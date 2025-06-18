@@ -45,7 +45,7 @@ The application will be a client-side web app that simulates the Goethe A2 "Lese
 Below deliverables are grouped into **MVP** (must-have for first release) and **Post-MVP** (nice-to-have after launch). Use the checkboxes to mark completion.
 
 ### 4.1 MVP Stages (0% is complete)
-1. [x] 🔐 Demo authentication (admin/admin) with hashed storage
+1. [ ] 🔐 Demo authentication (admin/admin) with hashed storage
 2. [ ] 🔄 Local data persistence (answers, scores) via Pinia-persist / localStorage
 3. [ ] 📄 Task fixtures loaded client-side (JSON/YAML)
 4. [ ] 📝 Part 1 — Statements & Text module
