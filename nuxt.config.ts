@@ -1,17 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-05-15',
+  // Disable server-side rendering - we are building a pure client-side PWA
+  ssr: false,
+
   devtools: { enabled: true },
 
+  /*
+   * Lightweight module set required for the Goethe A2 Reading Simulator.
+   * - @nuxt/ui: polished default components (tailwind-powered)
+   * - @nuxt/image: responsive image optimisation
+   * - @nuxt/icon: inline SVG icons
+   * - @pinia/nuxt: state-management (persisted later)
+   */
   modules: [
-    '@nuxt/content',
-    '@nuxt/eslint',
-    '@nuxt/fonts',
-    '@nuxt/icon',
-    '@nuxt/image',
-    '@nuxt/scripts',
-    '@nuxt/test-utils',
     '@nuxt/ui',
+    '@nuxt/image',
+    '@nuxt/icon',
     '@pinia/nuxt'
   ]
 })
