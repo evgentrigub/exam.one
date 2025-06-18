@@ -45,7 +45,7 @@ The application will be a client-side web app that simulates the Goethe A2 "Lese
 Below deliverables are grouped into **MVP** (must-have for first release) and **Post-MVP** (nice-to-have after launch). Use the checkboxes to mark completion.
 
 ### 4.1 MVP Stages (0% is complete)
-1. [ ] 🔐 Demo authentication (admin/admin) with hashed storage
+1. [x] 🔐 Demo authentication (admin/admin) with hashed storage
 2. [ ] 🔄 Local data persistence (answers, scores) via Pinia-persist / localStorage
 3. [ ] 📄 Task fixtures loaded client-side (JSON/YAML)
 4. [ ] 📝 Part 1 — Statements & Text module
@@ -62,7 +62,7 @@ Below deliverables are grouped into **MVP** (must-have for first release) and **
 2. [ ] ⚡ Quick Practice mode (daily 5-question sprint)
 3. [ ] 📱 PWA install prompt & offline caching via Service Worker
 4. [ ] 🌙 Dark mode + Accessibility refinements
-6. [ ] 🧩 Question bank editor (admin only)
-7. [ ] 🧪 Automated E2E tests (Playwright) & CI pipeline
+5. [ ] 🧩 Question bank editor (admin only)
+6. [ ] 🧪 Automated E2E tests (Playwright) & CI pipeline
 
 > Update this checklist regularly to reflect project progress. Each checked item should be accompanied by commit reference in project notes. 
