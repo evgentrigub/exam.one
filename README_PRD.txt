@@ -38,4 +38,31 @@ The application will be a client-side web app that simulates the Goethe A2 "Lese
 
 ### 3.6. Automated Scoring
 - After completing the simulation, the app will automatically calculate and display the user's score out of 20 points.
-- It will show which answers were correct and incorrect. 
+- It will show which answers were correct and incorrect.
+
+## 4. Deliverables & Progress Tracker
+
+Below deliverables are grouped into **MVP** (must-have for first release) and **Post-MVP** (nice-to-have after launch). Use the checkboxes to mark completion.
+
+### 4.1 MVP Stages (0% is complete)
+1. [ ] 🔐 Demo authentication (admin/admin) with hashed storage
+2. [ ] 🔄 Local data persistence (answers, scores) via Pinia-persist / localStorage
+3. [ ] 📄 Task fixtures loaded client-side (JSON/YAML)
+4. [ ] 📝 Part 1 — Statements & Text module
+5. [ ] 🛍️ Part 2 — Information Board module
+6. [ ] ✉️ Part 3 — Email Comprehension module
+7. [ ] 🌐 Part 4 — Requirements ↔ Website matching module
+8. [ ] 🧮 Automated scoring (0–20 pts) & per-question feedback
+9. [ ] ⏱️ Exam timer & progress bar
+10. [ ] 🎨 Basic, responsive UI following Apple-level guidelines
+5. [ ] 🗣️ Internationalisation infrastructure (i18n) for wider locales (english and german languages). Add UI select for swtching languages.
+
+### 4.2 Post-MVP Enhancements
+1. [ ] 📊 Dashboard with score history, charts & streaks
+2. [ ] ⚡ Quick Practice mode (daily 5-question sprint)
+3. [ ] 📱 PWA install prompt & offline caching via Service Worker
+4. [ ] 🌙 Dark mode + Accessibility refinements
+6. [ ] 🧩 Question bank editor (admin only)
+7. [ ] 🧪 Automated E2E tests (Playwright) & CI pipeline
+
+> Update this checklist regularly to reflect project progress. Each checked item should be accompanied by commit reference in project notes. 
