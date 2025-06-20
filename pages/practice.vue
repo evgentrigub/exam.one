@@ -24,29 +24,57 @@
         </div>
       </header>
 
+
+
       <!-- Practice Content -->
-      <div class="max-w-4xl mx-auto">
-        <div class="bg-white rounded-xl shadow-lg p-8">
-          <div class="text-center py-12">
-            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"></path>
-              </svg>
+      <div class="max-w-6xl mx-auto">
+        <!-- Filter Bar -->
+        <div class="mb-6 bg-white rounded-lg shadow-sm p-4">
+          <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <label class="text-sm font-medium text-gray-700">Texttyp:</label>
+              <select 
+                v-model="selectedFilter"
+                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="all">Alle Texte</option>
+                <option value="email">E-Mail</option>
+                <option value="notice">Hinweis</option>
+                <option value="article">Artikel</option>
+                <option value="advertisement">Anzeige</option>
+                <option value="instructions">Anleitung</option>
+              </select>
             </div>
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">
-              Practice Texts Coming Soon
-            </h2>
-            <p class="text-gray-600 mb-6 max-w-md mx-auto">
-              We're preparing authentic A2-level German texts for your practice. 
-              Check back soon to start improving your reading comprehension!
-            </p>
-            <div class="inline-flex items-center text-sm text-blue-600 bg-blue-50 px-4 py-2 rounded-full">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              Stage 2 - Text Display System (Next)
+            <div class="text-sm text-gray-600">
+              {{ filteredTexts.length }} {{ filteredTexts.length === 1 ? 'Text' : 'Texte' }} verfügbar
             </div>
           </div>
+        </div>
+
+        <!-- Text Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TextCard 
+            v-for="text in filteredTexts"
+            :key="text.id"
+            :text="text"
+            @start-reading="openReader"
+          />
+        </div>
+
+        <!-- Empty State -->
+        <div v-if="filteredTexts.length === 0" class="text-center py-12">
+          <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">
+            Keine Texte gefunden
+          </h3>
+          <p class="text-gray-600 max-w-md mx-auto">
+            Für den ausgewählten Filter sind keine Texte verfügbar. 
+            Probieren Sie einen anderen Filter aus.
+          </p>
         </div>
       </div>
     </div>
@@ -54,6 +82,9 @@
 </template>
 
 <script setup lang="ts">
+import { germanTexts } from '~/data/german-texts'
+import type { GermanText } from '~/utils/types'
+
 // Page metadata
 useHead({
   title: 'Reading Practice - German A2 Reading Trainer',
@@ -61,4 +92,24 @@ useHead({
     { name: 'description', content: 'Practice German A2 reading comprehension with authentic texts' }
   ]
 })
+
+// Reactive data
+const selectedFilter = ref<string>('all')
+
+// Computed properties
+const filteredTexts = computed(() => {
+  if (selectedFilter.value === 'all') {
+    return germanTexts
+  }
+  return germanTexts.filter(text => text.textType === selectedFilter.value)
+})
+
+// Methods
+function openReader(textId: string) {
+  // TODO: Implement in next stage - for now just show alert
+  const text = germanTexts.find(t => t.id === textId)
+  if (text) {
+    alert(`Text "${text.title}" ausgewählt! Der Text-Reader wird in einer späteren Version verfügbar sein.`)
+  }
+}
 </script> 
