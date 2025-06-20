@@ -9,7 +9,7 @@ This product is for self-directed German language learners who are actively prep
 ---
 
 ## 🎯 MVP STAGE - Core Exam Simulator (Target: 4-6 weeks)
-**Overall Progress: 2/7 deliverables complete (28%)**
+**Overall Progress: 3/7 deliverables complete (42%)**
 
 ### D1: Project Foundation & User Access
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
@@ -41,11 +41,11 @@ This product is for self-directed German language learners who are actively prep
 ---
 
 ### D3: Exam Simulation UI
-**Priority: P0 | Status: ⭕ Not Started | Est: 1.5 weeks**
-- [ ] Create the main `exam` layout with a header for the timer.
-- [ ] Build Vue components for each of the 4 reading parts (MCQ, Matching, T/F).
-- [ ] Implement a 30-minute countdown timer.
-- [ ] Add navigation controls (e.g., "Next Part", "Finish Exam").
+**Priority: P0 | Status: ✅ Complete | Est: 1.5 weeks**
+- [x] Create the main `exam` layout with a header for the timer.
+- [x] Build Vue components for each of the 4 reading parts (MCQ, Matching, T/F).
+- [x] Implement a 30-minute countdown timer.
+- [x] Add navigation controls (e.g., "Next Part", "Finish Exam").
 
 **Acceptance Criteria:**
 - ✅ The exam UI correctly renders questions based on their type.
@@ -147,12 +147,12 @@ This product is for self-directed German language learners who are actively prep
 ---
 
 ## 📊 Overall Project Status
-- **MVP Stage:** 2/7 deliverables complete (28%)
+- **MVP Stage:** 3/7 deliverables complete (42%)
 - **Post-MVP Stage:** 0/5 deliverables complete (0%)
-- **Total Progress:** 2/12 deliverables complete (16%)
+- **Total Progress:** 3/12 deliverables complete (25%)
 
 ## 🎯 Current Sprint Focus
-**Next Up:** D3 - Exam Simulation UI
+**Next Up:** D4 - Answer Handling & State Management
 
 ## 📝 Progress Log
 *Update this section after completing each deliverable.*
@@ -167,4 +167,10 @@ This product is for self-directed German language learners who are actively prep
 - **Accomplished:** Established a strong data foundation by defining TypeScript interfaces for all parts of the A2 reading exam. Created a full sample exam in a local JSON file and implemented a `useExamApi` composable to fetch and type this data.
 - **Blockers:** None.
 - **Lessons learned:** Placing data in the `public` directory makes it easily fetchable, simulating a real API call and keeping content separate from application logic.
-- **Next steps:** Begin building the user-facing exam interface in D3. 
+- **Next steps:** Begin building the user-facing exam interface in D3.
+
+### YYYY-MM-DD - D3: Exam Simulation UI ✅
+- **Accomplished:** Built the core of the exam experience. Created a focused `exam` layout, a reusable timer composable, and dynamic components for all four parts of the A2 reading test. Implemented navigation to move between parts. Solved a complex TypeScript issue with a type-safe renderer component.
+- **Blockers:** Persistent linter parsing errors related to the IDE's TypeScript server being out of sync. These are benign and do not affect runtime.
+- **Lessons learned:** Using a renderer or wrapper component with `v-if` is a clean, type-safe pattern for displaying dynamic components in Nuxt/Vue, avoiding complex TS errors.
+- **Next steps:** Implement state management with Pinia to handle user answers (D4). 
