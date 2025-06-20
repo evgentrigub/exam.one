@@ -8,7 +8,6 @@ alwaysApply: true
 ## Scope & Constraints
    - The application **MUST run 100 % offline** once installed (PWA-ready, no external APIs).
    - All data (user creds, progress, tasks) lives in `localStorage` or IndexedDB. No backend.
-   - Provide one demo credential pair: **admin / admin**.
    - Exam tasks are generated client-side from embedded JSON/YAML fixtures; keep them A2-level.
    - Mock API layer (`~/composables/api.ts`) to simulate REST; integrate latency simulation.
 

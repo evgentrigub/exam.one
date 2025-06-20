@@ -43,29 +43,6 @@ public/
 nuxt.config.ts
 ```
 
-## Data Model Sketch
-```ts
-interface User {
-  id: string
-  username: string // "admin"
-  passHash: string // bcrypt
-}
-
-interface QuestionMCQ {
-  id: string
-  prompt: string
-  options: [string, string, string]
-  answerIndex: 0 | 1 | 2
-  explanation?: string
-}
-
-interface TaskMatch {
-  id: string
-  statement: string
-  websiteRef: string // matches among 6 options
-}
-```
-
 ## Build & Tooling
 - Node ≥ 18, pnpm workspace.
 - ESLint (vue-eslint-parser) + Prettier.
