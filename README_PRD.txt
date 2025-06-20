@@ -16,9 +16,9 @@ to build confidence and accuracy for the exam format.
 ---
 
 ## 🎯 MVP STAGE - Core Reading Trainer (Target: 4-6 weeks)
-**Overall Progress: 7/7 deliverables complete (100%)**
+**Overall Progress: 0/7 deliverables complete (0%)**
 
-### D1: Project Foundation & Setup
+### Stage 1: Project Foundation & Setup
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
 - [ ] Nuxt 3 + TypeScript project initialization
 - [ ] Tailwind CSS + basic component structure
@@ -34,7 +34,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D2: Basic Text Display System
+### Stage 2: Basic Text Display System
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
 - [ ] Create German text data structure/schema
 - [ ] Implement text rendering component
@@ -49,7 +49,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D3: Question & Answer System
+### Stage 3: Question & Answer System
 **Priority: P0 | Status: ✅ Complete | Est: 1.5 weeks**
 - [ ] Multiple-choice question component
 - [ ] Answer selection functionality
@@ -65,7 +65,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D4: Basic Feedback System
+### Stage 4: Basic Feedback System
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
 - [ ] Immediate answer feedback (correct/incorrect)
 - [ ] Simple explanation for correct answers
@@ -80,7 +80,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D5: Local Storage & Basic Progress
+### Stage 5: Local Storage & Basic Progress
 **Priority: P1 | Status: ✅ Complete | Est: 1 week**
 - [ ] Save completed sessions to localStorage
 - [ ] Track basic stats (texts completed, overall accuracy)
@@ -95,7 +95,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D6: Text List Enhancements
+### Stage 6: Text List Enhancements
 **Priority: P1 | Status: ✅ Complete | Est: 1 week**
 - [ ] Completion indicators on text cards (checkmarks, best scores)
 - [ ] Filtering system (completed/incomplete, by text type)
@@ -114,7 +114,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D7: MVP Testing & Bug Fixes
+### Stage 7: MVP Testing & Bug Fixes
 **Priority: P1 | Status: ✅ Complete | Est: 0.5 weeks**
 - [ ] End-to-end user flow testing
 - [ ] Cross-browser compatibility testing
@@ -132,7 +132,7 @@ to build confidence and accuracy for the exam format.
 ## 🚀 POST-MVP STAGE - Enhanced Features (Target: 6-8 weeks)
 **Overall Progress: 0/8 deliverables complete (0%)**
 
-### D8: Advanced Progress Analytics
+### Stage 8: Advanced Progress Analytics
 **Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Detailed performance breakdown by question type
 - [ ] Time tracking per question and session
@@ -142,7 +142,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D9: Adaptive Difficulty System
+### Stage 9: Adaptive Difficulty System
 **Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Text complexity scoring algorithm
 - [ ] Dynamic difficulty adjustment based on performance
@@ -151,7 +151,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D10: Expanded Content Library
+### Stage 10: Expanded Content Library
 **Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] 20+ A2-level German texts across various categories
 - [ ] Text categorization system (emails, ads, articles, etc.)
@@ -160,7 +160,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D11: Advanced Session Management
+### Stage 11: Advanced Session Management
 **Priority: P3 | Status: ⭕ Not Started | Est: 1.5 weeks**
 - [ ] Customizable session lengths (5, 10, 15 questions)
 - [ ] Daily/weekly goal setting
@@ -169,7 +169,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D12: Enhanced User Experience
+### Stage 12: Enhanced User Experience
 **Priority: P3 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Dark mode support
 - [ ] Multiple UI themes
@@ -179,7 +179,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D13: Gamification Elements
+### Stage 13: Gamification Elements
 **Priority: P3 | Status: ⭕ Not Started | Est: 1.5 weeks**
 - [ ] Achievement badges system
 - [ ] Daily streak counters
@@ -188,7 +188,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D14: Advanced Analytics Dashboard
+### Stage 14: Advanced Analytics Dashboard
 **Priority: P3 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Interactive charts and graphs
 - [ ] Comparative performance analysis
@@ -197,7 +197,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### D15: Final Polish & Optimization
+### Stage 15: Final Polish & Optimization
 **Priority: P3 | Status: ⭕ Not Started | Est: 1 week**
 - [ ] Performance optimization (< 1s load time)
 - [ ] Comprehensive testing suite

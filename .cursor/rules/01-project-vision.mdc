@@ -19,7 +19,7 @@ Deliver a polished, exam-authentic Goethe A2 Reading Simulator that learners can
 - **IndexedDB** via `idb` for task banks (if large) else `localStorage`.
 - **Composables Layer**: `useExam`, `useTasks`, `useAuth`, `useStorage`.
 - **Mock API Service** inside `/composables/api.ts` returning Promises.
-- **UI Layer**: components inside `/components/` using Nuxt UI + Tailwind.
+- **UI Layer**: components inside `/components/` using Tailwind.
 - **Pages**: `/login`, `/dashboard`, `/exam/[part]`, `/results`.
 - **Layouts**: `default`, `auth` (no sidebar), `exam` (focused, full-screen).
 

@@ -9,7 +9,7 @@ alwaysApply: true
 Deliver **Apple-level polish**: intuitive, minimal, delightful, responsive.
 
 ## Visual Language
-1. Use Tailwind CSS + Nuxt UI tokens; no custom CSS unless necessary.
+1. Use Tailwind CSS; no custom CSS unless necessary.
 2. **Typography**: San Francisco / Inter as default; consistent scale (Major Third).
 3. Color palette: soft neutrals, Goethe brand teal accent; respect dark mode.
 4. Elevation & depth via subtle shadows (2-4 dp). Blur on modal backgrounds.
