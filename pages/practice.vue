@@ -24,8 +24,6 @@
         </div>
       </header>
 
-
-
       <!-- Practice Content -->
       <div class="max-w-6xl mx-auto">
         <!-- Filter Bar -->
@@ -78,6 +76,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Text Reader Modal -->
+    <div v-if="selectedText && mode === 'reading'" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="max-w-6xl w-full max-h-screen overflow-y-auto">
+        <TextReader 
+          :text="selectedText"
+          @close="closeReader"
+          @start-questions="startQuiz"
+        />
+      </div>
+    </div>
+
+    <!-- Quiz Session Modal -->
+    <div v-if="selectedText && mode === 'quiz'" class="fixed inset-0 bg-black bg-opacity-50 z-50">
+      <QuizSession 
+        :text="selectedText"
+        @exit="closeQuiz"
+      />
+    </div>
   </div>
 </template>
 
@@ -95,6 +112,8 @@ useHead({
 
 // Reactive data
 const selectedFilter = ref<string>('all')
+const selectedText = ref<GermanText | null>(null)
+const mode = ref<'reading' | 'quiz' | null>(null)
 
 // Computed properties
 const filteredTexts = computed(() => {
@@ -106,10 +125,28 @@ const filteredTexts = computed(() => {
 
 // Methods
 function openReader(textId: string) {
-  // TODO: Implement in next stage - for now just show alert
   const text = germanTexts.find(t => t.id === textId)
   if (text) {
-    alert(`Text "${text.title}" ausgewählt! Der Text-Reader wird in einer späteren Version verfügbar sein.`)
+    selectedText.value = text
+    mode.value = 'reading'
   }
+}
+
+function closeReader() {
+  selectedText.value = null
+  mode.value = null
+}
+
+function startQuiz(textId: string) {
+  const text = germanTexts.find(t => t.id === textId)
+  if (text && text.questions && text.questions.length > 0) {
+    selectedText.value = text
+    mode.value = 'quiz'
+  }
+}
+
+function closeQuiz() {
+  selectedText.value = null
+  mode.value = null
 }
 </script> 

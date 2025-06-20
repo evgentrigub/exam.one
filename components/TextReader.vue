@@ -82,9 +82,9 @@
         <button 
           @click="$emit('startQuestions', text.id)"
           class="flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
-          disabled
+          :disabled="!text.questions || text.questions.length === 0"
         >
-          Fragen beantworten (Coming Soon)
+          {{ text.questions && text.questions.length > 0 ? 'Fragen beantworten' : 'Keine Fragen verfügbar' }}
         </button>
       </div>
     </div>

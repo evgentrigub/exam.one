@@ -51,11 +51,11 @@ to build confidence and accuracy for the exam format.
 
 ### Stage 3: Question & Answer System
 **Priority: P0 | Status: ✅ Complete | Est: 1.5 weeks**
-- [ ] Multiple-choice question component
-- [ ] Answer selection functionality
-- [ ] Question data structure linked to texts
-- [ ] Navigation between questions (next/previous)
-- [ ] Submit answer functionality
+- [x] Multiple-choice question component
+- [x] Answer selection functionality
+- [x] Question data structure linked to texts
+- [x] Navigation between questions (next/previous)
+- [x] Submit answer functionality
 
 **Acceptance Criteria:**
 - ✅ Users can select one answer per question
@@ -67,10 +67,10 @@ to build confidence and accuracy for the exam format.
 
 ### Stage 4: Basic Feedback System
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
-- [ ] Immediate answer feedback (correct/incorrect)
-- [ ] Simple explanation for correct answers
-- [ ] Visual indicators (green checkmark, red X)
-- [ ] Score calculation per text/session
+- [x] Immediate answer feedback (correct/incorrect)
+- [x] Simple explanation for correct answers
+- [x] Visual indicators (green checkmark, red X)
+- [x] Score calculation per text/session
 
 **Acceptance Criteria:**
 - ✅ Instant feedback after answer selection
@@ -207,12 +207,12 @@ to build confidence and accuracy for the exam format.
 ---
 
 ## 📊 Overall Project Status
-- **MVP Stage:** 2/7 deliverables complete (29%) 
+- **MVP Stage:** 4/7 deliverables complete (57%) 
 - **Post-MVP Stage:** 0/8 deliverables complete (0%)
-- **Total Progress:** 2/15 deliverables complete (13%)
+- **Total Progress:** 4/15 deliverables complete (27%)
 
 ## 🎯 Current Sprint Focus
-**Next Up:** Stage 3 - Question & Answer System
+**Next Up:** Stage 5 - Local Storage & Basic Progress
 
 ## 📝 Progress Log
 *Update this section after completing each deliverable*
@@ -234,4 +234,23 @@ to build confidence and accuracy for the exam format.
 - Responsive design working on mobile and desktop
 - Clean separation of concerns with TypeScript types
 
-**Next:** Stage 3 - Question & Answer System with multiple-choice questions
+### ✅ Stage 3 & 4 Complete - Question/Answer System + Feedback (2024-01-21)
+**Deliverables:** ✅ Multiple-choice questions, ✅ Answer feedback system, ✅ Score calculation, ✅ Quiz session management
+
+**What was implemented:**
+- 20 A2-level comprehension questions (4 per text) with German explanations
+- QuestionCard component with immediate visual feedback (green/red indicators)
+- QuizSession component managing complete quiz flow with progress tracking
+- Real-time score calculation and percentage display
+- Detailed results screen with question-by-question breakdown
+- Modal-based text reading and quiz taking experience
+- localStorage integration for quiz progress persistence
+
+**Technical achievements:**
+- TypeScript interfaces for questions and quiz results
+- Reactive Vue 3 components with proper state management
+- Accessibility features (ARIA labels, keyboard navigation)
+- Responsive design for mobile and desktop quiz taking
+- Visual feedback system with icons and color coding
+
+**Next:** Stage 5 - Local Storage & Basic Progress with enhanced progress tracking
