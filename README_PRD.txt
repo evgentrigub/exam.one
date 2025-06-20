@@ -1,68 +1,164 @@
-# Product Requirements: Goethe A2 Reading Simulator
+# Goethe Exam Simulator - Product Requirements & Progress Tracker
 
-## 1. The Problem
+## 1. Problem Statement
+German language students preparing for Goethe-Institut exams find the preparation process stressful and often lack accessible tools that faithfully replicate the real exam experience. They need a way to practice the reading section under realistic conditions (timing, format, question types) to build confidence, identify weaknesses, and improve their time management skills, without requiring an internet connection.
 
-Studying for the Goethe A2 German exam is challenging. The "Lesen" (Reading) section has a specific and rigid format with four distinct parts, each testing different reading comprehension skills. Students struggle to find practice materials that accurately simulate the real exam's structure, question types, and time constraints. This makes it difficult to practice effectively, build confidence, and identify areas for improvement.
+## 2. Target Audience
+This product is for self-directed German language learners who are actively preparing for a Goethe-Institut certification exam, starting with the A2 level. They are tech-savvy enough to use a web application and value tools that are focused, efficient, and work offline.
 
-## 2. For Whom
+---
 
-This tool is for self-studying German language learners who are actively preparing to take the official Goethe-Institut A2 certification exam. They need a focused, reliable way to drill the reading module and measure their readiness.
+## 🎯 MVP STAGE - Core Exam Simulator (Target: 4-6 weeks)
+**Overall Progress: 0/7 deliverables complete (0%)**
 
-## 3. Core Features (MVP)
+### D1: Project Foundation & User Access
+**Priority: P0 | Status: ⭕ Not Started | Est: 1 week**
+- [ ] Initialize Nuxt 3 + TypeScript project.
+- [ ] Integrate Tailwind CSS for styling.
+- [ ] Create a basic `auth` layout and a `/login` page.
+- [ ] Implement a hardcoded login (`admin`/`admin`) as per requirements.
+- [ ] Set up basic routing (`/login`, `/exam`, `/results`).
 
-The application will be a client-side web app that simulates the Goethe A2 "Lesen" (Reading) module.
+**Acceptance Criteria:**
+- ✅ `pnpm dev` starts the development server.
+- ✅ User can log in using `admin`/`admin` credentials.
+- ✅ Upon login, user is redirected to a placeholder exam page.
+- ✅ ESLint and Prettier are configured for code quality.
 
-### 3.1. Exam Simulation
+---
 
-- Users can start a full reading exam simulation, consisting of all four parts presented in order.
-- The interface will be clean and intuitive, focusing on one question at a time to mimic exam conditions.
+### D2: Exam Data & Content Loading
+**Priority: P0 | Status: ⭕ Not Started | Est: 0.5 weeks**
+- [ ] Define TypeScript interfaces for the 4 parts of the A2 reading exam.
+- [ ] Create a JSON file in `/assets` or `/public` containing one full A2 sample exam.
+- [ ] Implement a composable (`useExamApi.ts`) to fetch and parse the local exam JSON.
 
-### 3.2. Part 1: Statements & Text
-- Display a medium-length text.
-- Present 5 incomplete statements, each with three possible completions (a, b, c).
-- Users must select the correct option to complete the statement based on the text.
+**Acceptance Criteria:**
+- ✅ TypeScript types correctly model the exam structure.
+- ✅ The composable successfully loads and returns the exam data.
+- ✅ The exam data structure is validated.
 
-### 3.3. Part 2: Information Board
-- Display an informational graphic (e.g., a shopping mall directory).
-- Present 5 tasks or requirements (e.g., "You want to buy shoes.").
-- For each task, users must select the correct location from three options (a, b, c).
+---
 
-### 3.4. Part 3: Email Comprehension
-- Display an email.
-- Present 5 multiple-choice questions about the email's content, each with three options (a, b, c).
+### D3: Exam Simulation UI
+**Priority: P0 | Status: ⭕ Not Started | Est: 1.5 weeks**
+- [ ] Create the main `exam` layout with a header for the timer.
+- [ ] Build Vue components for each of the 4 reading parts (MCQ, Matching, T/F).
+- [ ] Implement a 30-minute countdown timer.
+- [ ] Add navigation controls (e.g., "Next Part", "Finish Exam").
 
-### 3.5. Part 4: Matching Requirements to Websites
-- Display 5 statements describing a person's need or goal.
-- Display 6 screenshots of different websites or advertisements.
-- Users must match each of the 5 statements to the one correct website. One website will be unused.
+**Acceptance Criteria:**
+- ✅ The exam UI correctly renders questions based on their type.
+- ✅ The timer starts when the exam page loads and counts down.
+- ✅ Users can navigate between the different parts of the exam.
 
-### 3.6. Automated Scoring
-- After completing the simulation, the app will automatically calculate and display the user's score out of 20 points.
-- It will show which answers were correct and incorrect.
+---
 
-## 4. Deliverables & Progress Tracker
+### D4: Answer Handling & State Management
+**Priority: P1 | Status: ⭕ Not Started | Est: 1 week**
+- [ ] Set up a Pinia store (`examStore`) to manage the exam state.
+- [ ] Implement logic for selecting/changing answers for all question types.
+- [ ] Store the user's answers reactively in the Pinia store.
 
-Below deliverables are grouped into **MVP** (must-have for first release) and **Post-MVP** (nice-to-have after launch). Use the checkboxes to mark completion.
+**Acceptance Criteria:**
+- ✅ Clicking an answer updates the state in the Pinia store.
+- ✅ The UI correctly reflects the currently selected answers.
+- ✅ State is kept modular and separate from the UI components.
 
-### 4.1 MVP Stages (0% is complete)
-1. [ ] 🔐 Demo authentication (admin/admin) with hashed storage
-2. [ ] 🔄 Local data persistence (answers, scores) via Pinia-persist / localStorage
-3. [ ] 📄 Task fixtures loaded client-side (JSON/YAML)
-4. [ ] 📝 Part 1 — Statements & Text module
-5. [ ] 🛍️ Part 2 — Information Board module
-6. [ ] ✉️ Part 3 — Email Comprehension module
-7. [ ] 🌐 Part 4 — Requirements ↔ Website matching module
-8. [ ] 🧮 Automated scoring (0–20 pts) & per-question feedback
-9. [ ] ⏱️ Exam timer & progress bar
-10. [ ] 🎨 Basic, responsive UI following Apple-level guidelines
-5. [ ] 🗣️ Internationalisation infrastructure (i18n) for wider locales (english and german languages). Add UI select for swtching languages.
+---
 
-### 4.2 Post-MVP Enhancements
-1. [ ] 📊 Dashboard with score history, charts & streaks
-2. [ ] ⚡ Quick Practice mode (daily 5-question sprint)
-3. [ ] 📱 PWA install prompt & offline caching via Service Worker
-4. [ ] 🌙 Dark mode + Accessibility refinements
-5. [ ] 🧩 Question bank editor (admin only)
-6. [ ] 🧪 Automated E2E tests (Playwright) & CI pipeline
+### D5: Scoring & Results Page
+**Priority: P1 | Status: ⭕ Not Started | Est: 1 week**
+- [ ] Create a `results` page that is shown after submitting the exam.
+- [ ] Implement a scoring function that calculates the total correct answers.
+- [ ] Display the final score clearly on the results page.
+- [ ] Build a review mode on the results page where users can see their answers alongside the correct answers.
 
-> Update this checklist regularly to reflect project progress. Each checked item should be accompanied by commit reference in project notes. 
+**Acceptance Criteria:**
+- ✅ The final score is calculated correctly based on the stored answers.
+- ✅ The results page shows the score (e.g., 18/20).
+- ✅ The review mode correctly highlights correct and incorrect user answers.
+
+---
+
+### D6: State Persistence & Offline Readiness
+**Priority: P1 | Status: ⭕ Not Started | Est: 0.5 weeks**
+- [ ] Integrate `pinia-plugin-persistedstate` to save the `examStore` to `localStorage`.
+- [ ] Configure the persistence to save the user's current answers and timer state.
+
+**Acceptance Criteria:**
+- ✅ Refreshing the page during an exam does not reset the user's answers or timer.
+- ✅ The application remains fully functional if the user goes offline after the initial load.
+
+---
+
+### D7: MVP Testing & Bug Fixes
+**Priority: P1 | Status: ⭕ Not Started | Est: 0.5 weeks**
+- [ ] Conduct end-to-end testing of the full user flow (Login → Exam → Results).
+- [ ] Test on major browsers (Chrome, Firefox, Safari).
+- [ ] Fix any critical bugs found during testing.
+
+**Acceptance Criteria:**
+- ✅ A user can complete the entire exam flow without critical errors.
+- ✅ The application is responsive and works on mobile and desktop views.
+- ✅ No blocking bugs remain for the MVP launch.
+
+---
+
+## 🚀 POST-MVP STAGE - Enhanced Features
+**Overall Progress: 0/5 deliverables complete (0%)**
+
+### D8: Dashboard & Progress Analytics
+**Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
+- [ ] Create a user dashboard to view past exam results.
+- [ ] Track performance over time (e.g., scores, time taken).
+- [ ] Visualize progress with simple charts.
+
+---
+
+### D9: Expanded Exam Library
+**Priority: P2 | Status: ⭕ Not Started | Est: 1 week**
+- [ ] Add 3-5 more complete A2-level reading exams.
+- [ ] Implement a simple UI to allow users to choose which exam to take.
+
+---
+
+### D10: PWA & True Offline Mode
+**Priority: P2 | Status: ⭕ Not Started | Est: 1.5 weeks**
+- [ ] Configure the Nuxt PWA module.
+- [ ] Implement a service worker to cache all application assets for a true offline-first experience.
+- [ ] Add a web app manifest and icons.
+
+---
+
+### D11: Enhanced Review & Learning Mode
+**Priority: P3 | Status: ⭕ Not Started | Est: 1 week**
+- [ ] Add brief explanations for correct/incorrect answers in the review mode.
+- [ ] Link to external grammar/vocabulary resources for difficult questions.
+
+---
+
+### D12: Accessibility & UI Polish
+**Priority: P3 | Status: ⭕ Not Started | Est: 1 week**
+- [ ] Perform a full accessibility audit (WCAG 2.1 AA).
+- [ ] Add keyboard navigation for all interactive elements.
+- [ ] Implement subtle animations and transitions to improve UX.
+
+---
+
+## 📊 Overall Project Status
+- **MVP Stage:** 0/7 deliverables complete (0%)
+- **Post-MVP Stage:** 0/5 deliverables complete (0%)
+- **Total Progress:** 0/12 deliverables complete (0%)
+
+## 🎯 Current Sprint Focus
+**Next Up:** D1 - Project Foundation & User Access
+
+## 📝 Progress Log
+*Update this section after completing each deliverable.*
+
+### YYYY-MM-DD - D1: Project Foundation & User Access
+- **Accomplished:**
+- **Blockers:**
+- **Lessons learned:**
+- **Next steps:** 

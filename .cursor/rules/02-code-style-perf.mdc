@@ -50,7 +50,6 @@ alwaysApply: true
 ## Testing Pyramid
 - Unit (Vitest) > 70 % logic.
 - Component (Vue Test Utils) on key flows.
-- E2E (Playwright) smoke paths.
 
 ## Code Organisation
 - Single responsibility per file.
