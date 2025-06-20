@@ -9,15 +9,15 @@ This product is for self-directed German language learners who are actively prep
 ---
 
 ## 🎯 MVP STAGE - Core Exam Simulator (Target: 4-6 weeks)
-**Overall Progress: 0/7 deliverables complete (0%)**
+**Overall Progress: 2/7 deliverables complete (28%)**
 
 ### D1: Project Foundation & User Access
-**Priority: P0 | Status: ⭕ Not Started | Est: 1 week**
-- [ ] Initialize Nuxt 3 + TypeScript project.
-- [ ] Integrate Tailwind CSS for styling.
-- [ ] Create a basic `auth` layout and a `/login` page.
-- [ ] Implement a hardcoded login (`admin`/`admin`) as per requirements.
-- [ ] Set up basic routing (`/login`, `/exam`, `/results`).
+**Priority: P0 | Status: ✅ Complete | Est: 1 week**
+- [x] Initialize Nuxt 3 + TypeScript project.
+- [x] Integrate Tailwind CSS for styling.
+- [x] Create a basic `auth` layout and a `/login` page.
+- [x] Implement a hardcoded login (`admin`/`admin`) as per requirements.
+- [x] Set up basic routing (`/login`, `/exam`, `/results`).
 
 **Acceptance Criteria:**
 - ✅ `pnpm dev` starts the development server.
@@ -28,10 +28,10 @@ This product is for self-directed German language learners who are actively prep
 ---
 
 ### D2: Exam Data & Content Loading
-**Priority: P0 | Status: ⭕ Not Started | Est: 0.5 weeks**
-- [ ] Define TypeScript interfaces for the 4 parts of the A2 reading exam.
-- [ ] Create a JSON file in `/assets` or `/public` containing one full A2 sample exam.
-- [ ] Implement a composable (`useExamApi.ts`) to fetch and parse the local exam JSON.
+**Priority: P0 | Status: ✅ Complete | Est: 0.5 weeks**
+- [x] Define TypeScript interfaces for the 4 parts of the A2 reading exam.
+- [x] Create a JSON file in `/assets` or `/public` containing one full A2 sample exam.
+- [x] Implement a composable (`useExamApi.ts`) to fetch and parse the local exam JSON.
 
 **Acceptance Criteria:**
 - ✅ TypeScript types correctly model the exam structure.
@@ -147,18 +147,24 @@ This product is for self-directed German language learners who are actively prep
 ---
 
 ## 📊 Overall Project Status
-- **MVP Stage:** 0/7 deliverables complete (0%)
+- **MVP Stage:** 2/7 deliverables complete (28%)
 - **Post-MVP Stage:** 0/5 deliverables complete (0%)
-- **Total Progress:** 0/12 deliverables complete (0%)
+- **Total Progress:** 2/12 deliverables complete (16%)
 
 ## 🎯 Current Sprint Focus
-**Next Up:** D1 - Project Foundation & User Access
+**Next Up:** D3 - Exam Simulation UI
 
 ## 📝 Progress Log
 *Update this section after completing each deliverable.*
 
-### YYYY-MM-DD - D1: Project Foundation & User Access
-- **Accomplished:**
-- **Blockers:**
-- **Lessons learned:**
-- **Next steps:** 
+### YYYY-MM-DD - D1: Project Foundation & User Access ✅
+- **Accomplished:** Set up the initial Nuxt 3 project with TypeScript and Tailwind CSS. Created the login page with a dedicated layout, implemented the required `admin/admin` user access, and established basic routing to a placeholder exam page.
+- **Blockers:** The linter is showing errors for Nuxt's auto-imported functions (`definePageMeta`, `useRouter`), which is a known environment issue and does not affect the application's runtime functionality.
+- **Lessons learned:** A base `app.vue` is crucial for Nuxt 3's layout and page rendering to function correctly.
+- **Next steps:** Proceed with D2 to define the data structure for the exam and load the content.
+
+### YYYY-MM-DD - D2: Exam Data & Content Loading ✅
+- **Accomplished:** Established a strong data foundation by defining TypeScript interfaces for all parts of the A2 reading exam. Created a full sample exam in a local JSON file and implemented a `useExamApi` composable to fetch and type this data.
+- **Blockers:** None.
+- **Lessons learned:** Placing data in the `public` directory makes it easily fetchable, simulating a real API call and keeping content separate from application logic.
+- **Next steps:** Begin building the user-facing exam interface in D3. 
