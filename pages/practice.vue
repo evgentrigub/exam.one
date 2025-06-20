@@ -50,7 +50,7 @@
         </div>
 
         <!-- Text Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           <TextCard 
             v-for="text in filteredTexts"
             :key="text.id"
@@ -101,6 +101,7 @@
 <script setup lang="ts">
 import { germanTexts } from '~/data/german-texts'
 import type { GermanText } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
 
 // Page metadata
 useHead({
@@ -110,10 +111,28 @@ useHead({
   ]
 })
 
+// Progress composable
+const { getSession, clearSession, isTextCompleted, getBestScore } = useProgress()
+
 // Reactive data
 const selectedFilter = ref<string>('all')
 const selectedText = ref<GermanText | null>(null)
 const mode = ref<'reading' | 'quiz' | null>(null)
+
+// Check for resume session on mount
+onMounted(() => {
+  const route = useRoute()
+  if (route.query['resume'] === 'true') {
+    const session = getSession()
+    if (session) {
+      const text = germanTexts.find(t => t.id === session.textId)
+      if (text) {
+        selectedText.value = text
+        mode.value = 'quiz'
+      }
+    }
+  }
+})
 
 // Computed properties
 const filteredTexts = computed(() => {

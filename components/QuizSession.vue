@@ -144,6 +144,7 @@
 
 <script setup lang="ts">
 import type { GermanText, Question } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
 
 interface Props {
   text: GermanText
@@ -161,11 +162,46 @@ const emit = defineEmits<{
   exit: []
 }>()
 
+// Progress composable
+const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
+
 // Reactive state
 const currentQuestionIndex = ref(0)
 const score = ref(0)
 const isFinished = ref(false)
 const results = ref<QuizResult[]>([])
+const answeredQuestions = ref<Record<string, number>>({})
+
+// Initialize component and check for resume session
+onMounted(() => {
+  const session = getSession()
+  if (session && session.textId === props.text.id) {
+    // Restore session state
+    currentQuestionIndex.value = session.currentQuestionIndex || 0
+    answeredQuestions.value = session.answers || {}
+    
+    // Recalculate score and results from saved answers
+    let restoredScore = 0
+    const restoredResults: QuizResult[] = []
+    
+    Object.entries(answeredQuestions.value).forEach(([questionId, selectedAnswer]) => {
+      const question = questions.value.find(q => q.id === questionId)
+      if (question) {
+        const isCorrect = selectedAnswer === question.correctAnswer
+        if (isCorrect) restoredScore++
+        
+        restoredResults.push({
+          questionId,
+          selectedAnswer,
+          isCorrect
+        })
+      }
+    })
+    
+    score.value = restoredScore
+    results.value = restoredResults
+  }
+})
 
 // Computed properties
 const questions = computed(() => props.text.questions || [])
@@ -199,6 +235,12 @@ function handleAnswerSelected(questionId: string, selectedAnswer: number, isCorr
   if (isCorrect) {
     score.value++
   }
+  
+  // Save answer for resume functionality
+  answeredQuestions.value[questionId] = selectedAnswer
+  
+  // Auto-save session progress
+  saveSession(props.text.id, currentQuestionIndex.value, answeredQuestions.value)
 }
 
 function previousQuestion() {
@@ -216,20 +258,12 @@ function nextQuestion() {
 function finishQuiz() {
   isFinished.value = true
   
-  // Save to local storage for progress tracking
-  const progress = {
-    textId: props.text.id,
-    completed: true,
-    score: score.value,
-    totalQuestions: questions.value.length,
-    percentage: scorePercentage.value,
-    completedAt: new Date().toISOString()
-  }
+  // Use the progress composable for cleaner localStorage management
+  const { saveQuizCompletion, clearSession } = useProgress()
+  saveQuizCompletion(props.text.id, score.value, questions.value.length)
   
-  // Store in localStorage
-  const existingProgress = JSON.parse(localStorage.getItem('quiz-progress') || '{}')
-  existingProgress[props.text.id] = progress
-  localStorage.setItem('quiz-progress', JSON.stringify(existingProgress))
+  // Clear any incomplete session
+  clearSession()
 }
 
 function restartQuiz() {

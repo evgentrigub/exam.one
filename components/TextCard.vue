@@ -1,84 +1,135 @@
 <template>
-  <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-    <!-- Text Type Badge -->
+  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[320px]">
+    <!-- Header with badges -->
     <div class="px-4 pt-4">
       <div class="flex items-center justify-between mb-3">
-        <span 
-          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
-          :class="textTypeStyles[text.textType]"
-        >
-          <component :is="getTextTypeIcon(text.textType)" class="w-3 h-3 mr-1" />
-          {{ getTextTypeLabel(text.textType) }}
-        </span>
+        <!-- Time indicator always on left -->
         <div class="flex items-center text-xs text-gray-500">
           <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           {{ text.estimatedReadingTime }} Min
         </div>
+        
+        <!-- Completion or text type badge always on right -->
+        <span 
+          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+          :class="textCompleted ? 'bg-green-100 text-green-800' : textTypeStyles[text.textType]"
+        >
+          <!-- Completion check icon for completed texts -->
+          <svg v-if="textCompleted" class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          {{ textCompleted ? 'Completed' : getTextTypeLabel(text.textType) }}
+        </span>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="px-4 pb-4">
-      <h3 class="text-lg font-semibold text-gray-900 mb-2">
+    <!-- Content - flexible to fill space -->
+    <div class="px-4 flex-1 flex flex-col">
+      <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
         {{ text.title }}
       </h3>
-      
-      <!-- Preview of content -->
-      <p class="text-gray-600 text-sm mb-4 line-clamp-3">
-        {{ getContentPreview(text.content) }}
-      </p>
 
       <!-- Metadata -->
       <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
-        <div class="flex items-center">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 0 1 2 0v2h6V2a1 1 0 0 1 2 0v2h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4z"></path>
-          </svg>
-          {{ formatDate(text.createdAt) }}
+        <div class="flex items-center space-x-3">
+          <span>{{ text.wordCount }} words</span>
+          <span>•</span>
+          <span>{{ text.difficulty }}</span>
         </div>
-        <div class="flex items-center">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-          </svg>
-          {{ text.wordCount }} Wörter
+        <div class="flex flex-wrap gap-1 ml-auto">
+          <span 
+            v-for="topic in displayTopics" 
+            :key="topic"
+            class="px-2 py-1 bg-gray-100 rounded text-xs whitespace-nowrap"
+          >
+            {{ topic }}
+          </span>
         </div>
       </div>
 
-      <!-- Topics -->
-      <div class="flex flex-wrap gap-1 mb-4">
-        <span 
-          v-for="topic in text.topics" 
-          :key="topic"
-          class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"
+      <!-- Progress Information -->
+      <div v-if="textCompleted" class="mb-4 p-3 bg-green-50 rounded-lg">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center text-green-700">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="text-sm font-medium">Best Score</span>
+          </div>
+          <div class="text-right">
+            <div class="text-lg font-bold text-green-700">{{ Math.round((bestScore / (text.questions?.length || 4)) * 100) }}%</div>
+            <div class="text-xs text-green-600">
+              {{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spacer to push button to bottom -->
+      <div class="flex-1"></div>
+
+      <!-- Action Button - fixed at bottom -->
+      <div class="pb-4">
+        <button
+          @click="$emit('startReading', text.id)"
+          class="w-full px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+          :class="textCompleted 
+            ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500' 
+            : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500'"
         >
-          {{ topic }}
-        </span>
+          {{ textCompleted ? 'Read Again' : 'Start Reading' }}
+        </button>
       </div>
-
-      <!-- Action Button -->
-      <button 
-        @click="$emit('startReading', text.id)"
-        class="w-full bg-primary-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200"
-      >
-        Text lesen
-      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { GermanText } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
+import { computed, ref, onMounted } from 'vue'
 
 interface Props {
   text: GermanText
 }
 
-defineProps<Props>()
-defineEmits<{
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
   startReading: [textId: string]
 }>()
+
+// Progress tracking
+const { isTextCompleted, getBestScore, getTextProgress } = useProgress()
+
+// Client-side hydration flag
+const isClient = ref(false)
+
+onMounted(() => {
+  isClient.value = true
+})
+
+// Computed properties for progress display (only check after client hydration)
+const textCompleted = computed(() => isClient.value ? isTextCompleted(props.text.id) : false)
+const bestScore = computed(() => isClient.value ? getBestScore(props.text.id) : 0)
+const progress = computed(() => isClient.value ? getTextProgress(props.text.id) : null)
+
+// Filter and process topics for display
+const displayTopics = computed(() => {
+  return props.text.topics
+    .filter(topic => {
+      // Remove overly long topics that break layout
+      const longTopicsToRemove = ['Öffentliche Einrichtungen', 'Bewerbung']
+      return !longTopicsToRemove.includes(topic)
+    })
+    .map(topic => {
+      // Truncate topics longer than 12 characters
+      return topic.length > 12 ? topic.substring(0, 10) + '...' : topic
+    })
+    .slice(0, 2) // Still only show max 2 topics
+})
 
 // Text type styling
 const textTypeStyles = {
@@ -104,25 +155,6 @@ function getTextTypeLabel(type: string) {
   return textTypeLabels[type as keyof typeof textTypeLabels] || type
 }
 
-function getTextTypeIcon(type: string) {
-  const icons = {
-    email: 'svg',
-    notice: 'svg', 
-    article: 'svg',
-    advertisement: 'svg',
-    instructions: 'svg',
-    announcement: 'svg'
-  }
-  // Return a default icon component for now
-  return 'svg'
-}
-
-function getContentPreview(content: string): string {
-  // Remove extra whitespace and get first 120 characters
-  const cleanContent = content.replace(/\s+/g, ' ').trim()
-  return cleanContent.length > 120 ? cleanContent.substring(0, 120) + '...' : cleanContent
-}
-
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
   return date.toLocaleDateString('de-DE', { 
@@ -134,6 +166,13 @@ function formatDate(dateString: string): string {
 </script>
 
 <style scoped>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;

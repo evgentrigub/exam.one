@@ -12,6 +12,39 @@
         </p>
       </header>
 
+      <!-- Progress Overview -->
+      <div v-if="stats.totalTextsCompleted > 0" class="max-w-6xl mx-auto mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Progress Overview 📊</h2>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <!-- Texts Completed -->
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+              <div class="text-3xl font-bold text-green-600 mb-1">{{ stats.totalTextsCompleted }}</div>
+              <div class="text-sm text-gray-600">Texts Completed</div>
+            </div>
+            
+            <!-- Average Score -->
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+              <div class="text-3xl font-bold text-blue-600 mb-1">{{ stats.averageScore }}%</div>
+              <div class="text-sm text-gray-600">Average Score</div>
+            </div>
+            
+            <!-- Best Score -->
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+              <div class="text-3xl font-bold text-purple-600 mb-1">{{ stats.bestScore }}%</div>
+              <div class="text-sm text-gray-600">Best Score</div>
+            </div>
+            
+            <!-- Total Attempts -->
+            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+              <div class="text-3xl font-bold text-yellow-600 mb-1">{{ stats.totalAttempts }}</div>
+              <div class="text-sm text-gray-600">Total Attempts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Main Content -->
       <div class="max-w-4xl mx-auto">
         <div class="grid md:grid-cols-2 gap-8">
@@ -52,12 +85,75 @@
               <p class="text-gray-600 mb-6">
                 View your learning analytics and identify areas for improvement.
               </p>
-              <button 
-                class="inline-block bg-secondary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-secondary-700 transition-colors"
-                disabled
+              
+              <!-- Resume Session Button -->
+              <div v-if="resumeSession" class="mb-4">
+                <button 
+                  @click="resumeQuiz"
+                  class="inline-block bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors mb-2"
+                >
+                  📚 Resume Quiz
+                </button>
+                <p class="text-sm text-gray-600">Continue where you left off</p>
+              </div>
+              
+              <!-- Progress Stats or Getting Started -->
+              <div v-if="stats.totalTextsCompleted > 0">
+                <div class="text-lg font-semibold text-secondary-700 mb-2">
+                  {{ stats.totalTextsCompleted }} {{ stats.totalTextsCompleted === 1 ? 'Text' : 'Texts' }} Completed 🎉
+                </div>
+                <div class="text-sm text-gray-600">
+                  {{ stats.averageScore }}% Average Score
+                </div>
+              </div>
+              <div v-else>
+                <div class="text-lg font-medium text-gray-700 mb-2">
+                  Ready to start? 🚀
+                </div>
+                <div class="text-sm text-gray-600">
+                  Complete your first quiz to see progress stats
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div v-if="stats.recentActivity.length > 0" class="mt-12">
+          <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6">Recent Activity 📈</h3>
+            
+            <div class="space-y-4">
+              <div
+                v-for="activity in stats.recentActivity"
+                :key="activity.textId"
+                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
               >
-                Coming Soon
-              </button>
+                <div class="flex items-center space-x-4">
+                  <div 
+                    class="w-12 h-12 rounded-full flex items-center justify-center"
+                    :class="getScoreColor(activity.percentage)"
+                  >
+                    <span class="text-white font-bold">{{ activity.score }}</span>
+                  </div>
+                  <div>
+                    <div class="font-medium text-gray-900">
+                      Text {{ activity.textId }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                      {{ activity.percentage }}% • {{ formatDate(activity.completedAt) }}
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm text-gray-500">
+                    {{ activity.attemptCount || 1 }} {{ (activity.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
+                  </div>
+                  <div v-if="activity.bestScore && activity.bestScore > activity.score" class="text-xs text-green-600">
+                    Best: {{ Math.round((activity.bestScore / activity.totalQuestions) * 100) }}%
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -103,6 +199,11 @@
 </template>
 
 <script setup lang="ts">
+import { useProgress } from '~/composables/useProgress'
+
+// Progress tracking composable
+const { getProgressStats, getSession } = useProgress()
+
 // Page metadata
 useHead({
   title: 'German A2 Reading Trainer - Home',
@@ -110,4 +211,47 @@ useHead({
     { name: 'description', content: 'Practice German A2 reading comprehension with authentic exam-style texts' }
   ]
 })
+
+// Reactive data
+const stats = ref(getProgressStats())
+const resumeSession = ref(null)
+
+// Check for incomplete session on mount
+onMounted(() => {
+  // Refresh stats when component mounts
+  stats.value = getProgressStats()
+  
+  // Check for resume session
+  const session = getSession()
+  if (session) {
+    resumeSession.value = session
+  }
+})
+
+// Methods
+function getScoreColor(percentage: number): string {
+  if (percentage >= 75) return 'bg-green-500'
+  if (percentage >= 50) return 'bg-yellow-500'
+  return 'bg-red-500'
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffTime = Math.abs(now.getTime() - date.getTime())
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+  if (diffDays === 1) return 'Today'
+  if (diffDays === 2) return 'Yesterday'
+  if (diffDays <= 7) return `${diffDays - 1} days ago`
+  
+  return date.toLocaleDateString()
+}
+
+function resumeQuiz() {
+  if (resumeSession.value) {
+    // Navigate to practice page with resume parameter
+    navigateTo('/practice?resume=true')
+  }
+}
 </script> 
