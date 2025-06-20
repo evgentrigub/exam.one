@@ -16,18 +16,18 @@ to build confidence and accuracy for the exam format.
 ---
 
 ## 🎯 MVP STAGE - Core Reading Trainer (Target: 4-6 weeks)
-**Overall Progress: 0/7 deliverables complete (0%)**
+**Overall Progress: 1/7 deliverables complete (14%)**
 
 ### Stage 1: Project Foundation & Setup
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
-- [ ] Nuxt 3 + TypeScript project initialization
-- [ ] Tailwind CSS + basic component structure
-- [ ] Basic routing setup (home → reading practice)
-- [ ] Development environment & build pipeline
-- [ ] Git repository with initial commit
+- [x] Nuxt 3 + TypeScript project initialization
+- [x] Tailwind CSS + basic component structure
+- [x] Basic routing setup (home → reading practice)
+- [x] Development environment & build pipeline
+- [x] Git repository with initial commit
 
 **Acceptance Criteria:**
-- ✅ `npm run dev` starts development server
+- ✅ `pnpm run dev` starts development server
 - ✅ Basic homepage renders with navigation to reading practice
 - ✅ TypeScript compilation passes without errors
 - ✅ Tailwind styles applied correctly
@@ -207,12 +207,12 @@ to build confidence and accuracy for the exam format.
 ---
 
 ## 📊 Overall Project Status
-- **MVP Stage:** 7/7 deliverables complete (100%) 
+- **MVP Stage:** 1/7 deliverables complete (14%) 
 - **Post-MVP Stage:** 0/8 deliverables complete (0%)
-- **Total Progress:** 7/15 deliverables complete (47%)
+- **Total Progress:** 1/15 deliverables complete (7%)
 
 ## 🎯 Current Sprint Focus
-**Next Up:** D8 - Advanced Progress Analytics
+**Next Up:** Stage 2 - Basic Text Display System
 
 ## 📝 Progress Log
 *Update this section after completing each deliverable*
