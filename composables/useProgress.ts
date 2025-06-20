@@ -3,7 +3,7 @@
  * Handles localStorage operations, stats calculation, and session management
  */
 
-import type { UserProgress, Session } from '~/utils/types'
+// Removed unused imports - using inline types instead
 
 interface QuizProgress {
   textId: string
@@ -33,7 +33,7 @@ export const useProgress = () => {
    * Get all progress data from localStorage
    */
   const getProgressData = (): Record<string, QuizProgress> => {
-    if (process.client) {
+    if (import.meta.client) {
       const data = localStorage.getItem(STORAGE_KEY)
       return data ? JSON.parse(data) : {}
     }
@@ -44,7 +44,7 @@ export const useProgress = () => {
    * Save quiz completion to localStorage
    */
   const saveQuizCompletion = (textId: string, score: number, totalQuestions: number) => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
@@ -71,7 +71,7 @@ export const useProgress = () => {
    * Save incomplete session for resume functionality
    */
   const saveSession = (textId: string, currentQuestionIndex: number, answers: Record<string, number>) => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     const session = {
       textId,
@@ -87,7 +87,7 @@ export const useProgress = () => {
    * Get incomplete session for resume
    */
   const getSession = () => {
-    if (!process.client) return null
+    if (!import.meta.client) return null
     
     const data = localStorage.getItem(SESSION_STORAGE_KEY)
     return data ? JSON.parse(data) : null
@@ -97,7 +97,7 @@ export const useProgress = () => {
    * Clear incomplete session
    */
   const clearSession = () => {
-    if (!process.client) return
+    if (!import.meta.client) return
     localStorage.removeItem(SESSION_STORAGE_KEY)
   }
 

@@ -31,13 +31,14 @@
         <button
           v-for="(option, index) in question.options"
           :key="index"
-          @click="selectAnswer(index)"
           :disabled="isAnswered"
           class="w-full p-4 rounded-lg border-2 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
           :class="getOptionClass(index)"
+          @click="selectAnswer(index)"
         >
           <div class="flex items-center">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center mr-4 transition-all duration-200"
+            <div
+class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center mr-4 transition-all duration-200"
                  :class="getOptionCircleClass(index)">
               <span class="text-sm font-medium">{{ String.fromCharCode(65 + index) }}</span>
             </div>
@@ -45,10 +46,10 @@
             <!-- Feedback Icons -->
             <div v-if="isAnswered" class="ml-auto">
               <svg v-if="index === question.correctAnswer" class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
               <svg v-else-if="index === selectedAnswer && index !== question.correctAnswer" class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </div>
           </div>
@@ -61,12 +62,12 @@
           <div class="flex-shrink-0">
             <div v-if="isCorrect" class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
               <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
             <div v-else class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
               <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </div>
           </div>
@@ -84,9 +85,9 @@
       <!-- Navigation Buttons -->
       <div class="flex justify-between items-center mt-8 pt-6 border-t">
         <button
-          @click="$emit('previous')"
           :disabled="currentQuestionIndex === 0"
           class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          @click="$emit('previous')"
         >
           Zurück
         </button>
@@ -97,18 +98,18 @@
         
         <button
           v-if="currentQuestionIndex < totalQuestions - 1"
-          @click="$emit('next')"
           :disabled="!isAnswered"
           class="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          @click="$emit('next')"
         >
           Weiter
         </button>
         
         <button
           v-else
-          @click="$emit('finish')"
           :disabled="!isAnswered"
           class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          @click="$emit('finish')"
         >
           Fertig
         </button>

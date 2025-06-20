@@ -15,12 +15,12 @@
               </p>
             </div>
             <button
-              @click="$emit('exit')"
               class="p-2 hover:bg-white rounded-lg transition-colors"
               aria-label="Quiz beenden"
+              @click="$emit('exit')"
             >
               <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
@@ -47,12 +47,13 @@
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
           <!-- Results Header -->
           <div class="bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-8 text-center">
-            <div class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
+            <div
+class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
                  :class="getScoreColor()">
               <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path v-if="scorePercentage >= 75" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                <path v-else-if="scorePercentage >= 50" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path v-if="scorePercentage >= 75" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path v-else-if="scorePercentage >= 50" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
             <h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -90,13 +91,14 @@
                   :class="result.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'"
                 >
                   <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                    <div
+class="w-8 h-8 rounded-full flex items-center justify-center"
                          :class="result.isCorrect ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
                       <svg v-if="result.isCorrect" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                       </svg>
                       <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                       </svg>
                     </div>
                     <div>
@@ -123,14 +125,14 @@
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t">
               <button
-                @click="restartQuiz"
                 class="flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+                @click="restartQuiz"
               >
                 Nochmal versuchen
               </button>
               <button
-                @click="$emit('exit')"
                 class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                @click="$emit('exit')"
               >
                 Zurück zur Übersicht
               </button>
@@ -143,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GermanText, Question } from '~/utils/types'
+import type { GermanText } from '~/utils/types'
 import { useProgress } from '~/composables/useProgress'
 
 interface Props {
@@ -158,7 +160,7 @@ interface QuizResult {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits<{
+const _emit = defineEmits<{
   exit: []
 }>()
 
@@ -258,11 +260,8 @@ function nextQuestion() {
 function finishQuiz() {
   isFinished.value = true
   
-  // Use the progress composable for cleaner localStorage management
-  const { saveQuizCompletion, clearSession } = useProgress()
+  // Save completion and clear session
   saveQuizCompletion(props.text.id, score.value, questions.value.length)
-  
-  // Clear any incomplete session
   clearSession()
 }
 
