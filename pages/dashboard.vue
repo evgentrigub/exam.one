@@ -10,6 +10,35 @@
       </p>
     </header>
 
+    <!-- Progress Overview -->
+    <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Your Progress</h2>
+        <ClientOnly>
+          <div class="text-sm text-gray-600">
+            {{ completedCount }}/{{ germanTexts.length }} texts completed
+          </div>
+          <template #fallback>
+            <div class="text-sm text-gray-600">Loading...</div>
+          </template>
+        </ClientOnly>
+      </div>
+      
+      <ClientOnly>
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+          <div 
+            class="bg-green-600 h-3 rounded-full transition-all duration-500 ease-out"
+            :style="{ width: `${completionPercentage}%` }"
+          />
+        </div>
+        <template #fallback>
+          <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+            <div class="bg-gray-400 h-3 rounded-full animate-pulse" style="width: 0%"></div>
+          </div>
+        </template>
+      </ClientOnly>
+    </div>
+
     <!-- Progress Overview Cards -->
     <div class="max-w-6xl mx-auto mb-8">
       <ClientOnly>
@@ -21,8 +50,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <div class="text-3xl font-bold text-green-600 mb-1">{{ stats.totalTextsCompleted }}</div>
-            <div class="text-sm text-gray-600">Texts Completed</div>
+            <div class="text-3xl font-bold text-green-600 mb-1">{{ completionPercentage }}% </div>
+            <div class="text-sm text-gray-600">Completion Rate</div>
           </div>
           
           <!-- Average Score -->
@@ -212,6 +241,7 @@
 
 <script setup lang="ts">
 import { useProgress } from '~/composables/useProgress'
+import { germanTexts } from '~/data/german-texts'
 
 // Page metadata
 useHead({
@@ -222,7 +252,11 @@ useHead({
 })
 
 // Progress tracking composable
-const { getProgressStats, getSession } = useProgress()
+const { getProgressStats, getSession, isTextCompleted } = useProgress()
+
+const completionPercentage = computed(() => {
+  return Math.round((completedCount.value / germanTexts.length) * 100)
+})
 
 // Reactive data
 const stats = ref(getProgressStats())
@@ -238,6 +272,11 @@ onMounted(() => {
   if (session) {
     resumeSession.value = session
   }
+})
+
+
+const completedCount = computed(() => {
+  return germanTexts.filter(text => isTextCompleted(text.id)).length
 })
 
 // Methods

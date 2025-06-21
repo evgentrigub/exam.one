@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+  <div :class="isSideBySide ? 'bg-white' : 'bg-white rounded-xl shadow-lg overflow-hidden'">
     <!-- Question Header -->
-    <div class="bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-4 border-b">
+    <div v-if="!isSideBySide" class="bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-4 border-b">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
           <span class="text-sm font-medium text-gray-600">
@@ -20,8 +20,22 @@
       </div>
     </div>
 
+    <!-- Side-by-side progress bar -->
+    <div v-if="isSideBySide" class="mb-6">
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div 
+          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          :style="{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }"
+        />
+      </div>
+      <div class="flex justify-between mt-2 text-xs text-gray-500">
+        <span>Question {{ currentQuestionIndex + 1 }}</span>
+        <span>{{ totalQuestions }} total</span>
+      </div>
+    </div>
+
     <!-- Question Content -->
-    <div class="p-6 md:p-8">
+    <div :class="isSideBySide ? 'p-0' : 'p-6 md:p-8'">
       <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-6">
         {{ question.question }}
       </h2>
@@ -126,6 +140,7 @@ interface Props {
   currentQuestionIndex: number
   totalQuestions: number
   score: number | null
+  isSideBySide?: boolean | undefined
 }
 
 const props = defineProps<Props>()

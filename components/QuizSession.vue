@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div :class="isSideBySide ? 'h-full' : 'min-h-screen bg-gray-50'">
     <!-- Quiz Mode - Show questions -->
-    <div v-if="!isFinished" class="container mx-auto px-4 py-8">
-      <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="mb-8">
+    <div v-if="!isFinished" :class="isSideBySide ? 'p-6 h-full' : 'container mx-auto px-4 py-8'">
+      <div :class="isSideBySide ? 'h-full flex flex-col' : 'max-w-4xl mx-auto'">
+        <!-- Header (only show if not side-by-side since we have it in the main header) -->
+        <div v-if="!isSideBySide" class="mb-8">
           <div class="flex items-center justify-between">
             <div>
               <h1 class="text-2xl font-bold text-gray-900 mb-1">
@@ -26,18 +26,31 @@
           </div>
         </div>
 
+        <!-- Side-by-side header -->
+        <div v-if="isSideBySide" class="mb-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-gray-900">Questions</h2>
+            <div class="text-sm text-gray-600">
+              {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+            </div>
+          </div>
+        </div>
+
         <!-- Question Card -->
-        <QuestionCard
-          v-if="currentQuestion"
-          :question="currentQuestion"
-          :current-question-index="currentQuestionIndex"
-          :total-questions="questions.length"
-          :score="score"
-          @answer-selected="handleAnswerSelected"
-          @previous="previousQuestion"
-          @next="nextQuestion"
-          @finish="finishQuiz"
-        />
+        <div :class="isSideBySide ? 'flex-1 overflow-y-auto' : ''">
+          <QuestionCard
+            v-if="currentQuestion"
+            :question="currentQuestion"
+            :current-question-index="currentQuestionIndex"
+            :total-questions="questions.length"
+            :score="score"
+            :is-side-by-side="isSideBySide"
+            @answer-selected="handleAnswerSelected"
+            @previous="previousQuestion"
+            @next="nextQuestion"
+            @finish="finishQuiz"
+          />
+        </div>
       </div>
     </div>
 
@@ -150,6 +163,7 @@ import { useProgress } from '~/composables/useProgress'
 
 interface Props {
   text: GermanText
+  isSideBySide?: boolean
 }
 
 interface QuizResult {
