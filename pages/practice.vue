@@ -17,38 +17,60 @@
         <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900">Your Progress</h2>
-            <div class="text-sm text-gray-600">
-              {{ completedCount }}/{{ germanTexts.length }} texts completed
-            </div>
+            <ClientOnly>
+              <div class="text-sm text-gray-600">
+                {{ completedCount }}/{{ germanTexts.length }} texts completed
+              </div>
+              <template #fallback>
+                <div class="text-sm text-gray-600">Loading...</div>
+              </template>
+            </ClientOnly>
           </div>
           
           <!-- Progress Bar -->
-          <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
-            <div 
-              class="bg-green-600 h-3 rounded-full transition-all duration-500 ease-out"
-              :style="{ width: `${completionPercentage}%` }"
-            />
-          </div>
+          <ClientOnly>
+            <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+              <div 
+                class="bg-green-600 h-3 rounded-full transition-all duration-500 ease-out"
+                :style="{ width: `${completionPercentage}%` }"
+              />
+            </div>
+            <template #fallback>
+              <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                <div class="bg-gray-400 h-3 rounded-full animate-pulse" style="width: 0%"></div>
+              </div>
+            </template>
+          </ClientOnly>
           
           <!-- Stats Grid -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center">
-              <div class="text-2xl font-bold text-green-600">{{ completionPercentage }}%</div>
-              <div class="text-xs text-gray-600">Completion Rate</div>
+          <ClientOnly>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-green-600">{{ completionPercentage }}%</div>
+                <div class="text-xs text-gray-600">Completion Rate</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">{{ averageScore }}%</div>
+                <div class="text-xs text-gray-600">Average Score</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-purple-600">{{ bestOverallScore }}%</div>
+                <div class="text-xs text-gray-600">Best Score</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-orange-600">{{ totalAttempts }}</div>
+                <div class="text-xs text-gray-600">Total Attempts</div>
+              </div>
             </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-blue-600">{{ averageScore }}%</div>
-              <div class="text-xs text-gray-600">Average Score</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-purple-600">{{ bestOverallScore }}%</div>
-              <div class="text-xs text-gray-600">Best Score</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-orange-600">{{ totalAttempts }}</div>
-              <div class="text-xs text-gray-600">Total Attempts</div>
-            </div>
-          </div>
+            <template #fallback>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div v-for="i in 4" :key="i" class="text-center">
+                  <div class="text-2xl font-bold text-gray-400 animate-pulse">--</div>
+                  <div class="text-xs text-gray-600">Loading...</div>
+                </div>
+              </div>
+            </template>
+          </ClientOnly>
         </div>
 
         <!-- Enhanced Filter and Sort Bar -->
