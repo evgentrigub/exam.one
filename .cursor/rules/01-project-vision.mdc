@@ -6,7 +6,7 @@ alwaysApply: true
 # Project Vision & Structure
 
 ## Vision
-Deliver a polished, exam-authentic Goethe A2 Reading Simulator that learners can install and run entirely offline, tracking their progress over time while delighting them with an Apple-grade UX.
+Deliver a polished, exam-authentic Goethe Reading Simulator A2 that learners can install and run entirely offline, tracking their progress over time while delighting them with an Apple-grade UX.
 
 ## Key Objectives
 1. Faithfully reproduce the 4 reading parts described in `README_PRD.txt`.

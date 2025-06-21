@@ -3,25 +3,12 @@
     <div class="container mx-auto px-4 py-8">
       <!-- Header -->
       <header class="mb-8">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">
-              Reading Practice
-            </h1>
-            <p class="text-gray-600">
-              Choose a text to practice your German reading comprehension
-            </p>
-          </div>
-          <NuxtLink 
-            to="/" 
-            class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-            </svg>
-            Back to Home
-          </NuxtLink>
-        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          📚 Reading Practice
+        </h1>
+        <p class="text-gray-600">
+          Choose a text to practice your German reading comprehension
+        </p>
       </header>
 
       <!-- Practice Content -->
@@ -205,9 +192,9 @@ import { useProgress } from '~/composables/useProgress'
 
 // Page metadata
 useHead({
-  title: 'Reading Practice - German A2 Reading Trainer',
+  title: 'Reading Practice - German Reading Trainer',
   meta: [
-    { name: 'description', content: 'Practice German A2 reading comprehension with authentic texts' }
+    { name: 'description', content: 'Practice German reading comprehension with authentic texts' }
   ]
 })
 

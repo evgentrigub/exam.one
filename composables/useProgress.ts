@@ -1,5 +1,5 @@
 /**
- * Progress tracking composable for German A2 Reading Trainer
+ * Progress tracking composable for German Reading Trainer
  * Handles localStorage operations, stats calculation, and session management
  */
 

@@ -1,5 +1,5 @@
 /**
- * German A2 Reading Trainer - Type Definitions
+ * German Reading Trainer - Type Definitions
  * Data structures for German texts, questions, and user progress
  */
 

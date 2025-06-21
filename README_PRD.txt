@@ -1,4 +1,4 @@
-# German A2 Reading Trainer - Product Requirements & Progress Tracker
+# German Reading Trainer - Product Requirements & Progress Tracker
 
 ## Problem Statement
 German language learners preparing for Goethe Institut A2 certification struggle 
@@ -125,12 +125,28 @@ to build confidence and accuracy for the exam format.
 - ✅ Fast loading and responsive interactions
 - ✅ No blocking bugs remain
 
+
+### Stage 8: Home, practice and dashboard pages
+**Priority: P1 | Status: ✅ Complete | Est: 2 weeks**
+- [x] Add top navbar with three button links Home, Practice, Dashboard
+- [x] "Home" (Landing) page should be in the root path only with static advertisement content without any progress tracking
+- [x] "Practice" page is available in /practice path and contains texts with filters.
+- [x] "Dashboard" page is available in /dashboard path and contains cards with info about progress.
+
+**Acceptance Criteria:**
+- ✅ Top navigation bar with three clear links (Home, Practice, Dashboard)
+- ✅ Home page is a static landing page focused on marketing and features
+- ✅ Practice page maintains existing functionality with text filtering and quiz sessions
+- ✅ Dashboard page shows comprehensive progress tracking and analytics
+- ✅ All pages use consistent layout with navbar
+- ✅ Navigation highlights current active page
+
 ---
 
 ## 🚀 POST-MVP STAGE - Enhanced Features (Target: 6-8 weeks)
 **Overall Progress: 0/8 deliverables complete (0%)**
 
-### Stage 8: Advanced Progress Analytics
+### Stage 9: Advanced Progress Analytics
 **Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Detailed performance breakdown by question type
 - [ ] Time tracking per question and session
@@ -140,7 +156,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 9: Adaptive Difficulty System
+### Stage 10: Adaptive Difficulty System
 **Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Text complexity scoring algorithm
 - [ ] Dynamic difficulty adjustment based on performance
@@ -149,7 +165,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 10: Expanded Content Library
+### Stage 11: Expanded Content Library
 **Priority: P2 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] 20+ A2-level German texts across various categories
 - [ ] Text categorization system (emails, ads, articles, etc.)
@@ -158,7 +174,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 11: Advanced Session Management
+### Stage 12: Advanced Session Management
 **Priority: P3 | Status: ⭕ Not Started | Est: 1.5 weeks**
 - [ ] Customizable session lengths (5, 10, 15 questions)
 - [ ] Daily/weekly goal setting
@@ -167,7 +183,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 12: Enhanced User Experience
+### Stage 13: Enhanced User Experience
 **Priority: P3 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Dark mode support
 - [ ] Multiple UI themes
@@ -177,7 +193,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 13: Gamification Elements
+### Stage 14: Gamification Elements
 **Priority: P3 | Status: ⭕ Not Started | Est: 1.5 weeks**
 - [ ] Achievement badges system
 - [ ] Daily streak counters
@@ -186,7 +202,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 14: Advanced Analytics Dashboard
+### Stage 15: Advanced Analytics Dashboard
 **Priority: P3 | Status: ⭕ Not Started | Est: 2 weeks**
 - [ ] Interactive charts and graphs
 - [ ] Comparative performance analysis
@@ -195,7 +211,7 @@ to build confidence and accuracy for the exam format.
 
 ---
 
-### Stage 15: Final Polish & Optimization
+### Stage 16: Final Polish & Optimization
 **Priority: P3 | Status: ⭕ Not Started | Est: 1 week**
 - [ ] Performance optimization (< 1s load time)
 - [ ] Comprehensive testing suite
@@ -206,11 +222,11 @@ to build confidence and accuracy for the exam format.
 
 ## 📊 Overall Project Status
 - **MVP Stage:** 7/7 deliverables complete (100%) 🎉
-- **Post-MVP Stage:** 0/8 deliverables complete (0%)
-- **Total Progress:** 7/15 deliverables complete (47%)
+- **Post-MVP Stage:** 1/8 deliverables complete (12.5%)
+- **Total Progress:** 8/15 deliverables complete (53%)
 
 ## 🎯 Current Sprint Focus
-**MVP COMPLETE!** Ready for Post-MVP Stage 8 - Advanced Progress Analytics
+**Stage 8 COMPLETE!** ✅ Navigation and page structure implemented. Ready for Stage 9 - Advanced Progress Analytics
 
 ## 📝 Progress Log
 *Update this section after completing each deliverable*
@@ -319,4 +335,24 @@ to build confidence and accuracy for the exam format.
 - Build time: < 6 seconds
 - No blocking performance issues identified
 
-**🎉 MVP STAGE COMPLETE!** All 7 MVP deliverables successfully implemented and tested.
+### ✅ Stage 8 Complete - Navigation & Page Structure (2024-01-21)
+**Deliverables:** ✅ Top navbar component, ✅ Static landing page, ✅ Dashboard page, ✅ Page restructuring, ✅ Layout system
+
+**What was implemented:**
+- Top navigation bar with three distinct sections: Home, Practice, Dashboard
+- Completely restructured home page as static landing/marketing page without progress tracking
+- New dedicated dashboard page with comprehensive progress analytics and activity tracking
+- Default layout component integrating the navbar across all pages
+- Enhanced visual design with proper branding and call-to-action elements
+- Responsive navigation with active page indicators and smooth transitions
+
+**Technical achievements:**
+- Clean separation of concerns: Home (marketing), Practice (functionality), Dashboard (analytics)
+- Consistent navigation experience with proper route highlighting
+- Responsive design working seamlessly across mobile and desktop
+- Enhanced UX with clear information architecture and intuitive navigation flow
+- Static content optimization for better SEO and faster loading
+- Progress tracking functionality properly isolated to dashboard page
+
+**Next:** Stage 9 - Advanced Progress Analytics with detailed performance breakdowns and time tracking
+

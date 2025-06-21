@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Custom colors for German A2 Reading Trainer */
+  /* Custom colors for German Reading Trainer */
   --color-primary-50: oklch(0.97 0.014 254.604);
   --color-primary-100: oklch(0.932 0.032 255.585);
   --color-primary-500: oklch(0.623 0.214 259.815);

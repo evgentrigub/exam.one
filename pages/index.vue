@@ -1,257 +1,204 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50">
-    <div class="container mx-auto px-4 py-8">
-      <!-- Header -->
-      <header class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
-          German A2 Reading Trainer
+  <div class="bg-gradient-to-br from-blue-50 to-cyan-50">
+    <div class="container mx-auto px-4 py-16">
+      <!-- Hero Section -->
+      <header class="text-center mb-16">
+        <h1 class="text-5xl font-bold text-gray-900 mb-6">
+          German Reading Trainer
         </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
           Master German reading comprehension with authentic A2-level texts. 
-          Practice with exam-style questions and track your progress.
+          Practice with exam-style questions and track your progress towards Goethe Institut certification.
         </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <NuxtLink 
+            to="/practice" 
+            class="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg shadow-lg"
+          >
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
+            </svg>
+            Start Reading Practice
+          </NuxtLink>
+          <NuxtLink 
+            to="/dashboard" 
+            class="inline-flex items-center px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-lg"
+          >
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            View Dashboard
+          </NuxtLink>
+        </div>
       </header>
 
-      <!-- Progress Overview -->
-      <div v-if="stats.totalTextsCompleted > 0" class="max-w-6xl mx-auto mb-12">
-        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Progress Overview 📊</h2>
-          
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <!-- Texts Completed -->
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-              <div class="text-3xl font-bold text-green-600 mb-1">{{ stats.totalTextsCompleted }}</div>
-              <div class="text-sm text-gray-600">Texts Completed</div>
+      <!-- Features Section -->
+      <div class="max-w-6xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">
+          Why Choose Our Trainer? ✨
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Authentic Texts -->
+          <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
             </div>
-            
-            <!-- Average Score -->
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-3xl font-bold text-blue-600 mb-1">{{ stats.averageScore }}%</div>
-              <div class="text-sm text-gray-600">Average Score</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Authentic Texts</h3>
+            <p class="text-gray-600">
+              Real German texts matching A2 exam format - emails, notices, articles, and advertisements 
+              just like you'll see in the Goethe Institut certification exam.
+            </p>
+          </div>
+
+          <!-- Instant Feedback -->
+          <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
             </div>
-            
-            <!-- Best Score -->
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <div class="text-3xl font-bold text-purple-600 mb-1">{{ stats.bestScore }}%</div>
-              <div class="text-sm text-gray-600">Best Score</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Instant Feedback</h3>
+            <p class="text-gray-600">
+              Get immediate results and detailed explanations for each question. 
+              Learn from your mistakes and improve your reading comprehension skills.
+            </p>
+          </div>
+
+          <!-- Progress Tracking -->
+          <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+              </svg>
             </div>
-            
-            <!-- Total Attempts -->
-            <div class="text-center p-4 bg-yellow-50 rounded-lg">
-              <div class="text-3xl font-bold text-yellow-600 mb-1">{{ stats.totalAttempts }}</div>
-              <div class="text-sm text-gray-600">Total Attempts</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Progress Tracking</h3>
+            <p class="text-gray-600">
+              Monitor your improvement over time with detailed analytics. 
+              See your strengths and areas for improvement to focus your study efforts.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits Section -->
+      <div class="max-w-4xl mx-auto mb-16">
+        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+          <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">
+            Perfect for Goethe A2 Preparation 🎯
+          </h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Exam-Style Questions</h4>
+                  <p class="text-gray-600 text-sm">Questions designed to match the format and difficulty of real Goethe reading tests.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Authentic German Texts</h4>
+                  <p class="text-gray-600 text-sm">Real-world texts including emails, notices, advertisements, and short articles.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Immediate Results</h4>
+                  <p class="text-gray-600 text-sm">Get instant feedback and explanations to accelerate your learning.</p>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-1">
+                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Detailed Analytics</h4>
+                  <p class="text-gray-600 text-sm">Track your progress and identify areas that need more practice.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-1">
+                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Self-Paced Learning</h4>
+                  <p class="text-gray-600 text-sm">Practice at your own speed and resume sessions anytime.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-1">
+                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Free to Use</h4>
+                  <p class="text-gray-600 text-sm">No subscriptions or hidden costs. Start practicing immediately.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Main Content -->
-      <div class="max-w-4xl mx-auto">
-        <div class="grid md:grid-cols-2 gap-8">
-          <!-- Start Practice Card -->
-          <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
-            <div class="text-center">
-              <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
-                </svg>
-              </div>
-              <h2 class="text-2xl font-semibold text-gray-900 mb-4">
-                Start Reading Practice
-              </h2>
-              <p class="text-gray-600 mb-6">
-                Practice with authentic German texts designed for A2 level learners.
-              </p>
-              <NuxtLink 
-                to="/practice" 
-                class="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-              >
-                Begin Practice
-              </NuxtLink>
-            </div>
-          </div>
-
-          <!-- Progress Card -->
-          <div class="bg-white rounded-xl shadow-lg p-8">
-            <div class="text-center">
-              <div class="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
-              </div>
-              <h2 class="text-2xl font-semibold text-gray-900 mb-4">
-                Track Progress
-              </h2>
-              <p class="text-gray-600 mb-6">
-                View your learning analytics and identify areas for improvement.
-              </p>
-              
-              <!-- Resume Session Button -->
-              <div v-if="resumeSession" class="mb-4">
-                <button 
-                  class="inline-block bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors mb-2"
-                  @click="resumeQuiz"
-                >
-                  📚 Resume Quiz
-                </button>
-                <p class="text-sm text-gray-600">Continue where you left off</p>
-              </div>
-              
-              <!-- Progress Stats or Getting Started -->
-              <div v-if="stats.totalTextsCompleted > 0">
-                <div class="text-lg font-semibold text-secondary-700 mb-2">
-                  {{ stats.totalTextsCompleted }} {{ stats.totalTextsCompleted === 1 ? 'Text' : 'Texts' }} Completed 🎉
-                </div>
-                <div class="text-sm text-gray-600">
-                  {{ stats.averageScore }}% Average Score
-                </div>
-              </div>
-              <div v-else>
-                <div class="text-lg font-medium text-gray-700 mb-2">
-                  Ready to start? 🚀
-                </div>
-                <div class="text-sm text-gray-600">
-                  Complete your first quiz to see progress stats
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div v-if="stats.recentActivity.length > 0" class="mt-12">
-          <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-            <h3 class="text-xl font-semibold text-gray-900 mb-6">Recent Activity 📈</h3>
-            
-            <div class="space-y-4">
-              <div
-                v-for="activity in stats.recentActivity"
-                :key="activity.textId"
-                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-              >
-                <div class="flex items-center space-x-4">
-                  <div 
-                    class="w-12 h-12 rounded-full flex items-center justify-center"
-                    :class="getScoreColor(activity.percentage)"
-                  >
-                    <span class="text-white font-bold">{{ activity.score }}</span>
-                  </div>
-                  <div>
-                    <div class="font-medium text-gray-900">
-                      Text {{ activity.textId }}
-                    </div>
-                    <div class="text-sm text-gray-600">
-                      {{ activity.percentage }}% • {{ formatDate(activity.completedAt) }}
-                    </div>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="text-sm text-gray-500">
-                    {{ activity.attemptCount || 1 }} {{ (activity.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
-                  </div>
-                  <div v-if="activity.bestScore && activity.bestScore > activity.score" class="text-xs text-green-600">
-                    Best: {{ Math.round((activity.bestScore / activity.totalQuestions) * 100) }}%
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Features Section -->
-        <div class="mt-16">
-          <h3 class="text-2xl font-semibold text-center text-gray-900 mb-8">
-            Why Choose Our Trainer?
-          </h3>
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="text-center p-6">
-              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <h4 class="font-semibold text-gray-900 mb-2">Authentic Texts</h4>
-              <p class="text-sm text-gray-600">Real German texts matching A2 exam format</p>
-            </div>
-            <div class="text-center p-6">
-              <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-              </div>
-              <h4 class="font-semibold text-gray-900 mb-2">Instant Feedback</h4>
-              <p class="text-sm text-gray-600">Get immediate results and explanations</p>
-            </div>
-            <div class="text-center p-6">
-              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
-                </svg>
-              </div>
-              <h4 class="font-semibold text-gray-900 mb-2">Progress Tracking</h4>
-              <p class="text-sm text-gray-600">Monitor improvement over time</p>
-            </div>
-          </div>
-        </div>
+      <!-- Call to Action -->
+      <div class="text-center bg-white rounded-2xl shadow-lg p-12 max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+          Ready to Improve Your German Reading? 🚀
+        </h2>
+        <p class="text-lg text-gray-600 mb-8">
+          Join thousands of learners preparing for their Goethe A2 certification. 
+          Start practicing today and see immediate improvements in your reading comprehension.
+        </p>
+        <NuxtLink 
+          to="/practice" 
+          class="inline-flex items-center px-10 py-4 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors text-xl shadow-lg"
+        >
+          <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
+          </svg>
+          Start Your Practice Journey
+        </NuxtLink>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useProgress } from '~/composables/useProgress'
-
-// Progress tracking composable
-const { getProgressStats, getSession } = useProgress()
-
-// Page metadata
+// Page metadata for SEO
 useHead({
-  title: 'German A2 Reading Trainer - Home',
+  title: 'German Reading Trainer - Master Reading Comprehension',
   meta: [
-    { name: 'description', content: 'Practice German A2 reading comprehension with authentic exam-style texts' }
+    { 
+      name: 'description', 
+      content: 'Practice German reading comprehension with authentic exam-style texts. Perfect for Goethe Institut certification preparation. Free, interactive, and effective.' 
+    },
+    {
+      name: 'keywords',
+      content: 'German A2, reading comprehension, Goethe Institut, German exam preparation, A2 practice, German language learning'
+    }
   ]
 })
-
-// Reactive data
-const stats = ref(getProgressStats())
-const resumeSession = ref(null)
-
-// Check for incomplete session on mount
-onMounted(() => {
-  // Refresh stats when component mounts
-  stats.value = getProgressStats()
-  
-  // Check for resume session
-  const session = getSession()
-  if (session) {
-    resumeSession.value = session
-  }
-})
-
-// Methods
-function getScoreColor(percentage: number): string {
-  if (percentage >= 75) return 'bg-green-500'
-  if (percentage >= 50) return 'bg-yellow-500'
-  return 'bg-red-500'
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffTime = Math.abs(now.getTime() - date.getTime())
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  
-  if (diffDays === 1) return 'Today'
-  if (diffDays === 2) return 'Yesterday'
-  if (diffDays <= 7) return `${diffDays - 1} days ago`
-  
-  return date.toLocaleDateString()
-}
-
-function resumeQuiz() {
-  if (resumeSession.value) {
-    // Navigate to practice page with resume parameter
-    navigateTo('/practice?resume=true')
-  }
-}
 </script> 

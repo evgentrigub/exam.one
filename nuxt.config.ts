@@ -45,11 +45,11 @@ export default defineNuxtConfig({
   // App configuration
   app: {
     head: {
-      title: 'German A2 Reading Trainer',
+      title: 'German Reading Trainer',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Practice German A2 reading comprehension with authentic exam-style texts' }
+        { name: 'description', content: 'Practice German reading comprehension with authentic exam-style texts' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
