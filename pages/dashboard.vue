@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">
-        📊 Progress Dashboard
+        📊 {{ $t('dashboard.title') }}
       </h1>
       <p class="text-gray-600">
         Track your German Reading comprehension progress and performance
@@ -13,7 +13,7 @@
     <!-- Progress Overview -->
     <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900">Your Progress</h2>
+        <h2 class="text-lg font-semibold text-gray-900">{{ $t('dashboard.overview') }}</h2>
         <ClientOnly>
           <div class="text-sm text-gray-600">
             {{ completedCount }}/{{ germanTexts.length }} texts completed
@@ -62,7 +62,7 @@
               </svg>
             </div>
             <div class="text-3xl font-bold text-blue-600 mb-1">{{ stats.averageScore }}%</div>
-            <div class="text-sm text-gray-600">Average Score</div>
+            <div class="text-sm text-gray-600">{{ $t('dashboard.averageScore') }}</div>
           </div>
           
           <!-- Best Score -->
@@ -73,7 +73,7 @@
               </svg>
             </div>
             <div class="text-3xl font-bold text-purple-600 mb-1">{{ stats.bestScore }}%</div>
-            <div class="text-sm text-gray-600">Best Score</div>
+            <div class="text-sm text-gray-600">{{ $t('dashboard.bestScore') }}</div>
           </div>
           
           <!-- Total Attempts -->
@@ -84,7 +84,7 @@
               </svg>
             </div>
             <div class="text-3xl font-bold text-yellow-600 mb-1">{{ stats.totalAttempts }}</div>
-            <div class="text-sm text-gray-600">Total Attempts</div>
+            <div class="text-sm text-gray-600">{{ $t('dashboard.totalAttempts') }}</div>
           </div>
         </div>
         <template #fallback>
@@ -110,14 +110,14 @@
               </svg>
             </div>
             <div class="flex-1">
-              <h3 class="text-lg font-semibold text-orange-900 mb-1">Resume Your Quiz</h3>
-              <p class="text-orange-700">You have an incomplete quiz session. Continue where you left off.</p>
+              <h3 class="text-lg font-semibold text-orange-900 mb-1">{{ $t('dashboard.resumeSession') }}</h3>
+              <p class="text-orange-700">{{ $t('dashboard.resumeDescription') }}</p>
             </div>
             <button 
               class="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors"
               @click="resumeQuiz"
             >
-              📚 Resume
+              📚 {{ $t('dashboard.resume') }}
             </button>
           </div>
         </div>

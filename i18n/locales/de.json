@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "practice": "Übung",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "title": "Deutsch Lesetrainer",
+    "subtitle": "Goethe A2 Niveau",
+    "description": "Meistere das deutsche Leseverständnis mit authentischen A2-Texten und sofortigem Feedback. Übe alle vier Teile des Goethe-Prüfungsformats.",
+    "startPractice": "Übung starten",
+    "viewDashboard": "Dashboard anzeigen",
+    "features": {
+      "title": "Hauptmerkmale",
+      "authentic": {
+        "title": "Authentische Texte",
+        "description": "Übe mit echten deutschen Texten auf A2-Niveau"
+      },
+      "feedback": {
+        "title": "Sofortiges Feedback",
+        "description": "Erhalte sofortige Ergebnisse und Erklärungen"
+      },
+      "progress": {
+        "title": "Fortschrittsverfolgung",
+        "description": "Verfolge deine Verbesserung im Laufe der Zeit"
+      }
+    },
+    "benefits": {
+      "title": "Warum unseren Trainer wählen?",
+      "items": {
+        "comprehensive": "Umfassende A2-Leseübungen",
+        "timing": "Realistische Prüfungszeit und -format",
+        "improvement": "Verfolge deinen Fortschritt und deine Verbesserung",
+        "offline": "Funktioniert vollständig offline"
+      }
+    }
+  },
+  "practice": {
+    "title": "Leseübung",
+    "sortBy": "Sortieren nach:",
+    "titleSort": "Titel",
+    "difficulty": "Schwierigkeit",
+    "length": "Länge",
+    "topic": "Thema",
+    "back": "Zurück zur Startseite",
+    "startQuestions": "Fragen starten",
+    "reading": {
+      "backToSelection": "Zurück zur Auswahl",
+      "startQuestions": "Fragen starten"
+    }
+  },
+  "dashboard": {
+    "title": "Dein Fortschritts-Dashboard",
+    "overview": "Fortschrittsübersicht",
+    "score": "Punktzahl",
+    "average": "Durchschnitt",
+    "best": "Beste",
+    "sessions": "Sitzungen",
+    "resume": "Sitzung fortsetzen"
+  },
+  "quiz": {
+    "question": "Frage",
+    "of": "von",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "submit": "Absenden",
+    "results": "Ergebnisse",
+    "correct": "Richtig",
+    "incorrect": "Falsch",
+    "score": "Deine Punktzahl",
+    "tryAgain": "Nochmal versuchen",
+    "backToPractice": "Zurück zur Übung"
+  }
+} 

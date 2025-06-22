@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Home",
+    "practice": "Practice",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "title": "German Reading Trainer",
+    "subtitle": "Goethe A2 Level",
+    "description": "Master German reading comprehension with authentic A2-level texts and instant feedback. Practice all four parts of the Goethe exam format.",
+    "startPractice": "Start Practice",
+    "viewDashboard": "View Dashboard",
+    "features": {
+      "title": "Key Features",
+      "authentic": {
+        "title": "Authentic Texts",
+        "description": "Practice with real German texts at A2 level"
+      },
+      "feedback": {
+        "title": "Instant Feedback",
+        "description": "Get immediate results and explanations"
+      },
+      "progress": {
+        "title": "Progress Tracking",
+        "description": "Monitor your improvement over time"
+      }
+    },
+    "benefits": {
+      "title": "Why Choose Our Trainer?",
+      "items": {
+        "comprehensive": "Comprehensive A2-level reading practice",
+        "timing": "Realistic exam timing and format",
+        "improvement": "Track your progress and improvement",
+        "offline": "Works completely offline"
+      }
+    }
+  },
+  "practice": {
+    "title": "Reading Practice",
+    "sortBy": "Sort by:",
+    "titleSort": "Title",
+    "difficulty": "Difficulty",
+    "length": "Length",
+    "topic": "Topic",
+    "back": "Back to Home",
+    "startQuestions": "Start Questions",
+    "reading": {
+      "backToSelection": "Back to Selection",
+      "startQuestions": "Start Questions"
+    }
+  },
+  "dashboard": {
+    "title": "Your Progress Dashboard",
+    "overview": "Progress Overview",
+    "score": "Score",
+    "average": "Average",
+    "best": "Best",
+    "sessions": "Sessions",
+    "resume": "Resume Session"
+  },
+  "quiz": {
+    "question": "Question",
+    "of": "of",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "results": "Results",
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "score": "Your Score",
+    "tryAgain": "Try Again",
+    "backToPractice": "Back to Practice"
+  }
+} 

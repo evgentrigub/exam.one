@@ -4,7 +4,7 @@
       <!-- Header -->
       <header class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">
-          📚 Reading Practice
+          📚 {{ $t('practice.title') }}
         </h1>
         <p class="text-gray-600">
           Choose a text to practice your German reading comprehension
@@ -49,17 +49,17 @@
               </div>
             </div>
             
-            <!-- Sort Options -->
+                          <!-- Sort Options -->
             <div class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                <label class="text-sm font-medium text-gray-700">{{ $t('practice.sortBy') }}:</label>
                 <select 
                   v-model="selectedSort"
                   class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="title">Title</option>
+                  <option value="title">{{ $t('practice.titleSort') }}</option>
                   <option value="type">Type</option>
-                  <option value="difficulty">Difficulty</option>
+                  <option value="difficulty">{{ $t('practice.difficulty') }}</option>
                   <option value="completion">Completion Status</option>
                   <option value="score">Best Score</option>
                   <option value="wordCount">Word Count</option>
@@ -140,7 +140,7 @@
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
               </svg>
-              Back to Text Selection
+              {{ $t('practice.reading.backToSelection') }}
             </button>
             <div class="flex items-center space-x-4 text-sm text-gray-600">
               <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">{{ selectedText.textType }}</span>
@@ -183,7 +183,7 @@
                   @click="startQuiz(selectedText.id)"
                   class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center"
                 >
-                  Start Questions
+                  {{ $t('practice.reading.startQuestions') }}
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                   </svg>

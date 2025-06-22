@@ -4,11 +4,10 @@
       <!-- Hero Section -->
       <header class="text-center mb-16">
         <h1 class="text-5xl font-bold text-gray-900 mb-6">
-          German Reading Trainer
+          {{ $t('home.title') }}
         </h1>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-          Master German reading comprehension with authentic A2-level texts. 
-          Practice with exam-style questions and track your progress towards Goethe Institut certification.
+          {{ $t('home.description') }}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <NuxtLink 
@@ -18,7 +17,7 @@
             <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
             </svg>
-            Start Reading Practice
+            {{ $t('home.startPractice') }}
           </NuxtLink>
           <NuxtLink 
             to="/dashboard" 
@@ -27,7 +26,7 @@
             <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
-            View Dashboard
+            {{ $t('home.viewDashboard') }}
           </NuxtLink>
         </div>
       </header>
@@ -35,7 +34,7 @@
       <!-- Features Section -->
       <div class="max-w-6xl mx-auto mb-16">
         <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">
-          Why Choose Our Trainer? ✨
+          {{ $t('home.features.title') }}
         </h2>
         <div class="grid md:grid-cols-3 gap-8">
           <!-- Authentic Texts -->
@@ -45,10 +44,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Authentic Texts</h3>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ $t('home.features.authentic.title') }}</h3>
             <p class="text-gray-600">
-              Real German texts matching A2 exam format - emails, notices, articles, and advertisements 
-              just like you'll see in the Goethe Institut certification exam.
+              {{ $t('home.features.authentic.description') }}
             </p>
           </div>
 
@@ -59,10 +57,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Instant Feedback</h3>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ $t('home.features.feedback.title') }}</h3>
             <p class="text-gray-600">
-              Get immediate results and detailed explanations for each question. 
-              Learn from your mistakes and improve your reading comprehension skills.
+              {{ $t('home.features.feedback.description') }}
             </p>
           </div>
 
@@ -73,10 +70,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Progress Tracking</h3>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ $t('home.features.progress.title') }}</h3>
             <p class="text-gray-600">
-              Monitor your improvement over time with detailed analytics. 
-              See your strengths and areas for improvement to focus your study efforts.
+              {{ $t('home.features.progress.description') }}
             </p>
           </div>
         </div>
@@ -86,7 +82,7 @@
       <div class="max-w-4xl mx-auto mb-16">
         <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
           <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">
-            Perfect for Goethe A2 Preparation 🎯
+            {{ $t('home.benefits.title') }}
           </h2>
           <div class="grid md:grid-cols-2 gap-8">
             <div class="space-y-4">
@@ -97,8 +93,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Exam-Style Questions</h4>
-                  <p class="text-gray-600 text-sm">Questions designed to match the format and difficulty of real Goethe reading tests.</p>
+                  <h4 class="font-semibold text-gray-900">{{ $t('home.benefits.items.comprehensive') }}</h4>
+                  <p class="text-gray-600 text-sm">{{ $t('home.benefits.items.comprehensive') }}</p>
                 </div>
               </div>
               <div class="flex items-start space-x-3">
@@ -108,8 +104,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Authentic German Texts</h4>
-                  <p class="text-gray-600 text-sm">Real-world texts including emails, notices, advertisements, and short articles.</p>
+                  <h4 class="font-semibold text-gray-900">{{ $t('home.benefits.items.timing') }}</h4>
+                  <p class="text-gray-600 text-sm">{{ $t('home.benefits.items.timing') }}</p>
                 </div>
               </div>
               <div class="flex items-start space-x-3">
@@ -119,8 +115,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Immediate Results</h4>
-                  <p class="text-gray-600 text-sm">Get instant feedback and explanations to accelerate your learning.</p>
+                  <h4 class="font-semibold text-gray-900">{{ $t('home.benefits.items.improvement') }}</h4>
+                  <p class="text-gray-600 text-sm">{{ $t('home.benefits.items.improvement') }}</p>
                 </div>
               </div>
             </div>
@@ -132,8 +128,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Detailed Analytics</h4>
-                  <p class="text-gray-600 text-sm">Track your progress and identify areas that need more practice.</p>
+                  <h4 class="font-semibold text-gray-900">{{ $t('home.benefits.items.offline') }}</h4>
+                  <p class="text-gray-600 text-sm">{{ $t('home.benefits.items.offline') }}</p>
                 </div>
               </div>
               <div class="flex items-start space-x-3">
@@ -143,8 +139,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Self-Paced Learning</h4>
-                  <p class="text-gray-600 text-sm">Practice at your own speed and resume sessions anytime.</p>
+                  <h4 class="font-semibold text-gray-900">{{ $t('home.benefits.items.timing') }}</h4>
+                  <p class="text-gray-600 text-sm">{{ $t('home.benefits.items.timing') }}</p>
                 </div>
               </div>
               <div class="flex items-start space-x-3">
@@ -154,8 +150,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Free to Use</h4>
-                  <p class="text-gray-600 text-sm">No subscriptions or hidden costs. Start practicing immediately.</p>
+                  <h4 class="font-semibold text-gray-900">{{ $t('home.benefits.items.offline') }}</h4>
+                  <p class="text-gray-600 text-sm">{{ $t('home.benefits.items.offline') }}</p>
                 </div>
               </div>
             </div>
@@ -167,13 +163,15 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 // Page metadata for SEO
 useHead({
-  title: 'German Reading Trainer - Master Reading Comprehension',
+  title: computed(() => `${t('home.title')} - ${t('home.subtitle')}`),
   meta: [
     { 
       name: 'description', 
-      content: 'Practice German reading comprehension with authentic exam-style texts. Perfect for Goethe Institut certification preparation. Free, interactive, and effective.' 
+      content: computed(() => t('home.description'))
     },
     {
       name: 'keywords',
