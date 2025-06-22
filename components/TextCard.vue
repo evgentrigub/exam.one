@@ -79,7 +79,7 @@
             : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500'"
           @click="$emit('startReading', text.id)"
         >
-          {{ textCompleted ? 'Read Again' : 'Start Reading' }}
+          {{ textCompleted ? $t('practice.textCard.readAgain') : $t('practice.textCard.startReading') }}
         </button>
       </div>
     </div>

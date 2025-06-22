@@ -43,8 +43,8 @@
           <div class="relative">
             <select 
               :value="locale" 
+              class="appearance-none w-30 bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
               @change="changeLanguage"
-              class="appearance-none bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
             >
               <option value="en">🇺🇸 English</option>
               <option value="de">🇩🇪 Deutsch</option>
@@ -63,9 +63,11 @@
 
 <script setup lang="ts">
 const { locale } = useI18n()
+const { $i18n } = useNuxtApp()
 
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
-  locale.value = target.value as 'en' | 'de'
+  const newLocale = target.value as 'en' | 'de'
+  $i18n.setLocale(newLocale)
 }
 </script> 

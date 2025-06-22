@@ -37,7 +37,8 @@
   },
   "practice": {
     "title": "Leseübung",
-    "sortBy": "Sortieren nach:",
+    "subtitle": "Wähle einen Text, um dein deutsches Leseverständnis zu üben",
+    "sortBy": "Sortieren nach",
     "titleSort": "Titel",
     "difficulty": "Schwierigkeit",
     "length": "Länge",
@@ -47,16 +48,33 @@
     "reading": {
       "backToSelection": "Zurück zur Auswahl",
       "startQuestions": "Fragen starten"
+    },
+    "textCard": {
+      "readAgain": "Nochmal lesen",
+      "startReading": "Lesen"
     }
   },
   "dashboard": {
     "title": "Dein Fortschritts-Dashboard",
+    "subtitle": "Verfolge deinen deutschen Leseverständnis-Fortschritt und deine Leistung",
     "overview": "Fortschrittsübersicht",
+    "completionRate": "Abschlussrate",
+    "averageScore": "Durchschnittliche Punktzahl",
+    "bestScore": "Beste Punktzahl",
+    "totalAttempts": "Gesamtversuche",
+    "textsCompleted": "Texte abgeschlossen",
     "score": "Punktzahl",
     "average": "Durchschnitt",
     "best": "Beste",
     "sessions": "Sitzungen",
-    "resume": "Sitzung fortsetzen"
+    "resume": "Sitzung fortsetzen",
+    "resumeSession": "Sitzung fortsetzen",
+    "resumeDescription": "Dort weitermachen, wo du aufgehört hast",
+    "quickActions": "Schnellaktionen",
+    "continuePractice": "Weiter üben",
+    "continuePracticeDescription": "Starte mit dem Lesen und Üben von deutschen Texten",
+    "progressOverview": "Fortschrittsübersicht",
+    "startFirstQuiz": "Starte deine erste Quiz, um den Fortschritt zu sehen"
   },
   "quiz": {
     "question": "Frage",

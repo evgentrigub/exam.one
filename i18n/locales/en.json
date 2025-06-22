@@ -37,7 +37,8 @@
   },
   "practice": {
     "title": "Reading Practice",
-    "sortBy": "Sort by:",
+    "subtitle": "Choose a text to practice your German reading comprehension",
+    "sortBy": "Sort by",
     "titleSort": "Title",
     "difficulty": "Difficulty",
     "length": "Length",
@@ -47,16 +48,33 @@
     "reading": {
       "backToSelection": "Back to Selection",
       "startQuestions": "Start Questions"
+    },
+    "textCard": {
+      "readAgain": "Read Again",
+      "startReading": "Start Reading"
     }
   },
   "dashboard": {
     "title": "Your Progress Dashboard",
+    "subtitle": "Track your German Reading comprehension progress and performance",
     "overview": "Progress Overview",
+    "completionRate": "Completion Rate",
+    "averageScore": "Average Score",
+    "bestScore": "Best Score",
+    "totalAttempts": "Total Attempts",
+    "textsCompleted": "texts completed",
     "score": "Score",
     "average": "Average",
     "best": "Best",
     "sessions": "Sessions",
-    "resume": "Resume Session"
+    "resume": "Resume Session",
+    "resumeSession": "Resume Session",
+    "resumeDescription": "Continue where you left off",
+    "quickActions": "Quick Actions",
+    "continuePractice": "Continue Practice",
+    "continuePracticeDescription": "Start reading and practicing with German texts",
+    "progressOverview": "Progress Overview",
+    "startFirstQuiz": "Start your first quiz to see progress"
   },
   "quiz": {
     "question": "Question",

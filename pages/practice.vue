@@ -7,7 +7,7 @@
           📚 {{ $t('practice.title') }}
         </h1>
         <p class="text-gray-600">
-          Choose a text to practice your German reading comprehension
+          {{ $t('practice.subtitle') }}
         </p>
       </header>
 

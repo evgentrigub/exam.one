@@ -6,9 +6,35 @@
         📊 {{ $t('dashboard.title') }}
       </h1>
       <p class="text-gray-600">
-        Track your German Reading comprehension progress and performance
+        {{ $t('dashboard.subtitle') }}
       </p>
     </header>
+
+      <!-- Empty State -->
+      <ClientOnly>
+      <div v-if="stats.totalTextsCompleted === 0" class="max-w-2xl mx-auto text-center py-12">
+        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-lineCap="round" stroke-lineJoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+          Welcome to Your Dashboard! 🎉
+        </h3>
+        <p class="text-gray-600 mb-8">
+          Start practicing to see your progress statistics and track your improvement over time.
+        </p>
+        <NuxtLink 
+          to="/practice" 
+          class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
+          </svg>
+          Start Your First Practice
+        </NuxtLink>
+      </div>
+    </ClientOnly>
 
     <!-- Progress Overview -->
     <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
@@ -16,7 +42,7 @@
         <h2 class="text-lg font-semibold text-gray-900">{{ $t('dashboard.overview') }}</h2>
         <ClientOnly>
           <div class="text-sm text-gray-600">
-            {{ completedCount }}/{{ germanTexts.length }} texts completed
+            {{ completedCount }}/{{ germanTexts.length }} {{ $t('dashboard.textsCompleted') }}
           </div>
           <template #fallback>
             <div class="text-sm text-gray-600">Loading...</div>
@@ -51,7 +77,7 @@
               </svg>
             </div>
             <div class="text-3xl font-bold text-green-600 mb-1">{{ completionPercentage }}% </div>
-            <div class="text-sm text-gray-600">Completion Rate</div>
+            <div class="text-sm text-gray-600">{{ $t('dashboard.completionRate') }}</div>
           </div>
           
           <!-- Average Score -->
@@ -169,7 +195,7 @@
     <!-- Quick Actions -->
     <div class="max-w-4xl mx-auto">
       <div class="bg-white rounded-xl shadow-sm p-6">
-        <h3 class="text-xl font-semibold text-gray-900 mb-6">🚀 Quick Actions</h3>
+        <h3 class="text-xl font-semibold text-gray-900 mb-6">🚀 {{ $t('dashboard.quickActions') }}</h3>
         
         <div class="grid md:grid-cols-2 gap-6">
           <!-- Start Practice -->
@@ -180,8 +206,8 @@
               </svg>
             </div>
             <div>
-              <h4 class="font-semibold text-gray-900">Continue Practice</h4>
-              <p class="text-sm text-gray-600">Start reading and practicing with German texts</p>
+              <h4 class="font-semibold text-gray-900">{{ $t('dashboard.continuePractice') }}</h4>
+              <p class="text-sm text-gray-600">{{ $t('dashboard.continuePracticeDescription') }}</p>
             </div>
           </div>
 
@@ -193,12 +219,12 @@
               </svg>
             </div>
                        <div>
-             <h4 class="font-semibold text-gray-900">Progress Overview</h4>
+             <h4 class="font-semibold text-gray-900">{{ $t('dashboard.progressOverview') }}</h4>
              <ClientOnly>
                <p class="text-sm text-gray-600">
                  {{ stats.totalTextsCompleted > 0 
-                   ? `${stats.totalTextsCompleted} texts completed with ${stats.averageScore}% average` 
-                   : 'Start your first quiz to see progress'
+                   ? `${stats.totalTextsCompleted} ${$t('dashboard.textsCompleted')} with ${stats.averageScore}% ${$t('dashboard.average')}` 
+                   : $t('dashboard.startFirstQuiz')
                  }}
                </p>
                <template #fallback>
@@ -211,31 +237,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
-    <ClientOnly>
-      <div v-if="stats.totalTextsCompleted === 0" class="max-w-2xl mx-auto text-center py-12">
-        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-lineCap="round" stroke-lineJoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
-          </svg>
-        </div>
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">
-          Welcome to Your Dashboard! 🎉
-        </h3>
-        <p class="text-gray-600 mb-8">
-          Start practicing to see your progress statistics and track your improvement over time.
-        </p>
-        <NuxtLink 
-          to="/practice" 
-          class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-        >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
-          </svg>
-          Start Your First Practice
-        </NuxtLink>
-      </div>
-    </ClientOnly>
   </div>
 </template>
 

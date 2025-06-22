@@ -14,17 +14,18 @@ export default defineNuxtConfig({
     // i18n configuration
   i18n: {
     locales: [
-      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
-      { code: 'de', iso: 'de-DE', name: 'Deutsch', file: 'de.json' }
+      { code: 'de', iso: 'de-DE', name: 'Deutsch', file: 'de.json' },
+      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' }
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root'
-    },
-    langDir: 'locales/'
+    // detectBrowserLanguage: {
+    //   useCookie: true,
+    //   cookieKey: 'i18n_redirected',
+    //   redirectOn: 'root'
+    // },
+    langDir: 'locales',
+    // lazy: true
   },
 
   // TypeScript configuration
