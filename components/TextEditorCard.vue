@@ -43,7 +43,7 @@
         <!-- Word Count Progress Bar -->
         <div class="mb-2">
           <div class="flex justify-between items-center mb-1">
-            <span class="text-xs font-medium text-gray-700">Word Count Progress</span>
+            <span class="text-xs font-medium text-gray-700">Wortanzahl-Fortschritt</span>
             <span class="text-xs text-gray-600">{{ wordCountPercentage }}%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
@@ -52,6 +52,53 @@
               :class="progressBarColor"
               :style="{ width: `${Math.min(wordCountPercentage, 100)}%` }"
             />
+          </div>
+        </div>
+
+        <!-- Real-time Quality Indicators (Stage 12) -->
+        <div v-if="content.trim().length > 20" class="mb-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-gray-700">Schreibqualität</span>
+            <button 
+              @click="showQualityDetails = !showQualityDetails"
+              class="text-xs text-blue-600 hover:text-blue-700"
+            >
+              {{ showQualityDetails ? 'Weniger' : 'Details' }}
+            </button>
+          </div>
+          
+          <!-- Quality Indicators -->
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <div class="flex items-center">
+              <div class="w-2 h-2 rounded-full mr-2" :class="structureIndicatorColor"></div>
+              <span class="text-gray-600">Struktur</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-2 h-2 rounded-full mr-2" :class="vocabularyIndicatorColor"></div>
+              <span class="text-gray-600">Wortschatz</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-2 h-2 rounded-full mr-2" :class="lengthIndicatorColor"></div>
+              <span class="text-gray-600">Länge</span>
+            </div>
+          </div>
+
+          <!-- Detailed Quality Info -->
+          <div v-if="showQualityDetails && realtimeAnalysis" class="mt-2 p-2 bg-gray-50 rounded text-xs">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <span class="font-medium">Sätze:</span> {{ realtimeAnalysis.sentenceCount }}
+              </div>
+              <div>
+                <span class="font-medium">Absätze:</span> {{ realtimeAnalysis.structureElements.paragraphCount }}
+              </div>
+              <div>
+                <span class="font-medium">Wortvielfalt:</span> {{ Math.round(realtimeAnalysis.vocabularyMetrics.vocabularyDiversity * 100) }}%
+              </div>
+              <div>
+                <span class="font-medium">Konnektoren:</span> {{ realtimeAnalysis.vocabularyMetrics.commonConnectors.length }}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -76,7 +123,7 @@
             @click="clearContent"
             class="text-red-600 hover:text-red-700 text-xs font-medium transition-colors"
           >
-            Clear Text
+            Text löschen
           </button>
         </div>
       </div>
@@ -108,6 +155,8 @@
 
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
+import type { TextAnalysisResult } from '~/utils/textAnalysis'
+import { analyzeGermanText } from '~/utils/textAnalysis'
 
 interface Props {
   topic: WritingTopic
@@ -126,6 +175,10 @@ const content = ref(props.initialContent || '')
 const wordCount = ref(0)
 const timeSpent = ref(0)
 const startTime = ref<number | null>(null)
+const showQualityDetails = ref(false)
+
+// Real-time analysis (Stage 12)
+const realtimeAnalysis = ref<TextAnalysisResult | null>(null)
 
 // Start timing when component mounts
 onMounted(() => {
@@ -215,11 +268,49 @@ const submitButtonClasses = computed(() => {
   }
 })
 
+// Quality indicator colors (Stage 12)
+const structureIndicatorColor = computed(() => {
+  if (!realtimeAnalysis.value) return 'bg-gray-300'
+  const score = realtimeAnalysis.value.structureElements.structureScore
+  if (score >= 4) return 'bg-green-500'
+  if (score >= 3) return 'bg-yellow-500'
+  return 'bg-red-500'
+})
+
+const vocabularyIndicatorColor = computed(() => {
+  if (!realtimeAnalysis.value) return 'bg-gray-300'
+  const diversity = realtimeAnalysis.value.vocabularyMetrics.vocabularyDiversity
+  if (diversity >= 0.7) return 'bg-green-500'
+  if (diversity >= 0.5) return 'bg-yellow-500'
+  return 'bg-red-500'
+})
+
+const lengthIndicatorColor = computed(() => {
+  if (wordCount.value >= props.topic.wordCount.min && wordCount.value <= props.topic.wordCount.max) {
+    return 'bg-green-500'
+  } else if (wordCount.value >= props.topic.wordCount.min * 0.8) {
+    return 'bg-yellow-500'
+  }
+  return 'bg-red-500'
+})
+
 // Methods
 function updateWordCount() {
   // Simple word counting - split by whitespace and filter empty strings
   const words = content.value.trim().split(/\s+/).filter(word => word.length > 0)
   wordCount.value = content.value.trim() === '' ? 0 : words.length
+  
+  // Real-time analysis for quality indicators (Stage 12)
+  if (content.value.trim().length > 20) {
+    try {
+      realtimeAnalysis.value = analyzeGermanText(content.value, props.topic)
+    } catch (error) {
+      // Silently fail for real-time analysis to avoid disrupting user experience
+      console.warn('Real-time analysis failed:', error)
+    }
+  } else {
+    realtimeAnalysis.value = null
+  }
 }
 
 function clearContent() {

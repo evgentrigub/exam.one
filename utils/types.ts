@@ -104,6 +104,7 @@ export interface WritingSubmission {
   wordCount: number
   submittedAt: string
   timeSpent?: number // in seconds
+  isDraft?: boolean
   feedback?: WritingFeedback
 }
 

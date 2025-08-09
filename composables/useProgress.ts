@@ -4,7 +4,7 @@
  * Extended in Stage 11 to support writing progress tracking
  */
 
-// Removed unused imports - using inline types instead
+import type { WritingSubmission } from '~/utils/types'
 
 interface QuizProgress {
   textId: string
@@ -37,15 +37,7 @@ interface WritingProgress {
   submissions: WritingSubmission[]
 }
 
-interface WritingSubmission {
-  id: string
-  topicId: string
-  content: string
-  wordCount: number
-  submittedAt: string
-  timeSpent?: number // in seconds
-  isDraft?: boolean
-}
+
 
 interface WritingStats {
   totalTopicsCompleted: number
@@ -221,48 +213,49 @@ export const useProgress = () => {
   }
 
   /**
-   * Save writing submission to localStorage
-   */
-  const saveWritingSubmission = (topicId: string, content: string, wordCount: number, timeSpent?: number) => {
-    if (!import.meta.client) return
+ * Save writing submission to localStorage with evaluation (Stage 12)
+ */
+const saveWritingSubmission = (topicId: string, content: string, wordCount: number, timeSpent?: number, feedback?: any) => {
+  if (!import.meta.client) return
 
-    const submissionId = `${topicId}-${Date.now()}`
-    const submittedAt = new Date().toISOString()
-    
-    const existingProgress = getWritingProgressData()
-    const currentProgress = existingProgress[topicId] || {
-      topicId,
-      completed: false,
-      attemptCount: 0,
-      submissions: []
-    }
-    
-    const newSubmission: WritingSubmission = {
-      id: submissionId,
-      topicId,
-      content,
-      wordCount,
-      submittedAt,
-      timeSpent: timeSpent || 0,
-      isDraft: false
-    }
-    
-    const updatedProgress: WritingProgress = {
-      ...currentProgress,
-      completed: true,
-      attemptCount: currentProgress.attemptCount + 1,
-      bestWordCount: Math.max(currentProgress.bestWordCount || 0, wordCount),
-      completedAt: submittedAt,
-      timeSpent: (currentProgress.timeSpent || 0) + (timeSpent || 0),
-      submissions: [...currentProgress.submissions, newSubmission]
-    }
-    
-    existingProgress[topicId] = updatedProgress
-    localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(existingProgress))
-    
-    // Clear any draft for this topic
-    clearWritingSession(topicId)
+  const submissionId = `${topicId}-${Date.now()}`
+  const submittedAt = new Date().toISOString()
+  
+  const existingProgress = getWritingProgressData()
+  const currentProgress = existingProgress[topicId] || {
+    topicId,
+    completed: false,
+    attemptCount: 0,
+    submissions: []
   }
+  
+  const newSubmission: WritingSubmission = {
+    id: submissionId,
+    topicId,
+    content,
+    wordCount,
+    submittedAt,
+    timeSpent: timeSpent || 0,
+    isDraft: false,
+    feedback: feedback // Stage 12: Store evaluation results
+  }
+  
+  const updatedProgress: WritingProgress = {
+    ...currentProgress,
+    completed: true,
+    attemptCount: currentProgress.attemptCount + 1,
+    bestWordCount: Math.max(currentProgress.bestWordCount || 0, wordCount),
+    completedAt: submittedAt,
+    timeSpent: (currentProgress.timeSpent || 0) + (timeSpent || 0),
+    submissions: [...currentProgress.submissions, newSubmission]
+  }
+  
+  existingProgress[topicId] = updatedProgress
+  localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(existingProgress))
+  
+  // Clear any draft for this topic
+  clearWritingSession(topicId)
+}
 
   /**
    * Save writing draft to localStorage

@@ -106,27 +106,35 @@
 
         <!-- Results Content -->
         <div class="p-6">
-          <!-- Writing Statistics -->
+          <!-- Writing Feedback Component (Stage 12) -->
+          <div v-if="submissionResults?.feedback" class="mb-6">
+            <WritingFeedback 
+              :feedback="submissionResults.feedback"
+              :analysis-result="submissionResults.analysisResult"
+            />
+          </div>
+
+          <!-- Writing Statistics (Basic) -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="bg-blue-50 rounded-lg p-4 text-center">
               <div class="text-2xl font-bold text-blue-600">{{ submissionResults?.wordCount || 0 }}</div>
-              <div class="text-sm text-blue-800">Words Written</div>
+              <div class="text-sm text-blue-800">Wörter geschrieben</div>
             </div>
             <div class="bg-green-50 rounded-lg p-4 text-center">
               <div class="text-2xl font-bold text-green-600">{{ formatTime(submissionResults?.timeSpent || 0) }}</div>
-              <div class="text-sm text-green-800">Time Spent</div>
+              <div class="text-sm text-green-800">Zeit verwendet</div>
             </div>
             <div class="bg-purple-50 rounded-lg p-4 text-center">
               <div class="text-2xl font-bold text-purple-600">A2</div>
-              <div class="text-sm text-purple-800">Level</div>
+              <div class="text-sm text-purple-800">Niveau</div>
             </div>
           </div>
 
           <!-- Completion Message -->
           <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <h3 class="font-semibold text-green-800 mb-2">Great work!</h3>
+            <h3 class="font-semibold text-green-800 mb-2">Gut gemacht!</h3>
             <p class="text-green-700 text-sm">
-              You've successfully completed this writing task. Your text has been saved and you can review it anytime in your dashboard.
+              Du hast diese Schreibaufgabe erfolgreich abgeschlossen. Dein Text wurde gespeichert und du kannst ihn jederzeit in deinem Dashboard ansehen.
             </p>
           </div>
 
@@ -136,13 +144,13 @@
               class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               @click="tryAnotherTopic"
             >
-              Try Another Topic
+              Neues Thema versuchen
             </button>
             <button
               class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
               @click="viewDashboard"
             >
-              View Dashboard
+              Dashboard anzeigen
             </button>
           </div>
         </div>
@@ -152,7 +160,9 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic } from '~/utils/types'
+import type { WritingTopic, WritingFeedback } from '~/utils/types'
+import type { TextAnalysisResult } from '~/utils/textAnalysis'
+import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
 import { useProgress } from '~/composables/useProgress'
 
 interface Props {
@@ -181,6 +191,8 @@ const activeMobileTab = ref(0)
 const submissionResults = ref<{
   wordCount: number
   timeSpent: number
+  feedback?: WritingFeedback
+  analysisResult?: TextAnalysisResult | undefined
 } | null>(null)
 
 // Mobile tab configuration
@@ -221,10 +233,19 @@ function handleSaveDraft(content: string, wordCount: number) {
 }
 
 function handleSubmit(content: string, wordCount: number, timeSpent: number) {
-  submissionResults.value = { wordCount, timeSpent }
+  // Stage 12: Analyze text and create feedback
+  const analysisResult = analyzeGermanText(content, props.topic)
+  const feedback = createWritingFeedback(analysisResult, props.topic)
   
-  // Save writing submission to localStorage (Stage 11)
-  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent)
+  submissionResults.value = { 
+    wordCount, 
+    timeSpent, 
+    feedback, 
+    analysisResult 
+  }
+  
+  // Save writing submission with feedback to localStorage (Stage 12)
+  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent, feedback)
   
   showResults.value = true
   
