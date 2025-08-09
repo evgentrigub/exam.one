@@ -128,9 +128,9 @@
       </div>
     </div>
 
-    <!-- Writing Interface Placeholder (Stage 10) -->
-    <div v-if="selectedTopic" class="fixed inset-0 bg-white z-50 overflow-hidden">
-      <!-- Temporary placeholder - will be implemented in Stage 10 -->
+    <!-- Three-Card Writing Interface -->
+    <div v-if="selectedTopic" class="fixed inset-0 bg-gray-50 z-50 overflow-hidden">
+      <!-- Header -->
       <div class="bg-white border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between">
           <button 
@@ -144,31 +144,20 @@
           </button>
           <div class="flex items-center space-x-4">
             <span class="text-sm text-gray-600">{{ selectedTopic.topicType }} • A2 Level</span>
-            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+            <div class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
               Writing Mode
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Placeholder Content -->
-      <div class="h-full flex items-center justify-center" style="height: calc(100vh - 73px)">
-        <div class="text-center p-8">
-          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ selectedTopic.title }}</h2>
-          <p class="text-gray-600 mb-6 max-w-md">
-            Three-card writing interface will be implemented in Stage 10
-          </p>
-          <div class="bg-blue-50 rounded-lg p-4 max-w-lg mx-auto">
-            <p class="text-sm text-blue-800">
-              <strong>Coming Soon:</strong> Description card, Instructions card, and Writing editor with word count and submit functionality.
-            </p>
-          </div>
-        </div>
+      <!-- Writing Session Content -->
+      <div class="h-full" style="height: calc(100vh - 73px)">
+        <WritingSession 
+          :topic="selectedTopic"
+          @exit="closeWritingInterface"
+          @complete="handleWritingComplete"
+        />
       </div>
     </div>
   </div>
@@ -261,5 +250,18 @@ function resetFilters() {
   selectedStatusFilter.value = 'all'
   selectedSort.value = 'title'
   sortDirection.value = 'asc'
+}
+
+function handleWritingComplete(topicId: string, content: string, wordCount: number, timeSpent: number) {
+  // TODO: Save writing submission in Stage 11
+  console.log('Writing completed:', {
+    topicId,
+    content: content.substring(0, 100) + '...', // Log first 100 chars
+    wordCount,
+    timeSpent
+  })
+  
+  // For now, just show a success message
+  // In Stage 11, this will save to localStorage and update progress
 }
 </script>
