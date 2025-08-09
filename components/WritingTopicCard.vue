@@ -54,18 +54,6 @@
         </div>
       </div>
 
-      <!-- Writing prompt preview -->
-      <div class="mb-4 p-3 bg-blue-50 rounded-lg flex-1">
-        <div class="flex items-start">
-          <svg class="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-          </svg>
-          <p class="text-sm text-blue-800 line-clamp-3">
-            {{ topic.prompt }}
-          </p>
-        </div>
-      </div>
-
       <!-- Progress Information -->
       <div v-if="topicCompleted" class="mb-4 p-3 bg-green-50 rounded-lg">
         <div class="flex items-center justify-between">
@@ -76,10 +64,10 @@
             <span class="text-sm font-medium">Completed</span>
           </div>
           <div class="text-right">
-            <!-- <div class="text-sm font-bold text-green-700">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
+            <div class="text-sm font-bold text-green-700">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
             <div class="text-xs text-green-600">
               {{ progress?.bestWordCount || 0 }} words best
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -106,6 +94,7 @@
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
 import { computed, ref, onMounted } from 'vue'
+import { useProgress } from '~/composables/useProgress'
 
 interface Props {
   topic: WritingTopic
@@ -117,16 +106,19 @@ const _emit = defineEmits<{
   startWriting: [topicId: string]
 }>()
 
-// Mock progress tracking for now (will be implemented in Stage 11)
+// Progress tracking composable (Stage 11)
+const { isWritingTopicCompleted, getWritingTopicProgress } = useProgress()
+
+// Client-side hydration
 const isClient = ref(false)
 
 onMounted(() => {
   isClient.value = true
 })
 
-// Mock functions for progress tracking
-const isTopicCompleted = (_topicId: string) => false
-const getTopicProgress = (_topicId: string) => null
+// Real progress tracking functions (Stage 11)
+const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
+const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Computed properties for progress display
 const topicCompleted = computed(() => isClient.value ? isTopicCompleted(props.topic.id) : false)

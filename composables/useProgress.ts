@@ -1,6 +1,7 @@
 /**
  * Progress tracking composable for German Reading Trainer
  * Handles localStorage operations, stats calculation, and session management
+ * Extended in Stage 11 to support writing progress tracking
  */
 
 // Removed unused imports - using inline types instead
@@ -25,9 +26,51 @@ interface ProgressStats {
   completionRate: number
 }
 
+// Writing Progress Interfaces (Stage 11)
+interface WritingProgress {
+  topicId: string
+  completed: boolean
+  attemptCount: number
+  bestWordCount?: number
+  completedAt?: string
+  timeSpent?: number // in seconds
+  submissions: WritingSubmission[]
+}
+
+interface WritingSubmission {
+  id: string
+  topicId: string
+  content: string
+  wordCount: number
+  submittedAt: string
+  timeSpent?: number // in seconds
+  isDraft?: boolean
+}
+
+interface WritingStats {
+  totalTopicsCompleted: number
+  totalSubmissions: number
+  averageWordCount: number
+  totalTimeSpent: number
+  recentActivity: WritingProgress[]
+  completionRate: number
+}
+
+interface WritingSession {
+  topicId: string
+  content: string
+  wordCount: number
+  startedAt: string
+  lastSavedAt: string
+}
+
 export const useProgress = () => {
   const STORAGE_KEY = 'quiz-progress'
   const SESSION_STORAGE_KEY = 'quiz-session'
+  
+  // Writing progress storage keys (Stage 11)
+  const WRITING_STORAGE_KEY = 'writing-progress'
+  const WRITING_SESSION_KEY = 'writing-session'
 
   /**
    * Get all progress data from localStorage
@@ -162,20 +205,233 @@ export const useProgress = () => {
     return progress?.bestScore || progress?.score || 0
   }
 
+  // ============================================
+  // WRITING PROGRESS FUNCTIONS (Stage 11)
+  // ============================================
+
+  /**
+   * Get all writing progress data from localStorage
+   */
+  const getWritingProgressData = (): Record<string, WritingProgress> => {
+    if (import.meta.client) {
+      const data = localStorage.getItem(WRITING_STORAGE_KEY)
+      return data ? JSON.parse(data) : {}
+    }
+    return {}
+  }
+
+  /**
+   * Save writing submission to localStorage
+   */
+  const saveWritingSubmission = (topicId: string, content: string, wordCount: number, timeSpent?: number) => {
+    if (!import.meta.client) return
+
+    const submissionId = `${topicId}-${Date.now()}`
+    const submittedAt = new Date().toISOString()
+    
+    const existingProgress = getWritingProgressData()
+    const currentProgress = existingProgress[topicId] || {
+      topicId,
+      completed: false,
+      attemptCount: 0,
+      submissions: []
+    }
+    
+    const newSubmission: WritingSubmission = {
+      id: submissionId,
+      topicId,
+      content,
+      wordCount,
+      submittedAt,
+      timeSpent: timeSpent || 0,
+      isDraft: false
+    }
+    
+    const updatedProgress: WritingProgress = {
+      ...currentProgress,
+      completed: true,
+      attemptCount: currentProgress.attemptCount + 1,
+      bestWordCount: Math.max(currentProgress.bestWordCount || 0, wordCount),
+      completedAt: submittedAt,
+      timeSpent: (currentProgress.timeSpent || 0) + (timeSpent || 0),
+      submissions: [...currentProgress.submissions, newSubmission]
+    }
+    
+    existingProgress[topicId] = updatedProgress
+    localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(existingProgress))
+    
+    // Clear any draft for this topic
+    clearWritingSession(topicId)
+  }
+
+  /**
+   * Save writing draft to localStorage
+   */
+  const saveWritingDraft = (topicId: string, content: string, wordCount: number) => {
+    if (!import.meta.client) return
+
+    const session: WritingSession = {
+      topicId,
+      content,
+      wordCount,
+      startedAt: new Date().toISOString(),
+      lastSavedAt: new Date().toISOString()
+    }
+    
+    localStorage.setItem(`${WRITING_SESSION_KEY}-${topicId}`, JSON.stringify(session))
+  }
+
+  /**
+   * Get writing draft/session for specific topic
+   */
+  const getWritingSession = (topicId: string): WritingSession | null => {
+    if (!import.meta.client) return null
+    
+    const data = localStorage.getItem(`${WRITING_SESSION_KEY}-${topicId}`)
+    return data ? JSON.parse(data) : null
+  }
+
+  /**
+   * Clear writing session/draft for specific topic
+   */
+  const clearWritingSession = (topicId: string) => {
+    if (!import.meta.client) return
+    localStorage.removeItem(`${WRITING_SESSION_KEY}-${topicId}`)
+  }
+
+  /**
+   * Get all writing sessions (drafts) for resume functionality
+   */
+  const getAllWritingSessions = (): WritingSession[] => {
+    if (!import.meta.client) return []
+    
+    const sessions: WritingSession[] = []
+    
+    // Look for all writing session keys in localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && key.startsWith(WRITING_SESSION_KEY)) {
+        try {
+          const sessionData = localStorage.getItem(key)
+          if (sessionData) {
+            const session = JSON.parse(sessionData)
+            sessions.push(session)
+          }
+        } catch (error) {
+          // Skip invalid session data
+          console.warn(`Invalid writing session data for key: ${key}`)
+        }
+      }
+    }
+    
+    return sessions.sort((a, b) => new Date(b.lastSavedAt).getTime() - new Date(a.lastSavedAt).getTime())
+  }
+
+  /**
+   * Calculate comprehensive writing progress statistics
+   */
+  const getWritingStats = (): WritingStats => {
+    const progressData = getWritingProgressData()
+    const completedTopics = Object.values(progressData).filter(p => p.completed)
+    
+    if (completedTopics.length === 0) {
+      return {
+        totalTopicsCompleted: 0,
+        totalSubmissions: 0,
+        averageWordCount: 0,
+        totalTimeSpent: 0,
+        recentActivity: [],
+        completionRate: 0
+      }
+    }
+
+    const totalSubmissions = completedTopics.reduce((sum, p) => sum + p.submissions.length, 0)
+    const totalWords = completedTopics.reduce((sum, p) => sum + (p.bestWordCount || 0), 0)
+    const totalTime = completedTopics.reduce((sum, p) => sum + (p.timeSpent || 0), 0)
+    
+    // Recent activity (last 5 completed topics, sorted by completion date)
+    const recentActivity = completedTopics
+      .filter(p => p.completedAt)
+      .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())
+      .slice(0, 5)
+
+    // Calculate completion rate based on total available topics
+    const totalAvailableTopics = 8 // Current number of topics, could be dynamic
+
+    return {
+      totalTopicsCompleted: completedTopics.length,
+      totalSubmissions,
+      averageWordCount: Math.round(totalWords / completedTopics.length),
+      totalTimeSpent: totalTime,
+      recentActivity,
+      completionRate: Math.round((completedTopics.length / totalAvailableTopics) * 100)
+    }
+  }
+
+  /**
+   * Get progress for specific writing topic
+   */
+  const getWritingTopicProgress = (topicId: string): WritingProgress | null => {
+    const progressData = getWritingProgressData()
+    return progressData[topicId] || null
+  }
+
+  /**
+   * Check if writing topic is completed
+   */
+  const isWritingTopicCompleted = (topicId: string): boolean => {
+    const progress = getWritingTopicProgress(topicId)
+    return progress?.completed || false
+  }
+
+  /**
+   * Get best word count for specific writing topic
+   */
+  const getBestWordCount = (topicId: string): number => {
+    const progress = getWritingTopicProgress(topicId)
+    return progress?.bestWordCount || 0
+  }
+
+  /**
+   * Get latest submission for specific writing topic
+   */
+  const getLatestSubmission = (topicId: string): WritingSubmission | null => {
+    const progress = getWritingTopicProgress(topicId)
+    if (!progress || progress.submissions.length === 0) return null
+    
+    const latest = progress.submissions
+      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())[0]
+    
+    return latest || null
+  }
+
   return {
-    // Data operations
+    // Data operations (Reading)
     getProgressData,
     saveQuizCompletion,
     getProgressStats,
     getTextProgress,
     
-    // Session management
+    // Session management (Reading)
     saveSession,
     getSession,
     clearSession,
     
-    // Utility functions
+    // Utility functions (Reading)
     isTextCompleted,
-    getBestScore
+    getBestScore,
+
+    // Writing progress functions (Stage 11)
+    getWritingProgressData,
+    saveWritingSubmission,
+    saveWritingDraft,
+    getWritingSession,
+    clearWritingSession,
+    getAllWritingSessions,
+    getWritingStats,
+    getWritingTopicProgress,
+    isWritingTopicCompleted,
+    getBestWordCount,
+    getLatestSubmission
   }
 } 

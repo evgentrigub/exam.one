@@ -36,13 +36,13 @@
       </div>
     </ClientOnly>
 
-    <!-- Progress Overview -->
+    <!-- Reading Progress Overview -->
     <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900">{{ $t('dashboard.overview') }}</h2>
+        <h2 class="text-lg font-semibold text-gray-900">📚 Reading Progress</h2>
         <ClientOnly>
           <div class="text-sm text-gray-600">
-            {{ completedCount }}/{{ germanTexts.length }} {{ $t('dashboard.textsCompleted') }}
+            {{ completedCount }}/{{ germanTexts.length }} texts completed
           </div>
           <template #fallback>
             <div class="text-sm text-gray-600">Loading...</div>
@@ -53,7 +53,7 @@
       <ClientOnly>
         <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
           <div 
-            class="bg-green-600 h-3 rounded-full transition-all duration-500 ease-out"
+            class="bg-blue-600 h-3 rounded-full transition-all duration-500 ease-out"
             :style="{ width: `${completionPercentage}%` }"
           />
         </div>
@@ -65,64 +65,158 @@
       </ClientOnly>
     </div>
 
-    <!-- Progress Overview Cards -->
-    <div class="max-w-6xl mx-auto mb-8">
+    <!-- Writing Progress Overview (Stage 11) -->
+    <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">✍️ Writing Progress</h2>
+        <ClientOnly>
+          <div class="text-sm text-gray-600">
+            {{ writingCompletedCount }}/{{ writingTopics.length }} topics completed
+          </div>
+          <template #fallback>
+            <div class="text-sm text-gray-600">Loading...</div>
+          </template>
+        </ClientOnly>
+      </div>
+      
       <ClientOnly>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          <!-- Texts Completed -->
-          <div class="bg-white rounded-xl shadow-sm p-6 text-center">
-            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <div class="text-3xl font-bold text-green-600 mb-1">{{ completionPercentage }}% </div>
-            <div class="text-sm text-gray-600">{{ $t('dashboard.completionRate') }}</div>
-          </div>
-          
-          <!-- Average Score -->
-          <div class="bg-white rounded-xl shadow-sm p-6 text-center">
-            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-              </svg>
-            </div>
-            <div class="text-3xl font-bold text-blue-600 mb-1">{{ stats.averageScore }}%</div>
-            <div class="text-sm text-gray-600">{{ $t('dashboard.averageScore') }}</div>
-          </div>
-          
-          <!-- Best Score -->
-          <div class="bg-white rounded-xl shadow-sm p-6 text-center">
-            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/>
-              </svg>
-            </div>
-            <div class="text-3xl font-bold text-purple-600 mb-1">{{ stats.bestScore }}%</div>
-            <div class="text-sm text-gray-600">{{ $t('dashboard.bestScore') }}</div>
-          </div>
-          
-          <!-- Total Attempts -->
-          <div class="bg-white rounded-xl shadow-sm p-6 text-center">
-            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-              </svg>
-            </div>
-            <div class="text-3xl font-bold text-yellow-600 mb-1">{{ stats.totalAttempts }}</div>
-            <div class="text-sm text-gray-600">{{ $t('dashboard.totalAttempts') }}</div>
-          </div>
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+          <div 
+            class="bg-green-600 h-3 rounded-full transition-all duration-500 ease-out"
+            :style="{ width: `${Math.round((writingCompletedCount / writingTopics.length) * 100)}%` }"
+          />
         </div>
         <template #fallback>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <div v-for="i in 4" :key="i" class="bg-white rounded-xl shadow-sm p-6 text-center">
-              <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
-              <div class="h-8 bg-gray-200 rounded mb-1 animate-pulse"></div>
-              <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
-            </div>
+          <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+            <div class="bg-gray-400 h-3 rounded-full animate-pulse" style="width: 0%"></div>
           </div>
         </template>
       </ClientOnly>
+    </div>
+
+    <!-- Progress Overview Cards (Stage 11: Extended for Reading + Writing) -->
+    <div class="max-w-7xl mx-auto mb-8">
+      <!-- Reading Statistics -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 Reading Statistics</h3>
+        <ClientOnly>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <!-- Reading Completion Rate -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-blue-600 mb-1">{{ completionPercentage }}%</div>
+              <div class="text-sm text-gray-600">Reading Completion</div>
+            </div>
+            
+            <!-- Average Score -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-indigo-600 mb-1">{{ stats.averageScore }}%</div>
+              <div class="text-sm text-gray-600">Average Score</div>
+            </div>
+            
+            <!-- Best Score -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-purple-600 mb-1">{{ stats.bestScore }}%</div>
+              <div class="text-sm text-gray-600">Best Score</div>
+            </div>
+            
+            <!-- Total Reading Attempts -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-cyan-600 mb-1">{{ stats.totalAttempts }}</div>
+              <div class="text-sm text-gray-600">Reading Attempts</div>
+            </div>
+          </div>
+          <template #fallback>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              <div v-for="i in 4" :key="i" class="bg-white rounded-xl shadow-sm p-6 text-center">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
+                <div class="h-8 bg-gray-200 rounded mb-1 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </template>
+        </ClientOnly>
+      </div>
+
+      <!-- Writing Statistics (Stage 11) -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">✍️ Writing Statistics</h3>
+        <ClientOnly>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <!-- Writing Completion Rate -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-green-600 mb-1">{{ writingStats.completionRate }}%</div>
+              <div class="text-sm text-gray-600">Writing Completion</div>
+            </div>
+            
+            <!-- Average Word Count -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-emerald-600 mb-1">{{ writingStats.averageWordCount }}</div>
+              <div class="text-sm text-gray-600">Avg Word Count</div>
+            </div>
+            
+            <!-- Total Topics Completed -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-teal-600 mb-1">{{ writingStats.totalTopicsCompleted }}</div>
+              <div class="text-sm text-gray-600">Topics Completed</div>
+            </div>
+            
+            <!-- Total Writing Submissions -->
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-orange-600 mb-1">{{ writingStats.totalSubmissions }}</div>
+              <div class="text-sm text-gray-600">Writing Submissions</div>
+            </div>
+          </div>
+          <template #fallback>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              <div v-for="i in 4" :key="i" class="bg-white rounded-xl shadow-sm p-6 text-center">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
+                <div class="h-8 bg-gray-200 rounded mb-1 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </template>
+        </ClientOnly>
+      </div>
     </div>
 
     <!-- Resume Session Card -->
@@ -197,34 +291,47 @@
       <div class="bg-white rounded-xl shadow-sm p-6">
         <h3 class="text-xl font-semibold text-gray-900 mb-6">🚀 {{ $t('dashboard.quickActions') }}</h3>
         
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Start Practice -->
-          <div class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer" @click="goToPractice">
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Reading Practice -->
+          <div class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer" @click="goToReading">
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
               <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
               </svg>
             </div>
             <div>
-              <h4 class="font-semibold text-gray-900">{{ $t('dashboard.continuePractice') }}</h4>
-              <p class="text-sm text-gray-600">{{ $t('dashboard.continuePracticeDescription') }}</p>
+              <h4 class="font-semibold text-gray-900">Reading Practice</h4>
+              <p class="text-sm text-gray-600">Practice German reading comprehension</p>
+            </div>
+          </div>
+
+          <!-- Writing Practice (Stage 11) -->
+          <div class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors cursor-pointer" @click="goToWriting">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Writing Practice</h4>
+              <p class="text-sm text-gray-600">Practice German writing skills</p>
             </div>
           </div>
 
           <!-- View Progress Stats -->
           <div class="flex items-center p-4 border border-gray-200 rounded-lg">
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
               </svg>
             </div>
-                       <div>
-             <h4 class="font-semibold text-gray-900">{{ $t('dashboard.progressOverview') }}</h4>
+            <div>
+             <h4 class="font-semibold text-gray-900">Progress Overview</h4>
              <ClientOnly>
                <p class="text-sm text-gray-600">
-                 {{ stats.totalTextsCompleted > 0 
-                   ? `${stats.totalTextsCompleted} ${$t('dashboard.textsCompleted')} with ${stats.averageScore}% ${$t('dashboard.average')}` 
-                   : $t('dashboard.startFirstQuiz')
+                 {{ (stats.totalTextsCompleted + writingStats.totalTopicsCompleted) > 0 
+                   ? `${stats.totalTextsCompleted + writingStats.totalTopicsCompleted} activities completed` 
+                   : 'Start your first practice session'
                  }}
                </p>
                <template #fallback>
@@ -243,6 +350,7 @@
 <script setup lang="ts">
 import { useProgress } from '~/composables/useProgress'
 import { germanTexts } from '~/data/german-texts'
+import { writingTopics } from '~/data/writing-topics'
 
 // Page metadata
 useHead({
@@ -252,21 +360,29 @@ useHead({
   ]
 })
 
-// Progress tracking composable
-const { getProgressStats, getSession, isTextCompleted } = useProgress()
+// Progress tracking composable (Stage 11: Extended for writing)
+const { 
+  getProgressStats, 
+  getSession, 
+  isTextCompleted,
+  getWritingStats,
+  isWritingTopicCompleted
+} = useProgress()
 
 const completionPercentage = computed(() => {
   return Math.round((completedCount.value / germanTexts.length) * 100)
 })
 
-// Reactive data
+// Reactive data (Stage 11: Extended for writing)
 const stats = ref(getProgressStats())
+const writingStats = ref(getWritingStats())
 const resumeSession = ref(null)
 
 // Check for incomplete session on mount
 onMounted(() => {
   // Refresh stats when component mounts
   stats.value = getProgressStats()
+  writingStats.value = getWritingStats()
   
   // Check for resume session
   const session = getSession()
@@ -275,9 +391,12 @@ onMounted(() => {
   }
 })
 
-
 const completedCount = computed(() => {
   return germanTexts.filter(text => isTextCompleted(text.id)).length
+})
+
+const writingCompletedCount = computed(() => {
+  return writingTopics.filter(topic => isWritingTopicCompleted(topic.id)).length
 })
 
 // Methods
@@ -307,7 +426,11 @@ function resumeQuiz() {
   }
 }
 
-function goToPractice() {
+function goToReading() {
   navigateTo('/reading')
+}
+
+function goToWriting() {
+  navigateTo('/writing')
 }
 </script> 

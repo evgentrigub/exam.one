@@ -11,6 +11,45 @@
         </p>
       </header>
 
+      <!-- Resume Writing Session Card (Stage 11) -->
+      <div v-if="!selectedTopic && resumeSessions.length > 0" class="max-w-4xl mx-auto mb-8">
+        <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-green-900 mb-1">Resume Writing</h3>
+              <p class="text-green-700 text-sm">
+                You have {{ resumeSessions.length }} saved {{ resumeSessions.length === 1 ? 'draft' : 'drafts' }}. Continue where you left off!
+              </p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <button
+                  v-for="session in resumeSessions.slice(0, 3)"
+                  :key="session.topicId"
+                  class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
+                  @click="resumeWriting(session.topicId)"
+                >
+                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5l7 7-7 7"/>
+                  </svg>
+                  {{ getTopicTitle(session.topicId) }}
+                </button>
+                <button
+                  v-if="resumeSessions.length > 3"
+                  class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-sm rounded-lg hover:bg-green-200 transition-colors"
+                  @click="showAllDrafts = !showAllDrafts"
+                >
+                  {{ showAllDrafts ? 'Show Less' : `+${resumeSessions.length - 3} More` }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Writing Topic Selection -->
       <div v-if="!selectedTopic" class="max-w-6xl mx-auto">
 
@@ -166,6 +205,7 @@
 <script setup lang="ts">
 import { writingTopics } from '~/data/writing-topics'
 import type { WritingTopic } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
 
 // Page metadata
 useHead({
@@ -175,9 +215,16 @@ useHead({
   ]
 })
 
-// Mock progress functions (will be implemented in Stage 11)
-const isTopicCompleted = (_topicId: string) => false
-const _getTopicProgress = (_topicId: string) => null
+// Progress tracking composable (Stage 11)
+const { 
+  isWritingTopicCompleted, 
+  getWritingTopicProgress,
+  getAllWritingSessions
+} = useProgress()
+
+// Progress functions now using real implementation
+const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
+const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Reactive data
 const selectedTypeFilter = ref<string>('all')
@@ -185,6 +232,15 @@ const selectedStatusFilter = ref<string>('all')
 const selectedSort = ref<string>('title')
 const sortDirection = ref<'asc' | 'desc'>('asc')
 const selectedTopic = ref<WritingTopic | null>(null)
+
+// Resume functionality (Stage 11)
+const resumeSessions = ref<any[]>([])
+const showAllDrafts = ref(false)
+
+// Check for writing drafts on mount
+onMounted(() => {
+  resumeSessions.value = getAllWritingSessions()
+})
 
 // Computed properties
 const filteredTopics = computed(() => {
@@ -253,7 +309,8 @@ function resetFilters() {
 }
 
 function handleWritingComplete(topicId: string, content: string, wordCount: number, timeSpent: number) {
-  // TODO: Save writing submission in Stage 11
+  // Writing submission is already saved in WritingSession component (Stage 11)
+  // This function can be used for additional UI updates if needed
   console.log('Writing completed:', {
     topicId,
     content: content.substring(0, 100) + '...', // Log first 100 chars
@@ -261,7 +318,26 @@ function handleWritingComplete(topicId: string, content: string, wordCount: numb
     timeSpent
   })
   
-  // For now, just show a success message
-  // In Stage 11, this will save to localStorage and update progress
+  // Refresh resume sessions after completion
+  resumeSessions.value = getAllWritingSessions()
+  
+  // Force reactivity update for completion indicators
+  nextTick(() => {
+    // The topic cards will automatically show completion status
+    // due to reactive progress tracking
+  })
+}
+
+// Resume functionality methods (Stage 11)
+function resumeWriting(topicId: string) {
+  const topic = writingTopics.find(t => t.id === topicId)
+  if (topic) {
+    selectedTopic.value = topic
+  }
+}
+
+function getTopicTitle(topicId: string): string {
+  const topic = writingTopics.find(t => t.id === topicId)
+  return topic ? topic.title : 'Unknown Topic'
 }
 </script>
