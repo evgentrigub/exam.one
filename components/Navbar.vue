@@ -2,7 +2,7 @@
   <nav class="bg-white shadow-sm border-b border-gray-200">
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between h-16">
-        <!-- Logo/Brand -->
+        <!-- Logo/Brand and Language Selector -->
         <div class="flex items-center space-x-3">
           <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10,39 +10,10 @@
             </svg>
           </div>
           <span class="text-xl font-bold text-gray-900">{{ $t('home.title') }}</span>
-        </div>
-
-        <!-- Navigation Links and Language Selector -->
-        <div class="flex items-center space-x-6">
-          <!-- Navigation Links -->
-          <div class="flex items-center space-x-6">
-            <NuxtLink 
-              to="/" 
-              class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              :class="{ 'text-blue-600 bg-blue-50': $route.path === '/' }"
-            >
-              🏠 {{ $t('nav.home') }}
-            </NuxtLink>
-            <NuxtLink 
-              to="/practice" 
-              class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              :class="{ 'text-blue-600 bg-blue-50': $route.path === '/practice' }"
-            >
-              📚 {{ $t('nav.practice') }}
-            </NuxtLink>
-            <NuxtLink 
-              to="/dashboard" 
-              class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              :class="{ 'text-blue-600 bg-blue-50': $route.path === '/dashboard' }"
-            >
-              📊 {{ $t('nav.dashboard') }}
-            </NuxtLink>
-          </div>
-
           <!-- Language Selector -->
-          <div class="relative">
-            <select 
-              :value="locale" 
+          <div class="relative ml-4">
+            <select
+              :value="locale"
               class="appearance-none w-30 bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
               @change="changeLanguage"
             >
@@ -55,6 +26,31 @@
               </svg>
             </div>
           </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="flex items-center space-x-6">
+          <NuxtLink
+            to="/"
+            class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/' }"
+          >
+            🏠 {{ $t('nav.home') }}
+          </NuxtLink>
+          <NuxtLink
+            to="/practice"
+            class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/practice' }"
+          >
+            📚 {{ $t('nav.practice') }}
+          </NuxtLink>
+          <NuxtLink
+            to="/dashboard"
+            class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/dashboard' }"
+          >
+            📊 {{ $t('nav.dashboard') }}
+          </NuxtLink>
         </div>
       </div>
     </div>
