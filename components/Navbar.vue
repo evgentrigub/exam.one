@@ -30,15 +30,15 @@
 
         <!-- Navigation Links -->
         <div class="flex items-center space-x-6">
-          <NuxtLink
-            to="/"
+          <NuxtLink 
+            to="/" 
             class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             :class="{ 'text-blue-600 bg-blue-50': $route.path === '/' }"
           >
             🏠 {{ $t('nav.home') }}
           </NuxtLink>
-          <NuxtLink
-            to="/practice"
+          <NuxtLink 
+            to="/practice" 
             class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             :class="{ 'text-blue-600 bg-blue-50': $route.path === '/practice' }"
           >
@@ -51,13 +51,31 @@
           >
             📊 {{ $t('nav.dashboard') }}
           </NuxtLink>
+          <div class="relative">
+            <select
+              v-model="examLevel"
+              class="appearance-none bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+            >
+              <option value="A2">A2</option>
+              <option value="B1" disabled>B1 (soon ready)</option>
+              <option value="B2" disabled>B2 (soon ready)</option>
+              <option value="C1" disabled>C1 (soon ready)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
+const examLevel = ref('A2')
 const { locale } = useI18n()
 const { $i18n } = useNuxtApp()
 
