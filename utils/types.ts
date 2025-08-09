@@ -58,4 +58,59 @@ export interface Session {
   answers: Record<string, number> // questionId -> selected option index
   score?: number
   timeSpent?: number
+}
+
+// Writing Topic Types
+export interface WritingTopic {
+  id: string
+  title: string
+  topicType: WritingTopicType
+  difficulty: 'A2'
+  estimatedTime: number // in minutes
+  wordCount: {
+    min: number
+    max: number
+  }
+  category: string[]
+  createdAt: string
+  description: string // What type of text they should write
+  prompt: string // The actual writing prompt/task
+  requirements: string[] // Specific requirements (format, length, etc.)
+  tips?: string[] // Optional writing tips
+}
+
+export type WritingTopicType = 
+  | 'email'
+  | 'letter'
+  | 'essay'
+  | 'form'
+  | 'postcard'
+  | 'note'
+
+export interface WritingProgress {
+  topicId: string
+  completed: boolean
+  attemptCount: number
+  bestWordCount?: number
+  completedAt?: string
+  timeSpent?: number // in seconds
+  submissions: WritingSubmission[]
+}
+
+export interface WritingSubmission {
+  id: string
+  topicId: string
+  content: string
+  wordCount: number
+  submittedAt: string
+  timeSpent?: number // in seconds
+  feedback?: WritingFeedback
+}
+
+export interface WritingFeedback {
+  wordCountValid: boolean
+  structureScore: number // 1-5 scale
+  completenessScore: number // 1-5 scale
+  suggestions: string[]
+  overallScore: number // 1-5 scale
 } 
