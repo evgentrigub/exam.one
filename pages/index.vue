@@ -11,7 +11,7 @@
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <NuxtLink 
-            to="/practice" 
+            to="/reading" 
             class="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg shadow-lg"
           >
             <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

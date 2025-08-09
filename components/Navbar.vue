@@ -38,11 +38,11 @@
             🏠 {{ $t('nav.home') }}
           </NuxtLink>
           <NuxtLink 
-            to="/practice" 
+            to="/reading" 
             class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/practice' }"
+            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/reading' }"
           >
-            📚 {{ $t('nav.practice') }}
+            📚 {{ $t('nav.reading') }}
           </NuxtLink>
           <NuxtLink 
             to="/writing" 
