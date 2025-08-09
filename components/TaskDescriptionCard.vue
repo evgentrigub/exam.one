@@ -39,7 +39,7 @@
       <!-- Description -->
       <div class="mb-4">
         <h4 class="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">What you should write</h4>
-        <p class="text-gray-800 leading-relaxed">{{ topic.description }}</p>
+        <p class="text-gray-800 leading-relaxed text-sm">{{ topic.description }}</p>
       </div>
 
       <!-- Writing Tips (if available) -->

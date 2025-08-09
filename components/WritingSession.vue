@@ -77,7 +77,7 @@
     </div>
 
     <!-- Results Modal -->
-    <div v-if="showResults" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div v-if="showResults" class="fixed inset-0 bg-gray-50 flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <!-- Results Header -->
         <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
@@ -153,6 +153,7 @@
 
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
 
 interface Props {
   topic: WritingTopic
@@ -164,6 +165,14 @@ const emit = defineEmits<{
   exit: []
   complete: [topicId: string, content: string, wordCount: number, timeSpent: number]
 }>()
+
+// Progress tracking composable
+const { 
+  saveWritingSubmission, 
+  saveWritingDraft, 
+  getWritingSession, 
+  clearWritingSession: _clearWritingSession 
+} = useProgress()
 
 // Reactive state
 const currentDraft = ref('')
@@ -196,8 +205,9 @@ const mobileTabs = [
 // Methods
 function handleSaveDraft(content: string, wordCount: number) {
   currentDraft.value = content
-  // TODO: Save to localStorage in Stage 11
-  console.log('Draft saved:', { content, wordCount })
+  
+  // Save draft to localStorage (Stage 11)
+  saveWritingDraft(props.topic.id, content, wordCount)
   
   // Show success feedback
   const notification = document.createElement('div')
@@ -212,6 +222,10 @@ function handleSaveDraft(content: string, wordCount: number) {
 
 function handleSubmit(content: string, wordCount: number, timeSpent: number) {
   submissionResults.value = { wordCount, timeSpent }
+  
+  // Save writing submission to localStorage (Stage 11)
+  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent)
+  
   showResults.value = true
   
   // Emit completion event for parent component
@@ -241,7 +255,10 @@ function formatTime(seconds: number): string {
 
 // Load any existing draft on mount
 onMounted(() => {
-  // TODO: Load from localStorage in Stage 11
-  // For now, start with empty content
+  // Load existing draft from localStorage (Stage 11)
+  const existingSession = getWritingSession(props.topic.id)
+  if (existingSession) {
+    currentDraft.value = existingSession.content
+  }
 })
 </script>

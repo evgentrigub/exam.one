@@ -30,8 +30,8 @@
       <div class="mb-4">
         <textarea
           v-model="content"
-          rows="12"
-          class="w-full resize-none border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+          rows="10"
+          class="w-full border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
           :class="textareaClasses"
           placeholder="Start writing your response here..."
           @input="updateWordCount"
@@ -150,11 +150,18 @@ const wordCountPercentage = computed(() => {
   return Math.round((wordCount.value / target) * 100)
 })
 
+// const isSubmittable = computed(() => {
+//   return wordCount.value >= props.topic.wordCount.min && 
+//          wordCount.value <= props.topic.wordCount.max &&
+//          content.value.trim().length > 0
+// })
+
 const isSubmittable = computed(() => {
-  return wordCount.value >= props.topic.wordCount.min && 
-         wordCount.value <= props.topic.wordCount.max &&
+  return wordCount.value >= 10 && 
+         wordCount.value <= 20 &&
          content.value.trim().length > 0
 })
+
 
 const wordCountColor = computed(() => {
   if (wordCount.value < props.topic.wordCount.min) {
