@@ -160,10 +160,14 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic, WritingFeedback } from '~/utils/types'
-import type { TextAnalysisResult } from '~/utils/textAnalysis'
-import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
-import { useProgress } from '~/composables/useProgress'
+import type { WritingTopic, WritingFeedbackModel } from '../../utils/types'
+import type { TextAnalysisResult } from '../../utils/textAnalysis'
+import { analyzeGermanText, createWritingFeedback } from '../../utils/textAnalysis'
+import { useProgress } from '../../composables/useProgress'
+import WritingFeedback from './WritingFeedback.vue'
+import TextEditorCard from './TextEditorCard.vue'
+import TaskDescriptionCard from './TaskDescriptionCard.vue'
+import InstructionsCard from './InstructionsCard.vue'
 
 interface Props {
   topic: WritingTopic
@@ -191,7 +195,7 @@ const activeMobileTab = ref(0)
 const submissionResults = ref<{
   wordCount: number
   timeSpent: number
-  feedback?: WritingFeedback
+  feedback?: WritingFeedbackModel
   analysisResult?: TextAnalysisResult | undefined
 } | null>(null)
 

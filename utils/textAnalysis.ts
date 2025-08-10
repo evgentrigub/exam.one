@@ -3,7 +3,7 @@
  * Provides basic analysis functions for writing feedback system (Stage 12)
  */
 
-import type { WritingTopic, WritingFeedback } from '~/utils/types'
+import type { WritingTopic, WritingFeedbackModel } from '~/utils/types'
 
 export interface TextAnalysisResult {
   wordCount: number
@@ -63,7 +63,7 @@ export function analyzeGermanText(content: string, topic: WritingTopic): TextAna
 /**
  * Creates WritingFeedback object for storage
  */
-export function createWritingFeedback(analysisResult: TextAnalysisResult, topic: WritingTopic): WritingFeedback {
+export function createWritingFeedback(analysisResult: TextAnalysisResult, topic: WritingTopic): WritingFeedbackModel {
   const { wordCount, structureElements, suggestions } = analysisResult
   
   // Word count validation
@@ -335,7 +335,7 @@ function generateSuggestions(
 /**
  * Format feedback for display
  */
-export function formatFeedbackDisplay(feedback: WritingFeedback): {
+export function formatFeedbackDisplay(feedback: WritingFeedbackModel): {
   title: string
   color: string
   icon: string

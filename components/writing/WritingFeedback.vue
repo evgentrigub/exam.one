@@ -144,12 +144,12 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingFeedback } from '~/utils/types'
+import type { WritingFeedbackModel } from '~/utils/types'
 import type { TextAnalysisResult } from '~/utils/textAnalysis'
 import { formatFeedbackDisplay } from '~/utils/textAnalysis'
 
 interface Props {
-  feedback: WritingFeedback
+  feedback: WritingFeedbackModel
   analysisResult?: TextAnalysisResult | undefined
 }
 

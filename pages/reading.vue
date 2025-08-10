@@ -257,9 +257,11 @@
 </template>
 
 <script setup lang="ts">
-import { germanTexts } from '~/data/german-texts'
-import type { GermanText } from '~/utils/types'
-import { useProgress } from '~/composables/useProgress'
+import { germanTexts } from '../data/german-texts'
+import type { GermanText } from '../utils/types'
+import { useProgress } from '../composables/useProgress'
+import TextCard from '../components/reading/TextCard.vue'
+import QuizSession from '../components/reading/QuizSession.vue'
 
 // Page metadata
 useHead({
