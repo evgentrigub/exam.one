@@ -105,10 +105,10 @@ export interface WritingSubmission {
   submittedAt: string
   timeSpent?: number // in seconds
   isDraft?: boolean
-  feedback?: WritingFeedback
+  feedback?: WritingFeedbackModel
 }
 
-export interface WritingFeedback {
+export interface WritingFeedbackModel {
   wordCountValid: boolean
   structureScore: number // 1-5 scale
   completenessScore: number // 1-5 scale

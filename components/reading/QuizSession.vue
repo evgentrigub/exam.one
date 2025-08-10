@@ -158,8 +158,9 @@ class="w-8 h-8 rounded-full flex items-center justify-center"
 </template>
 
 <script setup lang="ts">
-import type { GermanText } from '~/utils/types'
-import { useProgress } from '~/composables/useProgress'
+import type { GermanText } from '../../utils/types'
+import { useProgress } from '../../composables/useProgress'
+import QuestionCard from './QuestionCard.vue'
 
 interface Props {
   text: GermanText

@@ -203,9 +203,11 @@
 </template>
 
 <script setup lang="ts">
-import { writingTopics } from '~/data/writing-topics'
-import type { WritingTopic } from '~/utils/types'
-import { useProgress } from '~/composables/useProgress'
+import { writingTopics } from '../data/writing-topics'
+import type { WritingTopic } from '../utils/types'
+import { useProgress } from '../composables/useProgress'
+import WritingSession from '../components/writing/WritingSession.vue'
+import WritingTopicCard from '../components/writing/WritingTopicCard.vue'
 
 // Page metadata
 useHead({
@@ -218,13 +220,13 @@ useHead({
 // Progress tracking composable (Stage 11)
 const { 
   isWritingTopicCompleted, 
-  getWritingTopicProgress,
+  // getWritingTopicProgress,
   getAllWritingSessions
 } = useProgress()
 
 // Progress functions now using real implementation
 const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
-const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
+// const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Reactive data
 const selectedTypeFilter = ref<string>('all')

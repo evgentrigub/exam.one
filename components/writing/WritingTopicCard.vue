@@ -92,9 +92,9 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic } from '~/utils/types'
 import { computed, ref, onMounted } from 'vue'
-import { useProgress } from '~/composables/useProgress'
+import type { WritingTopic } from '../../utils/types'
+import { useProgress } from '../../composables/useProgress'
 
 interface Props {
   topic: WritingTopic
