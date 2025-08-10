@@ -104,24 +104,18 @@
 
         <!-- Writing Status -->
         <div class="flex items-center justify-between text-sm">
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center">
             <span class="flex items-center" :class="wordCountColor">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
               {{ wordCountStatus }}
             </span>
-            <span v-if="timeSpent > 0" class="text-gray-600 flex items-center">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              {{ formatTime(timeSpent) }}
-            </span>
           </div>
           <button
             v-if="content.trim()"
-            @click="clearContent"
             class="text-red-600 hover:text-red-700 text-xs font-medium transition-colors"
+            @click="clearContent"
           >
             Text löschen
           </button>
@@ -131,17 +125,17 @@
       <!-- Action Buttons -->
       <div class="flex space-x-3">
         <button
-          @click="saveDraft"
           :disabled="!content.trim()"
           class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          @click="saveDraft"
         >
           Save Draft
         </button>
         <button
-          @click="submitWriting"
+          :class="submitButtonClasses"
           :disabled="!isSubmittable"
           class="flex-1 px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
-          :class="submitButtonClasses"
+          @click="submitWriting"
         >
           <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -330,9 +324,4 @@ function submitWriting() {
   }
 }
 
-function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-}
 </script>

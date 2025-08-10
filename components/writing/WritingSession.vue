@@ -5,12 +5,20 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Top Left: Task Description -->
         <div class="lg:col-span-1 h-full">
-          <TaskDescriptionCard :topic="topic" />
+          <TaskDescriptionCard 
+            :topic="topic" 
+            :current-mode="currentMode"
+            @mode-change="handleModeChange"
+          />
         </div>
 
         <!-- Top Right: Instructions -->
         <div class="lg:col-span-1 h-full">
-          <InstructionsCard :topic="topic" />
+          <InstructionsCard 
+            :topic="topic" 
+            :current-mode="currentMode"
+            :timer-display="timerDisplay"
+          />
         </div>
 
         <!-- Bottom Row: Text Editor (Full Width) -->
@@ -160,14 +168,16 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic, WritingFeedbackModel } from '../../utils/types'
-import type { TextAnalysisResult } from '../../utils/textAnalysis'
-import { analyzeGermanText, createWritingFeedback } from '../../utils/textAnalysis'
-import { useProgress } from '../../composables/useProgress'
-import WritingFeedback from './WritingFeedback.vue'
-import TextEditorCard from './TextEditorCard.vue'
+import type { WritingTopic, WritingFeedbackModel } from '~/utils/types'
+import type { TextAnalysisResult } from '~/utils/textAnalysis'
+import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
+import { useProgress } from '~/composables/useProgress'
+import { useWritingMode } from '~/composables/useWritingMode'
+import type { WritingMode } from '~/composables/useWritingMode'
 import TaskDescriptionCard from './TaskDescriptionCard.vue'
 import InstructionsCard from './InstructionsCard.vue'
+import TextEditorCard from './TextEditorCard.vue'
+import WritingFeedback from './WritingFeedback.vue'
 
 interface Props {
   topic: WritingTopic
@@ -187,6 +197,13 @@ const {
   getWritingSession, 
   clearWritingSession: _clearWritingSession 
 } = useProgress()
+
+// Writing mode composable
+const {
+  currentMode,
+  timerDisplay,
+  changeMode
+} = useWritingMode()
 
 // Reactive state
 const currentDraft = ref('')
@@ -276,6 +293,11 @@ function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60)
   const remainingSeconds = seconds % 60
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+}
+
+// Handle writing mode change
+function handleModeChange(mode: WritingMode) {
+  changeMode(mode)
 }
 
 // Load any existing draft on mount
