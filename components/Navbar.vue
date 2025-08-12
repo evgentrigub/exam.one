@@ -37,32 +37,62 @@
           >
             🏠 {{ $t('nav.home') }}
           </NuxtLink>
-          <div class="relative group">
+          <div ref="dropdownRef" class="relative">
             <button
               type="button"
-              class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              :aria-expanded="isDropdownOpen"
+              aria-haspopup="true"
+              class="inline-flex items-center gap-x-1.5 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               :class="{ 'text-blue-600 bg-blue-50': ['/reading', '/writing'].includes($route.path) }"
+              @click="toggleDropdown"
             >
               📝 {{ $t('nav.practice') }}
+              <svg 
+                class="h-4 w-4 transition-transform duration-200" 
+                :class="{ 'rotate-180': isDropdownOpen }" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
             </button>
-            <div
-              class="absolute left-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg hidden group-hover:block z-10"
+            <Transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
             >
-              <NuxtLink
-                to="/reading"
-                class="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md text-sm transition-colors"
-                :class="{ 'text-blue-600 bg-blue-50': $route.path === '/reading' }"
+              <div
+                v-show="isDropdownOpen"
+                class="absolute left-0 z-10 mt-2 w-48 origin-top-left rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none"
+                role="menu"
+                aria-orientation="vertical"
               >
-                📚 {{ $t('nav.reading') }}
-              </NuxtLink>
-              <NuxtLink
-                to="/writing"
-                class="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md text-sm transition-colors"
-                :class="{ 'text-blue-600 bg-blue-50': $route.path === '/writing' }"
-              >
-                ✍️ {{ $t('nav.writing') }}
-              </NuxtLink>
-            </div>
+                <div class="py-1" role="none">
+                  <NuxtLink
+                    to="/reading"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                    :class="{ 'bg-gray-100 text-gray-900': $route.path === '/reading' }"
+                    role="menuitem"
+                    @click="closeDropdown"
+                  >
+                    📚 {{ $t('nav.reading') }}
+                  </NuxtLink>
+                  <NuxtLink
+                    to="/writing"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                    :class="{ 'bg-gray-100 text-gray-900': $route.path === '/writing' }"
+                    role="menuitem"
+                    @click="closeDropdown"
+                  >
+                    ✍️ {{ $t('nav.writing') }}
+                  </NuxtLink>
+                </div>
+              </div>
+            </Transition>
           </div>
           <NuxtLink
             to="/dashboard"
@@ -98,6 +128,43 @@
 const examLevel = ref('A2')
 const { locale } = useI18n()
 const { $i18n } = useNuxtApp()
+
+// Dropdown state and functionality
+const isDropdownOpen = ref(false)
+const dropdownRef = ref<HTMLElement>()
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value
+}
+
+const closeDropdown = () => {
+  isDropdownOpen.value = false
+}
+
+// Close dropdown when clicking outside
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    closeDropdown()
+  }
+}
+
+// Close dropdown on escape key
+const handleEscapeKey = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    closeDropdown()
+  }
+}
+
+// Setup event listeners
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('keydown', handleEscapeKey)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('keydown', handleEscapeKey)
+})
 
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
