@@ -37,20 +37,33 @@
           >
             🏠 {{ $t('nav.home') }}
           </NuxtLink>
-          <NuxtLink 
-            to="/reading" 
-            class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/reading' }"
-          >
-            📚 {{ $t('nav.reading') }}
-          </NuxtLink>
-          <NuxtLink 
-            to="/writing" 
-            class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/writing' }"
-          >
-            ✍️ {{ $t('nav.writing') }}
-          </NuxtLink>
+          <div class="relative group">
+            <button
+              type="button"
+              class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              :class="{ 'text-blue-600 bg-blue-50': ['/reading', '/writing'].includes($route.path) }"
+            >
+              📝 {{ $t('nav.practice') }}
+            </button>
+            <div
+              class="absolute left-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg hidden group-hover:block z-10"
+            >
+              <NuxtLink
+                to="/reading"
+                class="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md text-sm transition-colors"
+                :class="{ 'text-blue-600 bg-blue-50': $route.path === '/reading' }"
+              >
+                📚 {{ $t('nav.reading') }}
+              </NuxtLink>
+              <NuxtLink
+                to="/writing"
+                class="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md text-sm transition-colors"
+                :class="{ 'text-blue-600 bg-blue-50': $route.path === '/writing' }"
+              >
+                ✍️ {{ $t('nav.writing') }}
+              </NuxtLink>
+            </div>
+          </div>
           <NuxtLink
             to="/dashboard"
             class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
