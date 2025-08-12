@@ -11,7 +11,7 @@
           </div>
           <div>
             <h2 class="text-lg font-bold text-gray-900">Description</h2>
-            <p class="text-sm text-blue-600">{{ getTopicTypeLabel(topic.topicType) }} • A2 Level</p>
+            <p class="text-sm text-blue-600">{{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}</p>
           </div>
         </div>
 

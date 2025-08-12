@@ -60,12 +60,14 @@ export interface Session {
   timeSpent?: number
 }
 
+export type Difficulty = 'A2' | 'B1' | 'B2' | 'C1'
+
 // Writing Topic Types
 export interface WritingTopic {
   id: string
   title: string
-  topicType: WritingTopicType
-  difficulty: 'A2'
+  topicType: WritingTopicTypeA2 | WritingTopicTypeC1
+  difficulty: Difficulty
   estimatedTime: number // in minutes
   wordCount: {
     min: number
@@ -79,13 +81,21 @@ export interface WritingTopic {
   tips?: string[] // Optional writing tips
 }
 
-export type WritingTopicType = 
+export type WritingTopicTypeA2 = 
   | 'email'
   | 'letter'
   | 'essay'
   | 'form'
   | 'postcard'
   | 'note'
+
+export type WritingTopicTypeC1 = 
+  | 'report'
+  | 'review'
+  | 'proposal'
+  | 'article'
+  | 'note'
+  | 'form'
 
 export interface WritingProgress {
   topicId: string
@@ -105,7 +115,7 @@ export interface WritingSubmission {
   submittedAt: string
   timeSpent?: number // in seconds
   isDraft?: boolean
-  feedback?: WritingFeedbackModel
+  feedback: WritingFeedbackModel
 }
 
 export interface WritingFeedbackModel {

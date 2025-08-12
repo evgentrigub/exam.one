@@ -199,6 +199,6 @@ const showTips = ref(false)
 
 // Get model answer for current topic
 const modelAnswer = computed<ModelAnswer | undefined>(() => {
-  return getModelAnswer(props.topic.id)
+  return getModelAnswer(props.topic.id, props.topic.difficulty)
 })
 </script>
