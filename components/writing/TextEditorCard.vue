@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col overflow-hidden">
     <!-- Card Header -->
-    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200 rounded-t-xl">
+    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200 rounded-t-xl flex-shrink-0">
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
@@ -26,12 +26,11 @@
     </div>
 
     <!-- Text Editor -->
-    <div class="p-6 flex flex-col">
-      <div class="mb-4">
+    <div class="p-6 flex-1 flex flex-col overflow-y-auto min-h-0">
+      <div class="mb-4 flex-1 min-h-0">
         <textarea
           v-model="content"
-          rows="10"
-          class="w-full border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+          class="w-full h-full min-h-[120px] border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
           :class="textareaClasses"
           placeholder="Start writing your response here..."
           @input="updateWordCount"
@@ -123,7 +122,7 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex space-x-3">
+      <div class="flex space-x-3 flex-shrink-0 mt-auto">
         <button
           :disabled="!content.trim()"
           class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
