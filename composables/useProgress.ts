@@ -48,7 +48,7 @@ interface WritingStats {
   completionRate: number
 }
 
-interface WritingSession {
+export interface WritingSessionModel {
   topicId: string
   content: string
   wordCount: number
@@ -263,7 +263,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
   const saveWritingDraft = (topicId: string, content: string, wordCount: number) => {
     if (!import.meta.client) return
 
-    const session: WritingSession = {
+    const session: WritingSessionModel = {
       topicId,
       content,
       wordCount,
@@ -277,7 +277,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
   /**
    * Get writing draft/session for specific topic
    */
-  const getWritingSession = (topicId: string): WritingSession | null => {
+  const getWritingSession = (topicId: string): WritingSessionModel | null => {
     if (!import.meta.client) return null
     
     const data = localStorage.getItem(`${WRITING_SESSION_KEY}-${topicId}`)
@@ -295,10 +295,10 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
   /**
    * Get all writing sessions (drafts) for resume functionality
    */
-  const getAllWritingSessions = (): WritingSession[] => {
+  const getAllWritingSessions = (): WritingSessionModel[] => {
     if (!import.meta.client) return []
     
-    const sessions: WritingSession[] = []
+    const sessions: WritingSessionModel[] = []
     
     // Look for all writing session keys in localStorage
     for (let i = 0; i < localStorage.length; i++) {
@@ -312,7 +312,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
           }
         } catch (error) {
           // Skip invalid session data
-          console.warn(`Invalid writing session data for key: ${key}`)
+          console.warn(`Invalid writing session data for key: ${key}`, error)
         }
       }
     }

@@ -1,8 +1,9 @@
 import type { WritingTopic } from '~/utils/types'
 
 /**
- * Sample A2-level German writing topics for writing practice
- * Each topic is designed to match Goethe Institut A2 certification standards
+ * Sample German writing topics for writing practice
+ * Each topic is designed to match Goethe Institut certification standards
+ * A2 and C1 topics are from Goethe Institut A2 and C1 certification standards
  */
 export const writingTopics: WritingTopic[] = [
   {
@@ -243,6 +244,162 @@ export const writingTopics: WritingTopic[] = [
       'Mache die Einladung attraktiv und einladend',
       'Gib alle wichtigen Informationen an',
       'Verwende Formulierungen wie "Ich würde mich freuen, wenn..."'
+    ]
+  },
+
+  // C1 Level Topics
+  {
+    id: 'essay-digitalization-001',
+    title: 'Argumentativer Aufsatz - Digitalisierung und Gesellschaft',
+    topicType: 'essay',
+    difficulty: 'C1',
+    estimatedTime: 50,
+    wordCount: {
+      min: 280,
+      max: 350
+    },
+    category: ['Gesellschaft', 'Argumentation', 'Digitalisierung'],
+    createdAt: '2024-01-22',
+    description: 'Schreiben Sie einen argumentativen Aufsatz über die Auswirkungen der Digitalisierung auf die moderne Gesellschaft.',
+    prompt: 'Die fortschreitende Digitalisierung verändert unsere Gesellschaft grundlegend. Während einige diese Entwicklung als Fortschritt begrüßen, sehen andere darin eine Bedrohung für zwischenmenschliche Beziehungen und traditionelle Werte. Nehmen Sie zu dieser kontroversen Diskussion Stellung.',
+    requirements: [
+      'Schreiben Sie 280-350 Wörter',
+      'Entwickeln Sie eine klare Argumentation mit These',
+      'Präsentieren Sie mindestens zwei Argumente pro Standpunkt',
+      'Verwenden Sie konkrete Beispiele zur Veranschaulichung',
+      'Strukturieren Sie Ihren Text mit Einleitung, Hauptteil und Schluss',
+      'Nutzen Sie komplexe Satzstrukturen und Konnektoren',
+      'Beziehen Sie eine begründete persönliche Position'
+    ],
+    tips: [
+      'Verwenden Sie Konnektoren wie "einerseits...andererseits", "folglich", "demzufolge"',
+      'Strukturieren Sie Argumente logisch und nachvollziehbar',
+      'Differenzieren Sie zwischen verschiedenen Aspekten des Themas',
+      'Verwenden Sie den Konjunktiv für hypothetische Überlegungen'
+    ]
+  },
+
+  {
+    id: 'report-workplace-001',
+    title: 'Professioneller Bericht - Arbeitsplatz der Zukunft',
+    topicType: 'report',
+    difficulty: 'C1',
+    estimatedTime: 55,
+    wordCount: {
+      min: 300,
+      max: 380
+    },
+    category: ['Beruf', 'Zukunft', 'Analyse'],
+    createdAt: '2024-01-22',
+    description: 'Verfassen Sie einen professionellen Bericht über die Veränderungen am Arbeitsplatz und deren Auswirkungen auf Arbeitnehmer.',
+    prompt: 'Ihr Unternehmen plant eine umfassende Modernisierung der Arbeitsplätze, einschließlich Home-Office-Möglichkeiten, flexibler Arbeitszeiten und digitaler Kollaborationstools. Als Personalverantwortliche/r sollen Sie einen Bericht über die zu erwartenden Auswirkungen auf die Mitarbeiterzufriedenheit und Produktivität erstellen.',
+    requirements: [
+      'Schreiben Sie 300-380 Wörter',
+      'Gliedern Sie den Bericht in Einleitung, Analyse und Empfehlungen',
+      'Analysieren Sie Vor- und Nachteile der geplanten Änderungen',
+      'Berücksichtigen Sie verschiedene Mitarbeitergruppen',
+      'Formulieren Sie konkrete, umsetzbare Empfehlungen',
+      'Verwenden Sie objektive, sachliche Sprache',
+      'Integrieren Sie relevante Daten oder Statistiken (fiktiv)'
+    ],
+    tips: [
+      'Verwenden Sie professionelle Formulierungen und Fachterminologie',
+      'Strukturieren Sie mit Überschriften und Absätzen',
+      'Belegen Sie Aussagen mit logischen Argumenten',
+      'Verwenden Sie Passivkonstruktionen für Objektivität'
+    ]
+  },
+
+  {
+    id: 'review-literature-001',
+    title: 'Kritische Rezension - Zeitgenössische Literatur',
+    topicType: 'review',
+    difficulty: 'C1',
+    estimatedTime: 45,
+    wordCount: {
+      min: 260,
+      max: 320
+    },
+    category: ['Literatur', 'Kritik', 'Kultur'],
+    createdAt: '2024-01-22',
+    description: 'Schreiben Sie eine kritische Rezension eines zeitgenössischen deutschen Romans.',
+    prompt: 'Sie haben kürzlich den Roman "Tschick" von Wolfgang Herrndorf gelesen, der als wichtiges Werk der deutschen Gegenwartsliteratur gilt. Verfassen Sie eine kritische Rezension für eine Literaturzeitschrift, in der Sie das Werk analysieren und bewerten.',
+    requirements: [
+      'Schreiben Sie 260-320 Wörter',
+      'Fassen Sie die Handlung kurz zusammen (ohne zu viel zu verraten)',
+      'Analysieren Sie Stil, Sprache und literarische Mittel',
+      'Bewerten Sie die Charakterentwicklung und Themen',
+      'Diskutieren Sie die gesellschaftliche Relevanz des Werks',
+      'Formulieren Sie eine begründete Gesamtbewertung',
+      'Verwenden Sie literaturwissenschaftliche Terminologie'
+    ],
+    tips: [
+      'Balance zwischen Beschreibung und kritischer Analyse',
+      'Verwenden Sie präzise literarische Fachbegriffe',
+      'Stützen Sie Bewertungen auf konkrete Textbeispiele',
+      'Berücksichtigen Sie den literarischen Kontext'
+    ]
+  },
+
+  {
+    id: 'proposal-environment-001',
+    title: 'Formeller Vorschlag - Umweltschutzinitiative',
+    topicType: 'proposal',
+    difficulty: 'C1',
+    estimatedTime: 60,
+    wordCount: {
+      min: 320,
+      max: 400
+    },
+    category: ['Umwelt', 'Initiative', 'Formell'],
+    createdAt: '2024-01-22',
+    description: 'Erstellen Sie einen formellen Vorschlag für eine Umweltschutzinitiative in Ihrer Gemeinde.',
+    prompt: 'Die Stadtverwaltung Ihrer Gemeinde hat einen Wettbewerb für innovative Umweltschutzprojekte ausgeschrieben. Entwickeln Sie einen detaillierten Vorschlag für ein Projekt, das zur Verbesserung der lokalen Umweltsituation beitragen könnte.',
+    requirements: [
+      'Schreiben Sie 320-400 Wörter',
+      'Strukturieren Sie den Vorschlag mit klaren Abschnitten',
+      'Definieren Sie das Umweltproblem und dessen Relevanz',
+      'Beschreiben Sie Ihre Lösungsidee detailliert',
+      'Erläutern Sie die erwarteten positiven Auswirkungen',
+      'Diskutieren Sie mögliche Herausforderungen und Lösungsansätze',
+      'Verwenden Sie überzeugende, aber sachliche Argumentation'
+    ],
+    tips: [
+      'Beginnen Sie mit einer prägnanten Problemdarstellung',
+      'Verwenden Sie konkrete, messbare Ziele',
+      'Antizipieren Sie mögliche Einwände und Gegenargumente',
+      'Schließen Sie mit einem überzeugenden Appell ab'
+    ]
+  },
+
+  {
+    id: 'article-education-001',
+    title: 'Meinungsartikel - Bildungssystem im Wandel',
+    topicType: 'article',
+    difficulty: 'C1',
+    estimatedTime: 50,
+    wordCount: {
+      min: 290,
+      max: 360
+    },
+    category: ['Bildung', 'Meinung', 'Gesellschaft'],
+    createdAt: '2024-01-22',
+    description: 'Verfassen Sie einen Meinungsartikel über notwendige Reformen im deutschen Bildungssystem.',
+    prompt: 'Das deutsche Bildungssystem steht vor großen Herausforderungen: Lehrermangel, veraltete Lehrpläne, unzureichende Digitalisierung und wachsende Bildungsungleichheit. Schreiben Sie einen Meinungsartikel für eine überregionale Zeitung, in dem Sie Ihre Sicht auf die dringendsten Probleme und mögliche Lösungsansätze darlegen.',
+    requirements: [
+      'Schreiben Sie 290-360 Wörter',
+      'Formulieren Sie eine klare, persönliche Meinung',
+      'Identifizieren Sie die wichtigsten Problembereiche',
+      'Entwickeln Sie realistische Lösungsvorschläge',
+      'Verwenden Sie aktuelle Beispiele und Bezüge',
+      'Berücksichtigen Sie verschiedene Perspektiven',
+      'Schreiben Sie in einem engagierten, aber sachlichen Ton'
+    ],
+    tips: [
+      'Verwenden Sie eine einprägsame Einleitung und einen starken Schluss',
+      'Variieren Sie Satzlänge und -struktur für bessere Lesbarkeit',
+      'Nutzen Sie rhetorische Mittel sparsam aber wirkungsvoll',
+      'Bleiben Sie trotz persönlicher Meinung respektvoll und differenziert'
     ]
   }
 ]

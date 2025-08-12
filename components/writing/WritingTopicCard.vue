@@ -141,7 +141,11 @@ const topicTypeStyles = {
   essay: 'bg-green-100 text-green-800',
   form: 'bg-orange-100 text-orange-800',
   postcard: 'bg-pink-100 text-pink-800',
-  note: 'bg-yellow-100 text-yellow-800'
+  note: 'bg-yellow-100 text-yellow-800',
+  report: 'bg-red-100 text-red-800',
+  review: 'bg-blue-100 text-blue-800',
+  proposal: 'bg-green-100 text-green-800',
+  article: 'bg-orange-100 text-orange-800',
 }
 
 // Topic type labels in German

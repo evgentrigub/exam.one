@@ -7,7 +7,7 @@
           ✍️ Writing Practice
         </h1>
         <p class="text-gray-600">
-          Practice German writing with authentic A2-level topics and prompts
+          Practice German writing with authentic topics and prompts
         </p>
       </header>
 
@@ -173,8 +173,8 @@
       <div class="bg-white border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between">
           <button 
-            @click="closeWritingInterface"
             class="inline-flex items-center text-gray-600 hover:text-gray-700 font-medium transition-colors"
+            @click="closeWritingInterface"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -208,12 +208,13 @@ import type { WritingTopic } from '../utils/types'
 import { useProgress } from '../composables/useProgress'
 import WritingSession from '../components/writing/WritingSession.vue'
 import WritingTopicCard from '../components/writing/WritingTopicCard.vue'
+import type { WritingSessionModel } from '../composables/useProgress'
 
 // Page metadata
 useHead({
   title: 'Writing Practice - German Writing Trainer',
   meta: [
-    { name: 'description', content: 'Practice German writing with authentic A2-level topics and prompts' }
+    { name: 'description', content: 'Practice German writing with authentic topics and prompts' }
   ]
 })
 
@@ -236,7 +237,7 @@ const sortDirection = ref<'asc' | 'desc'>('asc')
 const selectedTopic = ref<WritingTopic | null>(null)
 
 // Resume functionality (Stage 11)
-const resumeSessions = ref<any[]>([])
+const resumeSessions = ref<WritingSessionModel[]>([])
 const showAllDrafts = ref(false)
 
 // Check for writing drafts on mount
