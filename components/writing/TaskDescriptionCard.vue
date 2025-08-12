@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col overflow-hidden">
     <!-- Card Header -->
-    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-gray-200 rounded-t-xl">
+    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-gray-200 rounded-t-xl flex-shrink-0">
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
@@ -47,7 +47,7 @@
     </div>
 
     <!-- Card Content -->
-    <div class="p-6 flex-1">
+    <div class="p-6 flex-1 overflow-y-auto min-h-0">
       <!-- Topic Title -->
       <div class="mb-4">
         <h3 class="text-xl font-bold text-gray-900 mb-2">{{ topic.title }}</h3>

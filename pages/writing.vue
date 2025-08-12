@@ -191,7 +191,7 @@
       </div>
 
       <!-- Writing Session Content -->
-      <div class="h-full" style="height: calc(100vh - 73px)">
+      <div class="h-full overflow-y-auto" style="height: calc(100vh - 73px)">
         <WritingSession 
           :topic="selectedTopic"
           @exit="closeWritingInterface"

@@ -1,8 +1,45 @@
 <template>
-  <div class="flex flex-col min-h-full">
-    <!-- New Layout: Top row (2 equal cards) + Bottom row (full-width editor) -->
+  <div class="flex flex-col h-full">
+    <!-- Layout: Changes based on writing mode -->
     <div class="max-w-7xl mx-auto w-full p-6 flex-1">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Model Help Mode: 2x2 Grid -->
+      <div v-if="currentMode === 'model-help'" class="grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-6 min-h-[600px]" style="grid-template-rows: 1fr 1fr; height: max(600px, calc(100vh - 200px));">
+        <!-- Top Left: Task Description -->
+        <div class="h-full">
+          <TaskDescriptionCard 
+            :topic="topic" 
+            :current-mode="currentMode"
+            @mode-change="handleModeChange"
+          />
+        </div>
+
+        <!-- Top Right: Instructions -->
+        <div class="h-full">
+          <InstructionsCard 
+            :topic="topic" 
+            :current-mode="currentMode"
+            :timer-display="timerDisplay"
+          />
+        </div>
+
+        <!-- Bottom Left: Text Editor -->
+        <div class="h-full">
+          <TextEditorCard 
+            :topic="topic"
+            :initial-content="currentDraft"
+            @submit="handleSubmit"
+            @save-draft="handleSaveDraft"
+          />
+        </div>
+
+        <!-- Bottom Right: Model Answer -->
+        <div class="h-full">
+          <ModelAnswerCard :topic="topic" />
+        </div>
+      </div>
+
+      <!-- Quick/Challenge Mode: Original Layout -->
+      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Top Left: Task Description -->
         <div class="lg:col-span-1 h-full">
           <TaskDescriptionCard 
@@ -71,14 +108,28 @@
 
         <!-- Active Card Content -->
         <div>
-          <TaskDescriptionCard v-if="activeMobileTab === 0" :topic="topic" />
-          <InstructionsCard v-if="activeMobileTab === 1" :topic="topic" />
+          <TaskDescriptionCard 
+            v-if="activeMobileTab === 0" 
+            :topic="topic"
+            :current-mode="currentMode"
+            @mode-change="handleModeChange"
+          />
+          <InstructionsCard 
+            v-if="activeMobileTab === 1" 
+            :topic="topic"
+            :current-mode="currentMode"
+            :timer-display="timerDisplay"
+          />
           <TextEditorCard 
             v-if="activeMobileTab === 2"
             :topic="topic"
             :initial-content="currentDraft"
             @submit="handleSubmit"
             @save-draft="handleSaveDraft"
+          />
+          <ModelAnswerCard 
+            v-if="activeMobileTab === 3 && currentMode === 'model-help'"
+            :topic="topic"
           />
         </div>
       </div>
@@ -178,6 +229,7 @@ import TaskDescriptionCard from './TaskDescriptionCard.vue'
 import InstructionsCard from './InstructionsCard.vue'
 import TextEditorCard from './TextEditorCard.vue'
 import WritingFeedback from './WritingFeedback.vue'
+import ModelAnswerCard from './ModelAnswerCard.vue'
 
 interface Props {
   topic: WritingTopic
@@ -216,24 +268,37 @@ const submissionResults = ref<{
   analysisResult?: TextAnalysisResult | undefined
 } | null>(null)
 
-// Mobile tab configuration
-const mobileTabs = [
-  {
-    id: 'description',
-    label: 'Task',
-    icon: 'svg' // Will be replaced with actual icon component
-  },
-  {
-    id: 'instructions',
-    label: 'Instructions',
-    icon: 'svg'
-  },
-  {
-    id: 'editor',
-    label: 'Write',
-    icon: 'svg'
+// Mobile tab configuration (dynamic based on mode)
+const mobileTabs = computed(() => {
+  const baseTabs = [
+    {
+      id: 'description',
+      label: 'Task',
+      icon: 'svg'
+    },
+    {
+      id: 'instructions',
+      label: 'Instructions',
+      icon: 'svg'
+    },
+    {
+      id: 'editor',
+      label: 'Write',
+      icon: 'svg'
+    }
+  ]
+
+  // Add Model Answer tab in Model Help mode
+  if (currentMode.value === 'model-help') {
+    baseTabs.push({
+      id: 'model',
+      label: 'Model',
+      icon: 'svg'
+    })
   }
-]
+
+  return baseTabs
+})
 
 // Methods
 function handleSaveDraft(content: string, wordCount: number) {
@@ -298,6 +363,8 @@ function formatTime(seconds: number): string {
 // Handle writing mode change
 function handleModeChange(mode: WritingMode) {
   changeMode(mode)
+  // Reset mobile tab when switching modes to avoid index issues
+  activeMobileTab.value = 0
 }
 
 // Load any existing draft on mount
