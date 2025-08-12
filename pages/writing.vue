@@ -203,6 +203,8 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '~/stores/settings'
 import { writingTopics } from '../data/writing-topics'
 import type { WritingTopic } from '../utils/types'
 import { useProgress } from '../composables/useProgress'
@@ -236,6 +238,10 @@ const selectedSort = ref<string>('title')
 const sortDirection = ref<'asc' | 'desc'>('asc')
 const selectedTopic = ref<WritingTopic | null>(null)
 
+// Global settings (exam level)
+const settingsStore = useSettingsStore()
+const { examLevel } = storeToRefs(settingsStore)
+
 // Resume functionality (Stage 11)
 const resumeSessions = ref<WritingSessionModel[]>([])
 const showAllDrafts = ref(false)
@@ -248,6 +254,9 @@ onMounted(() => {
 // Computed properties
 const filteredTopics = computed(() => {
   let topics = writingTopics
+
+  const difficulty = examLevel.value
+  topics = topics.filter(topic => topic.difficulty === difficulty)
   
   // Filter by topic type
   if (selectedTypeFilter.value !== 'all') {
