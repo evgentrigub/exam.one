@@ -196,17 +196,18 @@ const wordCountPercentage = computed(() => {
   return Math.round((wordCount.value / target) * 100)
 })
 
+// Temporary: Submittable if word count is between 10 and 20
+// const isSubmittable = computed(() => {
+//   return wordCount.value >= props.topic.wordCount.min && 
+//          wordCount.value <= props.topic.wordCount.max &&
+//          content.value.trim().length > 0
+// })
+
 const isSubmittable = computed(() => {
-  return wordCount.value >= props.topic.wordCount.min && 
+  return wordCount.value >= 10 && 
          wordCount.value <= props.topic.wordCount.max &&
          content.value.trim().length > 0
 })
-
-// const isSubmittable = computed(() => {
-//   return wordCount.value >= 10 && 
-//          wordCount.value <= 20 &&
-//          content.value.trim().length > 0
-// })
 
 
 const wordCountColor = computed(() => {

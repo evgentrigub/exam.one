@@ -31,7 +31,7 @@
       <div class="mb-4">
         <h4 class="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Your Task</h4>
         <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-400">
-          <p class="text-gray-800 leading-relaxed font-medium text-sm">{{ topic.prompt }}</p>
+          <p class="text-gray-800 leading-relaxed font-medium text-sm">{{ topic.task }}</p>
         </div>
       </div>
 

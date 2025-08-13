@@ -6,7 +6,15 @@ import { defineStore } from 'pinia'
  * Persists to localStorage via VueUse so it works fully offline.
  */
 export const useSettingsStore = defineStore('settings', () => {
-  const examLevel = useLocalStorage<Difficulty>('examLevel', 'A2')
+  const examLevel = useLocalStorage<'A2' | 'C1'>(
+    'examLevel',
+    'A2',
+    {
+      // Defer reading/writing until client mount to avoid SSR hydration
+      // overwriting an existing localStorage value with the default.
+      initOnMounted: true,
+    },
+  )
 
   return {
     examLevel,
