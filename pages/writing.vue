@@ -211,6 +211,7 @@ import { useProgress } from '../composables/useProgress'
 import WritingSession from '../components/writing/WritingSession.vue'
 import WritingTopicCard from '../components/writing/WritingTopicCard.vue'
 import type { WritingSessionModel } from '../composables/useProgress'
+import { useWritingReview } from '~/composables/useWritingReview'
 
 // Page metadata
 useHead({
@@ -245,6 +246,9 @@ const { examLevel } = storeToRefs(settingsStore)
 // Resume functionality (Stage 11)
 const resumeSessions = ref<WritingSessionModel[]>([])
 const showAllDrafts = ref(false)
+
+// AI review (mocked OpenAI) integration
+const { requestReview } = useWritingReview()
 
 // Check for writing drafts on mount
 onMounted(() => {
@@ -320,7 +324,7 @@ function resetFilters() {
   sortDirection.value = 'asc'
 }
 
-function handleWritingComplete(topicId: string, content: string, wordCount: number, timeSpent: number) {
+async function handleWritingComplete(topicId: string, content: string, wordCount: number, timeSpent: number) {
   // Writing submission is already saved in WritingSession component (Stage 11)
   // This function can be used for additional UI updates if needed
   console.log('Writing completed:', {
@@ -333,6 +337,13 @@ function handleWritingComplete(topicId: string, content: string, wordCount: numb
   // Refresh resume sessions after completion
   resumeSessions.value = getAllWritingSessions()
   
+  // Trigger AI review request (mocked) using topic definition
+  const topic = writingTopics.find(t => t.id === topicId)
+  if (topic) {
+    console.log("🚀 ~ Requesting review for topic:", topic)
+    await requestReview(topic as WritingTopic, content)
+  }
+
   // Force reactivity update for completion indicators
   nextTick(() => {
     // The topic cards will automatically show completion status

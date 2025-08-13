@@ -19,7 +19,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Freunde', 'Alltag', 'Persönlich'],
     createdAt: '2024-01-22',
     description: 'Schreibe eine persönliche E-Mail an einen Freund oder eine Freundin.',
-    prompt: 'Dein Freund Max hat dir geschrieben, dass er nächste Woche Geburtstag hat und eine kleine Party macht. Schreibe ihm eine E-Mail zurück.',
+    task: 'Dein Freund Max hat dir geschrieben, dass er nächste Woche Geburtstag hat und eine kleine Party macht. Schreibe ihm eine E-Mail zurück.',
     requirements: [
       'Schreibe 80-120 Wörter',
       'Verwende eine passende Anrede und einen passenden Gruß',
@@ -48,7 +48,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Hotel', 'Reisen', 'Formell'],
     createdAt: '2024-01-22',
     description: 'Schreibe einen formellen Brief an ein Hotel für eine Zimmerreservierung.',
-    prompt: 'Du möchtest im Hotel "Zur schönen Aussicht" in München ein Zimmer für deinen Urlaub reservieren. Schreibe einen Brief an das Hotel.',
+    task: 'Du möchtest im Hotel "Zur schönen Aussicht" in München ein Zimmer für deinen Urlaub reservieren. Schreibe einen Brief an das Hotel.',
     requirements: [
       'Schreibe 100-150 Wörter',
       'Verwende eine formelle Anrede ("Sehr geehrte Damen und Herren")',
@@ -78,7 +78,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Stadt', 'Beschreibung', 'Persönlich'],
     createdAt: '2024-01-22',
     description: 'Schreibe einen kurzen Aufsatz über deine Heimatstadt oder eine Stadt, die du gut kennst.',
-    prompt: 'Beschreibe deine Heimatstadt. Was ist besonders an dieser Stadt? Was gefällt dir dort? Was können Touristen dort machen?',
+    task: 'Beschreibe deine Heimatstadt. Was ist besonders an dieser Stadt? Was gefällt dir dort? Was können Touristen dort machen?',
     requirements: [
       'Schreibe 120-180 Wörter',
       'Beschreibe die Lage der Stadt',
@@ -108,7 +108,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Arbeit', 'Bewerbung', 'Formell'],
     createdAt: '2024-01-22',
     description: 'Schreibe eine einfache Bewerbung für eine Teilzeitstelle.',
-    prompt: 'Du hast eine Stellenanzeige für einen Job als Verkäufer/in in einem Buchladen gesehen. Schreibe eine kurze Bewerbung.',
+    task: 'Du hast eine Stellenanzeige für einen Job als Verkäufer/in in einem Buchladen gesehen. Schreibe eine kurze Bewerbung.',
     requirements: [
       'Schreibe 90-140 Wörter',
       'Erwähne, für welche Stelle du dich bewirbst',
@@ -139,7 +139,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Urlaub', 'Familie', 'Persönlich'],
     createdAt: '2024-01-22',
     description: 'Schreibe eine Postkarte aus dem Urlaub an deine Familie.',
-    prompt: 'Du machst Urlaub am Meer in Italien. Schreibe eine Postkarte an deine Familie zu Hause.',
+    task: 'Du machst Urlaub am Meer in Italien. Schreibe eine Postkarte an deine Familie zu Hause.',
     requirements: [
       'Schreibe 60-100 Wörter',
       'Beschreibe, wo du bist und wie das Wetter ist',
@@ -169,7 +169,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Beschwerde', 'Service', 'Formell'],
     createdAt: '2024-01-22',
     description: 'Schreibe eine höfliche Beschwerde-E-Mail über ein Problem.',
-    prompt: 'Du hast online ein Buch bestellt, aber das falsche Buch bekommen. Schreibe eine E-Mail an den Online-Shop.',
+    task: 'Du hast online ein Buch bestellt, aber das falsche Buch bekommen. Schreibe eine E-Mail an den Online-Shop.',
     requirements: [
       'Schreibe 100-150 Wörter',
       'Erkläre das Problem klar und höflich',
@@ -199,7 +199,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Wohnen', 'Alltag', 'Informell'],
     createdAt: '2024-01-22',
     description: 'Schreibe eine kurze Nachricht an deinen Mitbewohner.',
-    prompt: 'Du musst für zwei Tage verreisen. Schreibe eine Nachricht an deinen Mitbewohner und bitte ihn, sich um deine Pflanzen zu kümmern.',
+    task: 'Du musst für zwei Tage verreisen. Schreibe eine Nachricht an deinen Mitbewohner und bitte ihn, sich um deine Pflanzen zu kümmern.',
     requirements: [
       'Schreibe 40-80 Wörter',
       'Erkläre, wann du wegfährst und wann du zurückkommst',
@@ -229,7 +229,7 @@ export const writingTopics: WritingTopic[] = [
     category: ['Einladung', 'Feier', 'Persönlich'],
     createdAt: '2024-01-22',
     description: 'Schreibe einen Einladungsbrief für eine besondere Feier.',
-    prompt: 'Du machst eine Einweihungsfeier für deine neue Wohnung. Schreibe einen Brief an deine Freunde und lade sie ein.',
+    task: 'Du machst eine Einweihungsfeier für deine neue Wohnung. Schreibe einen Brief an deine Freunde und lade sie ein.',
     requirements: [
       'Schreibe 80-120 Wörter',
       'Erkläre den Anlass (neue Wohnung)',
@@ -255,15 +255,15 @@ export const writingTopics: WritingTopic[] = [
     difficulty: 'C1',
     estimatedTime: 50,
     wordCount: {
-      min: 280,
-      max: 350
+      min: 230,
+      max: 300
     },
     category: ['Gesellschaft', 'Argumentation', 'Digitalisierung'],
     createdAt: '2024-01-22',
     description: 'Schreiben Sie einen argumentativen Aufsatz über die Auswirkungen der Digitalisierung auf die moderne Gesellschaft.',
-    prompt: 'Die fortschreitende Digitalisierung verändert unsere Gesellschaft grundlegend. Während einige diese Entwicklung als Fortschritt begrüßen, sehen andere darin eine Bedrohung für zwischenmenschliche Beziehungen und traditionelle Werte. Nehmen Sie zu dieser kontroversen Diskussion Stellung.',
+    task: 'Die fortschreitende Digitalisierung verändert unsere Gesellschaft grundlegend. Während einige diese Entwicklung als Fortschritt begrüßen, sehen andere darin eine Bedrohung für zwischenmenschliche Beziehungen und traditionelle Werte. Nehmen Sie zu dieser kontroversen Diskussion Stellung.',
     requirements: [
-      'Schreiben Sie 280-350 Wörter',
+      'Schreiben Sie 230',
       'Entwickeln Sie eine klare Argumentation mit These',
       'Präsentieren Sie mindestens zwei Argumente pro Standpunkt',
       'Verwenden Sie konkrete Beispiele zur Veranschaulichung',
@@ -286,13 +286,13 @@ export const writingTopics: WritingTopic[] = [
     difficulty: 'C1',
     estimatedTime: 55,
     wordCount: {
-      min: 300,
-      max: 380
+      min: 230,
+      max: 300
     },
     category: ['Beruf', 'Zukunft', 'Analyse'],
     createdAt: '2024-01-22',
     description: 'Verfassen Sie einen professionellen Bericht über die Veränderungen am Arbeitsplatz und deren Auswirkungen auf Arbeitnehmer.',
-    prompt: 'Ihr Unternehmen plant eine umfassende Modernisierung der Arbeitsplätze, einschließlich Home-Office-Möglichkeiten, flexibler Arbeitszeiten und digitaler Kollaborationstools. Als Personalverantwortliche/r sollen Sie einen Bericht über die zu erwartenden Auswirkungen auf die Mitarbeiterzufriedenheit und Produktivität erstellen.',
+    task: 'Ihr Unternehmen plant eine umfassende Modernisierung der Arbeitsplätze, einschließlich Home-Office-Möglichkeiten, flexibler Arbeitszeiten und digitaler Kollaborationstools. Als Personalverantwortliche/r sollen Sie einen Bericht über die zu erwartenden Auswirkungen auf die Mitarbeiterzufriedenheit und Produktivität erstellen.',
     requirements: [
       'Schreiben Sie 300-380 Wörter',
       'Gliedern Sie den Bericht in Einleitung, Analyse und Empfehlungen',
@@ -317,13 +317,13 @@ export const writingTopics: WritingTopic[] = [
     difficulty: 'C1',
     estimatedTime: 45,
     wordCount: {
-      min: 260,
-      max: 320
+      min: 230,
+      max: 300
     },
     category: ['Literatur', 'Kritik', 'Kultur'],
     createdAt: '2024-01-22',
     description: 'Schreiben Sie eine kritische Rezension eines zeitgenössischen deutschen Romans.',
-    prompt: 'Sie haben kürzlich den Roman "Tschick" von Wolfgang Herrndorf gelesen, der als wichtiges Werk der deutschen Gegenwartsliteratur gilt. Verfassen Sie eine kritische Rezension für eine Literaturzeitschrift, in der Sie das Werk analysieren und bewerten.',
+    task: 'Sie haben kürzlich den Roman "Tschick" von Wolfgang Herrndorf gelesen, der als wichtiges Werk der deutschen Gegenwartsliteratur gilt. Verfassen Sie eine kritische Rezension für eine Literaturzeitschrift, in der Sie das Werk analysieren und bewerten.',
     requirements: [
       'Schreiben Sie 260-320 Wörter',
       'Fassen Sie die Handlung kurz zusammen (ohne zu viel zu verraten)',
@@ -348,13 +348,13 @@ export const writingTopics: WritingTopic[] = [
     difficulty: 'C1',
     estimatedTime: 60,
     wordCount: {
-      min: 320,
-      max: 400
+      min: 230,
+      max: 300
     },
     category: ['Umwelt', 'Initiative', 'Formell'],
     createdAt: '2024-01-22',
     description: 'Erstellen Sie einen formellen Vorschlag für eine Umweltschutzinitiative in Ihrer Gemeinde.',
-    prompt: 'Die Stadtverwaltung Ihrer Gemeinde hat einen Wettbewerb für innovative Umweltschutzprojekte ausgeschrieben. Entwickeln Sie einen detaillierten Vorschlag für ein Projekt, das zur Verbesserung der lokalen Umweltsituation beitragen könnte.',
+    task: 'Die Stadtverwaltung Ihrer Gemeinde hat einen Wettbewerb für innovative Umweltschutzprojekte ausgeschrieben. Entwickeln Sie einen detaillierten Vorschlag für ein Projekt, das zur Verbesserung der lokalen Umweltsituation beitragen könnte.',
     requirements: [
       'Schreiben Sie 320-400 Wörter',
       'Strukturieren Sie den Vorschlag mit klaren Abschnitten',
@@ -379,13 +379,13 @@ export const writingTopics: WritingTopic[] = [
     difficulty: 'C1',
     estimatedTime: 50,
     wordCount: {
-      min: 290,
-      max: 360
+      min: 230,
+      max: 300
     },
     category: ['Bildung', 'Meinung', 'Gesellschaft'],
     createdAt: '2024-01-22',
     description: 'Verfassen Sie einen Meinungsartikel über notwendige Reformen im deutschen Bildungssystem.',
-    prompt: 'Das deutsche Bildungssystem steht vor großen Herausforderungen: Lehrermangel, veraltete Lehrpläne, unzureichende Digitalisierung und wachsende Bildungsungleichheit. Schreiben Sie einen Meinungsartikel für eine überregionale Zeitung, in dem Sie Ihre Sicht auf die dringendsten Probleme und mögliche Lösungsansätze darlegen.',
+    task: 'Das deutsche Bildungssystem steht vor großen Herausforderungen: Lehrermangel, veraltete Lehrpläne, unzureichende Digitalisierung und wachsende Bildungsungleichheit. Schreiben Sie einen Meinungsartikel für eine überregionale Zeitung, in dem Sie Ihre Sicht auf die dringendsten Probleme und mögliche Lösungsansätze darlegen.',
     requirements: [
       'Schreiben Sie 290-360 Wörter',
       'Formulieren Sie eine klare, persönliche Meinung',

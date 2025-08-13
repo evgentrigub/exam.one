@@ -193,7 +193,8 @@
           <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <h3 class="font-semibold text-green-800 mb-2">Gut gemacht!</h3>
             <p class="text-green-700 text-sm">
-              Du hast diese Schreibaufgabe erfolgreich abgeschlossen. Dein Text wurde gespeichert und du kannst ihn jederzeit in deinem Dashboard ansehen.
+              You have successfully completed this writing task. 
+              Your text was sent for review and once it is done, you can open it in the writing page.
             </p>
           </div>
 
@@ -203,13 +204,13 @@
               class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               @click="tryAnotherTopic"
             >
-              Neues Thema versuchen
+              Back to writing
             </button>
             <button
               class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
               @click="viewDashboard"
             >
-              Dashboard anzeigen
+              Check your progress
             </button>
           </div>
         </div>
@@ -319,7 +320,6 @@ function handleSaveDraft(content: string, wordCount: number) {
 }
 
 function handleSubmit(content: string, wordCount: number, timeSpent: number) {
-  // Stage 12: Analyze text and create feedback
   const analysisResult = analyzeGermanText(content, props.topic)
   const feedback = createWritingFeedback(analysisResult, props.topic)
   

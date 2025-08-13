@@ -76,7 +76,7 @@ export interface WritingTopic {
   category: string[]
   createdAt: string
   description: string // What type of text they should write
-  prompt: string // The actual writing prompt/task
+  task: string // The actual writing prompt/task
   requirements: string[] // Specific requirements (format, length, etc.)
   tips?: string[] // Optional writing tips
 }
@@ -125,3 +125,38 @@ export interface WritingFeedbackModel {
   suggestions: string[]
   overallScore: number // 1-5 scale
 } 
+
+// --- AI Review (C1 – JSON output from model) ---
+export type TeilRuleApplied = 'none' | 'E_zero_rule'
+
+export interface AiReviewCriteriaItem {
+  grade: string
+  points: number
+  comment: string
+}
+
+export interface AiReviewCriteria {
+  aufgabenerfuellung: AiReviewCriteriaItem
+  kohaerenz: AiReviewCriteriaItem
+  wortschatz: AiReviewCriteriaItem
+  strukturen: AiReviewCriteriaItem
+}
+
+export interface AiReviewExampleItem {
+  error: string
+  correction: string
+  rule: string
+}
+
+export interface AiReviewData {
+  teil: number
+  word_count: number
+  required_word_count: number
+  criteria: AiReviewCriteria
+  teil_points: number
+  teil_rule_applied: TeilRuleApplied
+  passed_module: boolean
+  priority_fixes: string[]
+  examples: AiReviewExampleItem[]
+  report: string
+}
