@@ -74,7 +74,7 @@
       </div>
 
       <!-- Writing Tips (if available) -->
-      <div v-if="topic.tips && topic.tips.length > 0" class="bg-yellow-50 rounded-lg p-4">
+      <div v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')" class="bg-yellow-50 rounded-lg p-4">
         <h4 class="text-sm font-semibold text-yellow-800 mb-2 flex items-center">
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
@@ -82,7 +82,7 @@
           Writing Tips
         </h4>
         <ul class="space-y-1">
-          <li v-for="tip in topic.tips" :key="tip" class="flex items-center text-sm text-yellow-700">
+          <li v-for="tip in writingTips" :key="tip" class="flex items-center text-sm text-yellow-700">
             <span class="text-yellow-500 mr-2 flex-shrink-0">•</span>
             <span>{{ tip }}</span>
           </li>
@@ -95,13 +95,14 @@
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
 import type { WritingMode } from '~/composables/useWritingMode'
+import { WritingTipsC1Teil1, WritingTipsC1Teil2 } from '~/data/writing-topics'
 
 interface Props {
   topic: WritingTopic
   currentMode?: WritingMode
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 defineEmits<{
   'mode-change': [mode: WritingMode]
@@ -132,6 +133,10 @@ const topicTypeLabels = {
   postcard: 'Postkarte',
   note: 'Notiz'
 }
+
+const writingTips = computed(() => {
+  return props.topic.testingPart === 1 ? WritingTipsC1Teil1 : WritingTipsC1Teil2
+})
 
 function getTopicTypeLabel(type: string) {
   return topicTypeLabels[type as keyof typeof topicTypeLabels] || type

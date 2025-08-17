@@ -5,6 +5,7 @@
 import type { Difficulty } from '~/utils/types'
 
 export interface ModelAnswer {
+  id: string
   topicId: string
   content: string
   wordCount: number
@@ -18,6 +19,7 @@ export interface ModelAnswer {
 
 export const modelAnswersA2: ModelAnswer[] = [
   {
+    id: '1',
     topicId: 'email-friend-001',
     content: `Lieber Max,
 
@@ -45,6 +47,7 @@ Anna`,
   },
 
   {
+    id: '2',
     topicId: 'letter-formal-001', 
     content: `Sehr geehrte Damen und Herren,
 
@@ -78,6 +81,7 @@ E-Mail: thomas.mueller@email.com`,
   },
 
   {
+    id: '3',
     topicId: 'essay-hometown-001',
     content: `Meine Heimatstadt Hamburg
 
@@ -103,6 +107,7 @@ Deshalb liebe ich meine Stadt: Hamburg ist lebendig, vielfältig und hat für je
   },
 
   {
+    id: '4',
     topicId: 'form-application-001',
     content: `Sehr geehrte Damen und Herren,
 
@@ -133,6 +138,7 @@ Maria Kowalski`,
   },
 
   {
+    id: '5',
     topicId: 'postcard-vacation-001',
     content: `Ciao aus Italien!
 
@@ -166,6 +172,7 @@ Musterstraße 15
   },
 
   {
+    id: '6',
     topicId: 'email-complaint-001',
     content: `Sehr geehrte Damen und Herren,
 
@@ -198,6 +205,7 @@ Stefan Weber`,
   },
 
   {
+    id: '7',
     topicId: 'note-roommate-001',
     content: `Hallo Lisa,
 
@@ -227,6 +235,7 @@ Tim`,
   },
 
   {
+    id: '8',
     topicId: 'letter-invitation-001',
     content: `Liebe Freunde,
 
@@ -265,185 +274,73 @@ Tel: 0177-1234567`,
   }
 ]
 
-export const modelAnswersC1: ModelAnswer[] = [
+export const modelAnswersС1: ModelAnswer[] = [
   {
-    topicId: 'essay-digitalization-001',
-    content: `Digitalisierung und Gesellschaft – Chancen nutzen, Risiken begrenzen
+    id: '9',
+    topicId: "1",
+    content: `KI am Arbeitsplatz: Automatisieren mit Augenmaß
 
-Die fortschreitende Digitalisierung prägt nahezu alle Lebensbereiche: Arbeit, Bildung, Gesundheit, Konsum und soziale Beziehungen. Befürworter betonen zu Recht die gewaltigen Effizienzgewinne und die neue Teilhabe, die aus niedrigeren Zugangshürden entstehen. Gleichzeitig mehren sich kritische Stimmen, die den Verlust von Privatheit, die Verbreitung von Desinformation und die wachsende Abhängigkeit von Plattformmonopolen problematisieren.
+In meinem Arbeitsalltag erweist sich KI besonders bei repetitiven Routinen als hilfreich: Entwürfe für Standardmails, Priorisierung von Tickets, schnelle Auswertung großer Textmengen. Grenzen sehe ich dort, wo Kontextwissen, Verantwortung oder Empathie entscheidend sind – etwa bei heiklen Kundengesprächen, Beurteilungen oder finalen Freigaben.
 
-Einerseits eröffnet die digitale Transformation enorme Möglichkeiten. Wissensbestände sind global verfügbar, kollaboratives Arbeiten über Zeitzonen hinweg ist selbstverständlich geworden, und datengetriebene Prozesse beschleunigen Innovationen – von der Medikamentenforschung bis zur Energiewende. In ländlichen Regionen können Telemedizin, E‑Government und Fernunterricht strukturelle Nachteile reduzieren. Zudem stärken barrierearme Tools die Inklusion von Menschen mit Behinderungen.
+Ein Beispiel: In unserem Support klassifiziert ein Modell Anfragen vor. Die Bearbeitungszeit sank um rund 20 %, weil Tickets automatisch geroutet werden. Gleichzeitig zeigte sich, dass das System ironische Formulierungen missdeutet und dadurch falsche Kategorien vergibt; ohne menschliche Korrektur hätten wir Qualitätsverluste riskiert.
 
-Andererseits entstehen gesellschaftliche Spannungen. Algorithmische Verstärkungseffekte fördern Echokammern, während Personalisierung die gemeinsame Informationsbasis erodiert. Der Arbeitsmarkt polarisiert sich: Hochqualifizierte profitieren überproportional, Routinetätigkeiten werden automatisiert. Nicht zuletzt verschiebt sich Macht hin zu wenigen globalen Konzernen, was Wettbewerb, Datenschutz und demokratische Kontrolle herausfordert.
+Pro sprechen Effizienz, geringere Fehler in Routineprozessen und die Möglichkeit, Beschäftigte für höherwertige Aufgaben zu gewinnen. Contra sind Datenschutzrisiken, Intransparenz von Entscheidungen („Black Box“), Qualifikationsdruck und reale Substitution bestimmter Tätigkeiten. Zudem bleibt die Haftungsfrage: Wer trägt Verantwortung, wenn KI-Vorschläge übernommen werden?
 
-Folglich muss die Frage nicht lauten, ob Digitalisierung gut oder schlecht ist, sondern wie sie gestaltbar bleibt. Nötig sind wirksame Regulierungen (Interoperabilität, Datenportabilität, Transparenz von Algorithmen), starke digitale Grundbildung für alle Altersgruppen und Investitionen in offene, gemeinwohlorientierte Infrastrukturen. So lassen sich Risiken begrenzen und Chancen breiter verteilen.
-
-Meine Position ist daher differenziert: Die Digitalisierung ist weder Heilsversprechen noch Bedrohung, sondern ein Gestaltungsauftrag. Wo klare Leitplanken, digitale Mündigkeit und wettbewerbsfähige, europäische Alternativen vorhanden sind, überwiegen die Vorteile. Fehlen sie, drohen Abhängigkeiten, Desinformation und Exklusion – mit spürbaren Folgen für den gesellschaftlichen Zusammenhalt.`,
-    wordCount: 330,
+Meine Empfehlung: nicht „alles oder nichts“, sondern ein gestuftes Vorgehen. Klare Richtlinien (Datenminimierung, Quellenangaben, Prüfpflicht), verbindliche Human-in-the-Loop-Kontrollen an kritischen Punkten, kleine Pilotprojekte mit messbaren Kriterien sowie verpflichtende Schulungen. So lässt sich Nutzen heben, ohne Sorgfalt und Verantwortung zu verlieren – und die Organisation bleibt lernfähig.`,
+    wordCount: 230,
     highlights: {
       mainPoints: [
-        'Chancen: Zugang, Effizienz, Inklusion',
-        'Risiken: Datenschutz, Desinformation, Marktmacht',
-        'Gestaltung: Regulierung, Bildung, offene Infrastruktur',
-        'Position: differenziert, Leitplanken nötig'
+        "Aufgabenerfüllung: A – Alle vier Inhaltspunkte vollständig, neutrale Forumsregister, klare Position.",
+        "Kohärenz: A – Stringente Absatzstruktur (Kontext → Beispiel → Pro/Contra → Empfehlung) mit präzisen Verknüpfungen.",
+        "Wortschatz: A – Fachnahe, differenzierte Lexik (Black Box, Human-in-the-Loop, Datenminimierung, Haftungsfrage).",
+        "Strukturen: A – Variabler Satzbau, Konjunktiv für Hypothesen, korrekte Zeichensetzung; Fehler beeinträchtigen das Verständnis nicht."
       ],
       keyPhrases: [
-        'algorithmische Verstärkungseffekte',
-        'digitale Mündigkeit',
-        'gemeinwohlorientierte Infrastrukturen',
-        'Interoperabilität und Datenportabilität'
+        "Human-in-the-Loop",
+        "Transparenzberichte",
+        "Audit-Logs",
+        "gestuftes Vorgehen",
+        "Qualifikationsdruck",
+        "Datenminimierung"
       ]
     }
   },
-
   {
-    topicId: 'report-workplace-001',
-    content: `Bericht: Arbeitsplatz der Zukunft – Auswirkungen geplanter Modernisierungen
+    id: '10',
+    topicId: "2",
+    content: `Sehr geehrtes Team Personalservice,
 
-Einleitung
-Das Unternehmen beabsichtigt, Home‑Office‑Modelle, flexible Arbeitszeiten und moderne Kollaborationstools einzuführen. Ziel dieses Berichts ist es, Auswirkungen auf Mitarbeiterzufriedenheit und Produktivität zu analysieren und Empfehlungen abzuleiten.
+vielen Dank für die Einführung des Dienstrad-Leasings – das passt hervorragend zu unseren Nachhaltigkeitszielen. Wäre es möglich, mir nähere Informationen zu den Konditionen zu senden?
 
-Analyse
-Vorteile: Flexible Modelle erhöhen nachweislich die wahrgenommene Autonomie, was sich positiv auf Motivation und Bindung auswirkt. Wegfall von Pendelzeiten reduziert Stress und erweitert den verfügbaren Fokus-Zeitraum. Digitale Tools verbessern die asynchrone Abstimmung und senken Übergabezeiten zwischen Teams.
+Konkret interessieren mich: private Nutzung außerhalb des Arbeitswegs, Versicherung/Diebstahlschutz (Selbstbehalt?), Laufzeit und Kosten bei vorzeitiger Beendigung sowie die Regelung bei einem möglichen Stellenwechsel.
 
-Herausforderungen: Ohne klare Spielregeln drohen Entgrenzung und Überlastung (ständige Erreichbarkeit). Informelle Wissensflüsse reißen ab, was Onboarding und Innovation hemmen kann. Zudem besteht die Gefahr sozialer Isolation, insbesondere bei Berufseinsteigern. Führung auf Distanz erfordert neue Kompetenzprofile (Ergebnisorientierung, Feedbackkultur, psychologische Sicherheit).
+Zu meinen Rahmenbedingungen: Ich pendele täglich 14 km, habe im Büro einen überdachten Stellplatz, zu Hause jedoch nur einen Hof. Wie wird Wartung im Winter organisiert und welche Werkstätten sind vorgesehen?
 
-Perspektiven verschiedener Gruppen: Eltern und Pendler profitieren besonders von Flexibilität; Produktionsnahe Bereiche benötigen hingegen hybride Lösungen. Neue Mitarbeitende brauchen strukturierte Lernpfade und Mentoring. Führungskräfte benötigen Training in virtueller Moderation und Zielvereinbarung.
+Als Vorschlag: Ein kurzer Probemonat oder ein Info-Termin für Mitarbeitende würde viele Fragen klären. Über eine Rückmeldung bis zum 30.09. würde ich mich freuen.
 
-Empfehlungen
-1) Klare Rahmen: Kernzeiten, Meeting‑Standards, asynchrone Dokumentation.
-2) Gesundheit: Recht auf Nichterreichbarkeit, ergonomische Ausstattungspauschalen.
-3) Wissensmanagement: Entscheidungsprotokolle, offene Wissensbasen, Buddy-Programme.
-4) Führung: Schulungen zu Remote‑Leadership und Outcome‑Messung.
-5) Monitoring: Quartalsweise Pulsbefragungen zu Wohlbefinden und Produktivität.
-
-Fazit
-Die geplanten Maßnahmen versprechen Produktivitätsgewinne, sofern sie von verbindlichen Standards, gezielter Qualifizierung und systematischem Wissensmanagement begleitet werden. Andernfalls drohen Ermüdungseffekte und Koordinationsverluste.`,
-    wordCount: 340,
+Mit freundlichen Grüßen
+Frau Müller`,
+    wordCount: 112,
     highlights: {
+      greeting: "Sehr geehrtes Team Personalservice,",
       mainPoints: [
-        'Vorteile: Autonomie, weniger Pendeln, bessere Abstimmung',
-        'Risiken: Entgrenzung, Wissensverlust, Isolation',
-        'Zielgruppen: Eltern, Einsteiger, Führungskräfte',
-        'Empfehlungen: Rahmen, Gesundheit, Wissensmanagement, Führung, Monitoring'
+        "Aufgabenerfüllung: A – Höfliches Verständnis, konkrete Bitten, Klärung von Bedingungen, Vorschlag/Kompromiss; passender Adressat und Stil.",
+        "Kohärenz: A – Klare Gliederung in kurze Absätze, explizite Leitfragen und saubere Verknüpfungen.",
+        "Wortschatz: A – Präzise Verwaltungsterminologie (Konditionen, vorzeitige Beendigung, Diebstahlschutz).",
+        "Strukturen: A – Höflichkeits- und Konjunktivformen („wäre es möglich“), korrekte Orthografie und Zeichensetzung."
       ],
+      closing: "Mit freundlichen Grüßen",
       keyPhrases: [
-        'psychologische Sicherheit',
-        'asynchrone Dokumentation',
-        'Recht auf Nichterreichbarkeit',
-        'Remote‑Leadership'
-      ]
-    }
-  },
-
-  {
-    topicId: 'review-literature-001',
-    content: `Kritische Rezension: Wolfgang Herrndorfs „Tschick“
-
-Ohne die zentrale Wendung vorwegzunehmen: „Tschick“ verbindet Road‑Novel, Coming‑of‑Age und Gesellschaftsskizze in einer überraschend leichten, zugleich präzisen Sprache. Der Erzählerblick bleibt nah an den Figuren, wodurch Humor und Melancholie ein glaubwürdiges Spannungsverhältnis eingehen.
-
-Stil und Sprache
-Herrndorf arbeitet mit lakonischen Beobachtungen und pointierten Dialogen. Die scheinbar beiläufige Erzählweise erzeugt Tempo, während dichte Bildfelder – etwa Landschaftsminiaturen – einen poetischen Unterton beisteuern. Registerwechsel zwischen Umgangssprache und literarischer Verdichtung wirken funktional, nie manieriert.
-
-Themen und Relevanz
-Im Zentrum stehen Freundschaft, Herkunft, soziale Ungleichheit und die Frage nach Selbstbestimmung. Die Reise wird zur Erprobungsfläche jugendlicher Autonomie. Gesellschaftliche Ränder treten nicht als Kulisse, sondern als aktive Gegenwelt zum bürgerlichen Normalmodus auf. Dadurch gelingt dem Roman ein inklusiver Blick, der weder romantisiert noch den moralischen Zeigefinger erhebt.
-
-Bewertung
-Die Figurenzeichnung überzeugt durch Ambivalenz: Widersprüche bleiben stehen und laden zur Deutung ein. Einzelne Episoden wirken episodisch‑skizzenhaft, was die erzählerische Kohärenz gelegentlich lockert; zugleich entspricht dies der Perspektive jugendlicher Wahrnehmung. Insgesamt liefert „Tschick“ ein sprachlich zugängliches, literarisch eigenständiges Werk, das Leserinnen und Leser über das Ende hinaus beschäftigt. Empfehlenswert – gerade auch für den Unterricht, sofern die gesellschaftlichen Kontexte mit reflektiert werden.`,
-    wordCount: 300,
-    highlights: {
-      mainPoints: [
-        'Stil: lakonisch, pointiert, poetische Untertöne',
-        'Themen: Freundschaft, Ungleichheit, Autonomie',
-        'Bewertung: zugänglich und eigenständig, mit Ambivalenzen'
-      ],
-      keyPhrases: [
-        'Coming‑of‑Age',
-        'Registerwechsel',
-        'inklusive Perspektive',
-        'episodisch‑skizzenhaft'
-      ]
-    }
-  },
-
-  {
-    topicId: 'proposal-environment-001',
-    content: `Formeller Vorschlag: „Grüne Höfe – Mikroklima verbessern, Gemeinschaft stärken“
-
-Problemstellung
-Hitzewellen nehmen zu, versiegelte Flächen heizen Wohnquartiere auf. Gleichzeitig fehlen niedrigschwellige Begegnungsräume. Ziel ist eine quartiersweite Entsiegelung und Begrünung von Innenhöfen, ergänzt um Regenwassermanagement.
-
-Lösungskonzept
-1) Entsiegelung von 2.000 m² Höfen; Ersatz durch wasserdurchlässige Beläge und Staudenbeete.
-2) Pflanzung von 80 klimaresilienten Bäumen (z. B. Feldahorn, Hainbuche) zur Verschattung.
-3) Regenwassernutzung: Zisternen und Mulden‑Rigolen‑Systeme, um Starkregen zu puffern.
-4) Gemeinschaftsbeete und Sitzinseln als soziale Ankerpunkte; saisonale Nachbarschaftsfeste.
-
-Erwartete Wirkungen
-– Temperaturspitzen sinken lokal um bis zu 2 °C; Aufenthaltsqualität steigt.
-– Biodiversität nimmt messbar zu (Insektenhabitate, Vogelnahrung).
-– Soziale Kohäsion durch partizipative Pflegepatenschaften.
-
-Umsetzung und Zeitplan
-Phase 1 (0–3 Monate): Partizipationsprozess, Flächenanalyse, Genehmigungen.
-Phase 2 (4–9 Monate): Bauliche Maßnahmen, Baumpflanzungen, Zisternen.
-Phase 3 (10–12 Monate): Möblierung, Kommunikationskampagne, Evaluation.
-
-Risiken und Gegenmaßnahmen
-Pflegeaufwand: Patenschaftsprogramm mit Schulungen; Trockenperioden: Tropfbewässerung aus Zisternen; Vandalismus: Beleuchtung und soziale Kontrolle durch Aktivierung.
-
-Finanzierung
-Kombination aus kommunalen Klimafonds, Stiftungsmitteln und Unternehmensspenden; Sachleistungen durch lokale Betriebe.
-
-Schlussbemerkung
-„Grüne Höfe“ verbindet Klimaanpassung mit sozialer Belebung. Das Projekt ist skalierbar, messbar und bürgernah – ein sichtbares Signal für nachhaltige Stadtentwicklung.`,
-    wordCount: 360,
-    highlights: {
-      mainPoints: [
-        'Entsiegelung und Begrünung',
-        'Regenwassermanagement',
-        'Soziale Aktivierung und Pflegepatenschaften',
-        'Skalierbarkeit und Evaluation'
-      ],
-      keyPhrases: [
-        'Mulden‑Rigolen‑Systeme',
-        'klimaresiliente Bäume',
-        'Klimaanpassung',
-        'kommunale Klimafonds'
-      ]
-    }
-  },
-
-  {
-    topicId: 'article-education-001',
-    content: `Bildung im Umbau: Drei Hebel für ein gerechteres System
-
-Die Diagnose ist vertraut: Lehrermangel, ungleiche Chancen, schleppende Digitalisierung. Doch statt pauschaler Klagen braucht es einen klaren Reformpfad – machbar, messbar, menschenzentriert.
-
-Erstens: Personal sichern durch neue Wege. Quereinstieg ja, aber qualitätsgesichert: verpflichtende didaktische Ausbildung, Mentoring im Tandem und reduzierte Unterrichtsdeputate im ersten Jahr. Regionale Anreize – von Wohnkostenzuschüssen bis Mobilitätsbudgets – lenken Lehrkräfte dorthin, wo sie fehlen.
-
-Zweitens: Unterricht entlasten und Lernen personalisieren. Digitale Basisinfrastruktur (WLAN, Endgeräte, Lernplattformen) ist kein Luxus, sondern Voraussetzung. Offene, geprüfte Lernmaterialien verringern Abhängigkeiten und ermöglichen adaptive Lernpfade. Diagnostische Kurzchecks zu Beginn jeder Einheit schaffen Transparenz über den Lernstand und geben Lehrkräften Zeit für Förderung statt Verwaltung.
-
-Drittens: Früh investieren, um Spätfolgen zu vermeiden. Sprachliche Bildung und multiprofessionelle Teams in der Primarstufe zahlen sich überproportional aus. Schulen in herausfordernden Lagen brauchen mehr Zeit pro Kind, kleinere Klassen und starke Kooperation mit Sozialarbeit und Eltern.
-
-Wer nun einwendet, es fehle das Geld, übersieht die Folgekosten des Nichtstuns: wiederholte Schuljahre, Ausbildungsabbrüche, demotivierte Lehrkräfte. Eine ehrliche Priorisierung im Haushalt – flankiert von Evaluation und Transparenz – schafft Vertrauen.
-
-Bildung ist öffentliche Infrastruktur wie Strom oder Wasser. Wenn wir sie zuverlässig machen, gewinnen alle: Lernende, Lehrende und die Gesellschaft. Reformen gelingen nicht über Nacht, aber sie beginnen mit konkreten Schritten – heute.`,
-    wordCount: 320,
-    highlights: {
-      mainPoints: [
-        'Lehrkräfte sichern: Quereinstieg mit Qualität, Anreize',
-        'Digitalbasis und OER: personalisiertes Lernen',
-        'Frühkindliche Förderung und Ressourcensteuerung'
-      ],
-      keyPhrases: [
-        'machbar, messbar, menschenzentriert',
-        'diagnostische Kurzchecks',
-        'offene, geprüfte Lernmaterialien (OER)'
+        "wäre es möglich",
+        "vorzeitige Beendigung",
+        "Rückmeldung bis zum 30.09.",
+        "Probemonat",
+        "Diebstahlschutz"
       ]
     }
   }
-]
+];
+
 
 /**
  * Get model answer for a specific topic
@@ -452,5 +349,5 @@ export function getModelAnswer(topicId: string, difficulty: Difficulty): ModelAn
   if (difficulty === 'A2') {
     return modelAnswersA2.find(answer => answer.topicId === topicId)
   }
-  return modelAnswersC1.find(answer => answer.topicId === topicId)
+  return modelAnswersС1.find(answer => answer.topicId === topicId)
 }
