@@ -11,7 +11,7 @@
 
 import type { WritingTopic, AiReviewData } from '~/utils/types'
 import { ref } from 'vue'
-import { reviewPromptC1Teil1 } from '~/data/prompt-texts'
+import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/prompt-texts'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -80,7 +80,11 @@ export function useWritingReview() {
   }
 
   function getReviewPrompt(topic: WritingTopic, userContent: string) {
-    return reviewPromptC1Teil1(topic, userContent)
+    if (topic.testingPart === 1) {
+      return reviewPromptC1Teil1(topic, userContent)
+    } else {
+      return reviewPromptC1Teil2(topic, userContent)
+    }
 }
 
   /**
