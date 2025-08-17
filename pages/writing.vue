@@ -87,6 +87,19 @@
                   <option value="incomplete">Not Completed</option>
                 </select>
               </div>
+
+              <!-- Task Part Filter -->
+              <div class="flex items-center space-x-2">
+                <label class="text-sm font-medium text-gray-700">Part:</label>
+                <select 
+                  v-model="selectedTaskPart"
+                  class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="all">All Parts</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
             </div>
             
             <!-- Sort Options -->
@@ -235,6 +248,7 @@ const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
 // Reactive data
 const selectedTypeFilter = ref<string>('all')
 const selectedStatusFilter = ref<string>('all')
+const selectedTaskPart = ref<string>('all')
 const selectedSort = ref<string>('title')
 const sortDirection = ref<'asc' | 'desc'>('asc')
 const selectedTopic = ref<WritingTopic | null>(null)
@@ -261,6 +275,11 @@ const filteredTopics = computed(() => {
 
   const difficulty = examLevel.value
   topics = topics.filter(topic => topic.difficulty === difficulty)
+
+  // Filter by task part
+  if (selectedTaskPart.value !== 'all') {
+    topics = topics.filter(topic => topic.testingPart === parseInt(selectedTaskPart.value))
+  }
   
   // Filter by topic type
   if (selectedTypeFilter.value !== 'all') {

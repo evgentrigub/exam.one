@@ -27,7 +27,7 @@
 
     <!-- Content - flexible to fill space -->
     <div class="px-4 flex-1 flex flex-col">
-      <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+      <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2" :title="topic.title">
         {{ topic.title }}
       </h3>
 
@@ -37,21 +37,24 @@
       </p>
 
       <!-- Metadata -->
-      <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+      <div class="flex items-center text-xs text-gray-500 mb-4">
         <div class="flex items-center space-x-3">
-          <span>{{ topic.wordCount.min }}-{{ topic.wordCount.max }} Wörter</span>
-          <span>•</span>
           <span>{{ topic.difficulty }}</span>
+          <span>•</span>
+          <span>{{ displayTestingPart }}</span>
+          <span>•</span>
+          <span>{{ topic.wordCount.min }}-{{ topic.wordCount.max }} Wörter</span>
         </div>
-        <div class="flex flex-wrap gap-1 ml-auto">
-          <span 
-            v-for="category in displayCategories" 
-            :key="category"
-            class="px-2 py-1 bg-gray-100 rounded text-xs whitespace-nowrap"
-          >
-            {{ category }}
-          </span>
-        </div>
+      </div>
+      <div class="flex flex-wrap gap-1">
+        <span 
+          v-for="categoryObj in displayCategories" 
+          :key="categoryObj.full"
+          :title="categoryObj.full"
+          class="px-2 py-1 bg-gray-100 rounded text-xs whitespace-nowrap"
+        >
+          {{ categoryObj.display }}
+        </span>
       </div>
 
       <!-- Progress Information -->
@@ -318,11 +321,15 @@ function openReviewModal() {
 // Filter and process categories for display
 const displayCategories = computed(() => {
   return props.topic.category
-    .map(category => {
-      // Truncate categories longer than 12 characters
-      return category.length > 12 ? category.substring(0, 10) + '...' : category
-    })
     .slice(0, 2) // Show max 2 categories
+    .map(category => ({
+      display: category.length > 15 ? category.substring(0, 15) + '...' : category,
+      full: category
+    }))
+})
+
+const displayTestingPart = computed(() => {
+  return props.topic.testingPart === 1 ? 'Teil 1' : 'Teil 2'
 })
 
 // Topic type styling
@@ -358,6 +365,7 @@ function getTopicTypeLabel(type: string) {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -365,6 +373,7 @@ function getTopicTypeLabel(type: string) {
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

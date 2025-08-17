@@ -68,6 +68,7 @@ export interface WritingTopic {
   title: string
   topicType: WritingTopicTypeA2 | WritingTopicTypeC1
   difficulty: Difficulty
+  testingPart?: 1 | 2
   estimatedTime: number // in minutes
   wordCount: {
     min: number
@@ -78,7 +79,6 @@ export interface WritingTopic {
   description: string // What type of text they should write
   task: string // The actual writing prompt/task
   requirements: string[] // Specific requirements (format, length, etc.)
-  tips?: string[] // Optional writing tips
 }
 
 export type WritingTopicTypeA2 = 
