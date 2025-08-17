@@ -416,7 +416,7 @@
 import { useProgress } from '~/composables/useProgress'
 import type { WritingProgress, WritingSubmission } from '~/utils/types'
 import { germanTexts } from '~/data/german-texts'
-import { writingTopics } from '~/data/writing-topics'
+import { writingTopics } from '~/data/writing/exerciseTopics'
 
 // Page metadata
 useHead({

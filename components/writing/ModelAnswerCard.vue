@@ -183,8 +183,8 @@
 
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
-import type { ModelAnswer } from '~/data/writing-model-answers'
-import { getModelAnswer } from '~/data/writing-model-answers'
+import type { ModelAnswer } from '~/data/writing/modelAnswers'
+import { getModelAnswer } from '~/data/writing/modelAnswers'
 
 interface Props {
   topic: WritingTopic

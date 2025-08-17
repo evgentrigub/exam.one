@@ -218,7 +218,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
-import { writingTopics } from '../data/writing-topics'
+import { writingTopics } from '../data/writing/exerciseTopics'
 import type { WritingTopic } from '../utils/types'
 import { useProgress } from '../composables/useProgress'
 import WritingSession from '../components/writing/WritingSession.vue'
