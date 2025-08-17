@@ -66,7 +66,7 @@ export type Difficulty = 'A2' | 'B1' | 'B2' | 'C1'
 export interface WritingTopic {
   id: string
   title: string
-  topicType: WritingTopicTypeA2 | WritingTopicTypeC1
+  topicType: WritingTopicTypes
   difficulty: Difficulty
   testingPart?: 1 | 2
   estimatedTime: number // in minutes
@@ -81,21 +81,18 @@ export interface WritingTopic {
   requirements: string[] // Specific requirements (format, length, etc.)
 }
 
-export type WritingTopicTypeA2 = 
-  | 'email'
-  | 'letter'
-  | 'essay'
-  | 'form'
-  | 'postcard'
-  | 'note'
 
-export type WritingTopicTypeC1 = 
-  | 'report'
-  | 'review'
-  | 'proposal'
-  | 'article'
-  | 'note'
-  | 'form'
+export type WritingTopicTypes = 
+| 'report'
+| 'review'
+| 'proposal'
+| 'article'
+| 'note'
+| 'form'
+| 'email'
+| 'letter'
+| 'essay'
+| 'postcard'
 
 export interface WritingProgress {
   topicId: string
