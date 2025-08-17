@@ -95,7 +95,7 @@
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
 import type { WritingMode } from '~/composables/useWritingMode'
-import { WritingTipsC1Teil1, WritingTipsC1Teil2 } from '~/data/writing-topics'
+import { writingTipsC1Teil1, writingTipsC1Teil2 } from '~/data/writing/exerciseTopics'
 
 interface Props {
   topic: WritingTopic
@@ -135,7 +135,7 @@ const topicTypeLabels = {
 }
 
 const writingTips = computed(() => {
-  return props.topic.testingPart === 1 ? WritingTipsC1Teil1 : WritingTipsC1Teil2
+  return props.topic.testingPart === 1 ? writingTipsC1Teil1 : writingTipsC1Teil2
 })
 
 function getTopicTypeLabel(type: string) {

@@ -1,6 +1,6 @@
 import type { WritingTopic } from '~/utils/types'
 
-export const WritingTipsC1Teil1 = [
+export const writingTipsC1Teil1 = [
   'Beginnen Sie mit 2–3 Sätzen Kontext und einer Leitfrage; benennen Sie Ihre Ausgangsposition nuanciert.',
   'Bearbeiten Sie die vier Inhaltspunkte je in einem Absatz nach dem Muster: Themensatz – Begründung – Beispiel – Mini-Fazit.',
   'Wägen Sie Pro und Contra ab und nutzen Sie Konnektoren wie „einerseits … andererseits“, „außerdem“, „jedoch“, „folglich“, „daher“.',
@@ -8,7 +8,7 @@ export const WritingTipsC1Teil1 = [
   'Sichern Sie Kohärenz durch Rückbezüge und Verknüpfungen; schließen Sie mit einer Empfehlung/Alternative und prüfen Sie die Wortzahl.',
 ]
 
-export const WritingTipsC1Teil2 = [
+export const writingTipsC1Teil2 = [
   'Betreff (falls vorgesehen), passende Anrede und ein klarer Eröffnungssatz mit Anlass und Ziel; konsequent in der Sie-Form schreiben.',
   'Höflichkeit und Verständnis zeigen; Bitten im Konjunktiv formulieren („wäre es möglich …“, „könnten Sie …“).',
   'Missverständnisse und Bedingungen präzise klären (Daten, Fristen, Zuständigkeiten) und neutral formulieren.',
@@ -290,24 +290,29 @@ export const writingTopics: WritingTopic[] = [
     ],
   },
   {
-    id: "2",
-    title: "Nachfrage zum Dienstrad-Leasing",
-    topicType: "email",
-    difficulty: "C1",
+    id: '2',
+    title: 'Nachfrage zum Dienstrad-Leasing',
+    topicType: 'email',
+    difficulty: 'C1',
     testingPart: 2,
     estimatedTime: 25,
     wordCount: { min: 100, max: 140 },
-    category: ["Mobilität und Verkehr", "Arbeit und Büroalltag", "Umwelt und Nachhaltigkeit"],
-    createdAt: "2025-08-17T00:00:00.000Z",
-    description: "(halb-)formelle E-Mail an den Personalservice.",
+    category: ['Mobilität und Verkehr', 'Arbeit und Büroalltag', 'Umwelt und Nachhaltigkeit'],
+    createdAt: '2025-08-17T00:00:00.000Z',
+    description: '(halb-)formelle E-Mail an den Personalservice.',
     task:
-      "Ihr Unternehmen hat kürzlich ein Dienstrad-Leasing eingeführt. Nach der Infomail sind einige Punkte unklar, insbesondere zur privaten Nutzung, Versicherung und zum Eigenanteil.\n\nInhaltspunkte:\n1) Zeigen Sie höflich Verständnis für das Angebot (nachhaltige Mobilität) und bitten Sie um weitere Informationen.\n2) Bitten Sie um Klärung konkreter Bedingungen (z. B. private Nutzung, Versicherung/Diebstahlschutz, Laufzeit, Regelung bei Jobwechsel).\n3) Beschreiben Sie Ihre persönlichen Rahmenbedingungen (Pendelstrecke, Abstellmöglichkeiten, Wartung im Winter) und welche Fragen sich daraus ergeben.\n4) Machen Sie einen Vorschlag/Kompromiss (z. B. Probemonat oder Info-Termin für Mitarbeitende) und bitten Sie um kurze Rückmeldung.",
+      `Ihr Unternehmen hat kürzlich ein Dienstrad-Leasing eingeführt. Nach der Infomail sind einige Punkte unklar, insbesondere zur privaten Nutzung, Versicherung und zum Eigenanteil.
+      Inhaltspunkte:
+      1) Zeigen Sie höflich Verständnis für das Angebot (nachhaltige Mobilität) und bitten Sie um weitere Informationen.
+      2) Bitten Sie um Klärung konkreter Bedingungen (z. B. private Nutzung, Versicherung/Diebstahlschutz, Laufzeit, Regelung bei Jobwechsel).
+      3) Beschreiben Sie Ihre persönlichen Rahmenbedingungen (Pendelstrecke, Abstellmöglichkeiten, Wartung im Winter) und welche Fragen sich daraus ergeben.
+      4) Machen Sie einen Vorschlag/Kompromiss (z. B. Probemonat oder Info-Termin für Mitarbeitende) und bitten Sie um kurze Rückmeldung.`,
     requirements: [
-      "C1-Format: (halb-)formelle E-Mail.",
-      "Passende Anrede und Grußformel, neutrales bis formelles Register.",
-      "Bearbeiten Sie alle vier Inhaltspunkte.",
-      "Konkrete Bitte um Rückmeldung/Termin.",
-      "Wortzahl: circa 120 Wörter (100–140)."
+      'C1-Format: (halb-)formelle E-Mail.',
+      'Passende Anrede und Grußformel, neutrales bis formelles Register.',
+      'Bearbeiten Sie alle vier Inhaltspunkte.',
+      'Konkrete Bitte um Rückmeldung/Termin.',
+      'Wortzahl: circa 120 Wörter (100–140).'
     ]
   }
 ]
