@@ -19,8 +19,8 @@ export interface ModelAnswer {
 
 export const modelAnswersA2: ModelAnswer[] = [
   {
-    id: '1',
-    topicId: 'email-friend-001',
+    id: 'a2-answer-1',
+    topicId: 'a2-topic-1',
     content: `Lieber Max,
 
 vielen Dank für deine Einladung zu deiner Geburtstagsfeier! Ich freue mich sehr und komme gerne zu deiner Party.
@@ -44,240 +44,13 @@ Anna`,
       closing: "Viele Grüße Anna",
       keyPhrases: ["freue mich sehr", "kannst du mir sagen", "kann es kaum erwarten"]
     }
-  },
-
-  {
-    id: '2',
-    topicId: 'letter-formal-001', 
-    content: `Sehr geehrte Damen und Herren,
-
-ich möchte gerne ein Zimmer in Ihrem Hotel "Zur schönen Aussicht" für meinen Urlaub reservieren.
-
-Ich plane, vom 15. bis 22. Juli nach München zu reisen. Für diese Zeit benötige ich ein Einzelzimmer für eine Person. Das Zimmer sollte ruhig sein und möglichst einen schönen Blick haben.
-
-Könnten Sie mir bitte den Preis pro Nacht mitteilen? Ist das Frühstück im Preis inbegriffen oder kostet es extra? Gibt es auch die Möglichkeit, abends im Hotel zu essen?
-
-Außerdem hätte ich gerne eine schriftliche Bestätigung der Reservierung. Sie können mir gerne per E-Mail antworten.
-
-Ich freue mich auf Ihre Antwort und meinen Aufenthalt in München.
-
-Mit freundlichen Grüßen
-Thomas Müller
-
-Tel: 030-12345678
-E-Mail: thomas.mueller@email.com`,
-    wordCount: 142,
-    highlights: {
-      greeting: "Sehr geehrte Damen und Herren,",
-      mainPoints: [
-        "Reservierung 15.-22. Juli",
-        "Einzelzimmer, ruhig",
-        "Preis und Frühstück fragen",
-        "Bestätigung erwünscht"
-      ],
-      closing: "Mit freundlichen Grüßen",
-      keyPhrases: ["ich möchte gerne", "könnten Sie mir bitte", "ich freue mich auf"]
-    }
-  },
-
-  {
-    id: '3',
-    topicId: 'essay-hometown-001',
-    content: `Meine Heimatstadt Hamburg
-
-Hamburg ist meine Heimatstadt und liegt im Norden Deutschlands. Die Stadt hat etwa 1,9 Millionen Einwohner und ist die zweitgrößte Stadt in Deutschland.
-
-Was Hamburg besonders macht, ist der große Hafen. Hier kommen Schiffe aus der ganzen Welt an. Außerdem gibt es viele Kanäle und Brücken in der Stadt - sogar mehr als in Venedig! Die Speicherstadt ist sehr schön und gehört zum UNESCO-Welterbe.
-
-Mir gefällt besonders die Mischung aus Tradition und Moderne in Hamburg. Die historischen Gebäude stehen neben neuen, modernen Häusern. Außerdem ist Hamburg sehr grün - es gibt viele Parks und die Alster mitten in der Stadt.
-
-Touristen sollten unbedingt den Hafen besuchen und eine Hafenrundfahrt machen. Die Reeperbahn ist auch sehr berühmt, aber eher für Erwachsene interessant. Für Familien empfehle ich den Tierpark Hagenbeck oder das Maritime Museum.
-
-Deshalb liebe ich meine Stadt: Hamburg ist lebendig, vielfältig und hat für jeden etwas zu bieten.`,
-    wordCount: 175,
-    highlights: {
-      mainPoints: [
-        "Lage und Größe",
-        "Besonderheiten: Hafen, Kanäle",
-        "Persönliche Meinung",
-        "Empfehlungen für Touristen"
-      ],
-      keyPhrases: ["was Hamburg besonders macht", "mir gefällt besonders", "außerdem", "deshalb"]
-    }
-  },
-
-  {
-    id: '4',
-    topicId: 'form-application-001',
-    content: `Sehr geehrte Damen und Herren,
-
-ich habe Ihre Stellenanzeige für eine Teilzeitstelle als Verkäufer/in in Ihrem Buchladen gelesen und möchte mich gerne dafür bewerben.
-
-Ich bin 24 Jahre alt und komme ursprünglich aus Polen. Seit drei Jahren lebe ich in Deutschland und spreche schon gut Deutsch. Zurzeit besuche ich einen B1-Deutschkurs, aber meine Kenntnisse reichen für den Alltag und die Arbeit aus.
-
-Bücher sind meine große Leidenschaft! Ich lese sehr viel und kenne mich gut mit deutscher und internationaler Literatur aus. In Polen habe ich schon einmal in einer Buchhandlung gearbeitet, deshalb habe ich Erfahrung im Verkauf.
-
-Ich suche eine Teilzeitstelle, weil ich nebenbei noch Deutsch lerne. Am besten könnte ich nachmittags und am Wochenende arbeiten, etwa 20 Stunden pro Woche.
-
-Gerne möchte ich Sie persönlich kennenlernen und mehr über die Stelle erfahren. Wann passt es Ihnen für ein Gespräch?
-
-Mit freundlichen Grüßen
-Maria Kowalski`,
-    wordCount: 164,
-    highlights: {
-      greeting: "Sehr geehrte Damen und Herren,",
-      mainPoints: [
-        "Bewerbung für Verkäuferstelle",
-        "Alter, Herkunft, Deutschkenntnisse",
-        "Erfahrung und Interesse an Büchern",
-        "Verfügbarkeit: Teilzeit"
-      ],
-      closing: "Mit freundlichen Grüßen",
-      keyPhrases: ["möchte mich bewerben", "meine große Leidenschaft", "gerne möchte ich"]
-    }
-  },
-
-  {
-    id: '5',
-    topicId: 'postcard-vacation-001',
-    content: `Ciao aus Italien!
-
-Hier am Meer ist es wunderschön! Das Wetter ist perfekt - jeden Tag Sonnenschein und 28 Grad. Das Wasser ist so warm und klar, dass ich jeden Tag schwimmen gehe.
-
-Gestern waren wir in einem kleinen Fischerdorf und haben fantastisch gegessen. Die Pasta war so lecker! Heute fahren wir mit dem Boot zu einer kleinen Insel. Ich bin schon sehr gespannt.
-
-Die Leute hier sind so freundlich und hilfsbereit. Auch wenn mein Italienisch nicht so gut ist, verstehen wir uns prima.
-
-Wie geht es euch denn zu Hause? Regnet es noch so viel wie letzte Woche? Ich vermisse euch, aber ich genieße jeden Moment hier.
-
-Bis bald und viele Grüße aus Bella Italia!
-
-Eure Lisa
-
-Familie Schmidt
-Musterstraße 15
-12345 Berlin`,
-    wordCount: 92,
-    highlights: {
-      greeting: "Ciao aus Italien!",
-      mainPoints: [
-        "Wetter und Meer",
-        "Aktivitäten und Essen",
-        "Freundliche Menschen",
-        "Frage nach Familie"
-      ],
-      closing: "Bis bald und viele Grüße",
-      keyPhrases: ["es ist wunderschön", "bin schon gespannt", "wie geht es euch", "ich genieße"]
-    }
-  },
-
-  {
-    id: '6',
-    topicId: 'email-complaint-001',
-    content: `Sehr geehrte Damen und Herren,
-
-ich habe am 5. März online bei Ihnen ein Buch bestellt (Bestellnummer: 12345), aber leider das falsche Buch erhalten.
-
-Bestellt habe ich "Der Hobbit" von J.R.R. Tolkien, aber in dem Paket war "Harry Potter und der Stein der Weisen". Das ist zwar auch ein gutes Buch, aber nicht das, was ich wollte.
-
-Ich möchte gerne das richtige Buch bekommen und das falsche zurückschicken. Können Sie mir bitte sagen, wie das funktioniert? Muss ich das falsche Buch zuerst zurücksenden oder schicken Sie mir erst das richtige?
-
-Die Rechnung und alle Unterlagen habe ich noch. Gerne kann ich Ihnen auch Fotos von dem falschen Buch schicken, wenn das hilft.
-
-Ich hoffe, dass wir das Problem schnell lösen können. Bitte antworten Sie mir so bald wie möglich.
-
-Vielen Dank für Ihre Hilfe.
-
-Mit freundlichen Grüßen
-Stefan Weber`,
-    wordCount: 147,
-    highlights: {
-      greeting: "Sehr geehrte Damen und Herren,",
-      mainPoints: [
-        "Problem: falsches Buch erhalten",
-        "Details: Bestellnummer, was bestellt/erhalten",
-        "Lösung: Umtausch gewünscht",
-        "Bereitschaft zur Mitarbeit"
-      ],
-      closing: "Mit freundlichen Grüßen",
-      keyPhrases: ["leider das falsche", "ich möchte gerne", "können Sie mir bitte sagen", "ich hoffe"]
-    }
-  },
-
-  {
-    id: '7',
-    topicId: 'note-roommate-001',
-    content: `Hallo Lisa,
-
-ich muss für zwei Tage nach Frankfurt fahren (Donnerstag bis Freitag). Kannst du bitte auf meine Pflanzen aufpassen?
-
-Die Blumen auf dem Balkon brauchen jeden Tag Wasser, aber nicht zu viel. Die große Pflanze im Wohnzimmer reicht einmal gießen.
-
-Im Kühlschrank ist noch Pizza vom Wochenende - iss gerne alles auf! :)
-
-Ich bin Freitag Abend wieder da.
-
-Vielen Dank für deine Hilfe!
-
-Tim`,
-    wordCount: 67,
-    highlights: {
-      greeting: "Hallo Lisa,",
-      mainPoints: [
-        "Reise: Donnerstag-Freitag",
-        "Bitte Pflanzen gießen",
-        "Genaue Anweisungen",
-        "Pizza angeboten"
-      ],
-      closing: "Vielen Dank!",
-      keyPhrases: ["kannst du bitte", "nicht zu viel", "iss gerne", "vielen Dank für"]
-    }
-  },
-
-  {
-    id: '8',
-    topicId: 'letter-invitation-001',
-    content: `Liebe Freunde,
-
-ich habe endlich meine neue Wohnung! Nach langer Suche bin ich vor zwei Wochen eingezogen und möchte das gerne mit euch feiern.
-
-Deshalb lade ich euch herzlich zu meiner Einweihungsfeier ein:
-
-Wann: Samstag, 20. Mai, ab 18:00 Uhr
-Wo: Sonnenstraße 42, 3. Stock (bei mir)
-
-Meine neue Wohnung ist nicht sehr groß, aber sehr gemütlich. Sie hat zwei Zimmer, eine moderne Küche und einen kleinen Balkon mit Blick in den Garten.
-
-Für Essen und Trinken ist gesorgt! Ich mache Grillwurst und Salate, und es gibt auch vegetarische Sachen. Getränke sind auch genug da.
-
-Bitte gebt mir bis zum 15. Mai Bescheid, ob ihr kommen könnt. Ihr könnt mir einfach eine WhatsApp schreiben oder anrufen.
-
-Ich würde mich riesig freuen, wenn ihr alle kommen könntet!
-
-Bis bald,
-Julia
-
-Tel: 0177-1234567`,
-    wordCount: 142,
-    highlights: {
-      greeting: "Liebe Freunde,",
-      mainPoints: [
-        "Neue Wohnung - Einweihungsfeier",
-        "Datum, Zeit, Adresse",
-        "Beschreibung der Wohnung",
-        "Essen und Trinken organisiert",
-        "Rückmeldung bis 15. Mai"
-      ],
-      closing: "Bis bald, Julia",
-      keyPhrases: ["lade ich euch herzlich ein", "für Essen ist gesorgt", "bitte gebt mir Bescheid", "würde mich riesig freuen"]
-    }
   }
 ]
 
 export const modelAnswersС1: ModelAnswer[] = [
   {
-    id: '9',
-    topicId: "1",
+    id: 'c1-answer-1',
+    topicId: "c1-topic-1",
     content: `KI am Arbeitsplatz: Automatisieren mit Augenmaß
 
 In meinem Arbeitsalltag erweist sich KI besonders bei repetitiven Routinen als hilfreich: Entwürfe für Standardmails, Priorisierung von Tickets, schnelle Auswertung großer Textmengen. Grenzen sehe ich dort, wo Kontextwissen, Verantwortung oder Empathie entscheidend sind – etwa bei heiklen Kundengesprächen, Beurteilungen oder finalen Freigaben.
@@ -306,8 +79,8 @@ Meine Empfehlung: nicht „alles oder nichts“, sondern ein gestuftes Vorgehen.
     }
   },
   {
-    id: '10',
-    topicId: "2",
+    id: 'c1-answer-2',
+    topicId: "c1-topic-2",
     content: `Sehr geehrtes Team Personalservice,
 
 vielen Dank für die Einführung des Dienstrad-Leasings – das passt hervorragend zu unseren Nachhaltigkeitszielen. Wäre es möglich, mir nähere Informationen zu den Konditionen zu senden?
@@ -336,6 +109,96 @@ Frau Müller`,
         "Rückmeldung bis zum 30.09.",
         "Probemonat",
         "Diebstahlschutz"
+      ]
+    }
+  },
+  {
+    id: 'c1-answer-3',
+    topicId: "c1-topic-3",
+    content: "KI-Tools haben in Studium und Beruf längst Einzug gehalten. Statt reflexhaft zu verbieten, sollten wir klären, wann ihr Einsatz verantwortbar ist. Meine Position: KI darf unterstützen, aber nicht ersetzen – transparent, überprüfbar und datensparsam.\n\nVerantwortungsvoll ist der Einsatz, wenn Ziele und Grenzen vorab festgelegt sind: Quellen müssen genannt, Eingaben ohne sensible Daten formuliert und Ergebnisse kritisch geprüft werden. Zudem braucht es Grundkenntnisse zu Funktionsweise, Bias und Urheberrecht, damit Nutzerinnen und Nutzer bewusste Entscheidungen treffen.\n\nEin Beispiel: In einem Forschungsseminar habe ich eine Gliederung mit Hilfe eines Sprachmodells erstellt. Das Tool half beim Strukturieren und beim Formulieren präziser Leitfragen; gleichzeitig enthielt ein Absatz sachliche Fehler. Erst durch Gegencheck mit Fachliteratur wurde der Entwurf belastbar. Das zeigt, wie Qualität steigen kann – sofern Kontrolle und Fachwissen vorhanden sind.\n\nPro sprechen Effizienz, Barrierefreiheit und neue Kreativität. Contra stehen Kompetenzabbau, Datenschutzrisiken, ungleiche Zugänge und die Haftungsfrage, wenn fehlerhafte Ausgaben übernommen werden. Ein reiner Verbotsansatz löst diese Spannungen nicht.\n\nEmpfehlenswert sind klare Leitlinien: verpflichtende Kennzeichnung von KI-Hilfe, Schulungen für Studierende und Mitarbeitende, sowie Prüfungsformate, die Recherche, Reflexion und Quellenarbeit sichtbar machen. Denkbar ist ein „KI-Kompetenzführerschein“ als Nachweis für verantwortliche Nutzung. So sichern wir Qualität, Fairness und Lernziele. Fazit: nicht Verhinderung, sondern reguliertes Ermöglichen.",
+    wordCount: 235,
+    highlights: {
+      mainPoints: [
+        "Klare Voraussetzungen für verantwortungsvollen Einsatz",
+        "Konkretes Beispiel mit Nutzen und Risiko",
+        "Abgewogene Pro-und-Contra-Argumentation",
+        "Konkrete Empfehlung: Leitlinien, Schulungen, Kennzeichnung, Prüfungsformate"
+      ],
+      keyPhrases: [
+        "transparent, überprüfbar und datensparsam",
+        "Gegencheck mit Fachliteratur",
+        "Kompetenzabbau und Haftungsfrage",
+        "KI-Kompetenzführerschein",
+        "reguliertes Ermöglichen"
+      ]
+    }
+  },
+  {
+    id: 'c1-answer-4',
+    topicId: "c1-topic-4",
+    content: "Sehr geehrte Frau Schneider,\n\nich weiß, wie wichtig der Kundentermin in Hamburg für unser Projekt ist. Leider fallen wegen des angekündigten Bahnstreiks meine direkten Verbindungen aus; das Hotel kann nur bis morgen 18 Uhr kostenfrei storniert werden, danach würden 80 % anfallen. Alternativ gäbe es eine Umstiegsroute mit deutlich längerer Fahrzeit.\n\nBitte teilen Sie mir mit, ob meine physische Anwesenheit zwingend erforderlich ist oder ob eine Zuschaltung per Videokonferenz akzeptabel wäre. Falls Präsenz gewünscht wird, könnte ich bereits am Vortag mit einer frühen Verbindung anreisen.\n\nMein Vorschlag: Videotermin mit geteilten Unterlagen; Kosten: null, Vorbereitung identisch. Zweitbeste Option: Anreise am Vortag, Mehrkosten ca. 140 €, dafür pünktliche Präsenz. Die Präsentation und das Protokoll bereite ich heute fertig vor, damit Sie entscheiden können.\n\nMit freundlichen Grüßen  \n[Ihr Name]",
+    wordCount: 128,
+    highlights: {
+      greeting: "Sehr geehrte Frau Schneider,",
+      mainPoints: [
+        "Höflicher Einstieg mit Verständnis und Problemanzeige",
+        "Klärung von Bedingungen: Stornofristen, Alternativverbindungen",
+        "Bitte um Entscheidung/Bestätigung",
+        "Konkreter Vorschlag mit Kosten- und Zeitrahmen, Sicherung der Vorbereitung"
+      ],
+      closing: "Mit freundlichen Grüßen",
+      keyPhrases: [
+        "zwingend erforderlich",
+        "Zuschaltung per Videokonferenz",
+        "Anreise am Vortag",
+        "Mehrkosten ca. 140 €",
+        "Vorbereitung identisch"
+      ]
+    }
+  },
+  {
+    id: 'c1-answer-5',
+    topicId: "c1-topic-5",
+    content:
+      "Reparieren sollte der Standard sein – Neuanschaffung die begründete Ausnahme. Sinnvoll ist eine Reparatur, wenn Sicherheitsrisiken ausgeschlossen sind, Ersatzteile verfügbar bleiben und die Gesamtkosten unter dem Preis eines gleichwertigen Neugeräts liegen. Unternehmen profitieren zusätzlich, wenn sie Service als Geschäftsmodell etablieren und Garantien nicht erlöschen, sobald ein Akku gewechselt wird.\n\nKonkretes Beispiel: Mein Smartphone hielt nach drei Jahren nur noch wenige Stunden. In einem Reparaturcafé ersetzte ich den Akku für 45 Euro, inklusive Einweisung in Sicherheitsschritte. Das Gerät läuft seitdem stabil; zugleich zeigte sich die Grenze: Eine versiegelte Gehäusekonstruktion machte die Arbeit unnötig aufwendig und riskant.\n\nPro Reparatur sprechen eine deutlich bessere Umweltbilanz durch längere Nutzungsdauer, regionale Dienstleistungsjobs und geringere Abhängigkeit von Rohstoffen. Contra sind mögliche Effizienzverluste alter Geräte, der Zeitaufwand, fehlende Softwareupdates und die Gefahr geplanter Obsoleszenz. Ein reines „Buy new“ fördert Kurzlebigkeit, ein pauschaler Reparaturzwang verhindert Innovation.\n\nDeshalb empfehle ich einen Mix: gesetzliches Recht auf Reparatur und modulare Designs, ein staatlich kofinanzierter Reparaturbonus sowie reduzierte Mehrwertsteuer auf Ersatzteile. Kommunale Werkstätten und Schulen können Grundlagen vermitteln; Hersteller kennzeichnen reparierbare Produkte mit einem Score. So entsteht Wahlfreiheit – mit klaren Anreizen für Langlebigkeit, ohne Fortschritt zu bremsen. Fazit: Reparieren zuerst, aber intelligent geregelt.",
+    wordCount: 242,
+    highlights: {
+      mainPoints: [
+        "Klare Kriterien für sinnvolle Reparaturen",
+        "Konkretes Beispiel mit Nutzen und Grenze",
+        "Ausgewogenes Pro-und-Contra mit Umwelt, Jobs, Innovation",
+        "Konkrete, realistische Empfehlungen (Recht auf Reparatur, Bonus, Steuer, Score)"
+      ],
+      keyPhrases: [
+        "Reparieren sollte der Standard sein",
+        "Service als Geschäftsmodell",
+        "geplante Obsoleszenz",
+        "modulare Designs",
+        "Wahlfreiheit mit Anreizen"
+      ]
+    }
+  },
+  {
+    id: 'c1-answer-6',
+    topicId: "c1-topic-6",
+    content:
+      "Sehr geehrte Frau Dr. Keller,\n\nvielen Dank für die klaren Anforderungen an die Präsentation; wir möchten sie bestmöglich erfüllen. Auf Moodle stehen jedoch 10–12 Minuten und mindestens fünf Quellen, während das Handout 15 Minuten und acht Quellen nennt. Zudem ist unsere Mitstudentin Lara krank (Attest bis Freitag).\n\nKönnten Sie bitte bestätigen, welche Dauer, Quellenzahl und Abgabeform (PDF vorab oder Upload nach dem Termin) gelten? Falls Präsenz aller Teammitglieder erforderlich ist, bitten wir um eine kurze Fristverlängerung bis Mittwoch.\n\nVorschlag: Wir liefern Ihnen morgen ein einseitiges Handout mit Gliederung und Quellenliste und halten am Montag einen 12-minütigen Vortrag zu dritt; Lara übernimmt später das schriftliche Protokoll. Ein kurzer Q&A-Slot würde die offenen Punkte klären.\n\nMit freundlichen Grüßen  \n[Ihr Name]",
+    wordCount: 149,
+    highlights: {
+      greeting: "Sehr geehrte Frau Dr. Keller,",
+      mainPoints: [
+        "Höflicher Einstieg und Problemanzeige (widersprüchliche Angaben)",
+        "Klärungsfragen zu Umfang, Quellenzahl, Abgabeform + Team-Bedingungen",
+        "Bitte um Rückmeldung und ggf. Fristverlängerung",
+        "Konkreter, umsetzbarer Kompromiss mit Verantwortlichkeiten"
+      ],
+      closing: "Mit freundlichen Grüßen",
+      keyPhrases: [
+        "bitte bestätigen",
+        "Fristverlängerung",
+        "einseitiges Handout",
+        "Q&A-Slot",
+        "schriftliches Protokoll"
       ]
     }
   }
