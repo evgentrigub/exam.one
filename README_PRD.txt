@@ -16,7 +16,7 @@ to build confidence and accuracy for the exam format.
 ---
 
 ## 🎯 Reading Stage - Section with Reading practice exercises
-**Overall Progress: 7/7 deliverables complete (100%)**
+**Overall Progress: 8/8 deliverables complete (100%)**
 
 ### Stage 1: Project Foundation & Setup
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
@@ -66,6 +66,18 @@ to build confidence and accuracy for the exam format.
 ---
 
 ### Stage 4: Basic Feedback System
+### Stage 5: Routing & UX Refinement
+**Priority: P1 | Status: ✅ Complete | Est: 0.5 week**
+- [x] Refactor inline reader to modal (`components/reading/ReadingModal.vue`)
+- [x] Add deep-linkable quiz route (`pages/reading/[quizId].vue`)
+- [x] Navigate to `/reading/{quizId}` on “Start questions”
+- [x] Resume session redirects to quiz route
+
+**Acceptance Criteria:**
+- ✅ Reading opens in a modal and can be closed with ESC/click-outside
+- ✅ Visiting `/reading/{quizId}` loads text and questions side-by-side
+- ✅ “Start questions” navigates to the route and closes modal
+- ✅ `?resume=true` on `/reading` redirects to the active quiz
 **Priority: P0 | Status: ✅ Complete | Est: 1 week**
 - [x] Immediate answer feedback (correct/incorrect)
 - [x] Simple explanation for correct answers
