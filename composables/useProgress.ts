@@ -1,9 +1,3 @@
-/**
- * Progress tracking composable for German Reading Trainer
- * Handles localStorage operations, stats calculation, and session management
- * Extended in Stage 11 to support writing progress tracking
- */
-
 import type { WritingSubmission } from '~/utils/types'
 
 interface QuizProgress {

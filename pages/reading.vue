@@ -265,9 +265,9 @@ import QuizSession from '../components/reading/QuizSession.vue'
 
 // Page metadata
 useHead({
-  title: 'Reading Practice - German Reading Trainer',
+  title: 'Reading Practice - Exam.one',
   meta: [
-    { name: 'description', content: 'Practice German reading comprehension with authentic texts' }
+    { name: 'description', content: 'Practice reading with authentic exam-style texts' }
   ]
 })
 

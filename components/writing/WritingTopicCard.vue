@@ -1,5 +1,5 @@
 <template>
-  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[360px]">
+  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[380px]">
     <!-- Header with badges -->
     <div class="px-4 pt-4">
       <div class="flex items-center justify-between mb-3">
@@ -58,7 +58,7 @@
       </div>
 
       <!-- Progress Information -->
-      <div v-if="topicCompleted" class="mb-4 p-3 bg-green-50 rounded-lg">
+      <div v-if="topicCompleted" class="mb-4 mt-4 p-3 bg-green-50 rounded-lg">
         <div class="flex items-center justify-between">
           <div class="flex items-center text-green-700">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,9 +68,6 @@
           </div>
           <div class="text-right">
             <div class="text-sm font-bold text-green-700">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
-            <div class="text-xs text-green-600">
-              {{ progress?.bestWordCount || 0 }} words best
-            </div>
           </div>
         </div>
       </div>
@@ -91,13 +88,31 @@
 
           <button
             v-if="topicCompleted"
-            class="flex-1 px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+            class="flex-[4] px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
             :class="(isPending || !isReady) ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'"
             :disabled="isPending || !isReady"
             @click="openReviewModal()"
           >
-            {{ isPending ? 'Checking…' : 'Check the review' }}
+            {{ isPending ? $t('writing.checking') : $t('writing.checkReview') }}
           </button>
+
+          <Tooltip
+            v-if="topicCompleted && !isPending"
+            :text="$t('writing.repeatExercise')"
+            position="top"
+            class="flex-[1]"
+          >
+            <button
+              class="w-full px-3 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center"
+              :class="(isPending || !isReady) ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'"
+              :disabled="isPending || !isReady"
+              @click="$emit('startWriting', topic.id)"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </button>
+          </Tooltip>
         </div>
       </div>
     </div>

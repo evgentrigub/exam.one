@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 /**
  * Settings store
- * Holds globally shared UI preferences like exam level.
+ * Holds globally shared UI preferences like exam level and target exam language.
  * Persists to localStorage via VueUse so it works fully offline.
  */
 export const useSettingsStore = defineStore('settings', () => {
@@ -16,8 +16,21 @@ export const useSettingsStore = defineStore('settings', () => {
     },
   )
 
+  /**
+   * Target language for exam preparation.
+   * Currently only German is fully supported.
+   */
+  const targetLanguage = useLocalStorage<'de' | 'en' | 'es'>(
+    'targetLanguage',
+    'de',
+    {
+      initOnMounted: true,
+    },
+  )
+
   return {
     examLevel,
+    targetLanguage,
   }
 })
 
