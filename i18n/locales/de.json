@@ -7,16 +7,16 @@
     "dashboard": "Dashboard"
   },
   "home": {
-    "title": "Deutsch Lesetrainer",
-    "subtitle": "Goethe A2 Niveau",
-    "description": "Meistere das deutsche Leseverständnis mit authentischen A2-Texten und sofortigem Feedback. Übe alle vier Teile des Goethe-Prüfungsformats.",
+    "title": "Exam.one",
+    "subtitle": "Bereite dich auf Prüfungen vor, indem du Lesen, Schreiben, Hören und Sprechen mit authentischen prüfungsähnlichen Texten übst",
+    "description": "Meistere Lesen, Schreiben, Hören und Sprechen mit authentischen prüfungsähnlichen Texten und sofortigem Feedback. Übe alle vier Teile des Goethe-Prüfungsformats.",
     "startPractice": "Übung starten",
     "viewDashboard": "Dashboard anzeigen",
     "features": {
       "title": "Hauptmerkmale",
       "authentic": {
         "title": "Authentische Texte",
-        "description": "Übe mit echten deutschen Texten auf A2-Niveau"
+        "description": "Übe mit echten deutschen Materialien auf A2-Niveau"
       },
       "feedback": {
         "title": "Sofortiges Feedback",
@@ -30,7 +30,7 @@
     "benefits": {
       "title": "Warum unseren Trainer wählen?",
       "items": {
-        "comprehensive": "Umfassende A2-Leseübungen",
+        "comprehensive": "Umfassende A2-Übungen für alle Fertigkeiten",
         "timing": "Realistische Prüfungszeit und -format",
         "improvement": "Verfolge deinen Fortschritt und deine Verbesserung",
         "offline": "Funktioniert vollständig offline"
@@ -58,7 +58,7 @@
   },
   "dashboard": {
     "title": "Dein Fortschritts-Dashboard",
-    "subtitle": "Verfolge deinen deutschen Leseverständnis-Fortschritt und deine Leistung",
+    "subtitle": "Verfolge deinen Lese-, Schreib-, Hör- und Sprech-Fortschritt und deine Leistung",
     "overview": "Fortschrittsübersicht",
     "completionRate": "Abschlussrate",
     "averageScore": "Durchschnittliche Punktzahl",
@@ -90,5 +90,21 @@
     "score": "Deine Punktzahl",
     "tryAgain": "Nochmal versuchen",
     "backToPractice": "Zurück zur Übung"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "interfaceLanguage": "Oberflächensprache",
+    "targetLanguage": "Zielsprache für Prüfung",
+    "targetLanguageDescription": "Wähle die Sprache aus, auf die du dich vorbereiten möchtest",
+    "examLevel": "Prüfungsniveau",
+    "examLevelDescription": "Wähle das Schwierigkeitsniveau deiner Prüfungsvorbereitung",
+    "availableSoon": "Bald verfügbar",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "writing": {
+    "checkReview": "Bewertung ansehen",
+    "checking": "Prüfe…",
+    "repeatExercise": "Übung wiederholen"
   }
 } 

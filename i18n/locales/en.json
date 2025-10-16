@@ -7,9 +7,9 @@
     "dashboard": "Dashboard"
   },
   "home": {
-    "title": "German Reading Trainer",
-    "subtitle": "Goethe A2 Level",
-    "description": "Master German reading comprehension with authentic A2-level texts and instant feedback. Practice all four parts of the Goethe exam format.",
+    "title": "Exam.one",
+    "subtitle": "Prepare to exams by practicing reading, writing, listening and speaking with authentic exam-style texts",
+    "description": "Master reading, writing, listening and speaking with authentic exam-style texts and instant feedback. Practice all four parts of the Goethe exam format.",
     "startPractice": "Start Practice",
     "viewDashboard": "View Dashboard",
     "features": {
@@ -58,7 +58,7 @@
   },
   "dashboard": {
     "title": "Your Progress Dashboard",
-    "subtitle": "Track your German Reading comprehension progress and performance",
+    "subtitle": "Track your German reading comprehension progress and performance",
     "overview": "Progress Overview",
     "completionRate": "Completion Rate",
     "averageScore": "Average Score",
@@ -90,5 +90,21 @@
     "score": "Your Score",
     "tryAgain": "Try Again",
     "backToPractice": "Back to Practice"
+  },
+  "settings": {
+    "title": "Settings",
+    "interfaceLanguage": "Interface Language",
+    "targetLanguage": "Target Exam Language",
+    "targetLanguageDescription": "Select the language you want to prepare for",
+    "examLevel": "Exam Level",
+    "examLevelDescription": "Choose the difficulty level of your exam preparation",
+    "availableSoon": "Available soon",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "writing": {
+    "checkReview": "Check the review",
+    "checking": "Checking…",
+    "repeatExercise": "Repeat exercise"
   }
 } 
