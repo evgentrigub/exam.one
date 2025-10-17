@@ -23,11 +23,12 @@ export const generateTopicsC1Part1 = () => {
     
     ФОРМАТ ВЫВОДА (строго): 
     Сгенерированные создания переделай под модель данных на JavaScript, которая представлена ниже. 
+    ВАЖНО: Для Teil 1 (форум) используй topicType: 'post' или 'article'.
     export interface WritingTopic { 
         id: string 
         title: string 
-        topicType: 'report' | 'review' | 'proposal' | 'article' | 'note' | 'form' | 'email' | 'letter' | 'essay' | 'postcard' 
-        difficulty: ‘C1’ 
+        topicType: 'report' | 'review' | 'proposal' | 'article' | 'note' | 'form' | 'email' | 'letter' | 'essay' | 'postcard' | 'post'
+        difficulty: 'C1' 
         testingPart: 1 // 1 - Teil 1, 2 - Teil 2
         estimatedTime: number // in minutes 
         wordCount: { min: number max: number } 
@@ -71,11 +72,12 @@ export const generateTopicsC1Part2 = () => {
       
       ФОРМАТ ВЫВОДА (строго): 
       Сгенерированные создания переделай под модель данных на JavaScript, которая представлена ниже. 
+      ВАЖНО: Для Teil 2 (E-Mail) используй topicType: 'email'.
       export interface WritingTopic { 
           id: string 
           title: string 
-          topicType: 'report' | 'review' | 'proposal' | 'article' | 'note' | 'form' | 'email' | 'letter' | 'essay' | 'postcard' 
-          difficulty: ‘C1’ 
+          topicType: 'report' | 'review' | 'proposal' | 'article' | 'note' | 'form' | 'email' | 'letter' | 'essay' | 'postcard' | 'post'
+          difficulty: 'C1' 
           testingPart: 2 // 1 - Teil 1, 2 - Teil 2
           estimatedTime: number // in minutes 
           wordCount: { min: number max: number } 

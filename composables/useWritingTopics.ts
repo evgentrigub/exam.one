@@ -100,14 +100,23 @@ export const useWritingTopics = () => {
 
   /**
    * Add multiple topics at once
+   * Accepts ALL topics regardless of topicType to ensure nothing is filtered
    */
   const addTopics = (newTopics: WritingTopic[]): void => {
+    console.log(`📥 Attempting to add ${newTopics.length} topics:`, newTopics.map(t => ({ id: t.id, type: t.topicType, title: t.title })))
+    
     const uniqueTopics = newTopics.filter(
       newTopic => !topics.value.some(t => t.id === newTopic.id)
     )
 
+    if (uniqueTopics.length < newTopics.length) {
+      console.warn(`⚠️ Skipped ${newTopics.length - uniqueTopics.length} duplicate topic(s)`)
+    }
+
     topics.value.push(...uniqueTopics)
     saveToStorage()
+    
+    console.log(`✅ Successfully saved ${uniqueTopics.length} new topic(s). Total topics: ${topics.value.length}`)
   }
 
   /**

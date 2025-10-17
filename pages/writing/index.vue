@@ -153,6 +153,17 @@
             @start-writing="openWritingInterface"
             @delete-topic="handleDeleteTopic"
           />
+          
+          <!-- Topic Generator Card (C1 only) -->
+          <TopicGeneratorCard 
+            v-if="examLevel === 'C1'"
+            :is-generating="isGenerating"
+            :generating-part="generatingPart"
+            :generation-error="generationError"
+            @generate="handleGenerate"
+            @retry="handleRetry"
+            @dismiss="handleDismissError"
+          />
         </div>
 
         <!-- Enhanced Empty State -->
@@ -187,8 +198,10 @@
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
 import { useWritingTopics } from '~/composables/useWritingTopics'
+import { useTopicGeneration } from '~/composables/useTopicGeneration'
 import { useProgress } from '~/composables/useProgress'
 import WritingTopicCard from '~/components/writing/WritingTopicCard.vue'
+import TopicGeneratorCard from '~/components/writing/TopicGeneratorCard.vue'
 import type { WritingSessionModel } from '~/composables/useProgress'
 
 // Page metadata
@@ -200,7 +213,17 @@ useHead({
 })
 
 // Writing topics management (localStorage-based)
-const { topics, getTopics, deleteTopic } = useWritingTopics()
+const { topics, getTopics, deleteTopic, addTopics } = useWritingTopics()
+
+// Topic generation management
+const { 
+  isGenerating, 
+  generatingPart, 
+  generationError,
+  generateTopics,
+  retryGeneration,
+  dismissError
+} = useTopicGeneration()
 
 // Progress tracking composable (Stage 11)
 const { 
@@ -324,6 +347,42 @@ function handleDeleteTopic(topicId: string) {
       console.log(`✅ Topic "${topic.title}" deleted successfully`)
     }
   }
+}
+
+// Generate topics handler
+async function handleGenerate(part: 1 | 2) {
+  try {
+    console.log(`🤖 Generating Teil ${part} topics...`)
+    const newTopics = await generateTopics(part)
+    
+    // Add generated topics to storage
+    addTopics(newTopics)
+    
+    console.log(`✅ Successfully generated ${newTopics.length} new topics for Teil ${part}`)
+    
+    // Optional: Show success notification
+    alert(`✨ Successfully generated ${newTopics.length} new topics!`)
+  } catch (error: any) {
+    console.error('Failed to generate topics:', error)
+    // Error is already stored in state, no need to show alert
+  }
+}
+
+// Retry generation handler
+async function handleRetry() {
+  try {
+    const newTopics = await retryGeneration()
+    addTopics(newTopics)
+    console.log(`✅ Successfully generated ${newTopics.length} new topics on retry`)
+    alert(`✨ Successfully generated ${newTopics.length} new topics!`)
+  } catch (error: any) {
+    console.error('Failed to retry generation:', error)
+  }
+}
+
+// Dismiss error handler
+function handleDismissError() {
+  dismissError()
 }
 </script>
 
