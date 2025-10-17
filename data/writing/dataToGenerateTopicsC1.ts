@@ -39,7 +39,6 @@ export const generateTopicsC1Part1 = () => {
         requirements: string[] // Specific requirements (format, length, etc.) 
     } 
 
-    Детальное описание задания Teil 1: ${dataC1Part1Rule}
     Важное: Темы и пункты должны быть реалистичными исовременными. 
     Не генерируй решения или текст писем — только экзаменационные условия. 
     Ниже ты видишь примеры заданий Teil 1 из книги по подготовке экзамену Goethe C1. Используй их для лучшего понимания контекста.
@@ -88,7 +87,6 @@ export const generateTopicsC1Part2 = () => {
           requirements: string[] // Specific requirements (format, length, etc.) 
       } 
 
-      Детальное описание задания Teil 2: ${dataC1Part2Rule}
       Важное: Темы и пункты должны быть реалистичными, современными и различаться по двум заданиям. 
       Не генерируй решения или текст писем — только экзаменационные условия. 
       Ниже ты видишь примеры заданий Teil 2 из книги по подготовке экзамену Goethe C1. Используй их для лучшего понимания контекста.
@@ -96,7 +94,7 @@ export const generateTopicsC1Part2 = () => {
       `
   }
 
-export const dataC1Part1Rule = `
+export const dataAnswerRuleC1Part1 = `
 Beschreibung der Prüfung
 Schreiben: Teil 1
 Sie schreiben einen Forumsbeitrag zu einem aktuellen Thema.
@@ -120,7 +118,7 @@ Sind die Verb- und Adjektivformen korrekt?
 Habe ich die Sätze und Abschnitte korrekt miteinander verbunden?
 `
 
-export const dataC1Part2Rule = `
+export const dataAnswerRuleC1Part2 = `
 Beschreibung der Prüfung
 Schreiben: Teil 2
 Sie schreiben eine Nachricht an Kolleginnen/Kollegen, Vorgesetzte, Lehrende, Tutorinnen/Tutoren u. Ä.
