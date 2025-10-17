@@ -3,8 +3,8 @@
     <!-- Delete button - top right corner -->
     <button
       class="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-      @click.stop="$emit('deleteTopic', topic.id)"
       title="Delete topic"
+      @click.stop="$emit('deleteTopic', topic.id)"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -25,7 +25,7 @@
         <!-- Completion or topic type badge always on right -->
         <span 
           class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
-          :class="topicCompleted ? 'bg-green-100 text-green-800' : topicTypeStyles[topic.topicType]"
+          :class="topicCompleted ? 'bg-green-100 text-green-800' : getTopicTypeStyle(topic.topicType)"
         >
           <!-- Completion check icon for completed topics -->
           <svg v-if="topicCompleted" class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +142,6 @@ import { computed, ref, onMounted } from 'vue'
 import type { WritingTopic } from '../../utils/types'
 import { useProgress } from '../../composables/useProgress'
 import { useWritingReview } from '~/composables/useWritingReview'
-import type { AiReviewData } from '~/utils/types'
 
 interface Props {
   topic: WritingTopic
@@ -156,7 +155,7 @@ const _emit = defineEmits<{
 }>()
 
 // Progress tracking composable (Stage 11)
-const { isWritingTopicCompleted, getWritingTopicProgress, getLatestSubmission } = useProgress()
+const { isWritingTopicCompleted, getWritingTopicProgress } = useProgress()
 
 // Client-side hydration
 const isClient = ref(false)
@@ -174,22 +173,11 @@ const topicCompleted = computed(() => isClient.value ? isTopicCompleted(props.to
 const progress = computed(() => isClient.value ? getTopicProgress(props.topic.id) : null)
 
 // Review state
-const { getReview, isReviewInProgress, reviewVersion, hasReview } = useWritingReview()
+const { isReviewInProgress, reviewVersion, hasReview } = useWritingReview()
 const isPending = computed(() => {
   // depend on version to refresh when localStorage-backed status changes
   void reviewVersion.value
   return isClient.value ? isReviewInProgress(props.topic.id) : false
-})
-const reviewText = computed(() => {
-  // depend on version to refresh
-  void reviewVersion.value
-  const rec = isClient.value ? getReview(props.topic.id) : null
-  return rec?.responseText || ''
-})
-const reviewData = computed<AiReviewData | null>(() => {
-  void reviewVersion.value
-  const rec = isClient.value ? getReview(props.topic.id) : null
-  return rec?.responseData || null
 })
 const isReady = computed(() => {
   void reviewVersion.value
@@ -211,8 +199,8 @@ const displayTestingPart = computed(() => {
   return props.topic.testingPart === 1 ? 'Teil 1' : 'Teil 2'
 })
 
-// Topic type styling
-const topicTypeStyles = {
+// Topic type styling with fallback
+const topicTypeStyles: Record<string, string> = {
   email: 'bg-blue-100 text-blue-800',
   letter: 'bg-purple-100 text-purple-800',
   essay: 'bg-green-100 text-green-800',
@@ -223,20 +211,32 @@ const topicTypeStyles = {
   review: 'bg-blue-100 text-blue-800',
   proposal: 'bg-green-100 text-green-800',
   article: 'bg-orange-100 text-orange-800',
+  post: 'bg-indigo-100 text-indigo-800',
 }
 
-// Topic type labels in German
-const topicTypeLabels = {
+// Fallback style for unknown types
+const getTopicTypeStyle = (type: string): string => {
+  return topicTypeStyles[type] || 'bg-gray-100 text-gray-800'
+}
+
+// Topic type labels in German with fallback
+const topicTypeLabels: Record<string, string> = {
   email: 'E-Mail',
   letter: 'Brief',
   essay: 'Aufsatz',
   form: 'Formular',
   postcard: 'Postkarte',
-  note: 'Notiz'
+  note: 'Notiz',
+  post: 'Beitrag',
+  article: 'Artikel',
+  report: 'Bericht',
+  review: 'Rezension',
+  proposal: 'Vorschlag',
 }
 
-function getTopicTypeLabel(type: string) {
-  return topicTypeLabels[type as keyof typeof topicTypeLabels] || type
+function getTopicTypeLabel(type: string): string {
+  // Return known label or capitalize the type as fallback
+  return topicTypeLabels[type] || type.charAt(0).toUpperCase() + type.slice(1)
 }
 </script>
 

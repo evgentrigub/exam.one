@@ -93,6 +93,8 @@ export type WritingTopicTypes =
 | 'letter'
 | 'essay'
 | 'postcard'
+| 'post'
+| string  // Allow any string to ensure all generated topics are saved
 
 export interface WritingProgress {
   topicId: string
