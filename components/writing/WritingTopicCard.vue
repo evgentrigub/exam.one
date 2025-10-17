@@ -1,5 +1,16 @@
 <template>
-  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[380px]">
+  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[380px] relative">
+    <!-- Delete button - top right corner -->
+    <button
+      class="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+      @click.stop="$emit('deleteTopic', topic.id)"
+      title="Delete topic"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+
     <!-- Header with badges -->
     <div class="px-4 pt-4">
       <div class="flex items-center justify-between mb-3">
@@ -141,6 +152,7 @@ const props = defineProps<Props>()
 
 const _emit = defineEmits<{
   startWriting: [topicId: string]
+  deleteTopic: [topicId: string]
 }>()
 
 // Progress tracking composable (Stage 11)

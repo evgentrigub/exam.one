@@ -172,7 +172,7 @@
 import { computed, ref } from 'vue'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
-import { writingTopics } from '~/data/writing/exerciseTopics'
+import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { AiReviewData } from '~/utils/types'
 
 interface Props {
@@ -182,8 +182,9 @@ const props = defineProps<Props>()
 
 const { getReview, isReviewInProgress, hasReview, reviewVersion } = useWritingReview()
 const { getLatestSubmission } = useProgress()
+const { getTopicById } = useWritingTopics()
 
-const currentTopic = computed(() => writingTopics.find(t => t.id === props.topicId))
+const currentTopic = computed(() => getTopicById(props.topicId))
 
 const isPending = computed(() => {
   void reviewVersion.value

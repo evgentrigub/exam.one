@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { writingTopics } from '~/data/writing/exerciseTopics'
+import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { WritingTopic } from '~/utils/types'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import { useWritingReview } from '~/composables/useWritingReview'
@@ -55,8 +55,9 @@ useHead({
 })
 
 const route = useRoute()
+const { getTopicById } = useWritingTopics()
 const topicId = computed(() => String(route.params['topicId'] || ''))
-const topic = computed<WritingTopic | undefined>(() => writingTopics.find(t => t.id === topicId.value))
+const topic = computed<WritingTopic | undefined>(() => getTopicById(topicId.value))
 
 const { requestReview } = useWritingReview()
 
