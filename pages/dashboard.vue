@@ -420,9 +420,9 @@ import { writingTopics } from '~/data/writing/exerciseTopics'
 
 // Page metadata
 useHead({
-  title: 'Dashboard - German Reading Trainer',
+  title: 'Dashboard - Exam.one',
   meta: [
-    { name: 'description', content: 'Track your German A2 reading comprehension progress and performance' }
+    { name: 'description', content: 'Track your reading, writing, listening and speaking progress and performance' }
   ]
 })
 

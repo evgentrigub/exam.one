@@ -1,6 +1,6 @@
 /**
- * German Reading Trainer - Type Definitions
- * Data structures for German texts, questions, and user progress
+ * Exam.one - Type Definitions
+ * Data structures for reading, writing, listening and speaking texts, questions, and user progress
  */
 
 export interface GermanText {
