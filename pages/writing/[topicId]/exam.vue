@@ -22,7 +22,7 @@
             Back to Topics
           </button>
           <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-600">{{ topic.topicType }} • A2 Level</span>
+            <span class="text-sm text-gray-600">{{ topic.topicType }} • {{ topic.difficulty }}</span>
             <div class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
               Writing Mode
             </div>
