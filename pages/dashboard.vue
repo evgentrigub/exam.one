@@ -71,7 +71,7 @@
         <h2 class="text-lg font-semibold text-gray-900">✍️ Writing Progress</h2>
         <ClientOnly>
           <div class="text-sm text-gray-600">
-            {{ writingCompletedCount }}/{{ writingTopics.length }} topics completed
+            {{ writingCompletedCount }}/{{ writingTopicsTotal }} topics completed
           </div>
           <template #fallback>
             <div class="text-sm text-gray-600">Loading...</div>
@@ -83,7 +83,7 @@
         <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
           <div 
             class="bg-green-600 h-3 rounded-full transition-all duration-500 ease-out"
-            :style="{ width: `${Math.round((writingCompletedCount / writingTopics.length) * 100)}%` }"
+            :style="{ width: `${Math.round((writingCompletedCount / writingTopicsTotal) * 100)}%` }"
           />
         </div>
         <template #fallback>
@@ -414,9 +414,9 @@
 
 <script setup lang="ts">
 import { useProgress } from '~/composables/useProgress'
+import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { WritingProgress, WritingSubmission } from '~/utils/types'
 import { germanTexts } from '~/data/german-texts'
-import { writingTopics } from '~/data/writing/exerciseTopics'
 
 // Page metadata
 useHead({
@@ -435,6 +435,9 @@ const {
   isWritingTopicCompleted,
   getWritingProgressData
 } = useProgress()
+
+// Writing topics composable
+const { getTopics } = useWritingTopics()
 
 const completionPercentage = computed(() => {
   return Math.round((completedCount.value / germanTexts.length) * 100)
@@ -531,7 +534,11 @@ const completedCount = computed(() => {
 })
 
 const writingCompletedCount = computed(() => {
-  return writingTopics.filter(topic => isWritingTopicCompleted(topic.id)).length
+  return getTopics().filter(topic => isWritingTopicCompleted(topic.id)).length
+})
+
+const writingTopicsTotal = computed(() => {
+  return getTopics().length
 })
 
 // Methods

@@ -151,6 +151,7 @@
             :key="topic.id"
             :topic="topic"
             @start-writing="openWritingInterface"
+            @delete-topic="handleDeleteTopic"
           />
         </div>
 
@@ -185,7 +186,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
-import { writingTopics } from '~/data/writing/exerciseTopics'
+import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useProgress } from '~/composables/useProgress'
 import WritingTopicCard from '~/components/writing/WritingTopicCard.vue'
 import type { WritingSessionModel } from '~/composables/useProgress'
@@ -197,6 +198,9 @@ useHead({
     { name: 'description', content: 'Practice German writing with authentic topics and prompts' }
   ]
 })
+
+// Writing topics management (localStorage-based)
+const { topics, getTopics, deleteTopic } = useWritingTopics()
 
 // Progress tracking composable (Stage 11)
 const { 
@@ -230,29 +234,29 @@ onMounted(() => {
 
 // Computed properties
 const filteredTopics = computed(() => {
-  let topics = writingTopics
+  let filteredList = getTopics()
 
   const difficulty = examLevel.value
-  topics = topics.filter(topic => topic.difficulty === difficulty)
+  filteredList = filteredList.filter(topic => topic.difficulty === difficulty)
 
   // Filter by task part
   if (selectedTaskPart.value !== 'all') {
-    topics = topics.filter(topic => topic.testingPart === parseInt(selectedTaskPart.value))
+    filteredList = filteredList.filter(topic => topic.testingPart === parseInt(selectedTaskPart.value))
   }
   
   // Filter by topic type
   if (selectedTypeFilter.value !== 'all') {
-    topics = topics.filter(topic => topic.topicType === selectedTypeFilter.value)
+    filteredList = filteredList.filter(topic => topic.topicType === selectedTypeFilter.value)
   }
   
   // Filter by completion status
   if (selectedStatusFilter.value === 'completed') {
-    topics = topics.filter(topic => isTopicCompleted(topic.id))
+    filteredList = filteredList.filter(topic => isTopicCompleted(topic.id))
   } else if (selectedStatusFilter.value === 'incomplete') {
-    topics = topics.filter(topic => !isTopicCompleted(topic.id))
+    filteredList = filteredList.filter(topic => !isTopicCompleted(topic.id))
   }
   
-  return topics
+  return filteredList
 })
 
 const filteredAndSortedTopics = computed(() => {
@@ -301,8 +305,25 @@ function resumeWriting(topicId: string) {
 }
 
 function getTopicTitle(topicId: string): string {
-  const topic = writingTopics.find(t => t.id === topicId)
+  const topic = getTopics().find(t => t.id === topicId)
   return topic ? topic.title : 'Unknown Topic'
+}
+
+// Delete topic handler with confirmation
+function handleDeleteTopic(topicId: string) {
+  const topic = getTopics().find(t => t.id === topicId)
+  if (!topic) return
+
+  const confirmed = confirm(
+    `Are you sure you want to delete "${topic.title}"?\n\nThis action cannot be undone.`
+  )
+
+  if (confirmed) {
+    const success = deleteTopic(topicId)
+    if (success) {
+      console.log(`✅ Topic "${topic.title}" deleted successfully`)
+    }
+  }
 }
 </script>
 
