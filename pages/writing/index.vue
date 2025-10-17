@@ -12,7 +12,7 @@
       </header>
 
       <!-- Resume Writing Session Card (Stage 11) -->
-      <div v-if="!selectedTopic && resumeSessions.length > 0" class="max-w-4xl mx-auto mb-8">
+      <div v-if="resumeSessions.length > 0" class="max-w-4xl mx-auto mb-8">
         <div class="bg-green-50 border border-green-200 rounded-xl p-6">
           <div class="flex items-center space-x-4">
             <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -51,7 +51,7 @@
       </div>
 
       <!-- Writing Topic Selection -->
-      <div v-if="!selectedTopic" class="max-w-6xl mx-auto">
+      <div class="max-w-6xl mx-auto">
 
         <!-- Enhanced Filter and Sort Bar -->
         <div class="mb-6 bg-white rounded-lg shadow-sm p-4">
@@ -179,52 +179,16 @@
         </div>
       </div>
     </div>
-
-    <!-- Three-Card Writing Interface -->
-    <div v-if="selectedTopic" class="fixed inset-0 bg-gray-50 z-50 overflow-hidden">
-      <!-- Header -->
-      <div class="bg-white border-b border-gray-200 px-6 py-4">
-        <div class="flex items-center justify-between">
-          <button 
-            class="inline-flex items-center text-gray-600 hover:text-gray-700 font-medium transition-colors"
-            @click="closeWritingInterface"
-          >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-            Back to Topics
-          </button>
-          <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-600">{{ selectedTopic.topicType }} • A2 Level</span>
-            <div class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
-              Writing Mode
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Writing Session Content -->
-      <div class="h-full overflow-y-auto" style="height: calc(100vh - 73px)">
-        <WritingSession 
-          :topic="selectedTopic"
-          @exit="closeWritingInterface"
-          @complete="handleWritingComplete"
-        />
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
-import { writingTopics } from '../data/writing/exerciseTopics'
-import type { WritingTopic } from '../utils/types'
-import { useProgress } from '../composables/useProgress'
-import WritingSession from '../components/writing/WritingSession.vue'
-import WritingTopicCard from '../components/writing/WritingTopicCard.vue'
-import type { WritingSessionModel } from '../composables/useProgress'
-import { useWritingReview } from '~/composables/useWritingReview'
+import { writingTopics } from '~/data/writing/exerciseTopics'
+import { useProgress } from '~/composables/useProgress'
+import WritingTopicCard from '~/components/writing/WritingTopicCard.vue'
+import type { WritingSessionModel } from '~/composables/useProgress'
 
 // Page metadata
 useHead({
@@ -237,13 +201,11 @@ useHead({
 // Progress tracking composable (Stage 11)
 const { 
   isWritingTopicCompleted, 
-  // getWritingTopicProgress,
   getAllWritingSessions
 } = useProgress()
 
 // Progress functions now using real implementation
 const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
-// const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Reactive data
 const selectedTypeFilter = ref<string>('all')
@@ -251,7 +213,7 @@ const selectedStatusFilter = ref<string>('all')
 const selectedTaskPart = ref<string>('all')
 const selectedSort = ref<string>('title')
 const sortDirection = ref<'asc' | 'desc'>('asc')
-const selectedTopic = ref<WritingTopic | null>(null)
+// removed inline exam overlay; navigation is used instead
 
 // Global settings (exam level)
 const settingsStore = useSettingsStore()
@@ -260,9 +222,6 @@ const { examLevel } = storeToRefs(settingsStore)
 // Resume functionality (Stage 11)
 const resumeSessions = ref<WritingSessionModel[]>([])
 const showAllDrafts = ref(false)
-
-// AI review (mocked OpenAI) integration
-const { requestReview } = useWritingReview()
 
 // Check for writing drafts on mount
 onMounted(() => {
@@ -326,14 +285,7 @@ const filteredAndSortedTopics = computed(() => {
 
 // Methods
 function openWritingInterface(topicId: string) {
-  const topic = writingTopics.find(t => t.id === topicId)
-  if (topic) {
-    selectedTopic.value = topic
-  }
-}
-
-function closeWritingInterface() {
-  selectedTopic.value = null
+  navigateTo(`/writing/${topicId}/exam`)
 }
 
 function resetFilters() {
@@ -343,39 +295,9 @@ function resetFilters() {
   sortDirection.value = 'asc'
 }
 
-async function handleWritingComplete(topicId: string, content: string, wordCount: number, timeSpent: number) {
-  // Writing submission is already saved in WritingSession component (Stage 11)
-  // This function can be used for additional UI updates if needed
-  console.log('Writing completed:', {
-    topicId,
-    content: content.substring(0, 100) + '...', // Log first 100 chars
-    wordCount,
-    timeSpent
-  })
-  
-  // Refresh resume sessions after completion
-  resumeSessions.value = getAllWritingSessions()
-  
-  // Trigger AI review request (mocked) using topic definition
-  const topic = writingTopics.find(t => t.id === topicId)
-  if (topic) {
-    console.log("🚀 ~ Requesting review for topic:", topic)
-    await requestReview(topic as WritingTopic, content)
-  }
-
-  // Force reactivity update for completion indicators
-  nextTick(() => {
-    // The topic cards will automatically show completion status
-    // due to reactive progress tracking
-  })
-}
-
 // Resume functionality methods (Stage 11)
 function resumeWriting(topicId: string) {
-  const topic = writingTopics.find(t => t.id === topicId)
-  if (topic) {
-    selectedTopic.value = topic
-  }
+  navigateTo(`/writing/${topicId}/exam`)
 }
 
 function getTopicTitle(topicId: string): string {
@@ -383,3 +305,4 @@ function getTopicTitle(topicId: string): string {
   return topic ? topic.title : 'Unknown Topic'
 }
 </script>
+
