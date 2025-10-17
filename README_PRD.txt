@@ -66,6 +66,12 @@ to build confidence and accuracy for the exam format.
 ---
 
 ### Stage 4: Basic Feedback System
+**Priority: P0 | Status: ✅ Complete | Est: 1 week**
+- [x] Immediate answer feedback (correct/incorrect)
+- [x] Simple explanation for correct answers
+- [x] Visual indicators (green checkmark, red X)
+- [x] Score calculation per text/session
+
 **Acceptance Criteria:**
 - ✅ Instant feedback after answer selection
 - ✅ Clear visual distinction between correct/incorrect
@@ -149,11 +155,6 @@ to build confidence and accuracy for the exam format.
 - ✅ Visiting `/reading/{quizId}` loads text and questions side-by-side
 - ✅ “Start questions” navigates to the route and closes modal
 - ✅ `?resume=true` on `/reading` redirects to the active quiz
-**Priority: P0 | Status: ✅ Complete | Est: 1 week**
-- [x] Immediate answer feedback (correct/incorrect)
-- [x] Simple explanation for correct answers
-- [x] Visual indicators (green checkmark, red X)
-- [x] Score calculation per text/session
 
 ## 🖊️ Writing Stage - Section with Writing practice exercises
 **Overall Progress: 2/4 deliverables complete (50%)**
