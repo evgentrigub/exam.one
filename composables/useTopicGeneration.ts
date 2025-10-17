@@ -102,13 +102,13 @@ export const useTopicGeneration = () => {
       const prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
 
       // Call API endpoint
-      const response = await $fetch<{ topics: WritingTopic[], error?: string }>('/api/generate-topics', {
+      const response = await $fetch('/api/generate-topics', {
         method: 'POST',
         body: {
           prompt,
           part
         }
-      })
+      }) as { topics: WritingTopic[], error?: string }
 
       if (response.error || !response.topics || response.topics.length === 0) {
         throw new Error(response.error || 'No topics generated')
@@ -118,13 +118,14 @@ export const useTopicGeneration = () => {
       clearState()
       return response.topics
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Set error state
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate topics'
       state.value = {
         isGenerating: false,
         part: null,
         startedAt: null,
-        error: error?.message || 'Failed to generate topics'
+        error: errorMessage
       }
       saveState()
 

@@ -213,7 +213,7 @@ useHead({
 })
 
 // Writing topics management (localStorage-based)
-const { topics, getTopics, deleteTopic, addTopics } = useWritingTopics()
+const { getTopics, deleteTopic, addTopics } = useWritingTopics()
 
 // Topic generation management
 const { 
@@ -359,12 +359,9 @@ async function handleGenerate(part: 1 | 2) {
     addTopics(newTopics)
     
     console.log(`✅ Successfully generated ${newTopics.length} new topics for Teil ${part}`)
-    
-    // Optional: Show success notification
-    alert(`✨ Successfully generated ${newTopics.length} new topics!`)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to generate topics:', error)
-    // Error is already stored in state, no need to show alert
+    alert(error instanceof Error ? error.message : 'Failed to generate topics')
   }
 }
 
@@ -374,9 +371,9 @@ async function handleRetry() {
     const newTopics = await retryGeneration()
     addTopics(newTopics)
     console.log(`✅ Successfully generated ${newTopics.length} new topics on retry`)
-    alert(`✨ Successfully generated ${newTopics.length} new topics!`)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to retry generation:', error)
+    alert(error instanceof Error ? error.message : 'Failed to retry generation')
   }
 }
 

@@ -114,7 +114,7 @@ export interface WritingSubmission {
   submittedAt: string
   timeSpent?: number // in seconds
   isDraft?: boolean
-  feedback: WritingFeedbackModel
+  feedback?: WritingFeedbackModel
 }
 
 export interface WritingFeedbackModel {
