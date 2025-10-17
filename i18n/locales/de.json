@@ -119,6 +119,28 @@
     "reviewInProgress": "Bewertung läuft. Bitte schaue später wieder vorbei.",
     "noReviewAvailable": "Noch keine Bewertung für dieses Thema verfügbar.",
     "noSubmission": "Keine Eingabe für dieses Thema gefunden.",
-    "taskNotFound": "Aufgabe nicht gefunden."
+    "taskNotFound": "Aufgabe nicht gefunden.",
+    "modelAnswer": {
+      "title": "Musterantwort",
+      "subtitle": "KI-Beispielantwort",
+      "words": "Wörter",
+      "modelText": "Mustertext",
+      "keyFeatures": "Wichtige Merkmale",
+      "greeting": "Anrede",
+      "mainPoints": "Hauptpunkte",
+      "closing": "Gruß",
+      "keyPhrases": "Nützliche Phrasen",
+      "whyGoodExample": "Warum ist das ein gutes Beispiel?",
+      "tips": {
+        "clearStructure": "Klare Struktur mit Anrede, Hauptteil und Gruß",
+        "appropriateWordCount": "Angemessene Wortanzahl für C1-Niveau",
+        "politeLanguage": "Höfliche und natürliche Sprache",
+        "allRequirements": "Alle Anforderungen der Aufgabe erfüllt"
+      },
+      "noExample": "Kein Beispiel für dieses Thema verfügbar",
+      "generating": "Musterantwort wird generiert...",
+      "canGenerate": "Eine Musterantwort kann für dieses Thema generiert werden",
+      "generateButton": "Musterantwort generieren"
+    }
   }
 } 

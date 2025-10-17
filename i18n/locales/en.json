@@ -119,6 +119,28 @@
     "reviewInProgress": "Review is in progress. Please check back soon.",
     "noReviewAvailable": "No review available yet for this topic.",
     "noSubmission": "No submission found for this topic.",
-    "taskNotFound": "Task not found."
+    "taskNotFound": "Task not found.",
+    "modelAnswer": {
+      "title": "Model Answer",
+      "subtitle": "AI example response",
+      "words": "words",
+      "modelText": "Model Text",
+      "keyFeatures": "Key Features",
+      "greeting": "Greeting",
+      "mainPoints": "Main Points",
+      "closing": "Closing",
+      "keyPhrases": "Useful Phrases",
+      "whyGoodExample": "Why is this a good example?",
+      "tips": {
+        "clearStructure": "Clear structure with greeting, main body and closing",
+        "appropriateWordCount": "Appropriate word count for C1 level",
+        "politeLanguage": "Polite and natural language",
+        "allRequirements": "All task requirements fulfilled"
+      },
+      "noExample": "No example available for this topic",
+      "generating": "Generating model answer...",
+      "canGenerate": "A model answer can be generated for this topic",
+      "generateButton": "Generate Model Answer"
+    }
   }
 } 

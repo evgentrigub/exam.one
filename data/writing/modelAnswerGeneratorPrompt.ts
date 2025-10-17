@@ -8,18 +8,17 @@ export const generateModelAnswerC1Part1 = (topicTask: string, topicId: string) =
         Детальное описание формата ответа Teil 1: ${dataAnswerRuleC1Part1}
         
         ФОРМАТ ВЫВОДА (строго): 
-        Сгенерированный ответ переделай под модель данных на JavaScript, которая представлена ниже. Не меняй поля id и topicId.
-        export interface ModelAnswer {
-            id: string
-            topicId: ${topicId} // не меняй это поле
-            content: string 
-            wordCount: number 
-            highlights?: { 
-                greeting?: string 
-                mainPoints?: string[] 
-                closing?: string 
-                keyPhrases?: string[] 
-            } 
+        Сгенерированный ответ выводи в формате JSON, который представлен ниже. Не меняй поле topicId.
+        {
+            "topicId": "${topicId}",
+            "content": "сгенерированный ответ",
+            "wordCount": "количество слов в ответе",
+            "highlights": {
+                "greeting": "приветствие в начале ответа",
+                "mainPoints": ["основные моменты в ответе"],
+                "closing": "закрытие в конце ответа",
+                "keyPhrases": ["ключевые фразы в ответе"]
+            }
         }
 
         topicId - id задания, к которому ты составляешь ответ 
@@ -38,18 +37,17 @@ export const generateModelAnswerC1Part2 = (topicTask: string, topicId: string) =
         Детальное описание формата ответа Teil 2: ${dataAnswerRuleC1Part2}
         
         ФОРМАТ ВЫВОДА (строго): 
-        Сгенерированный ответ переделай под модель данных на JavaScript, которая представлена ниже. Не меняй поля id и topicId.
-        export interface ModelAnswer {
-            id: string
-            topicId: ${topicId} // не меняй это поле
-            content: string 
-            wordCount: number 
-            highlights?: { 
-                greeting?: string 
-                mainPoints?: string[] 
-                closing?: string 
-                keyPhrases?: string[] 
-            } 
+        Сгенерированный ответ выводи в формате JSON, который представлен ниже. Не меняй поле topicId.
+        {
+            "topicId": "${topicId}",
+            "content": "сгенерированный ответ",
+            "wordCount": "количество слов в ответе",
+            "highlights": {
+                "greeting": "приветствие в начале ответа",
+                "mainPoints": ["основные моменты в ответе"],
+                "closing": "закрытие в конце ответа",
+                "keyPhrases": ["ключевые фразы в ответе"]
+            }
         }
 
         topicId - id задания, к которому ты составляешь ответ 
