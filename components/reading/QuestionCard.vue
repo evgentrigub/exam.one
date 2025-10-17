@@ -5,7 +5,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
           <span class="text-sm font-medium text-gray-600">
-            Frage {{ currentQuestionIndex + 1 }} von {{ totalQuestions }}
+            {{ $t('quiz.question') }} {{ currentQuestionIndex + 1 }} {{ $t('quiz.of') }} {{ totalQuestions }}
           </span>
           <div class="w-48 bg-gray-200 rounded-full h-2">
             <div 
@@ -15,7 +15,7 @@
           </div>
         </div>
         <div v-if="score !== null" class="text-sm font-medium text-primary-700">
-          Punkte: {{ score }}/{{ totalQuestions }}
+          {{ $t('quiz.scoreLabel') }} {{ score }}/{{ totalQuestions }}
         </div>
       </div>
     </div>
@@ -29,8 +29,8 @@
         />
       </div>
       <div class="flex justify-between mt-2 text-xs text-gray-500">
-        <span>Question {{ currentQuestionIndex + 1 }}</span>
-        <span>{{ totalQuestions }} total</span>
+        <span>{{ $t('quiz.question') }} {{ currentQuestionIndex + 1 }}</span>
+        <span>{{ totalQuestions }} {{ $t('quiz.total') }}</span>
       </div>
     </div>
 
@@ -87,7 +87,7 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
           </div>
           <div class="flex-1">
             <h3 class="text-lg font-medium mb-2" :class="isCorrect ? 'text-green-900' : 'text-red-900'">
-              {{ isCorrect ? 'Richtig!' : 'Nicht richtig' }}
+              {{ isCorrect ? $t('quiz.correct') : $t('quiz.incorrect') }}
             </h3>
             <p class="text-gray-700 text-sm leading-relaxed">
               {{ question.explanation }}
@@ -103,11 +103,11 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
           class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           @click="$emit('previous')"
         >
-          Zurück
+          {{ $t('quiz.previous') }}
         </button>
         
         <div v-if="!isAnswered" class="text-sm text-gray-500">
-          Wählen Sie eine Antwort aus
+          {{ $t('quiz.selectAnswer') }}
         </div>
         
         <button
@@ -116,7 +116,7 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
           class="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           @click="$emit('next')"
         >
-          Weiter
+          {{ $t('quiz.next') }}
         </button>
         
         <button
@@ -125,7 +125,7 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
           class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           @click="$emit('finish')"
         >
-          Fertig
+          {{ $t('quiz.finish') }}
         </button>
       </div>
     </div>
