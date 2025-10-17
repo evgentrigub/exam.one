@@ -109,6 +109,16 @@
   "writing": {
     "checkReview": "Check the review",
     "checking": "Checking…",
-    "repeatExercise": "Repeat exercise"
+    "repeatExercise": "Repeat exercise",
+    "aiReview": "AI Review",
+    "submittedAnswer": "Submitted Answer",
+    "topicTask": "Topic Task",
+    "yourSubmission": "Your submission",
+    "originalTask": "Original Task",
+    "requirements": "Requirements",
+    "reviewInProgress": "Review is in progress. Please check back soon.",
+    "noReviewAvailable": "No review available yet for this topic.",
+    "noSubmission": "No submission found for this topic.",
+    "taskNotFound": "Task not found."
   }
 } 

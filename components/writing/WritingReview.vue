@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isPending" class="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg p-4 mb-4">
-      Review is in progress. Please check back soon.
+      {{ $t('writing.reviewInProgress') }}
     </div>
 
     <div v-else-if="isReady && (reviewData || reviewText)" class="bg-white rounded-xl shadow-sm border">
@@ -14,21 +14,21 @@
               :class="selectedView === 'review' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'"
               @click="selectedView = 'review'"
             >
-              AI Review
+              {{ $t('writing.aiReview') }}
             </button>
             <button
               class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
               :class="selectedView === 'answer' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'"
               @click="selectedView = 'answer'"
             >
-              Submitted Answer
+              {{ $t('writing.submittedAnswer') }}
             </button>
             <button
               class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
               :class="selectedView === 'task' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'"
               @click="selectedView = 'task'"
             >
-              Topic Task
+              {{ $t('writing.topicTask') }}
             </button>
           </div>
         </div>
@@ -135,18 +135,18 @@
 
         <!-- Submitted Answer View -->
         <div v-else-if="selectedView === 'answer'">
-          <h4 class="text-sm font-semibold mb-2">Your submission</h4>
-          <p class="text-sm whitespace-pre-wrap">{{ latestSubmissionText || 'No submission found for this topic.' }}</p>
+          <h4 class="text-sm font-semibold mb-2">{{ $t('writing.yourSubmission') }}</h4>
+          <p class="text-sm whitespace-pre-wrap">{{ latestSubmissionText || $t('writing.noSubmission') }}</p>
         </div>
 
         <!-- Topic Task View -->
         <div v-else-if="selectedView === 'task'">
-          <h4 class="text-sm font-semibold mb-3">Original Task</h4>
+          <h4 class="text-sm font-semibold mb-3">{{ $t('writing.originalTask') }}</h4>
           <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-400 mb-4">
-            <p class="text-gray-800 leading-relaxed font-medium text-sm">{{ currentTopic?.task || 'Task not found.' }}</p>
+            <p class="text-gray-800 leading-relaxed font-medium text-sm">{{ currentTopic?.task || $t('writing.taskNotFound') }}</p>
           </div>
           <div v-if="currentTopic?.requirements?.length">
-            <h4 class="text-sm font-semibold mb-2">Requirements</h4>
+            <h4 class="text-sm font-semibold mb-2">{{ $t('writing.requirements') }}</h4>
             <div class="space-y-1">
               <div 
                 v-for="requirement in currentTopic.requirements" 
@@ -163,7 +163,7 @@
     </div>
 
     <div v-else class="bg-white rounded-xl border p-6 text-gray-700">
-      No review available yet for this topic.
+      {{ $t('writing.noReviewAvailable') }}
     </div>
   </div>
 </template>

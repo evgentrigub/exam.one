@@ -109,6 +109,16 @@
   "writing": {
     "checkReview": "Bewertung ansehen",
     "checking": "Prüfe…",
-    "repeatExercise": "Übung wiederholen"
+    "repeatExercise": "Übung wiederholen",
+    "aiReview": "KI-Bewertung",
+    "submittedAnswer": "Eingereichte Antwort",
+    "topicTask": "Aufgabe",
+    "yourSubmission": "Deine Eingabe",
+    "originalTask": "Ursprüngliche Aufgabe",
+    "requirements": "Anforderungen",
+    "reviewInProgress": "Bewertung läuft. Bitte schaue später wieder vorbei.",
+    "noReviewAvailable": "Noch keine Bewertung für dieses Thema verfügbar.",
+    "noSubmission": "Keine Eingabe für dieses Thema gefunden.",
+    "taskNotFound": "Aufgabe nicht gefunden."
   }
 } 
