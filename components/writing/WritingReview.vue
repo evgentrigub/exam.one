@@ -23,6 +23,13 @@
             >
               Submitted Answer
             </button>
+            <button
+              class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+              :class="selectedView === 'task' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'"
+              @click="selectedView = 'task'"
+            >
+              Topic Task
+            </button>
           </div>
         </div>
 
@@ -127,9 +134,30 @@
         <pre v-else-if="selectedView === 'review'" class="whitespace-pre-wrap text-sm text-gray-800">{{ reviewText }}</pre>
 
         <!-- Submitted Answer View -->
-        <div v-else>
+        <div v-else-if="selectedView === 'answer'">
           <h4 class="text-sm font-semibold mb-2">Your submission</h4>
           <p class="text-sm whitespace-pre-wrap">{{ latestSubmissionText || 'No submission found for this topic.' }}</p>
+        </div>
+
+        <!-- Topic Task View -->
+        <div v-else-if="selectedView === 'task'">
+          <h4 class="text-sm font-semibold mb-3">Original Task</h4>
+          <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-400 mb-4">
+            <p class="text-gray-800 leading-relaxed font-medium text-sm">{{ currentTopic?.task || 'Task not found.' }}</p>
+          </div>
+          <div v-if="currentTopic?.requirements?.length">
+            <h4 class="text-sm font-semibold mb-2">Requirements</h4>
+            <div class="space-y-1">
+              <div 
+                v-for="requirement in currentTopic.requirements" 
+                :key="requirement"
+                class="flex items-center p-1 rounded"
+              >
+                <span class="text-orange-500 mr-2 flex-shrink-0">•</span>
+                <span class="text-sm text-gray-700">{{ requirement }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -144,6 +172,7 @@
 import { computed, ref } from 'vue'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
+import { writingTopics } from '~/data/writing/exerciseTopics'
 import type { AiReviewData } from '~/utils/types'
 
 interface Props {
@@ -153,6 +182,8 @@ const props = defineProps<Props>()
 
 const { getReview, isReviewInProgress, hasReview, reviewVersion } = useWritingReview()
 const { getLatestSubmission } = useProgress()
+
+const currentTopic = computed(() => writingTopics.find(t => t.id === props.topicId))
 
 const isPending = computed(() => {
   void reviewVersion.value
@@ -181,5 +212,5 @@ const latestSubmissionText = computed(() => {
   return sub?.content || ''
 })
 
-const selectedView = ref<'review' | 'answer'>('review')
+const selectedView = ref<'review' | 'answer' | 'task'>('review')
 </script>

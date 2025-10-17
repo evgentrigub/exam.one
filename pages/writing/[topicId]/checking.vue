@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="fixed inset-0 bg-gray-50 overflow-hidden">
+    <!-- Header -->
     <div class="bg-white border-b border-gray-200 px-6 py-4">
       <div class="flex items-center justify-between">
         <button 
@@ -20,8 +21,11 @@
       </div>
     </div>
 
-    <div class="container mx-auto px-4 py-6 max-w-4xl">
-      <WritingReview :topic-id="topicId" />
+    <!-- Review Content -->
+    <div class="h-full overflow-y-auto" style="height: calc(100vh - 73px)">
+      <div class="container mx-auto px-4 py-6 max-w-4xl">
+        <WritingReview :topic-id="topicId" />
+      </div>
     </div>
   </div>
 </template>
@@ -38,7 +42,7 @@ useHead({
 })
 
 const route = useRoute()
-const topicId = computed(() => String(route.params.topicId || ''))
+const topicId = computed(() => String(route.params['topicId'] || ''))
 const topic = computed<WritingTopic | undefined>(() => writingTopics.find(t => t.id === topicId.value))
 
 function goBack() {
