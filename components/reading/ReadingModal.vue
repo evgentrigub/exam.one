@@ -14,8 +14,8 @@
       <div class="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
           <button
+            class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors cursor-pointer"
             @click="$emit('close')"
-            class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -60,8 +60,8 @@
                 </div>
               </div>
               <button
-                @click="$emit('startQuiz', text.id)"
-                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center cursor-pointer"
+                @click="$emit('start-quiz', text.id)"
               >
                 {{ $t('practice.reading.startQuestions') }}
                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,17 +72,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Close (X) button for additional accessibility -->
-      <button
-        class="absolute top-3 right-3 p-2 rounded-md text-gray-600 hover:bg-gray-100"
-        aria-label="Close"
-        @click="$emit('close')"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
     </div>
   </div>
 </template>
@@ -98,6 +87,6 @@ const props = defineProps<Props>()
 
 defineEmits<{
   close: []
-  startQuiz: [textId: string]
+  'start-quiz': [textId: string]
 }>()
 </script>

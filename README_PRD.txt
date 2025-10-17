@@ -66,24 +66,6 @@ to build confidence and accuracy for the exam format.
 ---
 
 ### Stage 4: Basic Feedback System
-### Stage 5: Routing & UX Refinement
-**Priority: P1 | Status: ✅ Complete | Est: 0.5 week**
-- [x] Refactor inline reader to modal (`components/reading/ReadingModal.vue`)
-- [x] Add deep-linkable quiz route (`pages/reading/[quizId].vue`)
-- [x] Navigate to `/reading/{quizId}` on “Start questions”
-- [x] Resume session redirects to quiz route
-
-**Acceptance Criteria:**
-- ✅ Reading opens in a modal and can be closed with ESC/click-outside
-- ✅ Visiting `/reading/{quizId}` loads text and questions side-by-side
-- ✅ “Start questions” navigates to the route and closes modal
-- ✅ `?resume=true` on `/reading` redirects to the active quiz
-**Priority: P0 | Status: ✅ Complete | Est: 1 week**
-- [x] Immediate answer feedback (correct/incorrect)
-- [x] Simple explanation for correct answers
-- [x] Visual indicators (green checkmark, red X)
-- [x] Score calculation per text/session
-
 **Acceptance Criteria:**
 - ✅ Instant feedback after answer selection
 - ✅ Clear visual distinction between correct/incorrect
@@ -154,6 +136,24 @@ to build confidence and accuracy for the exam format.
 - ✅ Navigation highlights current active page
 
 ---
+
+### Stage 9: Routing & UX Refinement
+**Priority: P1 | Status: ✅ Complete | Est: 0.5 week**
+- [x] Refactor inline reader to modal (`components/reading/ReadingModal.vue`)
+- [x] Add deep-linkable quiz route (`pages/reading/[quizId].vue`)
+- [x] Navigate to `/reading/{quizId}` on “Start questions”
+- [x] Resume session redirects to quiz route
+
+**Acceptance Criteria:**
+- ✅ Reading opens in a modal and can be closed with ESC/click-outside
+- ✅ Visiting `/reading/{quizId}` loads text and questions side-by-side
+- ✅ “Start questions” navigates to the route and closes modal
+- ✅ `?resume=true` on `/reading` redirects to the active quiz
+**Priority: P0 | Status: ✅ Complete | Est: 1 week**
+- [x] Immediate answer feedback (correct/incorrect)
+- [x] Simple explanation for correct answers
+- [x] Visual indicators (green checkmark, red X)
+- [x] Score calculation per text/session
 
 ## 🖊️ Writing Stage - Section with Writing practice exercises
 **Overall Progress: 2/4 deliverables complete (50%)**

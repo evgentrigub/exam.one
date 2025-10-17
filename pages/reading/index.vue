@@ -132,17 +132,17 @@
       v-if="selectedText"
       :text="selectedText"
       @close="closeReader"
-      @startQuiz="startQuiz"
+      @start-quiz="startQuiz"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { germanTexts } from '../data/german-texts'
-import type { GermanText } from '../utils/types'
-import { useProgress } from '../composables/useProgress'
-import TextCard from '../components/reading/TextCard.vue'
-import ReadingModal from '../components/reading/ReadingModal.vue'
+import { germanTexts } from '../../data/german-texts'
+import type { GermanText } from '../../utils/types'
+import { useProgress } from '../../composables/useProgress'
+import TextCard from '../../components/reading/TextCard.vue'
+import ReadingModal from '../../components/reading/ReadingModal.vue'
 
 // Page metadata
 useHead({

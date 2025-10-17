@@ -66,7 +66,7 @@ import QuizSession from '~/components/reading/QuizSession.vue'
 
 const route = useRoute()
 const router = useRouter()
-const quizId = computed(() => String(route.params.quizId || ''))
+const quizId = computed(() => String(route.params['quizId'] || ''))
 const text = computed<GermanText | null>(() => germanTexts.find(t => t.id === quizId.value) || null)
 
 if (!text.value) {
