@@ -85,11 +85,15 @@
     "previous": "Zurück",
     "submit": "Absenden",
     "results": "Ergebnisse",
-    "correct": "Richtig",
+    "correct": "Richtig!",
     "incorrect": "Falsch",
     "score": "Deine Punktzahl",
+    "scoreLabel": "Punkte:",
     "tryAgain": "Nochmal versuchen",
-    "backToPractice": "Zurück zur Übung"
+    "backToPractice": "Zurück zur Übung",
+    "selectAnswer": "Wählen Sie eine Antwort aus",
+    "finish": "Fertig",
+    "total": "gesamt"
   },
   "settings": {
     "title": "Einstellungen",

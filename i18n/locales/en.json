@@ -85,11 +85,15 @@
     "previous": "Previous",
     "submit": "Submit",
     "results": "Results",
-    "correct": "Correct",
+    "correct": "Correct!",
     "incorrect": "Incorrect",
     "score": "Your Score",
+    "scoreLabel": "Score:",
     "tryAgain": "Try Again",
-    "backToPractice": "Back to Practice"
+    "backToPractice": "Back to Practice",
+    "selectAnswer": "Select an answer",
+    "finish": "Finish",
+    "total": "total"
   },
   "settings": {
     "title": "Settings",
