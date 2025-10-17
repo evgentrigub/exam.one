@@ -37,6 +37,14 @@ export default defineNuxtConfig({
   // CSS configuration
   css: ['~/assets/styles/main.css'],
 
+  // Components configuration
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    }
+  ],
+
   // Tailwind CSS configuration will be in tailwind.config.js
 
   // Pinia configuration will be in stores/
@@ -63,11 +71,11 @@ export default defineNuxtConfig({
   // App configuration
   app: {
     head: {
-      title: 'German Reading Trainer',
+      title: 'Exam.one',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Practice German reading comprehension with authentic exam-style texts' }
+        { name: 'description', content: 'Prepare to exams by practicing reading, writing, listening and speaking with authentic exam-style texts' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
