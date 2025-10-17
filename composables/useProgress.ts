@@ -1,4 +1,4 @@
-import type { WritingSubmission } from '~/utils/types'
+import type { WritingSubmission, WritingFeedbackModel } from '~/utils/types'
 
 interface QuizProgress {
   textId: string
@@ -209,7 +209,7 @@ export const useProgress = () => {
   /**
  * Save writing submission to localStorage with evaluation (Stage 12)
  */
-const saveWritingSubmission = (topicId: string, content: string, wordCount: number, timeSpent?: number, feedback?: any) => {
+const saveWritingSubmission = (topicId: string, content: string, wordCount: number, timeSpent?: number, feedback?: WritingFeedbackModel) => {
   if (!import.meta.client) return
 
   const submissionId = `${topicId}-${Date.now()}`
@@ -231,7 +231,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     submittedAt,
     timeSpent: timeSpent || 0,
     isDraft: false,
-    feedback: feedback // Stage 12: Store evaluation results
+    ...(feedback && { feedback }) // Stage 12: Store evaluation results (only if provided)
   }
   
   const updatedProgress: WritingProgress = {
