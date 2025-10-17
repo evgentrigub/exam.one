@@ -179,19 +179,16 @@
         </div>
       </div>
     </div>
-
-    <!-- Exam interface moved to /writing/{topicId}/exam -->
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
-import { writingTopics } from '../data/writing/exerciseTopics'
-import type { WritingTopic } from '../utils/types'
-import { useProgress } from '../composables/useProgress'
-import WritingTopicCard from '../components/writing/WritingTopicCard.vue'
-import type { WritingSessionModel } from '../composables/useProgress'
+import { writingTopics } from '~/data/writing/exerciseTopics'
+import { useProgress } from '~/composables/useProgress'
+import WritingTopicCard from '~/components/writing/WritingTopicCard.vue'
+import type { WritingSessionModel } from '~/composables/useProgress'
 
 // Page metadata
 useHead({
@@ -204,13 +201,11 @@ useHead({
 // Progress tracking composable (Stage 11)
 const { 
   isWritingTopicCompleted, 
-  // getWritingTopicProgress,
   getAllWritingSessions
 } = useProgress()
 
 // Progress functions now using real implementation
 const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
-// const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Reactive data
 const selectedTypeFilter = ref<string>('all')
@@ -227,8 +222,6 @@ const { examLevel } = storeToRefs(settingsStore)
 // Resume functionality (Stage 11)
 const resumeSessions = ref<WritingSessionModel[]>([])
 const showAllDrafts = ref(false)
-
-// Review requests are triggered from the exam route after submission
 
 // Check for writing drafts on mount
 onMounted(() => {
@@ -312,3 +305,4 @@ function getTopicTitle(topicId: string): string {
   return topic ? topic.title : 'Unknown Topic'
 }
 </script>
+

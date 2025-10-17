@@ -55,7 +55,7 @@ useHead({
 })
 
 const route = useRoute()
-const topicId = computed(() => String(route.params.topicId || ''))
+const topicId = computed(() => String(route.params['topicId'] || ''))
 const topic = computed<WritingTopic | undefined>(() => writingTopics.find(t => t.id === topicId.value))
 
 const { requestReview } = useWritingReview()
@@ -65,10 +65,7 @@ function goBack() {
 }
 
 async function handleWritingComplete(
-  completedTopicId: string,
-  content: string,
-  wordCount: number,
-  timeSpent: number
+  content: string
 ) {
   if (!topic.value) return
   // Trigger AI review request (mocked)
