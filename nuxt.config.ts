@@ -45,7 +45,13 @@ export default defineNuxtConfig({
     }
   ],
 
-  // Tailwind CSS configuration will be in tailwind.config.js
+  // Tailwind CSS configuration
+  tailwindcss: {
+    configPath: '~/tailwind.config.js',
+    exposeConfig: true,
+    config: {},
+    viewer: true,
+  },
 
   // Pinia configuration will be in stores/
 
