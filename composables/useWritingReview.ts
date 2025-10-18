@@ -105,10 +105,10 @@ export function useWritingReview() {
 
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
-      const result = await $fetch(
+      const result: { text: string; data?: AiReviewData | null } = await $fetch(
         '/api/review',
         { method: 'POST', body: { topic, userContent, prompt } }
-      ) as { text: string; data?: AiReviewData | null }
+      )
       const current = getRecord(topic.id)
       if (current) {
         const update: WritingReviewRecord = {

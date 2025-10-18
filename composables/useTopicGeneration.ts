@@ -102,13 +102,13 @@ export const useTopicGeneration = () => {
       const prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
 
       // Call API endpoint
-      const response = await $fetch('/api/generate-topics', {
+      const response: { topics: WritingTopic[], error?: string } = await $fetch('/api/generate-topics', {
         method: 'POST',
         body: {
           prompt,
           part
         }
-      }) as { topics: WritingTopic[], error?: string }
+      })
 
       if (response.error || !response.topics || response.topics.length === 0) {
         throw new Error(response.error || 'No topics generated')

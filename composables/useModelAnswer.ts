@@ -99,10 +99,10 @@ export function useModelAnswer() {
     })
 
     try {
-      const result = await $fetch(
+      const result: { text: string; data?: Partial<ModelAnswer> | null } = await $fetch(
         '/api/generate-model-answer',
         { method: 'POST', body: { topic, prompt } }
-      ) as { text: string; data?: Partial<ModelAnswer> | null }
+      )
       
       const current = getRecord(topic.id)
       if (current) {
