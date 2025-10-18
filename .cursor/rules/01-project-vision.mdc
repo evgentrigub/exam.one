@@ -6,12 +6,7 @@ alwaysApply: true
 # Project Vision & Structure
 
 ## Vision
-Deliver a polished, exam-authentic Goethe Reading Simulator A2 that learners can install and run entirely offline, tracking their progress over time while delighting them with an Apple-grade UX.
-
-## Key Objectives
-1. Faithfully reproduce the 4 reading parts described in `README_PRD.txt`.
-2. Offer instant feedback and long-term progress stats.
-3. Require zero setup, zero accounts, zero internet once installed.
+Deliver a polished, exam-authentic simulator that learners can use and tracking their progress over time while delighting them with an Apple-grade UX.
 
 ## High-Level Architecture
 - **Nuxt 3** SPA + PWA mode (client-only rendering; SSR disabled).
