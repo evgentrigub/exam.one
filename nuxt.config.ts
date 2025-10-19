@@ -1,11 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   
   // Modules
   modules: [
-    '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxtjs/i18n'
@@ -45,14 +46,6 @@ export default defineNuxtConfig({
     }
   ],
 
-  // Tailwind CSS configuration
-  tailwindcss: {
-    configPath: '~/tailwind.config.js',
-    exposeConfig: true,
-    config: {},
-    viewer: true,
-  },
-
   // Pinia configuration will be in stores/
 
   // Build configuration
@@ -62,6 +55,7 @@ export default defineNuxtConfig({
 
   // Vite configuration for bundle optimization
   vite: {
+    plugins: [tailwindcss()],
     build: {
       rollupOptions: {
         output: {
