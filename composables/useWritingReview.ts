@@ -105,10 +105,11 @@ export function useWritingReview() {
 
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
-      const result: { text: string; data?: AiReviewData | null } = await $fetch(
-        '/api/review',
-        { method: 'POST', body: { topic, userContent, prompt } }
-      )
+      // Cast through unknown to bypass Nuxt's complex route type inference
+      const result = (await $fetch('/api/review', {
+        method: 'POST',
+        body: { topic, userContent, prompt }
+      }) as unknown) as { text: string; data?: AiReviewData | null }
       const current = getRecord(topic.id)
       if (current) {
         const update: WritingReviewRecord = {
