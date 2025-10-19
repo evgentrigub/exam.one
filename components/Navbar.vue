@@ -1,80 +1,82 @@
 <template>
-  <nav class="navbar bg-base-100 shadow-sm border-b">
-    <div class="navbar-start">
-      <NuxtLink 
-        to="/" 
-        class="btn btn-ghost normal-case gap-2"
-      >
-        <div class="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
-          </svg>
-        </div>
-        <span class="text-xl font-bold">{{ $t('home.title') }}</span>
-      </NuxtLink>
-      
-      <!-- Language Settings Icon -->
-      <button
-        type="button"
-        class="btn btn-ghost btn-circle"
-        aria-label="Language settings"
-        @click="openLanguageModal"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="navbar-end gap-2">
-      <!-- Practice Dropdown -->
-      <div class="dropdown dropdown-end">
-        <label 
-          tabindex="0" 
-          class="btn btn-ghost gap-1"
-          :class="{ 'btn-active': ['/reading', '/writing'].includes($route.path) }"
+  <div class="bg-base-100 shadow-sm border-b">
+    <nav class="navbar container mx-auto">
+      <div class="navbar-start">
+        <NuxtLink 
+          to="/" 
+          class="btn btn-ghost normal-case gap-2"
         >
-          📝 {{ $t('nav.practice') }}
-          <svg 
-            class="h-4 w-4 transition-transform duration-200" 
-            :class="{ 'rotate-180': isDropdownOpen }" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          <div class="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
+            </svg>
+          </div>
+          <span class="text-xl font-bold">{{ $t('home.title') }}</span>
+        </NuxtLink>
+        
+        <!-- Language Settings Icon -->
+        <button
+          type="button"
+          class="btn btn-ghost btn-circle"
+          aria-label="Language settings"
+          @click="openLanguageModal"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
-        </label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 mt-2">
-          <li>
-            <NuxtLink
-              to="/reading"
-              :class="{ 'active': $route.path === '/reading' }"
-            >
-              📚 {{ $t('nav.reading') }}
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink
-              to="/writing"
-              :class="{ 'active': $route.path === '/writing' }"
-            >
-              ✍️ {{ $t('nav.writing') }}
-            </NuxtLink>
-          </li>
-        </ul>
+        </button>
       </div>
 
-      <!-- Dashboard Link -->
-      <NuxtLink
-        to="/dashboard"
-        class="btn btn-ghost"
-        :class="{ 'btn-active': $route.path === '/dashboard' }"
-      >
-        📊 {{ $t('nav.dashboard') }}
-      </NuxtLink>
-    </div>
-  </nav>
+      <div class="navbar-end gap-2">
+        <!-- Practice Dropdown -->
+        <div class="dropdown dropdown-end">
+          <label 
+            tabindex="0" 
+            class="btn btn-ghost gap-1"
+            :class="{ 'btn-active': ['/reading', '/writing'].includes($route.path) }"
+          >
+            📝 {{ $t('nav.practice') }}
+            <svg 
+              class="h-4 w-4 transition-transform duration-200" 
+              :class="{ 'rotate-180': isDropdownOpen }" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </label>
+          <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 mt-2">
+            <li>
+              <NuxtLink
+                to="/reading"
+                :class="{ 'active': $route.path === '/reading' }"
+              >
+                📚 {{ $t('nav.reading') }}
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                to="/writing"
+                :class="{ 'active': $route.path === '/writing' }"
+              >
+                ✍️ {{ $t('nav.writing') }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Dashboard Link -->
+        <NuxtLink
+          to="/dashboard"
+          class="btn btn-ghost"
+          :class="{ 'btn-active': $route.path === '/dashboard' }"
+        >
+          📊 {{ $t('nav.dashboard') }}
+        </NuxtLink>
+      </div>
+    </nav>
+  </div>
 
   <!-- Language Settings Modal -->
   <input type="checkbox" v-model="isLanguageModalOpen" class="modal-toggle" />
@@ -175,7 +177,7 @@
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
 
-const settingsStore = useSettingsStore()
+const settingsStore = useSettingsStore()  
 const { examLevel, targetLanguage } = storeToRefs(settingsStore)
 const { locale } = useI18n()
 const { $i18n } = useNuxtApp()

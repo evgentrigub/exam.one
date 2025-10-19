@@ -181,20 +181,24 @@ const showQualityDetails = ref(false)
 const realtimeAnalysis = ref<TextAnalysisResult | null>(null)
 
 // Start timing when component mounts
+let interval: number | null = null
+
 onMounted(() => {
   startTime.value = Date.now()
   updateWordCount()
   
   // Update time every second
-  const interval = setInterval(() => {
+  interval = setInterval(() => {
     if (startTime.value) {
       timeSpent.value = Math.floor((Date.now() - startTime.value) / 1000)
     }
-  }, 1000)
-  
-  onUnmounted(() => {
+  }, 1000) as unknown as number
+})
+
+onUnmounted(() => {
+  if (interval) {
     clearInterval(interval)
-  })
+  }
 })
 
 // Computed properties

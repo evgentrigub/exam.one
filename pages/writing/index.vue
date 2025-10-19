@@ -13,38 +13,36 @@
 
       <!-- Resume Writing Session Card (Stage 11) -->
       <div v-if="resumeSessions.length > 0" class="max-w-4xl mx-auto mb-8">
-        <div class="bg-green-50 border border-green-200 rounded-xl p-6">
-          <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h3 class="text-lg font-semibold text-green-900 mb-1">Resume Writing</h3>
-              <p class="text-green-700 text-sm">
-                You have {{ resumeSessions.length }} saved {{ resumeSessions.length === 1 ? 'draft' : 'drafts' }}. Continue where you left off!
-              </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                <button
-                  v-for="session in resumeSessions.slice(0, 3)"
-                  :key="session.topicId"
-                  class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
-                  @click="resumeWriting(session.topicId)"
-                >
-                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5l7 7-7 7"/>
-                  </svg>
-                  {{ getTopicTitle(session.topicId) }}
-                </button>
-                <button
-                  v-if="resumeSessions.length > 3"
-                  class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-sm rounded-lg hover:bg-green-200 transition-colors"
-                  @click="showAllDrafts = !showAllDrafts"
-                >
-                  {{ showAllDrafts ? 'Show Less' : `+${resumeSessions.length - 3} More` }}
-                </button>
-              </div>
+        <div class="alert alert-success shadow">
+          <div class="w-12 h-12 bg-success/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-bold">Resume Writing</h3>
+            <p class="text-sm">
+              You have {{ resumeSessions.length }} saved {{ resumeSessions.length === 1 ? 'draft' : 'drafts' }}. Continue where you left off!
+            </p>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <button
+                v-for="session in resumeSessions.slice(0, 3)"
+                :key="session.topicId"
+                class="btn btn-success btn-sm gap-1"
+                @click="resumeWriting(session.topicId)"
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5l7 7-7 7"/>
+                </svg>
+                {{ getTopicTitle(session.topicId) }}
+              </button>
+              <button
+                v-if="resumeSessions.length > 3"
+                class="btn btn-outline btn-success btn-sm"
+                @click="showAllDrafts = !showAllDrafts"
+              >
+                {{ showAllDrafts ? 'Show Less' : `+${resumeSessions.length - 3} More` }}
+              </button>
             </div>
           </div>
         </div>
@@ -60,10 +58,10 @@
             <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <!-- Topic Type Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-gray-700">Type:</label>
+                <label class="text-sm font-medium">Type:</label>
                 <select 
                   v-model="selectedTypeFilter"
-                  class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="select select-bordered select-sm"
                 >
                   <option value="all">All Types</option>
                   <option value="email">E-Mail</option>
@@ -77,10 +75,10 @@
               
               <!-- Completion Status Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-gray-700">Status:</label>
+                <label class="text-sm font-medium">Status:</label>
                 <select 
                   v-model="selectedStatusFilter"
-                  class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="select select-bordered select-sm"
                 >
                   <option value="all">All Topics</option>
                   <option value="completed">Completed</option>
@@ -90,10 +88,10 @@
 
               <!-- Task Part Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-gray-700">Part:</label>
+                <label class="text-sm font-medium">Part:</label>
                 <select 
                   v-model="selectedTaskPart"
-                  class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="select select-bordered select-sm"
                 >
                   <option value="all">All Parts</option>
                   <option value="1">1</option>
@@ -105,10 +103,10 @@
             <!-- Sort Options -->
             <div class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                <label class="text-sm font-medium">Sort by:</label>
                 <select 
                   v-model="selectedSort"
-                  class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="select select-bordered select-sm"
                 >
                   <option value="title">Title</option>
                   <option value="type">Type</option>
@@ -121,12 +119,12 @@
               
               <!-- Sort Direction -->
               <button
-                class="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                class="btn btn-square btn-sm"
                 :title="sortDirection === 'asc' ? 'Sort Ascending' : 'Sort Descending'"
                 @click="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
               >
                 <svg 
-                  class="w-4 h-4 text-gray-600 transition-transform"
+                  class="w-4 h-4 transition-transform"
                   :class="{ 'rotate-180': sortDirection === 'desc' }"
                   fill="none" 
                   stroke="currentColor" 

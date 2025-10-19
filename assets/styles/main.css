@@ -4,6 +4,58 @@
 
 /* Custom theme colors are now configured in tailwind.config.js using daisyUI themes */
 
+@layer components {
+  /* Soft button styles (daisyUI 5+ feature, added for v4 compatibility) */
+  .btn-soft {
+    @apply border-transparent;
+  }
+  
+  .btn-soft.btn-primary {
+    @apply bg-primary/10 text-primary hover:bg-primary/20;
+  }
+  
+  .btn-soft.btn-secondary {
+    @apply bg-secondary/10 text-secondary hover:bg-secondary/20;
+  }
+  
+  .btn-soft.btn-success {
+    @apply bg-success/10 text-success hover:bg-success/20;
+  }
+  
+  .btn-soft.btn-error {
+    @apply bg-error/10 text-error hover:bg-error/20;
+  }
+  
+  .btn-soft.btn-warning {
+    @apply bg-warning/10 text-warning hover:bg-warning/20;
+  }
+  
+  .btn-soft.btn-info {
+    @apply bg-info/10 text-info hover:bg-info/20;
+  }
+  
+  /* Soft alert styles (daisyUI 5+ feature, added for v4 compatibility) */
+  .alert-soft {
+    @apply border-transparent;
+  }
+  
+  .alert-soft.alert-success {
+    @apply bg-success/10 text-success;
+  }
+  
+  .alert-soft.alert-error {
+    @apply bg-error/10 text-error;
+  }
+  
+  .alert-soft.alert-warning {
+    @apply bg-warning/10 text-warning;
+  }
+  
+  .alert-soft.alert-info {
+    @apply bg-info/10 text-info;
+  }
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;

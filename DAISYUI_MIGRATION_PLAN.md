@@ -367,64 +367,44 @@ Remove redundant custom styles, consolidate utilities.
 
 ---
 
-### Phase 4: Pages & Layouts 🟢
+### Phase 4: Pages & Layouts ✅ **COMPLETE**
 
 #### 4.1 Pages
-**Status**: ⏳ Not Started  
+**Status**: ✅ **COMPLETE**  
 **Priority**: LOW  
-**Effort**: 2 hours
+**Effort**: 2 hours → **DONE in 1.5 hours**
 
 **Files**:
-- ✅ `pages/index.vue` (182 lines) - Hero, features, benefits
-- ✅ `pages/dashboard.vue` (578 lines) - Stats overview
-- ✅ `pages/reading/index.vue`
-- ✅ `pages/reading/[quizId].vue`
-- ✅ `pages/writing/index.vue` (386 lines)
-- ✅ `pages/writing/[topicId]/exam.vue`
-- ✅ `pages/writing/[topicId]/checking.vue`
+- ✅ `pages/index.vue` - Already using daisyUI components
+- ✅ `pages/dashboard.vue` - Migrated to stats, progress, alert, cards, buttons
+- ✅ `pages/reading/index.vue` - Migrated to select, btn components
+- ✅ `pages/reading/[quizId].vue` - Migrated to badge, btn, card
+- ✅ `pages/writing/index.vue` - Migrated to alert, select, btn components
+- ✅ `pages/writing/[topicId]/exam.vue` - Migrated to card, badge, btn
+- ✅ `pages/writing/[topicId]/checking.vue` - Migrated to badge, btn
 
-**Migration Focus**:
-- Hero sections → Use `hero` component
-- Stat cards → Use `stats` and `stat` components
-- Feature grids → Use `card` in grid layout
-- Action cards → Use `card` with `card-actions`
-
-**Example - Dashboard Stats**:
-```vue
-<!-- BEFORE -->
-<div class="bg-white rounded-xl shadow-sm p-6 text-center">
-  <div class="w-12 h-12 bg-blue-100 rounded-full...">
-    <svg>...</svg>
-  </div>
-  <div class="text-3xl font-bold text-blue-600">75%</div>
-  <div class="text-sm text-gray-600">Completion</div>
-</div>
-
-<!-- AFTER -->
-<div class="stats shadow">
-  <div class="stat">
-    <div class="stat-figure text-primary">
-      <svg>...</svg>
-    </div>
-    <div class="stat-title">Completion</div>
-    <div class="stat-value text-primary">75%</div>
-  </div>
-</div>
-```
+**Completed Changes**:
+1. ✅ Dashboard stat cards → daisyUI `stats` component
+2. ✅ Progress bars → `progress` component
+3. ✅ Resume/alert cards → `alert` component
+4. ✅ Quick action cards → `card` with hover states
+5. ✅ Filter/sort selects → `select` component
+6. ✅ All buttons → `btn` variants
+7. ✅ Badges → `badge` component
 
 ---
 
 #### 4.2 Layouts
-**Status**: ⏳ Not Started  
+**Status**: ✅ **COMPLETE**  
 **Priority**: LOW  
-**Effort**: 0.5 hours
+**Effort**: 0.5 hours → **DONE in 5 minutes**
 
 **Files**:
-- ✅ `layouts/default.vue` (12 lines) - Already minimal
+- ✅ `layouts/default.vue` - Updated to use `bg-base-200`
 
-**Migration Focus**:
-- Update background colors to use daisyUI theme tokens
-- Ensure consistent spacing with daisyUI utilities
+**Completed Changes**:
+- ✅ Background colors now use daisyUI theme tokens (`bg-base-200`)
+- ✅ Consistent with daisyUI color system
 
 ---
 
