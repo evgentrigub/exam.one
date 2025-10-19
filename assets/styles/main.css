@@ -1,74 +1,11 @@
 /* Tailwind CSS v4 with daisyUI v5 */
 @import "tailwindcss";
-@plugin "daisyui";
 
-/* Custom OKLCH theme colors using CSS variables */
-@theme {
-  /* Light theme custom colors */
-  --color-primary: oklch(0.623 0.214 259.815);
-  --color-primary-content: oklch(0.97 0.014 254.604);
-  --color-secondary: oklch(0.715 0.143 215.221);
-  --color-secondary-content: oklch(0.977 0.013 236.62);
-  --color-accent: #00897B;
-  --color-neutral: #37474F;
-  --color-neutral-content: #FFFFFF;
-  --color-base-100: #FFFFFF;
-  --color-base-200: #F8F9FA;
-  --color-base-300: #E9ECEF;
-  --color-base-content: #1F2937;
-  --color-info: #0288D1;
-  --color-success: oklch(0.715 0.143 158.3);
-  --color-success-content: oklch(0.977 0.013 158.1);
-  --color-warning: oklch(0.715 0.143 80.3);
-  --color-warning-content: oklch(0.977 0.013 80.1);
-  --color-error: oklch(0.637 0.237 25.331);
-  --color-error-content: oklch(0.977 0.013 17.38);
-}
-
-/* Apply custom colors to daisyUI theme */
-:root {
-  --p: oklch(0.623 0.214 259.815);
-  --pc: oklch(0.97 0.014 254.604);
-  --s: oklch(0.715 0.143 215.221);
-  --sc: oklch(0.977 0.013 236.62);
-  --a: #00897B;
-  --n: #37474F;
-  --nc: #FFFFFF;
-  --b1: #FFFFFF;
-  --b2: #F8F9FA;
-  --b3: #E9ECEF;
-  --bc: #1F2937;
-  --in: #0288D1;
-  --su: oklch(0.715 0.143 158.3);
-  --suc: oklch(0.977 0.013 158.1);
-  --wa: oklch(0.715 0.143 80.3);
-  --wac: oklch(0.977 0.013 80.1);
-  --er: oklch(0.637 0.237 25.331);
-  --erc: oklch(0.977 0.013 17.38);
-}
-
-/* Dark mode custom colors */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --p: oklch(0.546 0.245 262.881);
-    --pc: oklch(0.932 0.032 255.585);
-    --s: oklch(0.609 0.126 221.723);
-    --sc: oklch(0.951 0.026 236.824);
-    --a: #26A69A;
-    --n: #263238;
-    --nc: #ECEFF1;
-    --b1: #1E1E1E;
-    --b2: #2D2D2D;
-    --b3: #3D3D3D;
-    --bc: #E5E7EB;
-    --in: #29B6F6;
-    --su: oklch(0.609 0.126 158.4);
-    --suc: oklch(0.951 0.026 158.2);
-    --wa: oklch(0.609 0.126 80.4);
-    --wac: oklch(0.951 0.026 80.2);
-    --er: oklch(0.577 0.245 27.325);
-    --erc: oklch(0.951 0.026 17.717);
-  }
+/* Include multiple daisyUI themes */
+@plugin "daisyui" {
+  themes: light, dark, bumblebee, cyberpunk, synthwave, retro, valentine, 
+          aqua, lofi, pastel, fantasy, luxury, dracula, autumn, business, 
+          night, coffee, winter;
 }
 
 body {
