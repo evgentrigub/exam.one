@@ -71,7 +71,7 @@
 
       <!-- Feedback Section -->
       <div v-if="isAnswered" class="border-t pt-6">
-        <div :class="isCorrect ? 'alert alert-success' : 'alert alert-error'">
+        <div :class="isCorrect ? 'alert alert-success alert-soft' : 'alert alert-error alert-soft'">
           <svg v-if="isCorrect" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
           </svg>

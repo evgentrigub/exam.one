@@ -1,10 +1,14 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <div v-if="!topic" class="container mx-auto px-4 py-12">
-      <div class="bg-white rounded-xl border p-6 text-center">
-        <h2 class="text-xl font-semibold mb-2">Topic not found</h2>
-        <p class="text-gray-600 mb-4">The requested writing topic does not exist.</p>
-        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" @click="goBack">Back to Topics</button>
+      <div class="card bg-base-100 shadow">
+        <div class="card-body text-center">
+          <h2 class="card-title mx-auto">Topic not found</h2>
+          <p>The requested writing topic does not exist.</p>
+          <div class="card-actions justify-center">
+            <button class="btn btn-primary" @click="goBack">Back to Topics</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -13,17 +17,17 @@
       <div class="bg-white border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between">
           <button 
-            class="inline-flex items-center text-gray-600 hover:text-gray-700 font-medium transition-colors"
+            class="btn btn-ghost btn-sm gap-2"
             @click="goBack"
           >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
             Back to Topics
           </button>
           <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-600">{{ topic.topicType }} • {{ topic.difficulty }}</span>
-            <div class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+            <span class="text-sm opacity-70">{{ topic.topicType }} • {{ topic.difficulty }}</span>
+            <div class="badge badge-secondary">
               Writing Mode
             </div>
           </div>

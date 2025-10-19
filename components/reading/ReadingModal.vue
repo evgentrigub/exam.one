@@ -14,7 +14,7 @@
       <div class="bg-base-200 px-6 py-4 border-b">
         <div class="flex items-center justify-between">
           <button
-            class="btn btn-ghost btn-sm gap-2"
+            class="btn btn-soft btn-primary btn-sm gap-2"
             @click="$emit('close')"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,29 +46,27 @@
 
         <!-- Start Questions Button -->
         <div class="modal-action mt-8 pt-6 border-t">
-          <div class="alert bg-primary/10">
-            <div class="flex items-center justify-between w-full">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                  <svg class="w-6 h-6 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold text-base-content mb-1">Ready for the questions?</h3>
-                  <p class="text-base-content opacity-70">Test your text comprehension with {{ text.questions?.length || 4 }} multiple-choice questions.</p>
-                </div>
-              </div>
-              <button
-                class="btn btn-primary gap-2"
-                @click="$emit('start-quiz', text.id)"
-              >
-                {{ $t('practice.reading.startQuestions') }}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          <div class="bg-primary/10 rounded-lg p-4 flex items-center justify-between w-full gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-              </button>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-base-content mb-1">Ready for the questions?</h3>
+                <p class="text-base-content opacity-70">Test your text comprehension with {{ text.questions?.length || 4 }} multiple-choice questions.</p>
+              </div>
             </div>
+            <button
+              class="btn btn-primary gap-2 flex-shrink-0"
+              @click="$emit('start-quiz', text.id)"
+            >
+              {{ $t('practice.reading.startQuestions') }}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

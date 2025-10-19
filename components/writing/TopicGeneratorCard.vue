@@ -40,7 +40,7 @@
     </div>
 
     <!-- Default State: Generator Buttons -->
-    <div v-else class="card-body flex flex-col items-center justify-center">
+    <div v-else class="card-body p-4 flex flex-col items-center justify-center">
       <!-- Icon -->
       <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
         <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@
       <!-- Title -->
       <h3 class="text-lg font-bold text-base-content mb-2 text-center">Generate New Topics</h3>
       <p class="text-sm text-base-content opacity-70 text-center mb-6 px-4">
-        Use AI to create new C1 writing exercises
+        AI creates new writing exercises
       </p>
 
       <!-- Generation Buttons -->
