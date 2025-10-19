@@ -99,10 +99,11 @@ export function useModelAnswer() {
     })
 
     try {
-      const result: { text: string; data?: Partial<ModelAnswer> | null } = await $fetch(
-        '/api/generate-model-answer',
-        { method: 'POST', body: { topic, prompt } }
-      )
+      // Cast through unknown to bypass Nuxt's complex route type inference
+      const result = (await $fetch('/api/generate-model-answer', {
+        method: 'POST',
+        body: { topic, prompt }
+      }) as unknown) as { text: string; data?: Partial<ModelAnswer> | null }
       
       const current = getRecord(topic.id)
       if (current) {

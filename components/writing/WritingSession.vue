@@ -72,18 +72,16 @@
 
     <!-- Mobile Layout Toggle (for smaller screens) -->
     <div class="lg:hidden fixed bottom-4 right-4 z-10">
-      <div class="bg-white rounded-full shadow-lg border border-gray-200">
+      <div class="btn-group btn-group-vertical">
         <button
           v-for="(tab, index) in mobileTabs"
           :key="tab.id"
-          class="p-3 rounded-full transition-colors"
-          :class="activeMobileTab === index 
-            ? 'bg-blue-600 text-white' 
-            : 'text-gray-600 hover:bg-gray-100'"
+          class="btn btn-sm"
+          :class="activeMobileTab === index ? 'btn-primary' : 'btn-ghost'"
           :title="tab.label"
           @click="activeMobileTab = index"
         >
-          <component :is="tab.icon" class="w-5 h-5" />
+          {{ tab.label }}
         </button>
       </div>
     </div>
@@ -92,18 +90,16 @@
     <div class="lg:hidden">
       <div class="p-4">
         <!-- Tab Navigation -->
-        <div class="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
-          <button
+        <div class="tabs tabs-boxed mb-4">
+          <a
             v-for="(tab, index) in mobileTabs"
             :key="tab.id"
-            class="flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors"
-            :class="activeMobileTab === index 
-              ? 'bg-white text-blue-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'"
+            class="tab flex-1"
+            :class="activeMobileTab === index ? 'tab-active' : ''"
             @click="activeMobileTab = index"
           >
             {{ tab.label }}
-          </button>
+          </a>
         </div>
 
         <!-- Active Card Content -->
@@ -136,31 +132,29 @@
     </div>
 
     <!-- Results Modal -->
-    <div v-if="showResults" class="fixed inset-0 bg-gray-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div v-if="showResults" class="modal modal-open">
+      <div class="modal-box max-w-2xl p-0">
         <!-- Results Header -->
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-xl font-bold text-gray-900">Writing Submitted!</h2>
-                <p class="text-sm text-green-600">{{ topic.title }}</p>
-              </div>
-            </div>
-            <button 
-              class="text-gray-400 hover:text-gray-600 transition-colors"
-              @click="closeResults"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        <div class="bg-base-200 px-6 py-4 border-b flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-success rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-success-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-            </button>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-base-content">Writing Submitted!</h2>
+              <p class="text-sm text-success">{{ topic.title }}</p>
+            </div>
           </div>
+          <button 
+            class="btn btn-ghost btn-circle btn-sm"
+            @click="closeResults"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
 
         <!-- Results Content -->
@@ -174,40 +168,60 @@
           </div>
 
           <!-- Writing Statistics (Basic) -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-blue-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-blue-600">{{ submissionResults?.wordCount || 0 }}</div>
-              <div class="text-sm text-blue-800">Wörter geschrieben</div>
+          <div class="stats stats-vertical md:stats-horizontal shadow w-full mb-6">
+            <div class="stat place-items-center">
+              <div class="stat-figure text-info">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div class="stat-title">Wörter geschrieben</div>
+              <div class="stat-value text-info">{{ submissionResults?.wordCount || 0 }}</div>
             </div>
-            <div class="bg-green-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-green-600">{{ formatTime(submissionResults?.timeSpent || 0) }}</div>
-              <div class="text-sm text-green-800">Zeit verwendet</div>
+            <div class="stat place-items-center">
+              <div class="stat-figure text-success">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="stat-title">Zeit verwendet</div>
+              <div class="stat-value text-success">{{ formatTime(submissionResults?.timeSpent || 0) }}</div>
             </div>
-            <div class="bg-purple-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-purple-600">A2</div>
-              <div class="text-sm text-purple-800">Niveau</div>
+            <div class="stat place-items-center">
+              <div class="stat-figure text-secondary">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="stat-title">Niveau</div>
+              <div class="stat-value text-secondary">A2</div>
             </div>
           </div>
 
           <!-- Completion Message -->
-          <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <h3 class="font-semibold text-green-800 mb-2">Gut gemacht!</h3>
-            <p class="text-green-700 text-sm">
-              You have successfully completed this writing task. 
-              Your text was sent for review and once it is done, you can open it in the writing page.
-            </p>
+          <div class="alert alert-success mb-6">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+              <h3 class="font-semibold">Gut gemacht!</h3>
+              <p class="text-sm">
+                You have successfully completed this writing task. 
+                Your text was sent for review and once it is done, you can open it in the writing page.
+              </p>
+            </div>
           </div>
 
           <!-- Next Steps -->
-          <div class="flex space-x-3">
+          <div class="modal-action">
             <button
-              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              class="btn btn-primary flex-1"
               @click="tryAnotherTopic"
             >
               Back to writing
             </button>
             <button
-              class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              class="btn btn-ghost flex-1"
               @click="viewDashboard"
             >
               Check your progress

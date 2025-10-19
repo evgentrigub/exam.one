@@ -46,7 +46,7 @@
       </p>
 
       <!-- Metadata -->
-      <div class="flex items-center text-xs text-gray-500 mb-4">
+      <div class="flex items-center text-xs opacity-60 mb-3">
         <div class="flex items-center space-x-3">
           <span>{{ topic.difficulty }}</span>
           <span>•</span>
@@ -55,7 +55,7 @@
           <span>{{ topic.wordCount.min }}-{{ topic.wordCount.max }} Wörter</span>
         </div>
       </div>
-      <div class="flex flex-wrap gap-1">
+      <div class="flex flex-wrap gap-1 mb-4">
         <span 
           v-for="categoryObj in displayCategories" 
           :key="categoryObj.full"

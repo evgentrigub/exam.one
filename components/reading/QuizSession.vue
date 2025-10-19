@@ -1,5 +1,5 @@
 <template>
-  <div :class="isSideBySide ? 'h-full' : 'min-h-screen bg-gray-50'">
+  <div :class="isSideBySide ? 'h-full' : 'min-h-screen bg-base-200'">
     <!-- Quiz Mode - Show questions -->
     <div v-if="!isFinished" :class="isSideBySide ? 'p-6 h-full' : 'container mx-auto px-4 py-8'">
       <div :class="isSideBySide ? 'h-full flex flex-col' : 'max-w-4xl mx-auto'">
@@ -7,19 +7,19 @@
         <div v-if="!isSideBySide" class="mb-8">
           <div class="flex items-center justify-between">
             <div>
-              <h1 class="text-2xl font-bold text-gray-900 mb-1">
+              <h1 class="text-2xl font-bold text-base-content mb-1">
                 {{ text.title }}
               </h1>
-              <p class="text-gray-600">
+              <p class="text-base-content opacity-70">
                 {{ getTextTypeLabel(text.textType) }} • {{ text.difficulty }} Level
               </p>
             </div>
             <button
-              class="p-2 hover:bg-white rounded-lg transition-colors"
+              class="btn btn-ghost btn-circle"
               aria-label="Quiz beenden"
               @click="$emit('exit')"
             >
-              <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
@@ -29,8 +29,8 @@
         <!-- Side-by-side header -->
         <div v-if="isSideBySide" class="mb-6">
           <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold text-gray-900">Questions</h2>
-            <div class="text-sm text-gray-600">
+            <h2 class="text-xl font-bold text-base-content">Questions</h2>
+            <div class="text-sm text-base-content opacity-70">
               {{ currentQuestionIndex + 1 }} of {{ questions.length }}
             </div>
           </div>
@@ -57,94 +57,77 @@
     <!-- Results Mode - Show final score and summary -->
     <div v-else class="container mx-auto px-4 py-8">
       <div class="max-w-4xl mx-auto">
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="card bg-base-100 shadow-xl">
           <!-- Results Header -->
-          <div class="bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-8 text-center">
+          <div class="bg-base-200 px-6 py-8 text-center">
             <div
-class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
-                 :class="getScoreColor()">
+              class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
+              :class="getScoreColor()"
+            >
               <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path v-if="scorePercentage >= 75" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 <path v-else-if="scorePercentage >= 50" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            <h1 class="text-3xl font-bold text-base-content mb-2">
               Quiz abgeschlossen!
             </h1>
-            <p class="text-gray-600">
+            <p class="text-base-content opacity-70">
               {{ text.title }}
             </p>
           </div>
 
           <!-- Score Summary -->
-          <div class="px-6 py-8">
-            <div class="text-center mb-8">
-              <div class="text-5xl font-bold mb-2" :class="getScoreTextColor()">
-                {{ score }}/{{ questions.length }}
+          <div class="card-body">
+            <div class="stats shadow mb-8 mx-auto">
+              <div class="stat place-items-center">
+                <div class="stat-title">Ihr Ergebnis</div>
+                <div class="stat-value" :class="getScoreTextColor()">{{ score }}/{{ questions.length }}</div>
+                <div class="stat-desc text-xl font-semibold">{{ scorePercentage }}% richtig</div>
               </div>
-              <div class="text-2xl font-medium text-gray-700 mb-4">
-                {{ scorePercentage }}% richtig
-              </div>
-              <div class="text-lg text-gray-600">
-                {{ getScoreMessage() }}
-              </div>
+            </div>
+            <div class="text-center text-lg text-base-content opacity-80 mb-8">
+              {{ getScoreMessage() }}
             </div>
 
             <!-- Detailed Results -->
-            <div class="border-t pt-8">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">
-                Detaillierte Ergebnisse
-              </h3>
-              <div class="space-y-4">
-                <div
-                  v-for="(result, index) in results"
-                  :key="result.questionId"
-                  class="flex items-center justify-between p-4 rounded-lg border"
-                  :class="result.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'"
-                >
-                  <div class="flex items-center space-x-4">
-                    <div
-class="w-8 h-8 rounded-full flex items-center justify-center"
-                         :class="result.isCorrect ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
-                      <svg v-if="result.isCorrect" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                      <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <div class="font-medium text-gray-900">
-                        Frage {{ index + 1 }}
-                      </div>
-                                             <div class="text-sm text-gray-600">
-                         {{ questions[index]?.question }}
-                       </div>
-                     </div>
-                   </div>
-                   <div class="text-right">
-                     <div class="text-sm text-gray-600">
-                       Ihre Antwort: {{ String.fromCharCode(65 + result.selectedAnswer) }}
-                     </div>
-                     <div v-if="!result.isCorrect" class="text-sm text-gray-600">
-                       Richtig: {{ String.fromCharCode(65 + (questions[index]?.correctAnswer ?? 0)) }}
-                     </div>
+            <div class="divider">Detaillierte Ergebnisse</div>
+            <div class="space-y-3">
+              <div
+                v-for="(result, index) in results"
+                :key="result.questionId"
+                :class="result.isCorrect ? 'alert alert-success' : 'alert alert-error'"
+              >
+                <svg v-if="result.isCorrect" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <div class="flex-1">
+                  <div class="font-semibold">Frage {{ index + 1 }}</div>
+                  <div class="text-sm opacity-80">{{ questions[index]?.question }}</div>
+                </div>
+                <div class="text-right text-sm">
+                  <div>Ihre Antwort: <strong>{{ String.fromCharCode(65 + result.selectedAnswer) }}</strong></div>
+                  <div v-if="!result.isCorrect">
+                    Richtig: <strong>{{ String.fromCharCode(65 + (questions[index]?.correctAnswer ?? 0)) }}</strong>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t">
+            <div class="card-actions justify-end mt-8 pt-6 border-t gap-3">
               <button
-                class="flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+                class="btn btn-primary flex-1 sm:flex-none"
                 @click="restartQuiz"
               >
                 Nochmal versuchen
               </button>
               <button
-                class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                class="btn btn-ghost flex-1 sm:flex-none"
                 @click="$emit('exit')"
               >
                 Zurück zur Übersicht
@@ -288,15 +271,15 @@ function restartQuiz() {
 }
 
 function getScoreColor() {
-  if (scorePercentage.value >= 75) return 'bg-green-500 text-white'
-  if (scorePercentage.value >= 50) return 'bg-yellow-500 text-white'
-  return 'bg-red-500 text-white'
+  if (scorePercentage.value >= 75) return 'bg-success text-success-content'
+  if (scorePercentage.value >= 50) return 'bg-warning text-warning-content'
+  return 'bg-error text-error-content'
 }
 
 function getScoreTextColor() {
-  if (scorePercentage.value >= 75) return 'text-green-600'
-  if (scorePercentage.value >= 50) return 'text-yellow-600'
-  return 'text-red-600'
+  if (scorePercentage.value >= 75) return 'text-success'
+  if (scorePercentage.value >= 50) return 'text-warning'
+  return 'text-error'
 }
 
 function getScoreMessage() {

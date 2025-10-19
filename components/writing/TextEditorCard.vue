@@ -1,24 +1,24 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col overflow-hidden">
+  <div class="card bg-base-100 shadow h-full flex flex-col">
     <!-- Card Header -->
-    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200 rounded-t-xl flex-shrink-0">
+    <div class="bg-purple-50 dark:bg-purple-950 px-6 py-4 border-b flex-shrink-0">
       <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
             </svg>
           </div>
           <div>
-            <h2 class="text-lg font-bold text-gray-900">Your Answer</h2>
-            <p class="text-sm text-purple-600">Write your response here</p>
+            <h2 class="card-title text-lg">Your Answer</h2>
+            <p class="text-sm text-purple-600 dark:text-purple-400">Write your response here</p>
           </div>
         </div>
         
         <!-- Word Counter -->
         <div class="text-right">
           <div class="text-2xl font-bold" :class="wordCountColor">{{ wordCount }}</div>
-          <div class="text-xs text-gray-600">
+          <div class="text-sm text-purple-600 dark:text-purple-400">
             {{ topic.wordCount.min }}-{{ topic.wordCount.max }} words
           </div>
         </div>
@@ -26,11 +26,11 @@
     </div>
 
     <!-- Text Editor -->
-    <div class="p-6 flex-1 flex flex-col overflow-y-auto min-h-0">
+    <div class="card-body flex-1 flex flex-col overflow-y-auto min-h-0">
       <div class="mb-4 flex-1 min-h-0">
         <textarea
           v-model="content"
-          class="w-full h-full min-h-[120px] border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
+          class="textarea textarea-bordered w-full h-full min-h-[120px] resize-none"
           :class="textareaClasses"
           placeholder="Start writing your response here..."
           @input="updateWordCount"
@@ -42,25 +42,24 @@
         <!-- Word Count Progress Bar -->
         <div class="mb-2">
           <div class="flex justify-between items-center mb-1">
-            <span class="text-xs font-medium text-gray-700">Wortanzahl-Fortschritt</span>
-            <span class="text-xs text-gray-600">{{ wordCountPercentage }}%</span>
+            <span class="text-xs font-medium text-base-content opacity-70">Wortanzahl-Fortschritt</span>
+            <span class="text-xs text-base-content opacity-60">{{ wordCountPercentage }}%</span>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              class="h-2 rounded-full transition-all duration-300"
-              :class="progressBarColor"
-              :style="{ width: `${Math.min(wordCountPercentage, 100)}%` }"
-            />
-          </div>
+          <progress 
+            class="progress w-full"
+            :class="progressBarColor"
+            :value="wordCountPercentage"
+            max="100"
+          ></progress>
         </div>
 
         <!-- Real-time Quality Indicators (Stage 12) -->
         <div v-if="content.trim().length > 20" class="mb-3">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-medium text-gray-700">Schreibqualität</span>
+            <span class="text-xs font-medium text-base-content opacity-70">Schreibqualität</span>
             <button 
               @click="showQualityDetails = !showQualityDetails"
-              class="text-xs text-blue-600 hover:text-blue-700"
+              class="btn btn-ghost btn-xs"
             >
               {{ showQualityDetails ? 'Weniger' : 'Details' }}
             </button>
@@ -69,40 +68,48 @@
           <!-- Quality Indicators -->
           <div class="grid grid-cols-3 gap-2 text-xs">
             <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full mr-2" :class="structureIndicatorColor"></div>
-              <span class="text-gray-600">Struktur</span>
+              <div class="badge badge-sm mr-2" :class="structureIndicatorColor"></div>
+              <span class="text-base-content opacity-70">Struktur</span>
             </div>
             <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full mr-2" :class="vocabularyIndicatorColor"></div>
-              <span class="text-gray-600">Wortschatz</span>
+              <div class="badge badge-sm mr-2" :class="vocabularyIndicatorColor"></div>
+              <span class="text-base-content opacity-70">Wortschatz</span>
             </div>
             <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full mr-2" :class="lengthIndicatorColor"></div>
-              <span class="text-gray-600">Länge</span>
+              <div class="badge badge-sm mr-2" :class="lengthIndicatorColor"></div>
+              <span class="text-base-content opacity-70">Länge</span>
             </div>
           </div>
 
           <!-- Detailed Quality Info -->
-          <div v-if="showQualityDetails && realtimeAnalysis" class="mt-2 p-2 bg-gray-50 rounded text-xs">
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <span class="font-medium">Sätze:</span> {{ realtimeAnalysis.sentenceCount }}
-              </div>
-              <div>
-                <span class="font-medium">Absätze:</span> {{ realtimeAnalysis.structureElements.paragraphCount }}
-              </div>
-              <div>
-                <span class="font-medium">Wortvielfalt:</span> {{ Math.round(realtimeAnalysis.vocabularyMetrics.vocabularyDiversity * 100) }}%
-              </div>
-              <div>
-                <span class="font-medium">Konnektoren:</span> {{ realtimeAnalysis.vocabularyMetrics.commonConnectors.length }}
-              </div>
+          <div v-if="showQualityDetails && realtimeAnalysis" class="stats stats-horizontal shadow mt-2 text-xs">
+            <div class="stat px-4 py-2">
+              <div class="stat-title text-xs">Sätze</div>
+              <div class="stat-value text-lg">{{ realtimeAnalysis.sentenceCount }}</div>
+            </div>
+            <div class="stat px-4 py-2">
+              <div class="stat-title text-xs">Absätze</div>
+              <div class="stat-value text-lg">{{ realtimeAnalysis.structureElements.paragraphCount }}</div>
+            </div>
+            <div class="stat px-4 py-2">
+              <div class="stat-title text-xs">Wortvielfalt</div>
+              <div class="stat-value text-lg">{{ Math.round(realtimeAnalysis.vocabularyMetrics.vocabularyDiversity * 100) }}%</div>
+            </div>
+            <div class="stat px-4 py-2">
+              <div class="stat-title text-xs">Konnektoren</div>
+              <div class="stat-value text-lg">{{ realtimeAnalysis.vocabularyMetrics.commonConnectors.length }}</div>
             </div>
           </div>
         </div>
 
         <!-- Writing Status -->
         <div class="flex items-center justify-between text-sm">
+          <!-- <div class="badge badge-soft gap-2" :class="wordCountColor">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            {{ wordCountStatus }}
+          </div> -->
           <div class="flex items-center">
             <span class="flex items-center" :class="wordCountColor">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +120,7 @@
           </div>
           <button
             v-if="content.trim()"
-            class="text-red-600 hover:text-red-700 text-xs font-medium transition-colors"
+            class="btn btn-error btn-ghost btn-xs"
             @click="clearContent"
           >
             Text löschen
@@ -122,10 +129,10 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex space-x-3 flex-shrink-0 mt-auto">
+      <div class="card-actions justify-end gap-3 flex-shrink-0 mt-auto">
         <button
           :disabled="!content.trim()"
-          class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="btn btn-outline flex-1"
           @click="saveDraft"
         >
           Save Draft
@@ -133,10 +140,10 @@
         <button
           :class="submitButtonClasses"
           :disabled="!isSubmittable"
-          class="flex-1 px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+          class="btn flex-1 gap-2"
           @click="submitWriting"
         >
-          <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
           </svg>
           Submit Writing
@@ -209,7 +216,6 @@ const isSubmittable = computed(() => {
          content.value.trim().length > 0
 })
 
-
 const wordCountColor = computed(() => {
   if (wordCount.value < props.topic.wordCount.min) {
     return 'text-red-600'
@@ -220,13 +226,34 @@ const wordCountColor = computed(() => {
   }
 })
 
+// const wordCountColor = computed(() => {
+//   if (wordCount.value < props.topic.wordCount.min) {
+//     return 'badge-error'
+//   } else if (wordCount.value > props.topic.wordCount.max) {
+//     return 'badge-error'
+//   } else {
+//     return 'badge-success'
+//   }
+// })
+
+// const wordCountColorText = computed(() => {
+//   if (wordCount.value < props.topic.wordCount.min) {
+//     return 'text-error'
+//   } else if (wordCount.value > props.topic.wordCount.max) {
+//     return 'text-error'
+//   } else {
+//     return 'text-success'
+//   }
+// })
+
+
 const progressBarColor = computed(() => {
   if (wordCount.value < props.topic.wordCount.min) {
-    return 'bg-red-400'
+    return 'progress-error'
   } else if (wordCount.value > props.topic.wordCount.max) {
-    return 'bg-red-400'
+    return 'progress-error'
   } else {
-    return 'bg-green-400'
+    return 'progress-success'
   }
 })
 
@@ -246,46 +273,46 @@ const wordCountStatus = computed(() => {
 
 const textareaClasses = computed(() => {
   if (wordCount.value > props.topic.wordCount.max) {
-    return 'min-h-[150px] border-red-300 focus:ring-red-500 focus:border-red-500'
+    return 'textarea-error'
   } else if (wordCount.value >= props.topic.wordCount.min) {
-    return 'min-h-[150px] border-green-300 focus:ring-green-500 focus:border-green-500'
+    return 'textarea-success'
   } else {
-    return 'min-h-[150px] border-gray-300 focus:ring-purple-500 focus:border-purple-500'
+    return 'textarea-accent'
   }
 })
 
 const submitButtonClasses = computed(() => {
   if (isSubmittable.value) {
-    return 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
+    return 'btn-success'
   } else {
-    return 'bg-gray-300 text-gray-500 cursor-not-allowed'
+    return 'btn-disabled'
   }
 })
 
 // Quality indicator colors (Stage 12)
 const structureIndicatorColor = computed(() => {
-  if (!realtimeAnalysis.value) return 'bg-gray-300'
+  if (!realtimeAnalysis.value) return 'badge-ghost'
   const score = realtimeAnalysis.value.structureElements.structureScore
-  if (score >= 4) return 'bg-green-500'
-  if (score >= 3) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (score >= 4) return 'badge-success'
+  if (score >= 3) return 'badge-warning'
+  return 'badge-error'
 })
 
 const vocabularyIndicatorColor = computed(() => {
-  if (!realtimeAnalysis.value) return 'bg-gray-300'
+  if (!realtimeAnalysis.value) return 'badge-ghost'
   const diversity = realtimeAnalysis.value.vocabularyMetrics.vocabularyDiversity
-  if (diversity >= 0.7) return 'bg-green-500'
-  if (diversity >= 0.5) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (diversity >= 0.7) return 'badge-success'
+  if (diversity >= 0.5) return 'badge-warning'
+  return 'badge-error'
 })
 
 const lengthIndicatorColor = computed(() => {
   if (wordCount.value >= props.topic.wordCount.min && wordCount.value <= props.topic.wordCount.max) {
-    return 'bg-green-500'
+    return 'badge-success'
   } else if (wordCount.value >= props.topic.wordCount.min * 0.8) {
-    return 'bg-yellow-500'
+    return 'badge-warning'
   }
-  return 'bg-red-500'
+  return 'badge-error'
 })
 
 // Methods
