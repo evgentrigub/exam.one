@@ -9,7 +9,7 @@ alwaysApply: true
 Deliver **Apple-level polish**: intuitive, minimal, delightful, responsive.
 
 ## Visual Language
-1. Use Tailwind CSS; no custom CSS unless necessary.
+1. Use Tailwind CSS and daisyUI
 2. **Typography**: San Francisco / Inter as default; consistent scale (Major Third).
 3. Color palette: soft neutrals, Goethe brand teal accent; respect dark mode.
 4. Elevation & depth via subtle shadows (2-4 dp). Blur on modal backgrounds.
@@ -33,7 +33,7 @@ Deliver **Apple-level polish**: intuitive, minimal, delightful, responsive.
 - Announce score via `aria-live` region.
 
 ## Content & Copy
-- Use English UI; German texts only where testing reading ability.
+- Use English and German UI localization.
 - Tone: encouraging, concise, no jargon.
 - Error messages actionable ("Please choose an answer before continuing").
 
@@ -47,10 +47,6 @@ Deliver **Apple-level polish**: intuitive, minimal, delightful, responsive.
 - Disable forward navigation until current question answered (option in settings).
 - Timer counts down total 30 min; warn at 5 min.
 
-## Offline & PWA
-- Encourage install banner after second visit.
-- App icon: simple book motif; splash screen light & dark.
-
 ## Animation Budget
 - 60fps mandatory; total JS per interaction under 2 kbms.
 - Prefer CSS transitions; avoid JS-heavy animations.
@@ -58,8 +54,5 @@ Deliver **Apple-level polish**: intuitive, minimal, delightful, responsive.
 ## Form Elements
 - Use floating labels for inputs.
 - Password field masked with toggle.
-
-## Testing
-- Manual QA checklist: dark mode, RTL, keyboard only, screen reader.
 
 *Adhere strictly to these principles to ensure a refined, inclusive user experience.*

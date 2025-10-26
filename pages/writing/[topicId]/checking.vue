@@ -4,17 +4,17 @@
     <div class="bg-white border-b border-gray-200 px-6 py-4">
       <div class="flex items-center justify-between">
         <button 
-          class="inline-flex items-center text-gray-600 hover:text-gray-700 font-medium transition-colors"
+          class="btn btn-ghost btn-sm gap-2"
           @click="goBack"
         >
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
           Back to Topics
         </button>
         <div class="flex items-center space-x-4">
-          <span class="text-sm text-gray-600">{{ topic?.topicType || 'Topic' }} • A2 Level</span>
-          <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+          <span class="text-sm opacity-70">{{ topic?.topicType || 'Topic' }} • A2 Level</span>
+          <div class="badge badge-success">
             Review
           </div>
         </div>
