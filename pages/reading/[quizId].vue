@@ -5,16 +5,16 @@
       <div class="flex items-center justify-between">
         <NuxtLink 
           to="/reading"
-          class="inline-flex items-center text-gray-600 hover:text-gray-700 font-medium transition-colors"
+          class="btn btn-ghost btn-sm gap-2"
         >
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
           Back to selection
         </NuxtLink>
         <div class="flex items-center space-x-4">
-          <span class="text-sm text-gray-600">{{ text?.textType }} • A2 Level</span>
-          <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+          <span class="text-sm opacity-70">{{ text?.textType }} • A2 Level</span>
+          <div class="badge badge-primary">
             Quiz Mode
           </div>
         </div>
@@ -24,22 +24,22 @@
     <!-- Content Grid -->
     <div class="h-full flex overflow-hidden" style="height: calc(100vh - 73px)">
       <!-- Text Panel (Left) -->
-      <div class="w-1/2 bg-gray-50 border-r border-gray-200">
+      <div class="w-1/2 bg-base-200 border-r">
         <div class="p-6">
-          <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center">
-                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="card bg-base-100 shadow overflow-hidden">
+            <div class="card-body p-6 border-b">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
                   </svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900">{{ text?.title }}</h2>
+                <h2 class="card-title">{{ text?.title }}</h2>
               </div>
             </div>
-            <div class="overflow-y-auto p-6 bg-gray-50">
+            <div class="overflow-y-auto p-6 bg-base-200">
               <div class="prose max-w-none">
-                <div class="whitespace-pre-line text-gray-800 leading-relaxed">{{ text?.content }}</div>
+                <div class="whitespace-pre-line leading-relaxed">{{ text?.content }}</div>
               </div>
             </div>
           </div>

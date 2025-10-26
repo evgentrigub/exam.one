@@ -1,20 +1,19 @@
 <template>
-  <div :class="isSideBySide ? 'bg-white' : 'bg-white rounded-xl shadow-lg overflow-hidden'">
+  <div :class="isSideBySide ? 'bg-base-100' : 'card bg-base-100 shadow-xl'">
     <!-- Question Header -->
-    <div v-if="!isSideBySide" class="bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-4 border-b">
+    <div v-if="!isSideBySide" class="bg-base-200 px-6 py-4 border-b">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <span class="text-sm font-medium text-gray-600">
+          <span class="text-sm font-medium text-base-content opacity-70">
             {{ $t('quiz.question') }} {{ currentQuestionIndex + 1 }} {{ $t('quiz.of') }} {{ totalQuestions }}
           </span>
-          <div class="w-48 bg-gray-200 rounded-full h-2">
-            <div 
-              class="bg-primary-600 h-2 rounded-full transition-all duration-300"
-              :style="{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }"
-            />
-          </div>
+          <progress 
+            class="progress progress-primary w-48" 
+            :value="currentQuestionIndex + 1" 
+            :max="totalQuestions"
+          />
         </div>
-        <div v-if="score !== null" class="text-sm font-medium text-primary-700">
+        <div v-if="score !== null" class="text-sm font-medium text-primary">
           {{ $t('quiz.scoreLabel') }} {{ score }}/{{ totalQuestions }}
         </div>
       </div>
@@ -22,13 +21,12 @@
 
     <!-- Side-by-side progress bar -->
     <div v-if="isSideBySide" class="mb-6">
-      <div class="w-full bg-gray-200 rounded-full h-2">
-        <div 
-          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-          :style="{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }"
-        />
-      </div>
-      <div class="flex justify-between mt-2 text-xs text-gray-500">
+      <progress 
+        class="progress progress-primary w-full" 
+        :value="currentQuestionIndex + 1" 
+        :max="totalQuestions"
+      />
+      <div class="flex justify-between mt-2 text-xs text-base-content opacity-60">
         <span>{{ $t('quiz.question') }} {{ currentQuestionIndex + 1 }}</span>
         <span>{{ totalQuestions }} {{ $t('quiz.total') }}</span>
       </div>
@@ -36,7 +34,7 @@
 
     <!-- Question Content -->
     <div :class="isSideBySide ? 'p-0' : 'p-6 md:p-8'">
-      <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+      <h2 class="text-xl md:text-2xl font-bold text-base-content mb-6">
         {{ question.question }}
       </h2>
 
@@ -46,23 +44,24 @@
           v-for="(option, index) in question.options"
           :key="index"
           :disabled="isAnswered"
-          class="w-full p-4 rounded-lg border-2 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          class="w-full p-4 rounded-lg border-2 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           :class="getOptionClass(index)"
           @click="selectAnswer(index)"
         >
           <div class="flex items-center">
             <div
-class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center mr-4 transition-all duration-200"
-                 :class="getOptionCircleClass(index)">
+              class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center mr-4 transition-all duration-200"
+              :class="getOptionCircleClass(index)"
+            >
               <span class="text-sm font-medium">{{ String.fromCharCode(65 + index) }}</span>
             </div>
-            <span class="text-gray-900 font-medium">{{ option }}</span>
+            <span class="text-base-content font-medium">{{ option }}</span>
             <!-- Feedback Icons -->
             <div v-if="isAnswered" class="ml-auto">
-              <svg v-if="index === question.correctAnswer" class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg v-if="index === question.correctAnswer" class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
-              <svg v-else-if="index === selectedAnswer && index !== question.correctAnswer" class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg v-else-if="index === selectedAnswer && index !== question.correctAnswer" class="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </div>
@@ -72,24 +71,18 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
 
       <!-- Feedback Section -->
       <div v-if="isAnswered" class="border-t pt-6">
-        <div class="flex items-start space-x-4">
-          <div class="flex-shrink-0">
-            <div v-if="isCorrect" class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-              </svg>
-            </div>
-            <div v-else class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </div>
-          </div>
-          <div class="flex-1">
-            <h3 class="text-lg font-medium mb-2" :class="isCorrect ? 'text-green-900' : 'text-red-900'">
+        <div :class="isCorrect ? 'alert alert-success alert-soft' : 'alert alert-error alert-soft'">
+          <svg v-if="isCorrect" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          <div>
+            <h3 class="font-bold">
               {{ isCorrect ? $t('quiz.correct') : $t('quiz.incorrect') }}
             </h3>
-            <p class="text-gray-700 text-sm leading-relaxed">
+            <p class="text-sm">
               {{ question.explanation }}
             </p>
           </div>
@@ -100,20 +93,20 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
       <div class="flex justify-between items-center mt-8 pt-6 border-t">
         <button
           :disabled="currentQuestionIndex === 0"
-          class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="btn btn-ghost"
           @click="$emit('previous')"
         >
           {{ $t('quiz.previous') }}
         </button>
         
-        <div v-if="!isAnswered" class="text-sm text-gray-500">
+        <div v-if="!isAnswered" class="text-sm text-base-content opacity-60">
           {{ $t('quiz.selectAnswer') }}
         </div>
         
         <button
           v-if="currentQuestionIndex < totalQuestions - 1"
           :disabled="!isAnswered"
-          class="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="btn btn-primary"
           @click="$emit('next')"
         >
           {{ $t('quiz.next') }}
@@ -122,7 +115,7 @@ class="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-cen
         <button
           v-else
           :disabled="!isAnswered"
-          class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="btn btn-success"
           @click="$emit('finish')"
         >
           {{ $t('quiz.finish') }}
@@ -178,33 +171,33 @@ function selectAnswer(index: number) {
 
 function getOptionClass(index: number) {
   if (!isAnswered.value) {
-    return 'border-gray-300 hover:border-primary-300 hover:bg-primary-50'
+    return 'border-base-300 hover:border-primary hover:bg-primary hover:bg-opacity-10'
   }
   
   if (index === props.question.correctAnswer) {
-    return 'border-green-500 bg-green-50'
+    return 'border-success bg-success bg-opacity-10'
   }
   
   if (index === selectedAnswer.value && index !== props.question.correctAnswer) {
-    return 'border-red-500 bg-red-50'
+    return 'border-error bg-error bg-opacity-10'
   }
   
-  return 'border-gray-200 bg-gray-50'
+  return 'border-base-200 bg-base-200'
 }
 
 function getOptionCircleClass(index: number) {
   if (!isAnswered.value) {
-    return 'border-gray-400 text-gray-600'
+    return 'border-base-content border-opacity-40 text-base-content text-opacity-60'
   }
   
   if (index === props.question.correctAnswer) {
-    return 'border-green-500 bg-green-500 text-white'
+    return 'border-success bg-success text-success-content'
   }
   
   if (index === selectedAnswer.value && index !== props.question.correctAnswer) {
-    return 'border-red-500 bg-red-500 text-white'
+    return 'border-error bg-error text-error-content'
   }
   
-  return 'border-gray-300 text-gray-500'
+  return 'border-base-content border-opacity-20 text-base-content text-opacity-50'
 }
 </script> 

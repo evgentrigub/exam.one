@@ -101,14 +101,14 @@ export const useTopicGeneration = () => {
       // Get the appropriate prompt
       const prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
 
-      // Call API endpoint
-      const response = await $fetch('/api/generate-topics', {
+      // Call API endpoint - cast through unknown to bypass Nuxt's complex route type inference
+      const response = (await $fetch('/api/generate-topics', {
         method: 'POST',
         body: {
           prompt,
           part
         }
-      }) as { topics: WritingTopic[], error?: string }
+      }) as unknown) as { topics: WritingTopic[], error?: string }
 
       if (response.error || !response.topics || response.topics.length === 0) {
         throw new Error(response.error || 'No topics generated')

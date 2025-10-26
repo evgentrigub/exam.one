@@ -64,7 +64,8 @@ alwaysApply: true
 
 ## Dependency Rules
 
-- Max 12 third-party libraries. Use browser-native APIs when possible.
+- Prefer browser-native APIs when possible, but use established UI libraries for rapid development.
+- **UI Library**: daisyUI (Tailwind CSS components) is the standard UI component library.
 - Update dependencies monthly. Use pinned versions to avoid drift.
 
 ## Extensibility

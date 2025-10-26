@@ -63,9 +63,5 @@ alwaysApply: true
 - Never store plain passwords.
 - No eval/string-based new Function.
 
-## Version Control
-- Conventional commits (`feat:`, `fix:`).
-- Branch naming: `feature/<slug>` `bug/<slug>`.
-
 ---
 *Follow these rules to ensure clean, maintainable, performant code.*

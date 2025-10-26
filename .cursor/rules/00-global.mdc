@@ -6,7 +6,6 @@ alwaysApply: true
 # Global Engineering & Product Rules (Goethe A2 Reading Simulator)
 
 ## Scope & Constraints
-   - The application **MUST run 100 % offline** once installed (PWA-ready, no external APIs).
    - All data (user creds, progress, tasks) lives in `localStorage` or IndexedDB. No backend.
    - Exam tasks are generated client-side from embedded JSON/YAML fixtures; keep them A2-level.
    - Mock API layer (`~/composables/api.ts`) to simulate REST; integrate latency simulation.
@@ -14,7 +13,7 @@ alwaysApply: true
 ## Technical Stack (researched • 2025-06-12)
    - Use **Nuxt 3 (stable)** + TypeScript.
    - State management: **Pinia** (idempotent, persisted).
-   - UI: Tailwind CSS v3 (JIT) for polished, accessible design.
+   - UI: Tailwind CSS v3 (JIT) + daisyUI for polished, accessible design.
    - Storage: IndexedDB via localForage; fall back to localStorage for small keys.
 
 ## File-Size & Maintainability
@@ -33,8 +32,7 @@ alwaysApply: true
 
 ## Investigation Discipline
    - Thoroughly inspect every request: search, grep, docs (Context7) **before coding**.
-   - Keep `README_PRD.txt` in sync: tick completed features. 
-   - PRD is the single source of truth. Update it after every major milestone.
+   - Memory-bank is the single source of truth. Update it after every major milestone.
 
 ## Performance & PWA
    - Register Service Worker via Nuxt PWA module (offline caching).
