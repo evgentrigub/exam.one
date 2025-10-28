@@ -1,10 +1,11 @@
 import type { H3Event } from 'h3'
-import type { WritingTopic } from '~/utils/types'
+import type { WritingTopic, Difficulty } from '~/utils/types'
 import { generateTopicId } from '~/utils/uuid'
 
 interface GenerateTopicsRequestBody {
   prompt: string
   part: 1 | 2
+  difficulty?: Difficulty
 }
 
 interface GenerateTopicsResponse {
@@ -102,13 +103,17 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
     }
 
     // Replace AI-generated IDs with unique UUIDs to prevent collisions
+    const difficulty = body.difficulty || 'C1'
+    // Only A2 and C1 are currently supported for generation
+    const supportedDifficulty: 'A2' | 'C1' = (difficulty === 'A2' || difficulty === 'C1') ? difficulty : 'C1'
     const topicsWithUniqueIds = topics.map(topic => ({
       ...topic,
-      id: generateTopicId(body.part),
+      id: generateTopicId(body.part, supportedDifficulty),
+      difficulty,
       createdAt: new Date().toISOString()
     }))
 
-    console.log(`✅ Generated ${topicsWithUniqueIds.length} topics for Teil ${body.part} with unique IDs`)
+    console.log(`✅ Generated ${topicsWithUniqueIds.length} topics for ${body.difficulty || 'C1'} Teil ${body.part} with unique IDs`)
 
     return { topics: topicsWithUniqueIds }
 
