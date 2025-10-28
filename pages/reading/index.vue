@@ -98,6 +98,18 @@
             :key="text.id"
             :text="text"
             @start-reading="openReader"
+            @delete-text="handleDeleteText"
+          />
+          
+          <!-- Reading Generator Card -->
+          <ReadingGeneratorCard 
+            :is-generating="isGenerating"
+            :generating-difficulty="generatingDifficulty"
+            :generation-error="generationError"
+            :current-difficulty="examLevel"
+            @generate="handleGenerate"
+            @retry="handleRetry"
+            @dismiss="handleDismissError"
           />
         </div>
 
@@ -138,11 +150,15 @@
 </template>
 
 <script setup lang="ts">
-import { germanTexts } from '../../data/german-texts'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '~/stores/settings'
 import type { GermanText } from '../../utils/types'
 import { useProgress } from '../../composables/useProgress'
+import { useReadingTexts } from '../../composables/useReadingTexts'
+import { useReadingGeneration } from '../../composables/useReadingGeneration'
 import TextCard from '../../components/reading/TextCard.vue'
 import ReadingModal from '../../components/reading/ReadingModal.vue'
+import ReadingGeneratorCard from '../../components/reading/ReadingGeneratorCard.vue'
 
 // Page metadata
 useHead({
@@ -154,6 +170,23 @@ useHead({
 
 // Progress composable
 const { getSession, isTextCompleted, getBestScore } = useProgress()
+
+// Reading texts management (localStorage-based)
+const { getTexts, addTexts, deleteText } = useReadingTexts()
+
+// Reading generation management
+const { 
+  isGenerating, 
+  generatingDifficulty,
+  generationError,
+  generateReading,
+  retryGeneration,
+  dismissError
+} = useReadingGeneration()
+
+// Global settings (exam level)
+const settingsStore = useSettingsStore()
+const { examLevel } = storeToRefs(settingsStore)
 
 // Reactive data
 const selectedTypeFilter = ref<string>('all')
@@ -177,7 +210,11 @@ onMounted(() => {
 
 // Computed properties
 const filteredTexts = computed(() => {
-  let texts = germanTexts
+  let texts = getTexts()
+
+  // Filter by current exam level
+  const difficulty = examLevel.value
+  texts = texts.filter(text => text.difficulty === difficulty)
   
   // Filter by text type
   if (selectedTypeFilter.value !== 'all') {
@@ -224,7 +261,7 @@ const filteredAndSortedTexts = computed(() => {
 
 // Methods
 function openReader(textId: string) {
-  const text = germanTexts.find(t => t.id === textId)
+  const text = getTexts().find(t => t.id === textId)
   if (text) {
     selectedText.value = text
   }
@@ -235,7 +272,7 @@ function closeReader() {
 }
 
 function startQuiz(textId: string) {
-  const text = germanTexts.find(t => t.id === textId)
+  const text = getTexts().find(t => t.id === textId)
   if (text && text.questions && text.questions.length > 0) {
     router.push({ path: `/reading/${text.id}` })
     selectedText.value = null
@@ -247,5 +284,55 @@ function resetFilters() {
   selectedStatusFilter.value = 'all'
   selectedSort.value = 'title'
   sortDirection.value = 'asc'
+}
+
+// Generate reading exercises handler
+async function handleGenerate() {
+  try {
+    console.log(`🤖 Generating ${examLevel.value} reading exercises...`)
+    const newTexts = await generateReading(examLevel.value)
+    
+    // Add generated texts to storage
+    addTexts(newTexts)
+    
+    console.log(`✅ Successfully generated ${newTexts.length} new reading exercises for ${examLevel.value}`)
+  } catch (error: unknown) {
+    console.error('Failed to generate reading exercises:', error)
+    alert(error instanceof Error ? error.message : 'Failed to generate reading exercises')
+  }
+}
+
+// Retry generation handler
+async function handleRetry() {
+  try {
+    const newTexts = await retryGeneration()
+    addTexts(newTexts)
+    console.log(`✅ Successfully generated ${newTexts.length} new reading exercises on retry`)
+  } catch (error: unknown) {
+    console.error('Failed to retry generation:', error)
+    alert(error instanceof Error ? error.message : 'Failed to retry generation')
+  }
+}
+
+// Dismiss error handler
+function handleDismissError() {
+  dismissError()
+}
+
+// Delete text handler with confirmation
+function handleDeleteText(textId: string) {
+  const text = getTexts().find(t => t.id === textId)
+  if (!text) return
+
+  const confirmed = confirm(
+    `Are you sure you want to delete "${text.title}"?\n\nThis action cannot be undone.`
+  )
+
+  if (confirmed) {
+    const success = deleteText(textId)
+    if (success) {
+      console.log(`✅ Text "${text.title}" deleted successfully`)
+    }
+  }
 }
 </script>

@@ -8,7 +8,7 @@ export interface GermanText {
   title: string
   content: string
   textType: TextType
-  difficulty: 'A2'
+  difficulty: 'A2' | 'C1'
   estimatedReadingTime: number // in minutes
   wordCount: number
   topics: string[]
@@ -60,7 +60,7 @@ export interface Session {
   timeSpent?: number
 }
 
-export type Difficulty = 'A2' | 'B1' | 'B2' | 'C1'
+export type Difficulty = 'A2' | 'C1'
 
 // Writing Topic Types
 export interface WritingTopic {

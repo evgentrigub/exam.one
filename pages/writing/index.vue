@@ -152,12 +152,12 @@
             @delete-topic="handleDeleteTopic"
           />
           
-          <!-- Topic Generator Card (C1 only) -->
+          <!-- Topic Generator Card -->
           <TopicGeneratorCard 
-            v-if="examLevel === 'C1'"
             :is-generating="isGenerating"
             :generating-part="generatingPart"
             :generation-error="generationError"
+            :current-difficulty="examLevel"
             @generate="handleGenerate"
             @retry="handleRetry"
             @dismiss="handleDismissError"
@@ -350,13 +350,13 @@ function handleDeleteTopic(topicId: string) {
 // Generate topics handler
 async function handleGenerate(part: 1 | 2) {
   try {
-    console.log(`🤖 Generating Teil ${part} topics...`)
-    const newTopics = await generateTopics(part)
+    console.log(`🤖 Generating ${examLevel.value} Teil ${part} topics...`)
+    const newTopics = await generateTopics(part, examLevel.value)
     
     // Add generated topics to storage
     addTopics(newTopics)
     
-    console.log(`✅ Successfully generated ${newTopics.length} new topics for Teil ${part}`)
+    console.log(`✅ Successfully generated ${newTopics.length} new topics for ${examLevel.value} Teil ${part}`)
   } catch (error: unknown) {
     console.error('Failed to generate topics:', error)
     alert(error instanceof Error ? error.message : 'Failed to generate topics')

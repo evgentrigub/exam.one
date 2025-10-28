@@ -13,7 +13,7 @@
           Back to selection
         </NuxtLink>
         <div class="flex items-center space-x-4">
-          <span class="text-sm opacity-70">{{ text?.textType }} • A2 Level</span>
+          <span class="text-sm opacity-70">{{ text?.textType }} • {{ text?.difficulty }} Level</span>
           <div class="badge badge-primary">
             Quiz Mode
           </div>
@@ -60,14 +60,16 @@
 </template>
 
 <script setup lang="ts">
-import { germanTexts } from '~/data/german-texts'
 import type { GermanText } from '~/utils/types'
+import { useReadingTexts } from '~/composables/useReadingTexts'
 import QuizSession from '~/components/reading/QuizSession.vue'
 
 const route = useRoute()
 const router = useRouter()
+const { getTexts } = useReadingTexts()
+
 const quizId = computed(() => String(route.params['quizId'] || ''))
-const text = computed<GermanText | null>(() => germanTexts.find(t => t.id === quizId.value) || null)
+const text = computed<GermanText | null>(() => getTexts().find(t => t.id === quizId.value) || null)
 
 if (!text.value) {
   // If invalid id, redirect back to list

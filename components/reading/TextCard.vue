@@ -1,6 +1,17 @@
 <template>
-  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[320px]">
-    <div class="card-body p-4 flex flex-col">
+  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[320px] group">
+    <div class="card-body p-4 flex flex-col relative">
+      <!-- Delete button - top right corner -->
+      <button
+        class="btn btn-circle btn-error btn-sm absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        title="Delete text"
+        @click.stop="$emit('deleteText', text.id)"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
       <!-- Header with badges -->
       <div class="flex items-center justify-between mb-3">
         <!-- Time indicator always on left -->
@@ -95,6 +106,7 @@ const props = defineProps<Props>()
 
 const _emit = defineEmits<{
   startReading: [textId: string]
+  deleteText: [textId: string]
 }>()
 
 // Progress tracking
