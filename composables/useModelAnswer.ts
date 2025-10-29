@@ -8,7 +8,7 @@
 import type { WritingTopic } from '~/utils/types'
 import type { ModelAnswer } from '~/data/writing/modelAnswers'
 import { ref } from 'vue'
-import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/modelAnswerGeneratorPrompt'
+import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/modelAnswerGeneratorPromptC1'
 import { generateUUID } from '~/utils/uuid'
 
 type GenerationStatus = 'idle' | 'pending' | 'ready' | 'error'
