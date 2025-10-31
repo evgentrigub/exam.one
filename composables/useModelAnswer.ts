@@ -8,7 +8,8 @@
 import type { WritingTopic } from '~/utils/types'
 import type { ModelAnswer } from '~/data/writing/modelAnswers'
 import { ref } from 'vue'
-import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/modelAnswerGeneratorPromptC1'
+import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/answerGeneratorC1Prompt'
+import { generateModelAnswerA2Part1, generateModelAnswerA2Part2 } from '~/data/writing/answerGeneratorA2Prompt'
 import { generateUUID } from '~/utils/uuid'
 
 type GenerationStatus = 'idle' | 'pending' | 'ready' | 'error'
@@ -77,10 +78,23 @@ export function useModelAnswer() {
   }
 
   function getGenerationPrompt(topic: WritingTopic): string {
-    if (topic.testingPart === 1) {
-      return generateModelAnswerC1Part1(topic.task, topic.id)
-    } else {
-      return generateModelAnswerC1Part2(topic.task, topic.id)
+    switch (topic.difficulty) {
+      case 'A2':
+        switch (topic.testingPart) {
+          case 1:
+            return generateModelAnswerA2Part1(topic.task, topic.id)
+          default:
+            return generateModelAnswerA2Part2(topic.task, topic.id)
+        }
+      case 'C1':
+        switch (topic.testingPart) {
+          case 1:
+            return generateModelAnswerC1Part1(topic.task, topic.id)
+          default:
+            return generateModelAnswerC1Part2(topic.task, topic.id)
+        }
+      default:
+        throw new Error(`Unsupported difficulty level: ${topic.difficulty}`)
     }
   }
 

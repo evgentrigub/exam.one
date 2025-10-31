@@ -1,5 +1,5 @@
 import type { WritingTopic } from '~/utils/types'
-export const reviewPromptC1Teil1 = (topic: WritingTopic, userContent: string) => {
+export const reviewPromptA2Teil1 = (topic: WritingTopic, userContent: string) => {
     return `
 Промпт для проверки A2 Schreiben (Goethe-Institut, модульный формат 2024)
 Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben.
@@ -26,7 +26,6 @@ Sprache: понятность, простая связность, базовая
 Гёте-Институт
 
 Специфика регистра для Teil 1: короткая личная SMS в du-Form, без формальной Anrede/Grußformel; 3–5 простых предложений, строго все 3 пункта.
-
 Дай конкретную обратную связь: коротко по делу. Приведи 3–6 типичных ошибок из ответа с точными исправлениями. Не переписывай весь текст целиком.
 
 Формат вывода JSON (строго):
@@ -65,7 +64,7 @@ Sprache: понятность, простая связность, базовая
     `
 }
 
-export const reviewPromptC1Teil2 = (topic: WritingTopic, userContent: string) => {
+export const reviewPromptA2Teil2 = (topic: WritingTopic, userContent: string) => {
   return `
 Промпт для проверки A2 Schreiben (Goethe-Institut, модульный формат 2024)
 Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben.
