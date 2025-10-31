@@ -45,19 +45,35 @@
             </div>
             <div>
               <div class="text-gray-500">Words</div>
-              <div class="font-medium">{{ reviewData.word_count }} / {{ reviewData.required_word_count }}</div>
+              <div class="font-medium">{{ formatWordCount(reviewData) }}</div>
             </div>
-            <div>
+            <div v-if="isC1ReviewData(reviewData)">
               <div class="text-gray-500">Teil points</div>
-              <div class="font-medium">{{ reviewData.teil_points }}</div>
+              <div class="font-medium">{{ getC1TeilPoints(reviewData) }}</div>
+            </div>
+            <div v-if="isA2ReviewData(reviewData)">
+              <div class="text-gray-500">Messpunkte</div>
+              <div class="font-medium">{{ getA2Messpunkte(reviewData) }}</div>
+            </div>
+            <div v-if="isA2ReviewData(reviewData)">
+              <div class="text-gray-500">Result Points</div>
+              <div class="font-medium">{{ getA2ResultPoints(reviewData) }}</div>
             </div>
             <div>
               <div class="text-gray-500">Rule</div>
               <div class="font-medium uppercase">{{ reviewData.teil_rule_applied }}</div>
             </div>
-            <div>
+            <div v-if="isC1ReviewData(reviewData)">
               <div class="text-gray-500">Passed module</div>
-              <div class="font-medium">{{ reviewData.passed_module ? 'Yes' : 'No' }}</div>
+              <div class="font-medium">{{ getPassedModule(reviewData) }}</div>
+            </div>
+            <div v-if="isA2ReviewData(reviewData)">
+              <div class="text-gray-500">Register</div>
+              <div class="font-medium">{{ formatRegisterCheck(reviewData) }}</div>
+            </div>
+            <div v-if="isA2ReviewData(reviewData)">
+              <div class="text-gray-500">Points Covered</div>
+              <div class="font-medium">{{ formatContentPoints(reviewData) }}</div>
             </div>
           </div>
 
@@ -80,23 +96,31 @@
                     <td>{{ reviewData.criteria.aufgabenerfuellung.points }}</td>
                     <td>{{ reviewData.criteria.aufgabenerfuellung.comment }}</td>
                   </tr>
-                  <tr>
+                  <!-- A2 criteria -->
+                  <tr v-if="isA2ReviewData(reviewData)">
+                    <td>Sprache</td>
+                    <td>{{ getA2Sprache(reviewData).grade }}</td>
+                    <td>{{ getA2Sprache(reviewData).points }}</td>
+                    <td>{{ getA2Sprache(reviewData).comment }}</td>
+                  </tr>
+                  <!-- C1 criteria -->
+                  <tr v-if="isC1ReviewData(reviewData)">
                     <td>Kohärenz</td>
-                    <td>{{ reviewData.criteria.kohaerenz.grade }}</td>
-                    <td>{{ reviewData.criteria.kohaerenz.points }}</td>
-                    <td>{{ reviewData.criteria.kohaerenz.comment }}</td>
+                    <td>{{ getC1Kohaerenz(reviewData).grade }}</td>
+                    <td>{{ getC1Kohaerenz(reviewData).points }}</td>
+                    <td>{{ getC1Kohaerenz(reviewData).comment }}</td>
                   </tr>
-                  <tr>
+                  <tr v-if="isC1ReviewData(reviewData)">
                     <td>Wortschatz</td>
-                    <td>{{ reviewData.criteria.wortschatz.grade }}</td>
-                    <td>{{ reviewData.criteria.wortschatz.points }}</td>
-                    <td>{{ reviewData.criteria.wortschatz.comment }}</td>
+                    <td>{{ getC1Wortschatz(reviewData).grade }}</td>
+                    <td>{{ getC1Wortschatz(reviewData).points }}</td>
+                    <td>{{ getC1Wortschatz(reviewData).comment }}</td>
                   </tr>
-                  <tr>
+                  <tr v-if="isC1ReviewData(reviewData)">
                     <td>Strukturen</td>
-                    <td>{{ reviewData.criteria.strukturen.grade }}</td>
-                    <td>{{ reviewData.criteria.strukturen.points }}</td>
-                    <td>{{ reviewData.criteria.strukturen.comment }}</td>
+                    <td>{{ getC1Strukturen(reviewData).grade }}</td>
+                    <td>{{ getC1Strukturen(reviewData).points }}</td>
+                    <td>{{ getC1Strukturen(reviewData).comment }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -181,6 +205,7 @@ import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { AiReviewData } from '~/utils/types'
+import { isA2Review, isC1Review } from '~/utils/types'
 
 interface Props {
   topicId: string
@@ -221,4 +246,81 @@ const latestSubmissionText = computed(() => {
 })
 
 const selectedView = ref<'review' | 'answer' | 'task'>('review')
+
+// Type guard helpers for template
+const isA2ReviewData = (data: AiReviewData | null): data is import('~/utils/types').AiReviewDataA2 => {
+  return data ? isA2Review(data) : false
+}
+
+const isC1ReviewData = (data: AiReviewData | null): data is import('~/utils/types').AiReviewDataC1 => {
+  return data ? isC1Review(data) : false
+}
+
+// Helper functions for type-safe property access
+const formatWordCount = (data: AiReviewData) => {
+  if (isA2Review(data)) {
+    return `${data.word_count} / ${data.required_word_count.min}-${data.required_word_count.max}`
+  }
+  return `${data.word_count} / ${data.required_word_count}`
+}
+
+const getC1TeilPoints = (data: AiReviewData) => {
+  return isC1Review(data) ? data.teil_points : 0
+}
+
+const getA2Messpunkte = (data: AiReviewData) => {
+  return isA2Review(data) ? data.teil_points_mess : 0
+}
+
+const getA2ResultPoints = (data: AiReviewData) => {
+  return isA2Review(data) ? data.teil_points_result : 0
+}
+
+const getPassedModule = (data: AiReviewData) => {
+  return isC1Review(data) ? (data.passed_module ? 'Yes' : 'No') : 'N/A'
+}
+
+const formatRegisterCheck = (data: AiReviewData) => {
+  if (isA2Review(data)) {
+    const { detected, ok } = data.register_check
+    return `${detected} (${ok ? '✓' : '✗'})`
+  }
+  return 'N/A'
+}
+
+const formatContentPoints = (data: AiReviewData) => {
+  if (isA2Review(data)) {
+    const { covered, required } = data.content_points_covered
+    return `${covered} / ${required}`
+  }
+  return 'N/A'
+}
+
+const getA2Sprache = (data: AiReviewData) => {
+  if (isA2Review(data)) {
+    return data.criteria.sprache
+  }
+  return { grade: '', points: 0, comment: '' }
+}
+
+const getC1Kohaerenz = (data: AiReviewData) => {
+  if (isC1Review(data)) {
+    return data.criteria.kohaerenz
+  }
+  return { grade: '', points: 0, comment: '' }
+}
+
+const getC1Wortschatz = (data: AiReviewData) => {
+  if (isC1Review(data)) {
+    return data.criteria.wortschatz
+  }
+  return { grade: '', points: 0, comment: '' }
+}
+
+const getC1Strukturen = (data: AiReviewData) => {
+  if (isC1Review(data)) {
+    return data.criteria.strukturen
+  }
+  return { grade: '', points: 0, comment: '' }
+}
 </script>

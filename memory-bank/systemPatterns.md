@@ -226,6 +226,133 @@ components/writing/WritingFeedback.vue (analysis results)
 - Show informative message: "AI features unavailable offline"
 - Ensure core functionality works without network
 
+## AI Generation Pattern (NEW - 2025-10-31)
+
+### Architecture Overview
+The AI generation system follows a consistent pattern across writing topics and reading exercises:
+
+```
+User Click → Page Handler → Generation Composable → API Endpoint  
+→ OpenAI API → Response Parsing → Storage Composable → localStorage  
+→ Reactive UI Update
+```
+
+### Generation Composables
+**Pattern**: `useTopicGeneration` and `useReadingGeneration` follow identical structure:
+
+```typescript
+interface GenerationState {
+  isGenerating: boolean
+  difficulty: Difficulty | null  // or part for writing
+  startedAt: string | null
+  error: string | null
+}
+```
+
+**Key Methods**:
+- `generateTopics(part, difficulty)` / `generateReading(difficulty)`
+- `retryGeneration()` - Preserves original parameters
+- `dismissError()` - Clears error state
+- `clearState()` - Resets generation state
+
+**Features**:
+- localStorage persistence for generation state
+- Timeout detection (5 minutes)
+- Automatic state recovery after page refresh
+- Error handling with retry capability
+
+### Storage Composables
+**Pattern**: `useWritingTopics` and `useReadingTexts` manage content storage:
+
+```typescript
+// Core Methods
+getItems()           // Retrieve all items
+getItemById(id)      // Find specific item
+addItems(items)      // Add multiple with deduplication
+deleteItem(id)       // Remove item (protected for defaults)
+resetToDefaults()    // Clear generated content
+```
+
+**Key Features**:
+- Merge default and generated content
+- Prevent duplicate IDs
+- Protection against deleting default content
+- localStorage persistence
+- Reactive updates via `ref()`
+
+### API Endpoints
+**Pattern**: All generation endpoints follow this structure:
+
+1. **Request Validation**: Check for API key
+2. **OpenAI Call**: Use `gpt-4o-mini` model
+3. **Response Parsing**: Extract JSON from markdown or raw text
+4. **ID Generation**: Assign unique IDs to all entities
+5. **Return**: Structured response with error handling
+
+**Response Parsing**:
+```typescript
+// Handles both markdown code blocks and raw JSON
+const blockStart = rawText.indexOf('```json')
+// ... extract and parse
+// Falls back to bracket scanning if no code block found
+```
+
+**ID Generation**:
+- Writing: `{difficulty}-part{part}-{timestamp}-{random}`
+- Reading: `reading-{difficulty}-{timestamp}-{random}`
+- Questions: `{textId}-q{index}`
+
+### UI Components
+**Generator Cards**: Display three states:
+1. **Default**: Show generate button with current difficulty
+2. **Generating**: Loading spinner with estimated time
+3. **Error**: Error message with retry/dismiss buttons
+
+**Integration Pattern**:
+```vue
+<TopicGeneratorCard 
+  :is-generating="isGenerating"
+  :generating-part="generatingPart"
+  :current-difficulty="examLevel"
+  @generate="handleGenerate"
+  @retry="handleRetry"
+  @dismiss="handleDismissError"
+/>
+```
+
+### Difficulty Handling
+**Type Safety**: Only A2 and C1 supported for generation:
+```typescript
+type Difficulty = 'A2' | 'C1'  // B1, B2 excluded
+const supportedDifficulty: 'A2' | 'C1' = 
+  (difficulty === 'A2' || difficulty === 'C1') ? difficulty : 'C1'
+```
+
+**Filtering**: All lists filter by current `examLevel` from settings store
+
+### Key Technical Decisions
+
+1. **Nullish Coalescing for Optional Properties**:
+```typescript
+const questions = text.questions?.map(...) ?? []
+// Prevents undefined from breaking TypeScript strict mode
+```
+
+2. **State Persistence**:
+- Generation state: Separate key per feature
+- Generated content: Separate from default content
+- Only non-default content saved to localStorage
+
+3. **Deduplication**:
+- Check IDs before adding new items
+- Filter duplicates when merging with defaults
+- Log warnings for skipped duplicates
+
+4. **Protection**:
+- Default texts/topics cannot be deleted
+- Composables check ID against defaults
+- UI shows delete button only for generated content (via hover)
+
 ## Performance Optimizations
 
 ### Code Splitting
