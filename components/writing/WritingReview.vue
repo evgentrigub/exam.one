@@ -40,39 +40,39 @@
         <div v-if="selectedView === 'review' && reviewData">
           <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
             <div>
-              <div class="text-gray-500">Teil</div>
+              <div class="text-base-content/60">Teil</div>
               <div class="font-medium">{{ reviewData.teil }}</div>
             </div>
             <div>
-              <div class="text-gray-500">Words</div>
+              <div class="text-base-content/60">Words</div>
               <div class="font-medium">{{ formatWordCount(reviewData) }}</div>
             </div>
             <div v-if="isC1ReviewData(reviewData)">
-              <div class="text-gray-500">Teil points</div>
+              <div class="text-base-content/60">Teil points</div>
               <div class="font-medium">{{ getC1TeilPoints(reviewData) }}</div>
             </div>
             <div v-if="isA2ReviewData(reviewData)">
-              <div class="text-gray-500">Messpunkte</div>
+              <div class="text-base-content/60">Messpunkte</div>
               <div class="font-medium">{{ getA2Messpunkte(reviewData) }}</div>
             </div>
             <div v-if="isA2ReviewData(reviewData)">
-              <div class="text-gray-500">Result Points</div>
+              <div class="text-base-content/60">Result Points</div>
               <div class="font-medium">{{ getA2ResultPoints(reviewData) }}</div>
             </div>
             <div>
-              <div class="text-gray-500">Rule</div>
+              <div class="text-base-content/60">Rule</div>
               <div class="font-medium uppercase">{{ reviewData.teil_rule_applied }}</div>
             </div>
             <div v-if="isC1ReviewData(reviewData)">
-              <div class="text-gray-500">Passed module</div>
+              <div class="text-base-content/60">Passed module</div>
               <div class="font-medium">{{ getPassedModule(reviewData) }}</div>
             </div>
             <div v-if="isA2ReviewData(reviewData)">
-              <div class="text-gray-500">Register</div>
+              <div class="text-base-content/60">Register</div>
               <div class="font-medium">{{ formatRegisterCheck(reviewData) }}</div>
             </div>
             <div v-if="isA2ReviewData(reviewData)">
-              <div class="text-gray-500">Points Covered</div>
+              <div class="text-base-content/60">Points Covered</div>
               <div class="font-medium">{{ formatContentPoints(reviewData) }}</div>
             </div>
           </div>
@@ -162,7 +162,7 @@
           </div>
         </div>
 
-        <pre v-else-if="selectedView === 'review'" class="whitespace-pre-wrap text-sm text-gray-800">{{ reviewText }}</pre>
+        <pre v-else-if="selectedView === 'review'" class="whitespace-pre-wrap text-sm text-base-content">{{ reviewText }}</pre>
 
         <!-- Submitted Answer View -->
         <div v-else-if="selectedView === 'answer'">

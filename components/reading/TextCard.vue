@@ -41,7 +41,7 @@
       </h3>
 
       <!-- Metadata -->
-      <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+      <div class="flex items-center justify-between text-xs text-base-content/60 mb-4">
         <div class="flex items-center space-x-3">
           <span>{{ text.wordCount }} words</span>
           <span>•</span>
@@ -59,17 +59,17 @@
       </div>
 
       <!-- Progress Information -->
-      <div v-if="textCompleted" class="mb-4 p-3 bg-green-50 rounded-lg">
+      <div v-if="textCompleted" class="mb-4 p-3 bg-success/10 rounded-lg">
         <div class="flex items-center justify-between">
-          <div class="flex items-center text-green-700">
+          <div class="flex items-center text-success">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <span class="text-sm font-medium">Best Score</span>
           </div>
           <div class="text-right">
-            <div class="text-lg font-bold text-green-700">{{ Math.round((bestScore / (text.questions?.length || 4)) * 100) }}%</div>
-            <div class="text-xs text-green-600">
+            <div class="text-lg font-bold text-success">{{ Math.round((bestScore / (text.questions?.length || 4)) * 100) }}%</div>
+            <div class="text-xs text-success/80">
               {{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
             </div>
           </div>

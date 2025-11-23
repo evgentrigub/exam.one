@@ -1,22 +1,22 @@
 <template>
   <div class="card bg-base-100 shadow h-full flex flex-col">
     <!-- Card Header -->
-    <div class="bg-cyan-50 dark:bg-cyan-950 px-6 py-4 border-b flex-shrink-0">
+    <div class="bg-secondary/10 px-6 py-4 border-b flex-shrink-0">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-cyan-100 dark:bg-cyan-900 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-10 h-10 bg-secondary/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
           <div>
             <h2 class="card-title text-lg">{{ $t('writing.modelAnswer.title') }}</h2>
-            <p class="text-sm text-cyan-600 dark:text-cyan-400">{{ $t('writing.modelAnswer.subtitle') }}</p>
+            <p class="text-sm text-secondary">{{ $t('writing.modelAnswer.subtitle') }}</p>
           </div>
         </div>
 
         <!-- Word Count Badge -->
-        <div v-if="!isLoading" class="bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+        <div v-if="!isLoading" class="badge badge-secondary font-semibold">
           {{ modelAnswer?.wordCount || 0 }} {{ $t('writing.modelAnswer.words') }}
         </div>
         <div v-else class="badge badge-ghost">
