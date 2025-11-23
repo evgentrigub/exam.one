@@ -19,7 +19,9 @@
 ### State Management
 - **Pinia** (v3.0.3) - Vue store with Composition API style
 - **pinia-plugin-persistedstate** (v4.3.0) - Automatic localStorage persistence
-- Composables for feature-specific state (`useProgress`, `useWritingTopics`)
+- Composables for feature-specific state:
+  - **Reading**: `useProgress` (tracking), `useReadingTexts` (storage), `useReadingGeneration` (AI generation)
+  - **Writing**: `useProgress`, `useWritingTopics` (storage), `useTopicGeneration` (AI generation), `useWritingReview`, `useWritingMode`, `useModelAnswer`
 
 ### Utilities
 - **VueUse** (v13.4.0) - Collection of Vue Composition API utilities
@@ -33,10 +35,17 @@
 - Strategy: `no_prefix` (detect locale, no URL prefix)
 
 ### Server/API (Optional Features)
-- **OpenAI** (v5.12.2) - AI-powered review and feedback
+- **OpenAI** (v5.12.2) - AI-powered generation, review, and feedback
   - Server-side only, never exposed to client
-  - Requires `OPENAI_API_KEY` environment variable
+  - Requires `NUXT_OPENAI_API_KEY` environment variable
   - Gracefully degrades when key not present
+  - **API Endpoints**:
+    - `/api/generate-topics` - Writing topic generation (A2 & C1, Teil 1 & 2)
+    - `/api/generate-reading` - Reading exercise generation (A2 & C1)
+    - `/api/generate-model-answer` - Model answer generation
+    - `/api/review` - AI text review and feedback
+  - **Model**: `gpt-4o-mini` (cost-effective, fast)
+  - **Response Parsing**: Robust JSON extraction from markdown code blocks
 
 ### Development Tools
 

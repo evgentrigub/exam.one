@@ -3,14 +3,16 @@
  * Manages AI topic generation state with localStorage persistence
  */
 
-import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/dataToGenerateTopicsC1'
-import type { WritingTopic } from '~/utils/types'
+import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/topicGeneratorC1Prompt'
+import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/topicGeneratorA2Prompt'
+import type { WritingTopic, Difficulty } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-topic-generation-state'
 
 interface GenerationState {
   isGenerating: boolean
   part: 1 | 2 | null
+  difficulty: Difficulty | null
   startedAt: string | null
   error: string | null
 }
@@ -19,6 +21,7 @@ export const useTopicGeneration = () => {
   const state = ref<GenerationState>({
     isGenerating: false,
     part: null,
+    difficulty: null,
     startedAt: null,
     error: null
   })
@@ -75,6 +78,7 @@ export const useTopicGeneration = () => {
     state.value = {
       isGenerating: false,
       part: null,
+      difficulty: null,
       startedAt: null,
       error: null
     }
@@ -85,28 +89,38 @@ export const useTopicGeneration = () => {
   }
 
   /**
-   * Generate topics for specified part
+   * Generate topics for specified part and difficulty
    */
-  const generateTopics = async (part: 1 | 2): Promise<WritingTopic[]> => {
+  const generateTopics = async (part: 1 | 2, difficulty: Difficulty = 'C1'): Promise<WritingTopic[]> => {
     // Set generating state
     state.value = {
       isGenerating: true,
       part,
+      difficulty,
       startedAt: new Date().toISOString(),
       error: null
     }
     saveState()
 
     try {
-      // Get the appropriate prompt
-      const prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
+      // Get the appropriate prompt based on difficulty and part
+      let prompt: string
+      const numberOfTopics = 3 // Default number of topics to generate
+      if (difficulty === 'C1') {
+        prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
+      } else if (difficulty === 'A2') {
+        prompt = part === 1 ? generateTopicsA2Part1(numberOfTopics) : generateTopicsA2Part2(numberOfTopics)
+      } else {
+        throw new Error(`Unsupported difficulty level: ${difficulty}`)
+      }
 
       // Call API endpoint - cast through unknown to bypass Nuxt's complex route type inference
       const response = (await $fetch('/api/generate-topics', {
         method: 'POST',
         body: {
           prompt,
-          part
+          part,
+          difficulty
         }
       }) as unknown) as { topics: WritingTopic[], error?: string }
 
@@ -124,6 +138,7 @@ export const useTopicGeneration = () => {
       state.value = {
         isGenerating: false,
         part: null,
+        difficulty: null,
         startedAt: null,
         error: errorMessage
       }
@@ -137,13 +152,14 @@ export const useTopicGeneration = () => {
    * Retry last failed generation
    */
   const retryGeneration = async (): Promise<WritingTopic[]> => {
-    if (!state.value.error || !state.value.part) {
+    if (!state.value.error || !state.value.part || !state.value.difficulty) {
       throw new Error('No failed generation to retry')
     }
 
     const part = state.value.part
+    const difficulty = state.value.difficulty
     clearState()
-    return generateTopics(part)
+    return generateTopics(part, difficulty)
   }
 
   /**
@@ -162,6 +178,7 @@ export const useTopicGeneration = () => {
     // State
     isGenerating: computed(() => state.value.isGenerating),
     generatingPart: computed(() => state.value.part),
+    generatingDifficulty: computed(() => state.value.difficulty),
     generationError: computed(() => state.value.error),
 
     // Methods

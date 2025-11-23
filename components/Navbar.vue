@@ -93,11 +93,11 @@
           </label>
           <div tabindex="0" class="dropdown-content shadow-lg bg-base-100 rounded-box mt-2 p-4 w-[400px]">
             <div class="grid grid-cols-2 gap-4">
-              <!-- Light Themes Column -->
+              <!-- Available Themes Column -->
               <div>
-                <div class="text-xs font-semibold uppercase opacity-60 mb-2 px-2">☀️ Light Themes</div>
+                <div class="text-xs font-semibold uppercase opacity-60 mb-2 px-2">Available Themes</div>
                 <ul class="menu p-0">
-                  <li v-for="themeOption in lightThemes" :key="themeOption.value">
+                  <li v-for="themeOption in availableThemes" :key="themeOption.value">
                     <a 
                       :class="{ 'active': theme === themeOption.value }"
                       @click="setTheme(themeOption.value)"
@@ -108,22 +108,6 @@
                   </li>
                 </ul>
               </div>
-              
-              <!-- Dark Themes Column -->
-              <!-- <div>
-                <div class="text-xs font-semibold uppercase opacity-60 mb-2 px-2">🌙 Dark Themes</div>
-                <ul class="menu p-0">
-                  <li v-for="themeOption in darkThemes" :key="themeOption.value">
-                    <a 
-                      :class="{ 'active': theme === themeOption.value }"
-                      @click="setTheme(themeOption.value)"
-                    >
-                      <span>{{ themeOption.icon }}</span>
-                      <span>{{ themeOption.label }}</span>
-                    </a>
-                  </li>
-                </ul>
-              </div> -->
             </div>
           </div>
         </div>
@@ -235,7 +219,7 @@ const { examLevel, targetLanguage } = storeToRefs(settingsStore)
 const { locale, setLocale } = useI18n()
 
 // Theme management
-const { theme, setTheme, currentThemeIcon, lightThemes } = useTheme()
+const { theme, setTheme, currentThemeIcon, availableThemes } = useTheme()
 
 // Dropdown state and functionality
 const isDropdownOpen = ref(false)

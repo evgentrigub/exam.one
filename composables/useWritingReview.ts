@@ -11,7 +11,8 @@
 
 import type { WritingTopic, AiReviewData } from '~/utils/types'
 import { ref } from 'vue'
-import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/reviewTextPrompts'
+import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/reviewTextC1Prompt'
+import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/reviewTexA2tPrompt'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -80,10 +81,20 @@ export function useWritingReview() {
   }
 
   function getReviewPrompt(topic: WritingTopic, userContent: string) {
-    if (topic.testingPart === 1) {
-      return reviewPromptC1Teil1(topic, userContent)
+    // Select prompts based on difficulty level
+    if (topic.difficulty === 'A2') {
+      if (topic.testingPart === 1) {
+        return reviewPromptA2Teil1(topic, userContent)
+      } else {
+        return reviewPromptA2Teil2(topic, userContent)
+      }
     } else {
-      return reviewPromptC1Teil2(topic, userContent)
+      // C1 level
+      if (topic.testingPart === 1) {
+        return reviewPromptC1Teil1(topic, userContent)
+      } else {
+        return reviewPromptC1Teil2(topic, userContent)
+      }
     }
 }
 

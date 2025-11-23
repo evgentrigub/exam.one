@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-base-200">
     <div v-if="!topic" class="container mx-auto px-4 py-12">
       <div class="card bg-base-100 shadow">
         <div class="card-body text-center">
@@ -12,9 +12,9 @@
       </div>
     </div>
 
-    <div v-else class="fixed inset-0 bg-gray-50 overflow-hidden">
+    <div v-else class="fixed inset-0 bg-base-200 overflow-hidden">
       <!-- Header -->
-      <div class="bg-white border-b border-gray-200 px-6 py-4">
+      <div class="bg-base-100 border-b border-base-300 px-6 py-4">
         <div class="flex items-center justify-between">
           <button 
             class="btn btn-ghost btn-sm gap-2"
