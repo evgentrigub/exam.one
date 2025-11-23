@@ -9,15 +9,17 @@ import type { GermanText } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-texts'
 
-export const useReadingTexts = () => {
-  const texts = ref<GermanText[]>([])
-  const isInitialized = ref(false)
+// Shared state (singleton pattern)
+const texts = ref<GermanText[]>([])
+const isInitialized = ref(false)
 
+export const useReadingTexts = () => {
   /**
    * Initialize texts from localStorage or seed with defaults
    */
   const initializeTexts = () => {
-    if (import.meta.server) return
+    // Skip if already initialized or on server
+    if (isInitialized.value || import.meta.server) return
 
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
@@ -149,10 +151,10 @@ export const useReadingTexts = () => {
     return texts.value.length
   }
 
-  // Initialize on mount (client-side only)
-  onMounted(() => {
+  // Initialize immediately if on client and not initialized
+  if (import.meta.client && !isInitialized.value) {
     initializeTexts()
-  })
+  }
 
   return {
     // State
@@ -169,4 +171,3 @@ export const useReadingTexts = () => {
     getTextsCount
   }
 }
-

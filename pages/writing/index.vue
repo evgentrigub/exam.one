@@ -103,7 +103,7 @@
             <!-- Sort Options -->
             <div class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium">Sort by:</label>
+                <label class="text-sm font-medium w-25">Sort by:</label>
                 <select 
                   v-model="selectedSort"
                   class="select select-bordered select-sm"

@@ -42,7 +42,7 @@
                   v-model="selectedStatusFilter"
                   class="select select-bordered select-sm"
                 >
-                  <option value="all">All Texts</option>
+                  <option value="all">All Topics</option>
                   <option value="completed">Completed</option>
                   <option value="incomplete">Not Completed</option>
                 </select>
@@ -52,7 +52,7 @@
             <!-- Sort Options -->
             <div class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium">{{ $t('practice.sortBy') }}:</label>
+                <label class="text-sm font-medium w-25">{{ $t('practice.sortBy') }}:</label>
                 <select 
                   v-model="selectedSort"
                   class="select select-bordered select-sm"
