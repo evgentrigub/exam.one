@@ -324,8 +324,11 @@ function handleSaveDraft(content: string, wordCount: number) {
   
   // Show success feedback
   const notification = document.createElement('div')
-  notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50'
-  notification.textContent = 'Draft saved!'
+  notification.className = 'alert alert-success fixed top-4 right-4 w-auto shadow-lg z-50'
+  notification.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <span>Draft saved!</span>
+  `
   document.body.appendChild(notification)
   
   setTimeout(() => {

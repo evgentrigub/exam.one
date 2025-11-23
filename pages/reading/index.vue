@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-base-200">
     <div class="container mx-auto px-4 py-8">
       <!-- Header -->
       <header class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        <h1 class="text-3xl font-bold text-base-content mb-2">
           📚 {{ $t('practice.title') }}
         </h1>
-        <p class="text-gray-600">
+        <p class="text-base-content/70">
           {{ $t('practice.subtitle') }}
         </p>
       </header>
@@ -15,13 +15,13 @@
       <div v-if="!selectedText" class="max-w-6xl mx-auto">
 
         <!-- Enhanced Filter and Sort Bar -->
-        <div class="mb-6 bg-white rounded-lg shadow-sm p-4">
+        <div class="mb-6 bg-base-100 rounded-lg shadow-sm p-4">
           <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
             <!-- Filters -->
             <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <!-- Text Type Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium">Type:</label>
+                <label class="text-sm font-medium text-base-content">Type:</label>
                 <select 
                   v-model="selectedTypeFilter"
                   class="select select-bordered select-sm"
@@ -37,7 +37,7 @@
               
               <!-- Completion Status Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium">Status:</label>
+                <label class="text-sm font-medium text-base-content">Status:</label>
                 <select 
                   v-model="selectedStatusFilter"
                   class="select select-bordered select-sm"
@@ -52,7 +52,7 @@
             <!-- Sort Options -->
             <div class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium w-25">{{ $t('practice.sortBy') }}:</label>
+                <label class="text-sm font-medium text-base-content w-25">{{ $t('practice.sortBy') }}:</label>
                 <select 
                   v-model="selectedSort"
                   class="select select-bordered select-sm"
@@ -85,7 +85,7 @@
             </div>
             
             <!-- Results Count -->
-            <div class="text-sm text-gray-600 whitespace-nowrap">
+            <div class="text-sm text-base-content/70 whitespace-nowrap">
               {{ filteredAndSortedTexts.length }} {{ filteredAndSortedTexts.length === 1 ? 'text' : 'texts' }} found
             </div>
           </div>
@@ -115,15 +115,15 @@
 
         <!-- Enhanced Empty State -->
         <div v-if="filteredAndSortedTexts.length === 0" class="text-center py-12">
-          <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-20 h-20 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
           </div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">
+          <h3 class="text-lg font-medium text-base-content mb-2">
             No texts found
           </h3>
-          <p class="text-gray-600 max-w-md mx-auto mb-4">
+          <p class="text-base-content/70 max-w-md mx-auto mb-4">
             No texts match your current filters. Try adjusting your search criteria.
           </p>
           <button

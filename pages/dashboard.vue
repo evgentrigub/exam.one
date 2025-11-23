@@ -2,10 +2,10 @@
   <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <header class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+      <h1 class="text-3xl font-bold text-base-content mb-2">
         📊 {{ $t('dashboard.title') }}
       </h1>
-      <p class="text-gray-600">
+      <p class="text-base-content/70">
         {{ $t('dashboard.subtitle') }}
       </p>
     </header>
@@ -13,15 +13,15 @@
       <!-- Empty State -->
       <ClientOnly>
       <div v-if="stats.totalTextsCompleted === 0" class="max-w-2xl mx-auto text-center py-12">
-        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-lineCap="round" stroke-lineJoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/>
           </svg>
         </div>
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+        <h3 class="text-2xl font-bold text-base-content mb-4">
           Welcome to Your Dashboard! 🎉
         </h3>
-        <p class="text-gray-600 mb-8">
+        <p class="text-base-content/70 mb-8">
           Start practicing to see your progress statistics and track your improvement over time.
         </p>
         <NuxtLink 
@@ -37,15 +37,15 @@
     </ClientOnly>
 
     <!-- Reading Progress Overview -->
-    <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
+    <div class="mb-6 bg-base-100 rounded-lg shadow-sm p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900">📚 Reading Progress</h2>
+        <h2 class="text-lg font-semibold text-base-content">📚 Reading Progress</h2>
         <ClientOnly>
-          <div class="text-sm text-gray-600">
+          <div class="text-sm text-base-content/70">
             {{ completedCount }}/{{ germanTexts.length }} texts completed
           </div>
           <template #fallback>
-            <div class="text-sm text-gray-600">Loading...</div>
+            <div class="text-sm text-base-content/70">Loading...</div>
           </template>
         </ClientOnly>
       </div>
@@ -63,15 +63,15 @@
     </div>
 
     <!-- Writing Progress Overview (Stage 11) -->
-    <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
+    <div class="mb-6 bg-base-100 rounded-lg shadow-sm p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900">✍️ Writing Progress</h2>
+        <h2 class="text-lg font-semibold text-base-content">✍️ Writing Progress</h2>
         <ClientOnly>
-          <div class="text-sm text-gray-600">
+          <div class="text-sm text-base-content/70">
             {{ writingCompletedCount }}/{{ writingTopicsTotal }} topics completed
           </div>
           <template #fallback>
-            <div class="text-sm text-gray-600">Loading...</div>
+            <div class="text-sm text-base-content/70">Loading...</div>
           </template>
         </ClientOnly>
       </div>
@@ -92,9 +92,9 @@
     <div class="max-w-7xl mx-auto mb-8">
       <!-- Reading Statistics -->
       <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 Reading Statistics</h3>
+        <h3 class="text-lg font-semibold text-base-content mb-4">📚 Reading Statistics</h3>
         <ClientOnly>
-          <div class="stats shadow w-full">
+          <div class="stats shadow w-full bg-base-100">
             <!-- Reading Completion Rate -->
             <div class="stat place-items-center">
               <div class="stat-figure text-primary">
@@ -141,10 +141,10 @@
           </div>
           <template #fallback>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              <div v-for="i in 4" :key="i" class="bg-white rounded-xl shadow-sm p-6 text-center">
-                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
-                <div class="h-8 bg-gray-200 rounded mb-1 animate-pulse"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div v-for="i in 4" :key="i" class="bg-base-100 rounded-xl shadow-sm p-6 text-center">
+                <div class="w-12 h-12 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
+                <div class="h-8 bg-base-200 rounded mb-1 animate-pulse"></div>
+                <div class="h-4 bg-base-200 rounded animate-pulse"></div>
               </div>
             </div>
           </template>
@@ -153,9 +153,9 @@
 
       <!-- Writing Statistics (Stage 11) -->
       <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">✍️ Writing Statistics</h3>
+        <h3 class="text-lg font-semibold text-base-content mb-4">✍️ Writing Statistics</h3>
         <ClientOnly>
-          <div class="stats shadow w-full">
+          <div class="stats shadow w-full bg-base-100">
             <!-- Writing Completion Rate -->
             <div class="stat place-items-center">
               <div class="stat-figure text-success">
@@ -202,10 +202,10 @@
           </div>
           <template #fallback>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              <div v-for="i in 4" :key="i" class="bg-white rounded-xl shadow-sm p-6 text-center">
-                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
-                <div class="h-8 bg-gray-200 rounded mb-1 animate-pulse"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div v-for="i in 4" :key="i" class="bg-base-100 rounded-xl shadow-sm p-6 text-center">
+                <div class="w-12 h-12 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse"></div>
+                <div class="h-8 bg-base-200 rounded mb-1 animate-pulse"></div>
+                <div class="h-4 bg-base-200 rounded animate-pulse"></div>
               </div>
             </div>
           </template>
@@ -214,9 +214,9 @@
 
       <!-- Writing Feedback Insights (Stage 12) -->
       <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">💡 Writing Feedback Insights</h3>
+        <h3 class="text-lg font-semibold text-base-content mb-4">💡 Writing Feedback Insights</h3>
         <ClientOnly>
-          <div v-if="writingStats.totalTopicsCompleted > 0" class="stats shadow w-full">
+          <div v-if="writingStats.totalTopicsCompleted > 0" class="stats shadow w-full bg-base-100">
             <!-- Average Quality Score -->
             <div class="stat place-items-center">
               <div class="stat-figure text-secondary">
@@ -251,26 +251,26 @@
             </div>
           </div>
           
-          <div v-else class="bg-gray-50 rounded-lg p-6 text-center">
-            <p class="text-gray-600">Vervollständige deine ersten Schreibaufgaben, um Feedback-Einblicke zu erhalten!</p>
+          <div v-else class="bg-base-200 rounded-lg p-6 text-center">
+            <p class="text-base-content/70">Vervollständige deine ersten Schreibaufgaben, um Feedback-Einblicke zu erhalten!</p>
           </div>
           
           <template #fallback>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div class="bg-white rounded-xl shadow-sm p-6 animate-pulse">
-                <div class="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3"></div>
-                <div class="h-8 bg-gray-200 rounded mb-2"></div>
-                <div class="h-4 bg-gray-200 rounded"></div>
+              <div class="bg-base-100 rounded-xl shadow-sm p-6 animate-pulse">
+                <div class="w-12 h-12 bg-base-200 rounded-full mx-auto mb-3"></div>
+                <div class="h-8 bg-base-200 rounded mb-2"></div>
+                <div class="h-4 bg-base-200 rounded"></div>
               </div>
-              <div class="bg-white rounded-xl shadow-sm p-6 animate-pulse">
-                <div class="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3"></div>
-                <div class="h-8 bg-gray-200 rounded mb-2"></div>
-                <div class="h-4 bg-gray-200 rounded"></div>
+              <div class="bg-base-100 rounded-xl shadow-sm p-6 animate-pulse">
+                <div class="w-12 h-12 bg-base-200 rounded-full mx-auto mb-3"></div>
+                <div class="h-8 bg-base-200 rounded mb-2"></div>
+                <div class="h-4 bg-base-200 rounded"></div>
               </div>
-              <div class="bg-white rounded-xl shadow-sm p-6 animate-pulse">
-                <div class="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3"></div>
-                <div class="h-8 bg-gray-200 rounded mb-2"></div>
-                <div class="h-4 bg-gray-200 rounded"></div>
+              <div class="bg-base-100 rounded-xl shadow-sm p-6 animate-pulse">
+                <div class="w-12 h-12 bg-base-200 rounded-full mx-auto mb-3"></div>
+                <div class="h-8 bg-base-200 rounded mb-2"></div>
+                <div class="h-4 bg-base-200 rounded"></div>
               </div>
             </div>
           </template>
@@ -545,9 +545,9 @@ const writingTopicsTotal = computed(() => {
 
 // Methods
 function getScoreColor(percentage: number): string {
-  if (percentage >= 75) return 'bg-green-500'
-  if (percentage >= 50) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (percentage >= 75) return 'bg-success'
+  if (percentage >= 50) return 'bg-warning'
+  return 'bg-error'
 }
 
 function formatDate(dateString: string): string {

@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed inset-0 bg-white z-50 overflow-hidden">
+  <div class="fixed inset-0 bg-base-100 z-50 overflow-hidden">
     <!-- Header -->
-    <div class="bg-white border-b border-gray-200 px-6 py-4">
+    <div class="bg-base-100 border-b border-base-300 px-6 py-4">
       <div class="flex items-center justify-between">
         <NuxtLink 
           to="/reading"
@@ -24,10 +24,10 @@
     <!-- Content Grid -->
     <div class="h-full flex overflow-hidden" style="height: calc(100vh - 73px)">
       <!-- Text Panel (Left) -->
-      <div class="w-1/2 bg-base-200 border-r">
+      <div class="w-1/2 bg-base-200 border-r border-base-300">
         <div class="p-6">
           <div class="card bg-base-100 shadow overflow-hidden">
-            <div class="card-body p-6 border-b">
+            <div class="card-body p-6 border-b border-base-200">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                   <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
       </div>
 
       <!-- Questions Panel (Right) -->
-      <div class="w-1/2 bg-white overflow-y-auto">
+      <div class="w-1/2 bg-base-100 overflow-y-auto">
         <QuizSession 
           v-if="text"
           :text="text"

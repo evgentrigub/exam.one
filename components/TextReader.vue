@@ -1,7 +1,7 @@
 <template>
-  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+  <div class="max-w-4xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-4 border-b">
+    <div class="bg-base-200 px-6 py-4 border-b border-base-300">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
           <span 
@@ -10,16 +10,16 @@
           >
             {{ getTextTypeLabel(text.textType) }}
           </span>
-          <div class="text-sm text-gray-600">
+          <div class="text-sm text-base-content/70">
             {{ text.difficulty }} Level
           </div>
         </div>
         <button 
-          class="p-2 hover:bg-white/50 rounded-lg transition-colors"
+          class="p-2 hover:bg-base-300 rounded-lg transition-colors"
           aria-label="Text schließen"
           @click="$emit('close')"
         >
-          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
@@ -29,12 +29,12 @@
     <!-- Text Content -->
     <div class="p-6 md:p-8">
       <div class="mb-6">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <h1 class="text-2xl md:text-3xl font-bold text-base-content mb-2">
           {{ text.title }}
         </h1>
         
         <!-- Metadata -->
-        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
+        <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/70 mb-6">
           <div class="flex items-center">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -55,7 +55,7 @@
               <span 
                 v-for="(topic, index) in text.topics" 
                 :key="topic"
-                class="text-gray-600"
+                class="text-base-content/70"
               >
                 {{ topic }}<span v-if="index < text.topics.length - 1">, </span>
               </span>
@@ -65,22 +65,22 @@
       </div>
 
       <!-- Main Text Content -->
-      <div class="prose prose-lg max-w-none text-content">
-        <div class="whitespace-pre-line text-lg leading-relaxed text-gray-800">
+      <div class="prose prose-lg max-w-none text-content text-base-content">
+        <div class="whitespace-pre-line text-lg leading-relaxed">
           {{ text.content }}
         </div>
       </div>
 
       <!-- Action Buttons -->
-      <div class="mt-8 pt-6 border-t flex flex-col sm:flex-row gap-3">
+      <div class="mt-8 pt-6 border-t border-base-300 flex flex-col sm:flex-row gap-3">
         <button 
-          class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+          class="flex-1 px-6 py-3 bg-base-200 text-base-content rounded-lg font-medium hover:bg-base-300 transition-colors"
           @click="$emit('close')"
         >
           Zurück zur Übersicht
         </button>
         <button 
-          class="flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+          class="flex-1 px-6 py-3 btn btn-primary text-primary-content rounded-lg font-medium transition-colors"
           :disabled="!text.questions || text.questions.length === 0"
           @click="$emit('startQuestions', text.id)"
         >
@@ -106,12 +106,12 @@ defineEmits<{
 
 // Text type styling
 const textTypeStyles = {
-  email: 'bg-blue-100 text-blue-800',
-  notice: 'bg-yellow-100 text-yellow-800', 
-  article: 'bg-green-100 text-green-800',
-  advertisement: 'bg-purple-100 text-purple-800',
-  instructions: 'bg-orange-100 text-orange-800',
-  announcement: 'bg-red-100 text-red-800'
+  email: 'bg-info/20 text-info',
+  notice: 'bg-warning/20 text-warning', 
+  article: 'bg-success/20 text-success',
+  advertisement: 'bg-secondary/20 text-secondary',
+  instructions: 'bg-accent/20 text-accent',
+  announcement: 'bg-error/20 text-error'
 }
 
 // Text type labels in German
@@ -129,7 +129,7 @@ function getTextTypeLabel(type: string) {
 }
 
 function getTextTypeStyle(type: string) {
-  return textTypeStyles[type as keyof typeof textTypeStyles] || 'bg-gray-100 text-gray-800'
+  return textTypeStyles[type as keyof typeof textTypeStyles] || 'bg-base-200 text-base-content'
 }
 </script>
 

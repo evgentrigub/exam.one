@@ -1,17 +1,17 @@
 <template>
   <div class="card bg-base-100 shadow h-full flex flex-col">
     <!-- Card Header -->
-    <div class="bg-blue-50 dark:bg-blue-950 px-6 py-4 border-b flex-shrink-0">
+    <div class="bg-info/10 px-6 py-4 border-b flex-shrink-0">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-10 h-10 bg-info/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
           </div>
           <div>
             <h2 class="card-title text-lg">Description</h2>
-            <p class="text-sm text-blue-600 dark:text-blue-400">{{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}</p>
+            <p class="text-sm text-info">{{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}</p>
           </div>
         </div>
 
@@ -72,21 +72,19 @@
       </div>
 
       <!-- Writing Tips (if available) -->
-      <div v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')" class="bg-yellow-50 dark:bg-yellow-950 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-        <div class="flex items-start gap-3">
-          <svg class="w-5 h-5 text-yellow-700 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')" class="alert alert-warning shadow-sm items-start">
+          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
           </svg>
           <div class="w-full">
-            <h4 class="text-sm font-semibold mb-2 text-yellow-900 dark:text-yellow-200">Writing Tips</h4>
-            <ul class="space-y-2 text-yellow-900 dark:text-yellow-100">
+            <h4 class="text-sm font-semibold mb-2">Writing Tips</h4>
+            <ul class="space-y-2">
               <li v-for="tip in writingTips" :key="tip" class="flex items-start text-sm">
                 <span class="mr-2">•</span>
                 <span>{{ tip }}</span>
               </li>
             </ul>
           </div>
-        </div>
       </div>
     </div>
   </div>
