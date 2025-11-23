@@ -51,7 +51,7 @@
       <!-- Title -->
       <h3 class="text-lg font-bold text-base-content mb-2 text-center">Generate New Topics</h3>
       <p class="text-sm text-base-content opacity-70 text-center mb-6 px-4">
-        AI creates new writing exercises
+        AI creates new {{ currentDifficulty }} writing exercises
       </p>
 
       <!-- Generation Buttons -->
@@ -90,6 +90,7 @@ interface Props {
   isGenerating: boolean
   generatingPart: 1 | 2 | null
   generationError: string | null
+  currentDifficulty: 'A2' | 'C1'
 }
 
 defineProps<Props>()

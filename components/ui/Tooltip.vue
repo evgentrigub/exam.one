@@ -36,7 +36,7 @@
         >
           <!-- Tooltip content -->
           <div
-            class="bg-gray-900 text-white text-xs font-medium px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
+            class="bg-neutral text-neutral-content text-xs font-medium px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
           >
             {{ text }}
           </div>
@@ -45,7 +45,7 @@
             :class="arrowClasses"
             class="absolute"
           >
-            <div class="w-2 h-2 bg-gray-900 transform rotate-45" />
+            <div class="w-2 h-2 bg-neutral transform rotate-45" />
           </div>
         </div>
       </Transition>

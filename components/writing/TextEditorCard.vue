@@ -1,24 +1,24 @@
 <template>
   <div class="card bg-base-100 shadow h-full flex flex-col">
     <!-- Card Header -->
-    <div class="bg-purple-50 dark:bg-purple-950 px-6 py-4 border-b flex-shrink-0">
+    <div class="bg-primary/10 px-6 py-4 border-b flex-shrink-0">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
             </svg>
           </div>
           <div>
             <h2 class="card-title text-lg">Your Answer</h2>
-            <p class="text-sm text-purple-600 dark:text-purple-400">Write your response here</p>
+            <p class="text-sm text-primary">Write your response here</p>
           </div>
         </div>
         
         <!-- Word Counter -->
         <div class="text-right">
           <div class="text-2xl font-bold" :class="wordCountColor">{{ wordCount }}</div>
-          <div class="text-sm text-purple-600 dark:text-purple-400">
+          <div class="text-sm text-primary">
             {{ topic.wordCount.min }}-{{ topic.wordCount.max }} words
           </div>
         </div>
@@ -222,11 +222,11 @@ const isSubmittable = computed(() => {
 
 const wordCountColor = computed(() => {
   if (wordCount.value < props.topic.wordCount.min) {
-    return 'text-red-600'
+    return 'text-error'
   } else if (wordCount.value > props.topic.wordCount.max) {
-    return 'text-red-600'
+    return 'text-error'
   } else {
-    return 'text-green-600'
+    return 'text-success'
   }
 })
 

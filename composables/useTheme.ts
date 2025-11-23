@@ -24,8 +24,8 @@ export type Theme =
   | 'winter'
 
 export const LIGHT_THEMES: { value: Theme; label: string; icon: string }[] = [
-//   { value: 'light', label: 'Light', icon: '☀️' },
-  { value: 'bumblebee', label: 'Bumblebee', icon: '🐝' },
+  { value: 'light', label: 'Light', icon: '☀️' },
+  // { value: 'bumblebee', label: 'Bumblebee', icon: '🐝' },
 //   { value: 'retro', label: 'Retro', icon: '📻' },
 //   { value: 'valentine', label: 'Valentine', icon: '💖' },
 //   { value: 'aqua', label: 'Aqua', icon: '🌊' },
@@ -33,18 +33,18 @@ export const LIGHT_THEMES: { value: Theme; label: string; icon: string }[] = [
 //   { value: 'pastel', label: 'Pastel', icon: '🎨' },
 //   { value: 'fantasy', label: 'Fantasy', icon: '🦄' },
 //   { value: 'autumn', label: 'Autumn', icon: '🍂' },
-  { value: 'winter', label: 'Winter', icon: '❄️' },
+  // { value: 'winter', label: 'Winter', icon: '❄️' },
 ]
 
 export const DARK_THEMES: { value: Theme; label: string; icon: string }[] = [
   { value: 'dark', label: 'Dark', icon: '🌙' },
-  { value: 'cyberpunk', label: 'Cyberpunk', icon: '🌆' },
-  { value: 'synthwave', label: 'Synthwave', icon: '🌃' },
-  { value: 'luxury', label: 'Luxury', icon: '💎' },
-  { value: 'dracula', label: 'Dracula', icon: '🧛' },
-  { value: 'business', label: 'Business', icon: '💼' },
-  { value: 'night', label: 'Night', icon: '🌌' },
-  { value: 'coffee', label: 'Coffee', icon: '☕' },
+  // { value: 'cyberpunk', label: 'Cyberpunk', icon: '🌆' },
+  // { value: 'synthwave', label: 'Synthwave', icon: '🌃' },
+  // { value: 'luxury', label: 'Luxury', icon: '💎' },
+  // { value: 'dracula', label: 'Dracula', icon: '🧛' },
+  // { value: 'business', label: 'Business', icon: '💼' },
+  // { value: 'night', label: 'Night', icon: '🌌' },
+  // { value: 'coffee', label: 'Coffee', icon: '☕' },
 ]
 
 export const AVAILABLE_THEMES = [...LIGHT_THEMES, ...DARK_THEMES]
