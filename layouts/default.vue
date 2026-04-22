@@ -11,6 +11,6 @@
 </template>
 
 <script setup lang="ts">
-const pageTitle = useState<string>('pageTitle', () => 'Examl.one')
+const pageTitle = useState<string>('pageTitle', () => 'Exam.one')
 const pageSubtitle = useState<string>('pageSubtitle', () => '')
 </script>

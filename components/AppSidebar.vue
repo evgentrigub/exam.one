@@ -5,7 +5,7 @@
       <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
         <span class="text-primary-content font-bold text-sm font-display">E</span>
       </div>
-      <span class="font-display text-base font-semibold tracking-tight">Examl.one</span>
+      <span class="font-display text-base font-semibold tracking-tight">Exam.one</span>
     </div>
 
     <!-- Main nav -->

@@ -194,7 +194,7 @@ import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useProgress } from '~/composables/useProgress'
 
 usePageMeta('Exercises', 'Browse and practice all exercise types')
-useHead({ title: 'Exercises — Examl.one' })
+useHead({ title: 'Exercises — Exam.one' })
 
 const route = useRoute()
 const router = useRouter()

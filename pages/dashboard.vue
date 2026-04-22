@@ -150,7 +150,7 @@ import { germanTexts } from '~/data/german-texts'
 
 usePageMeta('Dashboard', 'Your exam preparation overview')
 
-useHead({ title: 'Dashboard — Examl.one' })
+useHead({ title: 'Dashboard — Exam.one' })
 
 const router = useRouter()
 const settingsStore = useSettingsStore()
