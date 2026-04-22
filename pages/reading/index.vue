@@ -150,6 +150,9 @@
 </template>
 
 <script setup lang="ts">
+// Redirect to unified exercises page filtered by reading skill
+await navigateTo('/exercises?skill=reading', { replace: true })
+
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
 import type { GermanText } from '../../utils/types'

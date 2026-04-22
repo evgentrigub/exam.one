@@ -193,6 +193,9 @@
 </template>
 
 <script setup lang="ts">
+// Redirect to unified exercises page filtered by writing skill
+await navigateTo('/exercises?skill=writing', { replace: true })
+
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
 import { useWritingTopics } from '~/composables/useWritingTopics'

@@ -1,12 +1,16 @@
 <template>
-  <div class="min-h-screen bg-base-200">
-    <Navbar />
-    <main>
-      <slot />
-    </main>
+  <div class="app-shell flex">
+    <AppSidebar />
+    <div class="flex flex-col flex-1 min-w-0">
+      <AppTopbar :title="pageTitle" :subtitle="pageSubtitle" />
+      <main class="flex-1 overflow-y-auto bg-base-200">
+        <slot />
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// Layout component with navbar
-</script> 
+const pageTitle = useState<string>('pageTitle', () => 'Examl.one')
+const pageSubtitle = useState<string>('pageSubtitle', () => '')
+</script>
