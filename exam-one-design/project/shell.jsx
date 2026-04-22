@@ -94,7 +94,7 @@ function Topbar() {
       case 'progress':  return { t:'Progress', s:'Track your performance across skills.' };
       case 'audit':     return { t:'Current prototype · audit', s:'Issues and opportunities before redesign.' };
       case 'system':    return { t:'Redesign direction', s:'Principles, rules, and implementation priorities.' };
-      default: return { t:'Examl.one', s:'' };
+      default: return { t:'Exam.one', s:'' };
     }
   })();
 

@@ -1,4 +1,4 @@
-// Shared data + helpers + primitives for Examl.one redesign
+// Shared data + helpers + primitives for Exam.one redesign
 
 const L = window.React;
 const { useState, useEffect, useRef, useMemo, createContext, useContext } = L;

@@ -19,4 +19,4 @@ The design medium is **HTML/CSS/JS** — these are prototypes, not production co
 ## Bundle contents
 
 - `examl-one/README.md` — this file
-- `examl-one/project/` — the `Examl.one` project files (HTML prototypes, assets, components)
+- `examl-one/project/` — the `Exam.one` project files (HTML prototypes, assets, components)

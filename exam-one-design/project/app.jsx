@@ -57,7 +57,7 @@ function App() {
           <main className="flex-1 overflow-auto">
             {Screen}
             <footer className="max-w-[1240px] mx-auto px-6 py-6 text-[11px] text-base-content/50 flex items-center justify-between">
-              <span>Examl.one · redesign prototype · uses daisyUI design system</span>
+              <span>Exam.one · redesign prototype · uses daisyUI design system</span>
               <span>Toggle <b>Redesign ↔ Audit ↔ Prototype</b> in the top bar.</span>
             </footer>
           </main>

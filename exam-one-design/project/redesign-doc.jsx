@@ -33,7 +33,7 @@ function Redesign() {
       <section className="card bg-base-100 border border-base-300 ring-soft p-6 dot-pattern">
         <div className="max-w-3xl">
           <div className="text-[11px] uppercase tracking-wider font-semibold text-primary">Redesign direction</div>
-          <h2 className="font-display text-3xl font-bold mt-1 leading-tight">Turn Examl.one from a grid of exercises into a <span className="text-primary">coach that has a plan for today</span>.</h2>
+          <h2 className="font-display text-3xl font-bold mt-1 leading-tight">Turn Exam.one from a grid of exercises into a <span className="text-primary">coach that has a plan for today</span>.</h2>
           <p className="text-base-content/70 mt-3">We preserve the product (reading, writing, dashboard, soon listening & speaking), preserve the design system (daisyUI + Tailwind tokens, semantic colors, rounded‑box/field/selector, system fonts), and sharpen execution. The redesign leads with the learner’s exam date, surfaces readiness per skill, collapses the reading/writing pages into one Exercises view, and adds the two missing modules with a consistent audio‑first and mic‑first vocabulary.</p>
         </div>
         <div className="grid grid-cols-4 gap-3 mt-6 max-w-3xl">
