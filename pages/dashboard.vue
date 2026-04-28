@@ -146,7 +146,6 @@ import { useSettingsStore } from '~/stores/settings'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useProgress } from '~/composables/useProgress'
-import { germanTexts } from '~/data/german-texts'
 
 usePageMeta('Dashboard', 'Your exam preparation overview')
 
@@ -158,7 +157,14 @@ const { examLevel } = storeToRefs(settingsStore)
 
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
-const { getProgressStats, getWritingStats, isTextCompleted, isWritingTopicCompleted } = useProgress()
+const {
+  getBestScore,
+  getProgressStats,
+  getTextProgress,
+  getWritingTopicProgress,
+  isTextCompleted,
+  isWritingTopicCompleted
+} = useProgress()
 
 // Days left calculation — target 90 days from app launch as placeholder
 const daysLeft = computed(() => {
@@ -177,8 +183,8 @@ const readinessStatement = computed(() => {
 
 // Skill chips data
 const skills = computed(() => {
-  const readingTexts = getTexts()
-  const writingTopics = getTopics()
+  const readingTexts = getTexts().filter(text => text.difficulty === examLevel.value)
+  const writingTopics = getTopics().filter(topic => topic.difficulty === examLevel.value)
   const readingDone = readingTexts.filter(t => isTextCompleted(t.id)).length
   const writingDone = writingTopics.filter(t => isWritingTopicCompleted(t.id)).length
 
@@ -227,7 +233,7 @@ type DashExercise = {
 // Unified exercise list
 const allExercises = computed<DashExercise[]>(() => {
   const rStats = getProgressStats()
-  const reading: DashExercise[] = getTexts().map(t => {
+  const reading: DashExercise[] = getTexts().filter(t => t.difficulty === examLevel.value).map(t => {
     const activity = rStats.recentActivity?.find((a: { textId: string; percentage: number }) => a.textId === t.id)
     return {
       id: t.id,
@@ -239,7 +245,7 @@ const allExercises = computed<DashExercise[]>(() => {
       pct: activity ? activity.percentage : 0
     }
   })
-  const writing: DashExercise[] = getTopics().map(t => ({
+  const writing: DashExercise[] = getTopics().filter(t => t.difficulty === examLevel.value).map(t => ({
     id: t.id,
     skill: 'writing',
     title: t.title,
@@ -280,13 +286,19 @@ function navigateToExercise(ex: DashExercise) {
 
 // Stats cards
 const statsCards = computed(() => {
-  const rStats = getProgressStats()
-  const wStats = getWritingStats()
+  const readingTexts = getTexts().filter(text => text.difficulty === examLevel.value)
+  const writingTopics = getTopics().filter(topic => topic.difficulty === examLevel.value)
+  const completedReading = readingTexts.filter(text => isTextCompleted(text.id)).length
+  const completedWriting = writingTopics.filter(topic => isWritingTopicCompleted(topic.id)).length
+  const bestReadingScore = readingTexts.reduce((best, text) => Math.max(best, getBestScore(text.id)), 0)
+  const readingAttempts = readingTexts.reduce((sum, text) => sum + (getTextProgress(text.id)?.attemptCount ?? 0), 0)
+  const writingAttempts = writingTopics.reduce((sum, topic) => sum + (getWritingTopicProgress(topic.id)?.submissions.length ?? 0), 0)
+
   return [
-    { label: 'Reading completed', value: `${rStats.totalTextsCompleted ?? 0}/${germanTexts.length}`, color: 'text-reading' },
-    { label: 'Writing completed', value: `${wStats.totalTopicsCompleted ?? 0}/${getTopics().length}`, color: 'text-writing' },
-    { label: 'Best reading score', value: `${rStats.bestScore ?? 0}%`, color: 'text-primary' },
-    { label: 'Total attempts', value: String((rStats.totalAttempts ?? 0) + (wStats.totalSubmissions ?? 0)), color: 'text-base-content/70' }
+    { label: 'Reading completed', value: `${completedReading}/${readingTexts.length}`, color: 'text-reading' },
+    { label: 'Writing completed', value: `${completedWriting}/${writingTopics.length}`, color: 'text-writing' },
+    { label: 'Best reading score', value: `${bestReadingScore}%`, color: 'text-primary' },
+    { label: 'Total attempts', value: String(readingAttempts + writingAttempts), color: 'text-base-content/70' }
   ]
 })
 </script>
