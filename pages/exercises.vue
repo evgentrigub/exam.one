@@ -15,7 +15,7 @@
           :style="activeSkill === s.key && s.key !== 'all' ? { background: `color-mix(in oklab, var(--color-${s.colorVar}) 20%, transparent)` } : {}"
           @click="activeSkill = s.key"
         >
-          <component :is="s.icon" :size="12" v-if="s.icon" />
+          <component :is="s.icon" v-if="s.icon" :size="12" />
           {{ s.label }}
           <span class="ml-0.5 opacity-60">{{ s.count }}</span>
         </button>
@@ -46,7 +46,7 @@
             type="text"
             placeholder="Search exercises…"
             class="input input-sm input-bordered w-full pl-8 text-sm"
-          />
+          >
         </div>
         <select v-model="sortBy" class="select select-sm select-bordered text-sm">
           <option value="default">Default order</option>
@@ -189,15 +189,19 @@
 <script setup lang="ts">
 import { BookOpen, PenLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight } from 'lucide-vue-next'
 import type { Component } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useProgress } from '~/composables/useProgress'
+import { useSettingsStore } from '~/stores/settings'
 
 usePageMeta('Exercises', 'Browse and practice all exercise types')
 useHead({ title: 'Exercises — Exam.one' })
 
 const route = useRoute()
 const router = useRouter()
+const settingsStore = useSettingsStore()
+const { examLevel } = storeToRefs(settingsStore)
 
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
@@ -238,7 +242,7 @@ type UnifiedExercise = {
 
 const allExercises = computed<UnifiedExercise[]>(() => {
   const rStats = getProgressStats()
-  const readingList = getTexts().map(t => {
+  const readingList = getTexts().filter(t => t.difficulty === examLevel.value).map(t => {
     const activity = rStats.recentActivity?.find((a: { textId: string; percentage: number }) => a.textId === t.id)
     const pct = activity ? activity.percentage : 0
     const completed = isTextCompleted(t.id)
@@ -255,7 +259,7 @@ const allExercises = computed<UnifiedExercise[]>(() => {
     } as UnifiedExercise
   })
 
-  const writingList = getTopics().map(t => {
+  const writingList = getTopics().filter(t => t.difficulty === examLevel.value).map(t => {
     const completed = isWritingTopicCompleted(t.id)
     return {
       id: t.id,

@@ -87,17 +87,27 @@
     <div class="flex-1" />
 
     <!-- Exam target widget -->
-    <div class="mx-3 mb-4 rounded-box p-3" style="background: color-mix(in oklab, var(--color-primary) 10%, transparent);">
-      <div class="flex items-center gap-2 mb-2">
-        <Flag :size="14" class="text-primary" />
-        <span class="text-xs font-semibold text-primary">Exam target</span>
+    <div class="mx-3 mb-4 rounded-box border border-primary/20 bg-primary/5 p-3 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="flex h-7 w-7 items-center justify-center rounded-selector bg-primary/10">
+            <Flag :size="14" class="text-primary" />
+          </span>
+          <div>
+            <span class="block text-xs font-semibold text-primary">Exam target</span>
+            <span class="block text-[10px] leading-tight text-base-content/50">Filters exercises</span>
+          </div>
+        </div>
+        <span class="level-pip bg-primary text-primary-content">{{ examLevel }}</span>
       </div>
-      <div class="flex gap-1">
+      <div class="grid grid-cols-2 gap-1 rounded-field bg-base-200/70 p-1">
         <button
           v-for="level in levels"
           :key="level"
-          class="level-pip flex-1 text-center cursor-pointer transition-all"
-          :class="examLevel === level ? 'bg-primary text-primary-content' : 'hover:bg-base-200'"
+          type="button"
+          class="min-h-9 rounded-field px-2 py-1.5 text-center font-mono text-xs font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          :class="examLevel === level ? 'bg-primary text-primary-content shadow-sm' : 'text-base-content/55 hover:bg-base-100 hover:text-base-content'"
+          :aria-pressed="examLevel === level"
           @click="examLevel = level"
         >
           {{ level }}
@@ -126,8 +136,8 @@ const levels: Array<'A2' | 'C1'> = ['A2', 'C1']
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
 
-const readingCount = computed(() => getTexts().length)
-const writingCount = computed(() => getTopics().length)
+const readingCount = computed(() => getTexts().filter(text => text.difficulty === examLevel.value).length)
+const writingCount = computed(() => getTopics().filter(topic => topic.difficulty === examLevel.value).length)
 
 function isActive(path: string) {
   return route.path === path
