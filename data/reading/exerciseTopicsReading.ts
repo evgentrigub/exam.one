@@ -4,7 +4,7 @@ import type { GermanText } from '~/utils/types'
  * Sample A2-level German texts for reading comprehension practice
  * Each text is designed to match Goethe Institut A2 certification standards
  */
-export const germanTexts: GermanText[] = [
+export const defaultReadingTopics: GermanText[] = [
   {
     id: 'email-001',
     title: 'E-Mail von Lisa',

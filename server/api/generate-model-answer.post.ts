@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
-import type { WritingTopic } from '~/utils/types'
-import type { ModelAnswer } from '~/data/writing/modelAnswers'
+import type { WritingTopic, ModelAnswer } from '~/utils/types'
 
 interface ModelAnswerRequestBody {
   topic: WritingTopic

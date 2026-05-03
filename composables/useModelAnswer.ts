@@ -5,8 +5,7 @@
  * Storage: localStorage under key `model-answers`
  */
 
-import type { WritingTopic } from '~/utils/types'
-import type { ModelAnswer } from '~/data/writing/modelAnswers'
+import type { WritingTopic, ModelAnswer } from '~/utils/types'
 import { ref } from 'vue'
 import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/answerGeneratorC1Prompt'
 import { generateModelAnswerA2Part1, generateModelAnswerA2Part2 } from '~/data/writing/answerGeneratorA2Prompt'
