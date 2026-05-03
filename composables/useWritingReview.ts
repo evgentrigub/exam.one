@@ -11,8 +11,8 @@
 
 import type { WritingTopic, AiReviewData } from '~/utils/types'
 import { ref } from 'vue'
-import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/reviewTextC1Prompt'
-import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/reviewTexA2tPrompt'
+import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/reviewTextWritingC1'
+import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 

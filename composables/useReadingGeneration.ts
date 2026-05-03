@@ -3,8 +3,8 @@
  * Manages AI reading exercise generation state with localStorage persistence
  */
 
-import { generateReadingA2 } from '~/data/reading/dataToGenerateReadingA2'
-import { generateReadingC1 } from '~/data/reading/dataToGenerateReadingC1'
+import { generateReadingA2 } from '~/data/reading/topicGeneratorReadingA2'
+import { generateReadingC1 } from '~/data/reading/topicGeneratorReadingC1'
 import type { GermanText, Difficulty } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-generation-state'
