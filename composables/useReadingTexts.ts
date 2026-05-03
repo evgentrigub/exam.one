@@ -4,7 +4,7 @@
  * Integrates with existing germanTexts and supports AI generation
  */
 
-import { defaultReadingTopics } from '~/data/reading/exerciseTopicsReading'
+import { defaultReadingTopics } from '~/data/reading/exerciseReading'
 import type { GermanText } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-texts'

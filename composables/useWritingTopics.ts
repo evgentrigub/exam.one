@@ -4,7 +4,7 @@
  * Prepares for future OpenAI topic generation
  */
 
-import { defaultWritingTopics as defaultTopics } from '~/data/writing/exerciseTopicsWriting'
+import { defaultWritingTopics as defaultTopics } from '~/data/writing/exerciseWriting'
 import type { WritingTopic } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-writing-topics'
