@@ -4,7 +4,7 @@
  * Integrates with existing germanTexts and supports AI generation
  */
 
-import { germanTexts as defaultTexts } from '~/data/german-texts'
+import { defaultReadingTopics } from '~/data/reading/exerciseTopicsReading'
 import type { GermanText } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-texts'
@@ -27,12 +27,12 @@ export const useReadingTexts = () => {
       if (stored) {
         const storedTexts = JSON.parse(stored)
         // Merge stored texts with defaults, avoiding duplicates
-        const defaultIds = new Set(defaultTexts.map(t => t.id))
+        const defaultIds = new Set(defaultReadingTopics.map(t => t.id))
         const uniqueStoredTexts = storedTexts.filter((t: GermanText) => !defaultIds.has(t.id))
-        texts.value = [...defaultTexts, ...uniqueStoredTexts]
+        texts.value = [...defaultReadingTopics, ...uniqueStoredTexts]
       } else {
         // First time: seed with default texts
-        texts.value = [...defaultTexts]
+        texts.value = [...defaultReadingTopics]
         saveToStorage()
       }
       
@@ -40,7 +40,7 @@ export const useReadingTexts = () => {
     } catch (error) {
       console.error('Failed to load reading texts from localStorage:', error)
       // Fallback to default texts
-      texts.value = [...defaultTexts]
+      texts.value = [...defaultReadingTopics]
       isInitialized.value = true
     }
   }
@@ -53,7 +53,7 @@ export const useReadingTexts = () => {
 
     try {
       // Only save non-default texts to localStorage
-      const defaultIds = new Set(defaultTexts.map(t => t.id))
+      const defaultIds = new Set(defaultReadingTopics.map(t => t.id))
       const textsToSave = texts.value.filter(t => !defaultIds.has(t.id))
       localStorage.setItem(STORAGE_KEY, JSON.stringify(textsToSave))
     } catch (error) {
@@ -80,7 +80,7 @@ export const useReadingTexts = () => {
    */
   const deleteText = (id: string): boolean => {
     // Prevent deletion of default texts
-    const isDefaultText = defaultTexts.some(t => t.id === id)
+    const isDefaultText = defaultReadingTopics.some(t => t.id === id)
     if (isDefaultText) {
       console.warn('Cannot delete default text')
       return false
@@ -138,7 +138,7 @@ export const useReadingTexts = () => {
    * Reset to default texts (useful for testing or reset feature)
    */
   const resetToDefaults = (): void => {
-    texts.value = [...defaultTexts]
+    texts.value = [...defaultReadingTopics]
     if (import.meta.client) {
       localStorage.removeItem(STORAGE_KEY)
     }

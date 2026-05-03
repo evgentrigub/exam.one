@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import type { WritingTopic } from '~/utils/types'
 import type { WritingMode } from '~/composables/useWritingMode'
-import { writingTipsC1Teil1, writingTipsC1Teil2 } from '~/data/writing/exerciseTopics'
+import { writingTipsC1Teil1, writingTipsC1Teil2 } from '~/data/writing/exerciseTopicsWriting'
 
 interface Props {
   topic: WritingTopic

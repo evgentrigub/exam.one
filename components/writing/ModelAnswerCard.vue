@@ -166,8 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic } from '~/utils/types'
-import type { ModelAnswer } from '~/data/writing/modelAnswers'
+import type { WritingTopic, ModelAnswer } from '~/utils/types'
 import { useModelAnswer } from '~/composables/useModelAnswer'
 
 interface Props {
