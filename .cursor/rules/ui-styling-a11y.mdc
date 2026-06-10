@@ -1,0 +1,32 @@
+---
+description: DaisyUI, Tailwind 4, i18n, and accessibility rules for Vue UI
+globs: ["components/**/*.vue", "pages/**/*.vue", "layouts/**/*.vue", "assets/styles/**/*.css"]
+alwaysApply: false
+---
+
+# UI, Styling, And Accessibility
+
+## Styling
+
+- Use Tailwind CSS 4 through the existing Nuxt/Vite setup and `assets/styles/main.css`.
+- Prefer DaisyUI semantic tokens such as `base-*`, `primary`, `secondary`, `accent`, `success`, `warning`, and `error`.
+- Avoid raw palette classes for product surfaces when a DaisyUI token communicates the same intent.
+- Preserve the current visual language unless the task is explicitly a redesign.
+
+## Components
+
+- Reuse existing cards, buttons, badges, layout helpers, and state-class patterns before adding new variants.
+- Keep mobile and desktop behavior intact. Minimum interactive target size is 44px where practical.
+- Use `lucide-vue-next` icons consistently; do not add another icon system without approval.
+
+## Accessibility
+
+- Label interactive controls with visible text or `aria-label`.
+- Keep focus order logical and visible. Do not remove focus outlines without replacing them.
+- Use semantic elements first; add ARIA only when native HTML is not enough.
+- Keep contrast at WCAG AA level and avoid color-only state communication.
+
+## Language UI
+
+- Route user-facing copy through i18n when the surrounding feature is localized.
+- Mark German learning content with appropriate `lang="de"` when it is rendered inside English UI.

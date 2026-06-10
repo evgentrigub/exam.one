@@ -1,0 +1,27 @@
+---
+description: Project baseline for exam.one Nuxt/Vue work
+alwaysApply: true
+---
+
+# Project Baseline
+
+`AGENTS.md` is the primary working guide for this repository. Use `agent-os/standards/` for detailed product and implementation standards, and treat ECC rules, skills, and agents as optional workflow helpers.
+
+## Stack
+
+- Nuxt 3, Vue 3 Composition API, TypeScript, Pinia, Tailwind CSS 4, DaisyUI 5, `@nuxtjs/i18n`, and `pnpm`.
+- Core product flows are offline-first: reading practice, writing practice, progress tracking, navigation, settings, and stored drafts must not require network access.
+- AI features are optional enhancements through Nuxt server endpoints. Missing `OPENAI_API_KEY` or upstream AI failure must degrade gracefully.
+
+## Verification
+
+- Use `pnpm` commands only.
+- Before handoff, run `pnpm lint` and `pnpm type-check` when relevant to the change.
+- Run `pnpm build` for config, routing, server endpoint, dependency, or high-risk UI changes.
+- The repo does not currently have a test runner installed; add focused tests when introducing testable critical logic or when test infrastructure is part of the task.
+
+## Boundaries
+
+- Prefer small, local changes aligned with existing Nuxt, Vue, Pinia, and DaisyUI patterns.
+- Do not introduce required backend persistence for MVP core data.
+- Do not add new frameworks, state systems, UI libraries, or storage layers unless the user explicitly approves the architecture change.

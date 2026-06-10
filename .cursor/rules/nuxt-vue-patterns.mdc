@@ -1,0 +1,33 @@
+---
+description: Nuxt 3, Vue 3, Pinia, and TypeScript conventions
+globs: ["**/*.vue", "**/*.ts", "nuxt.config.ts"]
+alwaysApply: false
+---
+
+# Nuxt And Vue Patterns
+
+## Components
+
+- Use Vue SFCs with `<script setup lang="ts">`.
+- Keep templates declarative; move reusable logic into feature composables or small helpers.
+- Use `~/` imports for project files, not `../` parent traversal.
+- Guard hydration-sensitive reads with `ClientOnly`, an `isClient` ref, or `import.meta.client`.
+
+## State And Composables
+
+- Use Pinia only for shared cross-route state. Keep local UI state inside components or composables.
+- Prefix composables with `use*` and return named objects with clear state and method groups.
+- Keep persisted state local-first and resilient to malformed or missing stored values.
+- Prefix browser storage keys with `exam-one:` and keep keys defined near the owning feature.
+
+## Nuxt Server
+
+- Keep Nitro handlers thin and isolated from core offline flows.
+- Business-level AI failures should return `{ data: null, error: string }`; reserve thrown errors for infrastructure/runtime failures.
+- Never expose private runtime config to the client. Read secrets only from server runtime config or environment variables.
+
+## TypeScript
+
+- Prefer explicit domain types for seed data, progress, answers, and API envelopes.
+- Avoid broad `any`; use narrowing, discriminated unions, or small parser functions at boundaries.
+- Preserve immutability when updating arrays, objects, Pinia state, and stored progress.
