@@ -10,6 +10,7 @@
       <h1 class="text-lg font-semibold truncate">{{ text?.title }}</h1>
       <span class="level-pip">{{ text?.difficulty }}</span>
       <span class="level-pip capitalize">{{ text?.textType }}</span>
+      <span v-if="text?.testingPart" class="level-pip">Teil {{ text.testingPart }}</span>
     </div>
 
     <!-- 2-col layout -->
