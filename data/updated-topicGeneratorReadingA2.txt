@@ -1,0 +1,343 @@
+export interface ReadingTopicA2Part1 {
+  id: string; // will be auto-generated
+  title: string;
+  testingPart: 1; // Указываем, что это строго Teil 1
+  content: string; // Текст статьи (около 200 слов)
+  textType: 'article'; // Для Teil 1 это всегда статья/брошюра
+  difficulty: 'A2';
+  estimatedReadingTime: 7.5; // Официальное время на 1 часть 
+  wordCount: number;
+  topics: string[];
+  createdAt: string; // ISO date
+  questions: [
+    // Строго 5 вопросов, как требует Гете-Институт
+    ReadingQuestionA2Part1,
+    ReadingQuestionA2Part1,
+    ReadingQuestionA2Part1,
+    ReadingQuestionA2Part1,
+    ReadingQuestionA2Part1
+  ];
+}
+
+export interface ReadingQuestionA2Part1 {
+  id: string; // will be auto-generated
+  textId: string; // will be auto-generated
+  question: string;
+  options: [string, string, string]; // Строго 3 варианта ответа (a, b, c)!
+  correctAnswer: 0 | 1 | 2; // Индекс правильного ответа
+  explanation: string; // Объяснение, почему ответ верный (для фидбека пользователю)
+  type: 'comprehension'; // В Teil 1 проверяется именно детальное понимание
+}
+
+export const generateReadingA2Teil1 = (numberOfTopics: number) => { 
+  return `
+Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату 2024 года.
+Твоя задача: сгенерировать ${numberOfTopics} уникальных заданий для модуля Lesen A2: Teil 1 (Informationen in Medientexten verstehen).
+
+ОБЩИЕ ТРЕБОВАНИЯ И ПРАВИЛА (СТРОГО):
+1. Тип текста: Информационный текст (Zeitungsartikel, Broschüre) на актуальную, интересную тему.
+2. Объем текста: строго около 200 слов.
+3. Лексика и грамматика: строго уровень A2. Избегай Passiv, Plusquamperfekt, Konjunktiv I. Сложные слова должны быть понятны из контекста.
+4. Формат вопросов: К каждому тексту сгенерируй РОВНО 5 вопросов.
+5. Варианты ответов: РОВНО 3 варианта (a, b, c) для каждого вопроса. Не делай 4 варианта!
+6. Цель проверки (Lesestil): Вопросы должны проверять "sorgfältig-genaues Lesen" (внимательное детальное чтение) — понимание главной мысли и важных деталей.
+7. Ловушки: Как и на реальном экзамене, неправильные варианты ответов должны содержать слова из текста, чтобы запутать невнимательного читателя, но по смыслу быть неверными.
+
+ФОРМАТ ВЫВОДА:
+Сгенерируй результат строго в формате валидного JSON-массива, соответствующего интерфейсу ReadingTopicA2. Никакого текста до или после JSON.
+
+ЭТАЛОННЫЙ ПРИМЕР (Используй для понимания стиля, сложности и структуры):
+Текст "Paella mit Bauernbrot":
+"Mireia Vicario ist ein Beispiel für gute Integrationspolitik, denn sie ist eine der ersten Nachrichtensprecherinnen des deutschen Fernsehens mit Migrationshintergrund. Als Tochter spanischer Gastarbeiter wuchs sie in Kiel auf, was auch ihr Geburtsort ist. Bis 1993 besuchte sie dort das Gymnasium und half an den Wochenenden im Gemüseladen von ihrem Vater, obwohl sie immer viele Hausaufgaben machen musste. Dort hat sie viel erlebt und viele Menschen kennengelernt. Oft kamen auch die Eltern ihrer Mitschüler und kauften im Gemüseladen ein. Mireia Vicario jobbte dort bis zu ihrem 27. Lebensjahr und half so ihrer Familie auch nach dem Tod ihres Vaters, obwohl sie in dieser Zeit bereits als Praktikantin, Volontärin und Texterin bei diversen Werbeagenturen und Fernsehproduktionsfirmen arbeitete und „so ganz nebenbei“ eine Ausbildung zur Journalistin machte. Mit eisernem Willen und einer guten Schulbildung schaffte sie es, ab 2004 als Nachrichtensprecherin – zunächst bei lokalen Sendern – vor der Kamera zu stehen. Seit 2010 moderiert sie nun schon die Nachrichten im deutschen Fernsehen. Fragt man die Moderatorin mit den zwei Pässen, ob sie sich denn eher als Spanierin oder als Deutsche fühle, dann antwortet sie, wenn sie eine Speise wäre, dann Paella mit Bauernbrot."
+
+Примеры вопросов к этому тексту:
+Q1. Als sie jünger war, ...
+Options: ["arbeitete sie im Geschäft ihres Vaters.", "half ihr Vater Mireia bei den Hausaufgaben.", "hatte sie einen Job im Gymnasium."]
+Correct: 0 (arbeitete sie im Geschäft ihres Vaters.)
+Q2. Nach dem Tod ihres Vaters ...
+Options: ["arbeitete sie weiter im Gemüseladen.", "bekam sie Hilfe von den Familien ihrer Klassenkameraden.", "jobbte Mireia Vicario nicht mehr."]
+Correct: 0 (arbeitete sie weiter im Gemüseladen.)
+Q3. Mireia Vicario ...
+Options: ["begann mit 27 Jahren ihre Ausbildung.", "jobbte neben ihrer Ausbildung.", "musste zwischen Arbeit und Ausbildung wählen."]
+Correct: 1 (jobbte neben ihrer Ausbildung.)
+Q4. Im Jahre 2004 ...
+Options: ["konnte man sie bei einem bekannten Sender hören.", "konnte man sie zum ersten Mal im Fernsehen sehen.", "machte sie ihren Schulabschluss."]
+Correct: 1 (konnte man sie zum ersten Mal im Fernsehen sehen.)
+Q5. Dieser Text informiert über ...
+Options: ["das Leben einer Nachrichtensprecherin.", "die Integration in Deutschland.", "eine spanische Familie in Deutschland."]
+Correct: 0 (das Leben einer Nachrichtensprecherin.)
+
+Сгенерируй ${numberOfTopics} новых текстов и вопросов в формате JSON.
+`
+};
+
+------------------
+
+export interface ReadingTopicA2Part2 {
+  id: string; // will be auto-generated
+  title: string;
+  testingPart: 2; // Строго Teil 2
+  content: string; // Текст-список (около 100 слов)
+  textType: 'list'; // Для Teil 2 это всегда listenartiger Text (список, табло, меню)
+  difficulty: 'A2';
+  estimatedReadingTime: 7.5; // Официальное время
+  wordCount: number; // Около 100 слов
+  topics: string[];
+  createdAt: string; // ISO date
+  questions: [
+    // Строго 5 вопросов
+    ReadingQuestionA2Part2,
+    ReadingQuestionA2Part2,
+    ReadingQuestionA2Part2,
+    ReadingQuestionA2Part2,
+    ReadingQuestionA2Part2
+  ];
+}
+
+export interface ReadingQuestionA2Part2 {
+  id: string; 
+  textId: string; 
+  question: string; // Описание ситуации, например: "Sie möchten Ohrringe kaufen."
+  options: [string, string, string]; // Строго 3 варианта, часто третий - "anderer Ort" / "anderer Stock"
+  correctAnswer: 0 | 1 | 2; 
+  explanation: string; 
+  type: 'selective'; // Проверяется селективный поиск информации
+}
+
+export const generateReadingA2Part2 = (numberOfTopics: number) => { 
+  return `
+Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату 2024 года.
+Твоя задача: сгенерировать ${numberOfTopics} уникальных заданий для модуля Lesen A2: Teil 2 (Informationstafeln, Veranstaltungsprogramme etc. verstehen).
+
+ОБЩИЕ ТРЕБОВАНИЯ И ПРАВИЛА (СТРОГО):
+1. Тип текста: Структурированный текст-список (listenartiger Text), например: указатель этажей в торговом центре, программа мероприятий, расписание транспорта или ТВ-программа.
+2. Объем текста: строго около 100 слов. Текст должен быть разбит на логические блоки (например, по этажам, дням недели или времени).
+3. Лексика и грамматика: строго уровень A2.
+4. Формат вопросов: РОВНО 5 вопросов. Вопросы формулируются как жизненные ситуации (например, "Sie möchten einen Kaffee trinken.").
+5. Варианты ответов: РОВНО 3 варианта (a, b, c). 
+   ВАЖНОЕ ПРАВИЛО ФОРМАТА: В Teil 2 третий вариант ответа (c) почти всегда должен быть резервным обобщением, например: "anderer Stock" (другой этаж), "anderer Ort" (другое место), "andere Zeit" (другое время) или "anderer Tag" (другой день).
+6. Цель проверки (Lesestil): "suchendes, selektives Lesen". Студент должен найти конкретную деталь в списке.
+
+ФОРМАТ ВЫВОДА:
+Сгенерируй результат строго в формате валидного JSON-массива, соответствующего интерфейсу ReadingTopicA2Teil2. Никакого текста до или после JSON.
+
+ЭТАЛОННЫЙ ПРИМЕР (Используй для понимания структуры и логики ответов):
+Текст "Kaufhaus Mädler":
+"4. Stock
+Electro-World: Computer, Mobiltelefone, Musik, TV, Fotoapparate, elektronische Spiele, DVD, Zubehör
+Restaurant, Bistro, Toiletten, Fundbüro, Apotheke, Erste Hilfe, Friseur mit Nagelstudio
+3. Stock
+Alles fürs Kind: Kinderbekleidung, Schuhe, Spielwaren
+Deko: Stoffe, Gardinen, Bettwäsche, Frottierwaren, Wolldecken, Tischdecken, Lampen, Glas und Geschirr
+2. Stock
+Männermode: Herrenbekleidung, Schuhe, Unterwäsche, Accesoires
+Sport: Sportbekleidung, Sportschuhe, Sportartikel, Fitness-Test
+1. Stock
+Damenmode: Damenbekleidung, Schuhe, Unterwäsche, Accessoires
+Drogerie: Parfüme, Kosmetikartikel, Schmuck
+Schreibwaren
+Erdgeschoss
+Lebensmittel: Delikatessen, Getränke, Obst und Gemüse, Wurst- und Fleischwaren
+Kinderland: Spielecke für Kinder mit Kindergärtnerin
+Reisebüro: Last-Minute-Angebote, Fernreisen, Flugbuchungen
+Information und Reklamation, Blumen und Floristik"
+
+Примеры вопросов к этому тексту:
+Q1. Ihre Nichte möchte im Kaufhaus spielen.
+Options: ["1. Stock", "Erdgeschoss", "anderer Stock"]
+Correct: 1 (Erdgeschoss)
+Explanation: Im Erdgeschoss befindet sich das Kinderland mit einer Spielecke.
+Q2. Sie möchten Ohrringe kaufen.
+Options: ["3. Stock", "2. Stock", "anderer Stock"]
+Correct: 2 (anderer Stock)
+Explanation: Ohrringe sind Schmuck. Schmuck befindet sich in der Drogerie im 1. Stock. Da 1. Stock nicht Option A oder B ist, ist 'anderer Stock' richtig.
+Q3. Sie brauchen einen neuen Fernseher.
+Options: ["4. Stock", "Erdgeschoss", "anderer Stock"]
+Correct: 0 (4. Stock)
+Explanation: TV-Geräte gibt es in der Electro-World im 4. Stock.
+Q4. Sie wollen zu Weihnachten nach Kanada reisen.
+Options: ["2. Stock", "Erdgeschoss", "anderer Stock"]
+Correct: 1 (Erdgeschoss)
+Explanation: Das Reisebüro für Fernreisen befindet sich im Erdgeschoss.
+Q5. Sie möchten einen Kaffee trinken.
+Options: ["4. Stock", "Erdgeschoss", "anderer Stock"]
+Correct: 0 (4. Stock)
+Explanation: Das Bistro und Restaurant befinden sich im 4. Stock.
+
+Сгенерируй ${numberOfTopics} новых текстов-списков (используй разные темы: расписание ТВ, программа фестиваля, план аэропорта и т.д.) и вопросов к ним в формате JSON.
+`
+};
+
+------------------------
+
+export interface ReadingTopicA2Part3 {
+  id: string; // will be auto-generated
+  title: string;
+  testingPart: 3; // Строго Teil 3
+  content: string; // Текст письма (около 230 слов)
+  textType: 'email'; // Для Teil 3 это всегда личная переписка (E-Mail)
+  difficulty: 'A2';
+  estimatedReadingTime: 7.5; // Официальное время
+  wordCount: number; // Около 230 слов
+  topics: string[];
+  createdAt: string; // ISO date
+  questions: [
+    // Строго 5 вопросов
+    ReadingQuestionA2Part3,
+    ReadingQuestionA2Part3,
+    ReadingQuestionA2Part3,
+    ReadingQuestionA2Part3,
+    ReadingQuestionA2Part3
+  ];
+}
+
+export interface ReadingQuestionA2Part3 {
+  id: string; 
+  textId: string; 
+  question: string; 
+  options: [string, string, string]; // Строго 3 варианта (a, b, c)
+  correctAnswer: 0 | 1 | 2; 
+  explanation: string; 
+  type: 'comprehension'; // Проверяется глубокое понимание главных мыслей и деталей
+}
+
+export const generateReadingA2Teil3 = (numberOfTopics: number) => { 
+  return `
+Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату 2024 года.
+Твоя задача: сгенерировать ${numberOfTopics} уникальных заданий для модуля Lesen A2: Teil 3 (Korrespondenz lesen und verstehen).
+
+ОБЩИЕ ТРЕБОВАНИЯ И ПРАВИЛА (СТРОГО):
+1. Тип текста: Личная переписка (E-Mail). Текст должен иметь неформальное приветствие (z.B. "Lieber...", "Hallo...") и прощание ("Bis bald", "Liebe Grüße").
+2. Объем текста: строго около 230 слов. Текст должен быть достаточно подробным и рассказывать о каком-то событии (поездка, вечеринка, переезд, встреча).
+3. Лексика и грамматика: строго уровень A2. Используй Perfekt и Präteritum (haben/sein/Modalverben), weil/dass-Sätze. Избегай Passiv, Plusquamperfekt, Konjunktiv I (кроме 'würde/hätte/wäre').
+4. Формат вопросов: РОВНО 5 вопросов. Вопросы должны идти в хронологическом порядке по тексту.
+5. Варианты ответов: РОВНО 3 варианта (a, b, c).
+6. Цель проверки (Lesestil): "sorgfältig-genaues Lesen". Студент должен понять главные мысли и детали. 
+7. Ловушки: Правильный вариант ответа должен быть перефразирован (синонимы), а неправильные варианты часто содержат точные слова из текста, но искажают смысл.
+
+ФОРМАТ ВЫВОДА:
+Сгенерируй результат строго в формате валидного JSON-массива, соответствующего интерфейсу ReadingTopicA2Teil3. Никакого текста до или после JSON.
+
+ЭТАЛОННЫЙ ПРИМЕР (Используй для понимания структуры, длины и логики):
+Текст "Klassentreffen":
+"Lieber Wolfgang,
+wir hatten alle so gehofft, dass du - trotz deines Urlaubs - doch noch zu unserem Klassentreffen kommst. Es war super! Aber, wie versprochen, schreibe ich dir darüber. Naja, 20 Jahre sind eine lange Zeit, und so lange hatte ich die meisten unserer ehemaligen Mitschüler nicht gesehen. Ehrlich gesagt, habe ich viele von ihnen nicht wiedererkannt. Erinnerst du dich an Marco? Der war doch immer so dünn! Er wiegt jetzt fast 100 Kilo! Oder Maritta? Sie hat jetzt statt ihrer langen schwarzen Haare ganz kurze hellblonde Haare. Aber ich finde, es steht ihr gut. Im Anhang findest du Fotos von unserem Treffen. Versuch doch mal, zu erkennen, wer wer ist. Damit es dir leichter fällt, kann ich dir schon mal sagen, dass außer dir noch zwei Ehemalige nicht dabei waren: Andreas und Holger. Wir wissen leider nicht, was sie machen oder wie es ihnen geht.
+Tja, unser Superschüler Michael, der ja immer Arzt werden wollte, hat letztendlich Architektur studiert. Aber Jacqueline, die immer zu den Besten gehörte, hat ihr Jurastudium abgebrochen. Sylva, unsere Tierärztin, lebt jetzt in Schweden. Die hatte ja auch immer Supernoten!
+Wie du weißt, hatten wir uns zu unserem Klassentreffen in einem italienischen Restaurant getroffen. Das Essen war natürlich lecker, nur mussten wir wegen des Regens drinnen sitzen und konnten nicht die schöne Gartenterrasse genießen, obwohl zu Beginn die Sonne schien.
+Weißt du was? Ruf mich doch einfach an und dann erzähle ich dir noch mehr darüber!
+Bis dann!
+Stefan"
+
+Примеры вопросов к этому тексту:
+Q1. Stefan schreibt über das Klassentreffen, dass ...
+Options: ["alle gehofft haben, dass Wolfgang auch kommt.", "viele im Urlaub waren.", "es langweilig war."]
+Correct: 0 (alle gehofft haben, dass Wolfgang auch kommt.)
+Explanation: Im Text steht: "wir hatten alle so gehofft, dass du... doch noch zu unserem Klassentreffen kommst."
+Q2. Stefan ...
+Options: ["hatte seine ehemaligen Mitschüler sofort wiedererkannt.", "schreibt, dass die Mitschüler ihn nicht wiedererkannt haben.", "schreibt, dass sich viele Mitschüler verändert haben."]
+Correct: 2 (schreibt, dass sich viele Mitschüler verändert haben.)
+Explanation: Er schreibt, er hat viele nicht wiedererkannt, weil sie sich so verändert haben (z.B. Marco ist dicker, Maritta hat andere Haare).
+Q3. Auf dem Klassentreffen ...
+Options: ["waren fast alle anwesend.", "fehlten zwei Personen.", "haben Andreas und Holger über sich erzählt."]
+Correct: 1 (fehlten zwei Personen.)
+Explanation: Stefan schreibt: "außer dir noch zwei Ehemalige nicht dabei waren: Andreas und Holger."
+Q4. Die Klassenbesten ...
+Options: ["haben ihr Studium erfolgreich beendet.", "haben überraschende Lebensläufe.", "sind ins Ausland gegangen."]
+Correct: 1 (haben überraschende Lebensläufe.)
+Explanation: Michael wurde Architekt statt Arzt, Jacqueline hat ihr Studium abgebrochen. Das ist überraschend.
+Q5. Während des Essens ...
+Options: ["konnten sie nicht draußen sitzen.", "schien die Sonne.", "saßen sie auf der Gartenterrasse."]
+Correct: 0 (konnten sie nicht draußen sitzen.)
+Explanation: Im Text steht: "...mussten wir wegen des Regens drinnen sitzen und konnten nicht die schöne Gartenterrasse genießen".
+
+Сгенерируй ${numberOfTopics} новых текстов-писем (используй разные темы: отпуск, переезд, новая работа, приглашение на свадьбу) и вопросов к ним в формате JSON.
+`
+};
+
+---------------------
+
+export interface ReadingTopicA2Part4 {
+  id: string; // will be auto-generated
+  title: string;
+  testingPart: 4; // Строго Teil 4
+  textType: 'advertisements'; // Специальный тип для 4 части
+  difficulty: 'A2';
+  estimatedReadingTime: 7.5; // Официальное время
+  wordCount: number; // Максимум 240 слов на все 6 объявлений
+  topics: string[];
+  createdAt: string; // ISO date
+  advertisements: [
+    // Строго 6 объявлений от 'a' до 'f'
+    { letter: 'a', text: string },
+    { letter: 'b', text: string },
+    { letter: 'c', text: string },
+    { letter: 'd', text: string },
+    { letter: 'e', text: string },
+    { letter: 'f', text: string }
+  ];
+  questions: [
+    // Строго 5 персон/ситуаций
+    ReadingQuestionA2Part4,
+    ReadingQuestionA2Part4,
+    ReadingQuestionA2Part4,
+    ReadingQuestionA2Part4,
+    ReadingQuestionA2Part4
+  ];
+}
+
+export interface ReadingQuestionA2Part4 {
+  id: string; 
+  textId: string; 
+  situation: string; // Например: "Melanie möchte zu Hause Energie sparen."
+  // Правильным ответом выступает буква объявления. Для одной из ситуаций обязательно 'x'
+  correctAnswer: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'x'; 
+  explanation: string; // Объяснение, почему подходит это объявление (или почему 'x')
+  type: 'matching'; // Тип: Zuordnung (сопоставление)
+}
+
+export const generateReadingA2Teil4 = (numberOfTopics: number) => { 
+  return `
+Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату 2024 года.
+Твоя задача: сгенерировать ${numberOfTopics} уникальных заданий для модуля Lesen A2: Teil 4 (Anzeigen verstehen / Zuordnung).
+
+ОБЩИЕ ТРЕБОВАНИЯ И ПРАВИЛА (СТРОГО):
+1. Тип текста: 6 коротких рекламных или информационных объявлений (Anzeigen) на одну общую тему (например, покупки в интернете, курсы, туризм, поиск жилья). 
+2. Объем текста: суммарно не более 240 слов на все 6 объявлений.
+3. Лексика и грамматика: строго уровень A2.
+4. Формат вопросов (Ситуации): Сгенерируй ровно 5 ситуаций. В каждой ситуации описана конкретная потребность человека (например: "Rupert braucht ein Geschenk für seinen Enkel.").
+5. ЛОГИКА СОПОСТАВЛЕНИЯ (КРИТИЧЕСКИ ВАЖНО): 
+   - 4 ситуации должны иметь ровно одно подходящее объявление из списка (a, b, c, d, e, f).
+   - Для 1 из 5 ситуаций НЕ ДОЛЖНО БЫТЬ подходящего объявления. В этом случае правильным ответом должен быть "x".
+   - Одно из шести объявлений всегда остается "лишним" и никем не используется.
+   - Запрещено использовать одно объявление для двух разных людей.
+6. Цель проверки (Lesestil): "selektives Lesen". Студент должен найти объявление, которое решает проблему персоны.
+
+ФОРМАТ ВЫВОДА:
+Сгенерируй результат строго в формате валидного JSON-массива, соответствующего интерфейсу ReadingTopicA2Teil4.
+
+ЭТАЛОННЫЙ ПРИМЕР (Используй для понимания структуры, длины и логики):
+Объявления:
+a: "Gesundheits-Apps: Brauchen Sie einen Medikamenten-Manager? Möchten Sie schlanker werden? Wir haben 15 Apps getestet."
+b: "Der richtige Reisebegleiter: www.test-reisen.de. Welche Apps sind die besten Reisebegleiter für Sie?"
+c: "Im Test: Lampen. Elektrisches Licht brauchen wir überall. Wir haben getestet, welche Energiesparlampen für Sie am besten sind."
+d: "Sie brauchen einen Begleiter in Ihrem Urlaub? Chronisch kranke Menschen können oft nicht verreisen. Wir helfen Ihnen bei der Suche nach Reisebüros, bei denen ein Arzt mitreist."
+e: "Krank durch Spielzeug? Holzspielzeug ist nicht immer umweltfreundlich. Welches Spielzeug ist gut für die Kleinen? Klicken Sie hier."
+f: "Energie ohne Kabel? Möbel, wie Tische oder Lampen, mit denen Smartphone-Besitzer ihre Akkus kabellos aufladen können."
+
+Ситуации (Questions):
+Q1: Fued braucht auch in den Ferien ärztliche Kontrolle.
+Correct: "d" (Im Text d steht, dass ein Arzt auf der Reise mitreist).
+Q2: Rupert braucht noch ein Geschenk für seinen 3-jährigen Enkel.
+Correct: "e" (Im Text e geht es um sicheres Spielzeug für kleine Kinder).
+Q3: Die Batterie von Rolands Handy ist oft leer.
+Correct: "f" (Text f bewirbt Möbel, mit denen man Smartphone-Akkus aufladen kann).
+Q4: Melanie möchte zu Hause Energie sparen.
+Correct: "c" (In Text c geht es um Energiesparlampen für zu Hause).
+Q5: Theo sucht eine Stelle im Tourismusbereich.
+Correct: "x" (Es gibt keine Anzeige für Stellenangebote oder Jobs im Tourismus. Anzeige 'b' und 'd' bieten nur Reisen an, keine Jobs).
+
+Сгенерируй ${numberOfTopics} новых заданий (наборы из 6 объявлений и 5 ситуаций) в формате JSON. Обязательно убедись, что для одной персоны ответ "x"!
+`
+};
+
+----------------------

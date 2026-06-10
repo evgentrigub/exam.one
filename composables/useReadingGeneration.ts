@@ -3,7 +3,7 @@
  * Manages AI reading exercise generation state with localStorage persistence
  */
 
-import { generateReadingA2 } from '~/data/reading/topicGeneratorReadingA2'
+import { readingA2Parts } from '~/data/reading/topicGeneratorReadingA2'
 import { generateReadingC1 } from '~/data/reading/topicGeneratorReadingC1'
 import type { GermanText, Difficulty } from '~/utils/types'
 
@@ -99,12 +99,15 @@ export const useReadingGeneration = () => {
     saveState()
 
     try {
-      // Get the appropriate prompt based on difficulty
-      let prompt: string
+      // Build the request body based on difficulty.
+      // A2 uses the four-part Goethe format: one prompt per Teil so a single
+      // generation click yields one exercise for each part (Teil 1–4).
+      // C1 keeps the single generic prompt path.
+      let body: { difficulty: Difficulty; prompt?: string; prompts?: Array<{ part: number; prompt: string }> }
       if (difficulty === 'A2') {
-        prompt = generateReadingA2()
+        body = { difficulty, prompts: readingA2Parts(1) }
       } else if (difficulty === 'C1') {
-        prompt = generateReadingC1()
+        body = { difficulty, prompt: generateReadingC1() }
       } else {
         throw new Error(`Unsupported difficulty level: ${difficulty}`)
       }
@@ -112,10 +115,7 @@ export const useReadingGeneration = () => {
       // Call API endpoint - cast through unknown to bypass Nuxt's complex route type inference
       const response = (await $fetch('/api/generate-reading', {
         method: 'POST',
-        body: {
-          prompt,
-          difficulty
-        }
+        body
       }) as unknown) as { texts: GermanText[], error?: string }
 
       if (response.error || !response.texts || response.texts.length === 0) {

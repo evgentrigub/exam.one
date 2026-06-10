@@ -69,7 +69,9 @@
 
       <!-- Info Text -->
       <p class="text-xs text-base-content opacity-50 mt-4 text-center px-4">
-        Each generation creates 3 new exercises
+        {{ currentDifficulty === 'A2'
+          ? 'Creates one exercise per exam part (Teil 1–4)'
+          : 'Each generation creates new exercises' }}
       </p>
     </div>
   </div>

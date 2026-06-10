@@ -9,6 +9,8 @@ export interface GermanText {
   content: string
   textType: TextType
   difficulty: 'A2' | 'C1'
+  /** Goethe A2 Lesen part (Teil 1–4). Optional for legacy/C1 texts. */
+  testingPart?: 1 | 2 | 3 | 4
   estimatedReadingTime: number // in minutes
   wordCount: number
   topics: string[]
@@ -23,6 +25,7 @@ export type TextType =
   | 'advertisement'
   | 'instructions'
   | 'announcement'
+  | 'list'
 
 export interface Question {
   id: string
@@ -39,6 +42,8 @@ export type QuestionType =
   | 'vocabulary'
   | 'grammar'
   | 'inference'
+  | 'selective' // A2 Teil 2: selective info lookup
+  | 'matching' // A2 Teil 4: advert-to-situation matching
 
 export interface UserProgress {
   textId: string

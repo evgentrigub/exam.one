@@ -73,6 +73,20 @@
       </div>
     </div>
 
+    <!-- Reading generator (only when browsing reading exercises) -->
+    <ClientOnly>
+      <ReadingGeneratorCard
+        v-if="activeSkill === 'reading'"
+        :is-generating="isGenerating"
+        :generating-difficulty="generatingDifficulty"
+        :generation-error="generationError"
+        :current-difficulty="examLevel"
+        @generate="handleGenerate"
+        @retry="handleRetry"
+        @dismiss="handleDismissError"
+      />
+    </ClientOnly>
+
     <!-- Results -->
     <ClientOnly>
       <!-- Grid view -->
@@ -90,7 +104,9 @@
             <span class="level-pip">{{ ex.difficulty }}</span>
           </div>
           <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
-          <p class="text-xs text-base-content/50 capitalize mb-3">{{ ex.skill }} · {{ ex.type }}</p>
+          <p class="text-xs text-base-content/50 capitalize mb-3">
+            {{ ex.skill }} · {{ ex.type }}<span v-if="ex.part" class="uppercase"> · Teil {{ ex.part }}</span>
+          </p>
 
           <div class="flex items-center gap-3 text-xs text-base-content/50 mb-3">
             <span class="flex items-center gap-1">
@@ -151,7 +167,9 @@
                   {{ ex.skill }}
                 </span>
               </td>
-              <td class="py-3 text-xs text-base-content/60 capitalize">{{ ex.type }}</td>
+              <td class="py-3 text-xs text-base-content/60 capitalize">
+                {{ ex.type }}<span v-if="ex.part"> · Teil {{ ex.part }}</span>
+              </td>
               <td class="py-3"><span class="level-pip">{{ ex.difficulty }}</span></td>
               <td class="py-3 text-xs text-base-content/60">{{ ex.minutes }} min</td>
               <td class="py-3">
@@ -191,9 +209,11 @@ import { BookOpen, PenLine, Headphones, Mic, Search, LayoutGrid, List, Clock, Al
 import type { Component } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
+import { useReadingGeneration } from '~/composables/useReadingGeneration'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
+import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
 
 usePageMeta('Exercises', 'Browse and practice all exercise types')
 useHead({ title: 'Exercises — Exam.one' })
@@ -203,9 +223,43 @@ const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
 
-const { getTexts } = useReadingTexts()
+const { getTexts, addTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
 const { getProgressStats, isTextCompleted, isWritingTopicCompleted } = useProgress()
+
+// Reading generation
+const {
+  isGenerating,
+  generatingDifficulty,
+  generationError,
+  generateReading,
+  retryGeneration,
+  dismissError
+} = useReadingGeneration()
+
+async function handleGenerate() {
+  try {
+    const newTexts = await generateReading(examLevel.value)
+    addTexts(newTexts)
+  } catch (error: unknown) {
+    console.error('Failed to generate reading exercises:', error)
+    alert(error instanceof Error ? error.message : 'Failed to generate reading exercises')
+  }
+}
+
+async function handleRetry() {
+  try {
+    const newTexts = await retryGeneration()
+    addTexts(newTexts)
+  } catch (error: unknown) {
+    console.error('Failed to retry reading generation:', error)
+    alert(error instanceof Error ? error.message : 'Failed to retry generation')
+  }
+}
+
+function handleDismissError() {
+  dismissError()
+}
 
 // Filter state
 const activeSkill = ref<string>('all')
@@ -238,6 +292,7 @@ type UnifiedExercise = {
   words?: number
   pct: number
   status: 'new' | 'inprogress' | 'mastered'
+  part?: number
 }
 
 const allExercises = computed<UnifiedExercise[]>(() => {
@@ -255,7 +310,8 @@ const allExercises = computed<UnifiedExercise[]>(() => {
       minutes: t.estimatedReadingTime,
       words: t.wordCount,
       pct,
-      status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new'
+      status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
+      part: t.testingPart
     } as UnifiedExercise
   })
 
