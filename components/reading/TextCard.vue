@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
 import { computed, ref, onMounted } from 'vue'
 

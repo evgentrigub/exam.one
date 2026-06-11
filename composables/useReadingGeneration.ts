@@ -5,7 +5,8 @@
 
 import { readingA2Parts } from '~/data/reading/a2/topicGeneratorReadingA2'
 import { generateReadingC1 } from '~/data/reading/a2/topicGeneratorReadingC1'
-import type { ReadingExercise, Difficulty } from '~/utils/types'
+import type { ReadingExercise, ReadingPromptPart } from '~/utils/exercises/reading'
+import type { Difficulty } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-generation-state'
 
@@ -103,7 +104,7 @@ export const useReadingGeneration = () => {
       // A2 uses the four-part Goethe format: one prompt per Teil so a single
       // generation click yields one exercise for each part (Teil 1–4).
       // C1 keeps the single generic prompt path.
-      let body: { difficulty: Difficulty; prompt?: string; prompts?: Array<{ part: number; prompt: string }> }
+      let body: { difficulty: Difficulty; prompt?: string; prompts?: ReadingPromptPart[] }
       if (difficulty === 'A2') {
         body = { difficulty, prompts: readingA2Parts(1) }
       } else if (difficulty === 'C1') {

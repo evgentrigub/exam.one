@@ -1,4 +1,4 @@
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingA2Exercise, ReadingA2Part, ReadingPromptPart } from '~/utils/exercises/reading'
 
 /**
  * A2 Reading Exercise Generation Prompts (Goethe-Institut, modular 2024 format).
@@ -8,46 +8,108 @@ import type { ReadingExercise } from '~/utils/types'
  * part plus a `readingA2Parts` helper that returns one prompt per part so a single
  * "Generate" click can produce one exercise for every Teil.
  *
- * Every prompt instructs the model to return a JSON array of objects that are
- * directly compatible with the {@link ReadingExercise} interface so the existing
- * reading storage and quiz flow can consume them without special-casing.
+ * Each part checks a different reading skill, so the generated JSON uses a
+ * discriminated union keyed by `testingPart` while keeping the quiz-facing
+ * question shape uniform.
  */
 
-/** Reading part identifiers used across the A2 generation flow. */
-export type ReadingA2Part = 1 | 2 | 3 | 4
-
-/**
- * Shared output contract appended to every part prompt. Keeping the JSON shape
- * identical across parts lets the server normalise and the quiz UI render every
- * generated exercise uniformly.
- */
-const germanTextOutputContract = (part: ReadingA2Part, textType: string, questionType: string) => `
+const readingOutputPrelude = (interfaceName: string) => `
 ФОРМАТ ВЫВОДА (СТРОГО):
 Верни ТОЛЬКО валидный JSON-массив объектов. Никакого текста, пояснений или Markdown до или после JSON.
-Каждый объект должен строго соответствовать интерфейсу GermanText:
+Каждый объект должен строго соответствовать интерфейсу ${interfaceName}.
+Поля id, createdAt и вложенные id/textId НЕ добавляй — они будут проставляться автоматически позже.
+`
 
+const readingTeil1OutputContract = `
 {
-  "title": string,                 // короткий немецкий заголовок
-  "content": string,               // полный текст задания (см. правила части)
-  "textType": "${textType}",
-  "testingPart": ${part},
+  "title": string,
+  "content": string,
+  "textType": "article",
+  "testingPart": 1,
   "difficulty": "A2",
-  "estimatedReadingTime": number,  // минуты (например 7.5)
-  "wordCount": number,             // фактическое число слов в content
-  "topics": string[],              // 1–3 темы на немецком
+  "estimatedReadingTime": number,
+  "wordCount": number,
+  "topics": string[],
   "questions": [
     {
       "question": string,
-      "options": string[],
-      "correctAnswer": number,     // индекс правильного варианта в options (0-based)
-      "explanation": string,       // краткое объяснение на немецком
-      "type": "${questionType}"
+      "options": [string, string, string],
+      "correctAnswer": 0 | 1 | 2,
+      "explanation": string,
+      "type": "comprehension"
     }
     // ровно 5 вопросов
   ]
 }
+`
 
-ПОЛЯ id, textId, createdAt НЕ добавляй — они проставляются автоматически на сервере.
+const readingTeil2OutputContract = `
+{
+  "title": string,
+  "content": string,
+  "textType": "list",
+  "testingPart": 2,
+  "difficulty": "A2",
+  "estimatedReadingTime": number,
+  "wordCount": number,
+  "topics": string[],
+  "questions": [
+    {
+      "question": string,
+      "options": [string, string, string],
+      "correctAnswer": 0 | 1 | 2,
+      "explanation": string,
+      "type": "selective"
+    }
+    // ровно 5 вопросов
+  ]
+}
+`
+
+const readingTeil3OutputContract = `
+{
+  "title": string,
+  "content": string,
+  "textType": "email",
+  "testingPart": 3,
+  "difficulty": "A2",
+  "estimatedReadingTime": number,
+  "wordCount": number,
+  "topics": string[],
+  "questions": [
+    {
+      "question": string,
+      "options": [string, string, string],
+      "correctAnswer": 0 | 1 | 2,
+      "explanation": string,
+      "type": "comprehension"
+    }
+    // ровно 5 вопросов
+  ]
+}
+`
+
+const readingTeil4OutputContract = `
+{
+  "title": string,
+  "content": string,
+  "textType": "advertisement",
+  "testingPart": 4,
+  "difficulty": "A2",
+  "estimatedReadingTime": number,
+  "wordCount": number,
+  "topics": string[],
+  "questions": [
+    {
+      "question": string,
+      "options": ["a", "b", "c", "d", "e", "f", "x"],
+      "correctAnswer": 0 | 1 | 2 | 3 | 4 | 5 | 6,
+      "explanation": string,
+      "type": "matching"
+    }
+    // ровно 5 вопросов
+  ]
+}
 `
 
 /**
@@ -75,7 +137,9 @@ export const generateReadingA2Teil1 = (numberOfTopics: number) => {
 question: "Als sie jünger war, ..."
 options: ["arbeitete sie im Geschäft ihres Vaters.", "half ihr Vater Mireia bei den Hausaufgaben.", "hatte sie einen Job im Gymnasium."]
 correctAnswer: 0
-${germanTextOutputContract(1, 'article', 'comprehension')}
+
+${readingOutputPrelude('ReadingExerciseA2Teil1')}
+${readingTeil1OutputContract}
 Сгенерируй ${numberOfTopics} новых текстов (разные темы) в формате JSON.
 `
 }
@@ -104,7 +168,9 @@ question: "Sie möchten Ohrringe kaufen."
 options: ["3. Stock", "2. Stock", "anderer Stock"]
 correctAnswer: 2
 explanation: "Schmuck ist in der Drogerie im 1. Stock, also 'anderer Stock'."
-${germanTextOutputContract(2, 'list', 'selective')}
+
+${readingOutputPrelude('ReadingExerciseA2Teil2')}
+${readingTeil2OutputContract}
 Сгенерируй ${numberOfTopics} новых текстов-списков (разные темы: расписание ТВ, программа фестиваля, план аэропорта и т.д.) в формате JSON.
 `
 }
@@ -134,7 +200,9 @@ question: "Auf dem Klassentreffen ..."
 options: ["waren fast alle anwesend.", "fehlten zwei Personen.", "haben Andreas und Holger über sich erzählt."]
 correctAnswer: 1
 explanation: "Im Text: 'außer dir noch zwei Ehemalige nicht dabei waren: Andreas und Holger.'"
-${germanTextOutputContract(3, 'email', 'comprehension')}
+
+${readingOutputPrelude('ReadingExerciseA2Teil3')}
+${readingTeil3OutputContract}
 Сгенерируй ${numberOfTopics} новых писем (разные темы: отпуск, переезд, новая работа, приглашение на свадьбу) в формате JSON.
 `
 }
@@ -174,7 +242,9 @@ question: "Theo sucht eine Stelle im Tourismusbereich."
 options: ["a", "b", "c", "d", "e", "f", "x"]
 correctAnswer: 6
 explanation: "Es gibt keine Anzeige für Stellenangebote, daher 'x'."
-${germanTextOutputContract(4, 'advertisement', 'matching')}
+
+${readingOutputPrelude('ReadingExerciseA2Teil4')}
+${readingTeil4OutputContract}
 Сгенерируй ${numberOfTopics} новых заданий (наборы из 6 объявлений и 5 ситуаций) в формате JSON. Обязательно убедись, что ровно для одной ситуации ответ "x".
 `
 }
@@ -185,7 +255,7 @@ ${germanTextOutputContract(4, 'advertisement', 'matching')}
  *
  * @param topicsPerPart How many exercises to request per part (default 1).
  */
-export const readingA2Parts = (topicsPerPart = 1): Array<{ part: ReadingA2Part; prompt: string }> => [
+export const readingA2Parts = (topicsPerPart = 1): ReadingPromptPart<ReadingA2Part>[] => [
   { part: 1, prompt: generateReadingA2Teil1(topicsPerPart) },
   { part: 2, prompt: generateReadingA2Teil2(topicsPerPart) },
   { part: 3, prompt: generateReadingA2Teil3(topicsPerPart) },
@@ -195,6 +265,6 @@ export const readingA2Parts = (topicsPerPart = 1): Array<{ part: ReadingA2Part; 
 /**
  * Example A2 reading exercises for reference.
  */
-export const dataA2ReadingExamples: ReadingExercise[] = [
+export const dataA2ReadingExamples: ReadingA2Exercise[] = [
   // Reference examples can be added here.
 ]

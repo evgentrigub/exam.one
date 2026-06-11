@@ -75,13 +75,13 @@
 </template>
 
 <script setup lang="ts">
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 
 interface Props {
   text: ReadingExercise
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 defineEmits<{
   close: []

@@ -100,18 +100,18 @@
     "semantic_hash": "397115aa2e3df5b29c83af70e85c5767"
   },
   "components/TextReader.vue": {
-    "mtime": 1781189722.1446497,
-    "ast_hash": "b2964fe7b1462fd492c56dce3f9271d1",
+    "mtime": 1781192064.2592802,
+    "ast_hash": "a72006722c79695d2ef995b78ab10717",
     "semantic_hash": ""
   },
   "components/reading/QuestionCard.vue": {
-    "mtime": 1781189663.5141587,
-    "ast_hash": "4fffe69cc298f5e468201fe345bdb5c7",
+    "mtime": 1781192048.3995585,
+    "ast_hash": "0c9946a0e20f9963b258fc7066c67274",
     "semantic_hash": ""
   },
   "components/reading/QuizSession.vue": {
-    "mtime": 1781189722.1152587,
-    "ast_hash": "5e19ad14537bbcff8d171d0d83f1b4cb",
+    "mtime": 1781192054.4336424,
+    "ast_hash": "84c8f9de201d2e48b9575d2a68e95b43",
     "semantic_hash": ""
   },
   "components/reading/ReadingGeneratorCard.vue": {
@@ -120,13 +120,13 @@
     "semantic_hash": "c68b04655e976469f5507930e8ed4b4a"
   },
   "components/reading/ReadingModal.vue": {
-    "mtime": 1781189722.153419,
-    "ast_hash": "384ba41e7a5d5cb3ffdbddbd603e2d80",
+    "mtime": 1781192154.2796075,
+    "ast_hash": "631256d5214e5e74664d27b6896620ad",
     "semantic_hash": ""
   },
   "components/reading/TextCard.vue": {
-    "mtime": 1781189722.113226,
-    "ast_hash": "da9d4d4e823b7c877b644cb2d999d45c",
+    "mtime": 1781192061.1979232,
+    "ast_hash": "d591ba7fdbd48272606b1e5f1eb1977c",
     "semantic_hash": ""
   },
   "components/ui/Tooltip.vue": {
@@ -195,13 +195,13 @@
     "semantic_hash": "2b19e63161d59c8c4baf5179fce42d14"
   },
   "composables/useReadingGeneration.ts": {
-    "mtime": 1781189722.2623687,
-    "ast_hash": "1ff1c21783489f122fd5538aaf0d590e",
+    "mtime": 1781192032.1115978,
+    "ast_hash": "4e4b46091d194a8cbb44674fe7928507",
     "semantic_hash": ""
   },
   "composables/useReadingTexts.ts": {
-    "mtime": 1781189722.144632,
-    "ast_hash": "076ca1e779686a25f871b6c2c1f45e8a",
+    "mtime": 1781192035.7873695,
+    "ast_hash": "d66fc177c0f7b422d2448d3fff656be8",
     "semantic_hash": ""
   },
   "composables/useTheme.ts": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "data/reading/exerciseReading.ts": {
-    "mtime": 1781189722.1498866,
-    "ast_hash": "5b493ff3c102c1c122cbbc80f0a5c73d",
+    "mtime": 1781192039.671504,
+    "ast_hash": "7931c9fda92a566ad9dbe56a1b51180f",
     "semantic_hash": ""
   },
   "data/writing/a2/answerGeneratorWritingA2.ts": {
@@ -355,13 +355,13 @@
     "semantic_hash": "0e5c5c8c958318495b34629435d638e3"
   },
   "pages/reading/[quizId].vue": {
-    "mtime": 1781189722.0836964,
-    "ast_hash": "d292afd3f95790acc8186532ce28b8ab",
+    "mtime": 1781192070.5464904,
+    "ast_hash": "101012827b94ba64b1000fb08febbb92",
     "semantic_hash": ""
   },
   "pages/reading/index.vue": {
-    "mtime": 1781189722.1534543,
-    "ast_hash": "71b1d2ecf406c6e80b114eabc6939b07",
+    "mtime": 1781192148.5734396,
+    "ast_hash": "f75b48491ce833496836da0a94ef3240",
     "semantic_hash": ""
   },
   "pages/tooltip-demo.vue": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "server/api/generate-reading.post.ts": {
-    "mtime": 1781189722.079931,
-    "ast_hash": "66c651da8d84efb6fc22cb01d77532ec",
+    "mtime": 1781192524.536681,
+    "ast_hash": "5ec3d017cc395eb71e5952eddece49d1",
     "semantic_hash": ""
   },
   "server/api/generate-topics.post.ts": {
@@ -425,8 +425,8 @@
     "semantic_hash": ""
   },
   "utils/types.ts": {
-    "mtime": 1781189735.4921196,
-    "ast_hash": "cbf96bede804edd8efa56408bb3393b9",
+    "mtime": 1781191974.8140547,
+    "ast_hash": "675f304f05796d82201e73b401fb8983",
     "semantic_hash": ""
   },
   "utils/uuid.ts": {
@@ -1440,13 +1440,13 @@
     "semantic_hash": ""
   },
   "data/reading/a2/topicGeneratorReadingA2.ts": {
-    "mtime": 1781189722.1583514,
-    "ast_hash": "f674d5017d64b607ada68b07bce555ca",
+    "mtime": 1781192013.3567777,
+    "ast_hash": "fa1e2bea014a235e3fe66f2fdf0a1e9d",
     "semantic_hash": ""
   },
   "data/reading/a2/topicGeneratorReadingC1.ts": {
-    "mtime": 1781189722.106288,
-    "ast_hash": "6fb9bdd428048c5edf97a18cea901f07",
+    "mtime": 1781192043.776846,
+    "ast_hash": "3a10ded7772d5d71ffe8d924770282cf",
     "semantic_hash": ""
   },
   "data/speaking/a2/answerGeneratorSpeakingA2.ts": {
@@ -1470,13 +1470,13 @@
     "semantic_hash": ""
   },
   "utils/exercises/listening.ts": {
-    "mtime": 1781191235.8639839,
-    "ast_hash": "6214d75aece0f4344b98a75243af8be5",
+    "mtime": 1781191593.6407547,
+    "ast_hash": "906acffd926058d7796f9f6686e4cce7",
     "semantic_hash": ""
   },
   "utils/exercises/reading.ts": {
-    "mtime": 1781189756.747915,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1781192488.8668332,
+    "ast_hash": "39055ac91c79039683227e5862ec7c0d",
     "semantic_hash": ""
   },
   "utils/exercises/speaking.ts": {
@@ -3197,11 +3197,6 @@
   "README_COMMANDS.md": {
     "mtime": 1781120527.8880625,
     "ast_hash": "c40fd1b3d13554768c7b23a07b6654d1",
-    "semantic_hash": ""
-  },
-  "data/listeningPrompts.txt": {
-    "mtime": 1781189583.1517467,
-    "ast_hash": "83eddd90f8ad236a12e35253fc402245",
     "semantic_hash": ""
   }
 }

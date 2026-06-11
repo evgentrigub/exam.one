@@ -1,49 +1,7 @@
 /**
  * Exam.one - Type Definitions
- * Data structures for reading, writing, listening and speaking texts, questions, and user progress
+ * Shared data structures for exercises, reviews, and user progress
  */
-
-export interface ReadingExercise {
-  id: string
-  title: string
-  content: string
-  textType: TextType
-  difficulty: Difficulty
-  /** Goethe A2 Lesen part (Teil 1–4). */
-  testingPart?: 1 | 2 | 3 | 4
-  estimatedReadingTime: number // in minutes
-  wordCount: number
-  topics: string[]
-  createdAt: string
-  questions?: ReadingQuestion[] // Will be added in Stage 3
-}
-
-export type TextType = 
-  | 'email'
-  | 'notice'
-  | 'article'
-  | 'advertisement'
-  | 'instructions'
-  | 'announcement'
-  | 'list'
-
-export interface ReadingQuestion {
-  id: string
-  textId: string
-  question: string
-  options: string[]
-  correctAnswer: number // index of correct option
-  explanation: string
-  type: ReadingQuestionType
-}
-
-export type ReadingQuestionType = 
-  | 'comprehension'
-  | 'vocabulary'
-  | 'grammar'
-  | 'inference'
-  | 'selective' // A2 Teil 2: selective info lookup
-  | 'matching' // A2 Teil 4: advert-to-situation matching
 
 export interface UserProgress {
   textId: string

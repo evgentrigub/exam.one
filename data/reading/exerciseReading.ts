@@ -1,4 +1,4 @@
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 
 /**
  * Sample A2-level German texts for reading comprehension practice

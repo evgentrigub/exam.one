@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ArrowLeft, Clock, AlignLeft } from 'lucide-vue-next'
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import QuizSession from '~/components/reading/QuizSession.vue'
 
