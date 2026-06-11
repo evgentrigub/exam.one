@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ReadingQuestion } from '~/utils/types'
+import type { ReadingQuestion } from '~/utils/exercises/reading'
 
 interface Props {
   question: ReadingQuestion

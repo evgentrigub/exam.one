@@ -1,4 +1,4 @@
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 
 /**
  * C1 Reading Exercise Generation Prompt

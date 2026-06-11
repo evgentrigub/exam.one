@@ -83,8 +83,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ReadingExercise } from '../../utils/types'
-import { useProgress } from '../../composables/useProgress'
+import type { ReadingExercise } from '~/utils/exercises/reading'
+import { useProgress } from '~/composables/useProgress'
 import QuestionCard from './QuestionCard.vue'
 
 interface Props {

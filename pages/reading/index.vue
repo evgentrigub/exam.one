@@ -150,18 +150,18 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
+import ReadingModal from '~/components/reading/ReadingModal.vue'
+import TextCard from '~/components/reading/TextCard.vue'
+import { useProgress } from '~/composables/useProgress'
+import { useReadingGeneration } from '~/composables/useReadingGeneration'
+import { useReadingTexts } from '~/composables/useReadingTexts'
+import { useSettingsStore } from '~/stores/settings'
+import type { ReadingExercise } from '~/utils/exercises/reading'
+
 // Redirect to unified exercises page filtered by reading skill
 await navigateTo('/exercises?skill=reading', { replace: true })
-
-import { storeToRefs } from 'pinia'
-import { useSettingsStore } from '~/stores/settings'
-import type { ReadingExercise } from '../../utils/types'
-import { useProgress } from '../../composables/useProgress'
-import { useReadingTexts } from '../../composables/useReadingTexts'
-import { useReadingGeneration } from '../../composables/useReadingGeneration'
-import TextCard from '../../components/reading/TextCard.vue'
-import ReadingModal from '../../components/reading/ReadingModal.vue'
-import ReadingGeneratorCard from '../../components/reading/ReadingGeneratorCard.vue'
 
 // Page metadata
 useHead({

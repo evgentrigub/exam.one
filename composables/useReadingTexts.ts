@@ -5,7 +5,7 @@
  */
 
 import { defaultReadingTopics } from '~/data/reading/exerciseReading'
-import type { ReadingExercise } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 
 const STORAGE_KEY = 'exame-one-reading-texts'
 

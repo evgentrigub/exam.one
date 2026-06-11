@@ -1,16 +1,16 @@
 # Graph Report - exam-one  (2026-06-11)
 
 ## Corpus Check
-- 603 files · ~481,042 words
+- 603 files · ~479,413 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8136 nodes · 9515 edges · 606 communities (574 shown, 32 thin omitted)
+- 8163 nodes · 9572 edges · 606 communities (573 shown, 33 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 139 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b18a6e69`
+- Built from commit: `6370b618`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -582,6 +582,7 @@
 - [[_COMMUNITY_Community 588|Community 588]]
 - [[_COMMUNITY_Community 589|Community 589]]
 - [[_COMMUNITY_Community 590|Community 590]]
+- [[_COMMUNITY_Community 594|Community 594]]
 - [[_COMMUNITY_Community 601|Community 601]]
 - [[_COMMUNITY_Community 602|Community 602]]
 - [[_COMMUNITY_Community 603|Community 603]]
@@ -623,11 +624,11 @@
 - **A2 Reading Prompt Generators** — data_updated_topicgeneratorreadinga2_generatereadinga2teil1, data_updated_topicgeneratorreadinga2_generatereadinga2part2, data_updated_topicgeneratorreadinga2_generatereadinga2teil3, data_updated_topicgeneratorreadinga2_generatereadinga2teil4, data_updated_topicgeneratorreadinga2_goethe_a2_lesen_generation_rules [EXTRACTED 1.00]
 - **Redesign Product Direction** — project_redesign_coach_plan_for_today, project_redesign_exam_date_anchor, project_redesign_one_page_per_decision, project_redesign_status_not_statistics, project_redesign_progress_that_teaches [EXTRACTED 1.00]
 
-## Communities (606 total, 32 thin omitted)
+## Communities (606 total, 33 thin omitted)
 
 ### Community 0 - "AI Reading Generation"
-Cohesion: 0.18
-Nodes (12): extractTextsFromResponse(), generateForPrompt(), GenerateReadingRequestBody, normaliseText(), PromptPart, GenerateTopicsRequestBody, GenerateTopicsResponse, GenerationState (+4 more)
+Cohesion: 0.11
+Nodes (24): extractTextsFromResponse(), generateForPrompt(), GenerateReadingRequestBody, isAnswerIndex(), isDifficulty(), isGeneratedReadingExercise(), isGeneratedReadingQuestion(), isReadingA2Part() (+16 more)
 
 ### Community 1 - "German Locale Copy"
 Cohesion: 0.10
@@ -662,8 +663,8 @@ Cohesion: 0.12
 Nodes (22): Current AI Stack, Current Backend, 🙏 Acknowledgments, 🏗️ Architecture, 🧪 Available Commands, 📧 Contact, 🎨 Design Philosophy, 📚 Documentation (+14 more)
 
 ### Community 9 - "Writing Text Analysis"
-Cohesion: 0.15
-Nodes (14): analyzeGermanText(), analyzeStructure(), analyzeVocabulary(), calculateCompletenessScore(), countWords(), createWritingFeedback(), generateSuggestions(), splitIntoSentences() (+6 more)
+Cohesion: 0.12
+Nodes (18): analyzeGermanText(), analyzeStructure(), analyzeVocabulary(), calculateCompletenessScore(), countWords(), createWritingFeedback(), generateSuggestions(), splitIntoSentences() (+10 more)
 
 ### Community 10 - "German Product Copy"
 Cohesion: 0.15
@@ -682,8 +683,8 @@ Cohesion: 0.15
 Nodes (14): Mission Document, Product Documentation, Roadmap Document, Tech Stack Document, Four-Skill Exam Prep Gap, Frontend-Only Offline MVP, Planned Full-Stack SaaS, Self-Studying Goethe Learners (+6 more)
 
 ### Community 14 - "AI Review Types"
-Cohesion: 0.08
-Nodes (20): isInitialized, texts, defaultReadingTopics, AiReviewCriteria, AiReviewCriteriaA2, AiReviewCriteriaC1, AiReviewCriteriaItem, AiReviewDataA2 (+12 more)
+Cohesion: 0.18
+Nodes (18): cmd_projects(), _cmd_projects_delete(), _cmd_projects_gc(), _cmd_projects_merge(), load_registry(), _project_counts(), List or maintain known projects and their instinct counts., Load the projects registry. (+10 more)
 
 ### Community 15 - "Model Answer Generation"
 Cohesion: 0.19
@@ -706,8 +707,8 @@ Cohesion: 0.12
 Nodes (16): quiz, backToPractice, correct, finish, incorrect, next, of, previous (+8 more)
 
 ### Community 20 - "Writing Review Prompts"
-Cohesion: 0.15
-Nodes (15): reviewPromptA2Teil1(), reviewPromptA2Teil2(), ModelAnswerRequestBody, ReviewRequestBody, reviewPromptC1Teil1(), reviewPromptC1Teil2(), getRecord(), readAllReviews() (+7 more)
+Cohesion: 0.06
+Nodes (36): reviewPromptA2Teil1(), reviewPromptA2Teil2(), ModelAnswerRequestBody, ReviewRequestBody, reviewPromptC1Teil1(), reviewPromptC1Teil2(), getRecord(), readAllReviews() (+28 more)
 
 ### Community 21 - "TypeScript Strictness"
 Cohesion: 0.14
@@ -726,16 +727,19 @@ Cohesion: 0.13
 Nodes (16): generateReadingA2Part2, generateReadingA2Teil1, generateReadingA2Teil3, generateReadingA2Teil4, Goethe A2 Lesen Generation Rules, selektives Lesen, sorgfaltig-genaues Lesen, AI Response Envelope (+8 more)
 
 ### Community 25 - "Writing Topic Data"
-Cohesion: 0.23
-Nodes (8): dataA2Part1Topics, dataA2Part2Topics, generateTopicsA2Part1(), generateTopicsA2Part2(), dataC1Part1Topics, dataC1Part2Topics, generateTopicsC1Part1(), generateTopicsC1Part2()
+Cohesion: 0.21
+Nodes (9): dataA2Part1Topics, dataA2Part2Topics, generateTopicsA2Part1(), generateTopicsA2Part2(), dataC1Part1Topics, dataC1Part2Topics, generateTopicsC1Part1(), generateTopicsC1Part2() (+1 more)
 
 ### Community 26 - "Component Standards"
 Cohesion: 0.13
 Nodes (16): Card Layout Standard, Colored Header Convention, DaisyUI Card Structure, Stretch And Scroll Rules, Contextual Icon Size Scale, Icons Standard, No Inline SVG Icons, Nuxt Icon Heroicons (+8 more)
 
 ### Community 27 - "Writing Exam Flow"
-Cohesion: 0.15
-Nodes (11): useWritingReview(), useWritingTopics(), { getTopicById }, { requestReview }, route, topicId, defaultWritingTopics, defaultWritingTopicsA2 (+3 more)
+Cohesion: 0.16
+Nodes (18): collectExecutableBodies(), collectCheckSegments(), DEV_COMMAND_WORDS, {
+  extractCommandSubstitutions,
+  extractSubshellGroups
+}, getLeadingCommandWord(), isBlockedDevSegment(), isOptionToken(), normalizeCommandWord() (+10 more)
 
 ### Community 28 - "Composable Standards"
 Cohesion: 0.22
@@ -775,8 +779,8 @@ Cohesion: 0.33
 Nodes (4): AVAILABLE_THEMES, DARK_THEMES, LIGHT_THEMES, Theme
 
 ### Community 38 - "Hydration Guards"
-Cohesion: 0.07
-Nodes (45): _load_instincts_from_dir(), parse_instinct_file(), Validate and resolve a file path, guarding against path traversal.      Raises V, Parse YAML-like instinct file format.      Each instinct is delimited by a pair, Load instincts from a single directory., _validate_file_path(), patch_globals(), project_tree() (+37 more)
+Cohesion: 0.05
+Nodes (57): _load_instincts_from_dir(), parse_instinct_file(), Validate and resolve a file path, guarding against path traversal.      Raises V, Parse YAML-like instinct file format.      Each instinct is delimited by a pair, Load instincts from a single directory., _validate_file_path(), patch_globals(), project_tree() (+49 more)
 
 ### Community 39 - "Design Handoff"
 Cohesion: 0.50
@@ -795,12 +799,12 @@ Cohesion: 0.09
 Nodes (45): listInstallTargetAdapters(), analyzeRecord(), areFilesEqual(), buildDoctorReport(), buildIssue(), buildRecordedStatePreview(), cloneJsonValue(), compareStringArrays() (+37 more)
 
 ### Community 79 - "Community 79"
-Cohesion: 0.09
-Nodes (42): createInstallPlanFromRequest(), {
+Cohesion: 0.10
+Nodes (41): createInstallPlanFromRequest(), {
   createLegacyCompatInstallPlan,
   createLegacyInstallPlan,
   createManifestInstallPlan,
-}, path, toCursorAgentFileName(), toCursorAgentRelativePath(), addCursorAgentDataScaffoldOperations(), addFileCopyOperation(), addJsonMergeOperation() (+34 more)
+}, getInstallTargetAdapter(), planInstallTargetScaffold(), addCursorAgentDataScaffoldOperations(), addFileCopyOperation(), addJsonMergeOperation(), addMatchingRuleOperations() (+33 more)
 
 ### Community 80 - "Community 80"
 Cohesion: 0.05
@@ -812,7 +816,7 @@ Nodes (42): 1. Tests BEFORE Code, 2. Coverage Requirements, 3. Test Types, API I
 
 ### Community 82 - "Community 82"
 Cohesion: 0.08
-Nodes (38): { execFileSync, spawnSync }, { findProjectRoot, detectFormatter, resolveFormatterBin }, path, run(), exec(), { findProjectRoot, detectFormatter, resolveFormatterBin }, fs, log() (+30 more)
+Nodes (39): { execFileSync, spawnSync }, { findProjectRoot, detectFormatter, resolveFormatterBin }, path, run(), exec(), { findProjectRoot, detectFormatter, resolveFormatterBin }, fs, log() (+31 more)
 
 ### Community 83 - "Community 83"
 Cohesion: 0.05
@@ -827,8 +831,8 @@ Cohesion: 0.05
 Nodes (41): 1. Long Functions, 1. Readability First, 2. Deep Nesting, 2. KISS (Keep It Simple, Stupid), 3. DRY (Don't Repeat Yourself), 3. Magic Numbers, 4. YAGNI (You Aren't Gonna Need It), API Design Standards (+33 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.10
-Nodes (34): getInstallTargetAdapter(), planInstallTargetScaffold(), addSyntheticSkillComponents(), assertKnownModuleIds(), COMPONENT_FAMILY_PREFIXES, dedupeStrings(), DEFAULT_REPO_ROOT, expandComponentIdsToModuleIds() (+26 more)
+Cohesion: 0.11
+Nodes (32): addSyntheticSkillComponents(), assertKnownModuleIds(), COMPONENT_FAMILY_PREFIXES, dedupeStrings(), DEFAULT_REPO_ROOT, expandComponentIdsToModuleIds(), fs, getInstallComponent() (+24 more)
 
 ### Community 87 - "Community 87"
 Cohesion: 0.05
@@ -867,12 +871,12 @@ Cohesion: 0.05
 Nodes (37): 1. Simplicity and Clarity, 2. Make the Zero Value Useful, 3. Accept Interfaces, Return Structs, Anti-Patterns to Avoid, Avoid Package-Level State, Avoid String Concatenation in Loops, Avoiding Goroutine Leaks, Concurrency Patterns (+29 more)
 
 ### Community 96 - "Community 96"
-Cohesion: 0.11
-Nodes (35): actionForFileKey(), {
+Cohesion: 0.10
+Nodes (36): actionForFileKey(), {
   appendFile,
   getClaudeDir,
   stripAnsi,
-}, buildActivityRow(), buildCreationPreview(), buildDiffPreviewFromPatchPreview(), buildPatchPreviewFromContent(), buildPatchPreviewFromReplacement(), buildReplacementPreview() (+27 more)
+}, buildActivityRow(), buildCreationPreview(), buildDiffPreviewFromPatchPreview(), buildPatchPreviewFromContent(), buildPatchPreviewFromReplacement(), buildReplacementPreview() (+28 more)
 
 ### Community 97 - "Community 97"
 Cohesion: 0.05
@@ -904,7 +908,7 @@ Nodes (34): Assertion Macros, Async Tests, Basic Property Tests, Benchmarking wi
 
 ### Community 104 - "Community 104"
 Cohesion: 0.10
-Nodes (35): collapseWhitespace(), collectLearnedSkillFiles(), dedupeRecentSessions(), { detectProjectType }, extractFirstParagraph(), extractMarkdownHeading(), extractSection(), fs (+27 more)
+Nodes (32): collapseWhitespace(), collectLearnedSkillFiles(), dedupeRecentSessions(), { detectProjectType }, extractFirstParagraph(), extractMarkdownHeading(), extractSection(), fs (+24 more)
 
 ### Community 105 - "Community 105"
 Cohesion: 0.06
@@ -919,14 +923,14 @@ Cohesion: 0.06
 Nodes (32): 1. Partitioning Strategy, 2. Ordering Key, 3. Data Types, 4. Avoid, 5. Monitoring, AggregatingMergeTree (Pre-aggregation), Aggregations, Best Practices (+24 more)
 
 ### Community 108 - "Community 108"
-Cohesion: 0.09
-Nodes (37): EXCLUDED_PATTERNS, fs, { isGitRepo, getGitModifiedFiles, readFile, log }, fs, {
+Cohesion: 0.10
+Nodes (29): EXCLUDED_PATTERNS, fs, { isGitRepo, getGitModifiedFiles, readFile, log }, fs, {
   getLearnedSkillsDir,
   ensureDir,
   readFile,
   countInFile,
   log
-}, main(), path, { readFile } (+29 more)
+}, main(), path, { readFile } (+21 more)
 
 ### Community 109 - "Community 109"
 Cohesion: 0.06
@@ -961,8 +965,12 @@ Cohesion: 0.06
 Nodes (30): API ViewSet Testing, conftest.py, Coverage, Coverage Configuration, Coverage Goals, Django Testing with TDD, Django View Testing, DO (+22 more)
 
 ### Community 117 - "Community 117"
-Cohesion: 0.06
-Nodes (60): allowWithStateWarning(), collectExecutableBodies(), commandBasename(), crypto, denyResult(), destructiveBashMsg(), ECC_DISABLE_VALUES, ECC_ENABLE_VALUES (+52 more)
+Cohesion: 0.13
+Nodes (30): allowWithStateWarning(), crypto, denyResult(), destructiveBashMsg(), ECC_DISABLE_VALUES, ECC_ENABLE_VALUES, editGateMsg(), {
+  extractCommandSubstitutions,
+  extractSubshellGroups,
+  extractBraceGroups
+} (+22 more)
 
 ### Community 118 - "Community 118"
 Cohesion: 0.12
@@ -987,12 +995,12 @@ Cohesion: 0.06
 Nodes (30): Artisan Command Tests, Authorization Tests, Base TestCase Setup, Coverage, Coverage Goals, DO, DON'T, Event Fake (+22 more)
 
 ### Community 122 - "Community 122"
-Cohesion: 0.12
-Nodes (28): { commandExists, getClaudeDir, readFile, writeFile }, detectFromLockFile(), detectFromPackageJson(), DETECTION_PRIORITY, escapeRegex(), fs, getAvailablePackageManagers(), getCommandPattern() (+20 more)
+Cohesion: 0.13
+Nodes (27): { commandExists, getClaudeDir, readFile, writeFile }, detectFromLockFile(), detectFromPackageJson(), DETECTION_PRIORITY, escapeRegex(), fs, getAvailablePackageManagers(), getCommandPattern() (+19 more)
 
 ### Community 123 - "Community 123"
-Cohesion: 0.11
-Nodes (34): _append_observations(), cmd_evolve(), cmd_projects(), _cmd_projects_delete(), _cmd_projects_gc(), _cmd_projects_merge(), cmd_promote(), cmd_prune() (+26 more)
+Cohesion: 0.07
+Nodes (53): datetime, Path, _append_observations(), cmd_evolve(), cmd_export(), cmd_import(), cmd_promote(), cmd_prune() (+45 more)
 
 ### Community 124 - "Community 124"
 Cohesion: 0.08
@@ -1010,8 +1018,8 @@ Cohesion: 0.07
 Nodes (29): Architecture, Async Operations, Best Practices, Caching, Camel Bean Invocation, Camel Direct Routes (In-Memory), Camel File Processing, Camel Message Publishing (RabbitMQ) (+21 more)
 
 ### Community 127 - "Community 127"
-Cohesion: 0.07
-Nodes (35): _find_cross_project_instincts(), _promote_auto(), _promote_specific(), Find instincts that appear in multiple projects (promotion candidates).      Ret, Promote a specific instinct by ID from current project to global., Auto-promote instincts found in multiple projects., Validate instinct IDs before using them in filenames., _validate_instinct_id() (+27 more)
+Cohesion: 0.06
+Nodes (38): _promote_auto(), Auto-promote instincts found in multiple projects., Validate instinct IDs before using them in filenames., _validate_instinct_id(), _make_project(), Create project directory structure and return a project dict., Should load from both project and global directories., When project and global have same ID, project wins. (+30 more)
 
 ### Community 128 - "Community 128"
 Cohesion: 0.07
@@ -1038,12 +1046,12 @@ Cohesion: 0.07
 Nodes (26): Simple In-Memory Rate Limiter, API Design Patterns, Authentication & Authorization, Backend Development Patterns, Background Jobs & Queues, Cache-Aside Pattern, Caching Strategies, Centralized Error Handler (+18 more)
 
 ### Community 134 - "Community 134"
-Cohesion: 0.22
-Nodes (17): buildSessionHeader(), buildSummaryBlock(), buildSummarySection(), escapeRegExp(), extractHeaderField(), extractSessionSummary(), fs, getSessionMetadata() (+9 more)
+Cohesion: 0.50
+Nodes (4): description, type, url, laraplugins
 
 ### Community 135 - "Community 135"
-Cohesion: 0.14
-Nodes (14): calculateSuccessRate(), discoverSkills(), formatHealthReport(), formatRate(), fs, getFailureTrend(), listSkillsInRoot(), path (+6 more)
+Cohesion: 0.11
+Nodes (22): { collectSkillHealth, formatHealthReport }, main(), parseArgs(), { renderDashboard }, requireValue(), showHelp(), renderDashboard(), calculateSuccessRate() (+14 more)
 
 ### Community 136 - "Community 136"
 Cohesion: 0.12
@@ -1102,8 +1110,8 @@ Cohesion: 0.08
 Nodes (24): Accessibility Patterns, Animation Patterns, Async Data Fetching Hook, Code Splitting & Lazy Loading, Component Patterns, Composition Over Inheritance, Compound Components, Context + Reducer Pattern (+16 more)
 
 ### Community 150 - "Community 150"
-Cohesion: 0.09
-Nodes (22): datetime, path, { spawnSync }, { execFileSync }, fs, path, Path, cmd_status() (+14 more)
+Cohesion: 0.25
+Nodes (8): _confidence_bar(), _print_instincts_by_domain(), Helper to print instincts grouped by domain., _stream_can_encode(), Confidence bars should retain block glyphs on UTF-8 streams., Windows cp1252 streams cannot encode block glyphs., test_confidence_bar_uses_ascii_when_stream_rejects_block_glyphs(), test_confidence_bar_uses_unicode_when_supported()
 
 ### Community 151 - "Community 151"
 Cohesion: 0.08
@@ -1198,8 +1206,8 @@ Nodes (8): {
 }, path
 
 ### Community 171 - "Community 171"
-Cohesion: 0.16
-Nodes (16): buildSessionRecord(), fs, getAllSessions(), getMatchingSessionCandidates(), getSessionById(), getSessionCandidates(), getSessionContent(), getSessionPath() (+8 more)
+Cohesion: 0.15
+Nodes (18): buildSessionRecord(), fs, getAllSessions(), getMatchingSessionCandidates(), getSessionById(), getSessionCandidates(), getSessionContent(), getSessionPath() (+10 more)
 
 ### Community 172 - "Community 172"
 Cohesion: 0.16
@@ -1242,8 +1250,8 @@ Cohesion: 0.10
 Nodes (19): Activation, Anti-Patterns, Configuration, Connection Pools, Diagnostics, Full-Text Search, Indexing, JSON Fields (+11 more)
 
 ### Community 182 - "Community 182"
-Cohesion: 0.20
-Nodes (10): load_all_instincts(), Load all instincts: project-scoped + global.      Project-scoped instincts take, Should load from both project and global directories., When project and global have same ID, project wins., Global project should only load global instincts., No instincts at all should return empty list., test_load_all_empty(), test_load_all_global_only() (+2 more)
+Cohesion: 0.29
+Nodes (7): _find_cross_project_instincts(), Find instincts that appear in multiple projects (promotion candidates).      Ret, Single project should return nothing (need 2+)., Same instinct ID in 2 projects should be found., test_find_cross_project_empty_registry(), test_find_cross_project_shared_instinct(), test_find_cross_project_single_project()
 
 ### Community 183 - "Community 183"
 Cohesion: 0.25
@@ -1335,17 +1343,13 @@ Nodes (16): SUPPORTED_INSTALL_TARGETS, buildInstallApplyArgs(), deriveRepoRootFr
 Cohesion: 0.18
 Nodes (16): buildSessionSnapshot(), collectSessionSnapshot(), fs, listTmuxPanes(), listWorkerDirectories(), loadWorkerSnapshots(), parseBullets(), parseSection() (+8 more)
 
-### Community 203 - "Community 203"
-Cohesion: 0.12
-Nodes (18): detect_project(), _git_repo_root(), _main_worktree_root(), _normalize_remote_url(), Return the main worktree root when project_root is a linked worktree., Detect current project context. Returns dict with id, name, root, project_dir., Update the projects.json registry.      Uses file locking (where available) to p, _strip_remote_credentials() (+10 more)
-
 ### Community 204 - "Community 204"
 Cohesion: 0.11
 Nodes (17): Async Processing, Background Jobs, Caching, DTOs and Validation, Error-Resilient External Calls, Exception Handling, Logging (SLF4J), Middleware / Filters (+9 more)
 
 ### Community 205 - "Community 205"
-Cohesion: 0.21
-Nodes (13): dataA2ReadingExamples, generateReadingA2Teil1(), generateReadingA2Teil2(), generateReadingA2Teil3(), generateReadingA2Teil4(), germanTextOutputContract(), ReadingA2Part, readingA2Parts() (+5 more)
+Cohesion: 0.38
+Nodes (9): dataA2ReadingExamples, generateReadingA2Teil1(), generateReadingA2Teil2(), generateReadingA2Teil3(), generateReadingA2Teil4(), readingA2Parts(), readingOutputPrelude(), ReadingA2Exercise (+1 more)
 
 ### Community 206 - "Community 206"
 Cohesion: 0.12
@@ -1721,14 +1725,14 @@ Cohesion: 0.15
 Nodes (12): Continuous Mode, Integration with Hooks, Output Format, Phase 1: Build Verification, Phase 2: Type Check, Phase 3: Lint Check, Phase 4: Test Suite, Phase 5: Security Scan (+4 more)
 
 ### Community 298 - "Community 298"
-Cohesion: 0.25
-Nodes (6): {
+Cohesion: 0.19
+Nodes (9): {
   createFlatFileOperations,
   createFlatRuleOperations,
   createInstallTargetAdapter,
   createManagedOperation,
   isForeignPlatformPath,
-}, createJsonMergeOperation(), fs, path, readJsonObject(), { toCursorAgentFileName }
+}, createJsonMergeOperation(), fs, path, readJsonObject(), { toCursorAgentFileName }, path, toCursorAgentFileName() (+1 more)
 
 ### Community 299 - "Community 299"
 Cohesion: 0.15
@@ -1978,8 +1982,8 @@ Cohesion: 0.18
 Nodes (10): Best Practices, Connecting with stdio, Core concepts, Examples, How It Works, Install and server setup, MCP Server Patterns, Official SDKs and Docs (+2 more)
 
 ### Community 360 - "Community 360"
-Cohesion: 0.20
-Nodes (8): { ensureDir, appendFile, getClaudeDir }, fs, os, path, RATE_TABLE, { sanitizeSessionId }, sumUsageFromTranscript(), toNumber()
+Cohesion: 0.15
+Nodes (15): { ensureDir, appendFile, getClaudeDir }, fs, os, path, RATE_TABLE, { sanitizeSessionId }, sumUsageFromTranscript(), toNumber() (+7 more)
 
 ### Community 361 - "Community 361"
 Cohesion: 0.29
@@ -2014,8 +2018,8 @@ Cohesion: 0.18
 Nodes (10): Component Styling, Defining Styles, External Styles, `:host`, `:host-context()`, `::ng-deep`, Special Selectors, Styles in Templates (+2 more)
 
 ### Community 369 - "Community 369"
-Cohesion: 0.10
-Nodes (21): cmd_export(), cmd_import(), _fetch_import_url(), load_project_only_instincts(), Export instincts to file., Validate remote instinct imports before opening a network connection., Fetch a validated remote instinct file with bounded size and timeout., Quote a string for safe YAML frontmatter serialization.      Uses double quotes (+13 more)
+Cohesion: 0.29
+Nodes (7): Validate remote instinct imports before opening a network connection., _validate_import_url(), Remote imports should not downgrade to plaintext HTTP., Remote imports should not resolve to private or loopback addresses., test_validate_import_url_allows_public_https(), test_validate_import_url_rejects_http(), test_validate_import_url_rejects_private_hosts()
 
 ### Community 370 - "Community 370"
 Cohesion: 0.25
@@ -2710,8 +2714,8 @@ Cohesion: 0.50
 Nodes (4): description, type, url, cloudflare-docs
 
 ### Community 544 - "Community 544"
-Cohesion: 0.50
-Nodes (4): description, type, url, cloudflare-observability
+Cohesion: 0.20
+Nodes (18): buildSessionHeader(), buildSummaryBlock(), buildSummarySection(), escapeRegExp(), extractHeaderField(), extractSessionSummary(), fs, getSessionMetadata() (+10 more)
 
 ### Community 545 - "Community 545"
 Cohesion: 0.50
@@ -2719,19 +2723,19 @@ Nodes (4): description, type, url, cloudflare-workers-bindings
 
 ### Community 546 - "Community 546"
 Cohesion: 0.50
-Nodes (4): args, command, description, context7
+Nodes (3): { execFileSync }, fs, path
 
 ### Community 547 - "Community 547"
 Cohesion: 0.50
-Nodes (4): description, type, url, devfleet
+Nodes (4): args, command, description, context7
 
 ### Community 548 - "Community 548"
 Cohesion: 0.50
 Nodes (4): args, command, description, filesystem
 
 ### Community 549 - "Community 549"
-Cohesion: 0.36
-Nodes (8): { collectSkillHealth, formatHealthReport }, main(), parseArgs(), { renderDashboard }, requireValue(), showHelp(), renderDashboard(), collectSkillHealth()
+Cohesion: 0.21
+Nodes (12): commandBasename(), explodeSubshells(), findGitSubcommand(), getExtraDestructiveRegex(), isDestructiveBash(), isDestructiveGit(), isDestructiveRm(), isReadOnlyGitIntrospection() (+4 more)
 
 ### Community 550 - "Community 550"
 Cohesion: 0.50
@@ -2829,9 +2833,13 @@ Nodes (3): Directory Structure, Test Classes, Test Organization
 Cohesion: 0.67
 Nodes (3): Testing Exception Attributes, Testing Exceptions, Testing Expected Exceptions
 
+### Community 594 - "Community 594"
+Cohesion: 0.09
+Nodes (24): dataC1ReadingExamples, generateReadingC1(), GenerateReadingResponse, GenerationState, isInitialized, texts, ReadingExercise, ReadingExerciseA2Teil1 (+16 more)
+
 ### Community 601 - "Community 601"
-Cohesion: 0.25
-Nodes (8): _confidence_bar(), _print_instincts_by_domain(), Helper to print instincts grouped by domain., _stream_can_encode(), Confidence bars should retain block glyphs on UTF-8 streams., Windows cp1252 streams cannot encode block glyphs., test_confidence_bar_uses_ascii_when_stream_rejects_block_glyphs(), test_confidence_bar_uses_unicode_when_supported()
+Cohesion: 0.50
+Nodes (4): description, type, url, cloudflare-observability
 
 ### Community 602 - "Community 602"
 Cohesion: 0.29
@@ -2864,24 +2872,24 @@ Nodes (4): description, type, url, clickhouse
   Schreiben_Hilfen.pdf · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **5050 isolated node(s):** `name`, `displayName`, `plugins`, `schemaVersion`, `installedAt` (+5045 more)
+- **5056 isolated node(s):** `name`, `displayName`, `plugins`, `schemaVersion`, `installedAt` (+5051 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **32 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **33 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `✍️ Writing Practice` and `Schreiben Hilfen PDF`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `Path` connect `Community 150` to `Community 385`, `Community 258`, `Community 134`, `Community 135`, `Community 393`, `Community 279`, `Community 280`, `Community 409`, `Community 281`, `Community 154`, `Community 284`, `Progress Tracking`, `Community 285`, `AI Writing Endpoints`, `UI Card Standards`, `Community 163`, `Hydration Guards`, `Community 426`, `Community 170`, `Community 298`, `Community 171`, `Community 172`, `Community 307`, `Community 183`, `Community 441`, `Community 188`, `Community 453`, `Community 198`, `Community 199`, `Community 200`, `Community 201`, `Community 330`, `Community 331`, `Community 332`, `Community 333`, `Community 334`, `Community 79`, `Community 78`, `Community 202`, `Community 82`, `Community 335`, `Community 84`, `Community 339`, `Community 86`, `Community 88`, `Community 217`, `Community 602`, `Community 218`, `Community 604`, `Community 96`, `Community 99`, `Community 101`, `Community 104`, `Community 360`, `Community 108`, `Community 369`, `Community 114`, `Community 117`, `Community 118`, `Community 119`, `Community 122`, `Community 123`, `Community 125`?**
+- **Why does `Path` connect `Community 123` to `Community 385`, `Community 258`, `Community 135`, `Community 393`, `Community 279`, `Community 280`, `Community 409`, `Community 281`, `Writing Exam Flow`, `Community 154`, `Progress Tracking`, `Community 284`, `Community 285`, `Community 544`, `Community 546`, `UI Card Standards`, `AI Writing Endpoints`, `Community 163`, `Hydration Guards`, `Community 426`, `Community 170`, `Community 298`, `Community 171`, `Community 172`, `Community 307`, `Community 183`, `Community 441`, `Community 188`, `Community 453`, `Community 198`, `Community 199`, `Community 200`, `Community 201`, `Community 330`, `Community 203`, `Community 331`, `Community 332`, `Community 333`, `Community 334`, `Community 79`, `Community 78`, `Community 82`, `Community 202`, `Community 84`, `Community 335`, `Community 86`, `Community 339`, `Community 88`, `Community 217`, `Community 602`, `Community 218`, `Community 604`, `Community 96`, `Community 99`, `Community 101`, `Community 360`, `Community 104`, `Community 108`, `Community 114`, `Community 117`, `Community 118`, `Community 119`, `Community 122`, `Community 125`?**
   _High betweenness centrality (0.047) - this node is a cross-community bridge._
-- **Why does `_load_instincts_from_dir()` connect `Hydration Guards` to `Community 369`, `Community 150`, `Community 182`, `Community 123`, `Community 127`?**
+- **Why does `_load_instincts_from_dir()` connect `Hydration Guards` to `Community 123`, `Community 182`, `AI Review Types`, `Community 127`?**
   _High betweenness centrality (0.003) - this node is a cross-community bridge._
-- **Why does `parse_instinct_file()` connect `Hydration Guards` to `Community 369`, `Community 123`?**
+- **Why does `parse_instinct_file()` connect `Hydration Guards` to `Community 123`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Are the 12 inferred relationships involving `main()` (e.g. with `resolveProjectContext()` and `writeSessionLease()`) actually correct?**
   _`main()` has 12 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 9 inferred relationships involving `_load_instincts_from_dir()` (e.g. with `test_load_annotates_metadata()` and `test_load_defaults_scope_from_label()`) actually correct?**
   _`_load_instincts_from_dir()` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `name`, `displayName`, `plugins` to the rest of the system?**
-  _5145 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _5151 weakly-connected nodes found - possible documentation gaps or missing edges._
