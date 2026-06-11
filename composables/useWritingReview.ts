@@ -9,7 +9,7 @@
  * Storage: localStorage under key `writing-reviews`
  */
 
-import type { WritingTopic, AiReviewData } from '~/utils/types'
+import type { WritingExercise, AiReviewData } from '~/utils/types'
 import { ref } from 'vue'
 import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/reviewTextWritingC1'
 import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
@@ -80,7 +80,7 @@ export function useWritingReview() {
     writeAllReviews(rest)
   }
 
-  function getReviewPrompt(topic: WritingTopic, userContent: string) {
+  function getReviewPrompt(topic: WritingExercise, userContent: string) {
     // Select prompts based on difficulty level
     if (topic.difficulty === 'A2') {
       if (topic.testingPart === 1) {
@@ -103,7 +103,7 @@ export function useWritingReview() {
    * This function mocks latency and response. If an OpenAI API key is
    * available, the call site is prepared but disabled by default.
    */
-  async function requestReview(topic: WritingTopic, userContent: string): Promise<void> {
+  async function requestReview(topic: WritingExercise, userContent: string): Promise<void> {
     const prompt = getReviewPrompt(topic, userContent)
     console.log("🚀 ~ requestReview ~ prompt:", prompt)
     saveRecord({

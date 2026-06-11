@@ -1,4 +1,4 @@
-import type { GermanText } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/types'
 
 /**
  * C1 Reading Exercise Generation Prompt
@@ -52,7 +52,7 @@ export const generateReadingC1 = () => {
  * Example C1 reading exercises for reference
  * User can add actual examples from Goethe C1 exam materials
  */
-export const dataC1ReadingExamples: GermanText[] = [
+export const dataC1ReadingExamples: ReadingExercise[] = [
   // User can add reference examples here
 ]
 

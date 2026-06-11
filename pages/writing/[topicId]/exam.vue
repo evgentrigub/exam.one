@@ -28,13 +28,13 @@
 import { ArrowLeft } from 'lucide-vue-next'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useWritingReview } from '~/composables/useWritingReview'
-import type { WritingTopic } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 import WritingSession from '~/components/writing/WritingSession.vue'
 
 const route = useRoute()
 const { getTopicById } = useWritingTopics()
 const topicId = computed(() => String(route.params['topicId'] || ''))
-const topic = computed<WritingTopic | undefined>(() => getTopicById(topicId.value))
+const topic = computed<WritingExercise | undefined>(() => getTopicById(topicId.value))
 
 usePageMeta('Writing Exercise', 'Writing')
 watchEffect(() => {

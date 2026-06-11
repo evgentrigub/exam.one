@@ -5,7 +5,7 @@
  * Storage: localStorage under key `model-answers`
  */
 
-import type { WritingTopic, ModelAnswer } from '~/utils/types'
+import type { WritingExercise, ModelAnswer } from '~/utils/types'
 import { ref } from 'vue'
 import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/c1/answerGeneratorWritingC1'
 import { generateModelAnswerA2Part1, generateModelAnswerA2Part2 } from '~/data/writing/a2/answerGeneratorWritingA2'
@@ -76,7 +76,7 @@ export function useModelAnswer() {
     writeAllModelAnswers(rest)
   }
 
-  function getGenerationPrompt(topic: WritingTopic): string {
+  function getGenerationPrompt(topic: WritingExercise): string {
     switch (topic.difficulty) {
       case 'A2':
         switch (topic.testingPart) {
@@ -101,7 +101,7 @@ export function useModelAnswer() {
    * Request generation of a model answer for the given topic.
    * Uses OpenAI API if available, otherwise returns error.
    */
-  async function generateModelAnswer(topic: WritingTopic): Promise<void> {
+  async function generateModelAnswer(topic: WritingExercise): Promise<void> {
     const prompt = getGenerationPrompt(topic)
     
     saveRecord({

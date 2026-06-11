@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { WritingTopic, Difficulty } from '~/utils/types'
+import type { WritingExercise, Difficulty } from '~/utils/types'
 import { generateTopicId } from '~/utils/uuid'
 
 interface GenerateTopicsRequestBody {
@@ -9,14 +9,14 @@ interface GenerateTopicsRequestBody {
 }
 
 interface GenerateTopicsResponse {
-  topics: WritingTopic[]
+  topics: WritingExercise[]
   error?: string
 }
 
 /**
  * Extract and parse WritingTopic array from OpenAI response
  */
-function extractTopicsFromResponse(rawText: string): WritingTopic[] | null {
+function extractTopicsFromResponse(rawText: string): WritingExercise[] | null {
   // Try to find JSON array in markdown code block
   const blockStart = rawText.indexOf('```json')
   const fenceStart = blockStart >= 0 ? blockStart + 7 : -1

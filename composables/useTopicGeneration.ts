@@ -5,7 +5,7 @@
 
 import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/topicGeneratorWritingC1'
 import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/topicGeneratorWritingA2'
-import type { WritingTopic, Difficulty } from '~/utils/types'
+import type { WritingExercise, Difficulty } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-topic-generation-state'
 
@@ -91,7 +91,7 @@ export const useTopicGeneration = () => {
   /**
    * Generate topics for specified part and difficulty
    */
-  const generateTopics = async (part: 1 | 2, difficulty: Difficulty = 'C1'): Promise<WritingTopic[]> => {
+  const generateTopics = async (part: 1 | 2, difficulty: Difficulty = 'C1'): Promise<WritingExercise[]> => {
     // Set generating state
     state.value = {
       isGenerating: true,
@@ -122,7 +122,7 @@ export const useTopicGeneration = () => {
           part,
           difficulty
         }
-      }) as unknown) as { topics: WritingTopic[], error?: string }
+      }) as unknown) as { topics: WritingExercise[], error?: string }
 
       if (response.error || !response.topics || response.topics.length === 0) {
         throw new Error(response.error || 'No topics generated')
@@ -151,7 +151,7 @@ export const useTopicGeneration = () => {
   /**
    * Retry last failed generation
    */
-  const retryGeneration = async (): Promise<WritingTopic[]> => {
+  const retryGeneration = async (): Promise<WritingExercise[]> => {
     if (!state.value.error || !state.value.part || !state.value.difficulty) {
       throw new Error('No failed generation to retry')
     }

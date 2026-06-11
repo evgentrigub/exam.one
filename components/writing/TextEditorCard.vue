@@ -154,12 +154,12 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 import type { TextAnalysisResult } from '~/utils/textAnalysis'
 import { analyzeGermanText } from '~/utils/textAnalysis'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
   initialContent?: string
 }
 

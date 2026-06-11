@@ -57,15 +57,25 @@ highlights - здесь укажи основные моменты почему 
 }
 
 const dataAnswerRuleA2Part1 = `
-Eine Kurznachricht (SMS) schreiben
-In Schreiben, Teil 1 schreiben Sie eine SMS an Freunde, Bekannte oder Verwandte in der informellen „Du“-Form.
-In einem kurzen freien Text von 20–30 Wörtern sollen Sie auf Alltagssituationen reagieren (wie z. B. eine Verspätung), 
-einfache Informationen geben oder erfragen, sich entschuldigen, sich bedanken, um etwas bitten und etwas vorschlagen.
-`
+Eine Kurznachricht (SMS) schreiben. 
+In Schreiben, Teil 1 schreiben Sie eine SMS an Freunde, Bekannte oder Verwandte in der informellen „Du“-Form. 
+In einem kurzen freien Text von 20–30 Wörtern sollen Sie auf Alltagssituationen reagieren (wie z. B. eine Verspätung), einfache Informationen geben oder erfragen, sich entschuldigen, sich bedanken, um etwas bitten und etwas vorschlagen.
+
+ВАЖНЫЕ ПРАВИЛА ДЛЯ ГЕНЕРАЦИИ (ИДЕАЛЬНЫЙ ОТВЕТ):
+1. Используйте неформальное приветствие (например, Hallo, Hi) и формулу прощания (например, Bis bald, LG). Свое собственное имя в конце указывать не обязательно (опционально).
+2. В SMS вполне нормально и разрешено опускать подлежащее, если оно стоит в начале предложения (например, "Bin auf dem Weg" вместо "Ich bin auf dem Weg" или "Habe keine Lust"). Используйте этот стилистический прием, чтобы звучать аутентично!
+3. Вы можете (и должны) использовать 1-2 подходящих эмодзи/смайлика.
+4. Обязательно раскройте все 3 содержательных пункта из задания.
+`;
 
 const dataAnswerRuleA2Part2 = `
-Eine E-Mail schreiben
-In Schreiben, Teil 2 schreiben Sie eine E-Mail an Kollegen, Vorgesetzte oder andere Personen in der (halb)formellen „Sie“-Form.
-In einem kurzen freien Text von 30–40 Wörtern sollen Sie auf Alltagssituationen reagieren (wie z. B. eine Verspätung), 
-einfache Informationen geben oder erfragen, sich entschuldigen, sich bedanken, um etwas bitten und etwas vorschlagen.
-`
+Eine E-Mail schreiben.
+In Schreiben, Teil 2 schreiben Sie eine E-Mail an Kollegen, Vorgesetzte oder andere Personen in der (halb)formellen „Sie“-Form. 
+In einem kurzen freien Text von 30–40 Wörtern sollen Sie auf Alltagssituationen reagieren (wie z. B. eine Verspätung), einfache Informationen geben oder erfragen, sich entschuldigen, sich bedanken, um etwas bitten und etwas vorschlagen.
+
+ВАЖНЫЕ ПРАВИЛА ДЛЯ ГЕНЕРАЦИИ (ИДЕАЛЬНЫЙ ОТВЕТ):
+1. Письмо ОБЯЗАТЕЛЬНО должно начинаться с подходящего (полу)формального приветствия (например, Sehr geehrte(r)... / Lieber Herr...), а в конце ОБЯЗАТЕЛЬНО должна стоять формула прощания (например, Mit freundlichen Grüßen) и Ваше полное имя (имя и фамилия).
+2. Вы должны писать грамматически правильными и полными предложениями.
+3. Вы ОБЯЗАТЕЛЬНО должны использовать коннекторы (союзы), чтобы плавно связывать предложения (например, und, oder, aber, denn, weil). Избегайте простого перечисления/нанизывания коротких главных предложений друг за другом.
+4. Обязательно раскройте все 3 содержательных пункта из задания.
+`;

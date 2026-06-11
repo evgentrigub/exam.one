@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ArrowLeft, Clock, AlignLeft } from 'lucide-vue-next'
-import type { GermanText } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/types'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import QuizSession from '~/components/reading/QuizSession.vue'
 
@@ -54,7 +54,7 @@ const router = useRouter()
 const { getTexts } = useReadingTexts()
 
 const quizId = computed(() => String(route.params['quizId'] || ''))
-const text = computed<GermanText | null>(() => getTexts().find(t => t.id === quizId.value) || null)
+const text = computed<ReadingExercise | null>(() => getTexts().find(t => t.id === quizId.value) || null)
 
 watchEffect(() => {
   if (text.value) {

@@ -1,5 +1,5 @@
-import type { WritingTopic } from '~/utils/types'
-export const reviewPromptC1Teil1 = (topic: WritingTopic, userContent: string) => {
+import type { WritingExercise } from '~/utils/types'
+export const reviewPromptC1Teil1 = (topic: WritingExercise, userContent: string) => {
     return `
     Промпт для проверки C1 Schreiben (Goethe-Institut, модульный формат 2024)
 Ты — опытный экзаменатор по немецкому языку Goethe-Institut по модулю C1 Schreiben (новый модульный формат с 2024 года). 
@@ -88,7 +88,7 @@ Teil 1: формат форумного поста, ясная позиция, �
     `
 }
 
-export const reviewPromptC1Teil2 = (topic: WritingTopic, userContent: string) => {
+export const reviewPromptC1Teil2 = (topic: WritingExercise, userContent: string) => {
   return `
   Промпт для проверки C1 Schreiben (Goethe-Institut, модульный формат 2024)
 Ты — опытный экзаменатор по немецкому языку Goethe-Institut по модулю C1 Schreiben (новый модульный формат с 2024 года). 

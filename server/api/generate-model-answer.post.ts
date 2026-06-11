@@ -1,8 +1,8 @@
 import type { H3Event } from 'h3'
-import type { WritingTopic, ModelAnswer } from '~/utils/types'
+import type { WritingExercise, ModelAnswer } from '~/utils/types'
 
 interface ModelAnswerRequestBody {
-  topic: WritingTopic
+  topic: WritingExercise
   prompt: string
 }
 

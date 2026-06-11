@@ -1,8 +1,8 @@
 import type { H3Event } from 'h3'
-import type { WritingTopic, AiReviewData } from '~/utils/types'
+import type { WritingExercise, AiReviewData } from '~/utils/types'
 
 interface ReviewRequestBody {
-  topic: WritingTopic
+  topic: WritingExercise
   userContent: string
   prompt: string
 }

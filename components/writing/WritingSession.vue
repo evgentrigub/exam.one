@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic, WritingFeedbackModel } from '~/utils/types'
+import type { WritingExercise, WritingFeedbackModel } from '~/utils/types'
 import type { TextAnalysisResult } from '~/utils/textAnalysis'
 import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
 import { useProgress } from '~/composables/useProgress'
@@ -93,7 +93,7 @@ import WritingFeedback from './WritingFeedback.vue'
 import ModelAnswerCard from './ModelAnswerCard.vue'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
 }
 
 const props = defineProps<Props>()

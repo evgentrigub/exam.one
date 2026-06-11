@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { GermanText, Difficulty } from '~/utils/types'
+import type { ReadingExercise, Difficulty } from '~/utils/types'
 import { generateReadingId } from '~/utils/uuid'
 
 interface PromptPart {
@@ -16,7 +16,7 @@ interface GenerateReadingRequestBody {
 }
 
 interface GenerateReadingResponse {
-  texts: GermanText[]
+  texts: ReadingExercise[]
   error?: string
 }
 
@@ -24,7 +24,7 @@ interface GenerateReadingResponse {
  * Extract and parse a GermanText array from an OpenAI response. Handles both
  * fenced ```json blocks and a raw bracket-delimited array.
  */
-function extractTextsFromResponse(rawText: string): GermanText[] | null {
+function extractTextsFromResponse(rawText: string): ReadingExercise[] | null {
   // Try to find JSON array in markdown code block
   const blockStart = rawText.indexOf('```json')
   const fenceStart = blockStart >= 0 ? blockStart + 7 : -1
@@ -66,10 +66,10 @@ function extractTextsFromResponse(rawText: string): GermanText[] | null {
  * answers to numeric indices so the quiz UI can render them uniformly.
  */
 function normaliseText(
-  text: GermanText,
+  text: ReadingExercise,
   difficulty: Difficulty,
   part: 1 | 2 | 3 | 4 | undefined
-): GermanText {
+): ReadingExercise {
   const textId = generateReadingId(difficulty)
 
   const questions = text.questions?.map((question, questionIndex) => ({
@@ -102,7 +102,7 @@ function normaliseText(
 async function generateForPrompt(
   client: import('openai').OpenAI,
   prompt: string
-): Promise<GermanText[] | null> {
+): Promise<ReadingExercise[] | null> {
   const completion = await client.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
@@ -161,7 +161,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
         const parsed = await generateForPrompt(client, job.prompt)
         if (!parsed || parsed.length === 0) {
           console.error(`Failed to parse reading texts for part ${job.part}`)
-          return [] as GermanText[]
+          return [] as ReadingExercise[]
         }
         return parsed.map((text) =>
           normaliseText(text, body.difficulty, isMultiPart ? job.part : undefined)

@@ -5,12 +5,12 @@
  */
 
 import { defaultWritingTopics as defaultTopics } from '~/data/writing/exerciseWriting'
-import type { WritingTopic } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-writing-topics'
 
 export const useWritingTopics = () => {
-  const topics = ref<WritingTopic[]>([])
+  const topics = ref<WritingExercise[]>([])
   const isInitialized = ref(false)
 
   /**
@@ -55,14 +55,14 @@ export const useWritingTopics = () => {
   /**
    * Get all topics
    */
-  const getTopics = (): WritingTopic[] => {
+  const getTopics = (): WritingExercise[] => {
     return topics.value
   }
 
   /**
    * Get topic by ID
    */
-  const getTopicById = (id: string): WritingTopic | undefined => {
+  const getTopicById = (id: string): WritingExercise | undefined => {
     return topics.value.find(topic => topic.id === id)
   }
 
@@ -85,7 +85,7 @@ export const useWritingTopics = () => {
   /**
    * Add new topic (for future OpenAI generation)
    */
-  const addTopic = (topic: WritingTopic): void => {
+  const addTopic = (topic: WritingExercise): void => {
     // Check for duplicate ID
     const exists = topics.value.some(t => t.id === topic.id)
     
@@ -102,7 +102,7 @@ export const useWritingTopics = () => {
    * Add multiple topics at once
    * Accepts ALL topics regardless of topicType to ensure nothing is filtered
    */
-  const addTopics = (newTopics: WritingTopic[]): void => {
+  const addTopics = (newTopics: WritingExercise[]): void => {
     console.log(`📥 Attempting to add ${newTopics.length} topics:`, newTopics.map(t => ({ id: t.id, type: t.topicType, title: t.title })))
     
     const uniqueTopics = newTopics.filter(

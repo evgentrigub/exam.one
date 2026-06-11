@@ -34,7 +34,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useWritingTopics } from '~/composables/useWritingTopics'
-import type { WritingTopic } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 import WritingReview from '~/components/writing/WritingReview.vue'
 
 useHead({
@@ -44,7 +44,7 @@ useHead({
 const route = useRoute()
 const { getTopicById } = useWritingTopics()
 const topicId = computed(() => String(route.params['topicId'] || ''))
-const topic = computed<WritingTopic | undefined>(() => getTopicById(topicId.value))
+const topic = computed<WritingExercise | undefined>(() => getTopicById(topicId.value))
 
 function goBack() {
   navigateTo('/writing')

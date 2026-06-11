@@ -1,4 +1,4 @@
-import type { WritingTopic } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 
 export const writingTipsC1Teil1 = [
   'Beginnen Sie mit 2–3 Sätzen Kontext und einer Leitfrage; benennen Sie Ihre Ausgangsposition nuanciert.',
@@ -16,7 +16,7 @@ export const writingTipsC1Teil2 = [
   'Mit einem umsetzbaren Vorschlag/Kompromiss und einer höflichen Bitte um Rückmeldung bis zu einem realistischen Termin schließen; passende Grußformel und Name.',
 ]
 
-const defaultWritingTopicsC1: WritingTopic[] = [
+const defaultWritingTopicsC1: WritingExercise[] = [
   {
     id: "c1-topic-4",
     title: "Dienstreise und Bahnstreik – Abstimmung mit der/dem Vorgesetzten",
@@ -44,7 +44,7 @@ const defaultWritingTopicsC1: WritingTopic[] = [
   }
 ]
 
-const defaultWritingTopicsA2: WritingTopic[] = [
+const defaultWritingTopicsA2: WritingExercise[] = [
   {
     id: 'a2-topic-1',
     title: 'E-Mail an einen Freund',
@@ -73,7 +73,7 @@ const defaultWritingTopicsA2: WritingTopic[] = [
  * Sample German writing topics for writing practice
  * Each topic is designed to match Goethe Institut certification standards
  */
-export const defaultWritingTopics: WritingTopic[] = [
+export const defaultWritingTopics: WritingExercise[] = [
   ...defaultWritingTopicsA2,
   ...defaultWritingTopicsC1,
 ]

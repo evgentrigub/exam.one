@@ -166,11 +166,11 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic, ModelAnswer } from '~/utils/types'
+import type { WritingExercise, ModelAnswer } from '~/utils/types'
 import { useModelAnswer } from '~/composables/useModelAnswer'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
 }
 
 const props = defineProps<Props>()
