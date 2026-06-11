@@ -1,7 +1,7 @@
 ---
 name: conversation-analyzer
 description: Use this agent when analyzing conversation transcripts to find behaviors worth preventing with hooks. Triggered by /hookify without arguments.
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 tools: [Read, Grep]
 ---
 

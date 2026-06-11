@@ -1,7 +1,7 @@
 ---
 name: silent-failure-hunter
 description: Review code for silent failures, swallowed errors, bad fallbacks, and missing error propagation.
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 tools: [Read, Grep, Glob, Bash]
 ---
 

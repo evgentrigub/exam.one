@@ -2,7 +2,7 @@
 name: healthcare-reviewer
 description: Reviews healthcare application code for clinical safety, CDSS accuracy, PHI compliance, and medical data integrity. Specialized for EMR/EHR, clinical decision support, and health information systems.
 tools: ["Read", "Grep", "Glob"]
-model: opus
+model: gpt-5.5[context=272k,reasoning=high,fast=false]
 ---
 
 ## Prompt Defense Baseline
