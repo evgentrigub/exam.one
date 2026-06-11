@@ -35,10 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Question } from '~/utils/types'
+import type { ReadingQuestion } from '~/utils/types'
 
 interface Props {
-  question: Question
+  question: ReadingQuestion
   questionNumber: number
   preAnswered: number | null
 }

@@ -92,10 +92,10 @@
 </template>
 
 <script setup lang="ts">
-import type { GermanText } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/types'
 
 interface Props {
-  text: GermanText
+  text: ReadingExercise
 }
 
 defineProps<Props>()

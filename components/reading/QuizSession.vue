@@ -83,12 +83,12 @@
 </template>
 
 <script setup lang="ts">
-import type { GermanText } from '../../utils/types'
+import type { ReadingExercise } from '../../utils/types'
 import { useProgress } from '../../composables/useProgress'
 import QuestionCard from './QuestionCard.vue'
 
 interface Props {
-  text: GermanText
+  text: ReadingExercise
 }
 
 interface QuizResult {

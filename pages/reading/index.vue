@@ -155,7 +155,7 @@ await navigateTo('/exercises?skill=reading', { replace: true })
 
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
-import type { GermanText } from '../../utils/types'
+import type { ReadingExercise } from '../../utils/types'
 import { useProgress } from '../../composables/useProgress'
 import { useReadingTexts } from '../../composables/useReadingTexts'
 import { useReadingGeneration } from '../../composables/useReadingGeneration'
@@ -196,7 +196,7 @@ const selectedTypeFilter = ref<string>('all')
 const selectedStatusFilter = ref<string>('all')
 const selectedSort = ref<string>('title')
 const sortDirection = ref<'asc' | 'desc'>('asc')
-const selectedText = ref<GermanText | null>(null)
+const selectedText = ref<ReadingExercise | null>(null)
 
 const router = useRouter()
 const route = useRoute()

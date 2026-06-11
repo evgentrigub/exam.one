@@ -135,12 +135,12 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
-import type { WritingTopic } from '../../utils/types'
+import type { WritingExercise } from '../../utils/types'
 import { useProgress } from '../../composables/useProgress'
 import { useWritingReview } from '~/composables/useWritingReview'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
 }
 
 const props = defineProps<Props>()

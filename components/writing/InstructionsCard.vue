@@ -55,11 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 import type { WritingMode } from '~/composables/useWritingMode'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
   currentMode?: WritingMode
   timerDisplay?: string
 }

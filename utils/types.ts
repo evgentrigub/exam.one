@@ -3,19 +3,19 @@
  * Data structures for reading, writing, listening and speaking texts, questions, and user progress
  */
 
-export interface GermanText {
+export interface ReadingExercise {
   id: string
   title: string
   content: string
   textType: TextType
-  difficulty: 'A2' | 'C1'
-  /** Goethe A2 Lesen part (Teil 1–4). Optional for legacy/C1 texts. */
+  difficulty: Difficulty
+  /** Goethe A2 Lesen part (Teil 1–4). */
   testingPart?: 1 | 2 | 3 | 4
   estimatedReadingTime: number // in minutes
   wordCount: number
   topics: string[]
   createdAt: string
-  questions?: Question[] // Will be added in Stage 3
+  questions?: ReadingQuestion[] // Will be added in Stage 3
 }
 
 export type TextType = 
@@ -27,17 +27,17 @@ export type TextType =
   | 'announcement'
   | 'list'
 
-export interface Question {
+export interface ReadingQuestion {
   id: string
   textId: string
   question: string
   options: string[]
   correctAnswer: number // index of correct option
   explanation: string
-  type: QuestionType
+  type: ReadingQuestionType
 }
 
-export type QuestionType = 
+export type ReadingQuestionType = 
   | 'comprehension'
   | 'vocabulary'
   | 'grammar'
@@ -68,7 +68,7 @@ export interface Session {
 export type Difficulty = 'A2' | 'C1'
 
 // Writing Topic Types
-export interface WritingTopic {
+export interface WritingExercise {
   id: string
   title: string
   topicType: WritingTopicTypes

@@ -5,7 +5,7 @@
 
 import { readingA2Parts } from '~/data/reading/a2/topicGeneratorReadingA2'
 import { generateReadingC1 } from '~/data/reading/a2/topicGeneratorReadingC1'
-import type { GermanText, Difficulty } from '~/utils/types'
+import type { ReadingExercise, Difficulty } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-generation-state'
 
@@ -88,7 +88,7 @@ export const useReadingGeneration = () => {
   /**
    * Generate reading exercises for specified difficulty
    */
-  const generateReading = async (difficulty: Difficulty = 'A2'): Promise<GermanText[]> => {
+  const generateReading = async (difficulty: Difficulty = 'A2'): Promise<ReadingExercise[]> => {
     // Set generating state
     state.value = {
       isGenerating: true,
@@ -116,7 +116,7 @@ export const useReadingGeneration = () => {
       const response = (await $fetch('/api/generate-reading', {
         method: 'POST',
         body
-      }) as unknown) as { texts: GermanText[], error?: string }
+      }) as unknown) as { texts: ReadingExercise[], error?: string }
 
       if (response.error || !response.texts || response.texts.length === 0) {
         throw new Error(response.error || 'No reading exercises generated')
@@ -144,7 +144,7 @@ export const useReadingGeneration = () => {
   /**
    * Retry last failed generation
    */
-  const retryGeneration = async (): Promise<GermanText[]> => {
+  const retryGeneration = async (): Promise<ReadingExercise[]> => {
     if (!state.value.error || !state.value.difficulty) {
       throw new Error('No failed generation to retry')
     }

@@ -1,4 +1,4 @@
-import type { GermanText } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/types'
 
 /**
  * A2 Reading Exercise Generation Prompts (Goethe-Institut, modular 2024 format).
@@ -9,7 +9,7 @@ import type { GermanText } from '~/utils/types'
  * "Generate" click can produce one exercise for every Teil.
  *
  * Every prompt instructs the model to return a JSON array of objects that are
- * directly compatible with the {@link GermanText} interface so the existing
+ * directly compatible with the {@link ReadingExercise} interface so the existing
  * reading storage and quiz flow can consume them without special-casing.
  */
 
@@ -195,6 +195,6 @@ export const readingA2Parts = (topicsPerPart = 1): Array<{ part: ReadingA2Part; 
 /**
  * Example A2 reading exercises for reference.
  */
-export const dataA2ReadingExamples: GermanText[] = [
+export const dataA2ReadingExamples: ReadingExercise[] = [
   // Reference examples can be added here.
 ]

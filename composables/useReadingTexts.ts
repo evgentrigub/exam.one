@@ -5,12 +5,12 @@
  */
 
 import { defaultReadingTopics } from '~/data/reading/exerciseReading'
-import type { GermanText } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-reading-texts'
 
 // Shared state (singleton pattern)
-const texts = ref<GermanText[]>([])
+const texts = ref<ReadingExercise[]>([])
 const isInitialized = ref(false)
 
 export const useReadingTexts = () => {
@@ -28,7 +28,7 @@ export const useReadingTexts = () => {
         const storedTexts = JSON.parse(stored)
         // Merge stored texts with defaults, avoiding duplicates
         const defaultIds = new Set(defaultReadingTopics.map(t => t.id))
-        const uniqueStoredTexts = storedTexts.filter((t: GermanText) => !defaultIds.has(t.id))
+        const uniqueStoredTexts = storedTexts.filter((t: ReadingExercise) => !defaultIds.has(t.id))
         texts.value = [...defaultReadingTopics, ...uniqueStoredTexts]
       } else {
         // First time: seed with default texts
@@ -64,14 +64,14 @@ export const useReadingTexts = () => {
   /**
    * Get all texts
    */
-  const getTexts = (): GermanText[] => {
+  const getTexts = (): ReadingExercise[] => {
     return texts.value
   }
 
   /**
    * Get text by ID
    */
-  const getTextById = (id: string): GermanText | undefined => {
+  const getTextById = (id: string): ReadingExercise | undefined => {
     return texts.value.find(text => text.id === id)
   }
 
@@ -101,7 +101,7 @@ export const useReadingTexts = () => {
   /**
    * Add new text (for AI generation)
    */
-  const addText = (text: GermanText): void => {
+  const addText = (text: ReadingExercise): void => {
     // Check for duplicate ID
     const exists = texts.value.some(t => t.id === text.id)
     
@@ -117,7 +117,7 @@ export const useReadingTexts = () => {
   /**
    * Add multiple texts at once
    */
-  const addTexts = (newTexts: GermanText[]): void => {
+  const addTexts = (newTexts: ReadingExercise[]): void => {
     console.log(`📥 Attempting to add ${newTexts.length} reading texts:`, newTexts.map(t => ({ id: t.id, title: t.title, difficulty: t.difficulty })))
     
     const uniqueTexts = newTexts.filter(
