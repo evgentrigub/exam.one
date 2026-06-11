@@ -1,0 +1,1 @@
+// template file for speaking exercises
