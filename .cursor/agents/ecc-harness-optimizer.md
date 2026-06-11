@@ -2,7 +2,7 @@
 name: harness-optimizer
 description: Analyze and improve the local agent harness configuration for reliability, cost, and throughput.
 tools: ["Read", "Grep", "Glob", "Bash", "Edit"]
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 color: teal
 ---
 

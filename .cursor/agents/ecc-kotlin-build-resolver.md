@@ -2,7 +2,7 @@
 name: kotlin-build-resolver
 description: Kotlin/Gradle build, compilation, and dependency error resolution specialist. Fixes build errors, Kotlin compiler errors, and Gradle issues with minimal changes. Use when Kotlin builds fail.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 ---
 
 ## Prompt Defense Baseline

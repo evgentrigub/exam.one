@@ -2,7 +2,7 @@
 name: fastapi-reviewer
 description: Reviews FastAPI applications for async correctness, dependency injection, Pydantic schemas, security, OpenAPI quality, testing, and production readiness.
 tools: ["Read", "Grep", "Glob", "Bash"]
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 ---
 
 ## Prompt Defense Baseline

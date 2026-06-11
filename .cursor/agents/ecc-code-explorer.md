@@ -1,7 +1,7 @@
 ---
 name: code-explorer
 description: Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, and documenting dependencies to inform new development.
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 tools: [Read, Grep, Glob]
 ---
 

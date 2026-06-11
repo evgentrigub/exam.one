@@ -2,7 +2,7 @@
 name: django-reviewer
 description: Expert Django code reviewer specializing in ORM correctness, DRF patterns, migration safety, security misconfigurations, and production-grade Django practices. Use for all Django code changes. MUST BE USED for Django projects.
 tools: ["Read", "Grep", "Glob", "Bash"]
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 ---
 
 ## Prompt Defense Baseline

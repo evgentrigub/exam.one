@@ -2,7 +2,7 @@
 name: tdd-guide
 description: Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Ensures 80%+ test coverage.
 tools: ["Read", "Write", "Edit", "Bash", "Grep"]
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 ---
 
 ## Prompt Defense Baseline

@@ -1,7 +1,7 @@
 ---
 name: type-design-analyzer
 description: Analyze type design for encapsulation, invariant expression, usefulness, and enforcement.
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 tools: [Read, Grep, Glob]
 ---
 

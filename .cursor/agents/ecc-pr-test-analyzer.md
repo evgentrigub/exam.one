@@ -1,7 +1,7 @@
 ---
 name: pr-test-analyzer
 description: Review pull request test coverage quality and completeness, with emphasis on behavioral coverage and real bug prevention.
-model: sonnet
+model: gpt-5.5[context=272k,reasoning=medium,fast=false]
 tools: [Read, Grep, Glob, Bash]
 ---
 
