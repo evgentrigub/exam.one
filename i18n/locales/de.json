@@ -4,7 +4,39 @@
     "practice": "Üben",
     "reading": "Lesen",
     "writing": "Schreiben",
-    "dashboard": "Dashboard"
+    "listening": "Hören",
+    "speaking": "Sprechen",
+    "dashboard": "Dashboard",
+    "exercises": "Übungen",
+    "examFormat": "Prüfungsformat",
+    "progress": "Fortschritt",
+    "mockExams": "Modellprüfungen",
+    "account": "Konto"
+  },
+  "skill": {
+    "reading": "Lesen",
+    "writing": "Schreiben",
+    "listening": "Hören",
+    "speaking": "Sprechen"
+  },
+  "status": {
+    "new": "Neu",
+    "inprogress": "In Bearbeitung",
+    "mastered": "Gemeistert"
+  },
+  "exerciseType": {
+    "article": "Artikel",
+    "notice": "Aushang",
+    "email": "E-Mail",
+    "matching": "Zuordnung",
+    "announcement": "Durchsage",
+    "dialog": "Dialog",
+    "interview": "Interview",
+    "monologue": "Monolog",
+    "planning": "Planung",
+    "sms": "Nachricht",
+    "letter": "Brief",
+    "post": "Beitrag"
   },
   "home": {
     "title": "Exam.one",

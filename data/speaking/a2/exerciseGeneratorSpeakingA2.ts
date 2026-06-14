@@ -1,22 +1,10 @@
-export interface SpeakingTopicA2Teil1 {
-    id: string; // auto-generated
-    testingPart: 1; // Teil 1
-    topicType: 'interview';
-    difficulty: 'A2';
-    theme: string; // Общая тема, например: "Alltag" или "Hobby"
-    cards: [string, string, string, string]; // Строго 4 слова для карточек
-    createdAt: string; 
-}
-
-export interface SpeakingTopicA2Teil2 {
-    id: string; // will be auto-generated
-    testingPart: 2; // Строго Teil 2
-    topicType: 'monologue';
-    difficulty: 'A2';
-    theme: string; // Главный вопрос/тема, например: "Was machen Sie in Ihrer Freizeit?"
-    keywords: [string, string, string, string]; // Строго 4 опорных слова
-    createdAt: string; // ISO date
-}
+// Types now live in the canonical location and are re-exported for callers
+// that still import them from this generator module.
+export type {
+  SpeakingTopicA2Teil1,
+  SpeakingTopicA2Teil2,
+  SpeakingA2Topic
+} from '~/utils/exercises/speaking'
 
 export const generateSpeakingA2Teil1 = (numberOfTopics: number) => { 
     return `

@@ -4,7 +4,39 @@
     "practice": "Practice",
     "reading": "Reading",
     "writing": "Writing",
-    "dashboard": "Dashboard"
+    "listening": "Listening",
+    "speaking": "Speaking",
+    "dashboard": "Dashboard",
+    "exercises": "Exercises",
+    "examFormat": "Exam format",
+    "progress": "Progress",
+    "mockExams": "Mock exams",
+    "account": "Account"
+  },
+  "skill": {
+    "reading": "Reading",
+    "writing": "Writing",
+    "listening": "Listening",
+    "speaking": "Speaking"
+  },
+  "status": {
+    "new": "New",
+    "inprogress": "In progress",
+    "mastered": "Mastered"
+  },
+  "exerciseType": {
+    "article": "Article",
+    "notice": "Notice",
+    "email": "Email",
+    "matching": "Matching",
+    "announcement": "Announcement",
+    "dialog": "Dialogue",
+    "interview": "Interview",
+    "monologue": "Monologue",
+    "planning": "Planning",
+    "sms": "Message",
+    "letter": "Letter",
+    "post": "Post"
   },
   "home": {
     "title": "Exam.one",

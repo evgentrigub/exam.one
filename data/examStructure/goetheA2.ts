@@ -1,0 +1,85 @@
+import type { SkillId } from '~/utils/labels'
+
+/**
+ * Goethe-Zertifikat A2 exam structure (modular 2024 format).
+ * Drives the "Exam format" page. Sourced from agent-os/product/german-exam-A2.md
+ * and the design prototype's EXAM_STRUCTURE.
+ */
+
+export interface ExamPart {
+  n: number
+  title: string
+  format: string
+  short: string
+  goal: string
+  skill: string
+}
+
+export interface ExamModule {
+  id: SkillId
+  label: string
+  minutes: number
+  points: number
+  summary: string
+  scoringNote: string
+  parts: ExamPart[]
+}
+
+export const goetheA2Structure: ExamModule[] = [
+  {
+    id: 'reading',
+    label: 'Reading (Lesen)',
+    minutes: 30,
+    points: 25,
+    summary: 'Four short texts of increasing difficulty. You read for gist, for detail, and you match offers to people.',
+    scoringNote: 'Raw points (Messpunkte) × 1.25 → result points.',
+    parts: [
+      { n: 1, title: 'Article or newspaper text', format: '5 × multiple choice (a · b · c)', short: 'Read a short article (~200 words) and answer 5 a/b/c questions.', goal: 'Understand the main points and key details of an informational text.', skill: 'Detailed reading of authentic everyday texts.' },
+      { n: 2, title: 'Display board / schedule', format: '5 scenarios · choose the place (a · b · c)', short: 'Find information on a display board or timetable — pick the right floor or location.', goal: 'Locate one specific piece of information quickly in everyday signage.', skill: 'Selective / scanning reading.' },
+      { n: 3, title: 'Personal letter or email', format: '5 × multiple choice (a · b · c)', short: 'Read a personal email (~230 words) and answer 5 a/b/c questions.', goal: 'Grasp intentions, feelings and details in personal correspondence.', skill: 'Reading private correspondence.' },
+      { n: 4, title: 'Matching advertisements', format: 'Match ads a–f to 5 people (one answer is always "x")', short: 'Match the right advertisement to each person — one always has no match (x).', goal: 'Connect each person\u2019s needs to a suitable offer.', skill: 'Matching & inference under time pressure.' },
+    ],
+  },
+  {
+    id: 'listening',
+    label: 'Listening (Hören)',
+    minutes: 30,
+    points: 25,
+    summary: 'Four recordings — announcements, a long matching dialogue, short exchanges and an interview.',
+    scoringNote: 'Raw points (Messpunkte) × 1.25 → result points.',
+    parts: [
+      { n: 1, title: 'Announcements & voicemails', format: '5 × multiple choice (a · b · c) · played twice', short: 'Short announcements and messages — 5 questions, audio played twice.', goal: 'Catch key information in short, spoken messages.', skill: 'Detailed listening to short audio.' },
+      { n: 2, title: 'One long matching dialogue', format: 'Match 5 people to 9 options · played once', short: 'One long dialogue — match people to options, 9 choices, played once.', goal: 'Follow a longer conversation and assign the right detail to each person.', skill: 'Matching while listening.' },
+      { n: 3, title: 'Everyday dialogues', format: '5 × multiple choice (a · b · c) · played once', short: 'Short everyday conversations — 5 multiple-choice questions, played once.', goal: 'Understand short exchanges in daily situations.', skill: 'Gist & detail in conversation.' },
+      { n: 4, title: 'Radio interview', format: '5 × Ja / Nein · played twice', short: 'A radio interview — decide whether 5 statements are correct (Ja / Nein), played twice.', goal: 'Understand opinions and statements in a longer interview.', skill: 'True / false judgement.' },
+    ],
+  },
+  {
+    id: 'writing',
+    label: 'Writing (Schreiben)',
+    minutes: 30,
+    points: 25,
+    summary: 'Two short texts: a casual message to a friend, and a polite formal email.',
+    scoringNote: 'Max 20 raw points × 1.25. Under the minimum word count scores 0 for that part.',
+    parts: [
+      { n: 1, title: 'Informal message / SMS', format: 'Informal "du" · 20–30 words', short: 'Write a short, informal message to a friend using "du" with 3 content points.', goal: 'Communicate simple personal information in a casual register.', skill: 'Informal everyday writing.' },
+      { n: 2, title: 'Semi-formal / formal email', format: 'Formal "Sie" · 30–40 words', short: 'Write a polite email using "Sie" with greeting, sign-off and 3 content points.', goal: 'Make a polite request or reply in a formal register.', skill: 'Formal correspondence.' },
+    ],
+  },
+  {
+    id: 'speaking',
+    label: 'Speaking (Sprechen)',
+    minutes: 15,
+    points: 25,
+    summary: 'A paired exam in three stages: a short interview, a monologue about yourself, and planning something together.',
+    scoringNote: 'Direct points 4 + 8 + 8 + 5 pronunciation = 25 (no × 1.25 multiplier).',
+    parts: [
+      { n: 1, title: 'Interview', format: 'Ask & answer 4 questions from prompt cards (4 pts)', short: 'Ask your partner 4 questions from prompt cards and answer theirs.', goal: 'Exchange personal information in a simple interview.', skill: 'Asking & answering questions.' },
+      { n: 2, title: 'Monologue', format: 'Talk on a topic using 4 keywords + follow-ups (8 pts)', short: 'Talk about yourself on a topic using 4 keywords, then answer the examiner\u2019s questions.', goal: 'Speak coherently about familiar, personal topics.', skill: 'Connected, structured speech.' },
+      { n: 3, title: 'Dialogue & planning', format: 'Plan together using a schedule with busy slots (8 pts)', short: 'Plan a shared activity together using a personal calendar that has busy slots.', goal: 'Negotiate and agree on an arrangement with a partner.', skill: 'Interactive negotiation.' },
+    ],
+  },
+]
+
+export const goetheA2TotalMinutes = goetheA2Structure.reduce((sum, m) => sum + m.minutes, 0)
+export const goetheA2TotalPoints = goetheA2Structure.reduce((sum, m) => sum + m.points, 0)

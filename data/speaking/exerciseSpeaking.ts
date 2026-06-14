@@ -1,14 +1,11 @@
-import type {
-  SpeakingTopicA2Teil1,
-  SpeakingTopicA2Teil2
-} from '~/data/speaking/a2/exerciseGeneratorSpeakingA2'
+import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 
 /**
  * Default A2-level German speaking topics (Goethe-Institut, modular 2024 format).
  * One topic per Teil: Teil 1 (Gespräch zur Kontaktaufnahme, interview cards)
  * and Teil 2 (Über sich sprechen, monologue keywords).
  */
-export const defaultSpeakingTopics: Array<SpeakingTopicA2Teil1 | SpeakingTopicA2Teil2> = [
+export const defaultSpeakingTopics: SpeakingA2Topic[] = [
   {
     id: 'speaking-a2-teil1-001',
     testingPart: 1,

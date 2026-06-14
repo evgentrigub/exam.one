@@ -26,17 +26,29 @@
         <BookOpen :size="16" />
         Exercises
       </NuxtLink>
-      <span
-        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium opacity-40 cursor-not-allowed"
+      <NuxtLink
+        to="/exam-format"
+        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
+        :class="isActive('/exam-format') ? 'nav-item-active' : 'text-base-content/70'"
       >
-        <FileText :size="16" />
-        Mock exams
-      </span>
-      <span
-        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium opacity-40 cursor-not-allowed"
+        <ListTree :size="16" />
+        Exam format
+      </NuxtLink>
+      <NuxtLink
+        to="/progress"
+        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
+        :class="isActive('/progress') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <TrendingUp :size="16" />
         Progress
+      </NuxtLink>
+      <!-- Mock exams deferred to a later milestone -->
+      <span
+        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium opacity-40 cursor-not-allowed"
+        title="Coming soon"
+      >
+        <FileText :size="16" />
+        Mock exams
       </span>
     </nav>
 
@@ -66,20 +78,28 @@
           </span>
           <span class="level-pip text-writing">{{ writingCount }}</span>
         </NuxtLink>
-        <span class="flex items-center justify-between px-2 py-1.5 rounded-field text-sm opacity-40 cursor-not-allowed">
+        <NuxtLink
+          to="/exercises?skill=listening"
+          class="flex items-center justify-between px-2 py-1.5 rounded-field text-sm transition-colors hover:bg-base-200"
+          :class="isSkillActive('listening') ? 'nav-item-active' : 'text-base-content/70'"
+        >
           <span class="flex items-center gap-2">
             <Headphones :size="14" class="text-listening" />
             Listening
           </span>
-          <span class="level-pip">0</span>
-        </span>
-        <span class="flex items-center justify-between px-2 py-1.5 rounded-field text-sm opacity-40 cursor-not-allowed">
+          <span class="level-pip text-listening">{{ listeningCount }}</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/exercises?skill=speaking"
+          class="flex items-center justify-between px-2 py-1.5 rounded-field text-sm transition-colors hover:bg-base-200"
+          :class="isSkillActive('speaking') ? 'nav-item-active' : 'text-base-content/70'"
+        >
           <span class="flex items-center gap-2">
             <Mic :size="14" class="text-speaking" />
             Speaking
           </span>
-          <span class="level-pip">0</span>
-        </span>
+          <span class="level-pip text-speaking">{{ speakingCount }}</span>
+        </NuxtLink>
       </div>
     </div>
 
@@ -120,24 +140,31 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import {
-  LayoutDashboard, BookOpen, FileText, TrendingUp,
+  LayoutDashboard, BookOpen, FileText, TrendingUp, ListTree,
   PenLine, Headphones, Mic, Flag
 } from 'lucide-vue-next'
 import { useSettingsStore } from '~/stores/settings'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useWritingTopics } from '~/composables/useWritingTopics'
+import { useListeningExercises } from '~/composables/useListeningExercises'
+import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 
 const route = useRoute()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
 
-const levels: Array<'A2' | 'C1'> = ['A2', 'C1']
+// A2 only for this build; C1 returns later.
+const levels: Array<'A2' | 'C1'> = ['A2' /*, 'C1' */]
 
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
+const { getExercises: getListening } = useListeningExercises()
+const { getTopics: getSpeaking } = useSpeakingExercises()
 
 const readingCount = computed(() => getTexts().filter(text => text.difficulty === examLevel.value).length)
 const writingCount = computed(() => getTopics().filter(topic => topic.difficulty === examLevel.value).length)
+const listeningCount = computed(() => getListening().length)
+const speakingCount = computed(() => getSpeaking().filter(t => t.difficulty === examLevel.value).length)
 
 function isActive(path: string) {
   return route.path === path
