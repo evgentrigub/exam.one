@@ -1,6 +1,6 @@
 // App entry — routing + top-level composition
 const { L, useState, useEffect, AppCtx, Sidebar, Topbar, Dashboard, ExercisesList,
-  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account } = window;
+  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account, ExamStructure } = window;
 
 function App() {
   const [route, setRoute] = useState(() => {
@@ -35,6 +35,7 @@ function App() {
     switch(route.name) {
       case 'dashboard':      return <Dashboard/>;
       case 'exercises':      return <ExercisesList/>;
+      case 'structure':      return <ExamStructure/>;
       case 'reading-list':   return <ExercisesList/>;
       case 'writing-list':   return <ExercisesList/>;
       case 'listening-list': return <ExercisesList/>;

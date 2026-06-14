@@ -8,6 +8,7 @@ function Sidebar() {
   const items = [
     { id:'dashboard', label:'Dashboard', icon:'layout-dashboard' },
     { id:'exercises', label:'Exercises', icon:'layers' },
+    { id:'structure', label:'Exam format', icon:'list-tree' },
     { id:'exams',     label:'Mock exams', icon:'file-badge' },
     { id:'progress',  label:'Progress',  icon:'trending-up' },
   ];
@@ -91,7 +92,8 @@ function Topbar() {
   const title = (() => {
     switch(route.name) {
       case 'dashboard': return { t:'Welcome back, Lena', s:`Your ${level} exam is in 42 days. You’re on track.` };
-      case 'exercises': return { t:'Exercises', s:'Filter by exam part and type — all in one place.' };
+      case 'exercises': return { t:'Exercises', s:'Filter by exam part — all in one place.' };
+      case 'structure': return { t:'Exam format', s:'Every part of the exam, what it asks, and what it tests.' };
       case 'reading':   return { t:'Reading practice', s:'' };
       case 'writing':   return { t:'Writing practice', s:'' };
       case 'listening': return { t:'Listening practice', s:'' };

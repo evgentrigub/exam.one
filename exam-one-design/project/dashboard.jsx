@@ -19,7 +19,7 @@ function Dashboard() {
 
       {/* HERO: exam countdown + readiness */}
       <section className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 lg:col-span-8 card bg-base-100 border border-base-300 ring-soft overflow-hidden">
+        <div className="col-span-12 card bg-base-100 border border-base-300 ring-soft overflow-hidden">
           <div className="p-5 flex items-start gap-5">
             <div className="shrink-0">
               <div className="w-24 h-24 rounded-box bg-primary text-primary-content grid place-items-center">
@@ -69,32 +69,6 @@ function Dashboard() {
               <span className="flex items-center gap-1"><Ic name="flame" size={12} cls="text-warning"/> {streak}‑day streak</span>
               <span className="flex items-center gap-1"><Ic name="clock" size={12}/> {weekMinutes}/{goal} min this week</span>
             </div>
-          </div>
-        </div>
-
-        {/* Right: upcoming schedule */}
-        <div className="col-span-12 lg:col-span-4 space-y-4">
-          <div className="card bg-base-100 border border-base-300 ring-soft p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs font-semibold uppercase tracking-wider text-base-content/50">Upcoming</div>
-              <button className="text-xs text-primary font-medium">Schedule</button>
-            </div>
-            <ul className="space-y-2">
-              {[
-                { d:'Mon', t:'Listening · Interview drill', c:'info', time:'08:30' },
-                { d:'Wed', t:'Speaking · Role‑play A2', c:'warning', time:'18:00' },
-                { d:'Fri', t:'Mock Exam · C1 full test', c:'primary', time:'10:00' },
-              ].map((x,i)=>(
-                <li key={i} className="flex items-center gap-3 p-2 rounded-field hover:bg-base-200">
-                  <div className={`w-10 text-center shrink-0`}>
-                    <div className="text-[10px] uppercase font-semibold text-base-content/50">{x.d}</div>
-                    <div className="font-mono text-sm font-semibold">{x.time}</div>
-                  </div>
-                  <div className={`w-1 self-stretch bg-${x.c} rounded-full`}/>
-                  <div className="text-sm">{x.t}</div>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>
