@@ -1,21 +1,24 @@
 // App entry — routing + top-level composition
 const { L, useState, useEffect, AppCtx, Sidebar, Topbar, Dashboard, ExercisesList,
-  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, Progress,
-  AuditView, Redesign } = window;
+  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account } = window;
 
 function App() {
   const [route, setRoute] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('examl:route')) || { name:'system' }; } catch { return { name:'system' }; }
+    try { return JSON.parse(localStorage.getItem('exam:route')) || { name:'dashboard' }; } catch { return { name:'dashboard' }; }
   });
-  const [mode, setMode] = useState(() => localStorage.getItem('examl:mode') || 'system');
-  const [level, setLevel] = useState(() => localStorage.getItem('examl:level') || 'A2');
-  const [theme, setTheme] = useState(() => localStorage.getItem('examl:theme') || 'light');
-  const [auditOn] = useState(false);
+  const [level, setLevel] = useState(() => {
+    const v = localStorage.getItem('exam:level');
+    return (v === 'A2' || v === 'B1') ? v : 'A2';
+  });
+  const [theme, setTheme] = useState(() => localStorage.getItem('exam:theme') || 'light');
+  const [plan, setPlan] = useState(() => localStorage.getItem('exam:plan') || 'pro');
+  const [lang, setLang] = useState(() => localStorage.getItem('exam:lang') || 'en');
 
-  useEffect(()=>{ localStorage.setItem('examl:route', JSON.stringify(route)); }, [route]);
-  useEffect(()=>{ localStorage.setItem('examl:mode', mode); }, [mode]);
-  useEffect(()=>{ localStorage.setItem('examl:level', level); }, [level]);
-  useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('examl:theme', theme); }, [theme]);
+  useEffect(()=>{ localStorage.setItem('exam:route', JSON.stringify(route)); }, [route]);
+  useEffect(()=>{ localStorage.setItem('exam:level', level); }, [level]);
+  useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('exam:theme', theme); }, [theme]);
+  useEffect(()=>{ localStorage.setItem('exam:plan', plan); }, [plan]);
+  useEffect(()=>{ localStorage.setItem('exam:lang', lang); }, [lang]);
 
   const go = (r) => {
     // carry initial filter into ExercisesList via window (one-shot)
@@ -24,9 +27,9 @@ function App() {
   };
 
   // after any route change, remount icons
-  useEffect(()=>{ if (window.lucide) setTimeout(()=>window.lucide.createIcons(), 30); }, [route, mode, theme]);
+  useEffect(()=>{ if (window.lucide) setTimeout(()=>window.lucide.createIcons(), 30); }, [route, theme, plan, lang]);
 
-  const ctx = { route, go, mode, setMode, level, setLevel, theme, setTheme, auditOn };
+  const ctx = { route, go, level, setLevel, theme, setTheme, plan, setPlan, lang, setLang };
 
   const Screen = (() => {
     switch(route.name) {
@@ -41,9 +44,9 @@ function App() {
       case 'listening':      return <ListeningExercise/>;
       case 'speaking':       return <SpeakingExercise/>;
       case 'exams':          return <Exams/>;
+      case 'mock':           return <MockExam key={route.id || 'm'}/>;
       case 'progress':       return <Progress/>;
-      case 'audit':          return <AuditView/>;
-      case 'system':         return <Redesign/>;
+      case 'account':        return <Account/>;
       default:               return <Dashboard/>;
     }
   })();
@@ -57,8 +60,8 @@ function App() {
           <main className="flex-1 overflow-auto">
             {Screen}
             <footer className="max-w-[1240px] mx-auto px-6 py-6 text-[11px] text-base-content/50 flex items-center justify-between">
-              <span>Exam.one · redesign prototype · uses daisyUI design system</span>
-              <span>Toggle <b>Redesign ↔ Audit ↔ Prototype</b> in the top bar.</span>
+              <span>Exam.one · interactive prototype</span>
+              <span>German exam prep · Goethe · telc · ÖSD</span>
             </footer>
           </main>
         </div>

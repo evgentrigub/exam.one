@@ -2,16 +2,138 @@
 const { L, useState, useEffect, useMemo, useApp, EXERCISES, SKILLS, TYPE_OPTIONS, LEVELS,
   Ic, useIcons, SkillBadge, LevelPip } = window;
 
+// Modal: choose what to generate (design-only — closes on confirm, no real generation)
+function GenerateExercisesModal({ level, onClose, onGenerate }) {
+  const [lvl, setLvl] = useState(level);
+  const [skills, setSkills] = useState(() => SKILLS.map(s => s.id));
+  const [types, setTypes] = useState([]);
+  const [count, setCount] = useState(6);
+  const [diff, setDiff] = useState('balanced');
+  useIcons([lvl, skills, types, count, diff]);
+
+  const toggle = (arr, set, v) => set(arr.includes(v) ? arr.filter(x=>x!==v) : [...arr, v]);
+  const visibleTypes = useMemo(() => {
+    const set = new Set();
+    (skills.length ? skills : SKILLS.map(s=>s.id)).forEach(s => TYPE_OPTIONS[s].forEach(t => set.add(`${s}:${t}`)));
+    return [...set];
+  }, [skills]);
+  const canGen = skills.length > 0;
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-base-content/40 backdrop-blur-sm" onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()}
+        className="w-full max-w-[560px] max-h-[90vh] flex flex-col bg-base-100 rounded-box border border-base-300 shadow-xl overflow-hidden">
+        <div className="px-6 pt-5 pb-4 border-b border-base-300/70 flex items-start gap-3 shrink-0">
+          <span className="w-10 h-10 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0"><Ic name="sparkles" size={18}/></span>
+          <div className="flex-1">
+            <h2 className="font-display text-xl font-bold leading-tight">Generate exercises</h2>
+            <p className="text-sm text-base-content/60 mt-0.5">Pick the parts and types you want — we’ll create fresh exercises for you.</p>
+          </div>
+          <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle"><Ic name="x" size={16}/></button>
+        </div>
+
+        <div className="p-6 space-y-5 overflow-y-auto">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Level</div>
+            <div className="flex gap-2">
+              {LEVELS.map(l => (
+                <button key={l} onClick={()=>setLvl(l)}
+                  className={`flex-1 h-10 rounded-field text-sm font-semibold border transition-colors
+                    ${lvl===l ? 'bg-primary text-primary-content border-primary' : 'bg-base-100 border-base-300 hover:border-base-content/30'}`}>{l}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Exam parts</div>
+            <div className="grid grid-cols-2 gap-2">
+              {SKILLS.map(s => {
+                const on = skills.includes(s.id);
+                return (
+                  <button key={s.id} onClick={()=>toggle(skills, setSkills, s.id)}
+                    className={`flex items-center gap-2.5 px-3 h-12 rounded-box border text-left transition-colors
+                      ${on ? `border-${s.color} bg-${s.color}/5` : 'border-base-300 hover:border-base-content/30'}`}>
+                    <span className={`w-7 h-7 rounded-field grid place-items-center shrink-0 ${on ? `bg-${s.color}/15 text-${s.color}` : 'bg-base-200 text-base-content/50'}`}><Ic name={s.icon} size={14}/></span>
+                    <span className="text-sm font-medium flex-1">{s.label}</span>
+                    <span className={`w-5 h-5 rounded-md border grid place-items-center ${on ? `bg-${s.color} border-${s.color} text-${s.color}-content` : 'border-base-300'}`}>{on && <Ic name="check" size={12}/>}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Types <span className="normal-case font-normal text-base-content/40">· optional, leave empty for a mix</span></div>
+            <div className="flex gap-1.5 flex-wrap">
+              {visibleTypes.map(k => {
+                const [sk, tp] = k.split(':');
+                const sObj = SKILLS.find(s=>s.id===sk);
+                const on = types.includes(k);
+                return (
+                  <button key={k} onClick={()=>toggle(types, setTypes, k)}
+                    className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-selector text-xs border capitalize
+                      ${on ? `bg-${sObj.color}/15 border-${sObj.color} text-${sObj.color}` : 'bg-base-100 border-base-300 hover:border-base-content/30'}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full bg-${sObj.color}`}/>{tp}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50">How many</div>
+              <div className="text-xs text-base-content/55">Exercises to generate</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={()=>setCount(Math.max(1, count-1))} className="w-9 h-9 rounded-field border border-base-300 grid place-items-center hover:bg-base-200"><Ic name="minus" size={14}/></button>
+              <div className="w-12 text-center font-display text-2xl font-bold tabular-nums">{count}</div>
+              <button onClick={()=>setCount(Math.min(20, count+1))} className="w-9 h-9 rounded-field border border-base-300 grid place-items-center hover:bg-base-200"><Ic name="plus" size={14}/></button>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Difficulty</div>
+            <div className="flex gap-2">
+              {[['easier','Gentle'],['balanced','Mixed'],['harder','Challenging']].map(([id,l]) => (
+                <button key={id} onClick={()=>setDiff(id)}
+                  className={`flex-1 h-9 rounded-full text-xs font-medium border transition-colors
+                    ${diff===id ? 'bg-primary text-primary-content border-primary' : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'}`}>{l}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 py-4 border-t border-base-300/70 flex items-center gap-3 bg-base-200/40 shrink-0">
+          <div className="text-xs text-base-content/55 flex items-center gap-1.5"><Ic name="layers" size={13}/> {count} · {skills.length} part{skills.length!==1?'s':''}</div>
+          <button onClick={onClose} className="btn btn-ghost btn-sm ml-auto">Cancel</button>
+          <button onClick={onGenerate} disabled={!canGen}
+            className="btn btn-primary btn-sm rounded-full gap-2"><Ic name="sparkles" size={14}/> Generate exercises</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ExercisesList() {
-  const { go, level } = useApp();
-  const initialFilter = window.__exercisesInitial || null;
+  const { go, level, route } = useApp();
+  const initialFilter = window.__exercisesInitial || (route && route.filter) || null;
   const [skills, setSkills] = useState(() => initialFilter ? [initialFilter] : ['reading','writing','listening','speaking']);
   const [types, setTypes] = useState([]);
   const [status, setStatus] = useState('all'); // all|new|inprogress|mastered
   const [sort, setSort] = useState('recommended');
   const [search, setSearch] = useState('');
   const [view, setView] = useState('grid'); // grid|list
-  useIcons([skills,types,status,sort,view]);
+  const [genOpen, setGenOpen] = useState(false);
+  useIcons([skills,types,status,sort,view,genOpen]);
+
+  // Re-apply the skill filter whenever the user re-navigates here
+  useEffect(() => {
+    if (route && route.name === 'exercises') {
+      setSkills(route.filter ? [route.filter] : ['reading','writing','listening','speaking']);
+      setTypes([]);
+    }
+  }, [route]);
 
   const toggle = (arr,setArr,v) => setArr(arr.includes(v) ? arr.filter(x=>x!==v) : [...arr,v]);
 
@@ -56,12 +178,15 @@ function ExercisesList() {
                   ${active ? `bg-${s.color} text-${s.color}-content border-${s.color}` : 'bg-base-100 border-base-300 hover:border-base-content/30 text-base-content/80'}`}>
                 <Ic name={s.icon} size={14}/>
                 {s.label}
-                <span className={`text-[10px] ${active?'opacity-80':'opacity-50'}`}>{EXERCISES.filter(e=>e.skill===s.id).length}</span>
+                <span className={`text-[10px] ${active?'opacity-80':'opacity-50'}`}>{EXERCISES.filter(e=>e.skill===s.id && e.level===level).length}</span>
               </button>
             );
           })}
           <button onClick={()=>setSkills(SKILLS.map(s=>s.id))} className="btn btn-ghost btn-xs">All</button>
           <button onClick={()=>{ setSkills([]); setTypes([]); }} className="btn btn-ghost btn-xs">Clear</button>
+          <button onClick={()=>setGenOpen(true)} className="btn btn-primary btn-sm rounded-full gap-1.5 ml-auto">
+            <Ic name="sparkles" size={14}/> Generate exercises
+          </button>
         </div>
 
         <div className="flex items-start gap-2 flex-wrap border-t border-base-300 pt-3">
@@ -83,32 +208,46 @@ function ExercisesList() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 border-t border-base-300 pt-3">
-          <div className="join">
+        <div className="flex items-center gap-x-3 gap-y-2 flex-wrap border-t border-base-300 pt-3">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {[
               { id:'all', l:'All' }, { id:'new', l:'Not started' },
               { id:'inprogress', l:'In progress' }, { id:'mastered', l:'Mastered' },
             ].map(o => (
               <button key={o.id} onClick={()=>setStatus(o.id)}
-                className={`join-item btn btn-xs ${status===o.id?'btn-primary':'btn-ghost'}`}>{o.l}</button>
+                className={`h-8 px-3 rounded-full text-xs font-medium border whitespace-nowrap transition-colors
+                  ${status===o.id
+                    ? 'bg-primary text-primary-content border-primary'
+                    : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'}`}>{o.l}</button>
             ))}
           </div>
-          <div className="relative ml-2">
+          <div className="relative">
             <Ic name="search" size={12} cls="absolute left-2.5 top-1/2 -translate-y-1/2 opacity-50"/>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search…"
-              className="input input-bordered input-xs w-52 pl-7"/>
+              className="input input-bordered input-sm w-52 pl-7 rounded-full"/>
           </div>
 
-          <div className="ml-auto flex items-center gap-2">
-            <select className="select select-xs select-bordered" value={sort} onChange={e=>setSort(e.target.value)}>
-              <option value="recommended">Recommended</option>
-              <option value="title">A–Z</option>
-              <option value="shortest">Shortest first</option>
-              <option value="weakest">Weakest first</option>
-            </select>
-            <div className="join">
-              <button onClick={()=>setView('grid')} className={`join-item btn btn-xs ${view==='grid'?'btn-primary':'btn-ghost'}`}><Ic name="layout-grid" size={12}/></button>
-              <button onClick={()=>setView('list')} className={`join-item btn btn-xs ${view==='list'?'btn-primary':'btn-ghost'}`}><Ic name="list" size={12}/></button>
+          <div className="ml-auto flex items-center gap-3">
+            <label className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50">Sort</span>
+              <select className="select select-sm select-bordered w-40 rounded-full" value={sort} onChange={e=>setSort(e.target.value)}>
+                <option value="recommended">Recommended</option>
+                <option value="title">A–Z</option>
+                <option value="shortest">Shortest first</option>
+                <option value="weakest">Weakest first</option>
+              </select>
+            </label>
+            <div className="flex items-center gap-1.5">
+              <button onClick={()=>setView('grid')} aria-label="Grid view"
+                className={`w-9 h-9 grid place-items-center rounded-field border transition-colors
+                  ${view==='grid' ? 'bg-primary text-primary-content border-primary' : 'bg-base-100 border-base-300 text-base-content/60 hover:border-base-content/30'}`}>
+                <Ic name="layout-grid" size={14}/>
+              </button>
+              <button onClick={()=>setView('list')} aria-label="List view"
+                className={`w-9 h-9 grid place-items-center rounded-field border transition-colors
+                  ${view==='list' ? 'bg-primary text-primary-content border-primary' : 'bg-base-100 border-base-300 text-base-content/60 hover:border-base-content/30'}`}>
+                <Ic name="list" size={14}/>
+              </button>
             </div>
           </div>
         </div>
@@ -163,6 +302,9 @@ function ExercisesList() {
           <div className="text-sm text-base-content/60">Try clearing filters or changing your exam level.</div>
         </div>
       )}
+
+      {genOpen && <GenerateExercisesModal level={level} onClose={()=>setGenOpen(false)}
+        onGenerate={()=>setGenOpen(false)}/>}
     </div>
   );
 }
@@ -171,12 +313,18 @@ function ExerciseCard({ e, onOpen }) {
   const s = SKILLS.find(x=>x.id===e.skill);
   return (
     <button onClick={onOpen} className="text-left card bg-base-100 border border-base-300 ring-soft p-4 card-hov relative">
-      {e.status==='mastered' && <div className="absolute top-3 right-3 text-success"><Ic name="check-circle-2" size={16}/></div>}
-      {e.draft && <div className="absolute top-3 right-3 text-warning"><Ic name="file-edit" size={16}/></div>}
       <div className="flex items-center gap-2">
         <SkillBadge skill={e.skill} size="xs"/>
         <LevelPip level={e.level}/>
-        <span className="text-[10px] text-base-content/50 ml-auto">{e.type}</span>
+        <span className="ml-auto flex items-center gap-1.5">
+          <span className="capitalize text-[10px] font-medium px-2 py-0.5 rounded-full bg-base-200 text-base-content/60">{e.type}</span>
+          {e.status==='mastered' && (
+            <span className="tooltip tooltip-left text-success" data-tip="Mastered"><Ic name="check-circle-2" size={15}/></span>
+          )}
+          {e.draft && (
+            <span className="tooltip tooltip-left text-warning" data-tip="Draft saved"><Ic name="file-edit" size={15}/></span>
+          )}
+        </span>
       </div>
       <div className="font-display font-bold text-lg mt-2 leading-tight">{e.title}</div>
       <div className="text-xs text-base-content/60 mt-0.5">{e.subtitle}</div>

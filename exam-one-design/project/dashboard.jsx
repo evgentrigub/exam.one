@@ -1,18 +1,18 @@
 // Dashboard
-const { L, useState, useEffect, useMemo, useApp, EXERCISES, SKILLS,
+const { L, useState, useEffect, useMemo, useApp, EXERCISES, MOCK_EXAMS, SKILLS,
   Ic, useIcons, SkillBadge, LevelPip, Spark, RingProg } = window;
 
 function Dashboard() {
   const { go, level } = useApp();
-  useIcons([]);
+  useIcons([level]);
 
   const pct = { reading: 68, writing: 42, listening: 30, speaking: 35 };
   const streak = 12;
   const weekMinutes = 147;
   const goal = 210;
 
-  const continueItems = EXERCISES.filter(e => e.status==='inprogress').slice(0,3);
-  const recommended = EXERCISES.filter(e => e.status==='new').slice(0,4);
+  const continueItems = EXERCISES.filter(e => e.status==='inprogress' && e.level===level).slice(0,3);
+  const recommended = EXERCISES.filter(e => e.status==='new' && e.level===level).slice(0,4);
 
   return (
     <div className="max-w-[1240px] mx-auto p-6 space-y-6">
@@ -22,7 +22,7 @@ function Dashboard() {
         <div className="col-span-12 lg:col-span-8 card bg-base-100 border border-base-300 ring-soft overflow-hidden">
           <div className="p-5 flex items-start gap-5">
             <div className="shrink-0">
-              <div className="w-24 h-24 rounded-box bg-gradient-to-br from-primary to-accent text-primary-content grid place-items-center">
+              <div className="w-24 h-24 rounded-box bg-primary text-primary-content grid place-items-center">
                 <div className="text-center">
                   <div className="font-display text-3xl font-bold leading-none">42</div>
                   <div className="text-[10px] font-semibold uppercase tracking-wider opacity-90 mt-1">days left</div>
@@ -72,32 +72,8 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Right: subscription */}
+        {/* Right: upcoming schedule */}
         <div className="col-span-12 lg:col-span-4 space-y-4">
-          <div className="card bg-base-100 border border-base-300 ring-soft p-5">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-semibold uppercase tracking-wider text-base-content/50">Your subscription</div>
-              <span className="badge badge-primary badge-sm">Pro</span>
-            </div>
-            <div className="mt-1 font-display text-xl font-bold">€9.90 / month</div>
-            <div className="text-xs text-base-content/60">Renews 12 May · Unlimited AI review</div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-              <div className="p-2 bg-base-200 rounded-field">
-                <div className="font-mono text-sm font-semibold">∞</div>
-                <div className="text-[10px] text-base-content/60 uppercase tracking-wider">Exercises</div>
-              </div>
-              <div className="p-2 bg-base-200 rounded-field">
-                <div className="font-mono text-sm font-semibold">24/30</div>
-                <div className="text-[10px] text-base-content/60 uppercase tracking-wider">AI reviews</div>
-              </div>
-              <div className="p-2 bg-base-200 rounded-field">
-                <div className="font-mono text-sm font-semibold">3</div>
-                <div className="text-[10px] text-base-content/60 uppercase tracking-wider">Mock exams</div>
-              </div>
-            </div>
-            <button className="btn btn-ghost btn-sm mt-3 w-full">Manage plan</button>
-          </div>
-
           <div className="card bg-base-100 border border-base-300 ring-soft p-5">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs font-semibold uppercase tracking-wider text-base-content/50">Upcoming</div>
@@ -156,28 +132,26 @@ function Dashboard() {
       <section className="card bg-base-100 border border-base-300 ring-soft overflow-hidden">
         <div className="p-5 flex items-center justify-between">
           <div>
-            <h3 className="font-display text-lg font-bold">Your mock exams</h3>
+            <h3 className="font-display text-lg font-bold">Your mock exams · {level}</h3>
             <p className="text-xs text-base-content/60">Full‑length timed tests · unlocked after 40% readiness in each skill.</p>
           </div>
-          <button className="btn btn-primary btn-sm gap-1" onClick={()=>go({name:'exams'})}>Start full mock <Ic name="play" size={14}/></button>
+          <button className="btn btn-primary btn-sm gap-1" onClick={()=>go({name:'exams'})}>Go to mock exams <Ic name="arrow-right" size={14}/></button>
         </div>
         <div className="grid grid-cols-12 gap-0 border-t border-base-300">
-          {[
-            { t:'Goethe C1 · Set 1', d:'Completed 18 Mar', s:72, st:'done', time:'3h 10m' },
-            { t:'Goethe C1 · Set 2', d:'Recommended next', s:null, st:'next', time:'3h 20m' },
-            { t:'Goethe C1 · Set 3', d:'Locked — 3 of 4 skills ≥ 40%', s:null, st:'locked', time:'3h 20m' },
-          ].map((x,i)=>(
-            <div key={i} className="col-span-12 md:col-span-4 p-5 border-r last:border-r-0 border-base-300">
-              <div className="text-xs font-semibold uppercase tracking-wider text-base-content/50">{x.t}</div>
-              <div className="font-display text-lg font-bold mt-1">{x.d}</div>
+          {MOCK_EXAMS.filter(m=>m.level===level).map((x,i)=>(
+            <div key={x.id} className="col-span-12 md:col-span-6 p-5 border-r last:border-r-0 border-base-300">
+              <div className="text-xs font-semibold uppercase tracking-wider text-base-content/50">{x.title}</div>
+              <div className="font-display text-lg font-bold mt-1">
+                {x.status==='done' ? 'Completed' : x.status==='next' ? 'Recommended next' : 'Locked'}
+              </div>
               <div className="text-xs text-base-content/60 mt-1 flex items-center gap-3">
                 <span className="flex items-center gap-1"><Ic name="clock" size={11}/> {x.time}</span>
                 <span className="flex items-center gap-1"><Ic name="layers" size={11}/> 4 skills</span>
               </div>
               <div className="mt-3">
-                {x.st==='done' && <div className="flex items-center gap-2"><div className="ring-prog" style={{'--p':x.s, '--c':'var(--color-success)'}}><span>{x.s}%</span></div><div className="text-xs text-base-content/60">Passed · review available</div></div>}
-                {x.st==='next' && <button className="btn btn-primary btn-sm w-full gap-1">Start now <Ic name="play" size={12}/></button>}
-                {x.st==='locked' && <button disabled className="btn btn-disabled btn-sm w-full gap-1"><Ic name="lock" size={12}/> Locked</button>}
+                {x.status==='done' && <div className="flex items-center gap-3"><div className="ring-prog" style={{'--p':x.score, '--c':'var(--color-success)'}}><span>{x.score}%</span></div><div className="text-xs text-base-content/60">Passed · review available</div></div>}
+                {x.status==='next' && <button onClick={()=>go({name:'mock', id:x.id})} className="btn btn-primary btn-sm w-full gap-1">Start now <Ic name="play" size={12}/></button>}
+                {x.status==='locked' && <button disabled className="btn btn-sm w-full gap-1 bg-base-200 text-base-content/40 border border-base-300 hover:bg-base-200"><Ic name="lock" size={12}/> Locked</button>}
               </div>
             </div>
           ))}

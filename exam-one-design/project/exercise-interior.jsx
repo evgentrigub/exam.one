@@ -1,5 +1,5 @@
 // Exercise interiors — Stitch-inspired calm, airy 2-column layout
-const { L, useState, useEffect, useRef, useApp, EXERCISES, SKILLS, Ic, useIcons, LevelPip, Divider } = window;
+const { L, useState, useEffect, useRef, useApp, EXERCISES, MOCK_EXAMS, PLANS, SKILLS, LEVELS, TYPE_OPTIONS, Ic, useIcons, LevelPip, Divider } = window;
 
 // =====================================================================
 // Shared atoms for the calm look
@@ -38,6 +38,53 @@ const QuestionOption = ({ letter, selected, correct, wrong, onClick, disabled, c
   );
 };
 
+// Shown at the very top of an exercise opened inside a mock exam.
+const ExamModeBanner = ({ exam }) => (
+  <div className="mb-5 rounded-box border border-warning/40 bg-warning/10 px-4 py-3 flex items-center gap-3">
+    <span className="w-9 h-9 rounded-full bg-warning/20 text-warning grid place-items-center shrink-0">
+      <Ic name="file-badge" size={16}/>
+    </span>
+    <div className="flex-1 min-w-0">
+      <div className="text-sm font-semibold flex items-center gap-2 flex-wrap">
+        Exam mode · {exam.partLabel}
+        <span className="text-[11px] font-mono font-normal px-1.5 py-0.5 rounded-full bg-warning/15 text-base-content/70">Task {exam.exNo} of {exam.exTotal}</span>
+      </div>
+      <div className="text-xs text-base-content/70">You’re taking this exercise as part of a timed mock exam — answers count toward your result.</div>
+    </div>
+    <button onClick={exam.onBack} className="btn btn-xs btn-ghost gap-1 shrink-0">
+      <Ic name="arrow-left" size={12}/> Back to exam
+    </button>
+  </div>
+);
+
+// Sticky action bar with the "complete & lock" control for exam mode.
+const ExamCompleteBar = ({ exam }) => {
+  const [confirm, setConfirm] = useState(false);
+  return (
+    <div className="sticky bottom-4 mt-8 z-20">
+      <div className="rounded-box border border-base-300 bg-base-100/95 backdrop-blur shadow-lg px-5 py-3.5 flex items-center gap-3">
+        <Ic name="lock" size={15} cls="text-warning shrink-0"/>
+        <div className="text-xs text-base-content/70 leading-snug">
+          <b className="text-base-content">Finished this task?</b> Once you complete it you can’t return to it — your answers are final.
+        </div>
+        {!confirm ? (
+          <button onClick={()=>setConfirm(true)} className="btn btn-primary btn-sm ml-auto gap-1.5 shrink-0">
+            <Ic name="check" size={13}/> Complete exercise
+          </button>
+        ) : (
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            <span className="text-xs text-base-content/70 hidden sm:block">Complete and lock?</span>
+            <button onClick={()=>setConfirm(false)} className="btn btn-ghost btn-xs">Cancel</button>
+            <button onClick={exam.onComplete} className="btn btn-error btn-sm gap-1.5">
+              <Ic name="lock" size={12}/> Yes, complete
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ExerciseHeader = ({ skill, title, subtitle, level, type, onBack }) => {
   const s = SKILLS.find(x => x.id === skill);
   return (
@@ -64,7 +111,7 @@ const ExerciseHeader = ({ skill, title, subtitle, level, type, onBack }) => {
 // =====================================================================
 // READING
 // =====================================================================
-function ReadingExercise() {
+function ReadingExercise({ exam }) {
   const { go, route } = useApp();
   const e = EXERCISES.find(x => x.id === route.id) || EXERCISES.find(x => x.skill === 'reading');
   const [answers, setAnswers] = useState({});
@@ -81,8 +128,9 @@ function ReadingExercise() {
 
   return (
     <div className="max-w-[1180px] mx-auto px-8 py-8">
+      {exam && <ExamModeBanner exam={exam}/>}
       <ExerciseHeader skill="reading" type="email" title={e.title} subtitle="Personal email · 120 words · ~3 min read"
-        level={e.level} onBack={()=>go({ name:'exercises' })}/>
+        level={e.level} onBack={()=> exam ? exam.onBack() : go({ name:'exercises' })}/>
 
       <div className="grid grid-cols-12 gap-6">
         {/* LEFT — text */}
@@ -151,10 +199,12 @@ function ReadingExercise() {
             </div>
 
             <div className="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3">
-              <button onClick={()=>go({name:'exercises'})} className="btn btn-ghost btn-sm">Save & Exit</button>
+              <button onClick={()=> exam ? exam.onBack() : go({name:'exercises'})} className="btn btn-ghost btn-sm">Save & Exit</button>
               {!submitted ? (
                 <button onClick={()=>setSubmitted(true)} disabled={answered<questions.length}
                   className="btn btn-primary btn-sm flex-1 gap-1">Submit Answers <Ic name="arrow-right" size={12}/></button>
+              ) : exam ? (
+                <div className="ml-auto text-sm">Score: <b className="font-mono">3 / 4</b> · 75%</div>
               ) : (
                 <div className="flex-1 flex items-center gap-3">
                   <div className="text-sm">Score: <b className="font-mono">3 / 4</b> · 75%</div>
@@ -166,6 +216,7 @@ function ReadingExercise() {
           </CalmCard>
         </div>
       </div>
+      {exam && <ExamCompleteBar exam={exam}/>}
     </div>
   );
 }
@@ -173,7 +224,7 @@ function ReadingExercise() {
 // =====================================================================
 // WRITING
 // =====================================================================
-function WritingExercise() {
+function WritingExercise({ exam }) {
   const { go, route } = useApp();
   const e = EXERCISES.find(x => x.id === route.id) || EXERCISES.find(x => x.skill === 'writing');
   const [tab, setTab] = useState('prompt'); // prompt | ideal | feedback
@@ -187,9 +238,10 @@ function WritingExercise() {
 
   return (
     <div className="max-w-[1180px] mx-auto px-8 py-8">
+      {exam && <ExamModeBanner exam={exam}/>}
       <ExerciseHeader skill="writing" type="email" title="E-Mail an einen Freund"
         subtitle="Write a personal email · A2"
-        level={e.level} onBack={()=>go({ name:'exercises' })}/>
+        level={e.level} onBack={()=> exam ? exam.onBack() : go({ name:'exercises' })}/>
 
       <div className="grid grid-cols-12 gap-6">
         {/* LEFT column */}
@@ -209,7 +261,7 @@ function WritingExercise() {
             </p>
           </CalmCard>
 
-          <CalmCard className="p-0 overflow-hidden">
+          {!exam && <CalmCard className="p-0 overflow-hidden">
             <div className="flex border-b border-base-300/70 px-3">
               {[
                 { id:'prompt',   l:'AI Prompt',     i:'sparkles' },
@@ -291,7 +343,7 @@ Lena`}
                 </div>
               )}
             </div>
-          </CalmCard>
+          </CalmCard>}
         </div>
 
         {/* RIGHT column — editor */}
@@ -333,6 +385,7 @@ Lena`}
           </div>
         </CalmCard>
       </div>
+      {exam && <ExamCompleteBar exam={exam}/>}
     </div>
   );
 }
@@ -340,7 +393,7 @@ Lena`}
 // =====================================================================
 // LISTENING
 // =====================================================================
-function ListeningExercise() {
+function ListeningExercise({ exam }) {
   const { go, route } = useApp();
   const e = EXERCISES.find(x => x.id === route.id) || EXERCISES.find(x => x.skill === 'listening');
   const [t, setT] = useState(77);           // 1:17
@@ -377,9 +430,10 @@ function ListeningExercise() {
 
   return (
     <div className="max-w-[1180px] mx-auto px-8 py-8">
+      {exam && <ExamModeBanner exam={exam}/>}
       <ExerciseHeader skill="listening" type="dialog" title="Listening Practice: Exercise B"
         subtitle="Short conversation · answer 4 questions"
-        level={e.level} onBack={()=>go({ name:'exercises' })}/>
+        level={e.level} onBack={()=> exam ? exam.onBack() : go({ name:'exercises' })}/>
 
       <div className="grid grid-cols-12 gap-6">
         {/* LEFT — audio + timer */}
@@ -478,14 +532,14 @@ function ListeningExercise() {
           </div>
 
           <div className="mt-8 pt-5 border-t border-base-300/70 flex items-center gap-3">
-            <button onClick={()=>go({name:'exercises'})}
-              className="btn btn-sm rounded-full bg-base-200 border-base-300 hover:bg-base-300">Save & Exit</button>
+            {!exam && <button onClick={()=>go({name:'exercises'})}
+              className="btn btn-sm rounded-full bg-base-200 border-base-300 hover:bg-base-300">Save & Exit</button>}
             <button onClick={()=>setSubmitted(true)} disabled={Object.keys(answers).length<questions.length || submitted}
               className="btn btn-primary btn-sm rounded-full flex-1">
               {submitted ? 'Submitted' : 'Submit Answers'}
             </button>
           </div>
-          {submitted && (
+          {submitted && !exam && (
             <div className="mt-4 p-4 rounded-box bg-success/5 border border-success/30 flex items-center gap-3">
               <Ic name="trophy" size={16} cls="text-success"/>
               <div className="text-sm">Great — you scored <b className="font-mono">3/4</b>. Transcript and explanations are now unlocked below.</div>
@@ -494,6 +548,7 @@ function ListeningExercise() {
           )}
         </CalmCard>
       </div>
+      {exam && <ExamCompleteBar exam={exam}/>}
     </div>
   );
 }
@@ -501,7 +556,7 @@ function ListeningExercise() {
 // =====================================================================
 // SPEAKING
 // =====================================================================
-function SpeakingExercise() {
+function SpeakingExercise({ exam }) {
   const { go, route } = useApp();
   const e = EXERCISES.find(x => x.id === route.id) || EXERCISES.find(x => x.skill === 'speaking');
   const [phase, setPhase] = useState('ready'); // ready | recording | done
@@ -521,9 +576,10 @@ function SpeakingExercise() {
 
   return (
     <div className="max-w-[1180px] mx-auto px-8 py-8">
+      {exam && <ExamModeBanner exam={exam}/>}
       <ExerciseHeader skill="speaking" type="monologue" title="Dich selbst vorstellen"
         subtitle="30‑second self‑introduction"
-        level={e.level} onBack={()=>go({ name:'exercises' })}/>
+        level={e.level} onBack={()=> exam ? exam.onBack() : go({ name:'exercises' })}/>
 
       <div className="grid grid-cols-12 gap-6">
         {/* LEFT — prompt & phrases */}
@@ -554,7 +610,7 @@ function SpeakingExercise() {
             </div>
           </CalmCard>
 
-          <CalmCard className="p-6">
+          {!exam && <CalmCard className="p-6">
             <div className="flex items-center gap-2 text-base-content/70">
               <Ic name="lightbulb" size={14}/>
               <div className="text-sm font-semibold">Useful phrases</div>
@@ -564,7 +620,7 @@ function SpeakingExercise() {
                 <div key={p} className="px-3 py-2 rounded-box bg-base-200/60 border border-base-300/70">{p}</div>
               ))}
             </div>
-          </CalmCard>
+          </CalmCard>}
         </div>
 
         {/* RIGHT — recorder */}
@@ -624,17 +680,17 @@ function SpeakingExercise() {
           </div>
 
           <div className="mt-6 flex items-center gap-3">
-            <button disabled={phase!=='done'}
+            {!exam && <button disabled={phase!=='done'}
               className="btn btn-sm rounded-full bg-base-200 border-base-300 hover:bg-base-300 gap-1.5 flex-1">
               <Ic name="play" size={12}/> Play back
-            </button>
+            </button>}
             <button disabled={phase!=='done'}
               className="btn btn-primary btn-sm rounded-full gap-1.5 flex-1">
               Submit for Feedback <Ic name="arrow-right" size={12}/>
             </button>
           </div>
 
-          {phase==='done' && (
+          {phase==='done' && !exam && (
             <div className="mt-5 p-4 rounded-box bg-base-200/60 border border-base-300/70">
               <div className="text-[11px] uppercase tracking-wider font-semibold text-base-content/60">Auto transcript (preview)</div>
               <p className="text-sm mt-2 leading-relaxed">
@@ -644,6 +700,7 @@ function SpeakingExercise() {
           )}
         </CalmCard>
       </div>
+      {exam && <ExamCompleteBar exam={exam}/>}
     </div>
   );
 }
@@ -651,82 +708,403 @@ function SpeakingExercise() {
 // =====================================================================
 // EXAMS + PROGRESS  (kept calm, rebuilt in new vocabulary)
 // =====================================================================
+
+// Modal: configure & "generate" a fresh mock exam (design-only — closes on confirm)
+function GenerateExamModal({ level, onClose, onGenerate }) {
+  const [lvl, setLvl] = useState(level);
+  const [secs, setSecs] = useState(() => SKILLS.map(s => s.id));
+  const [focus, setFocus] = useState('balanced');
+  useIcons([lvl, secs, focus]);
+  const toggle = (id) => setSecs(secs.includes(id) ? secs.filter(x=>x!==id) : [...secs, id]);
+  const canGen = secs.length > 0;
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-base-content/40 backdrop-blur-sm" onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()}
+        className="w-full max-w-[520px] max-h-[90vh] flex flex-col bg-base-100 rounded-box border border-base-300 shadow-xl overflow-hidden">
+        <div className="px-6 pt-5 pb-4 border-b border-base-300/70 flex items-start gap-3 shrink-0">
+          <span className="w-10 h-10 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0"><Ic name="sparkles" size={18}/></span>
+          <div className="flex-1">
+            <h2 className="font-display text-xl font-bold leading-tight">Generate mock exam</h2>
+            <p className="text-sm text-base-content/60 mt-0.5">We’ll assemble a fresh, full‑length timed exam to your spec.</p>
+          </div>
+          <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle"><Ic name="x" size={16}/></button>
+        </div>
+
+        <div className="p-6 space-y-5 overflow-y-auto">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Level</div>
+            <div className="flex gap-2">
+              {LEVELS.map(l => (
+                <button key={l} onClick={()=>setLvl(l)}
+                  className={`flex-1 h-10 rounded-field text-sm font-semibold border transition-colors
+                    ${lvl===l ? 'bg-primary text-primary-content border-primary' : 'bg-base-100 border-base-300 hover:border-base-content/30'}`}>{l}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Sections to include</div>
+            <div className="grid grid-cols-2 gap-2">
+              {SKILLS.map(s => {
+                const on = secs.includes(s.id);
+                return (
+                  <button key={s.id} onClick={()=>toggle(s.id)}
+                    className={`flex items-center gap-2.5 px-3 h-12 rounded-box border text-left transition-colors
+                      ${on ? `border-${s.color} bg-${s.color}/5` : 'border-base-300 hover:border-base-content/30'}`}>
+                    <span className={`w-7 h-7 rounded-field grid place-items-center shrink-0 ${on ? `bg-${s.color}/15 text-${s.color}` : 'bg-base-200 text-base-content/50'}`}><Ic name={s.icon} size={14}/></span>
+                    <span className="text-sm font-medium flex-1">{s.label}</span>
+                    <span className={`w-5 h-5 rounded-md border grid place-items-center ${on ? `bg-${s.color} border-${s.color} text-${s.color}-content` : 'border-base-300'}`}>{on && <Ic name="check" size={12}/>}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">Difficulty mix</div>
+            <div className="flex gap-2">
+              {[['easier','Gentle'],['balanced','Exam‑like'],['harder','Challenging']].map(([id,l]) => (
+                <button key={id} onClick={()=>setFocus(id)}
+                  className={`flex-1 h-9 rounded-full text-xs font-medium border transition-colors
+                    ${focus===id ? 'bg-primary text-primary-content border-primary' : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'}`}>{l}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 py-4 border-t border-base-300/70 flex items-center gap-3 bg-base-200/40 shrink-0">
+          <div className="text-xs text-base-content/55 flex items-center gap-1.5"><Ic name="info" size={13}/> {secs.length} of {SKILLS.length} sections</div>
+          <button onClick={onClose} className="btn btn-ghost btn-sm ml-auto">Cancel</button>
+          <button onClick={onGenerate} disabled={!canGen}
+            className="btn btn-primary btn-sm rounded-full gap-2"><Ic name="sparkles" size={14}/> Generate mock exam</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Exams() {
-  const { go } = useApp(); useIcons([]);
+  const { go, level } = useApp();
+  const [genOpen, setGenOpen] = useState(false);
+  useIcons([level, genOpen]);
+  const exams = MOCK_EXAMS.filter(m => m.level === level);
+  const featured = exams.find(m => m.status === 'next') || exams[0];
   return (
     <div className="max-w-[1180px] mx-auto px-8 py-8 space-y-6">
       <CalmCard className="p-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider font-semibold text-primary">
-          <Ic name="file-badge" size={11}/> Full mock exam
+          <Ic name="file-badge" size={11}/> Full mock exam · {level}
         </div>
-        <h2 className="font-display text-2xl font-bold mt-2">Goethe Zertifikat C1 · Set 2</h2>
-        <p className="text-sm text-base-content/70 mt-1">Timed 3h 20m · all four skills in exam order · exam‑authentic conditions.</p>
+        <h2 className="font-display text-2xl font-bold mt-2">{featured.title}</h2>
+        <p className="text-sm text-base-content/70 mt-1">Timed {featured.time} · all four skills in exam order · exam‑authentic conditions.</p>
         <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[['Reading','book-open','70 min'],['Listening','headphones','40 min'],['Writing','pen-line','80 min'],['Speaking','mic','15 min']].map(([l,i,t])=>(
-            <div key={l} className="p-4 rounded-box bg-base-200/60 border border-base-300/70">
-              <Ic name={i} size={14} cls="text-base-content/60"/>
-              <div className="text-sm font-semibold mt-2">{l}</div>
-              <div className="text-xs text-base-content/60 font-mono">{t}</div>
-            </div>
-          ))}
+          {featured.sections.map(([l,m])=>{
+            const icon = { Reading:'book-open', Listening:'headphones', Writing:'pen-line', Speaking:'mic' }[l];
+            return (
+              <div key={l} className="p-4 rounded-box bg-base-200/60 border border-base-300/70">
+                <Ic name={icon} size={14} cls="text-base-content/60"/>
+                <div className="text-sm font-semibold mt-2">{l}</div>
+                <div className="text-xs text-base-content/60 font-mono">{m} min</div>
+              </div>
+            );
+          })}
         </div>
         <div className="mt-6 flex gap-3">
-          <button className="btn btn-primary rounded-full gap-2"><Ic name="play" size={14}/> Start full exam</button>
-          <button className="btn btn-ghost rounded-full gap-2"><Ic name="clock" size={14}/> Schedule for later</button>
+          <button onClick={()=>setGenOpen(true)} className="btn btn-primary rounded-full gap-2"><Ic name="sparkles" size={14}/> Generate mock exam</button>
         </div>
       </CalmCard>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { t:'C1 · Set 1', s:72, when:'18 Mar', done:true },
-          { t:'C1 · Set 2', s:null, when:'Next up', done:false },
-          { t:'C1 · Set 3', s:null, when:'Locked', done:false, locked:true },
-        ].map((x,i)=>(
-          <CalmCard key={i} className="p-5">
-            <div className="text-[11px] uppercase font-semibold tracking-wider text-base-content/50">{x.when}</div>
-            <div className="font-display font-bold text-lg mt-1">{x.t}</div>
-            {x.done && <div className="text-success font-mono text-xs mt-1">Passed · {x.s}%</div>}
-            {x.locked && <div className="text-base-content/50 text-xs mt-1 flex items-center gap-1"><Ic name="lock" size={11}/> Unlock at 40% across all skills</div>}
-            <button className={`btn btn-sm mt-4 w-full rounded-full ${x.done?'btn-ghost bg-base-200 border-base-300':x.locked?'btn-disabled':'btn-primary'}`}>
-              {x.done?'Review':x.locked?'Locked':'Start'}
-            </button>
-          </CalmCard>
-        ))}
+      <div>
+        <h3 className="font-display text-lg font-bold mb-3">All {level} mock exams</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {exams.map((x)=>(
+            <CalmCard key={x.id} className="p-5 flex flex-col">
+              <div className="flex items-center justify-between">
+                <div className="text-[11px] uppercase font-semibold tracking-wider text-base-content/50">{x.set}</div>
+                <span className="text-[11px] font-mono text-base-content/50">{x.time}</span>
+              </div>
+              <div className="font-display font-bold text-lg mt-1">{x.title}</div>
+              {x.status==='done' && <div className="text-success font-mono text-xs mt-1 flex items-center gap-1"><Ic name="check-circle-2" size={12}/> Passed · {x.score}%</div>}
+              {x.status==='locked' && <div className="text-base-content/50 text-xs mt-1 flex items-center gap-1"><Ic name="lock" size={11}/> Unlock at 40% across all skills</div>}
+              {x.status==='next' && <div className="text-primary text-xs mt-1 flex items-center gap-1"><Ic name="sparkles" size={11}/> Recommended next</div>}
+              <div className="mt-3 flex items-center gap-2 flex-wrap text-[11px] text-base-content/55">
+                {x.sections.map(([l])=>(<span key={l} className="px-2 py-0.5 rounded-full bg-base-200">{l}</span>))}
+              </div>
+              {x.status==='done'
+                ? <button onClick={()=>go({name:'mock', id:x.id})} className="btn btn-sm btn-outline mt-4 w-full rounded-full gap-1.5"><Ic name="eye" size={13}/> Review results</button>
+                : x.status==='locked'
+                ? <button disabled className="btn btn-sm mt-4 w-full rounded-full gap-1.5 bg-base-200 text-base-content/40 border border-base-300 hover:bg-base-200"><Ic name="lock" size={13}/> Locked</button>
+                : <button onClick={()=>go({name:'mock', id:x.id})} className="btn btn-sm btn-primary mt-4 w-full rounded-full gap-1.5"><Ic name="play" size={13}/> Start exam</button>}
+            </CalmCard>
+          ))}
+        </div>
       </div>
+      {genOpen && <GenerateExamModal level={level} onClose={()=>setGenOpen(false)}
+        onGenerate={()=>{ setGenOpen(false); go({name:'mock', id:featured.id}); }}/>}
     </div>
   );
 }
 
 function Progress() {
   useIcons([]);
+  const skillData = [
+    { pct:68, delta:'+8', attempts:14, best:92 },
+    { pct:42, delta:'+5', attempts:6,  best:4.2 },
+    { pct:30, delta:'+12', attempts:4, best:80 },
+    { pct:35, delta:'+9', attempts:5,  best:3.9 },
+  ];
+  const chart = [30,34,40,38,45,52,48,55,60,58,62,64];
+  const activity = [
+    { skill:'reading',   title:'Einladung von Anna',        score:'92%', when:'Today · 09:14',     good:true },
+    { skill:'listening', title:'Lautsprecherdurchsage',     score:'80%', when:'Today · 08:40',     good:true },
+    { skill:'speaking',  title:'Dich selbst vorstellen',    score:'3.9/5', when:'Yesterday · 19:22', good:true },
+    { skill:'writing',   title:'Beschwerde an Vermieter',   score:'3.4/5', when:'Yesterday · 18:05', good:false },
+    { skill:'reading',   title:'Klimaschutz in Städten',    score:'64%', when:'2 days ago',        good:false },
+  ];
+  const skillTone = { reading:'primary', writing:'success', listening:'info', speaking:'warning' };
+
   return (
     <div className="max-w-[1180px] mx-auto px-8 py-8 space-y-6">
+
+      {/* Summary stat row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {SKILLS.map((s,i) => (
-          <CalmCard key={s.id} className="p-5">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-base-content/60">
-              <Ic name={s.icon} size={12}/> {s.label}
+        {[
+          { l:'Study time', v:'18h 42m', sub:'+3h this week', icon:'clock' },
+          { l:'Exercises completed', v:'29', sub:'of 64 total', icon:'check-check' },
+          { l:'Average score', v:'74%', sub:'+6 vs last month', icon:'target' },
+          { l:'Current streak', v:'12 days', sub:'Best: 18 days', icon:'flame' },
+        ].map((s,i)=>(
+          <CalmCard key={i} className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="text-[11px] uppercase tracking-wider font-semibold text-base-content/50">{s.l}</div>
+              <Ic name={s.icon} size={14} cls="text-base-content/40"/>
             </div>
-            <div className="font-display text-3xl font-bold mt-2 tabular-nums">{[68,42,30,35][i]}%</div>
-            <div className="text-xs text-success mt-1 flex items-center gap-1"><Ic name="trending-up" size={11}/> +8 this week</div>
+            <div className="font-display text-2xl font-bold mt-2 tabular-nums">{s.v}</div>
+            <div className="text-xs text-success mt-1 flex items-center gap-1"><Ic name="trending-up" size={11}/> {s.sub}</div>
           </CalmCard>
         ))}
       </div>
+
+      {/* Per-skill readiness */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {SKILLS.map((s,i) => (
+          <CalmCard key={s.id} className="p-5">
+            <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-${s.color}`}>
+              <Ic name={s.icon} size={12}/> {s.label}
+            </div>
+            <div className="font-display text-3xl font-bold mt-2 tabular-nums">{skillData[i].pct}%</div>
+            <div className="text-xs text-success mt-1 flex items-center gap-1"><Ic name="trending-up" size={11}/> {skillData[i].delta} this week</div>
+            <div className="mt-3 h-1.5 rounded-full bg-base-200 overflow-hidden">
+              <div className={`h-full rounded-full bg-${s.color}`} style={{ width: `${skillData[i].pct}%` }}/>
+            </div>
+            <div className="mt-3 flex items-center justify-between text-[11px] text-base-content/60">
+              <span>{skillData[i].attempts} sessions</span>
+              <span>Best {skillData[i].best}</span>
+            </div>
+          </CalmCard>
+        ))}
+      </div>
+
+      {/* Readiness over time + Recent activity */}
+      <div className="grid grid-cols-12 gap-6">
+        <CalmCard className="col-span-12 lg:col-span-7 p-7">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-display text-xl font-bold">Readiness over time</h3>
+              <p className="text-xs text-base-content/60 mt-0.5">Overall exam‑readiness, last 12 weeks</p>
+            </div>
+            <div className="join">
+              <button className="join-item btn btn-xs btn-primary">Week</button>
+              <button className="join-item btn btn-xs btn-ghost">Month</button>
+              <button className="join-item btn btn-xs btn-ghost">All</button>
+            </div>
+          </div>
+          <div className="h-60 mt-5 rounded-box bg-base-200/60 flex items-end gap-2 p-4">
+            {chart.map((v,i)=>(
+              <div key={i} className="flex-1 h-full flex flex-col justify-end items-center gap-2">
+                <div className="w-full rounded-t-md bg-primary/80 hover:bg-primary transition-colors" style={{ height: `${v}%` }} title={`Week ${i+1}: ${v}%`}/>
+                <div className="text-[10px] text-base-content/50 font-mono">W{i+1}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 flex items-center gap-4 text-xs text-base-content/60">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-primary/80"/> Readiness %</span>
+            <span>Target for exam day: <b className="text-base-content">85%</b></span>
+          </div>
+        </CalmCard>
+
+        <CalmCard className="col-span-12 lg:col-span-5 p-7">
+          <h3 className="font-display text-xl font-bold">Recent activity</h3>
+          <div className="mt-4 divide-y divide-base-300/70">
+            {activity.map((a,i)=>{
+              const sk = SKILLS.find(s=>s.id===a.skill);
+              return (
+                <div key={i} className="py-3 flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-field grid place-items-center bg-${skillTone[a.skill]}/10 text-${skillTone[a.skill]}`}>
+                    <Ic name={sk.icon} size={15}/>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium truncate">{a.title}</div>
+                    <div className="text-[11px] text-base-content/55">{a.when}</div>
+                  </div>
+                  <div className={`text-sm font-mono font-semibold ${a.good?'text-success':'text-warning'}`}>{a.score}</div>
+                </div>
+              );
+            })}
+          </div>
+        </CalmCard>
+      </div>
+
+      {/* Strengths & weak spots */}
+      <div className="grid grid-cols-12 gap-6">
+        <CalmCard className="col-span-12 lg:col-span-6 p-7">
+          <div className="flex items-center gap-2">
+            <Ic name="sparkles" size={15} cls="text-success"/>
+            <h3 className="font-display text-lg font-bold">Strengths</h3>
+          </div>
+          <ul className="mt-4 space-y-3">
+            {[
+              ['Reading · everyday emails', 90],
+              ['Writing · greetings & closings', 86],
+              ['Listening · main idea', 82],
+            ].map(([k,v],i)=>(
+              <li key={i}>
+                <div className="flex items-center justify-between text-sm"><span>{k}</span><span className="font-mono text-xs text-base-content/60">{v}%</span></div>
+                <div className="mt-1 h-1.5 rounded-full bg-base-200 overflow-hidden"><div className="h-full bg-success rounded-full" style={{ width:`${v}%` }}/></div>
+              </li>
+            ))}
+          </ul>
+        </CalmCard>
+
+        <CalmCard className="col-span-12 lg:col-span-6 p-7">
+          <div className="flex items-center gap-2">
+            <Ic name="target" size={15} cls="text-warning"/>
+            <h3 className="font-display text-lg font-bold">Focus areas</h3>
+          </div>
+          <ul className="mt-4 space-y-3">
+            {[
+              ['Listening · numbers & times', 58],
+              ['Speaking · fillers & pacing', 49],
+              ['Writing · formal register', 62],
+            ].map(([k,v],i)=>(
+              <li key={i}>
+                <div className="flex items-center justify-between text-sm"><span>{k}</span><span className="font-mono text-xs text-base-content/60">{v}%</span></div>
+                <div className="mt-1 h-1.5 rounded-full bg-base-200 overflow-hidden"><div className="h-full bg-warning rounded-full" style={{ width:`${v}%` }}/></div>
+              </li>
+            ))}
+          </ul>
+          <button className="btn btn-outline btn-sm mt-5 w-full gap-1.5"><Ic name="zap" size={13}/> Build a 15‑min drill from focus areas</button>
+        </CalmCard>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// ACCOUNT + SUBSCRIPTION
+// =====================================================================
+function Account() {
+  const { plan, setPlan, level } = useApp();
+  useIcons([plan]);
+  const current = PLANS.find(p => p.id === plan) || PLANS[0];
+
+  return (
+    <div className="max-w-[1180px] mx-auto px-8 py-8 space-y-6">
+      {/* Profile */}
       <CalmCard className="p-7">
-        <div className="flex items-center justify-between">
-          <h3 className="font-display text-xl font-bold">Readiness over time</h3>
-          <div className="join"><button className="join-item btn btn-xs btn-primary">Week</button><button className="join-item btn btn-xs btn-ghost">Month</button><button className="join-item btn btn-xs btn-ghost">All</button></div>
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-primary/10 grid place-items-center text-primary font-display text-xl font-bold">LB</div>
+          <div className="flex-1">
+            <h2 className="font-display text-2xl font-bold">Lena Bauer</h2>
+            <div className="text-sm text-base-content/60">lena.bauer@email.de · Learning German · Target {level}</div>
+          </div>
+          <button className="btn btn-outline btn-sm rounded-full gap-1.5"><Ic name="pencil" size={13}/> Edit profile</button>
         </div>
-        <div className="h-60 mt-5 rounded-box bg-base-200/60 flex items-end gap-2 p-4">
-          {[30,34,40,38,45,52,48,55,60,58,62,64].map((v,i)=>(
-            <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-              <div className="w-full rounded-t-md bg-primary/80" style={{ height: `${v}%` }}/>
-              <div className="text-[10px] text-base-content/50 font-mono">W{i+1}</div>
+        <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[['Member since','Jan 2026'],['Current plan',current.name],['Exam target','Goethe '+level],['Streak','12 days']].map(([l,v])=>(
+            <div key={l} className="p-3 rounded-box bg-base-200/60 border border-base-300/70">
+              <div className="text-[10px] uppercase tracking-wider text-base-content/50">{l}</div>
+              <div className="font-semibold text-sm mt-0.5">{v}</div>
             </div>
           ))}
         </div>
+      </CalmCard>
+
+      {/* Subscription */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-display text-lg font-bold">Subscription</h3>
+          <span className={`badge ${plan==='pro'?'badge-primary':'badge-ghost'}`}>
+            Current: {current.name}
+          </span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {PLANS.map(p => {
+            const active = p.id === plan;
+            return (
+              <CalmCard key={p.id} className={`p-6 flex flex-col ${active ? 'border-primary ring-1 ring-primary/30' : ''}`}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-display text-xl font-bold">{p.name}</h4>
+                      {active && <span className="badge badge-primary badge-sm">Active</span>}
+                    </div>
+                    <p className="text-sm text-base-content/60 mt-0.5">{p.blurb}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-display text-2xl font-bold leading-none">{p.price}</div>
+                    <div className="text-[11px] text-base-content/50">{p.period}</div>
+                  </div>
+                </div>
+                <ul className="mt-4 space-y-2 flex-1">
+                  {p.features.map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm">
+                      <Ic name="check" size={14} cls={`mt-0.5 shrink-0 ${p.id==='pro'?'text-primary':'text-success'}`}/>
+                      <span className="text-base-content/80">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={()=>setPlan(p.id)}
+                  disabled={active}
+                  className={`btn btn-sm mt-5 w-full rounded-full gap-1.5
+                    ${active ? 'bg-base-200 text-base-content/40 border border-base-300 hover:bg-base-200'
+                             : p.id==='pro' ? 'btn-primary' : 'btn-outline'}`}>
+                  {active ? <><Ic name="check" size={13}/> Current plan</>
+                          : p.id==='pro' ? <><Ic name="arrow-up-circle" size={13}/> Upgrade to Pro</>
+                          : <><Ic name="arrow-down-circle" size={13}/> Switch to Free</>}
+                </button>
+              </CalmCard>
+            );
+          })}
+        </div>
+        <div className="mt-3 text-xs text-base-content/50 flex items-center gap-1.5">
+          <Ic name="info" size={12}/> Demo only — switching plans changes the badge but not the available features in this prototype.
+        </div>
+      </div>
+
+      {/* Billing (mock) */}
+      <CalmCard className="p-6">
+        <h3 className="font-display text-lg font-bold">Billing</h3>
+        <div className="mt-4 divide-y divide-base-300/70">
+          {[
+            ['12 Apr 2026', plan==='pro'?'Pro · monthly':'Free plan', plan==='pro'?'€9.90':'€0.00'],
+            ['12 Mar 2026', plan==='pro'?'Pro · monthly':'Free plan', plan==='pro'?'€9.90':'€0.00'],
+          ].map(([d,desc,amt],i)=>(
+            <div key={i} className="py-3 flex items-center gap-3 text-sm">
+              <Ic name="receipt" size={15} cls="text-base-content/40"/>
+              <div className="flex-1">
+                <div className="font-medium">{desc}</div>
+                <div className="text-xs text-base-content/55">{d}</div>
+              </div>
+              <div className="font-mono">{amt}</div>
+            </div>
+          ))}
+        </div>
+        <button className="btn btn-ghost btn-sm mt-3 gap-1.5"><Ic name="credit-card" size={13}/> Manage payment method</button>
       </CalmCard>
     </div>
   );
 }
 
-Object.assign(window, { ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, Progress });
+Object.assign(window, { ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, Progress, Account });
