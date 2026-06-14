@@ -1,141 +1,296 @@
-import type { ReadingExercise } from '~/utils/exercises/reading'
+import type { ReadingA2Exercise } from '~/utils/exercises/reading'
 
 /**
- * Sample A2-level German texts for reading comprehension practice
- * Each text is designed to match Goethe Institut A2 certification standards
+ * Default A2-level German reading exercises (Goethe-Institut, modular 2024 format).
+ * One exercise per Teil (1-4), each distinguished by `testingPart` and text type.
  */
-export const defaultReadingTopics: ReadingExercise[] = [
+export const defaultReadingTopics: ReadingA2Exercise[] = [
   {
-    id: 'email-001',
-    title: 'E-Mail von Lisa',
-    textType: 'email',
+    id: 'reading-a2-teil1-001',
+    title: 'Neue Fahrräder in der Stadt',
+    textType: 'article',
+    testingPart: 1,
     difficulty: 'A2',
-    estimatedReadingTime: 3,
-    wordCount: 142,
-    topics: ['Familie', 'Urlaub', 'Freunde'],
-    createdAt: '2024-01-15',
-    content: `Liebe Maria,
+    estimatedReadingTime: 4,
+    wordCount: 205,
+    topics: ['Stadt', 'Verkehr', 'Fahrrad', 'Umwelt'],
+    createdAt: '2026-06-14',
+    content: `Seit dem ersten März gibt es in Freiburg ein neues Angebot für alle Bürger. Die Stadt hat 200 grüne Fahrräder gekauft. Die Fahrräder stehen an 30 Stationen in der ganzen Stadt. Besonders viele Stationen findet man am Bahnhof und in der Nähe der Universität.
 
-wie geht es dir? Mir geht es sehr gut! Ich schreibe dir aus dem Urlaub. Wir sind seit drei Tagen in München und es gefällt uns sehr gut hier.
+Das Mieten ist sehr einfach. Man braucht nur ein Handy und eine App. Die erste halbe Stunde kostet nichts. Danach zahlt man einen Euro pro Stunde. Studenten und Kinder unter 14 Jahren fahren noch günstiger. Sie bezahlen nur 50 Cent pro Stunde.
 
-Gestern waren wir im berühmten Englischen Garten spazieren. Das Wetter war wunderbar - sonnig und warm. Wir haben ein Picknick gemacht und viele Fotos gemacht. Mein Bruder Tom hat auch viele Leute kennengelernt. Er spricht jetzt den ganzen Tag nur Deutsch!
+Viele Menschen sind sehr zufrieden mit den neuen Fahrrädern. „Ich fahre jetzt jeden Morgen mit dem Rad zur Arbeit", sagt Frau Meier. „Das ist gesund und ich spare Geld." Auch Touristen nutzen das Angebot gern, denn so können sie die Stadt schnell sehen.
 
-Heute wollen wir das Deutsche Museum besuchen. Morgen fahren wir nach Salzburg in Österreich. Ich freue mich schon sehr darauf.
-
-Was machst du denn in den Ferien? Schreibst du mir bald zurück?
-
-Viele liebe Grüße aus München
-Lisa
-
-P.S.: Ich bringe dir ein kleines Geschenk mit!`,
+Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer noch mehr Stationen. Auch neue Wege nur für Fahrräder sollen bald kommen. Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet.`,
     questions: [
       {
-        id: 'email-001-q1',
-        textId: 'email-001',
-        question: 'Wo ist Lisa im Urlaub?',
-        options: ['In Berlin', 'In München', 'In Hamburg', 'In Salzburg'],
-        correctAnswer: 1,
-        explanation: 'Lisa schreibt "Ich schreibe dir aus dem Urlaub. Wir sind seit drei Tagen in München".',
+        id: 'reading-a2-teil1-001-q1',
+        textId: 'reading-a2-teil1-001',
+        question: 'Seit wann gibt es das neue Angebot in Freiburg?',
+        options: ['Seit März.', 'Seit dem Sommer.', 'Seit der Universität.'],
+        correctAnswer: 0,
+        explanation:
+          'Im Text steht: „Seit dem ersten März gibt es in Freiburg ein neues Angebot." Der Sommer wird nur für spätere Pläne genannt.',
         type: 'comprehension'
       },
       {
-        id: 'email-001-q2',
-        textId: 'email-001',
-        question: 'Wie war das Wetter gestern?',
-        options: ['Regnerisch und kalt', 'Sonnig und warm', 'Windig und kühl', 'Nebelig und feucht'],
+        id: 'reading-a2-teil1-001-q2',
+        textId: 'reading-a2-teil1-001',
+        question: 'Wie viel kostet die erste halbe Stunde?',
+        options: ['Einen Euro.', 'Nichts.', '50 Cent.'],
         correctAnswer: 1,
-        explanation: 'Lisa schreibt: "Das Wetter war wunderbar - sonnig und warm."',
+        explanation:
+          'Der Text sagt: „Die erste halbe Stunde kostet nichts." Einen Euro zahlt man erst danach pro Stunde, 50 Cent zahlen nur Studenten und Kinder.',
         type: 'comprehension'
       },
       {
-        id: 'email-001-q3',
-        textId: 'email-001',
-        question: 'Was wollen sie heute machen?',
-        options: ['Ein Picknick machen', 'Nach Salzburg fahren', 'Das Deutsche Museum besuchen', 'Im Englischen Garten spazieren'],
+        id: 'reading-a2-teil1-001-q3',
+        textId: 'reading-a2-teil1-001',
+        question: 'Wie viel bezahlen Studenten pro Stunde?',
+        options: ['Einen Euro.', 'Nichts.', '50 Cent.'],
         correctAnswer: 2,
-        explanation: 'Lisa schreibt: "Heute wollen wir das Deutsche Museum besuchen."',
+        explanation:
+          'Im Text steht: „Studenten und Kinder unter 14 Jahren ... bezahlen nur 50 Cent pro Stunde." Einen Euro zahlen die anderen Personen.',
         type: 'comprehension'
       },
       {
-        id: 'email-001-q4',
-        textId: 'email-001',
-        question: 'Was macht Tom jetzt den ganzen Tag?',
-        options: ['Er macht Fotos', 'Er spricht nur Deutsch', 'Er schreibt E-Mails', 'Er lernt neue Leute kennen'],
+        id: 'reading-a2-teil1-001-q4',
+        textId: 'reading-a2-teil1-001',
+        question: 'Was möchte die Stadt erreichen?',
+        options: ['Dass mehr Touristen kommen.', 'Dass weniger Autos fahren.', 'Dass mehr Büros öffnen.'],
         correctAnswer: 1,
-        explanation: 'Lisa schreibt über ihren Bruder Tom: "Er spricht jetzt den ganzen Tag nur Deutsch!"',
+        explanation:
+          'Der Text sagt klar: „Die Stadt möchte, dass weniger Autos fahren." Touristen und das Büro werden zwar genannt, sind aber nicht das Ziel.',
+        type: 'comprehension'
+      },
+      {
+        id: 'reading-a2-teil1-001-q5',
+        textId: 'reading-a2-teil1-001',
+        question: 'Wann ist das Büro am Marktplatz geöffnet?',
+        options: ['Jeden Tag von 9 bis 18 Uhr.', 'Nur am Morgen.', 'Von 14 bis 18 Uhr.'],
+        correctAnswer: 0,
+        explanation:
+          'Im Text steht: „Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet."',
         type: 'comprehension'
       }
     ]
   },
 
   {
-    id: 'notice-001',
-    title: 'Schwimmbad-Information',
-    textType: 'notice',
+    id: 'reading-a2-teil2-001',
+    title: 'Kaufhaus Stern – Wegweiser',
+    textType: 'list',
+    testingPart: 2,
     difficulty: 'A2',
     estimatedReadingTime: 2,
-    wordCount: 98,
-    topics: ['Öffentliche Einrichtungen', 'Öffnungszeiten', 'Regeln'],
-    createdAt: '2024-01-16',
-    content: `STADTBAD MITTE - WICHTIGE INFORMATION
-
-Liebe Besucher,
-
-ab dem 1. Februar ändern sich unsere Öffnungszeiten:
-
-Montag bis Freitag: 6:00 - 22:00 Uhr
-Samstag und Sonntag: 8:00 - 20:00 Uhr
-
-PREISE:
-Erwachsene: 4,50 Euro
-Kinder (bis 14 Jahre): 2,00 Euro
-Familienkarte: 12,00 Euro
-
-WICHTIGE REGELN:
-- Duschen vor dem Schwimmen ist Pflicht
-- Kinder unter 8 Jahren nur mit Erwachsenen
-- Schwimmkurse: Anmeldung an der Kasse
-
-Bei Fragen rufen Sie uns an: 030-12345678
-
-Ihr Team vom Stadtbad Mitte`,
+    wordCount: 62,
+    topics: ['Einkaufen', 'Kaufhaus', 'Orientierung'],
+    createdAt: '2026-06-14',
+    content: `Kaufhaus Stern – Wegweiser
+Erdgeschoss: Parfüm, Schmuck, Information, Kundenservice und Umtausch
+1. Stock: Damenmode, Schuhe
+2. Stock: Herrenmode, Sportkleidung
+3. Stock: Bücher, Spielzeug, Schreibwaren, Geschenke einpacken
+4. Stock: Möbel, Küchengeräte, Lampen
+5. Stock: Restaurant, Café, Toiletten
+Untergeschoss: Parkhaus (die erste Stunde ist frei)
+Öffnungszeiten: Montag bis Samstag, 9–20 Uhr
+Am Sonntag geschlossen.
+Der Aufzug befindet sich neben dem Eingang.`,
     questions: [
       {
-        id: 'notice-001-q1',
-        textId: 'notice-001',
-        question: 'Wann ändert sich die Öffnungszeit?',
-        options: ['Ab dem 1. Januar', 'Ab dem 1. Februar', 'Ab dem 1. März', 'Ab dem 1. April'],
+        id: 'reading-a2-teil2-001-q1',
+        textId: 'reading-a2-teil2-001',
+        question: 'Sie möchten ein Buch für Ihre Tochter kaufen. Wohin gehen Sie?',
+        options: ['In den 3. Stock.', 'In den 1. Stock.', 'In einen anderen Stock.'],
+        correctAnswer: 0,
+        explanation: 'Bücher gibt es im 3. Stock. Im 1. Stock sind nur Damenmode und Schuhe.',
+        type: 'selective'
+      },
+      {
+        id: 'reading-a2-teil2-001-q2',
+        textId: 'reading-a2-teil2-001',
+        question: 'Sie möchten einen Kaffee trinken. Wohin gehen Sie?',
+        options: ['In den 4. Stock.', 'In den 5. Stock.', 'In einen anderen Stock.'],
         correctAnswer: 1,
-        explanation: 'Im Text steht: "ab dem 1. Februar ändern sich unsere Öffnungszeiten".',
+        explanation: 'Das Café ist im 5. Stock. Im 4. Stock gibt es nur Möbel, Küchengeräte und Lampen.',
+        type: 'selective'
+      },
+      {
+        id: 'reading-a2-teil2-001-q3',
+        textId: 'reading-a2-teil2-001',
+        question: 'Sie möchten Sportkleidung kaufen. Wohin gehen Sie?',
+        options: ['In den 2. Stock.', 'In den 1. Stock.', 'In einen anderen Stock.'],
+        correctAnswer: 0,
+        explanation: 'Sportkleidung gibt es im 2. Stock. Im 1. Stock sind Damenmode und Schuhe.',
+        type: 'selective'
+      },
+      {
+        id: 'reading-a2-teil2-001-q4',
+        textId: 'reading-a2-teil2-001',
+        question: 'Sie möchten am Sonntag einkaufen. Was tun Sie?',
+        options: ['Sie kommen von 9 bis 20 Uhr.', 'Sie kommen erst um 12 Uhr.', 'Sie kommen an einem anderen Tag.'],
+        correctAnswer: 2,
+        explanation:
+          'Am Sonntag ist das Kaufhaus geschlossen. Die Öffnungszeiten 9–20 Uhr gelten nur von Montag bis Samstag.',
+        type: 'selective'
+      },
+      {
+        id: 'reading-a2-teil2-001-q5',
+        textId: 'reading-a2-teil2-001',
+        question: 'Sie möchten Ihr Auto parken. Wohin fahren Sie?',
+        options: ['Ins Untergeschoss.', 'In den 5. Stock.', 'An einen anderen Ort.'],
+        correctAnswer: 0,
+        explanation: 'Das Parkhaus ist im Untergeschoss, und die erste Stunde ist frei.',
+        type: 'selective'
+      }
+    ]
+  },
+
+  {
+    id: 'reading-a2-teil3-001',
+    title: 'Lenas Urlaub am Meer',
+    textType: 'email',
+    testingPart: 3,
+    difficulty: 'A2',
+    estimatedReadingTime: 4,
+    wordCount: 232,
+    topics: ['Urlaub', 'Reise', 'Familie', 'Meer'],
+    createdAt: '2026-06-14',
+    content: `Liebe Sandra,
+
+wie geht es dir? Ich muss dir unbedingt von meinem Urlaub erzählen. Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer.
+
+Die Reise war lang, weil wir mit dem Auto gefahren sind. Am ersten Tag sind wir zwölf Stunden unterwegs gewesen. Mein Bruder hat die ganze Zeit geschlafen, aber ich konnte nicht schlafen, weil es zu heiß war.
+
+Unser Hotel war direkt am Strand. Jeden Morgen sind wir früh aufgestanden und haben im Meer gebadet. Das Wasser war wunderbar warm. Am Nachmittag haben wir oft ein Eis gegessen oder sind in die kleine Stadt gegangen.
+
+Ein Tag war besonders schön. Wir haben einen Ausflug mit dem Boot gemacht. Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren. Am Abend ging es ihr aber wieder gut.
+
+Am letzten Tag habe ich noch ein kleines Geschenk für dich gekauft. Ich glaube, du wirst es lieben! Ich gebe es dir, wenn wir uns nächste Woche treffen.
+
+Schade, dass der Urlaub schon vorbei ist. Aber im nächsten Jahr möchte ich gern wieder dorthin fahren. Vielleicht hast du ja Lust, mitzukommen?
+
+Schreib mir bald und erzähl mir von deinen Plänen!
+
+Liebe Grüße
+Lena`,
+    questions: [
+      {
+        id: 'reading-a2-teil3-001-q1',
+        textId: 'reading-a2-teil3-001',
+        question: 'Wohin ist Lena gefahren?',
+        options: ['Ans Meer nach Italien.', 'In die Berge.', 'Nach Spanien.'],
+        correctAnswer: 0,
+        explanation:
+          'Lena schreibt: „Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer."',
         type: 'comprehension'
       },
       {
-        id: 'notice-001-q2',
-        textId: 'notice-001',
-        question: 'Wie viel kostet der Eintritt für Erwachsene?',
-        options: ['2,00 Euro', '4,50 Euro', '12,00 Euro', '6,00 Euro'],
+        id: 'reading-a2-teil3-001-q2',
+        textId: 'reading-a2-teil3-001',
+        question: 'Wie ist die Familie gereist?',
+        options: ['Mit dem Flugzeug.', 'Mit dem Auto.', 'Mit dem Zug.'],
         correctAnswer: 1,
-        explanation: 'Bei den Preisen steht: "Erwachsene: 4,50 Euro".',
+        explanation: 'Im Text steht: „Die Reise war lang, weil wir mit dem Auto gefahren sind."',
         type: 'comprehension'
       },
       {
-        id: 'notice-001-q3',
-        textId: 'notice-001',
-        question: 'Was ist vor dem Schwimmen Pflicht?',
-        options: ['Anmelden an der Kasse', 'Duschen', 'Bezahlen', 'Schwimmkurs machen'],
-        correctAnswer: 1,
-        explanation: 'In den wichtigen Regeln steht: "Duschen vor dem Schwimmen ist Pflicht".',
+        id: 'reading-a2-teil3-001-q3',
+        textId: 'reading-a2-teil3-001',
+        question: 'Was hat Lenas Bruder während der Fahrt gemacht?',
+        options: ['Er hat geschlafen.', 'Er hat gebadet.', 'Er war krank.'],
+        correctAnswer: 0,
+        explanation:
+          'Lena schreibt: „Mein Bruder hat die ganze Zeit geschlafen." Gebadet wurde erst im Urlaub, krank wurde später die Mutter.',
         type: 'comprehension'
       },
       {
-        id: 'notice-001-q4',
-        textId: 'notice-001',
-        question: 'Wie lange ist das Schwimmbad am Sonntag geöffnet?',
-        options: ['Von 6:00 bis 22:00 Uhr', 'Von 8:00 bis 20:00 Uhr', 'Von 8:00 bis 22:00 Uhr', 'Von 6:00 bis 20:00 Uhr'],
+        id: 'reading-a2-teil3-001-q4',
+        textId: 'reading-a2-teil3-001',
+        question: 'Was ist beim Bootsausflug passiert?',
+        options: ['Das Boot hatte einen Unfall.', 'Lenas Mutter wurde krank.', 'Lena hat ein Eis gegessen.'],
         correctAnswer: 1,
-        explanation: 'Für Wochenende steht: "Samstag und Sonntag: 8:00 - 20:00 Uhr".',
+        explanation:
+          'Im Text steht: „Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren."',
+        type: 'comprehension'
+      },
+      {
+        id: 'reading-a2-teil3-001-q5',
+        textId: 'reading-a2-teil3-001',
+        question: 'Was möchte Lena im nächsten Jahr machen?',
+        options: ['Ein Geschenk kaufen.', 'Zu Hause bleiben.', 'Wieder dorthin fahren.'],
+        correctAnswer: 2,
+        explanation: 'Am Ende schreibt Lena: „Aber im nächsten Jahr möchte ich gern wieder dorthin fahren."',
         type: 'comprehension'
       }
     ]
+  },
+
+  {
+    id: 'reading-a2-teil4-001',
+    title: 'Freizeitkurse in der Volkshochschule',
+    textType: 'advertisement',
+    testingPart: 4,
+    difficulty: 'A2',
+    estimatedReadingTime: 3,
+    wordCount: 150,
+    topics: ['Freizeit', 'Kurse', 'Hobby'],
+    createdAt: '2026-06-14',
+    content: `a: Italienisch kochen! Jeden Dienstagabend um 19 Uhr lernen Sie Pasta und Pizza selbst zu machen. Kleine Gruppen, nur 15 Euro pro Abend. Anmeldung unter 0761/12345.
+b: Gitarre für Anfänger – am Samstag und Sonntag. Sie brauchen keine Vorkenntnisse. Eine Gitarre können Sie bei uns leihen. Infos in der Musikschule Ton & Klang.
+c: Schwimmkurs für Kinder von 4 bis 7 Jahren. Mittwochnachmittag im Hallenbad. Erfahrene Lehrer und kleine Gruppen. Die erste Stunde ist kostenlos!
+d: Sanftes Yoga am Morgen, besonders für Senioren. Jeden Montag und Donnerstag von 9 bis 10 Uhr. Bitte bequeme Kleidung mitbringen.
+e: Computer für ältere Menschen. Lernen Sie E-Mails schreiben und im Internet surfen. Der Kurs ist jeden Freitagvormittag, ganz ohne Stress.
+f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Park. Farben und Papier sind vorhanden. Auch für Anfänger geeignet.`,
+    questions: [
+      {
+        id: 'reading-a2-teil4-001-q1',
+        textId: 'reading-a2-teil4-001',
+        question: 'Herr Klein (70) möchte lernen, wie man am Computer E-Mails schreibt.',
+        options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
+        correctAnswer: 4,
+        explanation:
+          'Anzeige e bietet einen Computerkurs für ältere Menschen, in dem man E-Mails schreiben und im Internet surfen lernt.',
+        type: 'matching'
+      },
+      {
+        id: 'reading-a2-teil4-001-q2',
+        textId: 'reading-a2-teil4-001',
+        question: 'Marta möchte am Wochenende ein Instrument lernen.',
+        options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
+        correctAnswer: 1,
+        explanation:
+          'Anzeige b bietet einen Gitarrenkurs für Anfänger am Samstag und Sonntag, also genau am Wochenende.',
+        type: 'matching'
+      },
+      {
+        id: 'reading-a2-teil4-001-q3',
+        textId: 'reading-a2-teil4-001',
+        question: 'Frau Sommer möchte ihre kleine Tochter zum Schwimmen anmelden.',
+        options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
+        correctAnswer: 2,
+        explanation: 'Anzeige c bietet einen Schwimmkurs für Kinder von 4 bis 7 Jahren am Mittwochnachmittag.',
+        type: 'matching'
+      },
+      {
+        id: 'reading-a2-teil4-001-q4',
+        textId: 'reading-a2-teil4-001',
+        question: 'Tom sucht einen Tanzkurs für Salsa.',
+        options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
+        correctAnswer: 6,
+        explanation: 'Es gibt keine Anzeige für einen Tanzkurs. Deshalb passt hier keine Anzeige, die Antwort ist x.',
+        type: 'matching'
+      },
+      {
+        id: 'reading-a2-teil4-001-q5',
+        textId: 'reading-a2-teil4-001',
+        question: 'Sabine möchte abends lernen, italienisch zu kochen.',
+        options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
+        correctAnswer: 0,
+        explanation: 'Anzeige a bietet einen Kochkurs für italienische Küche jeden Dienstagabend um 19 Uhr.',
+        type: 'matching'
+      }
+    ]
   }
-] 
+]

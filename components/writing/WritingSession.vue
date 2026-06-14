@@ -87,7 +87,7 @@ import type { WritingExercise, WritingFeedbackModel } from '~/utils/types'
 import type { TextAnalysisResult } from '~/utils/textAnalysis'
 import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
 import { useProgress } from '~/composables/useProgress'
-import { writingTipsC1Teil1, writingTipsC1Teil2 } from '~/data/writing/exerciseWriting'
+import { getWritingTips } from '~/data/writing/exerciseTips'
 import TextEditorCard from './TextEditorCard.vue'
 import WritingFeedback from './WritingFeedback.vue'
 import ModelAnswerCard from './ModelAnswerCard.vue'
@@ -122,7 +122,7 @@ const submissionResults = ref<{
 } | null>(null)
 
 const writingTips = computed(() =>
-  props.topic.testingPart === 1 ? writingTipsC1Teil1 : writingTipsC1Teil2
+  getWritingTips(props.topic.difficulty, props.topic.testingPart)
 )
 
 onMounted(() => {
