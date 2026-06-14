@@ -50,7 +50,7 @@
             :class="progressBarColor"
             :value="wordCountPercentage"
             max="100"
-          ></progress>
+          />
         </div>
 
         <!-- Real-time Quality Indicators (Stage 12) -->
@@ -58,8 +58,8 @@
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-medium text-base-content opacity-70">Schreibqualität</span>
             <button 
-              @click="showQualityDetails = !showQualityDetails"
               class="btn btn-ghost btn-xs"
+              @click="showQualityDetails = !showQualityDetails"
             >
               {{ showQualityDetails ? 'Weniger' : 'Details' }}
             </button>
@@ -68,15 +68,15 @@
           <!-- Quality Indicators -->
           <div class="grid grid-cols-3 gap-2 text-xs">
             <div class="flex items-center">
-              <div class="badge badge-sm mr-2" :class="structureIndicatorColor"></div>
+              <div class="badge badge-sm mr-2" :class="structureIndicatorColor"/>
               <span class="text-base-content opacity-70">Struktur</span>
             </div>
             <div class="flex items-center">
-              <div class="badge badge-sm mr-2" :class="vocabularyIndicatorColor"></div>
+              <div class="badge badge-sm mr-2" :class="vocabularyIndicatorColor"/>
               <span class="text-base-content opacity-70">Wortschatz</span>
             </div>
             <div class="flex items-center">
-              <div class="badge badge-sm mr-2" :class="lengthIndicatorColor"></div>
+              <div class="badge badge-sm mr-2" :class="lengthIndicatorColor"/>
               <span class="text-base-content opacity-70">Länge</span>
             </div>
           </div>
@@ -126,6 +126,14 @@
             Text löschen
           </button>
         </div>
+      </div>
+
+      <!-- Autosave indicator -->
+      <div v-if="autoSaved" class="flex items-center gap-1.5 text-xs text-base-content/40 mb-2">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Draft auto-saved
       </div>
 
       <!-- Action Buttons -->
@@ -180,6 +188,20 @@ const showQualityDetails = ref(false)
 // Real-time analysis (Stage 12)
 const realtimeAnalysis = ref<TextAnalysisResult | null>(null)
 
+// Autosave (debounced) indicator
+const autoSaved = ref(false)
+let saveTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(content, () => {
+  if (saveTimer) clearTimeout(saveTimer)
+  saveTimer = setTimeout(() => {
+    if (content.value.trim()) {
+      emit('saveDraft', content.value, wordCount.value)
+      autoSaved.value = true
+    }
+  }, 800)
+})
+
 // Start timing when component mounts
 let interval: number | null = null
 
@@ -199,6 +221,7 @@ onUnmounted(() => {
   if (interval) {
     clearInterval(interval)
   }
+  if (saveTimer) clearTimeout(saveTimer)
 })
 
 // Computed properties

@@ -3,7 +3,8 @@
  * Manages AI topic generation state with localStorage persistence
  */
 
-import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/exerciseGeneratorWritingC1'
+// C1 is disabled in this build; re-enable with the level toggle later.
+// import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/exerciseGeneratorWritingC1'
 import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 
@@ -91,7 +92,7 @@ export const useTopicGeneration = () => {
   /**
    * Generate topics for specified part and difficulty
    */
-  const generateTopics = async (part: 1 | 2, difficulty: Difficulty = 'C1'): Promise<WritingExercise[]> => {
+  const generateTopics = async (part: 1 | 2, difficulty: Difficulty = 'A2'): Promise<WritingExercise[]> => {
     // Set generating state
     state.value = {
       isGenerating: true,
@@ -106,10 +107,11 @@ export const useTopicGeneration = () => {
       // Get the appropriate prompt based on difficulty and part
       let prompt: string
       const numberOfTopics = 3 // Default number of topics to generate
-      if (difficulty === 'C1') {
-        prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
-      } else if (difficulty === 'A2') {
+      if (difficulty === 'A2') {
         prompt = part === 1 ? generateTopicsA2Part1(numberOfTopics) : generateTopicsA2Part2(numberOfTopics)
+      // C1 disabled in this build — kept for later:
+      // } else if (difficulty === 'C1') {
+      //   prompt = part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
       } else {
         throw new Error(`Unsupported difficulty level: ${difficulty}`)
       }

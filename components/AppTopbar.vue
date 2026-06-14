@@ -40,14 +40,18 @@
       </button>
 
       <!-- Avatar -->
-      <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+      <NuxtLink
+        to="/account"
+        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center transition-colors hover:bg-primary/30"
+        title="Account & subscription"
+      >
         <User :size="14" class="text-primary" />
-      </div>
+      </NuxtLink>
     </div>
   </header>
 
   <!-- Settings modal -->
-  <input v-model="isSettingsOpen" type="checkbox" class="modal-toggle" />
+  <input v-model="isSettingsOpen" type="checkbox" class="modal-toggle" >
   <div class="modal modal-bottom sm:modal-middle">
     <div class="modal-box max-w-lg">
       <div class="flex items-center gap-3 mb-6">
@@ -70,7 +74,8 @@
           <legend class="text-xs font-semibold px-2">{{ $t('settings.examLevel') }}</legend>
           <select v-model="tempLevel" class="select select-bordered select-sm w-full">
             <option value="A2">A2 — Elementary</option>
-            <option value="C1">C1 — Advanced</option>
+            <!-- C1 returns in a later milestone -->
+            <!-- <option value="C1">C1 — Advanced</option> -->
           </select>
         </fieldset>
 

@@ -120,7 +120,7 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <progress class="progress flex-1 h-1.5" :class="`progress-${ex.skill === 'reading' ? 'primary' : 'success'}`" :value="ex.pct" max="100" />
+            <progress class="progress flex-1 h-1.5" :class="progressClass(ex.skill)" :value="ex.pct" max="100" />
             <span class="text-xs font-mono text-base-content/40 w-8 text-right">{{ ex.pct }}%</span>
             <span
               class="text-[10px] font-semibold px-1.5 py-0.5 rounded-selector"
@@ -174,7 +174,7 @@
               <td class="py-3 text-xs text-base-content/60">{{ ex.minutes }} min</td>
               <td class="py-3">
                 <div class="flex items-center gap-2 w-28">
-                  <progress class="progress flex-1 h-1" :class="`progress-${ex.skill === 'reading' ? 'primary' : 'success'}`" :value="ex.pct" max="100" />
+                  <progress class="progress flex-1 h-1" :class="progressClass(ex.skill)" :value="ex.pct" max="100" />
                   <span class="text-xs font-mono text-base-content/40">{{ ex.pct }}%</span>
                 </div>
               </td>
@@ -211,8 +211,11 @@ import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useReadingGeneration } from '~/composables/useReadingGeneration'
 import { useWritingTopics } from '~/composables/useWritingTopics'
+import { useListeningExercises } from '~/composables/useListeningExercises'
+import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
+import { getSkillMeta } from '~/utils/labels'
 import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
 
 usePageMeta('Exercises', 'Browse and practice all exercise types')
@@ -225,7 +228,22 @@ const { examLevel } = storeToRefs(settingsStore)
 
 const { getTexts, addTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
-const { getProgressStats, isTextCompleted, isWritingTopicCompleted } = useProgress()
+const { getExercises: getListening } = useListeningExercises()
+const { getTopics: getSpeaking } = useSpeakingExercises()
+const {
+  getProgressStats,
+  isTextCompleted,
+  isWritingTopicCompleted,
+  getListeningProgress,
+  isListeningCompleted,
+  isSpeakingCompleted,
+} = useProgress()
+
+const LISTENING_TYPE_BY_PART: Record<number, string> = {
+  1: 'announcement', 2: 'matching', 3: 'dialog', 4: 'interview',
+}
+const LISTENING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7, 3: 5, 4: 8 }
+const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
 
 // Reading generation
 const {
@@ -329,7 +347,44 @@ const allExercises = computed<UnifiedExercise[]>(() => {
     } as UnifiedExercise
   })
 
-  return [...readingList, ...writingList]
+  const listeningList = getListening()
+    .filter(e => e.difficulty === examLevel.value)
+    .map(e => {
+      const id = e.id ?? ''
+      const progress = getListeningProgress(id)
+      const pct = progress?.percentage ?? 0
+      const completed = isListeningCompleted(id)
+      return {
+        id,
+        skill: 'listening',
+        title: e.title,
+        type: LISTENING_TYPE_BY_PART[e.testingPart] ?? 'listening',
+        difficulty: e.difficulty,
+        minutes: LISTENING_MINUTES_BY_PART[e.testingPart] ?? 6,
+        pct,
+        status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
+        part: e.testingPart,
+      } as UnifiedExercise
+    })
+
+  const speakingList = getSpeaking()
+    .filter(t => t.difficulty === examLevel.value)
+    .map(t => {
+      const completed = isSpeakingCompleted(t.id)
+      return {
+        id: t.id,
+        skill: 'speaking',
+        title: t.theme,
+        type: t.topicType,
+        difficulty: t.difficulty,
+        minutes: SPEAKING_MINUTES_BY_PART[t.testingPart] ?? 7,
+        pct: completed ? 100 : 0,
+        status: completed ? 'mastered' : 'new',
+        part: t.testingPart,
+      } as UnifiedExercise
+    })
+
+  return [...readingList, ...writingList, ...listeningList, ...speakingList]
 })
 
 // Skill filter options
@@ -337,8 +392,8 @@ const skillFilters = computed(() => [
   { key: 'all', label: 'All', icon: null, count: allExercises.value.length, colorVar: 'base-content' },
   { key: 'reading', label: 'Reading', icon: BookOpen, count: allExercises.value.filter(e => e.skill === 'reading').length, colorVar: 'primary' },
   { key: 'writing', label: 'Writing', icon: PenLine, count: allExercises.value.filter(e => e.skill === 'writing').length, colorVar: 'success' },
-  { key: 'listening', label: 'Listening', icon: Headphones, count: 0, colorVar: 'info' },
-  { key: 'speaking', label: 'Speaking', icon: Mic, count: 0, colorVar: 'warning' }
+  { key: 'listening', label: 'Listening', icon: Headphones, count: allExercises.value.filter(e => e.skill === 'listening').length, colorVar: 'info' },
+  { key: 'speaking', label: 'Speaking', icon: Mic, count: allExercises.value.filter(e => e.skill === 'speaking').length, colorVar: 'warning' }
 ])
 
 const statusFilters = [
@@ -396,6 +451,12 @@ function statusClass(status: string) {
 function openExercise(ex: UnifiedExercise) {
   if (ex.skill === 'reading') router.push(`/reading/${ex.id}`)
   else if (ex.skill === 'writing') router.push(`/writing/${ex.id}/exam`)
+  else if (ex.skill === 'listening') router.push(`/listening/${ex.id}`)
+  else if (ex.skill === 'speaking') router.push(`/speaking/${ex.id}`)
+}
+
+function progressClass(skill: string) {
+  return getSkillMeta(skill).progressClass
 }
 
 function resetFilters() {

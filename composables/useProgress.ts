@@ -50,6 +50,28 @@ export interface WritingSessionModel {
   lastSavedAt: string
 }
 
+// Listening progress (MCQ-scored, mirrors reading quiz model)
+export type ListeningProgress = QuizProgress
+
+// Speaking progress (attempt-based: recordings are mocked, no auto score yet)
+interface SpeakingAttempt {
+  id: string
+  topicId: string
+  durationSec: number
+  transcript?: string
+  selfScore?: number // optional 1-5 self assessment
+  submittedAt: string
+}
+
+interface SpeakingProgress {
+  topicId: string
+  completed: boolean
+  attemptCount: number
+  bestSelfScore?: number
+  completedAt?: string
+  attempts: SpeakingAttempt[]
+}
+
 export const useProgress = () => {
   const STORAGE_KEY = 'quiz-progress'
   const SESSION_STORAGE_KEY = 'quiz-session'
@@ -57,6 +79,10 @@ export const useProgress = () => {
   // Writing progress storage keys (Stage 11)
   const WRITING_STORAGE_KEY = 'writing-progress'
   const WRITING_SESSION_KEY = 'writing-session'
+
+  // Listening + speaking progress keys (exam-one: standard prefix)
+  const LISTENING_STORAGE_KEY = 'exam-one:listening:progress'
+  const SPEAKING_STORAGE_KEY = 'exam-one:speaking:progress'
 
   /**
    * Get all progress data from localStorage
@@ -392,6 +418,107 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     return latest || null
   }
 
+  // ============================================
+  // LISTENING PROGRESS FUNCTIONS
+  // ============================================
+
+  const getListeningProgressData = (): Record<string, ListeningProgress> => {
+    if (import.meta.client) {
+      const data = localStorage.getItem(LISTENING_STORAGE_KEY)
+      return data ? JSON.parse(data) : {}
+    }
+    return {}
+  }
+
+  const saveListeningCompletion = (exerciseId: string, score: number, totalQuestions: number) => {
+    if (!import.meta.client) return
+
+    const percentage = Math.round((score / totalQuestions) * 100)
+    const completedAt = new Date().toISOString()
+
+    const existing = getListeningProgressData()
+    const current = existing[exerciseId]
+
+    existing[exerciseId] = {
+      textId: exerciseId,
+      completed: true,
+      score,
+      totalQuestions,
+      percentage,
+      completedAt,
+      attemptCount: (current?.attemptCount || 0) + 1,
+      bestScore: Math.max(current?.bestScore || 0, score),
+    }
+
+    localStorage.setItem(LISTENING_STORAGE_KEY, JSON.stringify(existing))
+  }
+
+  const getListeningProgress = (exerciseId: string): ListeningProgress | null => {
+    return getListeningProgressData()[exerciseId] || null
+  }
+
+  const isListeningCompleted = (exerciseId: string): boolean => {
+    return getListeningProgress(exerciseId)?.completed || false
+  }
+
+  // ============================================
+  // SPEAKING PROGRESS FUNCTIONS
+  // ============================================
+
+  const getSpeakingProgressData = (): Record<string, SpeakingProgress> => {
+    if (import.meta.client) {
+      const data = localStorage.getItem(SPEAKING_STORAGE_KEY)
+      return data ? JSON.parse(data) : {}
+    }
+    return {}
+  }
+
+  const saveSpeakingAttempt = (
+    topicId: string,
+    attempt: { durationSec: number; transcript?: string; selfScore?: number },
+  ) => {
+    if (!import.meta.client) return
+
+    const submittedAt = new Date().toISOString()
+    const existing = getSpeakingProgressData()
+    const current = existing[topicId] || {
+      topicId,
+      completed: false,
+      attemptCount: 0,
+      attempts: [],
+    }
+
+    const newAttempt: SpeakingAttempt = {
+      id: `${topicId}-${Date.now()}`,
+      topicId,
+      durationSec: attempt.durationSec,
+      submittedAt,
+      ...(attempt.transcript !== undefined && { transcript: attempt.transcript }),
+      ...(attempt.selfScore !== undefined && { selfScore: attempt.selfScore }),
+    }
+
+    existing[topicId] = {
+      ...current,
+      completed: true,
+      attemptCount: current.attemptCount + 1,
+      completedAt: submittedAt,
+      ...(attempt.selfScore !== undefined && {
+        bestSelfScore: Math.max(current.bestSelfScore || 0, attempt.selfScore),
+      }),
+      attempts: [...current.attempts, newAttempt],
+    }
+
+    localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(existing))
+  }
+
+  const getSpeakingProgress = (topicId: string): SpeakingProgress | null => {
+    return getSpeakingProgressData()[topicId] || null
+  }
+
+  const isSpeakingCompleted = (topicId: string): boolean => {
+    return getSpeakingProgress(topicId)?.completed || false
+  }
+
   return {
     // Data operations (Reading)
     getProgressData,
@@ -419,6 +546,18 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     getWritingTopicProgress,
     isWritingTopicCompleted,
     getBestWordCount,
-    getLatestSubmission
+    getLatestSubmission,
+
+    // Listening progress functions
+    getListeningProgressData,
+    saveListeningCompletion,
+    getListeningProgress,
+    isListeningCompleted,
+
+    // Speaking progress functions
+    getSpeakingProgressData,
+    saveSpeakingAttempt,
+    getSpeakingProgress,
+    isSpeakingCompleted
   }
 } 

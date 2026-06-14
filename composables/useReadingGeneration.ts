@@ -4,7 +4,8 @@
  */
 
 import { readingA2Parts } from '~/data/reading/a2/exerciseGeneratorReadingA2'
-import { generateReadingC1 } from '~/data/reading/a2/exerciseGeneratorReadingC1'
+// C1 is disabled in this build; re-enable with the level toggle later.
+// import { generateReadingC1 } from '~/data/reading/a2/exerciseGeneratorReadingC1'
 import type { ReadingExercise, ReadingPromptPart } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
 
@@ -107,8 +108,9 @@ export const useReadingGeneration = () => {
       let body: { difficulty: Difficulty; prompt?: string; prompts?: ReadingPromptPart[] }
       if (difficulty === 'A2') {
         body = { difficulty, prompts: readingA2Parts(1) }
-      } else if (difficulty === 'C1') {
-        body = { difficulty, prompt: generateReadingC1() }
+      // C1 disabled in this build — kept for later:
+      // } else if (difficulty === 'C1') {
+      //   body = { difficulty, prompt: generateReadingC1() }
       } else {
         throw new Error(`Unsupported difficulty level: ${difficulty}`)
       }

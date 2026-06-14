@@ -18,19 +18,39 @@
 
       <!-- Left: text card (sticky) -->
       <div class="bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden lg:sticky lg:top-4">
-        <div class="p-4 border-b border-base-300 flex items-center gap-2 flex-wrap">
-          <span class="level-pip flex items-center gap-1">
-            <Clock :size="11" />
-            {{ text?.estimatedReadingTime }} min
-          </span>
-          <span class="level-pip flex items-center gap-1">
-            <AlignLeft :size="11" />
-            {{ text?.wordCount }} words
-          </span>
-          <span class="level-pip capitalize">{{ text?.textType }}</span>
+        <div class="p-4 border-b border-base-300 flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="level-pip flex items-center gap-1">
+              <Clock :size="11" />
+              {{ text?.estimatedReadingTime }} min
+            </span>
+            <span class="level-pip flex items-center gap-1">
+              <AlignLeft :size="11" />
+              {{ text?.wordCount }} words
+            </span>
+            <span class="level-pip capitalize">{{ text?.textType }}</span>
+          </div>
+
+          <!-- Reader toolbar -->
+          <div class="flex items-center gap-1">
+            <button
+              class="btn btn-ghost btn-xs btn-square"
+              :class="{ 'btn-active': fontSize === 'lg' }"
+              title="Toggle larger text"
+              @click="toggleFontSize"
+            >
+              <Type :size="14" />
+            </button>
+            <button class="btn btn-ghost btn-xs btn-square opacity-60" title="Read aloud (coming soon)" disabled>
+              <Volume2 :size="14" />
+            </button>
+            <button class="btn btn-ghost btn-xs btn-square opacity-60" title="Translate (coming soon)" disabled>
+              <Languages :size="14" />
+            </button>
+          </div>
         </div>
         <div class="p-5 overflow-y-auto max-h-[calc(100vh-220px)]">
-          <p class="text-sm leading-relaxed whitespace-pre-line">{{ text?.content }}</p>
+          <p class="leading-relaxed whitespace-pre-line" :class="contentSizeClass">{{ text?.content }}</p>
         </div>
       </div>
 
@@ -42,10 +62,16 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Clock, AlignLeft } from 'lucide-vue-next'
+import { ArrowLeft, Clock, AlignLeft, Type, Volume2, Languages } from 'lucide-vue-next'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import QuizSession from '~/components/reading/QuizSession.vue'
+
+const fontSize = ref<'base' | 'lg'>('base')
+const contentSizeClass = computed(() => (fontSize.value === 'lg' ? 'text-base' : 'text-sm'))
+function toggleFontSize() {
+  fontSize.value = fontSize.value === 'lg' ? 'base' : 'lg'
+}
 
 usePageMeta('Reading Exercise', 'Reading')
 
@@ -62,7 +88,9 @@ watchEffect(() => {
   }
 })
 
-if (!text.value) {
+// Resolve from localStorage-backed store on the client; redirect only when the
+// id is genuinely missing (server has no localStorage, so defer to the client).
+if (import.meta.client && !text.value) {
   navigateTo('/exercises?skill=reading', { replace: true })
 }
 
