@@ -20,15 +20,15 @@ composables:
 
 global:
   localstorage-keys:
-    description: Prefix all localStorage keys with exam-one: and kebab-case paths; define as a const at the top of owning files
+    description: "Prefix localStorage keys with exam-one: and kebab-case paths; one key per skill/mock-exam; keep keys exam-agnostic; no secrets; const at top of owning files"
   offline-first-core:
-    description: Core features work with zero network; AI is an enhancement; typed seed data in data/{feature}/ with defaults ∪ stored merge
+    description: "All exam skills (reading/writing/listening/speaking) + mock exam work offline; multi-language framework; provider-agnostic AI enhancement; read matching product exam references before changing exam behavior; typed seed data in data/{skill}/ with defaults ∪ stored merge"
   ssr-storage-guards:
-    description: Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level
+    description: "Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level"
 
 server:
   ai-response-envelope:
-    description: AI endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; throw createError for infra
+    description: "Provider-agnostic (bring-your-own-key) AI endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; throw createError for infra"
 
 styling:
   daisyui-setup:

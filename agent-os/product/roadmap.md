@@ -8,7 +8,7 @@ The goal of this phase is a **complete, ready-to-use app covering all exam parts
 
 **Supported exams:**
 - **English** — Cambridge A2
-- **German** — Goethe A2
+- **German** — Goethe A2 (see `agent-os/product/german-exam-A2.md`)
 
 **Must-have features:**
 - **Reading practice** — comprehension exercises

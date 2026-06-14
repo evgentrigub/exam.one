@@ -4,13 +4,13 @@ Always use the `~/` alias for project imports. Never use `../` or `../../` to re
 
 ```ts
 // Good
-import type { GermanText } from '~/utils/types'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
 import QuestionCard from '~/components/reading/QuestionCard.vue'
 import TaskDescriptionCard from '~/components/writing/TaskDescriptionCard.vue'
 
 // Bad
-import type { GermanText } from '../../utils/types'
+import type { ReadingExercise } from '../../utils/exercises/reading'
 import QuestionCard from './QuestionCard.vue'
 ```
 
