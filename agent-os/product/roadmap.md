@@ -1,31 +1,44 @@
 # Product Roadmap
 
-## Phase 1: MVP (current) — Frontend
+## Phase 1: Frontend-Only MVP
 
-Frontend-only, offline-first web app. All user data lives in localStorage; AI calls go directly from the browser to the AI provider via Nuxt server routes. No accounts, no database.
+The first usable, shippable version is **frontend only** — no separate backend and no database. The app is built entirely in the frontend (Nuxt/Vue), with thin Nuxt server routes acting as a proxy to the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives client-side in localStorage; core practice flows are offline-first and never require the network.
 
-- **Reading practice** — timed reading comprehension exercises (A2 & C1) ✓
-- **Writing practice** — writing tasks with AI review and model answers (A2 & C1) ✓
-- **Listening practice** — audio-based comprehension exercises (A2 & C1)
-- **Speaking practice** — prompt-driven speaking tasks with AI evaluation (A2 & C1)
-- **Mock Exam mode** — full timed exam simulation covering all four skills
+The goal of this phase is a **complete, ready-to-use app covering all exam parts** — exactly the current architecture, fully finished.
 
-Open-source core: the app, UI, and exercise runner. The AI prompts (exercise generators, graders) are the proprietary layer.
+**Supported exams:**
+- **English** — Cambridge A2
+- **German** — Goethe A2
 
-## Phase 2: Full-Stack SaaS
+**Must-have features:**
+- **Reading practice** — comprehension exercises
+- **Writing practice** — tasks with AI review and model answers
+- **Listening practice** — audio-based comprehension exercises
+- **Speaking practice** — prompt-driven tasks with AI evaluation
+- **Demo prompt templates** — bundled templates that generate and review exercises and grade student answers, editable by the user
+- **Mock exam mode** — a true single-attempt simulation with no pauses and the same limitations applied in real language exams
 
-Rebuild as a proper high-load web SaaS with backend, database, and user accounts:
+## Phase 2: Self-Hostable Full-Stack App
 
-- **Backend** — NestJS REST/GraphQL API, PostgreSQL database
-- **Authentication** — user accounts, sessions, OAuth
-- **Cloud persistence** — sync progress, drafts, and results across devices
-- **AI integration** — server-side orchestration via Google Gemini and/or OpenAI (ChatGPT)
-- **Progress tracking** — performance history per skill, readiness score over time, streak tracking
-- **Adaptive practice** — surface exercises targeting the learner's weakest areas relative to exam date
-- **Business model** — decide on freemium vs. subscription vs. one-time purchase for the AI-powered layer (TBD)
+Evolve the finished frontend MVP into a full-stack application that users serve locally via **Docker Compose** (NestJS backend, Nuxt/Vue frontend, PostgreSQL database). Like n8n, a self-hosted instance supports signing up a single user who then uses the app. AI features still run on the user's own LLM API keys.
 
-## Phase 3: Scale
+- **Backend** — NestJS API replacing the thin Nuxt proxy
+- **Database** — PostgreSQL for users, exercises, attempts, results, and drafts
+- **Persistence** — localStorage replaced by API-backed state
+- **Packaging** — single-command Docker Compose self-hosting
 
-- **More exam levels** — extend beyond A2/C1 to B1/B2 and potentially other Goethe formats
-- **Multi-language support** — other certification exams (DELF, CEFR-aligned tests)
-- **Teacher/classroom mode** — assign exercises, track student cohorts
+## Phase 3: Post-MVP — Open-Source Enhancements
+
+Improve the open-source solution with:
+
+- **Progress tracking** — performance history per skill
+- **Readiness score** — exam-readiness signal over time
+- **Adaptive practice** — surface exercises targeting the learner's weakest areas
+
+## Phase 4: Hosted Cloud Product
+
+A separately hosted copy of the project, run in the cloud and offered under paid price plans for users who prefer not to self-host. Likely additions:
+
+- Managed accounts and cloud sync across devices
+- More exam levels (B1/B2, C1) and additional language certifications
+- Teacher/classroom mode for cohorts
