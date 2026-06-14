@@ -3,8 +3,8 @@
  * Manages AI reading exercise generation state with localStorage persistence
  */
 
-import { readingA2Parts } from '~/data/reading/a2/topicGeneratorReadingA2'
-import { generateReadingC1 } from '~/data/reading/a2/topicGeneratorReadingC1'
+import { readingA2Parts } from '~/data/reading/a2/exerciseGeneratorReadingA2'
+import { generateReadingC1 } from '~/data/reading/a2/exerciseGeneratorReadingC1'
 import type { ReadingExercise, ReadingPromptPart } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
 

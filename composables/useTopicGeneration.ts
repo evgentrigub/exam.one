@@ -3,8 +3,8 @@
  * Manages AI topic generation state with localStorage persistence
  */
 
-import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/topicGeneratorWritingC1'
-import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/topicGeneratorWritingA2'
+import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/exerciseGeneratorWritingC1'
+import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 
 const STORAGE_KEY = 'exame-one-topic-generation-state'
