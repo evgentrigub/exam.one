@@ -7,11 +7,11 @@ Composables run on both server and client. Any access to `localStorage`, `sessio
 ```ts
 const KEY = 'exam-one:reading:texts'
 
-function readAll(): GermanText[] {
+function readAll(): ReadingExercise[] {
   if (!import.meta.client) return []
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as GermanText[]) : []
+    return raw ? (JSON.parse(raw) as ReadingExercise[]) : []
   } catch {
     return []
   }
@@ -21,7 +21,7 @@ function readAll(): GermanText[] {
 ## Write pattern
 
 ```ts
-function writeAll(items: GermanText[]): void {
+function writeAll(items: ReadingExercise[]): void {
   if (import.meta.server) return
   try {
     localStorage.setItem(KEY, JSON.stringify(items))

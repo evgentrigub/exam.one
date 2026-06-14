@@ -4,10 +4,10 @@ This file is the working guide for coding agents in this repository. It should b
 
 ## Project Summary
 
-- Product: `exam.one`, a Goethe exam preparation app
-- Current app shape: Nuxt 3 MVP with offline-first core flows
-- Primary features today: reading practice, writing practice, progress tracking
-- AI usage: optional enhancement only, routed through Nuxt server endpoints
+- Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework (today: English / Cambridge A2 and German / Goethe A2)
+- Current app shape: Nuxt 3, frontend-only MVP (Phase 1) with offline-first core flows; Phase 2 evolves into a self-hostable full-stack app (NestJS + PostgreSQL via Docker Compose)
+- Primary features: reading, writing, listening, and speaking practice; mock exam mode; editable demo prompt templates; progress tracking
+- AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
 
 ## Stack
 
@@ -18,7 +18,7 @@ This file is the working guide for coding agents in this repository. It should b
 - Tailwind CSS 4
 - DaisyUI 5
 - `@nuxtjs/i18n`
-- OpenAI Node SDK for optional AI-backed review/generation
+- Provider-agnostic, bring-your-own-key LLM access (e.g. OpenAI, Google Gemini, or local models) for optional AI-backed generation, review, and grading
 
 ## Package Manager And Commands
 
@@ -46,8 +46,8 @@ Use `pnpm`.
 
 ## Agent Priorities
 
-1. Preserve offline-first behavior. Core reading, writing, navigation, and progress flows must not require network access.
-2. Treat AI as optional. If `OPENAI_API_KEY` is absent or an AI request fails, the app should degrade gracefully.
+1. Preserve offline-first behavior. Core reading, writing, listening, speaking, mock exam, navigation, and progress flows must not require network access.
+2. Treat AI as optional and provider-agnostic (bring-your-own-key). If no API key is configured or an AI request fails, the app should degrade gracefully.
 3. Keep changes aligned with existing Nuxt, Vue, and DaisyUI patterns instead of introducing a parallel architecture.
 4. Prefer small, local changes over broad refactors unless the task explicitly requires structural work.
 
@@ -89,12 +89,14 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 ## Data And Persistence Rules
 
 - Seed content belongs in typed modules under `data/`
+- Exam-specific implementation details belong in `agent-os/product/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
 - User progress and drafts are local-first
 - Do not move core user data to a required backend dependency in MVP work
 
 ## AI Integration Rules
 
-- Keep prompts and AI-specific logic isolated from core user flows
+- Keep prompts and AI-specific logic isolated from core user flows; ship prompt templates as editable demo templates
+- Keep AI provider-agnostic (bring-your-own-key); do not hard-code a single provider into core or endpoint contracts
 - Avoid blocking UI completion on AI responses
 - Handle missing API keys and upstream failures explicitly
 
@@ -110,9 +112,11 @@ If you cannot run verification, state that clearly in your handoff.
 ## Useful Context Files
 
 - `README.md`
+- `agent-os/product/index.md`
 - `agent-os/product/mission.md`
 - `agent-os/product/tech-stack.md`
 - `agent-os/product/roadmap.md`
+- `agent-os/product/german-exam-A2.md`
 - `agent-os/standards/index.yml`
 
 If a task touches a standardized area, read the matching file under `agent-os/standards/` before editing.
