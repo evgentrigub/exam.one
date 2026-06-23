@@ -9,63 +9,64 @@
     <div class="modal-backdrop" @click="$emit('close')" />
 
     <!-- Panel -->
-    <div class="modal-box w-11/12 max-w-4xl p-0">
+    <div class="modal-box w-11/12 max-w-5xl p-0 bg-base-100 border border-base-300/70 ring-soft">
       <!-- Header -->
-      <div class="bg-base-200 px-6 py-4 border-b">
-        <div class="flex items-center justify-between">
+      <div class="px-5 sm:px-7 py-5 border-b border-base-300/70 flex items-start justify-between gap-4">
+        <div class="flex items-start gap-3 min-w-0">
           <button
-            class="btn btn-soft btn-primary btn-sm gap-2"
+            class="mt-1 w-9 h-9 rounded-full border border-base-300 hover:bg-base-200 grid place-items-center text-base-content/70 shrink-0"
+            aria-label="Back to reading selection"
             @click="$emit('close')"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            {{ $t('practice.reading.backToSelection') }}
+            <ArrowLeft :size="14" />
           </button>
-          <div class="flex items-center gap-4 text-sm">
-            <span class="badge badge-primary">{{ text.textType }}</span>
-            <span class="text-base-content opacity-70">A2 • {{ text.wordCount }} Wörter</span>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50 flex-wrap">
+              <BookOpen :size="11" />
+              Reading preview · {{ getTextTypeLabel(text.textType) }}
+            </div>
+            <h2 class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content">{{ text.title }}</h2>
+            <p class="text-sm text-base-content/60 mt-1">
+              {{ text.wordCount }} words · ~{{ text.estimatedReadingTime }} min read
+            </p>
           </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end">
+          <span class="level-pip">{{ text.difficulty }}</span>
+          <span v-if="text.testingPart" class="level-pip">Teil {{ text.testingPart }}</span>
         </div>
       </div>
 
       <!-- Content -->
-      <div class="p-8">
-        <div class="flex items-center mb-6">
-          <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
-            </svg>
+      <div class="p-5 sm:p-7">
+        <div class="bg-base-100 border border-base-300/70 rounded-box p-5 sm:p-6">
+          <div class="flex items-center gap-2 text-base-content/70 mb-4">
+            <component :is="textTypeIcon" :size="14" />
+            <div class="text-sm font-semibold">Text</div>
           </div>
-          <h2 class="text-2xl font-bold text-base-content">{{ text.title }}</h2>
-        </div>
-
-        <div class="prose prose-lg max-w-none h-[55vh] overflow-y-auto border rounded-lg p-6 bg-base-200">
-          <div class="whitespace-pre-line text-base-content leading-relaxed font-medium">{{ text.content }}</div>
+          <div class="h-[52vh] overflow-y-auto pr-1 leading-[1.75] text-[15px] text-base-content/85 whitespace-pre-line">
+            {{ text.content }}
+          </div>
         </div>
 
         <!-- Start Questions Button -->
-        <div class="modal-action mt-8 pt-6 border-t">
-          <div class="bg-primary/10 rounded-lg p-4 flex items-center justify-between w-full gap-4">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                <svg class="w-6 h-6 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+        <div class="modal-action mt-6 pt-5 border-t border-base-300/70">
+          <div class="rounded-box bg-primary/10 border border-primary/20 p-4 flex flex-col sm:flex-row sm:items-center justify-between w-full gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 bg-primary text-primary-content rounded-full grid place-items-center shrink-0">
+                <HelpCircle :size="20" />
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-base-content mb-1">Ready for the questions?</h3>
-                <p class="text-base-content opacity-70">Test your text comprehension with {{ text.questions?.length || 4 }} multiple-choice questions.</p>
+                <h3 class="text-base font-semibold text-base-content">Ready for the questions?</h3>
+                <p class="text-sm text-base-content/70">Answer {{ text.questions?.length || 0 }} multiple-choice questions after reading.</p>
               </div>
             </div>
             <button
-              class="btn btn-primary gap-2 flex-shrink-0"
+              class="btn btn-primary btn-sm gap-1.5 shrink-0"
               @click="$emit('start-quiz', text.id)"
             >
-              {{ $t('practice.reading.startQuestions') }}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
+              Start questions
+              <ArrowRight :size="13" />
             </button>
           </div>
         </div>
@@ -75,16 +76,44 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowLeft, ArrowRight, Bell, BookOpen, FileText, HelpCircle, Mail, Megaphone, Newspaper } from 'lucide-vue-next'
+import type { Component } from 'vue'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 
 interface Props {
   text: ReadingExercise
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 defineEmits<{
   close: []
   'start-quiz': [textId: string]
 }>()
+
+const textTypeIcon = computed<Component>(() => getTextTypeIcon(props.text.textType))
+
+function getTextTypeLabel(type: string) {
+  const labels: Record<string, string> = {
+    email: 'Personal email',
+    notice: 'Information notice',
+    article: 'Article',
+    advertisement: 'Advertisement',
+    instructions: 'Instructions',
+    announcement: 'Announcement'
+  }
+  return labels[type] || type
+}
+
+function getTextTypeIcon(type: string): Component {
+  const icons: Record<string, Component> = {
+    email: Mail,
+    notice: Bell,
+    article: Newspaper,
+    advertisement: Megaphone,
+    instructions: FileText,
+    announcement: Bell
+  }
+  return icons[type] || BookOpen
+}
 </script>

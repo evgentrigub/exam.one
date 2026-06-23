@@ -1,33 +1,38 @@
 <template>
-  <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3">
+  <div>
     <!-- Question header -->
-    <div class="flex items-start gap-2">
-      <span class="level-pip shrink-0 font-mono">{{ questionNumber }}</span>
-      <p class="text-sm font-medium leading-snug">{{ question.question }}</p>
+    <div class="flex items-baseline gap-2">
+      <span class="font-mono text-sm font-semibold text-primary">{{ questionNumber }}.</span>
+      <div class="text-[15px] font-semibold leading-snug text-base-content">{{ question.question }}</div>
     </div>
 
     <!-- 2×2 option grid -->
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid sm:grid-cols-2 gap-2 mt-3">
       <button
         v-for="(option, i) in question.options"
         :key="i"
-        :disabled="isAnswered"
-        class="flex items-center gap-2 p-3 rounded-field border text-left text-sm transition-all"
+        :disabled="submitted"
+        type="button"
+        class="group w-full text-left px-4 py-3 rounded-box border transition-all flex items-center gap-3"
         :class="getOptionClass(i)"
         @click="selectAnswer(i)"
       >
         <span
-          class="level-pip shrink-0 font-mono text-xs"
+          class="w-5 h-5 rounded-full border grid place-items-center text-[10px] font-mono shrink-0"
           :class="getLetterPillClass(i)"
-        >{{ String.fromCharCode(65 + i) }}</span>
-        <span class="leading-snug">{{ option }}</span>
+        >
+          <Check v-if="submitted && i === question.correctAnswer" :size="10" />
+          <X v-else-if="submitted && selectedAnswer === i && i !== question.correctAnswer" :size="10" />
+          <span v-else class="opacity-70">{{ String.fromCharCode(65 + i) }}</span>
+        </span>
+        <span class="text-sm flex-1 leading-snug">{{ option }}</span>
       </button>
     </div>
 
     <!-- Inline feedback -->
-    <div v-if="isAnswered" class="text-xs flex items-start gap-1.5">
+    <div v-if="submitted" class="mt-3 text-xs flex items-start gap-1.5">
       <span :class="isCorrect ? 'text-success' : 'text-error'">
-        {{ isCorrect ? 'Correct!' : `Incorrect — correct answer: ${String.fromCharCode(65 + question.correctAnswer)}` }}
+        {{ isCorrect ? 'Correct!' : `Correct answer: ${String.fromCharCode(65 + question.correctAnswer)}` }}
       </span>
       <span v-if="question.explanation" class="text-base-content/50">{{ question.explanation }}</span>
     </div>
@@ -35,56 +40,46 @@
 </template>
 
 <script setup lang="ts">
+import { Check, X } from 'lucide-vue-next'
 import type { ReadingQuestion } from '~/utils/exercises/reading'
 
 interface Props {
   question: ReadingQuestion
   questionNumber: number
-  preAnswered: number | null
+  selectedAnswer: number | null
+  submitted: boolean
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  answerSelected: [questionId: string, selectedAnswer: number, isCorrect: boolean]
+  answerSelected: [questionId: string, selectedAnswer: number]
 }>()
 
-const selectedAnswer = ref<number | null>(null)
-const isAnswered = ref(false)
-
-onMounted(() => {
-  if (props.preAnswered !== null) {
-    selectedAnswer.value = props.preAnswered
-    isAnswered.value = true
-  }
-})
-
-const isCorrect = computed(() => selectedAnswer.value === props.question.correctAnswer)
+const isCorrect = computed(() => props.selectedAnswer === props.question.correctAnswer)
 
 function selectAnswer(index: number) {
-  if (isAnswered.value) return
-  selectedAnswer.value = index
-  isAnswered.value = true
-  emit('answerSelected', props.question.id, index, index === props.question.correctAnswer)
+  if (props.submitted) return
+  emit('answerSelected', props.question.id, index)
 }
 
 function getOptionClass(index: number) {
-  if (!isAnswered.value) {
-    return 'border-base-300 hover:border-primary hover:bg-primary/10 cursor-pointer'
+  if (props.submitted && index === props.question.correctAnswer) {
+    return 'border-success bg-success/5'
   }
-  if (index === props.question.correctAnswer) {
-    return 'border-success bg-success/10'
+  if (props.submitted && props.selectedAnswer === index && index !== props.question.correctAnswer) {
+    return 'border-error bg-error/5'
   }
-  if (index === selectedAnswer.value && index !== props.question.correctAnswer) {
-    return 'border-error bg-error/10'
+  if (props.selectedAnswer === index) {
+    return 'border-primary bg-primary/5'
   }
-  return 'border-base-200 opacity-50'
+  return 'border-base-300 hover:border-base-content/30 bg-base-100'
 }
 
 function getLetterPillClass(index: number) {
-  if (!isAnswered.value) return ''
-  if (index === props.question.correctAnswer) return 'bg-success text-success-content border-success'
-  if (index === selectedAnswer.value && index !== props.question.correctAnswer) return 'bg-error text-error-content border-error'
-  return ''
+  if (props.submitted && index === props.question.correctAnswer) return 'border-success bg-success text-success-content'
+  if (props.submitted && props.selectedAnswer === index && index !== props.question.correctAnswer) return 'border-error bg-error text-error-content'
+  if (props.selectedAnswer === index) return 'border-primary bg-primary text-primary-content'
+  return 'border-base-300 bg-base-100'
 }
 </script>
