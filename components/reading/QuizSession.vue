@@ -1,44 +1,66 @@
 <template>
-  <div>
+  <div class="space-y-5">
     <!-- Questions list -->
-    <div v-if="!isFinished" class="space-y-4">
-      <QuestionCard
-        v-for="(q, i) in questions"
-        :key="q.id"
-        :question="q"
-        :question-number="i + 1"
-        :pre-answered="answeredQuestions[q.id] ?? null"
-        @answer-selected="handleAnswerSelected"
-      />
+    <div class="bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 sm:p-7">
+      <div class="flex items-center gap-2">
+        <h2 class="font-display text-xl font-bold text-base-content">Questions</h2>
+        <span class="ml-auto text-xs text-base-content/60">
+          {{ answeredCount }} of {{ questions.length }} answered
+        </span>
+      </div>
+      <p class="text-sm text-base-content/60 mt-1">Read the text and choose the best answer for each question.</p>
+
+      <div class="mt-5 space-y-6">
+        <QuestionCard
+          v-for="(q, i) in questions"
+          :key="q.id"
+          :question="q"
+          :question-number="i + 1"
+          :selected-answer="answeredQuestions[q.id] ?? null"
+          :submitted="isFinished"
+          @answer-selected="handleAnswerSelected"
+        />
+      </div>
 
       <!-- Submit row -->
-      <div class="flex items-center justify-between pt-2">
-        <span class="text-xs text-base-content/50">
-          {{ Object.keys(answeredQuestions).length }} / {{ questions.length }} answered
-        </span>
+      <div class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap">
+        <button class="btn btn-ghost btn-sm" @click="saveAndExit">Save & Exit</button>
         <button
-          class="btn btn-primary"
+          v-if="!isFinished"
+          class="btn btn-primary btn-sm flex-1 gap-1"
           :disabled="!allAnswered"
           @click="finishQuiz"
         >
-          Submit Quiz
+          Submit Answers
+          <ArrowRight :size="12" />
         </button>
+        <div v-else class="flex-1 flex items-center gap-3 flex-wrap">
+          <div class="text-sm">
+            Score: <b class="font-mono" :class="getScoreTextColor()">{{ score }} / {{ questions.length }}</b> · {{ scorePercentage }}%
+          </div>
+          <button class="btn btn-outline btn-sm gap-1 sm:ml-auto" @click="restartQuiz">
+            <RotateCcw :size="12" />
+            Retry
+          </button>
+          <button class="btn btn-primary btn-sm gap-1" @click="$emit('finish')">
+            Back
+            <ArrowRight :size="12" />
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Results screen -->
-    <div v-else class="bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden">
+    <div v-if="isFinished" class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden">
       <!-- Score header -->
       <div class="p-6 text-center border-b border-base-300">
         <div
           class="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center"
           :class="getScoreColor()"
         >
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path v-if="scorePercentage >= 75" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            <path v-else-if="scorePercentage >= 50" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <CircleCheck v-if="scorePercentage >= 75" :size="32" />
+          <Info v-else-if="scorePercentage >= 50" :size="32" />
+          <CircleAlert v-else :size="32" />
         </div>
         <div class="text-3xl font-bold font-mono mb-1" :class="getScoreTextColor()">
           {{ score }}/{{ questions.length }}
@@ -57,24 +79,22 @@
             class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
             :class="result.isCorrect ? 'bg-success/20 text-success' : 'bg-error/20 text-error'"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path v-if="result.isCorrect" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
+            <Check v-if="result.isCorrect" :size="14" />
+            <X v-else :size="14" />
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-xs font-medium text-base-content/60 mb-0.5">Question {{ index + 1 }}</p>
             <p class="text-sm">{{ questions[index]?.question }}</p>
             <p v-if="!result.isCorrect" class="text-xs text-base-content/50 mt-1">
-              Your answer: <strong>{{ String.fromCharCode(65 + result.selectedAnswer) }}</strong> ·
-              Correct: <strong>{{ String.fromCharCode(65 + (questions[index]?.correctAnswer ?? 0)) }}</strong>
+              Your answer: <strong>{{ formatAnswerLabel(result.selectedAnswer) }}</strong> ·
+              Correct: <strong>{{ formatAnswerLabel(questions[index]?.correctAnswer ?? 0) }}</strong>
             </p>
           </div>
         </div>
       </div>
 
       <!-- Actions -->
-      <div class="p-4 border-t border-base-300 flex gap-3">
+      <div class="p-4 border-t border-base-300 flex gap-3 flex-wrap sm:flex-nowrap">
         <button class="btn btn-primary flex-1" @click="restartQuiz">Try again</button>
         <button class="btn btn-ghost flex-1" @click="$emit('finish')">Back to exercises</button>
       </div>
@@ -83,9 +103,10 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowRight, Check, CircleAlert, CircleCheck, Info, RotateCcw, X } from 'lucide-vue-next'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
-import QuestionCard from './QuestionCard.vue'
+import QuestionCard from '~/components/reading/QuestionCard.vue'
 
 interface Props {
   text: ReadingExercise
@@ -99,57 +120,64 @@ interface QuizResult {
 
 const props = defineProps<Props>()
 
-defineEmits<{ finish: [] }>()
+const emit = defineEmits<{ finish: [] }>()
 
 const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
 
-const score = ref(0)
 const isFinished = ref(false)
-const results = ref<QuizResult[]>([])
 const answeredQuestions = ref<Record<string, number>>({})
+
+const questions = computed(() => props.text.questions || [])
+const answeredCount = computed(() => Object.keys(answeredQuestions.value).length)
+const allAnswered = computed(() => questions.value.every(q => q.id in answeredQuestions.value))
+const results = computed<QuizResult[]>(() => questions.value.reduce<QuizResult[]>((acc, question) => {
+  const selectedAnswer = answeredQuestions.value[question.id]
+  if (typeof selectedAnswer !== 'number') return acc
+  acc.push({
+    questionId: question.id,
+    selectedAnswer,
+    isCorrect: selectedAnswer === question.correctAnswer
+  })
+  return acc
+}, []))
+const score = computed(() => results.value.filter(result => result.isCorrect).length)
+const scorePercentage = computed(() => questions.value.length ? Math.round((score.value / questions.value.length) * 100) : 0)
 
 onMounted(() => {
   const session = getSession()
   if (session && session.textId === props.text.id) {
     answeredQuestions.value = session.answers || {}
-    let restoredScore = 0
-    const restoredResults: QuizResult[] = []
-    Object.entries(answeredQuestions.value).forEach(([questionId, selectedAnswer]) => {
-      const question = questions.value.find(q => q.id === questionId)
-      if (question) {
-        const isCorrect = selectedAnswer === question.correctAnswer
-        if (isCorrect) restoredScore++
-        restoredResults.push({ questionId, selectedAnswer, isCorrect })
-      }
-    })
-    score.value = restoredScore
-    results.value = restoredResults
   }
 })
 
-const questions = computed(() => props.text.questions || [])
-const scorePercentage = computed(() => Math.round((score.value / questions.value.length) * 100))
-const allAnswered = computed(() => questions.value.every(q => q.id in answeredQuestions.value))
-
-function handleAnswerSelected(questionId: string, selectedAnswer: number, isCorrect: boolean) {
-  if (questionId in answeredQuestions.value) return
-  results.value.push({ questionId, selectedAnswer, isCorrect })
-  if (isCorrect) score.value++
-  answeredQuestions.value[questionId] = selectedAnswer
+function handleAnswerSelected(questionId: string, selectedAnswer: number) {
+  answeredQuestions.value = {
+    ...answeredQuestions.value,
+    [questionId]: selectedAnswer
+  }
   saveSession(props.text.id, 0, answeredQuestions.value)
 }
 
 function finishQuiz() {
+  if (!allAnswered.value) return
   isFinished.value = true
   saveQuizCompletion(props.text.id, score.value, questions.value.length)
   clearSession()
 }
 
+function saveAndExit() {
+  saveSession(props.text.id, 0, answeredQuestions.value)
+  emit('finish')
+}
+
 function restartQuiz() {
-  score.value = 0
   isFinished.value = false
-  results.value = []
   answeredQuestions.value = {}
+  clearSession()
+}
+
+function formatAnswerLabel(index: number) {
+  return String.fromCharCode(65 + index)
 }
 
 function getScoreColor() {

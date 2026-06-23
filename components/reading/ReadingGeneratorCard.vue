@@ -1,21 +1,20 @@
 <template>
-  <div class="card bg-base-200 border-2 border-dashed border-primary shadow-md hover:shadow-lg transition-all">
+  <div class="bg-base-100 border border-primary/30 ring-soft rounded-box overflow-hidden card-hov">
     <!-- Error State -->
-    <div v-if="generationError" class="card-body flex flex-col items-center justify-center">
-      <div class="alert alert-error mb-4">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
+    <div v-if="generationError" class="p-5 sm:p-6">
+      <div class="alert alert-error mb-4 items-start">
+        <CircleAlert :size="22" class="shrink-0" />
         <div>
-          <h3 class="font-bold">Generation Failed</h3>
+          <h3 class="font-bold">Generation failed</h3>
           <div class="text-sm">{{ generationError }}</div>
         </div>
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-wrap">
         <button
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary btn-sm gap-1.5"
           @click="$emit('retry')"
         >
+          <RotateCcw :size="13" />
           Retry
         </button>
         <button
@@ -28,56 +27,52 @@
     </div>
 
     <!-- Generating State -->
-    <div v-else-if="isGenerating" class="card-body flex flex-col items-center justify-center">
-      <span class="loading loading-spinner loading-lg text-primary mb-6"></span>
-      <h3 class="text-lg font-bold text-base-content mb-2">Generating Reading Exercises...</h3>
-      <p class="text-sm text-base-content opacity-70 text-center">
-        Creating {{ generatingDifficulty }} level reading exercises with AI
-      </p>
-      <p class="text-xs text-base-content opacity-50 mt-4 text-center px-4">
-        This may take 15-40 seconds. Please don't close this page.
-      </p>
+    <div v-else-if="isGenerating" class="p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+      <span class="loading loading-spinner loading-lg text-primary shrink-0" />
+      <div>
+        <h3 class="font-display text-xl font-bold text-base-content">Generating reading exercises…</h3>
+        <p class="text-sm text-base-content/70 mt-1">
+          Creating {{ generatingDifficulty }} level Goethe-style reading exercises with AI.
+        </p>
+        <p class="text-xs text-base-content/50 mt-2">
+          This may take 15–40 seconds. Core practice remains available offline.
+        </p>
+      </div>
     </div>
 
     <!-- Default State: Generator Button -->
-    <div v-else class="card-body p-4 flex flex-col items-center justify-center">
-      <!-- Icon -->
-      <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-        <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-        </svg>
+    <div v-else class="p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center gap-5">
+      <div class="w-12 h-12 rounded-box bg-reading-soft text-reading grid place-items-center shrink-0">
+        <BookOpen :size="22" />
       </div>
 
-      <!-- Title -->
-      <h3 class="text-lg font-bold text-base-content mb-2 text-center">Generate New Reading Exercises</h3>
-      <p class="text-sm text-base-content opacity-70 text-center mb-6 px-4">
-        AI creates new reading comprehension exercises for {{ currentDifficulty }} level
-      </p>
-
-      <!-- Generation Button -->
-      <div class="w-full px-4">
-        <button
-          class="btn btn-primary w-full gap-2"
-          @click="$emit('generate')"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          Generate exercises
-        </button>
+      <div class="flex-1 min-w-0">
+        <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">Optional AI enhancement</div>
+        <h3 class="font-display text-xl font-bold text-base-content mt-1">Generate new reading exercises</h3>
+        <p class="text-sm text-base-content/70 mt-1">
+          AI can create new {{ currentDifficulty }} reading comprehension sets. If unavailable, bundled exercises still work offline.
+        </p>
+        <p class="text-xs text-base-content/50 mt-2">
+          {{ currentDifficulty === 'A2'
+            ? 'Creates one exercise per exam part (Teil 1–4).'
+            : 'Each generation creates new exercises.' }}
+        </p>
       </div>
 
-      <!-- Info Text -->
-      <p class="text-xs text-base-content opacity-50 mt-4 text-center px-4">
-        {{ currentDifficulty === 'A2'
-          ? 'Creates one exercise per exam part (Teil 1–4)'
-          : 'Each generation creates new exercises' }}
-      </p>
+      <button
+        class="btn btn-primary btn-sm gap-1.5 shrink-0"
+        @click="$emit('generate')"
+      >
+        <Plus :size="14" />
+        Generate exercises
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { BookOpen, CircleAlert, Plus, RotateCcw } from 'lucide-vue-next'
+
 interface Props {
   isGenerating: boolean
   generatingDifficulty: 'A2' | 'C1' | null
@@ -93,16 +88,3 @@ defineEmits<{
   dismiss: []
 }>()
 </script>
-
-<style scoped>
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-</style>
-
