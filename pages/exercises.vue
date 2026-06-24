@@ -20,6 +20,9 @@
           <span class="text-[10px]" :class="activeSkill === s.key ? 'opacity-80' : 'opacity-50'">{{ s.count }}</span>
         </button>
         <button class="btn btn-ghost btn-xs" @click="setActiveSkill('all')">{{ $t('exercisesUi.all') }}</button>
+        <button class="btn btn-primary btn-sm rounded-full gap-2 ml-auto" @click="genOpen = true">
+          <Sparkles :size="14" /> {{ $t('exercisesUi.generate') }}
+        </button>
       </div>
 
       <!-- Part filter row -->
@@ -105,39 +108,14 @@
       </div>
     </div>
 
-    <!-- Skill generators -->
+    <!-- Generate exercises modal -->
     <ClientOnly>
-      <ReadingGeneratorCard
-        v-if="activeSkill === 'reading'"
-        :is-generating="isGeneratingReading"
-        :generating-difficulty="generatingReadingDifficulty"
-        :generation-error="readingGenerationError"
-        :current-difficulty="examLevel"
-        @generate="handleGenerateReading"
-        @retry="handleRetryReading"
-        @dismiss="handleDismissReadingError"
+      <GenerateExercisesModal
+        v-if="genOpen"
+        :level="examLevel"
+        @close="genOpen = false"
+        @generate="handleGenerateFromModal"
       />
-      <TopicGeneratorCard
-        v-else-if="activeSkill === 'writing' && examLevel === 'A2'"
-        :is-generating="isGeneratingWriting"
-        :generating-part="generatingWritingPart"
-        :generation-error="writingGenerationError"
-        :current-difficulty="examLevel"
-        @generate="handleGenerateWriting"
-        @retry="handleRetryWriting"
-        @dismiss="handleDismissWritingError"
-      />
-      <div v-else-if="activeSkill === 'writing'" class="bg-base-100 border border-base-300/70 rounded-box p-5 sm:p-6">
-        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
-          <div class="w-12 h-12 rounded-field bg-base-200 text-base-content/50 grid place-items-center shrink-0">
-            <PencilLine :size="22" aria-hidden="true" />
-          </div>
-          <div>
-            <h3 class="font-display text-lg font-bold">Writing generation is available for A2</h3>
-            <p class="text-sm text-base-content/60 mt-1">Switch to A2 to generate new Goethe A2 writing topics. Existing C1 writing practice remains available offline.</p>
-          </div>
-        </div>
-      </div>
     </ClientOnly>
 
     <!-- Results -->
@@ -300,7 +278,7 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2, Info } from 'lucide-vue-next'
+import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2, Info, Sparkles } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { goetheA2Structure } from '~/data/examStructure/goetheA2'
 import type { SkillId } from '~/utils/labels'
@@ -314,8 +292,7 @@ import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
 import { getSkillMeta, getSkillLabel } from '~/utils/labels'
-import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
-import TopicGeneratorCard from '~/components/writing/TopicGeneratorCard.vue'
+import GenerateExercisesModal from '~/components/exercises/GenerateExercisesModal.vue'
 
 usePageMeta('pageMeta.exercisesTitle', 'pageMeta.exercisesSubtitle')
 useHead({ title: 'Exercises — Exam.one' })
@@ -347,71 +324,47 @@ const LISTENING_TYPE_BY_PART: Record<number, string> = {
 const LISTENING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7, 3: 5, 4: 8 }
 const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
 
-// Reading generation
-const {
-  isGenerating: isGeneratingReading,
-  generatingDifficulty: generatingReadingDifficulty,
-  generationError: readingGenerationError,
-  generateReading,
-  retryGeneration: retryReadingGeneration,
-  dismissError: dismissReadingError,
-} = useReadingGeneration()
+// Generation composables (reading + writing only; listening/speaking have none)
+const { generateReading } = useReadingGeneration()
+const { generateTopics } = useTopicGeneration()
 
-const {
-  isGenerating: isGeneratingWriting,
-  generatingPart: generatingWritingPart,
-  generationError: writingGenerationError,
-  generateTopics,
-  retryGeneration: retryWritingGeneration,
-  dismissError: dismissWritingError,
-} = useTopicGeneration()
+// Generate exercises modal
+const genOpen = ref(false)
 
-async function handleGenerateReading() {
-  try {
-    const newTexts = await generateReading(examLevel.value)
-    addTexts(newTexts)
-  } catch (error: unknown) {
-    console.error('Failed to generate reading exercises:', error)
-    alert(error instanceof Error ? error.message : 'Failed to generate reading exercises')
+type GeneratePayload = {
+  level: 'A2' | 'C1'
+  skills: SkillId[]
+  parts: string[]
+  count: number
+  difficulty: 'easier' | 'balanced' | 'harder'
+}
+
+async function handleGenerateFromModal(payload: GeneratePayload) {
+  // Difficulty is a mock control and is intentionally never forwarded to the composables.
+  genOpen.value = false
+
+  for (const skill of payload.skills) {
+    try {
+      if (skill === 'reading') {
+        const newTexts = await generateReading(examLevel.value)
+        addTexts(newTexts)
+      } else if (skill === 'writing' && examLevel.value === 'A2') {
+        const selectedParts = payload.parts
+          .filter(p => p.startsWith('writing:'))
+          .map(p => Number(p.split(':')[1]))
+          .filter((n): n is 1 | 2 => n === 1 || n === 2)
+        const partsToGenerate: (1 | 2)[] = selectedParts.length ? selectedParts : [1, 2]
+        for (const part of partsToGenerate) {
+          const newTopics = await generateTopics(part, examLevel.value)
+          addTopics(newTopics)
+        }
+      }
+      // listening / speaking: no generator available — skipped silently
+    } catch (error: unknown) {
+      console.error(`Failed to generate ${skill} exercises:`, error)
+      alert(error instanceof Error ? error.message : `Failed to generate ${skill} exercises`)
+    }
   }
-}
-
-async function handleRetryReading() {
-  try {
-    const newTexts = await retryReadingGeneration()
-    addTexts(newTexts)
-  } catch (error: unknown) {
-    console.error('Failed to retry reading generation:', error)
-    alert(error instanceof Error ? error.message : 'Failed to retry generation')
-  }
-}
-
-function handleDismissReadingError() {
-  dismissReadingError()
-}
-
-async function handleGenerateWriting(part: 1 | 2) {
-  try {
-    const newTopics = await generateTopics(part, examLevel.value)
-    addTopics(newTopics)
-  } catch (error: unknown) {
-    console.error('Failed to generate writing topics:', error)
-    alert(error instanceof Error ? error.message : 'Failed to generate writing topics')
-  }
-}
-
-async function handleRetryWriting() {
-  try {
-    const newTopics = await retryWritingGeneration()
-    addTopics(newTopics)
-  } catch (error: unknown) {
-    console.error('Failed to retry writing generation:', error)
-    alert(error instanceof Error ? error.message : 'Failed to retry generation')
-  }
-}
-
-function handleDismissWritingError() {
-  dismissWritingError()
 }
 
 // Filter state
