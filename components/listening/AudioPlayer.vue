@@ -1,13 +1,15 @@
 <template>
-  <div class="rounded-box border border-base-300 bg-base-100 p-4">
+  <div class="bg-base-100 rounded-box border border-base-300/70 p-5">
     <!-- Artwork + label -->
-    <div class="flex items-center gap-3 mb-3">
-      <div class="w-11 h-11 rounded-selector bg-listening-soft flex items-center justify-center shrink-0">
-        <Headphones :size="20" class="text-listening" />
+    <div class="flex items-start gap-3">
+      <div
+        class="w-12 h-12 rounded-box shrink-0 grid place-items-center bg-listening-soft"
+      >
+        <AudioWaveform :size="18" class="text-listening" />
       </div>
       <div class="min-w-0">
-        <p class="text-sm font-semibold truncate">{{ label }}</p>
-        <p class="text-[11px] text-base-content/50">
+        <p class="font-semibold text-sm leading-tight truncate">{{ label }}</p>
+        <p class="text-xs text-base-content/60 mt-0.5">
           {{ playsLeft > 0 ? `${playsLeft} ${playsLeft === 1 ? 'play' : 'plays'} left` : 'No plays left' }}
           · simulated audio
         </p>
@@ -15,54 +17,64 @@
     </div>
 
     <!-- Scrubber -->
-    <div class="flex items-center gap-2">
+    <div class="mt-5">
+      <input
+        type="range"
+        :min="0"
+        :max="durationSec"
+        :value="currentSec"
+        class="w-full accent-info"
+        @input="seekTo(Number(($event.target as HTMLInputElement).value))"
+      ></input>
+      <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
+        <span>{{ fmt(currentSec) }}</span>
+        <span>{{ fmt(durationSec) }}</span>
+      </div>
+    </div>
+
+    <!-- Controls row -->
+    <div class="mt-4 pt-4 border-t border-base-300/70 flex items-center gap-3">
+      <!-- Play/Pause -->
       <button
         type="button"
-        class="btn btn-circle btn-sm btn-info text-info-content"
+        class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0"
         :disabled="!canPlay && !playing"
         :title="playing ? 'Pause' : 'Play'"
         @click="toggle"
       >
-        <Pause v-if="playing" :size="15" />
-        <Play v-else :size="15" />
+        <Pause v-if="playing" :size="14" />
+        <Play v-else :size="14" />
       </button>
-      <span class="font-mono text-[11px] text-base-content/60 w-9 text-right">{{ fmt(currentSec) }}</span>
-      <div
-        class="relative flex-1 h-1.5 rounded-full bg-base-content/15 overflow-hidden cursor-default"
-      >
-        <div class="absolute inset-y-0 left-0 bg-info rounded-full" :style="{ width: `${progressPct}%` }" />
-      </div>
-      <span class="font-mono text-[11px] text-base-content/40 w-9">{{ fmt(durationSec) }}</span>
-    </div>
 
-    <!-- Speed control -->
-    <div class="flex items-center justify-between mt-3">
+      <!-- Volume icon + slider (visual only) -->
+      <Volume2 :size="13" class="text-base-content/50 shrink-0" />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        :value="volume"
+        class="flex-1 accent-info min-w-0"
+        @input="volume = Number(($event.target as HTMLInputElement).value)"
+      ></input>
+
+      <!-- Speed segmented control -->
       <div class="join">
         <button
           v-for="s in speeds"
           :key="s"
           type="button"
-          class="btn btn-xs join-item"
+          class="join-item btn btn-xs"
           :class="speed === s ? 'btn-info text-info-content' : 'btn-ghost'"
           @click="speed = s"
         >
           {{ s }}x
         </button>
       </div>
-      <button
-        type="button"
-        class="btn btn-xs btn-ghost gap-1"
-        :disabled="!canPlay"
-        title="Replay from start"
-        @click="replay"
-      >
-        <RotateCcw :size="12" />
-        Replay
-      </button>
     </div>
 
     <!-- Transcript (revealed after submit) -->
-    <div v-if="revealTranscript" class="mt-3 p-3 rounded-field bg-base-200/60 border border-base-300/70">
+    <div v-if="revealTranscript" class="mt-4 p-3 rounded-field bg-base-200/60 border border-base-300/70">
       <p class="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1">Transcript</p>
       <p class="text-sm leading-relaxed whitespace-pre-line">{{ transcript }}</p>
     </div>
@@ -70,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { Headphones, Play, Pause, RotateCcw } from 'lucide-vue-next'
+import { AudioWaveform, Play, Pause, Volume2 } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<{
   transcript: string
@@ -98,12 +110,12 @@ const speed = ref<number>(1)
 const playing = ref(false)
 const currentSec = ref(0)
 const plays = ref(0)
+const volume = ref(0.6)
 
 let timer: ReturnType<typeof setInterval> | null = null
 
 const playsLeft = computed(() => Math.max(0, props.replayLimit - plays.value))
 const canPlay = computed(() => playsLeft.value > 0)
-const progressPct = computed(() => durationSec.value ? Math.min(100, (currentSec.value / durationSec.value) * 100) : 0)
 
 function fmt(sec: number): string {
   const m = Math.floor(sec / 60)
@@ -148,11 +160,8 @@ function toggle() {
   startTimer()
 }
 
-function replay() {
-  if (!canPlay.value) return
-  currentSec.value = 0
-  playing.value = true
-  startTimer()
+function seekTo(sec: number) {
+  currentSec.value = Math.min(sec, durationSec.value)
 }
 
 onUnmounted(stopTimer)
