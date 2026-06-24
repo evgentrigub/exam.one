@@ -73,18 +73,39 @@
       </div>
     </div>
 
-    <!-- Reading generator (only when browsing reading exercises) -->
+    <!-- Skill generators -->
     <ClientOnly>
       <ReadingGeneratorCard
         v-if="activeSkill === 'reading'"
-        :is-generating="isGenerating"
-        :generating-difficulty="generatingDifficulty"
-        :generation-error="generationError"
+        :is-generating="isGeneratingReading"
+        :generating-difficulty="generatingReadingDifficulty"
+        :generation-error="readingGenerationError"
         :current-difficulty="examLevel"
-        @generate="handleGenerate"
-        @retry="handleRetry"
-        @dismiss="handleDismissError"
+        @generate="handleGenerateReading"
+        @retry="handleRetryReading"
+        @dismiss="handleDismissReadingError"
       />
+      <TopicGeneratorCard
+        v-else-if="activeSkill === 'writing' && examLevel === 'A2'"
+        :is-generating="isGeneratingWriting"
+        :generating-part="generatingWritingPart"
+        :generation-error="writingGenerationError"
+        :current-difficulty="examLevel"
+        @generate="handleGenerateWriting"
+        @retry="handleRetryWriting"
+        @dismiss="handleDismissWritingError"
+      />
+      <div v-else-if="activeSkill === 'writing'" class="bg-base-100 border border-base-300/70 rounded-box p-5 sm:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div class="w-12 h-12 rounded-field bg-base-200 text-base-content/50 grid place-items-center shrink-0">
+            <PencilLine :size="22" aria-hidden="true" />
+          </div>
+          <div>
+            <h3 class="font-display text-lg font-bold">Writing generation is available for A2</h3>
+            <p class="text-sm text-base-content/60 mt-1">Switch to A2 to generate new Goethe A2 writing topics. Existing C1 writing practice remains available offline.</p>
+          </div>
+        </div>
+      </div>
     </ClientOnly>
 
     <!-- Results -->
@@ -101,7 +122,19 @@
             <div class="w-9 h-9 rounded-selector flex items-center justify-center" :class="`bg-${ex.skill}-soft`">
               <component :is="skillIcon(ex.skill)" :size="16" :class="`text-${ex.skill}`" />
             </div>
-            <span class="level-pip">{{ ex.difficulty }}</span>
+            <div class="flex items-center gap-2">
+              <span class="level-pip">{{ ex.difficulty }}</span>
+              <button
+                v-if="ex.skill === 'writing'"
+                class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error"
+                type="button"
+                title="Delete writing topic"
+                aria-label="Delete writing topic"
+                @click.stop="deleteWritingTopic(ex)"
+              >
+                <Trash2 :size="13" aria-hidden="true" />
+              </button>
+            </div>
           </div>
           <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
           <p class="text-xs text-base-content/50 capitalize mb-3">
@@ -127,6 +160,14 @@
               :class="statusClass(ex.status)"
             >{{ statusLabel(ex.status) }}</span>
           </div>
+          <button
+            v-if="ex.skill === 'writing' && ex.status === 'mastered'"
+            class="btn btn-ghost btn-xs gap-1 mt-3"
+            type="button"
+            @click.stop="repeatWritingExercise(ex.id)"
+          >
+            Repeat <ChevronRight :size="12" aria-hidden="true" />
+          </button>
         </div>
 
         <!-- Empty state -->
@@ -179,8 +220,30 @@
                 </div>
               </td>
               <td class="py-3 pr-5">
-                <button class="btn btn-xs btn-ghost gap-1 opacity-60 hover:opacity-100">
-                  Start <ChevronRight :size="12" />
+                <button
+                  class="btn btn-xs btn-ghost gap-1 opacity-60 hover:opacity-100"
+                  type="button"
+                  @click.stop="openExercise(ex)"
+                >
+                  {{ ex.skill === 'writing' && ex.status === 'mastered' ? 'Review' : 'Start' }}
+                  <ChevronRight :size="12" />
+                </button>
+                <button
+                  v-if="ex.skill === 'writing' && ex.status === 'mastered'"
+                  class="btn btn-xs btn-ghost"
+                  type="button"
+                  @click.stop="repeatWritingExercise(ex.id)"
+                >
+                  Repeat
+                </button>
+                <button
+                  v-if="ex.skill === 'writing'"
+                  class="btn btn-xs btn-ghost text-base-content/40 hover:text-error"
+                  type="button"
+                  aria-label="Delete writing topic"
+                  @click.stop="deleteWritingTopic(ex)"
+                >
+                  <Trash2 :size="12" aria-hidden="true" />
                 </button>
               </td>
             </tr>
@@ -205,18 +268,20 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, PenLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight } from 'lucide-vue-next'
+import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2 } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useReadingGeneration } from '~/composables/useReadingGeneration'
 import { useWritingTopics } from '~/composables/useWritingTopics'
+import { useTopicGeneration } from '~/composables/useTopicGeneration'
 import { useListeningExercises } from '~/composables/useListeningExercises'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
 import { getSkillMeta } from '~/utils/labels'
 import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
+import TopicGeneratorCard from '~/components/writing/TopicGeneratorCard.vue'
 
 usePageMeta('Exercises', 'Browse and practice all exercise types')
 useHead({ title: 'Exercises — Exam.one' })
@@ -227,13 +292,15 @@ const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
 
 const { getTexts, addTexts } = useReadingTexts()
-const { getTopics } = useWritingTopics()
+const { getTopics, addTopics, deleteTopic } = useWritingTopics()
 const { getExercises: getListening } = useListeningExercises()
 const { getTopics: getSpeaking } = useSpeakingExercises()
 const {
   getProgressStats,
   isTextCompleted,
   isWritingTopicCompleted,
+  getWritingTopicProgress,
+  getAllWritingSessions,
   getListeningProgress,
   isListeningCompleted,
   isSpeakingCompleted,
@@ -247,15 +314,24 @@ const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
 
 // Reading generation
 const {
-  isGenerating,
-  generatingDifficulty,
-  generationError,
+  isGenerating: isGeneratingReading,
+  generatingDifficulty: generatingReadingDifficulty,
+  generationError: readingGenerationError,
   generateReading,
-  retryGeneration,
-  dismissError
+  retryGeneration: retryReadingGeneration,
+  dismissError: dismissReadingError,
 } = useReadingGeneration()
 
-async function handleGenerate() {
+const {
+  isGenerating: isGeneratingWriting,
+  generatingPart: generatingWritingPart,
+  generationError: writingGenerationError,
+  generateTopics,
+  retryGeneration: retryWritingGeneration,
+  dismissError: dismissWritingError,
+} = useTopicGeneration()
+
+async function handleGenerateReading() {
   try {
     const newTexts = await generateReading(examLevel.value)
     addTexts(newTexts)
@@ -265,9 +341,9 @@ async function handleGenerate() {
   }
 }
 
-async function handleRetry() {
+async function handleRetryReading() {
   try {
-    const newTexts = await retryGeneration()
+    const newTexts = await retryReadingGeneration()
     addTexts(newTexts)
   } catch (error: unknown) {
     console.error('Failed to retry reading generation:', error)
@@ -275,8 +351,32 @@ async function handleRetry() {
   }
 }
 
-function handleDismissError() {
-  dismissError()
+function handleDismissReadingError() {
+  dismissReadingError()
+}
+
+async function handleGenerateWriting(part: 1 | 2) {
+  try {
+    const newTopics = await generateTopics(part, examLevel.value)
+    addTopics(newTopics)
+  } catch (error: unknown) {
+    console.error('Failed to generate writing topics:', error)
+    alert(error instanceof Error ? error.message : 'Failed to generate writing topics')
+  }
+}
+
+async function handleRetryWriting() {
+  try {
+    const newTopics = await retryWritingGeneration()
+    addTopics(newTopics)
+  } catch (error: unknown) {
+    console.error('Failed to retry writing generation:', error)
+    alert(error instanceof Error ? error.message : 'Failed to retry generation')
+  }
+}
+
+function handleDismissWritingError() {
+  dismissWritingError()
 }
 
 // Filter state
@@ -333,8 +433,11 @@ const allExercises = computed<UnifiedExercise[]>(() => {
     } as UnifiedExercise
   })
 
+  const draftTopicIds = new Set(getAllWritingSessions().map(session => session.topicId))
   const writingList = getTopics().filter(t => t.difficulty === examLevel.value).map(t => {
     const completed = isWritingTopicCompleted(t.id)
+    const progress = getWritingTopicProgress(t.id)
+    const hasDraft = draftTopicIds.has(t.id)
     return {
       id: t.id,
       skill: 'writing',
@@ -342,8 +445,10 @@ const allExercises = computed<UnifiedExercise[]>(() => {
       type: t.topicType,
       difficulty: t.difficulty,
       minutes: t.estimatedTime,
-      pct: completed ? 100 : 0,
-      status: completed ? 'mastered' : 'new'
+      words: t.wordCount.max,
+      pct: completed ? 100 : hasDraft ? 50 : progress ? 25 : 0,
+      status: completed ? 'mastered' : hasDraft || progress ? 'inprogress' : 'new',
+      part: t.testingPart,
     } as UnifiedExercise
   })
 
@@ -391,7 +496,7 @@ const allExercises = computed<UnifiedExercise[]>(() => {
 const skillFilters = computed(() => [
   { key: 'all', label: 'All', icon: null, count: allExercises.value.length, colorVar: 'base-content' },
   { key: 'reading', label: 'Reading', icon: BookOpen, count: allExercises.value.filter(e => e.skill === 'reading').length, colorVar: 'primary' },
-  { key: 'writing', label: 'Writing', icon: PenLine, count: allExercises.value.filter(e => e.skill === 'writing').length, colorVar: 'success' },
+  { key: 'writing', label: 'Writing', icon: PencilLine, count: allExercises.value.filter(e => e.skill === 'writing').length, colorVar: 'success' },
   { key: 'listening', label: 'Listening', icon: Headphones, count: allExercises.value.filter(e => e.skill === 'listening').length, colorVar: 'info' },
   { key: 'speaking', label: 'Speaking', icon: Mic, count: allExercises.value.filter(e => e.skill === 'speaking').length, colorVar: 'warning' }
 ])
@@ -430,7 +535,7 @@ const filtered = computed(() => {
 })
 
 function skillIcon(skill: string): Component {
-  const map: Record<string, Component> = { reading: BookOpen, writing: PenLine, listening: Headphones, speaking: Mic }
+  const map: Record<string, Component> = { reading: BookOpen, writing: PencilLine, listening: Headphones, speaking: Mic }
   return map[skill] ?? BookOpen
 }
 
@@ -450,9 +555,21 @@ function statusClass(status: string) {
 
 function openExercise(ex: UnifiedExercise) {
   if (ex.skill === 'reading') router.push(`/reading/${ex.id}`)
-  else if (ex.skill === 'writing') router.push(`/writing/${ex.id}/exam`)
+  else if (ex.skill === 'writing') router.push(ex.status === 'mastered' ? `/writing/${ex.id}/checking` : `/writing/${ex.id}/exam`)
   else if (ex.skill === 'listening') router.push(`/listening/${ex.id}`)
   else if (ex.skill === 'speaking') router.push(`/speaking/${ex.id}`)
+}
+
+function repeatWritingExercise(topicId: string) {
+  router.push(`/writing/${topicId}/exam`)
+}
+
+function deleteWritingTopic(ex: UnifiedExercise) {
+  if (ex.skill !== 'writing') return
+  const confirmed = confirm(`Delete "${ex.title}"?\n\nThis removes the writing topic from local storage.`)
+  if (confirmed) {
+    deleteTopic(ex.id)
+  }
 }
 
 function progressClass(skill: string) {

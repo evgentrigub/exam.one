@@ -5,9 +5,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-info/20 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
+            <FileText :size="20" class="text-info" aria-hidden="true" />
           </div>
           <div>
             <h2 class="card-title text-lg">Description</h2>
@@ -26,17 +24,11 @@
           >
             <div class="flex items-center space-x-1">
               <!-- Quick Mode Icon -->
-              <svg v-if="mode.id === 'quick'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
+              <Zap v-if="mode.id === 'quick'" :size="16" aria-hidden="true" />
               <!-- Challenge Mode Icon -->
-              <svg v-else-if="mode.id === 'challenge'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+              <Clock v-else-if="mode.id === 'challenge'" :size="16" aria-hidden="true" />
               <!-- Model Help Icon -->
-              <svg v-else-if="mode.id === 'model-help'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+              <CircleHelp v-else-if="mode.id === 'model-help'" :size="16" aria-hidden="true" />
               <span>{{ mode.label }}</span>
             </div>
           </button>
@@ -51,15 +43,11 @@
         <h3 class="text-xl font-bold text-base-content mb-2">{{ topic.title }}</h3>
         <div class="flex items-center gap-4 text-sm">
           <div class="badge badge-outline gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <Clock :size="16" aria-hidden="true" />
             {{ topic.estimatedTime }} minutes
           </div>
           <div class="badge badge-outline gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
+            <FileText :size="16" aria-hidden="true" />
             {{ topic.wordCount.min }}-{{ topic.wordCount.max }} words
           </div>
         </div>
@@ -73,9 +61,7 @@
 
       <!-- Writing Tips (if available) -->
       <div v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')" class="alert alert-warning shadow-sm items-start">
-          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-          </svg>
+          <Lightbulb :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
           <div class="w-full">
             <h4 class="text-sm font-semibold mb-2">Writing Tips</h4>
             <ul class="space-y-2">
@@ -91,6 +77,7 @@
 </template>
 
 <script setup lang="ts">
+import { CircleHelp, Clock, FileText, Lightbulb, Zap } from 'lucide-vue-next'
 import type { WritingExercise } from '~/utils/types'
 import type { WritingMode } from '~/composables/useWritingMode'
 import { getWritingTips } from '~/data/writing/exerciseTips'

@@ -161,10 +161,16 @@ const { getTopics } = useWritingTopics()
 const { getExercises: getListening } = useListeningExercises()
 const { getTopics: getSpeaking } = useSpeakingExercises()
 
-const readingCount = computed(() => getTexts().filter(text => text.difficulty === examLevel.value).length)
-const writingCount = computed(() => getTopics().filter(topic => topic.difficulty === examLevel.value).length)
-const listeningCount = computed(() => getListening().length)
-const speakingCount = computed(() => getSpeaking().filter(t => t.difficulty === examLevel.value).length)
+const isClient = ref(false)
+
+onMounted(() => {
+  isClient.value = true
+})
+
+const readingCount = computed(() => isClient.value ? getTexts().filter(text => text.difficulty === examLevel.value).length : 0)
+const writingCount = computed(() => isClient.value ? getTopics().filter(topic => topic.difficulty === examLevel.value).length : 0)
+const listeningCount = computed(() => isClient.value ? getListening().length : 0)
+const speakingCount = computed(() => isClient.value ? getSpeaking().filter(t => t.difficulty === examLevel.value).length : 0)
 
 function isActive(path: string) {
   return route.path === path

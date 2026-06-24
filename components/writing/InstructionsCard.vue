@@ -5,9 +5,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-success/20 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-            </svg>
+            <ClipboardList :size="20" class="text-success" aria-hidden="true" />
           </div>
           <div>
             <h2 class="card-title text-lg">Instructions</h2>
@@ -17,9 +15,7 @@
 
         <!-- Challenge Mode Timer -->
         <div v-if="currentMode === 'challenge'" class="badge badge-warning gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <Clock :size="16" aria-hidden="true" />
           <span class="font-mono font-semibold">{{ timerDisplay }}</span>
         </div>
       </div>
@@ -31,9 +27,7 @@
       <div class="mb-4">
         <h4 class="text-sm font-semibold text-base-content opacity-70 mb-3 uppercase tracking-wide">Your Task</h4>
         <div class="alert alert-success shadow-sm flex items-start gap-3">
-          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <CheckCircle2 :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p class="leading-relaxed font-medium text-sm">{{ topic.task }}</p>
         </div>
       </div>
@@ -55,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import { CheckCircle2, ClipboardList, Clock } from 'lucide-vue-next'
 import type { WritingExercise } from '~/utils/types'
 import type { WritingMode } from '~/composables/useWritingMode'
 
