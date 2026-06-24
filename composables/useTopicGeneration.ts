@@ -8,7 +8,8 @@
 import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 
-const STORAGE_KEY = 'exame-one-topic-generation-state'
+const STORAGE_KEY = 'exam-one:writing:topic-generation-state'
+const LEGACY_STORAGE_KEY = 'exame-one-topic-generation-state'
 
 interface GenerationState {
   isGenerating: boolean
@@ -34,7 +35,7 @@ export const useTopicGeneration = () => {
     if (import.meta.server) return
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      const stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY)
       if (stored) {
         const parsedState = JSON.parse(stored)
         
@@ -86,6 +87,7 @@ export const useTopicGeneration = () => {
     
     if (import.meta.client) {
       localStorage.removeItem(STORAGE_KEY)
+      localStorage.removeItem(LEGACY_STORAGE_KEY)
     }
   }
 
@@ -124,15 +126,21 @@ export const useTopicGeneration = () => {
           part,
           difficulty
         }
-      }) as unknown) as { topics: WritingExercise[], error?: string }
+      }) as unknown) as {
+        topics?: WritingExercise[]
+        data?: { topics: WritingExercise[] } | null
+        error?: string | null
+      }
 
-      if (response.error || !response.topics || response.topics.length === 0) {
+      const topics = response.data?.topics || response.topics || []
+
+      if (response.error || topics.length === 0) {
         throw new Error(response.error || 'No topics generated')
       }
 
       // Success - clear state
       clearState()
-      return response.topics
+      return topics
 
     } catch (error: unknown) {
       // Set error state

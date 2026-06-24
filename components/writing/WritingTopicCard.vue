@@ -7,18 +7,14 @@
         title="Delete topic"
         @click.stop="$emit('deleteTopic', topic.id)"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
+        <X :size="16" aria-hidden="true" />
       </button>
 
       <!-- Header with badges -->
       <div class="flex items-center justify-between mb-3">
         <!-- Time indicator always on left -->
         <div class="flex items-center text-xs opacity-60">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <Clock :size="12" class="mr-1" aria-hidden="true" />
           {{ topic.estimatedTime }} Min
         </div>
         
@@ -28,9 +24,7 @@
           :class="topicCompleted ? 'badge-success' : getTopicBadgeClass(topic.topicType)"
         >
           <!-- Completion check icon for completed topics -->
-          <svg v-if="topicCompleted" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
+          <Check v-if="topicCompleted" :size="12" aria-hidden="true" />
           {{ topicCompleted ? 'Completed' : getTopicTypeLabel(topic.topicType) }}
         </span>
       </div>
@@ -70,9 +64,7 @@
       <div v-if="topicCompleted" class="mb-4 mt-4 p-3 bg-success/10 rounded-lg">
         <div class="flex items-center justify-between">
           <div class="flex items-center text-success">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <CheckCircle2 :size="16" class="mr-2" aria-hidden="true" />
             <span class="text-sm font-medium">Completed</span>
           </div>
           <div class="text-right">
@@ -117,13 +109,11 @@
         >
           <button
             class="btn btn-success btn-circle w-full"
-            :class="(isPending || !isReady) ? 'btn-disabled' : ''"
-            :disabled="isPending || !isReady"
+            :class="isPending ? 'btn-disabled' : ''"
+            :disabled="isPending"
             @click="$emit('startWriting', topic.id)"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
+            <RotateCcw :size="20" aria-hidden="true" />
           </button>
         </Tooltip>
       </div>
@@ -134,9 +124,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
-import type { WritingExercise } from '../../utils/types'
-import { useProgress } from '../../composables/useProgress'
+import { Check, CheckCircle2, Clock, RotateCcw, X } from 'lucide-vue-next'
+import type { WritingExercise } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
 import { useWritingReview } from '~/composables/useWritingReview'
 
 interface Props {

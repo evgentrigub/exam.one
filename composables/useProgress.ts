@@ -77,8 +77,10 @@ export const useProgress = () => {
   const SESSION_STORAGE_KEY = 'quiz-session'
   
   // Writing progress storage keys (Stage 11)
-  const WRITING_STORAGE_KEY = 'writing-progress'
-  const WRITING_SESSION_KEY = 'writing-session'
+  const WRITING_STORAGE_KEY = 'exam-one:writing:progress'
+  const WRITING_STORAGE_LEGACY_KEY = 'writing-progress'
+  const WRITING_SESSION_KEY = 'exam-one:writing:session'
+  const WRITING_SESSION_LEGACY_KEY = 'writing-session'
 
   // Listening + speaking progress keys (exam-one: standard prefix)
   const LISTENING_STORAGE_KEY = 'exam-one:listening:progress'
@@ -221,16 +223,24 @@ export const useProgress = () => {
   // WRITING PROGRESS FUNCTIONS (Stage 11)
   // ============================================
 
+  const readWritingProgressStorage = (): Record<string, WritingProgress> => {
+    if (!import.meta.client) return {}
+
+    try {
+      const data = localStorage.getItem(WRITING_STORAGE_KEY) || localStorage.getItem(WRITING_STORAGE_LEGACY_KEY)
+      return data ? JSON.parse(data) : {}
+    } catch {
+      return {}
+    }
+  }
+
+  const getWritingSessionKey = (topicId: string) => `${WRITING_SESSION_KEY}:${topicId}`
+  const getLegacyWritingSessionKey = (topicId: string) => `${WRITING_SESSION_LEGACY_KEY}-${topicId}`
+
   /**
    * Get all writing progress data from localStorage
    */
-  const getWritingProgressData = (): Record<string, WritingProgress> => {
-    if (import.meta.client) {
-      const data = localStorage.getItem(WRITING_STORAGE_KEY)
-      return data ? JSON.parse(data) : {}
-    }
-    return {}
-  }
+  const getWritingProgressData = (): Record<string, WritingProgress> => readWritingProgressStorage()
 
   /**
  * Save writing submission to localStorage with evaluation (Stage 12)
@@ -270,8 +280,15 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     submissions: [...currentProgress.submissions, newSubmission]
   }
   
-  existingProgress[topicId] = updatedProgress
-  localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(existingProgress))
+  const updatedProgressData = {
+    ...existingProgress,
+    [topicId]: updatedProgress
+  }
+  try {
+    localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(updatedProgressData))
+  } catch (error) {
+    console.warn('Failed to save writing progress:', error)
+  }
   
   // Clear any draft for this topic
   clearWritingSession(topicId)
@@ -291,7 +308,11 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
       lastSavedAt: new Date().toISOString()
     }
     
-    localStorage.setItem(`${WRITING_SESSION_KEY}-${topicId}`, JSON.stringify(session))
+    try {
+      localStorage.setItem(getWritingSessionKey(topicId), JSON.stringify(session))
+    } catch (error) {
+      console.warn('Failed to save writing draft:', error)
+    }
   }
 
   /**
@@ -300,8 +321,12 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
   const getWritingSession = (topicId: string): WritingSessionModel | null => {
     if (!import.meta.client) return null
     
-    const data = localStorage.getItem(`${WRITING_SESSION_KEY}-${topicId}`)
-    return data ? JSON.parse(data) : null
+    try {
+      const data = localStorage.getItem(getWritingSessionKey(topicId)) || localStorage.getItem(getLegacyWritingSessionKey(topicId))
+      return data ? JSON.parse(data) : null
+    } catch {
+      return null
+    }
   }
 
   /**
@@ -309,7 +334,8 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
    */
   const clearWritingSession = (topicId: string) => {
     if (!import.meta.client) return
-    localStorage.removeItem(`${WRITING_SESSION_KEY}-${topicId}`)
+    localStorage.removeItem(getWritingSessionKey(topicId))
+    localStorage.removeItem(getLegacyWritingSessionKey(topicId))
   }
 
   /**
@@ -323,7 +349,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     // Look for all writing session keys in localStorage
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
-      if (key && key.startsWith(WRITING_SESSION_KEY)) {
+      if (key && (key.startsWith(`${WRITING_SESSION_KEY}:`) || key.startsWith(`${WRITING_SESSION_LEGACY_KEY}-`))) {
         try {
           const sessionData = localStorage.getItem(key)
           if (sessionData) {
@@ -412,7 +438,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     const progress = getWritingTopicProgress(topicId)
     if (!progress || progress.submissions.length === 0) return null
     
-    const latest = progress.submissions
+    const latest = [...progress.submissions]
       .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())[0]
     
     return latest || null

@@ -1,10 +1,34 @@
 <template>
   <div>
     <div v-if="isPending" class="alert alert-warning mb-4">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
+      <Clock :size="24" aria-hidden="true" />
       <span>{{ $t('writing.reviewInProgress') }}</span>
+    </div>
+
+    <div v-else-if="reviewError" class="card bg-base-100 shadow">
+      <div class="card-body space-y-4">
+        <div class="alert alert-warning items-start">
+          <AlertTriangle :size="20" class="shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <h3 class="font-bold">AI review unavailable</h3>
+            <p class="text-sm">{{ reviewError }}</p>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold mb-2">{{ $t('writing.yourSubmission') }}</h4>
+          <p class="text-sm whitespace-pre-wrap rounded-box bg-base-200/60 border border-base-300/70 p-3">
+            {{ latestSubmissionText || $t('writing.noSubmission') }}
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold mb-2">{{ $t('writing.originalTask') }}</h4>
+          <div class="rounded-box bg-success/10 border border-success/20 p-3">
+            <p class="leading-relaxed font-medium text-sm">{{ currentTopic?.task || $t('writing.taskNotFound') }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-else-if="isReady && (reviewData || reviewText)" class="card bg-base-100 shadow">
@@ -174,9 +198,7 @@
         <div v-else-if="selectedView === 'task'">
           <h4 class="text-sm font-semibold mb-3">{{ $t('writing.originalTask') }}</h4>
           <div class="alert alert-success mb-4">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <CheckCircle2 :size="20" aria-hidden="true" />
             <p class="leading-relaxed font-medium text-sm">{{ currentTopic?.task || $t('writing.taskNotFound') }}</p>
           </div>
           <div v-if="currentTopic?.requirements?.length">
@@ -200,7 +222,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { AlertTriangle, CheckCircle2, Clock } from 'lucide-vue-next'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
 import { useWritingTopics } from '~/composables/useWritingTopics'
@@ -212,7 +234,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 
-const { getReview, isReviewInProgress, hasReview, reviewVersion } = useWritingReview()
+const { getReview, isReviewInProgress, hasReview, getReviewError, reviewVersion } = useWritingReview()
 const { getLatestSubmission } = useProgress()
 const { getTopicById } = useWritingTopics()
 
@@ -226,6 +248,11 @@ const isPending = computed(() => {
 const isReady = computed(() => {
   void reviewVersion.value
   return hasReview(props.topicId)
+})
+
+const reviewError = computed(() => {
+  void reviewVersion.value
+  return getReviewError(props.topicId)
 })
 
 const reviewText = computed(() => {
