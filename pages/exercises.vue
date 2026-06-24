@@ -2,57 +2,89 @@
   <div class="max-w-[1240px] mx-auto p-6 space-y-5">
 
     <!-- Filter panel -->
-    <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3">
-      <!-- Skill chips row -->
+    <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3 overflow-visible">
+      <!-- Module chips row -->
       <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mr-1">{{ $t('exercisesUi.module') }}</span>
         <button
-          v-for="s in skillFilters"
+          v-for="s in moduleFilters"
           :key="s.key"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-selector text-xs font-semibold border transition-all exam-skill-chip"
+          class="module-chip inline-flex items-center gap-2 h-9 px-3 rounded-field border text-sm font-medium"
           :class="activeSkill === s.key
-            ? (s.key === 'all' ? 'bg-base-content text-base-100 border-base-content' : `bg-${s.key === 'all' ? 'base-content' : s.key}-soft text-${s.key === 'all' ? 'base-100' : s.key} border-transparent skill-active`)
-            : 'bg-base-200 border-base-300 text-base-content/60 hover:bg-base-300'"
-          :style="activeSkill === s.key && s.key !== 'all' ? { background: `color-mix(in oklab, var(--color-${s.colorVar}) 20%, transparent)` } : {}"
-          @click="activeSkill = s.key"
+            ? `module-chip-${s.key} is-active`
+            : 'bg-base-100 border-base-300 hover:border-base-content/30 text-base-content/80'"
+          @click="setActiveSkill(s.key)"
         >
-          <component :is="s.icon" v-if="s.icon" :size="12" />
+          <component :is="s.icon" :size="14" />
           {{ s.label }}
-          <span class="ml-0.5 opacity-60">{{ s.count }}</span>
+          <span class="text-[10px]" :class="activeSkill === s.key ? 'opacity-80' : 'opacity-50'">{{ s.count }}</span>
         </button>
+        <button class="btn btn-ghost btn-xs" @click="setActiveSkill('all')">{{ $t('exercisesUi.all') }}</button>
+      </div>
 
-        <!-- Divider -->
-        <div class="w-px h-4 bg-base-300 mx-1" />
+      <!-- Part filter row -->
+      <div class="flex items-start gap-2 flex-wrap border-t border-base-300 pt-3">
+        <div class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mr-1 mt-2 flex items-center gap-1">
+          {{ $t('exercisesUi.part') }}
+          <span class="tooltip tooltip-right normal-case" :data-tip="$t('exercisesUi.partHint')">
+            <Info :size="12" class="opacity-50" />
+          </span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div
+            v-for="sk in partFilterSkills"
+            :key="sk"
+            class="flex items-center gap-1.5 flex-wrap"
+          >
+            <span
+              v-if="partFilterSkills.length > 1"
+              class="inline-flex items-center gap-1.5 text-[11px] font-medium text-base-content/55 w-[68px] shrink-0 capitalize"
+            >
+              <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${sk}`" />{{ sk }}
+            </span>
+            <PartChip
+              v-for="p in partsForSkill(sk)"
+              :key="`${sk}:${p.n}`"
+              :skill="sk"
+              :n="p.n"
+              :active="activeParts.includes(`${sk}:${p.n}`)"
+              @toggle="togglePart(sk, p.n)"
+            />
+          </div>
+        </div>
+        <button v-if="activeParts.length > 0" class="btn btn-ghost btn-xs ml-1 mt-1" @click="activeParts = []">
+          {{ $t('exercisesUi.clearParts') }}
+        </button>
+      </div>
 
+      <!-- Status + search + sort + view toggle row -->
+      <div class="flex items-center gap-2 flex-wrap border-t border-base-300 pt-3">
         <!-- Status chips -->
         <button
           v-for="st in statusFilters"
           :key="st.key"
-          class="px-3 py-1.5 rounded-selector text-xs font-medium border transition-all"
+          class="h-8 px-3 rounded-full text-xs font-medium border whitespace-nowrap transition-colors"
           :class="activeStatus === st.key
-            ? 'bg-base-content text-base-100 border-base-content'
-            : 'bg-base-200 border-base-300 text-base-content/60 hover:bg-base-300'"
+            ? 'bg-primary text-primary-content border-primary'
+            : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'"
           @click="activeStatus = st.key"
         >
           {{ st.label }}
         </button>
-      </div>
-
-      <!-- Search + sort + view toggle row -->
-      <div class="flex items-center gap-2">
         <div class="relative flex-1 max-w-xs">
           <Search :size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
           <input
             v-model="search"
             type="text"
-            placeholder="Search exercises…"
+            :placeholder="$t('exercisesUi.search')"
             class="input input-sm input-bordered w-full pl-8 text-sm"
           >
         </div>
         <select v-model="sortBy" class="select select-sm select-bordered text-sm">
-          <option value="default">Default order</option>
-          <option value="level">Level</option>
-          <option value="time">Estimated time</option>
-          <option value="progress">Progress</option>
+          <option value="default">{{ $t('exercisesUi.sortDefault') }}</option>
+          <option value="level">{{ $t('exercisesUi.sortLevel') }}</option>
+          <option value="time">{{ $t('exercisesUi.sortTime') }}</option>
+          <option value="progress">{{ $t('exercisesUi.sortProgress') }}</option>
         </select>
         <div class="flex border border-base-300 rounded-selector overflow-hidden">
           <button
@@ -268,8 +300,10 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2 } from 'lucide-vue-next'
+import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2, Info } from 'lucide-vue-next'
 import type { Component } from 'vue'
+import { goetheA2Structure } from '~/data/examStructure/goetheA2'
+import type { SkillId } from '~/utils/labels'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useReadingGeneration } from '~/composables/useReadingGeneration'
@@ -279,13 +313,14 @@ import { useListeningExercises } from '~/composables/useListeningExercises'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
-import { getSkillMeta } from '~/utils/labels'
+import { getSkillMeta, getSkillLabel } from '~/utils/labels'
 import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
 import TopicGeneratorCard from '~/components/writing/TopicGeneratorCard.vue'
 
-usePageMeta('Exercises', 'Browse and practice all exercise types')
+usePageMeta('pageMeta.exercisesTitle', 'pageMeta.exercisesSubtitle')
 useHead({ title: 'Exercises — Exam.one' })
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const settingsStore = useSettingsStore()
@@ -382,22 +417,56 @@ function handleDismissWritingError() {
 // Filter state
 const activeSkill = ref<string>('all')
 const activeStatus = ref<string>('all')
+const activeParts = ref<string[]>([])
 const search = ref('')
 const sortBy = ref('default')
 const viewMode = ref<'grid' | 'list'>('grid')
 
-// Read ?skill= query param on mount
-onMounted(() => {
-  const skillParam = route.query['skill'] as string
-  if (skillParam && ['reading', 'writing', 'listening', 'speaking'].includes(skillParam)) {
-    activeSkill.value = skillParam
-  }
-})
+const SKILL_KEYS: SkillId[] = ['reading', 'writing', 'listening', 'speaking']
 
-// Watch route query for sidebar clicks
-watch(() => route.query['skill'], (val) => {
-  if (val && typeof val === 'string') activeSkill.value = val
-})
+function setActiveSkill(key: string) {
+  if (activeSkill.value !== key) {
+    activeSkill.value = key
+    // Clearing/switching modules clears the part selection
+    activeParts.value = []
+  }
+}
+
+function togglePart(skill: string, n: number) {
+  const key = `${skill}:${n}`
+  const idx = activeParts.value.indexOf(key)
+  if (idx === -1) activeParts.value = [...activeParts.value, key]
+  else activeParts.value = activeParts.value.filter(k => k !== key)
+}
+
+// Skills shown in the Part filter row: the active module, or all four when 'All'
+const partFilterSkills = computed<SkillId[]>(() =>
+  activeSkill.value === 'all' ? SKILL_KEYS : [activeSkill.value as SkillId],
+)
+
+function partsForSkill(skill: SkillId) {
+  return goetheA2Structure.find(m => m.id === skill)?.parts ?? []
+}
+
+// Apply ?skill= and ?part= query params
+function applyQuery() {
+  const skillParam = route.query['skill'] as string | undefined
+  const partParam = route.query['part'] as string | undefined
+  if (skillParam && SKILL_KEYS.includes(skillParam as SkillId)) {
+    activeSkill.value = skillParam
+    const partNum = Number(partParam)
+    if (partParam && Number.isFinite(partNum) && partNum > 0) {
+      activeParts.value = [`${skillParam}:${partNum}`]
+    } else {
+      activeParts.value = []
+    }
+  }
+}
+
+onMounted(applyQuery)
+
+// Watch route query for sidebar clicks / deep links
+watch(() => [route.query['skill'], route.query['part']], applyQuery)
 
 // Unified exercise list
 type UnifiedExercise = {
@@ -492,21 +561,20 @@ const allExercises = computed<UnifiedExercise[]>(() => {
   return [...readingList, ...writingList, ...listeningList, ...speakingList]
 })
 
-// Skill filter options
-const skillFilters = computed(() => [
-  { key: 'all', label: 'All', icon: null, count: allExercises.value.length, colorVar: 'base-content' },
-  { key: 'reading', label: 'Reading', icon: BookOpen, count: allExercises.value.filter(e => e.skill === 'reading').length, colorVar: 'primary' },
-  { key: 'writing', label: 'Writing', icon: PencilLine, count: allExercises.value.filter(e => e.skill === 'writing').length, colorVar: 'success' },
-  { key: 'listening', label: 'Listening', icon: Headphones, count: allExercises.value.filter(e => e.skill === 'listening').length, colorVar: 'info' },
-  { key: 'speaking', label: 'Speaking', icon: Mic, count: allExercises.value.filter(e => e.skill === 'speaking').length, colorVar: 'warning' }
+// Module (skill) filter options — color-coded chips
+const moduleFilters = computed(() => [
+  { key: 'reading', label: getSkillLabel('reading', t), icon: BookOpen, count: allExercises.value.filter(e => e.skill === 'reading').length },
+  { key: 'writing', label: getSkillLabel('writing', t), icon: PencilLine, count: allExercises.value.filter(e => e.skill === 'writing').length },
+  { key: 'listening', label: getSkillLabel('listening', t), icon: Headphones, count: allExercises.value.filter(e => e.skill === 'listening').length },
+  { key: 'speaking', label: getSkillLabel('speaking', t), icon: Mic, count: allExercises.value.filter(e => e.skill === 'speaking').length },
 ])
 
-const statusFilters = [
-  { key: 'all', label: 'All' },
-  { key: 'new', label: 'Not started' },
-  { key: 'inprogress', label: 'In progress' },
-  { key: 'mastered', label: 'Mastered' }
-]
+const statusFilters = computed(() => [
+  { key: 'all', label: t('exercisesUi.all') },
+  { key: 'new', label: t('status.new') },
+  { key: 'inprogress', label: t('status.inprogress') },
+  { key: 'mastered', label: t('status.mastered') },
+])
 
 // Filtered + sorted list
 const filtered = computed(() => {
@@ -514,6 +582,9 @@ const filtered = computed(() => {
 
   if (activeSkill.value !== 'all') {
     list = list.filter(e => e.skill === activeSkill.value)
+  }
+  if (activeParts.value.length) {
+    list = list.filter(e => e.part != null && activeParts.value.includes(`${e.skill}:${e.part}`))
   }
   if (activeStatus.value !== 'all') {
     list = list.filter(e => e.status === activeStatus.value)
@@ -579,6 +650,7 @@ function progressClass(skill: string) {
 function resetFilters() {
   activeSkill.value = 'all'
   activeStatus.value = 'all'
+  activeParts.value = []
   search.value = ''
   sortBy.value = 'default'
 }

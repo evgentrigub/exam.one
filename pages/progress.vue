@@ -150,7 +150,7 @@ import { useSkillStats } from '~/composables/useSkillStats'
 import { useAccountProfile } from '~/composables/useAccountProfile'
 import { getSkillMeta, getSkillLabel, getScoreTextClass, type SkillId } from '~/utils/labels'
 
-usePageMeta('Progress', 'Track your readiness across all four skills')
+usePageMeta('pageMeta.progressTitle', 'pageMeta.progressSubtitle')
 useHead({ title: 'Progress — Exam.one' })
 
 const { t } = useI18n()

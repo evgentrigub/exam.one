@@ -174,7 +174,7 @@ import { useSkillStats } from '~/composables/useSkillStats'
 import { useAccountProfile } from '~/composables/useAccountProfile'
 import { getSkillMeta, getSkillLabel, type SkillId } from '~/utils/labels'
 
-usePageMeta('Dashboard', 'Your exam preparation overview')
+usePageMeta('pageMeta.dashboardTitle', 'pageMeta.dashboardSubtitle')
 useHead({ title: 'Dashboard — Exam.one' })
 
 const { t } = useI18n()

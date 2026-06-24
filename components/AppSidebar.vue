@@ -16,7 +16,7 @@
         :class="isActive('/dashboard') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <LayoutDashboard :size="16" />
-        Dashboard
+        {{ $t('nav.dashboard') }}
       </NuxtLink>
       <NuxtLink
         to="/exercises"
@@ -24,7 +24,7 @@
         :class="isActive('/exercises') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <BookOpen :size="16" />
-        Exercises
+        {{ $t('nav.exercises') }}
       </NuxtLink>
       <NuxtLink
         to="/exam-format"
@@ -32,7 +32,7 @@
         :class="isActive('/exam-format') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <ListTree :size="16" />
-        Exam format
+        {{ $t('nav.examFormat') }}
       </NuxtLink>
       <NuxtLink
         to="/progress"
@@ -40,21 +40,21 @@
         :class="isActive('/progress') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <TrendingUp :size="16" />
-        Progress
+        {{ $t('nav.progress') }}
       </NuxtLink>
       <!-- Mock exams deferred to a later milestone -->
       <span
         class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium opacity-40 cursor-not-allowed"
-        title="Coming soon"
+        :title="$t('shell.comingSoon')"
       >
         <FileText :size="16" />
-        Mock exams
+        {{ $t('nav.mockExams') }}
       </span>
     </nav>
 
     <!-- Practice by skill -->
     <div class="px-4 mt-4">
-      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-1.5">Practice by skill</p>
+      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-1.5">{{ $t('shell.practiceBySkill') }}</p>
       <div class="flex flex-col gap-0.5">
         <NuxtLink
           to="/exercises?skill=reading"
@@ -63,7 +63,7 @@
         >
           <span class="flex items-center gap-2">
             <BookOpen :size="14" class="text-reading" />
-            Reading
+            {{ $t('skill.reading') }}
           </span>
           <span class="level-pip text-reading">{{ readingCount }}</span>
         </NuxtLink>
@@ -74,7 +74,7 @@
         >
           <span class="flex items-center gap-2">
             <PenLine :size="14" class="text-writing" />
-            Writing
+            {{ $t('skill.writing') }}
           </span>
           <span class="level-pip text-writing">{{ writingCount }}</span>
         </NuxtLink>
@@ -85,7 +85,7 @@
         >
           <span class="flex items-center gap-2">
             <Headphones :size="14" class="text-listening" />
-            Listening
+            {{ $t('skill.listening') }}
           </span>
           <span class="level-pip text-listening">{{ listeningCount }}</span>
         </NuxtLink>
@@ -96,7 +96,7 @@
         >
           <span class="flex items-center gap-2">
             <Mic :size="14" class="text-speaking" />
-            Speaking
+            {{ $t('skill.speaking') }}
           </span>
           <span class="level-pip text-speaking">{{ speakingCount }}</span>
         </NuxtLink>
@@ -107,31 +107,40 @@
     <div class="flex-1" />
 
     <!-- Exam target widget -->
-    <div class="mx-3 mb-4 rounded-box border border-primary/20 bg-primary/5 p-3 shadow-sm">
-      <div class="flex items-center justify-between gap-2 mb-3">
-        <div class="flex items-center gap-2">
-          <span class="flex h-7 w-7 items-center justify-center rounded-selector bg-primary/10">
-            <Flag :size="14" class="text-primary" />
-          </span>
-          <div>
-            <span class="block text-xs font-semibold text-primary">Exam target</span>
-            <span class="block text-[10px] leading-tight text-base-content/50">Filters exercises</span>
-          </div>
+    <div class="mt-auto p-3 border-t border-base-300">
+      <div class="rounded-box bg-base-200 p-3">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-xs font-semibold text-base-content/70">{{ $t('shell.examTarget') }}</div>
+          <NuxtLink to="/exercises" class="text-[10px] text-primary font-medium hover:underline">
+            {{ $t('shell.viewExercises') }}
+          </NuxtLink>
         </div>
-        <span class="level-pip bg-primary text-primary-content">{{ examLevel }}</span>
-      </div>
-      <div class="grid grid-cols-2 gap-1 rounded-field bg-base-200/70 p-1">
-        <button
-          v-for="level in levels"
-          :key="level"
-          type="button"
-          class="min-h-9 rounded-field px-2 py-1.5 text-center font-mono text-xs font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          :class="examLevel === level ? 'bg-primary text-primary-content shadow-sm' : 'text-base-content/55 hover:bg-base-100 hover:text-base-content'"
-          :aria-pressed="examLevel === level"
-          @click="examLevel = level"
+        <NuxtLink
+          to="/exercises"
+          class="w-full flex items-center gap-2 rounded-field p-1 -m-1 hover:bg-base-300/60 transition-colors text-left"
         >
-          {{ level }}
-        </button>
+          <div class="w-9 h-9 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0">
+            <Flag :size="16" />
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold leading-tight">Goethe {{ examLevel }}</div>
+            <div class="text-[11px] text-base-content/60">{{ $t('shell.examTargetMeta', { days: 42 }) }}</div>
+          </div>
+        </NuxtLink>
+        <div class="mt-3 flex gap-1.5">
+          <button
+            v-for="level in levels"
+            :key="level"
+            type="button"
+            class="flex-1 h-8 rounded-selector text-xs font-semibold transition-colors"
+            :class="examLevel === level ? 'bg-primary text-primary-content' : 'bg-base-100 text-base-content/70 hover:bg-base-300'"
+            :aria-pressed="examLevel === level"
+            @click="selectLevel(level)"
+          >
+            {{ level }}
+          </button>
+        </div>
+        <div class="mt-2 text-[10px] text-base-content/50 text-center">{{ $t('shell.tapLevel') }}</div>
       </div>
     </div>
   </aside>
@@ -150,8 +159,14 @@ import { useListeningExercises } from '~/composables/useListeningExercises'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 
 const route = useRoute()
+const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+
+function selectLevel(level: 'A2' | 'C1') {
+  examLevel.value = level
+  router.push('/exercises')
+}
 
 // A2 only for this build; C1 returns later.
 const levels: Array<'A2' | 'C1'> = ['A2' /*, 'C1' */]

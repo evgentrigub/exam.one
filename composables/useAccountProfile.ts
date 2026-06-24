@@ -24,8 +24,8 @@ function defaultTargetDate(): string {
 }
 
 const defaults: AccountProfile = {
-  name: 'Language Learner',
-  email: 'learner@exam.one',
+  name: 'Lena Bauer',
+  email: 'lena.bauer@email.de',
   examTargetDate: defaultTargetDate(),
   plan: 'free',
 }

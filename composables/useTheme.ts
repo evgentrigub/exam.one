@@ -3,54 +3,22 @@
  * Manages daisyUI theme switching and persistence
  */
 
-export type Theme = 
-  | 'light' 
-  | 'dark' 
-  | 'bumblebee' 
-  | 'cyberpunk' 
-  | 'synthwave' 
-  | 'retro' 
-  | 'valentine'
-  | 'aqua'
-  | 'lofi'
-  | 'pastel'
-  | 'fantasy'
-  | 'luxury'
-  | 'dracula'
-  | 'autumn'
-  | 'business'
-  | 'night'
-  | 'coffee'
-  | 'winter'
+export type Theme = 'light' | 'cupcake'
 
 export const LIGHT_THEMES: { value: Theme; label: string; icon: string }[] = [
   { value: 'light', label: 'Light', icon: '☀️' },
-  // { value: 'bumblebee', label: 'Bumblebee', icon: '🐝' },
-//   { value: 'retro', label: 'Retro', icon: '📻' },
-//   { value: 'valentine', label: 'Valentine', icon: '💖' },
-//   { value: 'aqua', label: 'Aqua', icon: '🌊' },
-//   { value: 'lofi', label: 'Lo-Fi', icon: '🎧' },
-//   { value: 'pastel', label: 'Pastel', icon: '🎨' },
-//   { value: 'fantasy', label: 'Fantasy', icon: '🦄' },
-//   { value: 'autumn', label: 'Autumn', icon: '🍂' },
-  // { value: 'winter', label: 'Winter', icon: '❄️' },
+  { value: 'cupcake', label: 'Cupcake', icon: '🧁' },
 ]
 
-export const DARK_THEMES: { value: Theme; label: string; icon: string }[] = [
-  { value: 'dark', label: 'Dark', icon: '🌙' },
-  // { value: 'cyberpunk', label: 'Cyberpunk', icon: '🌆' },
-  // { value: 'synthwave', label: 'Synthwave', icon: '🌃' },
-  // { value: 'luxury', label: 'Luxury', icon: '💎' },
-  // { value: 'dracula', label: 'Dracula', icon: '🧛' },
-  // { value: 'business', label: 'Business', icon: '💼' },
-  // { value: 'night', label: 'Night', icon: '🌌' },
-  // { value: 'coffee', label: 'Coffee', icon: '☕' },
-]
+export const DARK_THEMES: { value: Theme; label: string; icon: string }[] = []
 
 export const AVAILABLE_THEMES = [...LIGHT_THEMES, ...DARK_THEMES]
 
+const isValidTheme = (value: string | null): value is Theme =>
+  AVAILABLE_THEMES.some(t => t.value === value)
+
 export const useTheme = () => {
-  const theme = useState<Theme>('theme', () => 'bumblebee')
+  const theme = useState<Theme>('theme', () => 'light')
   
   /**
    * Set a new theme
@@ -72,8 +40,8 @@ export const useTheme = () => {
    */
   const initTheme = () => {
     if (import.meta.client) {
-      const savedTheme = localStorage.getItem('theme') as Theme
-      const defaultTheme = savedTheme || 'bumblebee'
+      const savedTheme = localStorage.getItem('theme')
+      const defaultTheme: Theme = isValidTheme(savedTheme) ? savedTheme : 'light'
       setTheme(defaultTheme)
     }
   }
