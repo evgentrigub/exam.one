@@ -168,8 +168,7 @@ function selectLevel(level: 'A2' | 'C1') {
   router.push('/exercises')
 }
 
-// A2 only for this build; C1 returns later.
-const levels: Array<'A2' | 'C1'> = ['A2' /*, 'C1' */]
+const levels: Array<'A2' | 'C1'> = ['A2', 'C1']
 
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()

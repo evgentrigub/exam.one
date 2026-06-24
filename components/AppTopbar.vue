@@ -2,8 +2,10 @@
   <header class="h-14 shrink-0 flex items-center gap-4 px-6 bg-base-100 border-b border-base-300">
     <!-- Page title -->
     <div class="flex-1 min-w-0">
-      <h1 class="font-display text-[17px] font-bold leading-none truncate">{{ title }}</h1>
-      <p v-if="subtitle" class="text-xs text-base-content/60 truncate leading-none mt-1">{{ subtitle }}</p>
+      <ClientOnly>
+        <h1 class="font-display text-[17px] font-bold leading-none truncate">{{ title }}</h1>
+        <p v-if="subtitle" class="text-xs text-base-content/60 truncate leading-none mt-1">{{ subtitle }}</p>
+      </ClientOnly>
     </div>
 
     <!-- Right controls -->
