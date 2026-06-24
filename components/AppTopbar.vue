@@ -2,101 +2,100 @@
   <header class="h-14 shrink-0 flex items-center gap-4 px-6 bg-base-100 border-b border-base-300">
     <!-- Page title -->
     <div class="flex-1 min-w-0">
-      <h1 class="text-sm font-semibold text-base-content truncate">{{ title }}</h1>
-      <p v-if="subtitle" class="text-xs text-base-content/50 truncate leading-none mt-0.5">{{ subtitle }}</p>
+      <h1 class="font-display text-[17px] font-bold leading-none truncate">{{ title }}</h1>
+      <p v-if="subtitle" class="text-xs text-base-content/60 truncate leading-none mt-1">{{ subtitle }}</p>
     </div>
 
     <!-- Right controls -->
     <div class="flex items-center gap-2 shrink-0">
-      <!-- Theme switcher -->
+      <!-- Language selector -->
       <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost btn-sm btn-circle" title="Switch theme">
-          <Palette :size="16" />
-        </label>
-        <div tabindex="0" class="dropdown-content shadow-lg bg-base-100 rounded-box mt-2 p-3 w-52 z-50">
-          <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-2 px-1">Theme</p>
-          <ul class="menu p-0 gap-0.5">
-            <li v-for="t in availableThemes" :key="t.value">
-              <a
-                class="text-sm py-1.5"
-                :class="{ 'active': theme === t.value }"
-                @click="setTheme(t.value)"
-              >
-                <span>{{ t.icon }}</span>
-                <span>{{ t.label }}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+        <button tabindex="0" class="btn btn-sm btn-ghost gap-1.5" :aria-label="$t('settings.interfaceLanguage')">
+          <Globe :size="16" />
+          <span class="text-xs font-semibold uppercase">{{ locale }}</span>
+          <ChevronDown :size="12" class="opacity-50" />
+        </button>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-30 w-48 p-1 mt-1 border border-base-300 shadow">
+          <li class="menu-title text-[10px] uppercase tracking-wider">{{ $t('settings.interfaceLanguage') }}</li>
+          <li v-for="o in languages" :key="o.code">
+            <a :class="locale === o.code ? 'active' : ''" @click="changeLocale(o.code)">
+              <span class="font-mono text-[10px] font-semibold w-5">{{ o.code.toUpperCase() }}</span>
+              {{ o.label }}
+              <span class="ml-auto text-primary font-bold w-3 text-center">{{ locale === o.code ? '✓' : '' }}</span>
+            </a>
+          </li>
+        </ul>
       </div>
 
-      <!-- Settings button -->
-      <button
-        class="btn btn-ghost btn-sm btn-circle"
-        title="Settings"
-        @click="openSettings"
-      >
-        <Settings :size="16" />
-      </button>
+      <!-- Theme selector -->
+      <div class="dropdown dropdown-end">
+        <button tabindex="0" class="btn btn-sm btn-ghost btn-circle" :aria-label="$t('shell.theme')">
+          <Cake v-if="theme === 'cupcake'" :size="16" />
+          <Sun v-else :size="16" />
+        </button>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-30 w-40 p-1 mt-1 border border-base-300 shadow">
+          <li class="menu-title text-[10px] uppercase tracking-wider">{{ $t('shell.theme') }}</li>
+          <li v-for="t in availableThemes" :key="t.value">
+            <a :class="theme === t.value ? 'active' : ''" @click="setTheme(t.value)">
+              <span>{{ t.icon }}</span>
+              <span class="capitalize">{{ t.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-      <!-- Avatar -->
-      <NuxtLink
-        to="/account"
-        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center transition-colors hover:bg-primary/30"
-        title="Account & subscription"
-      >
-        <User :size="14" class="text-primary" />
-      </NuxtLink>
+      <!-- Profile button -->
+      <div class="dropdown dropdown-end">
+        <button
+          tabindex="0"
+          class="flex items-center gap-2 rounded-full pl-1 pr-2 h-9 hover:bg-base-200 transition-colors"
+          :aria-label="$t('nav.account')"
+        >
+          <span class="w-8 h-8 rounded-full bg-primary/10 grid place-items-center text-primary font-semibold text-xs">
+            {{ initials }}
+          </span>
+          <ChevronDown :size="14" class="opacity-50" />
+        </button>
+        <div tabindex="0" class="dropdown-content bg-base-100 rounded-box z-30 w-60 p-1.5 mt-1 border border-base-300 shadow">
+          <div class="px-3 py-2 flex items-center gap-3">
+            <span class="w-9 h-9 rounded-full bg-primary/10 grid place-items-center text-primary font-semibold text-xs">
+              {{ initials }}
+            </span>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold leading-tight truncate">{{ profile.name }}</div>
+              <div class="text-[11px] text-base-content/60 truncate">{{ profile.email }}</div>
+            </div>
+          </div>
+          <div class="px-3 pb-2">
+            <span class="badge badge-sm" :class="profile.plan === 'pro' ? 'badge-primary' : 'badge-ghost'">
+              {{ profile.plan === 'pro' ? $t('shell.proPlan') : $t('shell.freePlan') }}
+            </span>
+          </div>
+          <div class="h-px bg-base-300 my-1" />
+          <NuxtLink
+            to="/account"
+            class="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200"
+          >
+            <User :size="15" /> {{ $t('shell.accountSubscription') }}
+          </NuxtLink>
+          <NuxtLink
+            to="/progress"
+            class="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200"
+          >
+            <TrendingUp :size="15" /> {{ $t('shell.myProgress') }}
+          </NuxtLink>
+          <div class="h-px bg-base-300 my-1" />
+          <button class="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm text-base-content/70 hover:bg-base-200">
+            <LogOut :size="15" /> {{ $t('shell.signOut') }}
+          </button>
+        </div>
+      </div>
     </div>
   </header>
-
-  <!-- Settings modal -->
-  <input v-model="isSettingsOpen" type="checkbox" class="modal-toggle" >
-  <div class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box max-w-lg">
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center">
-          <Settings :size="18" class="text-primary" />
-        </div>
-        <h3 class="font-bold text-xl">{{ $t('settings.title') }}</h3>
-      </div>
-
-      <form class="space-y-4" @submit.prevent="saveSettings">
-        <fieldset class="border border-base-300 rounded-field p-4">
-          <legend class="text-xs font-semibold px-2">{{ $t('settings.interfaceLanguage') }}</legend>
-          <select v-model="tempLocale" class="select select-bordered select-sm w-full">
-            <option value="en">🇺🇸 English</option>
-            <option value="de">🇩🇪 Deutsch</option>
-          </select>
-        </fieldset>
-
-        <fieldset class="border border-base-300 rounded-field p-4">
-          <legend class="text-xs font-semibold px-2">{{ $t('settings.examLevel') }}</legend>
-          <select v-model="tempLevel" class="select select-bordered select-sm w-full">
-            <option value="A2">A2 — Elementary</option>
-            <!-- C1 returns in a later milestone -->
-            <!-- <option value="C1">C1 — Advanced</option> -->
-          </select>
-        </fieldset>
-
-        <div class="modal-action mt-4">
-          <button type="button" class="btn btn-ghost btn-sm" @click="isSettingsOpen = false">
-            {{ $t('settings.cancel') }}
-          </button>
-          <button type="submit" class="btn btn-primary btn-sm">
-            {{ $t('settings.save') }}
-          </button>
-        </div>
-      </form>
-    </div>
-    <label class="modal-backdrop" @click="isSettingsOpen = false">Close</label>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { Palette, Settings, User } from 'lucide-vue-next'
-import { useSettingsStore } from '~/stores/settings'
+import { Globe, ChevronDown, Cake, Sun, User, TrendingUp, LogOut } from 'lucide-vue-next'
 
 defineProps<{
   title?: string
@@ -104,23 +103,15 @@ defineProps<{
 }>()
 
 const { theme, setTheme, availableThemes } = useTheme()
-const settingsStore = useSettingsStore()
-const { examLevel } = storeToRefs(settingsStore)
+const { profile, initials } = useAccountProfile()
 const { locale, setLocale } = useI18n()
 
-const isSettingsOpen = ref(false)
-const tempLocale = ref<'en' | 'de'>(locale.value as 'en' | 'de')
-const tempLevel = ref<'A2' | 'C1'>(examLevel.value)
+const languages: { code: 'en' | 'de'; label: string }[] = [
+  { code: 'en', label: 'English' },
+  { code: 'de', label: 'Deutsch' },
+]
 
-function openSettings() {
-  tempLocale.value = locale.value as 'en' | 'de'
-  tempLevel.value = examLevel.value
-  isSettingsOpen.value = true
-}
-
-function saveSettings() {
-  if (tempLocale.value !== locale.value) setLocale(tempLocale.value)
-  examLevel.value = tempLevel.value
-  isSettingsOpen.value = false
+function changeLocale(code: 'en' | 'de') {
+  if (code !== locale.value) setLocale(code)
 }
 </script>

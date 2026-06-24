@@ -135,7 +135,7 @@ import { useSettingsStore } from '~/stores/settings'
 import { useAccountProfile, type PlanId } from '~/composables/useAccountProfile'
 import { plans } from '~/data/account/plans'
 
-usePageMeta('Account', 'Profile and subscription')
+usePageMeta('pageMeta.accountTitle', 'pageMeta.accountSubtitle')
 useHead({ title: 'Account — Exam.one' })
 
 const { locale, setLocale } = useI18n()

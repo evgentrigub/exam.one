@@ -21,11 +21,11 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
-    // detectBrowserLanguage: {
-    //   useCookie: true,
-    //   cookieKey: 'i18n_redirected',
-    //   redirectOn: 'root'
-    // },
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'exam-one:locale',
+      redirectOn: 'root'
+    },
     langDir: 'locales',
     // lazy: true
   },
