@@ -17,7 +17,7 @@
         >
           <component :is="s.icon" :size="14" />
           {{ s.label }}
-          <span class="text-[10px]" :class="activeSkill === s.key ? 'opacity-80' : 'opacity-50'">{{ s.count }}</span>
+          <span v-if="isMounted" class="text-[10px]" :class="activeSkill === s.key ? 'opacity-80' : 'opacity-50'">{{ s.count }}</span>
         </button>
         <button class="btn btn-ghost btn-xs" @click="setActiveSkill('all')">{{ $t('exercisesUi.all') }}</button>
         <button class="btn btn-primary btn-sm rounded-full gap-2 ml-auto" @click="genOpen = true">
@@ -416,7 +416,12 @@ function applyQuery() {
   }
 }
 
-onMounted(applyQuery)
+// Guard client-only counts (derived from localStorage) to avoid hydration mismatch
+const isMounted = ref(false)
+onMounted(() => {
+  isMounted.value = true
+  applyQuery()
+})
 
 // Watch route query for sidebar clicks / deep links
 watch(() => [route.query['skill'], route.query['part']], applyQuery)

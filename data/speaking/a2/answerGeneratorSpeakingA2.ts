@@ -27,7 +27,7 @@ export const generateModelAnswerSpeakingA2Teil1 = (topicTask: string, topicId: s
   {
     "topicId": "${topicId}",
     "content": "Скрипт диалога. Например:\nPartner A: Hallo! Unsere Thema ist 'Wochenende'. Meine erste Karte ist 'Sport'. Machst du am Wochenende Sport?\nPartner B: Ja, ich spiele am Samstag oft Fußball mit meinen Freunden. Das macht viel Spaß.\nPartner A: Ach so, toll! Meine zweite Karte ist...",
-    "wordCount": "количество слов в сгенерированном ответе",
+    "wordCount": 80,
     "highlights": {
       "greeting": "приветствие в начале",
       "mainPoints": ["Укажи здесь, почему этот ответ идеален (например: 'Использованы полные предложения', 'Есть реакции на ответы')"],
@@ -37,8 +37,9 @@ export const generateModelAnswerSpeakingA2Teil1 = (topicTask: string, topicId: s
   }
   \`\`\`
   
-  Важное: ответы должны звучать как реальная живая речь, а не как текст из учебника.
-  ` 
+  wordCount - количество слов в content (целое число, не строка).
+  Важное: ответы должны звучать как реальная живая речь, а не как текст из учебника. Выводи ТОЛЬКО JSON.
+  `
   };
 
 const dataAnswerRuleSpeakingA2Part2 = `
@@ -66,7 +67,7 @@ ${dataAnswerRuleSpeakingA2Part2}
 {
   "topicId": "${topicId}",
   "content": "Kandidat: Also, in meiner Freizeit mache ich viele Dinge. Am liebsten ruhe ich mich auf dem Sofa aus und lese ein Buch... (продолжение монолога по всем 4 словам).\n\nPrüfer: Welche Bücher lesen Sie denn am liebsten?\nKandidat: Ich lese sehr gern Krimis.\nPrüfer: Und gehen Sie auch manchmal ins Theater?\nKandidat: Nein, Theater finde ich ein bisschen langweilig.",
-  "wordCount": "количество слов в ответе",
+  "wordCount": 60,
   "highlights": {
     "greeting": "вводное слово (например, 'Also...')",
     "mainPoints": ["Укажи, почему ответ идеален (например, 'Раскрыты все 4 пункта из задания', 'Использованы союзы und/aber')"],

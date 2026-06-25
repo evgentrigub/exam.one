@@ -38,9 +38,9 @@ function stringArray(value: unknown): string[] | undefined {
 }
 
 function normalizeModelAnswerData(value: unknown): Pick<ModelAnswer, 'content' | 'wordCount' | 'highlights'> | null {
-  if (!isRecord(value) || typeof value['content'] !== 'string' || typeof value['wordCount'] !== 'number') {
-    return null
-  }
+  if (!isRecord(value) || typeof value['content'] !== 'string') return null
+  const wordCount = Number(value['wordCount'])
+  if (!Number.isFinite(wordCount) || wordCount < 0) return null
 
   const highlights = isRecord(value['highlights']) ? value['highlights'] : {}
   const normalizedHighlights: NonNullable<ModelAnswer['highlights']> = {}
@@ -54,7 +54,7 @@ function normalizeModelAnswerData(value: unknown): Pick<ModelAnswer, 'content' |
 
   return {
     content: value['content'],
-    wordCount: value['wordCount'],
+    wordCount,
     ...(Object.keys(normalizedHighlights).length > 0 && { highlights: normalizedHighlights }),
   }
 }
