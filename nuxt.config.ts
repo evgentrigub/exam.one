@@ -102,8 +102,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Private (server-only). You can also override at runtime with env var NUXT_OPENAI_API_KEY
-    openaiApiKey: process.env['OPENAI_API_KEY'] || '',
+    // Private (server-only). Override at runtime with env var NUXT_OPENROUTER_API_KEY
+    openrouterApiKey: process.env['OPENROUTER_API_KEY'] || '',
     // Public (exposed to client). Leave empty unless you explicitly want to expose something.
     public: {}
   }
