@@ -18,22 +18,29 @@ export const reviewPromptSpeakingA2Teil2 = (topicTask: string, userContent: stri
   Дай конкретную обратную связь на немецком: похвали за сильные стороны и укажи, что исправить. Приведи примеры грамматических или лексических ошибок из расшифровки и покажи, как сказать правильно.
   
   Формат вывода JSON (строго):
-  \`\`\`json 
-  { 
-    "teil": 2, 
-    "word_count": <число>, 
-    "criteria": { 
-      "aufgabenerfuellung": { "points": <0|1|2|3|4>, "comment": "<kurzer Kommentar auf Deutsch>" }, 
-      "sprache":            { "points": <0|1|2|3|4>, "comment": "<kurzer Kommentar auf Deutsch>" } 
-    }, 
-    "teil_points_result": <сумма баллов, макс 8>, 
-    "content_points_covered": { "required": 4, "covered": <0-4> }, 
-    "priority_fixes": [ "<исправление 1>", "<исправление 2>" ], 
-    "examples": [ 
-      { "error": "<ошибка из STT>", "correction": "<как сказать правильно>", "rule": "<почему так>" } 
-    ], 
-    "report": "<короткий итоговый отчёт на русском: удалось ли построить монолог, какие грамматические/лексические темы нужно подтянуть для разговорной речи>" 
-  } 
+  \`\`\`json
+  {
+    "teil": 2,
+    "word_count": <число>,
+    "required_word_count": { "min": 40, "max": 80 },
+    "criteria": {
+      "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <0|1|2|3|4>, "comment": "<kurzer Kommentar auf Deutsch>" },
+      "sprache":            { "grade": "A|B|C|D|E", "points": <0|1|2|3|4>, "comment": "<kurzer Kommentar auf Deutsch>" }
+    },
+    "teil_points_mess": <сумма points из criteria, макс 8>,
+    "teil_points_result": <teil_points_mess * 1.0>,
+    "teil_rule_applied": "none",
+    "register_check": { "expected": "du", "detected": "<du|sie|mixed|unknown>", "ok": true },
+    "content_points_covered": { "required": 4, "covered": <0-4> },
+    "priority_fixes": [ "<исправление 1>", "<исправление 2>" ],
+    "examples": [
+      { "error": "<ошибка из STT>", "correction": "<как сказать правильно>", "rule": "<почему так>" }
+    ],
+    "report": "<короткий итоговый отчёт на русском: удалось ли построить монолог, какие грамматические/лексические темы нужно подтянуть для разговорной речи>"
+  }
   \`\`\`
-  ` 
+
+  Шкала grade для каждого критерия: A (отлично), B (хорошо), C (удовлетворительно), D (плохо), E (провал).
+  Выводи ТОЛЬКО JSON, без пояснений до и после.
+  `
   };

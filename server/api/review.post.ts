@@ -146,7 +146,13 @@ export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse
   }
 
   try {
-    const rawText = await callLlm(openrouterApiKey, [{ role: 'user', content: body.prompt }])
+    const rawText = await callLlm(openrouterApiKey, [
+      {
+        role: 'system',
+        content: 'You are an expert Goethe-Institut examiner. Review writing submissions according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'
+      },
+      { role: 'user', content: body.prompt }
+    ])
     const data = tryExtractJsonObject(rawText)
     return { text: rawText, data, error: data ? null : 'Failed to parse review from AI response.' }
   } catch (error) {

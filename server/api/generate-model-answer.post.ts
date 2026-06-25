@@ -29,9 +29,9 @@ function stringArray(value: unknown): string[] | undefined {
 }
 
 function normalizeModelAnswer(value: unknown): Partial<ModelAnswer> | null {
-  if (!isRecord(value) || typeof value['content'] !== 'string' || typeof value['wordCount'] !== 'number') {
-    return null
-  }
+  if (!isRecord(value) || typeof value['content'] !== 'string') return null
+  const wordCount = Number(value['wordCount'])
+  if (!Number.isFinite(wordCount) || wordCount < 0) return null
 
   const highlights = isRecord(value['highlights']) ? value['highlights'] : {}
   const normalizedHighlights: NonNullable<ModelAnswer['highlights']> = {}
@@ -45,7 +45,7 @@ function normalizeModelAnswer(value: unknown): Partial<ModelAnswer> | null {
 
   return {
     content: value['content'],
-    wordCount: value['wordCount'],
+    wordCount,
     ...(Object.keys(normalizedHighlights).length > 0 && { highlights: normalizedHighlights }),
   }
 }
@@ -101,7 +101,13 @@ export default defineEventHandler(async (event: H3Event): Promise<ModelAnswerRes
   }
 
   try {
-    const rawText = await callLlm(openrouterApiKey, [{ role: 'user', content: body.prompt }])
+    const rawText = await callLlm(openrouterApiKey, [
+      {
+        role: 'system',
+        content: 'You are an expert Goethe-Institut exam creator. Generate model answers according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'
+      },
+      { role: 'user', content: body.prompt }
+    ])
     const data = tryExtractJsonObject(rawText)
     return { text: rawText, data, error: data ? null : 'Failed to parse model answer from AI response.' }
   } catch (error) {

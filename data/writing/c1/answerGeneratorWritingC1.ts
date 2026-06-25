@@ -10,7 +10,7 @@ export const generateModelAnswerC1Part1 = (topicTask: string, topicId: string) =
         {
             "topicId": "${topicId}",
             "content": "сгенерированный ответ",
-            "wordCount": "количество слов в ответе",
+            "wordCount": 120,
             "highlights": {
                 "greeting": "приветствие в начале ответа",
                 "mainPoints": ["основные моменты в ответе"],
@@ -19,11 +19,13 @@ export const generateModelAnswerC1Part1 = (topicTask: string, topicId: string) =
             }
         }
 
-        topicId - id задания, к которому ты составляешь ответ 
-        content - сгенерированный "идеальный" ответ 
-        highlights - здесь укажи основные моменты почему твой сгенерированный ответ является идеальным
+        Поля JSON:
+        topicId - id задания (не меняй)
+        content - сгенерированный "идеальный" ответ (строка)
+        wordCount - количество слов в content (целое число, не строка)
+        highlights - объяснение почему ответ идеален
 
-        Важное: ответы должны быть реалистичными и современными. 
+        Важное: ответы должны быть реалистичными и современными. Выводи ТОЛЬКО JSON, без пояснений до и после.
     `
 }
 
@@ -39,7 +41,7 @@ export const generateModelAnswerC1Part2 = (topicTask: string, topicId: string) =
         {
             "topicId": "${topicId}",
             "content": "сгенерированный ответ",
-            "wordCount": "количество слов в ответе",
+            "wordCount": 120,
             "highlights": {
                 "greeting": "приветствие в начале ответа",
                 "mainPoints": ["основные моменты в ответе"],
@@ -48,11 +50,13 @@ export const generateModelAnswerC1Part2 = (topicTask: string, topicId: string) =
             }
         }
 
-        topicId - id задания, к которому ты составляешь ответ 
-        content - сгенерированный "идеальный" ответ 
-        highlights - здесь укажи основные моменты почему твой сгенерированный ответ является идеальным
+        Поля JSON:
+        topicId - id задания (не меняй)
+        content - сгенерированный "идеальный" ответ (строка)
+        wordCount - количество слов в content (целое число, не строка)
+        highlights - объяснение почему ответ идеален
 
-        Важное: ответы должны быть реалистичными и современными. 
+        Важное: ответы должны быть реалистичными и современными. Выводи ТОЛЬКО JSON, без пояснений до и после.
     `
 }
 
