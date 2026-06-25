@@ -1,3 +1,5 @@
+import type { SpeakingA2Part } from '~/utils/exercises/speaking'
+
 // Types now live in the canonical location and are re-exported for callers
 // that still import them from this generator module.
 export type {
@@ -49,5 +51,17 @@ export const generateSpeakingA2Teil2 = (numberOfTopics: number) => {
     "keywords": ["Sich ausruhen?", "Sport?", "Ausgehen?", "Mit wem?"]
   }
   Никакого текста до или после JSON.
-  ` 
+  `
   };
+
+/**
+ * Build one prompt per A2 speaking part. Mirrors `listeningA2Parts` /
+ * `readingA2Parts` so a single generation call yields one topic for every
+ * Sprechen Teil. Only Teil 1 & 2 are modelled in this build.
+ */
+export const speakingA2Parts = (
+  topicsPerPart = 1
+): Array<{ part: SpeakingA2Part; prompt: string }> => [
+  { part: 1, prompt: generateSpeakingA2Teil1(topicsPerPart) },
+  { part: 2, prompt: generateSpeakingA2Teil2(topicsPerPart) }
+]
