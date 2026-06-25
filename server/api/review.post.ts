@@ -1,5 +1,6 @@
 import type { H3Event } from 'h3'
 import type { WritingExercise, AiReviewData } from '~/utils/types'
+import { callLlm } from '~/server/utils/llm'
 
 interface ReviewRequestBody {
   topic: WritingExercise
@@ -125,7 +126,7 @@ function tryExtractJsonObject(rawText: string): AiReviewData | null {
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse> => {
-  const { openaiApiKey } = useRuntimeConfig()
+  const { openrouterApiKey } = useRuntimeConfig()
   const body = await readBody<unknown>(event)
 
   if (!isValidReviewRequest(body)) {
@@ -136,7 +137,7 @@ export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse
     }
   }
 
-  if (!openaiApiKey) {
+  if (!openrouterApiKey) {
     return {
       text: '',
       data: null,
@@ -145,13 +146,7 @@ export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse
   }
 
   try {
-    const { OpenAI } = await import('openai')
-    const client = new OpenAI({ apiKey: openaiApiKey })
-    const response = await client.responses.create({
-      model: 'gpt-5',
-      input: body.prompt,
-    })
-    const rawText = response.output_text ?? 'No response from OpenAI.'
+    const rawText = await callLlm(openrouterApiKey, [{ role: 'user', content: body.prompt }])
     const data = tryExtractJsonObject(rawText)
     return { text: rawText, data, error: data ? null : 'Failed to parse review from AI response.' }
   } catch (error) {

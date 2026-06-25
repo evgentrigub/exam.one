@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 import { generateTopicId } from '~/utils/uuid'
+import { callLlm } from '~/server/utils/llm'
 
 interface GenerateTopicsRequestBody {
   prompt: string
@@ -23,13 +24,13 @@ function invalidRequestResponse(): GenerateTopicsResponse {
 }
 
 /**
- * Extract and parse WritingTopic array from OpenAI response
+ * Extract and parse WritingTopic array from AI response
  */
 function extractTopicsFromResponse(rawText: string): unknown[] | null {
   // Try to find JSON array in markdown code block
   const blockStart = rawText.indexOf('```json')
   const fenceStart = blockStart >= 0 ? blockStart + 7 : -1
-  
+
   if (fenceStart >= 0) {
     const fenceEnd = rawText.indexOf('```', fenceStart)
     if (fenceEnd > fenceStart) {
@@ -46,7 +47,7 @@ function extractTopicsFromResponse(rawText: string): unknown[] | null {
   // Try to find JSON array by brackets
   const firstBracket = rawText.indexOf('[')
   if (firstBracket < 0) return null
-  
+
   for (let j = rawText.length - 1; j > firstBracket; j--) {
     if (rawText[j] !== ']') continue
     const candidate = rawText.slice(firstBracket, j + 1)
@@ -57,7 +58,7 @@ function extractTopicsFromResponse(rawText: string): unknown[] | null {
       // continue trying shorter tails
     }
   }
-  
+
   return null
 }
 
@@ -114,15 +115,15 @@ function normalizeGeneratedTopic(value: unknown, part: 1 | 2, difficulty: Diffic
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<GenerateTopicsResponse> => {
-  const { openaiApiKey } = useRuntimeConfig()
+  const { openrouterApiKey } = useRuntimeConfig()
   const body = await readBody<unknown>(event)
 
   if (!isValidGenerateTopicsRequest(body)) {
     return invalidRequestResponse()
   }
 
-  if (!openaiApiKey) {
-    return { 
+  if (!openrouterApiKey) {
+    return {
       topics: [],
       data: null,
       error: 'AI topic generation is unavailable because no API key is configured.'
@@ -130,40 +131,34 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
   }
 
   try {
-    const { OpenAI } = await import('openai')
-    const client = new OpenAI({ apiKey: openaiApiKey })
-
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { 
-          role: 'system', 
+    const rawText = await callLlm(
+      openrouterApiKey,
+      [
+        {
+          role: 'system',
           content: 'You are an expert Goethe-Institut exam creator. Generate writing topics according to the specifications provided. Return ONLY valid JSON array of WritingTopic objects, no additional text.'
         },
-        { 
-          role: 'user', 
+        {
+          role: 'user',
           content: body.prompt
         }
       ],
-      temperature: 0.8,
-      max_tokens: 2500,
-    })
+      { temperature: 0.8, maxTokens: 2500 }
+    )
 
-    const rawText = completion.choices?.[0]?.message?.content ?? ''
-    
     if (!rawText) {
-      return { 
+      return {
         topics: [],
         data: null,
-        error: 'No response from OpenAI.'
+        error: 'No response from AI.'
       }
     }
 
     const topics = extractTopicsFromResponse(rawText)
-    
+
     if (!topics || topics.length === 0) {
       console.error('Failed to parse topics from response:', rawText)
-      return { 
+      return {
         topics: [],
         data: null,
         error: 'Failed to parse topics from AI response. Please try again.'
@@ -198,11 +193,10 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
 
   } catch (error: unknown) {
     console.error('Error generating topics:', error)
-    return { 
+    return {
       topics: [],
       data: null,
       error: 'AI topic generation failed. Please check your API key and try again.'
     }
   }
 })
-

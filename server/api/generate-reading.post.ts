@@ -10,6 +10,7 @@ import type {
 } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
 import { generateReadingId } from '~/utils/uuid'
+import { callLlm } from '~/server/utils/llm'
 
 const readingTextTypes = [
   'email',
@@ -141,7 +142,7 @@ interface GenerateReadingResponse {
 }
 
 /**
- * Extract and parse a GermanText array from an OpenAI response. Handles both
+ * Extract and parse a GermanText array from an AI response. Handles both
  * fenced ```json blocks and a raw bracket-delimited array.
  */
 function extractTextsFromResponse(rawText: string): GeneratedReadingExercise[] | null {
@@ -212,16 +213,16 @@ function normaliseText(
 }
 
 /**
- * Send a single prompt to OpenAI and return the parsed GermanText array.
+ * Send a single prompt to the LLM and return the parsed GermanText array.
  * Returns null when the model produced no parsable array.
  */
 async function generateForPrompt(
-  client: import('openai').OpenAI,
+  apiKey: string,
   prompt: string
 ): Promise<GeneratedReadingExercise[] | null> {
-  const completion = await client.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [
+  const rawText = await callLlm(
+    apiKey,
+    [
       {
         role: 'system',
         content:
@@ -232,24 +233,22 @@ async function generateForPrompt(
         content: prompt
       }
     ],
-    temperature: 0.8,
-    max_tokens: 4000
-  })
+    { temperature: 0.8, maxTokens: 4000 }
+  )
 
-  const rawText = completion.choices?.[0]?.message?.content ?? ''
   if (!rawText) return null
 
   return extractTextsFromResponse(rawText)
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<GenerateReadingResponse> => {
-  const { openaiApiKey } = useRuntimeConfig()
+  const { openrouterApiKey } = useRuntimeConfig()
   const body = (await readBody<GenerateReadingRequestBody>(event)) || ({} as GenerateReadingRequestBody)
 
-  if (!openaiApiKey) {
+  if (!openrouterApiKey) {
     return {
       texts: [],
-      error: 'OpenAI API key not configured. Please set NUXT_OPENAI_API_KEY in your environment.'
+      error: 'OpenRouter API key not configured. Please set OPENROUTER_API_KEY in your environment.'
     }
   }
 
@@ -275,13 +274,10 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
   }
 
   try {
-    const { OpenAI } = await import('openai')
-    const client = new OpenAI({ apiKey: openaiApiKey })
-
     // Run all parts in parallel; each part yields one (or more) exercises.
     const results = await Promise.all(
       jobs.map(async (job) => {
-        const parsed = await generateForPrompt(client, job.prompt)
+        const parsed = await generateForPrompt(openrouterApiKey, job.prompt)
         if (!parsed || parsed.length === 0) {
           console.error(`Failed to parse reading texts for part ${job.part}`)
           return [] as ReadingExercise[]
