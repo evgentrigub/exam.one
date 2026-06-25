@@ -69,52 +69,23 @@
           </div>
         </div>
 
-        <!-- Parts (dynamic) -->
-        <div>
-          <div class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">
-            {{ $t('exercisesUi.parts') }}
-            <span class="normal-case font-normal text-base-content/40">{{ $t('exercisesUi.partsOptional') }}</span>
-          </div>
-          <div class="space-y-2">
-            <div
-              v-for="sk in activeSkills"
-              :key="sk"
-              class="flex items-center gap-2 flex-wrap"
-            >
-              <span class="text-[11px] font-medium text-base-content/55 w-16 shrink-0">{{ skillLabel(sk) }}</span>
-              <PartChip
-                v-for="p in partsForSkill(sk)"
-                :key="`${sk}:${p.n}`"
-                :skill="sk"
-                :n="p.n"
-                :active="parts.includes(`${sk}:${p.n}`)"
-                @toggle="togglePart(`${sk}:${p.n}`)"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Count -->
-        <div class="flex items-center justify-between gap-4">
-          <div>
+        <!-- Count (derived from selected modules' parts) -->
+        <div class="flex items-center justify-between gap-4 rounded-box border border-base-300 bg-base-200/40 px-4 py-3">
+          <div class="min-w-0">
             <div class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50">{{ $t('exercisesUi.howMany') }}</div>
             <div class="text-xs text-base-content/55">{{ $t('exercisesUi.exercisesToGenerate') }}</div>
+            <div v-if="selectedBreakdown.length" class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span
+                v-for="s in selectedBreakdown"
+                :key="s.id"
+                class="inline-flex items-center gap-1 text-[11px] font-medium"
+                :class="s.textClass"
+              >
+                <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${s.id}`" />{{ s.label }} ×{{ s.count }}
+              </span>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <button
-              class="w-9 h-9 rounded-field border border-base-300 grid place-items-center hover:bg-base-200"
-              @click="count = Math.max(1, count - 1)"
-            >
-              <Minus :size="14" />
-            </button>
-            <div class="w-12 text-center font-display text-2xl font-bold tabular-nums">{{ count }}</div>
-            <button
-              class="w-9 h-9 rounded-field border border-base-300 grid place-items-center hover:bg-base-200"
-              @click="count = Math.min(20, count + 1)"
-            >
-              <Plus :size="14" />
-            </button>
-          </div>
+          <div class="font-display text-3xl font-bold tabular-nums shrink-0">{{ totalExercises }}</div>
         </div>
 
         <!-- Difficulty (mock) -->
@@ -137,7 +108,7 @@
       <!-- Footer -->
       <div class="px-6 py-4 border-t border-base-300/70 flex items-center gap-3 bg-base-200/40 shrink-0">
         <div class="text-xs text-base-content/55 flex items-center gap-1.5">
-          <Layers :size="13" /> {{ count }} · {{ $t('exercisesUi.modulesCount', { count: skills.length }) }}
+          <Layers :size="13" /> {{ totalExercises }} · {{ $t('exercisesUi.modulesCount', { count: skills.length }) }}
         </div>
         <button class="btn btn-ghost btn-sm ml-auto" @click="emit('close')">{{ $t('exercisesUi.cancel') }}</button>
         <button
@@ -153,9 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { Sparkles, X, Check, Minus, Plus, Layers, BookOpen, PenLine, Headphones, Mic } from 'lucide-vue-next'
+import { Sparkles, X, Check, Layers, BookOpen, PenLine, Headphones, Mic } from 'lucide-vue-next'
 import type { Component } from 'vue'
-import PartChip from '~/components/exercises/PartChip.vue'
 import { SKILLS, getSkillLabel, type SkillId } from '~/utils/labels'
 import { goetheA2Structure } from '~/data/examStructure/goetheA2'
 
@@ -208,45 +178,45 @@ const difficulties = computed<{ id: Difficulty; label: string }[]>(() => [
 
 const lvl = ref<ExamLevel>(props.level)
 const skills = ref<SkillId[]>(SKILLS.map(s => s.id))
-const parts = ref<string[]>([])
-const count = ref(1)
 const diff = ref<Difficulty>('balanced')
 
-const activeSkills = computed<SkillId[]>(() =>
-  skills.value.length ? skills.value : SKILLS.map(s => s.id),
-)
 const canGen = computed(() => skills.value.length > 0)
 
 function toggleSkill(id: SkillId) {
   if (skills.value.includes(id)) {
     skills.value = skills.value.filter(s => s !== id)
-    // Drop part selections that belong to the unchecked module
-    parts.value = parts.value.filter(p => !p.startsWith(`${id}:`))
   } else {
     skills.value = [...skills.value, id]
   }
-}
-
-function togglePart(key: string) {
-  if (parts.value.includes(key)) parts.value = parts.value.filter(p => p !== key)
-  else parts.value = [...parts.value, key]
 }
 
 function partsForSkill(skill: SkillId) {
   return goetheA2Structure.find(m => m.id === skill)?.parts ?? []
 }
 
-function skillLabel(skill: SkillId) {
-  return getSkillLabel(skill, t)
-}
+// One exercise is generated per part of each selected module.
+const selectedBreakdown = computed(() =>
+  skillOptions.value
+    .filter(s => skills.value.includes(s.id))
+    .map(s => ({ id: s.id, label: s.label, textClass: s.textClass, count: partsForSkill(s.id).length })),
+)
+
+const totalExercises = computed(() =>
+  selectedBreakdown.value.reduce((sum, s) => sum + s.count, 0),
+)
+
+// Full part keys (e.g. "reading:1") for every part of every selected module.
+const selectedParts = computed<string[]>(() =>
+  skills.value.flatMap(id => partsForSkill(id).map(p => `${id}:${p.n}`)),
+)
 
 function onGenerate() {
   if (!canGen.value) return
   emit('generate', {
     level: lvl.value,
     skills: [...skills.value],
-    parts: [...parts.value],
-    count: count.value,
+    parts: [...selectedParts.value],
+    count: totalExercises.value,
     difficulty: diff.value,
   })
 }

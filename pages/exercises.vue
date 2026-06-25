@@ -288,7 +288,9 @@ import { useReadingGeneration } from '~/composables/useReadingGeneration'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useTopicGeneration } from '~/composables/useTopicGeneration'
 import { useListeningExercises } from '~/composables/useListeningExercises'
+import { useListeningGeneration } from '~/composables/useListeningGeneration'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
+import { useSpeakingGeneration } from '~/composables/useSpeakingGeneration'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
 import { getSkillMeta, getSkillLabel } from '~/utils/labels'
@@ -305,8 +307,8 @@ const { examLevel } = storeToRefs(settingsStore)
 
 const { getTexts, addTexts } = useReadingTexts()
 const { getTopics, addTopics, deleteTopic } = useWritingTopics()
-const { getExercises: getListening } = useListeningExercises()
-const { getTopics: getSpeaking } = useSpeakingExercises()
+const { getExercises: getListening, addExercises: addListening } = useListeningExercises()
+const { getTopics: getSpeaking, addTopics: addSpeaking } = useSpeakingExercises()
 const {
   getProgressStats,
   isTextCompleted,
@@ -324,9 +326,11 @@ const LISTENING_TYPE_BY_PART: Record<number, string> = {
 const LISTENING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7, 3: 5, 4: 8 }
 const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
 
-// Generation composables (reading + writing only; listening/speaking have none)
+// Generation composables — one per skill module
 const { generateReading } = useReadingGeneration()
 const { generateTopics } = useTopicGeneration()
+const { generateListening } = useListeningGeneration()
+const { generateSpeaking } = useSpeakingGeneration()
 
 // Generate exercises modal
 const genOpen = ref(false)
@@ -358,8 +362,13 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
           const newTopics = await generateTopics(part, examLevel.value)
           addTopics(newTopics)
         }
+      } else if (skill === 'listening' && examLevel.value === 'A2') {
+        const newExercises = await generateListening(examLevel.value)
+        addListening(newExercises)
+      } else if (skill === 'speaking' && examLevel.value === 'A2') {
+        const newTopics = await generateSpeaking(examLevel.value)
+        addSpeaking(newTopics)
       }
-      // listening / speaking: no generator available — skipped silently
     } catch (error: unknown) {
       console.error(`Failed to generate ${skill} exercises:`, error)
       alert(error instanceof Error ? error.message : `Failed to generate ${skill} exercises`)

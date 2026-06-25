@@ -1,5 +1,6 @@
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
-export const LLM_MODEL = 'google/gemma-4-31b-it:free'
+// export const LLM_MODEL = 'google/gemma-4-31b-it:free'
+export const LLM_MODEL = 'google/gemma-4-26b-a4b-it:free'
 
 export interface LlmMessage {
   role: 'system' | 'user'

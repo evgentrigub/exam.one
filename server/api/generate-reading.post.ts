@@ -274,21 +274,25 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
   }
 
   try {
-    // Run all parts in parallel; each part yields one (or more) exercises.
-    const results = await Promise.all(
-      jobs.map(async (job) => {
-        const parsed = await generateForPrompt(openrouterApiKey, job.prompt)
-        if (!parsed || parsed.length === 0) {
-          console.error(`Failed to parse reading texts for part ${job.part}`)
-          return [] as ReadingExercise[]
-        }
-        return parsed.map((text) =>
+    // Run parts sequentially (one prompt at a time): the free upstream model
+    // rate-limits concurrent calls, which silently drops parts. Retry each part
+    // once so a transient parse/timeout failure does not lose a whole exercise.
+    const texts: ReadingExercise[] = []
+    for (const job of jobs) {
+      let parsed = await generateForPrompt(openrouterApiKey, job.prompt)
+      if (!parsed || parsed.length === 0) {
+        parsed = await generateForPrompt(openrouterApiKey, job.prompt)
+      }
+      if (!parsed || parsed.length === 0) {
+        console.error(`Failed to parse reading texts for part ${job.part}`)
+        continue
+      }
+      texts.push(
+        ...parsed.map((text) =>
           normaliseText(text, body.difficulty, isMultiPart ? job.part : undefined)
         )
-      })
-    )
-
-    const texts = results.flat()
+      )
+    }
 
     if (texts.length === 0) {
       return {
