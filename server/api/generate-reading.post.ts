@@ -10,7 +10,7 @@ import type {
 } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
 import { generateReadingId } from '~/utils/uuid'
-import { callLlm } from '~/server/utils/llm'
+import { callLlm, getLlmConfig, type LlmConfig } from '~/server/utils/llm'
 
 const readingTextTypes = [
   'email',
@@ -217,11 +217,11 @@ function normaliseText(
  * Returns null when the model produced no parsable array.
  */
 async function generateForPrompt(
-  apiKey: string,
+  llmConfig: LlmConfig,
   prompt: string
 ): Promise<GeneratedReadingExercise[] | null> {
   const rawText = await callLlm(
-    apiKey,
+    llmConfig,
     [
       {
         role: 'system',
@@ -242,13 +242,14 @@ async function generateForPrompt(
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<GenerateReadingResponse> => {
-  const { openrouterApiKey } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
   const body = (await readBody<GenerateReadingRequestBody>(event)) || ({} as GenerateReadingRequestBody)
 
-  if (!openrouterApiKey) {
+  if (!llmConfig) {
     return {
       texts: [],
-      error: 'OpenRouter API key not configured. Please set OPENROUTER_API_KEY in your environment.'
+      error: 'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
     }
   }
 
@@ -279,9 +280,9 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
     // once so a transient parse/timeout failure does not lose a whole exercise.
     const texts: ReadingExercise[] = []
     for (const job of jobs) {
-      let parsed = await generateForPrompt(openrouterApiKey, job.prompt)
+      let parsed = await generateForPrompt(llmConfig, job.prompt)
       if (!parsed || parsed.length === 0) {
-        parsed = await generateForPrompt(openrouterApiKey, job.prompt)
+        parsed = await generateForPrompt(llmConfig, job.prompt)
       }
       if (!parsed || parsed.length === 0) {
         console.error(`Failed to parse reading texts for part ${job.part}`)

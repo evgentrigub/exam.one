@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 import { generateTopicId } from '~/utils/uuid'
-import { callLlm } from '~/server/utils/llm'
+import { callLlm, getLlmConfig } from '~/server/utils/llm'
 
 interface GenerateTopicsRequestBody {
   prompt: string
@@ -115,24 +115,25 @@ function normalizeGeneratedTopic(value: unknown, part: 1 | 2, difficulty: Diffic
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<GenerateTopicsResponse> => {
-  const { openrouterApiKey } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
   const body = await readBody<unknown>(event)
 
   if (!isValidGenerateTopicsRequest(body)) {
     return invalidRequestResponse()
   }
 
-  if (!openrouterApiKey) {
+  if (!llmConfig) {
     return {
       topics: [],
       data: null,
-      error: 'AI topic generation is unavailable because no API key is configured.'
+      error: 'AI topic generation is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
     }
   }
 
   try {
     const rawText = await callLlm(
-      openrouterApiKey,
+      llmConfig,
       [
         {
           role: 'system',

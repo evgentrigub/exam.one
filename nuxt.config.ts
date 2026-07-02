@@ -102,8 +102,13 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Private (server-only). Override at runtime with env var NUXT_OPENROUTER_API_KEY
-    openrouterApiKey: process.env['OPENROUTER_API_KEY'] || '',
+    // Private (server-only). Override at runtime with env vars NUXT_LLM_PROVIDER, NUXT_LLM_OPENAI_API_KEY, etc.
+    llmProvider: process.env['LLM_PROVIDER'] || 'openrouter',
+    llmOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
+    llmOpenrouterApiKey: process.env['OPENROUTER_API_KEY'] || '',
+    llmOpenaiModel: process.env['OPENAI_MODEL'] || 'gpt-5.5',
+    llmOpenrouterModel: process.env['OPENROUTER_MODEL'] || 'google/gemma-4-26b-a4b-it:free',
+    llmReasoningEffort: process.env['LLM_REASONING_EFFORT'] || 'medium',
     // Public (exposed to client). Leave empty unless you explicitly want to expose something.
     public: {}
   }

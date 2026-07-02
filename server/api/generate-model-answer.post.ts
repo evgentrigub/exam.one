@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { WritingExercise, ModelAnswer } from '~/utils/types'
-import { callLlm } from '~/server/utils/llm'
+import { callLlm, getLlmConfig } from '~/server/utils/llm'
 
 interface ModelAnswerRequestBody {
   topic: WritingExercise
@@ -81,7 +81,8 @@ function tryExtractJsonObject(rawText: string): Partial<ModelAnswer> | null {
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<ModelAnswerResponse> => {
-  const { openrouterApiKey } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
   const body = await readBody<unknown>(event)
 
   if (!isValidModelAnswerRequest(body)) {
@@ -92,16 +93,16 @@ export default defineEventHandler(async (event: H3Event): Promise<ModelAnswerRes
     }
   }
 
-  if (!openrouterApiKey) {
+  if (!llmConfig) {
     return {
       text: '',
       data: null,
-      error: 'AI model answers are unavailable because no API key is configured.',
+      error: 'AI model answers are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
   try {
-    const rawText = await callLlm(openrouterApiKey, [
+    const rawText = await callLlm(llmConfig, [
       {
         role: 'system',
         content: 'You are an expert Goethe-Institut exam creator. Generate model answers according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'

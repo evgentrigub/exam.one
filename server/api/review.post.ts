@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { WritingExercise, AiReviewData } from '~/utils/types'
-import { callLlm } from '~/server/utils/llm'
+import { callLlm, getLlmConfig } from '~/server/utils/llm'
 
 interface ReviewRequestBody {
   topic: WritingExercise
@@ -126,7 +126,8 @@ function tryExtractJsonObject(rawText: string): AiReviewData | null {
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse> => {
-  const { openrouterApiKey } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
   const body = await readBody<unknown>(event)
 
   if (!isValidReviewRequest(body)) {
@@ -137,16 +138,16 @@ export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse
     }
   }
 
-  if (!openrouterApiKey) {
+  if (!llmConfig) {
     return {
       text: '',
       data: null,
-      error: 'AI review is unavailable because no API key is configured.',
+      error: 'AI review is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
   try {
-    const rawText = await callLlm(openrouterApiKey, [
+    const rawText = await callLlm(llmConfig, [
       {
         role: 'system',
         content: 'You are an expert Goethe-Institut examiner. Review writing submissions according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'

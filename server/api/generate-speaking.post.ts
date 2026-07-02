@@ -6,7 +6,7 @@ import type {
 } from '~/utils/exercises/speaking'
 import type { Difficulty } from '~/utils/types'
 import { generateSpeakingId } from '~/utils/uuid'
-import { callLlm } from '~/server/utils/llm'
+import { callLlm, getLlmConfig, type LlmConfig } from '~/server/utils/llm'
 
 interface SpeakingPromptPart {
   part: SpeakingA2Part
@@ -123,12 +123,12 @@ function normaliseTopic(
 }
 
 async function generateForPart(
-  apiKey: string,
+  llmConfig: LlmConfig,
   job: SpeakingPromptPart,
   difficulty: Difficulty
 ): Promise<SpeakingA2Topic[]> {
   const rawText = await callLlm(
-    apiKey,
+    llmConfig,
     [
       {
         role: 'system',
@@ -154,13 +154,14 @@ async function generateForPart(
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeakingResponse> => {
-  const { openrouterApiKey } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
   const body = (await readBody<GenerateSpeakingRequestBody>(event)) || ({} as GenerateSpeakingRequestBody)
 
-  if (!openrouterApiKey) {
+  if (!llmConfig) {
     return {
       topics: [],
-      error: 'OpenRouter API key not configured. Please set OPENROUTER_API_KEY in your environment.'
+      error: 'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
     }
   }
 
@@ -181,9 +182,9 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeaki
     // model rate-limits concurrent calls, which silently drops parts.
     const topics: SpeakingA2Topic[] = []
     for (const job of jobs) {
-      let partTopics = await generateForPart(openrouterApiKey, job, body.difficulty)
+      let partTopics = await generateForPart(llmConfig, job, body.difficulty)
       if (partTopics.length === 0) {
-        partTopics = await generateForPart(openrouterApiKey, job, body.difficulty)
+        partTopics = await generateForPart(llmConfig, job, body.difficulty)
       }
       topics.push(...partTopics)
     }
