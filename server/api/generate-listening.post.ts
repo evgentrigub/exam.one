@@ -13,7 +13,7 @@ import type {
 } from '~/utils/exercises/listening'
 import type { Difficulty } from '~/utils/types'
 import { generateListeningId } from '~/utils/uuid'
-import { callLlm } from '~/server/utils/llm'
+import { callLlm, getLlmConfig, type LlmConfig } from '~/server/utils/llm'
 
 interface ListeningPromptPart {
   part: ListeningA2Part
@@ -216,12 +216,12 @@ function normaliseExercise(
 }
 
 async function generateForPart(
-  apiKey: string,
+  llmConfig: LlmConfig,
   job: ListeningPromptPart,
   difficulty: Difficulty
 ): Promise<ListeningA2Exercise[]> {
   const rawText = await callLlm(
-    apiKey,
+    llmConfig,
     [
       {
         role: 'system',
@@ -247,13 +247,14 @@ async function generateForPart(
 }
 
 export default defineEventHandler(async (event: H3Event): Promise<GenerateListeningResponse> => {
-  const { openrouterApiKey } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
   const body = (await readBody<GenerateListeningRequestBody>(event)) || ({} as GenerateListeningRequestBody)
 
-  if (!openrouterApiKey) {
+  if (!llmConfig) {
     return {
       exercises: [],
-      error: 'OpenRouter API key not configured. Please set OPENROUTER_API_KEY in your environment.'
+      error: 'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
     }
   }
 
@@ -274,9 +275,9 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateListen
     // model rate-limits concurrent calls, which silently drops parts.
     const exercises: ListeningA2Exercise[] = []
     for (const job of jobs) {
-      let partExercises = await generateForPart(openrouterApiKey, job, body.difficulty)
+      let partExercises = await generateForPart(llmConfig, job, body.difficulty)
       if (partExercises.length === 0) {
-        partExercises = await generateForPart(openrouterApiKey, job, body.difficulty)
+        partExercises = await generateForPart(llmConfig, job, body.difficulty)
       }
       exercises.push(...partExercises)
     }
