@@ -121,63 +121,33 @@
     <!-- Generation progress (modal flows close immediately, so surface per-part status here) -->
     <ClientOnly>
       <div
-        v-if="isGeneratingReading || isGeneratingListening || isGeneratingSpeaking"
+        v-if="unifiedGenerationJobs.length"
         class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3"
       >
         <div class="flex items-center gap-2 text-sm font-semibold text-base-content">
-          <span class="loading loading-spinner loading-sm text-primary" />
-          Generating exercises…
+          <span v-if="isAnyGenerating" class="loading loading-spinner loading-sm text-primary" />
+          {{ isAnyGenerating ? 'Generating exercises…' : 'Generation status' }}
         </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="space-y-2">
           <div
-            v-if="isGeneratingReading && readingGenerationJobs.length"
-            class="border border-base-300 rounded-box p-3"
+            v-for="job in unifiedGenerationJobs"
+            :key="`${job.skill}-${job.part}`"
+            class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
           >
-            <div class="text-xs font-semibold text-base-content/70 mb-2">Reading</div>
-            <div class="space-y-1">
-              <div
-                v-for="job in readingGenerationJobs"
-                :key="`reading-${job.part}`"
-                class="flex items-center justify-between text-xs"
-              >
-                <span>Teil {{ job.part }}</span>
-                <span :class="jobStatusClass(job.status)">{{ $t(statusKey(job.status)) }}</span>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="isGeneratingListening && listeningGenerationJobs.length"
-            class="border border-base-300 rounded-box p-3"
-          >
-            <div class="text-xs font-semibold text-base-content/70 mb-2">Listening</div>
-            <div class="space-y-1">
-              <div
-                v-for="job in listeningGenerationJobs"
-                :key="`listening-${job.part}`"
-                class="flex items-center justify-between text-xs"
-              >
-                <span>Teil {{ job.part }}</span>
-                <span :class="jobStatusClass(job.status)">{{ $t(statusKey(job.status)) }}</span>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="isGeneratingSpeaking && speakingGenerationJobs.length"
-            class="border border-base-300 rounded-box p-3"
-          >
-            <div class="text-xs font-semibold text-base-content/70 mb-2">Speaking</div>
-            <div class="space-y-1">
-              <div
-                v-for="job in speakingGenerationJobs"
-                :key="`speaking-${job.part}`"
-                class="flex items-center justify-between text-xs"
-              >
-                <span>Teil {{ job.part }}</span>
-                <span :class="jobStatusClass(job.status)">{{ $t(statusKey(job.status)) }}</span>
-              </div>
-            </div>
+            <span class="text-sm font-medium text-base-content capitalize">
+              {{ job.skill }} · Teil {{ job.part }}
+            </span>
+            <span
+              class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
+              :class="jobStatusClass(job.status)"
+            >
+              {{ $t(statusKey(job.status)) }}
+            </span>
           </div>
         </div>
+        <p class="text-xs text-base-content/50">
+          Each part takes 10–60 seconds. Completed parts are saved immediately.
+        </p>
       </div>
     </ClientOnly>
 
@@ -350,7 +320,7 @@ import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useReadingGeneration } from '~/composables/useReadingGeneration'
 import { useWritingTopics } from '~/composables/useWritingTopics'
-import { useTopicGeneration } from '~/composables/useTopicGeneration'
+import { useWritingGeneration } from '~/composables/useWritingGeneration'
 import { useListeningExercises } from '~/composables/useListeningExercises'
 import { useListeningGeneration } from '~/composables/useListeningGeneration'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
@@ -397,7 +367,11 @@ const {
   generationJobs: readingGenerationJobs,
   generationError: readingGenerationError
 } = useReadingGeneration()
-const { generateTopics } = useTopicGeneration()
+const {
+  generateWriting,
+  isGenerating: isGeneratingWriting,
+  generationJobs: writingGenerationJobs
+} = useWritingGeneration()
 const {
   generateListening,
   isGenerating: isGeneratingListening,
@@ -443,10 +417,10 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
           .map(p => Number(p.split(':')[1]))
           .filter((n): n is 1 | 2 => n === 1 || n === 2)
         const partsToGenerate: (1 | 2)[] = selectedParts.length ? selectedParts : [1, 2]
-        for (const part of partsToGenerate) {
-          const newTopics = await generateTopics(part, examLevel.value)
-          addTopics(newTopics)
-        }
+        await generateWriting(examLevel.value, {
+          parts: partsToGenerate,
+          onPartComplete: (items) => addTopics(items)
+        })
       } else if (skill === 'listening' && examLevel.value === 'A2') {
         const parts = parseSkillPartKeys('listening', payload.parts)
         await generateListening(examLevel.value, {
@@ -472,6 +446,36 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
     }
   }
 }
+
+const isAnyGenerating = computed(() =>
+  isGeneratingReading.value || isGeneratingListening.value || isGeneratingSpeaking.value || isGeneratingWriting.value
+)
+
+type UnifiedJob = {
+  skill: string
+  part: number
+  status: PartStatus
+}
+
+const unifiedGenerationJobs = computed<UnifiedJob[]>(() => {
+  const jobs: UnifiedJob[] = []
+
+  readingGenerationJobs.value.forEach(job =>
+    jobs.push({ skill: 'reading', part: job.part, status: job.status })
+  )
+  listeningGenerationJobs.value.forEach(job =>
+    jobs.push({ skill: 'listening', part: job.part, status: job.status })
+  )
+  speakingGenerationJobs.value.forEach(job =>
+    jobs.push({ skill: 'speaking', part: job.part, status: job.status })
+  )
+
+  writingGenerationJobs.value.forEach(job =>
+    jobs.push({ skill: 'writing', part: job.part, status: job.status })
+  )
+
+  return jobs
+})
 
 // Filter state
 const activeSkill = ref<string>('all')
