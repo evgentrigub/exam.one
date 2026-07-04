@@ -10,7 +10,7 @@
           <div class="flex items-start justify-between">
             <div>
               <div class="font-mono text-5xl font-bold leading-none">{{ daysLeft }}</div>
-              <div class="text-sm text-base-content/50 mt-1">days until exam</div>
+              <div class="text-sm text-base-content/50 mt-1">{{ $t('dashboard.daysUntilExam') }}</div>
             </div>
             <span class="level-pip text-primary">{{ examLevel }}</span>
           </div>
@@ -32,11 +32,11 @@
           </template>
         </ClientOnly>
         <div class="min-w-0">
-          <p class="text-sm font-semibold mb-1">Overall readiness</p>
-          <p class="text-xs text-base-content/50 mb-3">Across all four exam skills</p>
+          <p class="text-sm font-semibold mb-1">{{ $t('dashboard.overallReadiness') }}</p>
+          <p class="text-xs text-base-content/50 mb-3">{{ $t('dashboard.overallReadinessDescription') }}</p>
           <NuxtLink to="/progress" class="btn btn-sm btn-outline gap-1.5">
             <component :is="iconTrendingUp" :size="14" />
-            View progress
+            {{ $t('dashboard.viewProgress') }}
           </NuxtLink>
         </div>
       </div>
@@ -45,7 +45,7 @@
     <!-- 4 skill tiles -->
     <ClientOnly>
       <section>
-        <h2 class="text-sm font-semibold mb-3">Skill readiness</h2>
+        <h2 class="text-sm font-semibold mb-3">{{ $t('dashboard.skillReadiness') }}</h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <NuxtLink
             v-for="stat in skillStats"
@@ -61,7 +61,7 @@
               <span class="font-mono text-xs font-semibold text-base-content/50">{{ stat.readiness }}%</span>
             </div>
             <progress class="progress h-1.5 w-full" :class="meta(stat.id).progressClass" :value="stat.readiness" max="100" />
-            <p class="text-[11px] text-base-content/50 mt-2">{{ stat.completed }}/{{ stat.total }} done</p>
+            <p class="text-[11px] text-base-content/50 mt-2">{{ stat.completed }}/{{ stat.total }} {{ $t('dashboard.done') }}</p>
           </NuxtLink>
         </div>
       </section>
@@ -73,18 +73,18 @@
         <!-- Continue practicing -->
         <section class="lg:col-span-2">
           <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-semibold">Continue practicing</h2>
-            <NuxtLink to="/exercises" class="text-xs text-primary hover:underline">All exercises</NuxtLink>
+            <h2 class="text-sm font-semibold">{{ $t('dashboard.continuePracticing') }}</h2>
+            <NuxtLink to="/exercises" class="text-xs text-primary hover:underline">{{ $t('dashboard.allExercises') }}</NuxtLink>
           </div>
 
           <div v-if="continueExercises.length === 0" class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center">
             <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
               <component :is="iconBookOpen" :size="20" class="text-primary" />
             </div>
-            <p class="text-sm font-medium">Nothing in progress</p>
-            <p class="text-xs text-base-content/50 mt-1">Start an exercise to see it here</p>
+            <p class="text-sm font-medium">{{ $t('dashboard.nothingInProgress') }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ $t('dashboard.startExerciseHint') }}</p>
             <NuxtLink to="/exercises" class="btn btn-primary btn-sm mt-4 gap-2">
-              <component :is="iconPlus" :size="14" /> Browse exercises
+              <component :is="iconPlus" :size="14" /> {{ $t('dashboard.browseExercises') }}
             </NuxtLink>
           </div>
 
@@ -102,7 +102,7 @@
                 <span class="level-pip">{{ ex.difficulty }}</span>
               </div>
               <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
-              <p class="text-xs text-base-content/50">{{ label(ex.skill) }} · {{ ex.minutes }} min</p>
+              <p class="text-xs text-base-content/50">{{ label(ex.skill) }} · {{ ex.minutes }} {{ $t('exercisesUi.min') }}</p>
               <div class="mt-3 flex items-center gap-2">
                 <progress class="progress flex-1 h-1.5" :class="meta(ex.skill).progressClass" :value="ex.pct" max="100" />
                 <span class="text-xs font-mono text-base-content/50">{{ ex.pct }}%</span>
@@ -114,7 +114,7 @@
         <!-- Weak spots + recommended -->
         <section class="space-y-5">
           <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
-            <h2 class="text-sm font-semibold mb-3">Focus next</h2>
+            <h2 class="text-sm font-semibold mb-3">{{ $t('dashboard.focusNext') }}</h2>
             <div class="space-y-3">
               <div v-for="stat in weakestSkills.slice(0, 3)" :key="stat.id" class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-selector flex items-center justify-center shrink-0" :class="meta(stat.id).softBgClass">
@@ -133,14 +133,14 @@
 
           <!-- Recommended -->
           <div v-if="recommended" class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
-            <h2 class="text-sm font-semibold mb-3">Recommended</h2>
+            <h2 class="text-sm font-semibold mb-3">{{ $t('dashboard.recommended') }}</h2>
             <div class="flex items-start gap-3 cursor-pointer" @click="navigateToExercise(recommended)">
               <div class="w-9 h-9 rounded-selector flex items-center justify-center shrink-0" :class="meta(recommended.skill).softBgClass">
                 <component :is="icon(recommended.skill)" :size="16" :class="meta(recommended.skill).textClass" />
               </div>
               <div class="min-w-0">
                 <p class="text-sm font-semibold line-clamp-2">{{ recommended.title }}</p>
-                <p class="text-xs text-base-content/50 mt-0.5">{{ label(recommended.skill) }} · {{ recommended.minutes }} min</p>
+                <p class="text-xs text-base-content/50 mt-0.5">{{ label(recommended.skill) }} · {{ recommended.minutes }} {{ $t('exercisesUi.min') }}</p>
               </div>
             </div>
           </div>
@@ -148,10 +148,10 @@
           <!-- Mock exam (deferred) -->
           <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5 opacity-70">
             <div class="flex items-center justify-between">
-              <h2 class="text-sm font-semibold">Mock exam</h2>
-              <span class="badge badge-ghost badge-sm">Soon</span>
+              <h2 class="text-sm font-semibold">{{ $t('dashboard.mockExam') }}</h2>
+              <span class="badge badge-ghost badge-sm">{{ $t('dashboard.soon') }}</span>
             </div>
-            <p class="text-xs text-base-content/50 mt-1">Full timed mock exams are coming in a later update.</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ $t('dashboard.mockExamComingSoon') }}</p>
           </div>
         </section>
       </div>
@@ -209,9 +209,9 @@ function label(skill: SkillId) { return getSkillLabel(skill, t) }
 
 const readinessStatement = computed(() => {
   const r = overallReadiness.value
-  if (r >= 80) return 'You\'re well prepared — keep it up!'
-  if (r >= 50) return 'Good progress — focus on your weak spots'
-  return 'Keep practicing to build your readiness'
+  if (r >= 80) return t('dashboard.readiness.wellPrepared')
+  if (r >= 50) return t('dashboard.readiness.goodProgress')
+  return t('dashboard.readiness.keepPracticing')
 })
 
 interface DashExercise {

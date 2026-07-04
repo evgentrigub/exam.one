@@ -5,7 +5,7 @@
       <div class="alert alert-error mb-4 items-start">
         <CircleAlert :size="22" class="shrink-0" />
         <div>
-          <h3 class="font-bold">Generation failed</h3>
+          <h3 class="font-bold">{{ $t('generation.failed') }}</h3>
           <div class="text-sm">{{ generationError }}</div>
         </div>
       </div>
@@ -15,13 +15,13 @@
           @click="$emit('retry')"
         >
           <RotateCcw :size="13" />
-          Retry
+          {{ $t('generation.retry') }}
         </button>
         <button
           class="btn btn-ghost btn-sm"
           @click="$emit('dismiss')"
         >
-          Dismiss
+          {{ $t('generation.dismiss') }}
         </button>
       </div>
     </div>
@@ -31,9 +31,9 @@
       <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
         <span class="loading loading-spinner loading-lg text-primary shrink-0" />
         <div>
-          <h3 class="font-display text-xl font-bold text-base-content">Generating reading exercises…</h3>
+          <h3 class="font-display text-xl font-bold text-base-content">{{ $t('generation.readingTitle') }}</h3>
           <p class="text-sm text-base-content/70 mt-1">
-            Creating {{ generatingDifficulty }} level Goethe-style reading exercises with AI.
+            {{ $t('generation.readingDescription', { level: generatingDifficulty }) }}
           </p>
         </div>
       </div>
@@ -44,7 +44,7 @@
           :key="job.part"
           class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
         >
-          <span class="text-sm font-medium text-base-content">Teil {{ job.part }}</span>
+          <span class="text-sm font-medium text-base-content">{{ $t('exercisesUi.part') }} {{ job.part }}</span>
           <span
             class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
             :class="statusClass(job.status)"
@@ -55,7 +55,7 @@
       </div>
 
       <p class="text-xs text-base-content/50 mt-3">
-        Each part takes 10–60 seconds. Completed parts are saved immediately, so you can reload and resume.
+        {{ $t('generation.hintResumable') }}
       </p>
     </div>
 
@@ -66,10 +66,10 @@
           <BookOpen :size="22" />
         </div>
         <div>
-          <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">Optional AI enhancement</div>
-          <h3 class="font-display text-xl font-bold text-base-content mt-1">Resume generation</h3>
+          <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">{{ $t('generation.aiLabel') }}</div>
+          <h3 class="font-display text-xl font-bold text-base-content mt-1">{{ $t('generation.resumeTitle') }}</h3>
           <p class="text-sm text-base-content/70 mt-1">
-            A previous generation was interrupted. {{ remainingJobsCount }} part(s) are still pending.
+            {{ $t('generation.resumeDescription', { count: remainingJobsCount }) }}
           </p>
         </div>
       </div>
@@ -80,7 +80,7 @@
           :key="job.part"
           class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
         >
-          <span class="text-sm font-medium text-base-content">Teil {{ job.part }}</span>
+          <span class="text-sm font-medium text-base-content">{{ $t('exercisesUi.part') }} {{ job.part }}</span>
           <span
             class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
             :class="statusClass(job.status)"
@@ -102,7 +102,7 @@
           class="btn btn-ghost btn-sm"
           @click="$emit('dismiss')"
         >
-          Dismiss
+          {{ $t('generation.dismiss') }}
         </button>
       </div>
     </div>
@@ -114,15 +114,15 @@
       </div>
 
       <div class="flex-1 min-w-0">
-        <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">Optional AI enhancement</div>
-        <h3 class="font-display text-xl font-bold text-base-content mt-1">Generate new reading exercises</h3>
+        <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">{{ $t('generation.aiLabel') }}</div>
+        <h3 class="font-display text-xl font-bold text-base-content mt-1">{{ $t('generation.generateReadingTitle') }}</h3>
         <p class="text-sm text-base-content/70 mt-1">
-          AI can create new {{ currentDifficulty }} reading comprehension sets. If unavailable, bundled exercises still work offline.
+          {{ $t('generation.generateReadingDescription', { level: currentDifficulty }) }}
         </p>
         <p class="text-xs text-base-content/50 mt-2">
           {{ currentDifficulty === 'A2'
-            ? 'Creates one exercise per exam part (Teil 1–4).'
-            : 'Each generation creates new exercises.' }}
+            ? $t('generation.a2PartsHint', { part: $t('exercisesUi.part') })
+            : $t('generation.otherPartsHint') }}
         </p>
       </div>
 
@@ -131,7 +131,7 @@
         @click="$emit('generate')"
       >
         <Plus :size="14" />
-        Generate exercises
+        {{ $t('generation.generateExercises') }}
       </button>
     </div>
   </div>

@@ -21,30 +21,30 @@
             <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <!-- Text Type Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-base-content">Type:</label>
+                <label class="text-sm font-medium text-base-content">{{ $t('practice.type') }}:</label>
                 <select 
                   v-model="selectedTypeFilter"
                   class="select select-bordered select-sm"
                 >
-                  <option value="all">All Types</option>
-                  <option value="email">E-Mail</option>
-                  <option value="notice">Notice</option>
-                  <option value="article">Article</option>
-                  <option value="advertisement">Advertisement</option>
-                  <option value="instructions">Instructions</option>
+                  <option value="all">{{ $t('practice.allTypes') }}</option>
+                  <option value="email">{{ $t('exerciseType.email') }}</option>
+                  <option value="notice">{{ $t('exerciseType.notice') }}</option>
+                  <option value="article">{{ $t('exerciseType.article') }}</option>
+                  <option value="advertisement">{{ $t('exerciseType.advertisement') }}</option>
+                  <option value="instructions">{{ $t('exerciseType.instructions') }}</option>
                 </select>
               </div>
               
               <!-- Completion Status Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-base-content">Status:</label>
+                <label class="text-sm font-medium text-base-content">{{ $t('practice.status') }}:</label>
                 <select 
                   v-model="selectedStatusFilter"
                   class="select select-bordered select-sm"
                 >
-                  <option value="all">All Topics</option>
-                  <option value="completed">Completed</option>
-                  <option value="incomplete">Not Completed</option>
+                  <option value="all">{{ $t('practice.allTopics') }}</option>
+                  <option value="completed">{{ $t('practice.completed') }}</option>
+                  <option value="incomplete">{{ $t('practice.notCompleted') }}</option>
                 </select>
               </div>
             </div>
@@ -58,18 +58,18 @@
                   class="select select-bordered select-sm"
                 >
                   <option value="title">{{ $t('practice.titleSort') }}</option>
-                  <option value="type">Type</option>
+                  <option value="type">{{ $t('practice.type') }}</option>
                   <option value="difficulty">{{ $t('practice.difficulty') }}</option>
-                  <option value="completion">Completion Status</option>
-                  <option value="score">Best Score</option>
-                  <option value="wordCount">Word Count</option>
+                  <option value="completion">{{ $t('practice.completionStatus') }}</option>
+                  <option value="score">{{ $t('practice.bestScore') }}</option>
+                  <option value="wordCount">{{ $t('practice.wordCount') }}</option>
                 </select>
               </div>
               
               <!-- Sort Direction -->
               <button
                 class="btn btn-square btn-sm"
-                :title="sortDirection === 'asc' ? 'Sort Ascending' : 'Sort Descending'"
+                :title="sortDirection === 'asc' ? $t('practice.sortAscending') : $t('practice.sortDescending')"
                 @click="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
               >
                 <svg 
@@ -86,7 +86,7 @@
             
             <!-- Results Count -->
             <div class="text-sm text-base-content/70 whitespace-nowrap">
-              {{ filteredAndSortedTexts.length }} {{ filteredAndSortedTexts.length === 1 ? 'text' : 'texts' }} found
+              {{ filteredAndSortedTexts.length === 1 ? $t('practice.textFound', { count: filteredAndSortedTexts.length }) : $t('practice.textsFound', { count: filteredAndSortedTexts.length }) }}
             </div>
           </div>
         </div>
@@ -124,10 +124,10 @@
             </svg>
           </div>
           <h3 class="text-lg font-medium text-base-content mb-2">
-            No texts found
+            {{ $t('practice.noTextsFound') }}
           </h3>
           <p class="text-base-content/70 max-w-md mx-auto mb-4">
-            No texts match your current filters. Try adjusting your search criteria.
+            {{ $t('practice.noTextsMatch') }}
           </p>
           <button
             class="btn btn-primary gap-2"
@@ -136,7 +136,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
-            Reset Filters
+            {{ $t('practice.resetFilters') }}
           </button>
         </div>
       </div>
@@ -154,6 +154,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 import ReadingGeneratorCard from '~/components/reading/ReadingGeneratorCard.vue'
 import ReadingModal from '~/components/reading/ReadingModal.vue'
 import TextCard from '~/components/reading/TextCard.vue'
@@ -170,6 +171,9 @@ useHead({
     { name: 'description', content: 'Practice reading with authentic exam-style texts' }
   ]
 })
+
+// i18n
+const { t } = useI18n()
 
 // Progress composable
 const { getSession, isTextCompleted, getBestScore } = useProgress()
@@ -303,7 +307,7 @@ async function handleGenerate() {
     console.log(`✅ Successfully generated ${newTexts.length} new reading exercises for ${examLevel.value}`)
   } catch (error: unknown) {
     console.error('Failed to generate reading exercises:', error)
-    alert(error instanceof Error ? error.message : 'Failed to generate reading exercises')
+    alert(error instanceof Error ? error.message : t('generation.readingErrorFallback'))
   }
 }
 
@@ -314,7 +318,7 @@ async function handleRetry() {
     console.log(`✅ Successfully generated ${newTexts.length} new reading exercises on retry`)
   } catch (error: unknown) {
     console.error('Failed to retry generation:', error)
-    alert(error instanceof Error ? error.message : 'Failed to retry generation')
+    alert(error instanceof Error ? error.message : t('generation.retryErrorFallback'))
   }
 }
 
@@ -326,7 +330,7 @@ async function handleResume() {
     console.log(`✅ Successfully resumed and generated ${newTexts.length} new reading exercises`)
   } catch (error: unknown) {
     console.error('Failed to resume generation:', error)
-    alert(error instanceof Error ? error.message : 'Failed to resume generation')
+    alert(error instanceof Error ? error.message : t('generation.resumeErrorFallback'))
   }
 }
 
@@ -341,7 +345,7 @@ function handleDeleteText(textId: string) {
   if (!text) return
 
   const confirmed = confirm(
-    `Are you sure you want to delete "${text.title}"?\n\nThis action cannot be undone.`
+    t('practice.deleteConfirm', { title: text.title })
   )
 
   if (confirmed) {
