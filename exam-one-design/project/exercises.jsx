@@ -58,12 +58,17 @@ function GenerateExercisesModal({ level, onClose, onGenerate }) {
   const [lvl, setLvl] = useState(level);
   const [skills, setSkills] = useState(() => SKILLS.map(s => s.id));
   const [parts, setParts] = useState([]);
-  const [count, setCount] = useState(6);
   const [diff, setDiff] = useState('balanced');
-  useIcons([lvl, skills, parts, count, diff]);
+  useIcons([lvl, skills, parts, diff]);
 
   const toggle = (arr, set, v) => set(arr.includes(v) ? arr.filter(x=>x!==v) : [...arr, v]);
   const activeSkills = skills.length ? skills : SKILLS.map(s=>s.id);
+
+  // How many exercises will be generated: one per chosen part. If specific
+  // parts are picked, that's the count; otherwise every part of each chosen module.
+  const count = parts.length
+    ? parts.length
+    : activeSkills.reduce((sum, sk) => sum + (EXAM_STRUCTURE[sk]?.parts.length || 0), 0);
   const canGen = skills.length > 0;
 
   return (
@@ -128,15 +133,14 @@ function GenerateExercisesModal({ level, onClose, onGenerate }) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 rounded-box border border-base-300 bg-base-200/40 px-4 py-3">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-wider text-base-content/50">How many</div>
-              <div className="text-xs text-base-content/55">Exercises to generate</div>
+              <div className="text-xs text-base-content/55">{parts.length ? 'One per selected part' : 'One per part of each selected module'}</div>
             </div>
-            <div className="flex items-center gap-2">
-              <button onClick={()=>setCount(Math.max(1, count-1))} className="w-9 h-9 rounded-field border border-base-300 grid place-items-center hover:bg-base-200"><Ic name="minus" size={14}/></button>
-              <div className="w-12 text-center font-display text-2xl font-bold tabular-nums">{count}</div>
-              <button onClick={()=>setCount(Math.min(20, count+1))} className="w-9 h-9 rounded-field border border-base-300 grid place-items-center hover:bg-base-200"><Ic name="plus" size={14}/></button>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-display text-3xl font-bold tabular-nums leading-none">{count}</span>
+              <span className="text-xs text-base-content/55">exercise{count!==1?'s':''}</span>
             </div>
           </div>
 
@@ -155,7 +159,7 @@ function GenerateExercisesModal({ level, onClose, onGenerate }) {
         <div className="px-6 py-4 border-t border-base-300/70 flex items-center gap-3 bg-base-200/40 shrink-0">
           <div className="text-xs text-base-content/55 flex items-center gap-1.5"><Ic name="layers" size={13}/> {count} · {skills.length} module{skills.length!==1?'s':''}</div>
           <button onClick={onClose} className="btn btn-ghost btn-sm ml-auto">Cancel</button>
-          <button onClick={onGenerate} disabled={!canGen}
+          <button onClick={()=>{ window.GenQueue.enqueue(window.buildGenJobs({ level:lvl, skills, parts, count })); onGenerate(); }} disabled={!canGen}
             className="btn btn-primary btn-sm rounded-full gap-2"><Ic name="sparkles" size={14}/> Generate exercises</button>
         </div>
       </div>

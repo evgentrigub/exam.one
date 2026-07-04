@@ -1030,6 +1030,9 @@ function Account() {
         </div>
       </CalmCard>
 
+      {/* AI prompt settings */}
+      <PromptSettings defaultLevel={level} />
+
       {/* Subscription */}
       <div>
         <div className="flex items-center justify-between mb-3">

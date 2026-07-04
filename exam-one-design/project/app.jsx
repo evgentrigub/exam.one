@@ -1,6 +1,6 @@
 // App entry — routing + top-level composition
 const { L, useState, useEffect, AppCtx, Sidebar, Topbar, Dashboard, ExercisesList,
-  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account, ExamStructure } = window;
+  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account, ExamStructure, GenQueueHost } = window;
 
 function App() {
   const [route, setRoute] = useState(() => {
@@ -66,6 +66,7 @@ function App() {
             </footer>
           </main>
         </div>
+        <GenQueueHost/>
       </div>
     </AppCtx.Provider>
   );
