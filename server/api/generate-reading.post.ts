@@ -275,17 +275,20 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
   }
 
   try {
+    console.log(`[exam.one][reading] queue parts=${jobs.map(j => j.part).join(',')}`)
+
     // Run parts sequentially (one prompt at a time): the free upstream model
     // rate-limits concurrent calls, which silently drops parts. Retry each part
     // once so a transient parse/timeout failure does not lose a whole exercise.
     const texts: ReadingExercise[] = []
     for (const job of jobs) {
+      console.log(`[exam.one][reading] start part=${job.part}`)
       let parsed = await generateForPrompt(llmConfig, job.prompt)
       if (!parsed || parsed.length === 0) {
         parsed = await generateForPrompt(llmConfig, job.prompt)
       }
       if (!parsed || parsed.length === 0) {
-        console.error(`Failed to parse reading texts for part ${job.part}`)
+        console.error(`[exam.one][reading] failed part=${job.part} reason=parse_error`)
         continue
       }
       texts.push(
@@ -293,6 +296,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
           normaliseText(text, body.difficulty, isMultiPart ? job.part : undefined)
         )
       )
+      console.log(`[exam.one][reading] done part=${job.part} texts=${parsed.length}`)
     }
 
     if (texts.length === 0) {
@@ -303,8 +307,8 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
     }
 
     console.log(
-      `✅ Generated ${texts.length} reading texts for ${body.difficulty}` +
-        (isMultiPart ? ` across ${jobs.length} parts` : '')
+      `[exam.one][reading] complete texts=${texts.length} difficulty=${body.difficulty}` +
+        (isMultiPart ? ` parts=${jobs.length}` : '')
     )
 
     return { texts }

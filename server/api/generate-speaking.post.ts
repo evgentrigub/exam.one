@@ -178,13 +178,21 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeaki
   }
 
   try {
+    console.log(`[exam.one][speaking] queue parts=${jobs.map(j => j.part).join(',')}`)
+
     // Sequential (one prompt at a time) + one retry per part: the free upstream
     // model rate-limits concurrent calls, which silently drops parts.
     const topics: SpeakingA2Topic[] = []
     for (const job of jobs) {
+      console.log(`[exam.one][speaking] start part=${job.part}`)
       let partTopics = await generateForPart(llmConfig, job, body.difficulty)
       if (partTopics.length === 0) {
         partTopics = await generateForPart(llmConfig, job, body.difficulty)
+      }
+      if (partTopics.length === 0) {
+        console.error(`[exam.one][speaking] failed part=${job.part} reason=parse_error`)
+      } else {
+        console.log(`[exam.one][speaking] done part=${job.part} topics=${partTopics.length}`)
       }
       topics.push(...partTopics)
     }
@@ -193,7 +201,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeaki
       return { topics: [], error: 'Failed to parse speaking topics from AI response. Please try again.' }
     }
 
-    console.log(`✅ Generated ${topics.length} speaking topics for ${body.difficulty} across ${jobs.length} parts`)
+    console.log(`[exam.one][speaking] complete topics=${topics.length} difficulty=${body.difficulty} parts=${jobs.length}`)
     return { topics }
   } catch (error: unknown) {
     if (error instanceof Error) {

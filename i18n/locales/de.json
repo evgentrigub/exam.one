@@ -209,6 +209,13 @@
     "skillTested": "Geprüfte Fertigkeit",
     "practice": "Üben"
   },
+  "generation": {
+    "statusQueued": "Wartend",
+    "statusRunning": "Läuft",
+    "statusDone": "Fertig",
+    "statusFailed": "Fehlgeschlagen",
+    "resume": "Generierung fortsetzen"
+  },
   "writing": {
     "checkReview": "Bewertung ansehen",
     "checking": "Prüfe…",

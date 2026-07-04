@@ -209,6 +209,13 @@
     "skillTested": "Skill tested",
     "practice": "Practice"
   },
+  "generation": {
+    "statusQueued": "Queued",
+    "statusRunning": "Running",
+    "statusDone": "Done",
+    "statusFailed": "Failed",
+    "resume": "Resume generation"
+  },
   "writing": {
     "checkReview": "Check the review",
     "checking": "Checking…",
