@@ -90,6 +90,11 @@ export function useWritingReview() {
     writeAllReviews(rest)
   }
 
+  async function regenerateReview(topic: WritingExercise, userContent: string): Promise<void> {
+    clearReview(topic.id)
+    return requestReview(topic, userContent)
+  }
+
   function getReviewPrompt(topic: WritingExercise, userContent: string) {
     // Select prompts based on difficulty level
     if (topic.difficulty === 'A2') {
@@ -170,6 +175,7 @@ export function useWritingReview() {
     reviewVersion,
     // commands
     requestReview,
+    regenerateReview,
     clearReview,
   }
 }

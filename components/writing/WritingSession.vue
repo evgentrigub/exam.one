@@ -68,23 +68,65 @@
 
           <ModelAnswerCard v-else-if="activeTab === 'answer'" :topic="topic" />
 
-          <div v-else-if="activeTab === 'feedback'" class="space-y-3">
-            <div v-if="!submissionResults" class="text-center py-8 text-sm text-base-content/60">
-              <MessageSquareQuote :size="22" class="mx-auto opacity-40 mb-2" aria-hidden="true" />
-              Submit your answer to see AI feedback here.
+          <div v-else-if="activeTab === 'ai-review'" class="space-y-4">
+            <div v-if="!isSubmitted" class="text-center py-8 text-sm text-base-content/60">
+              <MessageSquare :size="22" class="mx-auto opacity-40 mb-2" aria-hidden="true" />
+              Submit your answer to see AI review here.
             </div>
-            <template v-else>
+
+            <div v-else-if="reviewPending" class="flex items-center gap-3 py-2 text-sm text-base-content/70">
+              <span class="loading loading-spinner loading-sm text-primary" aria-hidden="true" />
+              <span>AI review in progress…</span>
+            </div>
+
+            <div v-else-if="reviewError" class="space-y-3">
+              <div class="alert alert-warning items-start text-sm">
+                <AlertTriangle :size="16" class="shrink-0 mt-0.5" aria-hidden="true" />
+                <div class="min-w-0">
+                  <p class="font-medium">AI review unavailable</p>
+                  <p class="text-xs opacity-80">{{ reviewError }}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm w-full gap-1.5 rounded-full"
+                :disabled="reviewPending"
+                @click="handleRegenerate"
+              >
+                <Sparkles :size="14" aria-hidden="true" />
+                Regenerate AI review
+              </button>
+            </div>
+
+            <div v-else-if="reviewReady" class="space-y-3">
               <div class="flex items-center gap-2 p-3 rounded-box bg-success/10 border border-success/20">
                 <CheckCircle2 :size="14" class="text-success shrink-0" aria-hidden="true" />
-                <p class="text-xs font-medium text-success">Writing submitted — {{ submissionResults.wordCount }} words</p>
+                <p class="text-sm font-medium text-success">AI review ready</p>
               </div>
-              <WritingFeedback
-                v-if="submissionResults.feedback"
-                :feedback="submissionResults.feedback"
-                :analysis-result="submissionResults.analysisResult"
-              />
-            </template>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm w-full gap-1.5 rounded-full"
+                @click="handleViewDetailedReview"
+              >
+                <Sparkles :size="14" aria-hidden="true" />
+                View detailed AI review
+              </button>
+            </div>
+
+            <div v-else class="space-y-3">
+              <p class="text-sm text-base-content/60 py-2">Preparing your review…</p>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm w-full gap-1.5 rounded-full"
+                :disabled="reviewPending"
+                @click="handleRegenerate"
+              >
+                <Sparkles :size="14" aria-hidden="true" />
+                Regenerate AI review
+              </button>
+            </div>
           </div>
+
         </div>
       </section>
     </div>
@@ -93,8 +135,10 @@
       <TextEditorCard
         :topic="topic"
         :initial-content="currentDraft"
+        :submitted="isSubmitted"
         @submit="handleSubmit"
         @save-draft="handleSaveDraft"
+        @finish="handleFinish"
       />
     </div>
   </div>
@@ -102,14 +146,12 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { CheckCircle2, Clock, FileText, Lightbulb, MessageSquareQuote, Sparkles, Type } from 'lucide-vue-next'
-import type { WritingExercise, WritingFeedbackModel } from '~/utils/types'
-import type { TextAnalysisResult } from '~/utils/textAnalysis'
-import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
+import { AlertTriangle, CheckCircle2, Clock, FileText, Lightbulb, MessageSquare, Sparkles, Type } from 'lucide-vue-next'
+import type { WritingExercise } from '~/utils/types'
 import { useProgress } from '~/composables/useProgress'
+import { useWritingReview } from '~/composables/useWritingReview'
 import { getWritingTips } from '~/data/writing/exerciseTips'
 import TextEditorCard from '~/components/writing/TextEditorCard.vue'
-import WritingFeedback from '~/components/writing/WritingFeedback.vue'
 import ModelAnswerCard from '~/components/writing/ModelAnswerCard.vue'
 
 interface Props {
@@ -122,45 +164,89 @@ const emit = defineEmits<{
   complete: [topicId: string, content: string, wordCount: number, timeSpent: number]
 }>()
 
-const { saveWritingSubmission, saveWritingDraft, getWritingSession } = useProgress()
+const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission } = useProgress()
+const { requestReview, regenerateReview, isReviewInProgress, hasReview, getReviewError, reviewVersion } = useWritingReview()
 
-type TabKey = 'prompt' | 'answer' | 'feedback'
+type TabKey = 'prompt' | 'answer' | 'ai-review'
 
 const activeTab = ref<TabKey>('prompt')
 const tabs: { key: TabKey; label: string; icon: Component }[] = [
   { key: 'prompt', label: 'AI Prompt', icon: Sparkles },
   { key: 'answer', label: 'Ideal Answer', icon: Lightbulb },
-  { key: 'feedback', label: 'AI Feedback', icon: MessageSquareQuote },
+  { key: 'ai-review', label: 'AI Review', icon: MessageSquare },
 ]
 
 const currentDraft = ref('')
-const submissionResults = ref<{
-  wordCount: number
-  timeSpent: number
-  feedback?: WritingFeedbackModel
-  analysisResult?: TextAnalysisResult | undefined
-} | null>(null)
+const isSubmitted = ref(false)
+const submittedContent = ref('')
+const submittedWordCount = ref(0)
+const submittedTimeSpent = ref(0)
 
 const writingTips = computed(() => getWritingTips(props.topic.difficulty, props.topic.testingPart))
+
+const reviewPending = computed(() => {
+  void reviewVersion.value
+  return isReviewInProgress(props.topic.id)
+})
+
+const reviewReady = computed(() => {
+  void reviewVersion.value
+  return hasReview(props.topic.id)
+})
+
+const reviewError = computed(() => {
+  void reviewVersion.value
+  return getReviewError(props.topic.id)
+})
 
 onMounted(() => {
   const existingSession = getWritingSession(props.topic.id)
   if (existingSession) {
     currentDraft.value = existingSession.content
   }
+
+  const latest = getLatestSubmission(props.topic.id)
+  if (latest && !latest.isDraft) {
+    isSubmitted.value = true
+    submittedContent.value = latest.content
+    submittedWordCount.value = latest.wordCount
+    submittedTimeSpent.value = latest.timeSpent || 0
+    currentDraft.value = latest.content
+  }
 })
 
 function handleSaveDraft(content: string, wordCount: number) {
+  if (isSubmitted.value) return
   currentDraft.value = content
   saveWritingDraft(props.topic.id, content, wordCount)
 }
 
-function handleSubmit(content: string, wordCount: number, timeSpent: number) {
-  const analysisResult = analyzeGermanText(content, props.topic)
-  const feedback = createWritingFeedback(analysisResult, props.topic)
-  submissionResults.value = { wordCount, timeSpent, feedback, analysisResult }
-  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent, feedback)
-  activeTab.value = 'feedback'
+async function handleSubmit(content: string, wordCount: number, timeSpent: number) {
+  isSubmitted.value = true
+  submittedContent.value = content
+  submittedWordCount.value = wordCount
+  submittedTimeSpent.value = timeSpent
+  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent)
   emit('complete', props.topic.id, content, wordCount, timeSpent)
+  activeTab.value = 'ai-review'
+
+  try {
+    await requestReview(props.topic, content)
+  } catch {
+    // Errors are stored in the review record; UI reads from there.
+  }
+}
+
+async function handleRegenerate() {
+  if (!submittedContent.value) return
+  await regenerateReview(props.topic, submittedContent.value)
+}
+
+function handleViewDetailedReview() {
+  navigateTo(`/writing/${props.topic.id}/checking`)
+}
+
+function handleFinish() {
+  navigateTo('/exercises?skill=writing')
 }
 </script>
