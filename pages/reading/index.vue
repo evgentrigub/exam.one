@@ -107,7 +107,10 @@
             :generating-difficulty="generatingDifficulty"
             :generation-error="generationError"
             :current-difficulty="examLevel"
+            :generation-jobs="generationJobs"
+            :can-resume-generation="canResumeGeneration"
             @generate="handleGenerate"
+            @resume="handleResume"
             @retry="handleRetry"
             @dismiss="handleDismissError"
           />
@@ -160,9 +163,6 @@ import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useSettingsStore } from '~/stores/settings'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 
-// Redirect to unified exercises page filtered by reading skill
-await navigateTo('/exercises?skill=reading', { replace: true })
-
 // Page metadata
 useHead({
   title: 'Reading Practice - Exam.one',
@@ -182,7 +182,10 @@ const {
   isGenerating, 
   generatingDifficulty,
   generationError,
+  generationJobs,
+  canResumeGeneration,
   generateReading,
+  resumeGeneration,
   retryGeneration,
   dismissError
 } = useReadingGeneration()
@@ -293,11 +296,10 @@ function resetFilters() {
 async function handleGenerate() {
   try {
     console.log(`🤖 Generating ${examLevel.value} reading exercises...`)
-    const newTexts = await generateReading(examLevel.value)
-    
-    // Add generated texts to storage
-    addTexts(newTexts)
-    
+    const newTexts = await generateReading(examLevel.value, {
+      onPartComplete: (items) => addTexts(items)
+    })
+
     console.log(`✅ Successfully generated ${newTexts.length} new reading exercises for ${examLevel.value}`)
   } catch (error: unknown) {
     console.error('Failed to generate reading exercises:', error)
@@ -308,12 +310,23 @@ async function handleGenerate() {
 // Retry generation handler
 async function handleRetry() {
   try {
-    const newTexts = await retryGeneration()
-    addTexts(newTexts)
+    const newTexts = await retryGeneration((items) => addTexts(items))
     console.log(`✅ Successfully generated ${newTexts.length} new reading exercises on retry`)
   } catch (error: unknown) {
     console.error('Failed to retry generation:', error)
     alert(error instanceof Error ? error.message : 'Failed to retry generation')
+  }
+}
+
+// Resume interrupted generation
+async function handleResume() {
+  try {
+    const newTexts = await resumeGeneration()
+    addTexts(newTexts)
+    console.log(`✅ Successfully resumed and generated ${newTexts.length} new reading exercises`)
+  } catch (error: unknown) {
+    console.error('Failed to resume generation:', error)
+    alert(error instanceof Error ? error.message : 'Failed to resume generation')
   }
 }
 

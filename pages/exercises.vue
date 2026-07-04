@@ -118,6 +118,69 @@
       />
     </ClientOnly>
 
+    <!-- Generation progress (modal flows close immediately, so surface per-part status here) -->
+    <ClientOnly>
+      <div
+        v-if="isGeneratingReading || isGeneratingListening || isGeneratingSpeaking"
+        class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3"
+      >
+        <div class="flex items-center gap-2 text-sm font-semibold text-base-content">
+          <span class="loading loading-spinner loading-sm text-primary" />
+          Generating exercises…
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div
+            v-if="isGeneratingReading && readingGenerationJobs.length"
+            class="border border-base-300 rounded-box p-3"
+          >
+            <div class="text-xs font-semibold text-base-content/70 mb-2">Reading</div>
+            <div class="space-y-1">
+              <div
+                v-for="job in readingGenerationJobs"
+                :key="`reading-${job.part}`"
+                class="flex items-center justify-between text-xs"
+              >
+                <span>Teil {{ job.part }}</span>
+                <span :class="jobStatusClass(job.status)">{{ $t(statusKey(job.status)) }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="isGeneratingListening && listeningGenerationJobs.length"
+            class="border border-base-300 rounded-box p-3"
+          >
+            <div class="text-xs font-semibold text-base-content/70 mb-2">Listening</div>
+            <div class="space-y-1">
+              <div
+                v-for="job in listeningGenerationJobs"
+                :key="`listening-${job.part}`"
+                class="flex items-center justify-between text-xs"
+              >
+                <span>Teil {{ job.part }}</span>
+                <span :class="jobStatusClass(job.status)">{{ $t(statusKey(job.status)) }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="isGeneratingSpeaking && speakingGenerationJobs.length"
+            class="border border-base-300 rounded-box p-3"
+          >
+            <div class="text-xs font-semibold text-base-content/70 mb-2">Speaking</div>
+            <div class="space-y-1">
+              <div
+                v-for="job in speakingGenerationJobs"
+                :key="`speaking-${job.part}`"
+                class="flex items-center justify-between text-xs"
+              >
+                <span>Teil {{ job.part }}</span>
+                <span :class="jobStatusClass(job.status)">{{ $t(statusKey(job.status)) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ClientOnly>
+
     <!-- Results -->
     <ClientOnly>
       <!-- Grid view -->
@@ -282,6 +345,7 @@ import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock,
 import type { Component } from 'vue'
 import { goetheA2Structure } from '~/data/examStructure/goetheA2'
 import type { SkillId } from '~/utils/labels'
+import { parseSkillPartKeys } from '~/utils/generation/partJobs'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useReadingGeneration } from '~/composables/useReadingGeneration'
@@ -327,10 +391,25 @@ const LISTENING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7, 3: 5, 4:
 const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
 
 // Generation composables — one per skill module
-const { generateReading } = useReadingGeneration()
+const {
+  generateReading,
+  isGenerating: isGeneratingReading,
+  generationJobs: readingGenerationJobs,
+  generationError: readingGenerationError
+} = useReadingGeneration()
 const { generateTopics } = useTopicGeneration()
-const { generateListening } = useListeningGeneration()
-const { generateSpeaking } = useSpeakingGeneration()
+const {
+  generateListening,
+  isGenerating: isGeneratingListening,
+  generationJobs: listeningGenerationJobs,
+  generationError: listeningGenerationError
+} = useListeningGeneration()
+const {
+  generateSpeaking,
+  isGenerating: isGeneratingSpeaking,
+  generationJobs: speakingGenerationJobs,
+  generationError: speakingGenerationError
+} = useSpeakingGeneration()
 
 // Generate exercises modal
 const genOpen = ref(false)
@@ -350,8 +429,14 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
   for (const skill of payload.skills) {
     try {
       if (skill === 'reading') {
-        const newTexts = await generateReading(examLevel.value)
-        addTexts(newTexts)
+        const parts = parseSkillPartKeys('reading', payload.parts)
+        await generateReading(examLevel.value, {
+          parts: parts.length ? parts : undefined,
+          onPartComplete: (items) => addTexts(items)
+        })
+        if (readingGenerationError.value) {
+          alert(readingGenerationError.value)
+        }
       } else if (skill === 'writing' && examLevel.value === 'A2') {
         const selectedParts = payload.parts
           .filter(p => p.startsWith('writing:'))
@@ -363,11 +448,23 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
           addTopics(newTopics)
         }
       } else if (skill === 'listening' && examLevel.value === 'A2') {
-        const newExercises = await generateListening(examLevel.value)
-        addListening(newExercises)
+        const parts = parseSkillPartKeys('listening', payload.parts)
+        await generateListening(examLevel.value, {
+          parts: parts.length ? parts : undefined,
+          onPartComplete: (items) => addListening(items)
+        })
+        if (listeningGenerationError.value) {
+          alert(listeningGenerationError.value)
+        }
       } else if (skill === 'speaking' && examLevel.value === 'A2') {
-        const newTopics = await generateSpeaking(examLevel.value)
-        addSpeaking(newTopics)
+        const parts = parseSkillPartKeys('speaking', payload.parts)
+        await generateSpeaking(examLevel.value, {
+          parts: parts.length ? parts : undefined,
+          onPartComplete: (items) => addSpeaking(items)
+        })
+        if (speakingGenerationError.value) {
+          alert(speakingGenerationError.value)
+        }
       }
     } catch (error: unknown) {
       console.error(`Failed to generate ${skill} exercises:`, error)
@@ -620,5 +717,27 @@ function resetFilters() {
   activeParts.value = []
   search.value = ''
   sortBy.value = 'default'
+}
+
+type PartStatus = 'queued' | 'running' | 'done' | 'failed'
+
+function statusKey(status: PartStatus) {
+  const keys: Record<PartStatus, string> = {
+    queued: 'generation.statusQueued',
+    running: 'generation.statusRunning',
+    done: 'generation.statusDone',
+    failed: 'generation.statusFailed'
+  }
+  return keys[status]
+}
+
+function jobStatusClass(status: PartStatus) {
+  const classes: Record<PartStatus, string> = {
+    queued: 'text-base-content/50',
+    running: 'text-primary font-medium',
+    done: 'text-success',
+    failed: 'text-error'
+  }
+  return classes[status]
 }
 </script>

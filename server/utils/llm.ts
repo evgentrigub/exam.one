@@ -33,7 +33,10 @@ export interface LlmMessage {
 export interface LlmOptions {
   temperature?: number
   maxTokens?: number
+  timeoutMs?: number
 }
+
+const DEFAULT_GENERATION_TIMEOUT_MS = 120_000
 
 export type LlmConnectionResult =
   | { status: 'skipped'; provider: LlmProvider; message: string }
@@ -111,7 +114,12 @@ export async function callLlm(
 ): Promise<string> {
   const { OpenAI } = await import('openai')
   const baseURL = config.provider === 'openrouter' ? OPENROUTER_BASE_URL : undefined
-  const client = new OpenAI({ apiKey: config.apiKey, baseURL })
+  const client = new OpenAI({
+    apiKey: config.apiKey,
+    baseURL,
+    maxRetries: 0,
+    timeout: opts?.timeoutMs ?? DEFAULT_GENERATION_TIMEOUT_MS,
+  })
 
   const usesOpenAiReasoning = config.provider === 'openai' && config.reasoningEffort !== undefined
   const maxTokensOption =
@@ -121,14 +129,32 @@ export async function callLlm(
         : { max_tokens: opts.maxTokens }
       : {}
 
-  const completion = await client.chat.completions.create({
-    model: config.model,
-    messages,
-    ...(usesOpenAiReasoning && { reasoning_effort: config.reasoningEffort }),
-    // Reasoning models reject temperature; only pass it for OpenRouter and non-reasoning OpenAI calls.
-    ...(!usesOpenAiReasoning && opts?.temperature !== undefined && { temperature: opts.temperature }),
-    ...maxTokensOption,
-  })
+  console.log(
+    `[exam.one][llm] request provider=${config.provider} model=${config.model} messages=${messages.length}`
+  )
 
-  return completion.choices?.[0]?.message?.content ?? ''
+  const startedAt = Date.now()
+
+  try {
+    const completion = await client.chat.completions.create({
+      model: config.model,
+      messages,
+      ...(usesOpenAiReasoning && { reasoning_effort: config.reasoningEffort }),
+      // Reasoning models reject temperature; only pass it for OpenRouter and non-reasoning OpenAI calls.
+      ...(!usesOpenAiReasoning && opts?.temperature !== undefined && { temperature: opts.temperature }),
+      ...maxTokensOption,
+    })
+
+    const content = completion.choices?.[0]?.message?.content ?? ''
+    const duration = Date.now() - startedAt
+    console.log(
+      `[exam.one][llm] done ms=${duration} chars=${content.length}`
+    )
+    return content
+  } catch (error: unknown) {
+    const duration = Date.now() - startedAt
+    const errorMessage = error instanceof Error ? error.message : 'Unknown LLM error'
+    console.error(`[exam.one][llm] failed ms=${duration} error=${errorMessage}`)
+    throw error
+  }
 }

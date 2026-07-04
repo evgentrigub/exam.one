@@ -271,13 +271,21 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateListen
   }
 
   try {
+    console.log(`[exam.one][listening] queue parts=${jobs.map(j => j.part).join(',')}`)
+
     // Sequential (one prompt at a time) + one retry per part: the free upstream
     // model rate-limits concurrent calls, which silently drops parts.
     const exercises: ListeningA2Exercise[] = []
     for (const job of jobs) {
+      console.log(`[exam.one][listening] start part=${job.part}`)
       let partExercises = await generateForPart(llmConfig, job, body.difficulty)
       if (partExercises.length === 0) {
         partExercises = await generateForPart(llmConfig, job, body.difficulty)
+      }
+      if (partExercises.length === 0) {
+        console.error(`[exam.one][listening] failed part=${job.part} reason=parse_error`)
+      } else {
+        console.log(`[exam.one][listening] done part=${job.part} exercises=${partExercises.length}`)
       }
       exercises.push(...partExercises)
     }
@@ -286,7 +294,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateListen
       return { exercises: [], error: 'Failed to parse listening exercises from AI response. Please try again.' }
     }
 
-    console.log(`✅ Generated ${exercises.length} listening exercises for ${body.difficulty} across ${jobs.length} parts`)
+    console.log(`[exam.one][listening] complete exercises=${exercises.length} difficulty=${body.difficulty} parts=${jobs.length}`)
     return { exercises }
   } catch (error: unknown) {
     if (error instanceof Error) {
