@@ -36,7 +36,9 @@
     "planning": "Planung",
     "sms": "Nachricht",
     "letter": "Brief",
-    "post": "Beitrag"
+    "post": "Beitrag",
+    "advertisement": "Anzeige",
+    "instructions": "Anleitung"
   },
   "home": {
     "title": "Exam.one",
@@ -86,7 +88,24 @@
     "textCard": {
       "readAgain": "Nochmal lesen",
       "startReading": "Lesen"
-    }
+    },
+    "type": "Typ",
+    "allTypes": "Alle Typen",
+    "status": "Status",
+    "allTopics": "Alle Themen",
+    "completed": "Abgeschlossen",
+    "notCompleted": "Nicht abgeschlossen",
+    "completionStatus": "Abschlussstatus",
+    "bestScore": "Beste Punktzahl",
+    "wordCount": "Wortanzahl",
+    "textFound": "{count} Text gefunden",
+    "textsFound": "{count} Texte gefunden",
+    "noTextsFound": "Keine Texte gefunden",
+    "noTextsMatch": "Keine Texte passen zu deinen aktuellen Filtern. Passe die Suchkriterien an.",
+    "resetFilters": "Filter zurücksetzen",
+    "deleteConfirm": "Möchtest du \"{title}\" wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden.",
+    "sortAscending": "Aufsteigend sortieren",
+    "sortDescending": "Absteigend sortieren"
   },
   "dashboard": {
     "title": "Dein Fortschritts-Dashboard",
@@ -108,7 +127,28 @@
     "continuePractice": "Weiter üben",
     "continuePracticeDescription": "Starte mit dem Lesen und Üben von deutschen Texten",
     "progressOverview": "Fortschrittsübersicht",
-    "startFirstQuiz": "Starte deine erste Quiz, um den Fortschritt zu sehen"
+    "startFirstQuiz": "Starte deine erste Quiz, um den Fortschritt zu sehen",
+    "daysUntilExam": "Tage bis zur Prüfung",
+    "overallReadiness": "Gesamtbereitschaft",
+    "overallReadinessDescription": "Über alle vier Prüfungsfertigkeiten",
+    "viewProgress": "Fortschritt ansehen",
+    "skillReadiness": "Fertigkeitsbereitschaft",
+    "done": "erledigt",
+    "continuePracticing": "Weiter üben",
+    "allExercises": "Alle Übungen",
+    "nothingInProgress": "Nichts in Bearbeitung",
+    "startExerciseHint": "Starte eine Übung, um sie hier zu sehen",
+    "browseExercises": "Übungen durchsuchen",
+    "focusNext": "Als Nächstes",
+    "recommended": "Empfohlen",
+    "mockExam": "Modellprüfung",
+    "soon": "Demnächst",
+    "mockExamComingSoon": "Vollständige zeitbegrenzte Modellprüfungen kommen in einem späteren Update.",
+    "readiness": {
+      "wellPrepared": "Du bist gut vorbereitet — mach weiter so!",
+      "goodProgress": "Guter Fortschritt — konzentriere dich auf deine Schwächen",
+      "keepPracticing": "Übe weiter, um deine Bereitschaft zu steigern"
+    }
   },
   "quiz": {
     "question": "Frage",
@@ -190,7 +230,22 @@
     "mixed": "Gemischt",
     "challenging": "Anspruchsvoll",
     "cancel": "Abbrechen",
-    "modulesCount": "{count} Module"
+    "modulesCount": "{count} Module",
+    "exercise": "Übung",
+    "skill": "Fertigkeit",
+    "type": "Typ",
+    "time": "Zeit",
+    "progress": "Fortschritt",
+    "start": "Starten",
+    "review": "Ansehen",
+    "repeat": "Wiederholen",
+    "noMatches": "Keine Übungen passen zu deinen Filtern",
+    "clearFilters": "Filter zurücksetzen",
+    "clear": "Zurücksetzen",
+    "min": "Min.",
+    "words": "Wörter",
+    "deleteWritingTopic": "Schreibthema löschen",
+    "deleteWritingConfirm": "\"{title}\" löschen?\n\nDieses Schreibthema wird aus dem lokalen Speicher entfernt."
   },
   "examFormatUi": {
     "tagline": "So ist die Prüfung aufgebaut",
@@ -214,7 +269,28 @@
     "statusRunning": "Läuft",
     "statusDone": "Fertig",
     "statusFailed": "Fehlgeschlagen",
-    "resume": "Generierung fortsetzen"
+    "resume": "Generierung fortsetzen",
+    "generating": "Übungen werden generiert…",
+    "status": "Generierungsstatus",
+    "readingTitle": "Leseübungen werden generiert…",
+    "readingDescription": "Erstelle {level}-niveau Leseübungen im Goethe-Stil mit KI.",
+    "failed": "Generierung fehlgeschlagen",
+    "retry": "Wiederholen",
+    "dismiss": "Verwerfen",
+    "hint": "Jeder Teil dauert 10–60 Sekunden. Abgeschlossene Teile werden sofort gespeichert.",
+    "hintResumable": "Jeder Teil dauert 10–60 Sekunden. Abgeschlossene Teile werden sofort gespeichert, damit du neu laden und fortsetzen kannst.",
+    "aiLabel": "Optionale KI-Erweiterung",
+    "resumeTitle": "Generierung fortsetzen",
+    "resumeDescription": "Eine vorherige Generierung wurde unterbrochen. {count} Teil(e) sind noch ausstehend.",
+    "generateReadingTitle": "Neue Leseübungen generieren",
+    "generateReadingDescription": "Die KI kann neue {level}-Leseübungen erstellen. Falls nicht verfügbar, funktionieren die enthaltenen Übungen weiterhin offline.",
+    "a2PartsHint": "Erstellt eine Übung pro Prüfungsteil ({part} 1–4).",
+    "otherPartsHint": "Jede Generierung erstellt neue Übungen.",
+    "generateExercises": "Übungen generieren",
+    "readingErrorFallback": "Leseübungen konnten nicht generiert werden",
+    "retryErrorFallback": "Generierung konnte nicht wiederholt werden",
+    "resumeErrorFallback": "Generierung konnte nicht fortgesetzt werden",
+    "skillErrorFallback": "Übungen für {skill} konnten nicht generiert werden"
   },
   "writing": {
     "checkReview": "Bewertung ansehen",

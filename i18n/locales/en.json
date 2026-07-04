@@ -36,7 +36,9 @@
     "planning": "Planning",
     "sms": "Message",
     "letter": "Letter",
-    "post": "Post"
+    "post": "Post",
+    "advertisement": "Advertisement",
+    "instructions": "Instructions"
   },
   "home": {
     "title": "Exam.one",
@@ -86,7 +88,24 @@
     "textCard": {
       "readAgain": "Read Again",
       "startReading": "Start Reading"
-    }
+    },
+    "type": "Type",
+    "allTypes": "All Types",
+    "status": "Status",
+    "allTopics": "All Topics",
+    "completed": "Completed",
+    "notCompleted": "Not Completed",
+    "completionStatus": "Completion Status",
+    "bestScore": "Best Score",
+    "wordCount": "Word Count",
+    "textFound": "{count} text found",
+    "textsFound": "{count} texts found",
+    "noTextsFound": "No texts found",
+    "noTextsMatch": "No texts match your current filters. Try adjusting your search criteria.",
+    "resetFilters": "Reset Filters",
+    "deleteConfirm": "Are you sure you want to delete \"{title}\"?\n\nThis action cannot be undone.",
+    "sortAscending": "Sort Ascending",
+    "sortDescending": "Sort Descending"
   },
   "dashboard": {
     "title": "Your Progress Dashboard",
@@ -108,7 +127,28 @@
     "continuePractice": "Continue Practice",
     "continuePracticeDescription": "Start reading and practicing with German texts",
     "progressOverview": "Progress Overview",
-    "startFirstQuiz": "Start your first quiz to see progress"
+    "startFirstQuiz": "Start your first quiz to see progress",
+    "daysUntilExam": "days until exam",
+    "overallReadiness": "Overall readiness",
+    "overallReadinessDescription": "Across all four exam skills",
+    "viewProgress": "View progress",
+    "skillReadiness": "Skill readiness",
+    "done": "done",
+    "continuePracticing": "Continue practicing",
+    "allExercises": "All exercises",
+    "nothingInProgress": "Nothing in progress",
+    "startExerciseHint": "Start an exercise to see it here",
+    "browseExercises": "Browse exercises",
+    "focusNext": "Focus next",
+    "recommended": "Recommended",
+    "mockExam": "Mock exam",
+    "soon": "Soon",
+    "mockExamComingSoon": "Full timed mock exams are coming in a later update.",
+    "readiness": {
+      "wellPrepared": "You're well prepared — keep it up!",
+      "goodProgress": "Good progress — focus on your weak spots",
+      "keepPracticing": "Keep practicing to build your readiness"
+    }
   },
   "quiz": {
     "question": "Question",
@@ -190,7 +230,22 @@
     "mixed": "Mixed",
     "challenging": "Challenging",
     "cancel": "Cancel",
-    "modulesCount": "{count} modules"
+    "modulesCount": "{count} modules",
+    "exercise": "Exercise",
+    "skill": "Skill",
+    "type": "Type",
+    "time": "Time",
+    "progress": "Progress",
+    "start": "Start",
+    "review": "Review",
+    "repeat": "Repeat",
+    "noMatches": "No exercises match your filters",
+    "clearFilters": "Clear filters",
+    "clear": "Clear",
+    "min": "min",
+    "words": "words",
+    "deleteWritingTopic": "Delete writing topic",
+    "deleteWritingConfirm": "Delete \"{title}\"?\n\nThis removes the writing topic from local storage."
   },
   "examFormatUi": {
     "tagline": "How the exam is built",
@@ -214,7 +269,28 @@
     "statusRunning": "Running",
     "statusDone": "Done",
     "statusFailed": "Failed",
-    "resume": "Resume generation"
+    "resume": "Resume generation",
+    "generating": "Generating exercises…",
+    "status": "Generation status",
+    "readingTitle": "Generating reading exercises…",
+    "readingDescription": "Creating {level} level Goethe-style reading exercises with AI.",
+    "failed": "Generation failed",
+    "retry": "Retry",
+    "dismiss": "Dismiss",
+    "hint": "Each part takes 10–60 seconds. Completed parts are saved immediately.",
+    "hintResumable": "Each part takes 10–60 seconds. Completed parts are saved immediately, so you can reload and resume.",
+    "aiLabel": "Optional AI enhancement",
+    "resumeTitle": "Resume generation",
+    "resumeDescription": "A previous generation was interrupted. {count} part(s) are still pending.",
+    "generateReadingTitle": "Generate new reading exercises",
+    "generateReadingDescription": "AI can create new {level} reading comprehension sets. If unavailable, bundled exercises still work offline.",
+    "a2PartsHint": "Creates one exercise per exam part ({part} 1–4).",
+    "otherPartsHint": "Each generation creates new exercises.",
+    "generateExercises": "Generate exercises",
+    "readingErrorFallback": "Failed to generate reading exercises",
+    "retryErrorFallback": "Failed to retry generation",
+    "resumeErrorFallback": "Failed to resume generation",
+    "skillErrorFallback": "Failed to generate {skill} exercises"
   },
   "writing": {
     "checkReview": "Check the review",

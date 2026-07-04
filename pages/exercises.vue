@@ -43,7 +43,7 @@
               v-if="partFilterSkills.length > 1"
               class="inline-flex items-center gap-1.5 text-[11px] font-medium text-base-content/55 w-[68px] shrink-0 capitalize"
             >
-              <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${sk}`" />{{ sk }}
+              <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${sk}`" />{{ getSkillLabel(sk, t) }}
             </span>
             <PartChip
               v-for="p in partsForSkill(sk)"
@@ -126,7 +126,7 @@
       >
         <div class="flex items-center gap-2 text-sm font-semibold text-base-content">
           <span v-if="isAnyGenerating" class="loading loading-spinner loading-sm text-primary" />
-          {{ isAnyGenerating ? 'Generating exercises…' : 'Generation status' }}
+          {{ isAnyGenerating ? $t('generation.generating') : $t('generation.status') }}
         </div>
         <div class="space-y-2">
           <div
@@ -135,7 +135,7 @@
             class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
           >
             <span class="text-sm font-medium text-base-content capitalize">
-              {{ job.skill }} · Teil {{ job.part }}
+              {{ $t('skill.' + job.skill) }} · {{ $t('exercisesUi.part') }} {{ job.part }}
             </span>
             <span
               class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
@@ -146,7 +146,7 @@
           </div>
         </div>
         <p class="text-xs text-base-content/50">
-          Each part takes 10–60 seconds. Completed parts are saved immediately.
+          {{ $t('generation.hint') }}
         </p>
       </div>
     </ClientOnly>
@@ -171,8 +171,8 @@
                 v-if="ex.skill === 'writing'"
                 class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error"
                 type="button"
-                title="Delete writing topic"
-                aria-label="Delete writing topic"
+                :title="$t('exercisesUi.deleteWritingTopic')"
+                :aria-label="$t('exercisesUi.deleteWritingTopic')"
                 @click.stop="deleteWritingTopic(ex)"
               >
                 <Trash2 :size="13" aria-hidden="true" />
@@ -181,17 +181,17 @@
           </div>
           <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
           <p class="text-xs text-base-content/50 capitalize mb-3">
-            {{ ex.skill }} · {{ ex.type }}<span v-if="ex.part" class="uppercase"> · Teil {{ ex.part }}</span>
+            {{ $t('skill.' + ex.skill) }} · {{ getTypeLabel(ex.type, t) }}<span v-if="ex.part" class="uppercase"> · {{ $t('exercisesUi.part') }} {{ ex.part }}</span>
           </p>
 
           <div class="flex items-center gap-3 text-xs text-base-content/50 mb-3">
             <span class="flex items-center gap-1">
               <Clock :size="11" />
-              {{ ex.minutes }} min
+              {{ ex.minutes }} {{ $t('exercisesUi.min') }}
             </span>
             <span v-if="ex.words" class="flex items-center gap-1">
               <AlignLeft :size="11" />
-              {{ ex.words }} words
+              {{ ex.words }} {{ $t('exercisesUi.words') }}
             </span>
           </div>
 
@@ -209,15 +209,15 @@
             type="button"
             @click.stop="repeatWritingExercise(ex.id)"
           >
-            Repeat <ChevronRight :size="12" aria-hidden="true" />
+            {{ $t('exercisesUi.repeat') }} <ChevronRight :size="12" aria-hidden="true" />
           </button>
         </div>
 
         <!-- Empty state -->
         <div v-if="filtered.length === 0" class="col-span-3 py-16 text-center">
           <BookOpen :size="32" class="mx-auto text-base-content/20 mb-3" />
-          <p class="text-sm text-base-content/50">No exercises match your filters</p>
-          <button class="btn btn-ghost btn-sm mt-2" @click="resetFilters">Clear filters</button>
+          <p class="text-sm text-base-content/50">{{ $t('exercisesUi.noMatches') }}</p>
+          <button class="btn btn-ghost btn-sm mt-2" @click="resetFilters">{{ $t('exercisesUi.clearFilters') }}</button>
         </div>
       </div>
 
@@ -226,12 +226,12 @@
         <table class="table table-sm w-full">
           <thead>
             <tr class="text-xs text-base-content/50 border-b border-base-300">
-              <th class="font-medium py-3 pl-5">Exercise</th>
-              <th class="font-medium py-3">Skill</th>
-              <th class="font-medium py-3">Type</th>
-              <th class="font-medium py-3">Level</th>
-              <th class="font-medium py-3">Time</th>
-              <th class="font-medium py-3">Progress</th>
+              <th class="font-medium py-3 pl-5">{{ $t('exercisesUi.exercise') }}</th>
+              <th class="font-medium py-3">{{ $t('exercisesUi.skill') }}</th>
+              <th class="font-medium py-3">{{ $t('exercisesUi.type') }}</th>
+              <th class="font-medium py-3">{{ $t('exercisesUi.level') }}</th>
+              <th class="font-medium py-3">{{ $t('exercisesUi.time') }}</th>
+              <th class="font-medium py-3">{{ $t('exercisesUi.progress') }}</th>
               <th class="font-medium py-3 pr-5" />
             </tr>
           </thead>
@@ -248,14 +248,14 @@
               <td class="py-3">
                 <span class="flex items-center gap-1.5 text-xs font-medium capitalize" :class="`text-${ex.skill}`">
                   <component :is="skillIcon(ex.skill)" :size="12" />
-                  {{ ex.skill }}
+                  {{ $t('skill.' + ex.skill) }}
                 </span>
               </td>
               <td class="py-3 text-xs text-base-content/60 capitalize">
-                {{ ex.type }}<span v-if="ex.part"> · Teil {{ ex.part }}</span>
+                {{ getTypeLabel(ex.type, t) }}<span v-if="ex.part"> · {{ $t('exercisesUi.part') }} {{ ex.part }}</span>
               </td>
               <td class="py-3"><span class="level-pip">{{ ex.difficulty }}</span></td>
-              <td class="py-3 text-xs text-base-content/60">{{ ex.minutes }} min</td>
+              <td class="py-3 text-xs text-base-content/60">{{ ex.minutes }} {{ $t('exercisesUi.min') }}</td>
               <td class="py-3">
                 <div class="flex items-center gap-2 w-28">
                   <progress class="progress flex-1 h-1" :class="progressClass(ex.skill)" :value="ex.pct" max="100" />
@@ -268,7 +268,7 @@
                   type="button"
                   @click.stop="openExercise(ex)"
                 >
-                  {{ ex.skill === 'writing' && ex.status === 'mastered' ? 'Review' : 'Start' }}
+                  {{ ex.skill === 'writing' && ex.status === 'mastered' ? $t('exercisesUi.review') : $t('exercisesUi.start') }}
                   <ChevronRight :size="12" />
                 </button>
                 <button
@@ -277,13 +277,13 @@
                   type="button"
                   @click.stop="repeatWritingExercise(ex.id)"
                 >
-                  Repeat
+                  {{ $t('exercisesUi.repeat') }}
                 </button>
                 <button
                   v-if="ex.skill === 'writing'"
                   class="btn btn-xs btn-ghost text-base-content/40 hover:text-error"
                   type="button"
-                  aria-label="Delete writing topic"
+                  :aria-label="$t('exercisesUi.deleteWritingTopic')"
                   @click.stop="deleteWritingTopic(ex)"
                 >
                   <Trash2 :size="12" aria-hidden="true" />
@@ -292,8 +292,8 @@
             </tr>
             <tr v-if="filtered.length === 0">
               <td colspan="7" class="py-12 text-center text-sm text-base-content/50">
-                No exercises match your filters.
-                <button class="btn btn-ghost btn-xs ml-2" @click="resetFilters">Clear</button>
+                {{ $t('exercisesUi.noMatches') }}.
+                <button class="btn btn-ghost btn-xs ml-2" @click="resetFilters">{{ $t('exercisesUi.clear') }}</button>
               </td>
             </tr>
           </tbody>
@@ -314,7 +314,7 @@
 import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2, Info, Sparkles } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { goetheA2Structure } from '~/data/examStructure/goetheA2'
-import type { SkillId } from '~/utils/labels'
+import type { ExerciseStatus, SkillId } from '~/utils/labels'
 import { parseSkillPartKeys } from '~/utils/generation/partJobs'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
@@ -327,7 +327,7 @@ import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useSpeakingGeneration } from '~/composables/useSpeakingGeneration'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
-import { getSkillMeta, getSkillLabel } from '~/utils/labels'
+import { getSkillMeta, getSkillLabel, getStatusLabel, getTypeLabel } from '~/utils/labels'
 import GenerateExercisesModal from '~/components/exercises/GenerateExercisesModal.vue'
 
 usePageMeta('pageMeta.exercisesTitle', 'pageMeta.exercisesSubtitle')
@@ -442,7 +442,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
       }
     } catch (error: unknown) {
       console.error(`Failed to generate ${skill} exercises:`, error)
-      alert(error instanceof Error ? error.message : `Failed to generate ${skill} exercises`)
+      alert(error instanceof Error ? error.message : t('generation.skillErrorFallback', { skill: t('skill.' + skill) }))
     }
   }
 }
@@ -679,8 +679,7 @@ function skillIcon(skill: string): Component {
 }
 
 function statusLabel(status: string) {
-  const map: Record<string, string> = { new: 'New', inprogress: 'In progress', mastered: 'Mastered' }
-  return map[status] ?? ''
+  return getStatusLabel(status as ExerciseStatus, t)
 }
 
 function statusClass(status: string) {
@@ -705,7 +704,7 @@ function repeatWritingExercise(topicId: string) {
 
 function deleteWritingTopic(ex: UnifiedExercise) {
   if (ex.skill !== 'writing') return
-  const confirmed = confirm(`Delete "${ex.title}"?\n\nThis removes the writing topic from local storage.`)
+  const confirmed = confirm(t('exercisesUi.deleteWritingConfirm', { title: ex.title }))
   if (confirmed) {
     deleteTopic(ex.id)
   }
