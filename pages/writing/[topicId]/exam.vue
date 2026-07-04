@@ -42,7 +42,6 @@
 <script setup lang="ts">
 import { ArrowLeft, PenLine } from 'lucide-vue-next'
 import { useWritingTopics } from '~/composables/useWritingTopics'
-import { useWritingReview } from '~/composables/useWritingReview'
 import type { WritingExercise } from '~/utils/types'
 import WritingSession from '~/components/writing/WritingSession.vue'
 
@@ -58,10 +57,7 @@ watchEffect(() => {
 
 useHead({ title: computed(() => topic.value ? `${topic.value.title} – Writing` : 'Writing Exercise') })
 
-const { requestReview } = useWritingReview()
-
-async function handleWritingComplete(_topicId: string, content: string) {
-  if (!topic.value) return
-  await requestReview(topic.value, content)
+function handleWritingComplete(_topicId: string, _content: string, _wordCount: number, _timeSpent: number) {
+  // Progress is saved and the AI review is requested inside WritingSession.
 }
 </script>

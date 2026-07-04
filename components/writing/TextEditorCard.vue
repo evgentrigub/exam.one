@@ -12,7 +12,8 @@
     <textarea
       v-model="content"
       class="mt-4 w-full min-h-[360px] p-4 text-[15px] leading-relaxed rounded-box border bg-base-100 outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 resize-y"
-      :class="textareaClasses"
+      :class="[textareaClasses, props.submitted ? 'opacity-80 cursor-default' : '']"
+      :disabled="props.submitted"
       placeholder="Start writing your response here..."
       aria-label="Your writing answer"
       @input="updateWordCount"
@@ -26,7 +27,7 @@
       <progress class="progress w-full h-1.5" :class="progressBarColor" :value="wordCountPercentage" max="100" />
     </div>
 
-    <div v-if="content.trim().length > 20" class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3">
+    <div v-if="content.trim().length > 20 && !props.submitted" class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3">
       <div class="flex items-center justify-between gap-3 mb-2">
         <span class="text-xs font-semibold uppercase tracking-wider text-base-content/50">Writing quality</span>
         <button class="btn btn-ghost btn-xs" type="button" @click="showQualityDetails = !showQualityDetails">
@@ -60,20 +61,44 @@
         <FileText :size="13" aria-hidden="true" />
         <span>{{ wordCountStatus }}</span>
       </div>
-      <button v-if="content.trim()" type="button" class="btn btn-error btn-ghost btn-xs" @click="clearContent">
+      <button v-if="content.trim() && !props.submitted" type="button" class="btn btn-error btn-ghost btn-xs" @click="clearContent">
         Clear text
       </button>
     </div>
 
     <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-      <button :disabled="!content.trim()" type="button" class="btn btn-ghost btn-sm gap-1.5 flex-1 border border-base-300 rounded-full" @click="saveDraft">
+      <button
+        v-if="!props.submitted"
+        :disabled="!content.trim()"
+        type="button"
+        class="btn btn-ghost btn-sm gap-1.5 flex-1 border border-base-300 rounded-full"
+        @click="saveDraft"
+      >
         <Save :size="12" aria-hidden="true" />
         Save Draft
       </button>
-      <button :disabled="!isSubmittable" type="button" class="btn btn-primary btn-sm flex-1 gap-1.5 rounded-full" @click="submitWriting">
+      <button
+        v-if="!props.submitted"
+        :disabled="!isSubmittable"
+        type="button"
+        class="btn btn-primary btn-sm flex-1 gap-1.5 rounded-full"
+        @click="submitWriting"
+      >
         Submit
         <ArrowRight :size="12" aria-hidden="true" />
       </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary btn-sm flex-1 gap-1.5 rounded-full"
+        @click="emit('finish')"
+      >
+        <DoorOpen :size="12" aria-hidden="true" />
+        Save & Exit
+      </button>
+      <div v-if="props.submitted" class="flex-1 text-center text-sm text-base-content/60">
+        Submitted
+      </div>
     </div>
 
     <div v-if="autoSaved" class="text-[11px] text-success mt-2 flex items-center gap-1" aria-live="polite">
@@ -84,7 +109,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, CheckCircle2, FileText, PenLine, Save } from 'lucide-vue-next'
+import { ArrowRight, CheckCircle2, DoorOpen, FileText, PenLine, Save } from 'lucide-vue-next'
 import type { WritingExercise } from '~/utils/types'
 import type { TextAnalysisResult } from '~/utils/textAnalysis'
 import { analyzeGermanText } from '~/utils/textAnalysis'
@@ -92,6 +117,7 @@ import { analyzeGermanText } from '~/utils/textAnalysis'
 interface Props {
   topic: WritingExercise
   initialContent?: string
+  submitted?: boolean
 }
 
 const props = defineProps<Props>()
@@ -99,6 +125,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   submit: [content: string, wordCount: number, timeSpent: number]
   saveDraft: [content: string, wordCount: number]
+  finish: []
 }>()
 
 const content = ref(props.initialContent || '')
@@ -120,6 +147,7 @@ watch(() => props.initialContent, (next) => {
 })
 
 watch(content, () => {
+  if (props.submitted) return
   updateWordCount()
   if (saveTimer) clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
