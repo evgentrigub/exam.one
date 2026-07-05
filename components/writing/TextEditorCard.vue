@@ -1,159 +1,123 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col overflow-hidden">
-    <!-- Card Header -->
-    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200 rounded-t-xl flex-shrink-0">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-gray-900">Your Answer</h2>
-            <p class="text-sm text-purple-600">Write your response here</p>
-          </div>
+  <div class="bg-base-100 rounded-box border border-base-300/70 p-5 sm:p-7 h-fit">
+    <div class="flex items-center gap-2">
+      <PenLine :size="14" class="text-base-content/70" aria-hidden="true" />
+      <div class="text-sm font-semibold text-base-content/70">Your Answer</div>
+      <span class="ml-auto text-xs text-base-content/60">
+        <span class="font-mono font-semibold" :class="wordCountColor">{{ wordCount }}</span>
+        <span class="text-base-content/50"> / {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words</span>
+      </span>
+    </div>
+
+    <textarea
+      v-model="content"
+      class="mt-4 w-full min-h-[360px] p-4 text-[15px] leading-relaxed rounded-box border bg-base-100 outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 resize-y"
+      :class="[textareaClasses, props.submitted ? 'opacity-80 cursor-default' : '']"
+      :disabled="props.submitted"
+      placeholder="Start writing your response here..."
+      aria-label="Your writing answer"
+      @input="updateWordCount"
+    />
+
+    <div class="mt-4">
+      <div class="flex items-center justify-between text-xs text-base-content/60 mb-1.5">
+        <span>Word count progress</span>
+        <span class="font-mono">{{ wordCountPercentage }}%</span>
+      </div>
+      <progress class="progress w-full h-1.5" :class="progressBarColor" :value="wordCountPercentage" max="100" />
+    </div>
+
+    <div v-if="content.trim().length > 20 && !props.submitted" class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3">
+      <div class="flex items-center justify-between gap-3 mb-2">
+        <span class="text-xs font-semibold uppercase tracking-wider text-base-content/50">Writing quality</span>
+        <button class="btn btn-ghost btn-xs" type="button" @click="showQualityDetails = !showQualityDetails">
+          {{ showQualityDetails ? 'Hide details' : 'Details' }}
+        </button>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-xs">
+        <div class="flex items-center gap-2 text-base-content/70">
+          <span class="badge badge-sm" :class="structureIndicatorColor" />
+          <span>Structure</span>
         </div>
-        
-        <!-- Word Counter -->
-        <div class="text-right">
-          <div class="text-2xl font-bold" :class="wordCountColor">{{ wordCount }}</div>
-          <div class="text-xs text-gray-600">
-            {{ topic.wordCount.min }}-{{ topic.wordCount.max }} words
-          </div>
+        <div class="flex items-center gap-2 text-base-content/70">
+          <span class="badge badge-sm" :class="vocabularyIndicatorColor" />
+          <span>Vocabulary</span>
+        </div>
+        <div class="flex items-center gap-2 text-base-content/70">
+          <span class="badge badge-sm" :class="lengthIndicatorColor" />
+          <span>Length</span>
+        </div>
+      </div>
+      <div v-if="showQualityDetails && realtimeAnalysis" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
+        <div v-for="item in analysisStats" :key="item.label" class="rounded-box bg-base-100 border border-base-300/70 p-2">
+          <div class="text-[10px] uppercase tracking-wider text-base-content/50">{{ item.label }}</div>
+          <div class="font-mono font-bold text-sm">{{ item.value }}</div>
         </div>
       </div>
     </div>
 
-    <!-- Text Editor -->
-    <div class="p-6 flex-1 flex flex-col overflow-y-auto min-h-0">
-      <div class="mb-4 flex-1 min-h-0">
-        <textarea
-          v-model="content"
-          class="w-full h-full min-h-[120px] border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
-          :class="textareaClasses"
-          placeholder="Start writing your response here..."
-          @input="updateWordCount"
-        />
+    <div class="mt-3 flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-1.5" :class="wordCountColor">
+        <FileText :size="13" aria-hidden="true" />
+        <span>{{ wordCountStatus }}</span>
       </div>
+      <button v-if="content.trim() && !props.submitted" type="button" class="btn btn-error btn-ghost btn-xs" @click="clearContent">
+        Clear text
+      </button>
+    </div>
 
-      <!-- Writing Progress Indicators -->
-      <div class="mb-4">
-        <!-- Word Count Progress Bar -->
-        <div class="mb-2">
-          <div class="flex justify-between items-center mb-1">
-            <span class="text-xs font-medium text-gray-700">Wortanzahl-Fortschritt</span>
-            <span class="text-xs text-gray-600">{{ wordCountPercentage }}%</span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              class="h-2 rounded-full transition-all duration-300"
-              :class="progressBarColor"
-              :style="{ width: `${Math.min(wordCountPercentage, 100)}%` }"
-            />
-          </div>
-        </div>
-
-        <!-- Real-time Quality Indicators (Stage 12) -->
-        <div v-if="content.trim().length > 20" class="mb-3">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-medium text-gray-700">Schreibqualität</span>
-            <button 
-              @click="showQualityDetails = !showQualityDetails"
-              class="text-xs text-blue-600 hover:text-blue-700"
-            >
-              {{ showQualityDetails ? 'Weniger' : 'Details' }}
-            </button>
-          </div>
-          
-          <!-- Quality Indicators -->
-          <div class="grid grid-cols-3 gap-2 text-xs">
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full mr-2" :class="structureIndicatorColor"></div>
-              <span class="text-gray-600">Struktur</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full mr-2" :class="vocabularyIndicatorColor"></div>
-              <span class="text-gray-600">Wortschatz</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full mr-2" :class="lengthIndicatorColor"></div>
-              <span class="text-gray-600">Länge</span>
-            </div>
-          </div>
-
-          <!-- Detailed Quality Info -->
-          <div v-if="showQualityDetails && realtimeAnalysis" class="mt-2 p-2 bg-gray-50 rounded text-xs">
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <span class="font-medium">Sätze:</span> {{ realtimeAnalysis.sentenceCount }}
-              </div>
-              <div>
-                <span class="font-medium">Absätze:</span> {{ realtimeAnalysis.structureElements.paragraphCount }}
-              </div>
-              <div>
-                <span class="font-medium">Wortvielfalt:</span> {{ Math.round(realtimeAnalysis.vocabularyMetrics.vocabularyDiversity * 100) }}%
-              </div>
-              <div>
-                <span class="font-medium">Konnektoren:</span> {{ realtimeAnalysis.vocabularyMetrics.commonConnectors.length }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Writing Status -->
-        <div class="flex items-center justify-between text-sm">
-          <div class="flex items-center">
-            <span class="flex items-center" :class="wordCountColor">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-              </svg>
-              {{ wordCountStatus }}
-            </span>
-          </div>
-          <button
-            v-if="content.trim()"
-            class="text-red-600 hover:text-red-700 text-xs font-medium transition-colors"
-            @click="clearContent"
-          >
-            Text löschen
-          </button>
-        </div>
+    <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+      <button
+        v-if="!props.submitted"
+        :disabled="!content.trim()"
+        type="button"
+        class="btn btn-ghost btn-sm gap-1.5 flex-1 border border-base-300 rounded-full"
+        @click="saveDraft"
+      >
+        <Save :size="12" aria-hidden="true" />
+        Save Draft
+      </button>
+      <button
+        v-if="!props.submitted"
+        :disabled="!isSubmittable"
+        type="button"
+        class="btn btn-primary btn-sm flex-1 gap-1.5 rounded-full"
+        @click="submitWriting"
+      >
+        Submit
+        <ArrowRight :size="12" aria-hidden="true" />
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary btn-sm flex-1 gap-1.5 rounded-full"
+        @click="emit('finish')"
+      >
+        <DoorOpen :size="12" aria-hidden="true" />
+        Save & Exit
+      </button>
+      <div v-if="props.submitted" class="flex-1 text-center text-sm text-base-content/60">
+        Submitted
       </div>
+    </div>
 
-      <!-- Action Buttons -->
-      <div class="flex space-x-3 flex-shrink-0 mt-auto">
-        <button
-          :disabled="!content.trim()"
-          class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          @click="saveDraft"
-        >
-          Save Draft
-        </button>
-        <button
-          :class="submitButtonClasses"
-          :disabled="!isSubmittable"
-          class="flex-1 px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
-          @click="submitWriting"
-        >
-          <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-          </svg>
-          Submit Writing
-        </button>
-      </div>
+    <div v-if="autoSaved" class="text-[11px] text-success mt-2 flex items-center gap-1" aria-live="polite">
+      <CheckCircle2 :size="11" aria-hidden="true" />
+      Draft auto-saved just now
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic } from '~/utils/types'
+import { ArrowRight, CheckCircle2, DoorOpen, FileText, PenLine, Save } from 'lucide-vue-next'
+import type { WritingExercise } from '~/utils/types'
 import type { TextAnalysisResult } from '~/utils/textAnalysis'
 import { analyzeGermanText } from '~/utils/textAnalysis'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
   initialContent?: string
+  submitted?: boolean
 }
 
 const props = defineProps<Props>()
@@ -161,150 +125,144 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   submit: [content: string, wordCount: number, timeSpent: number]
   saveDraft: [content: string, wordCount: number]
+  finish: []
 }>()
 
-// Reactive state
 const content = ref(props.initialContent || '')
 const wordCount = ref(0)
 const timeSpent = ref(0)
 const startTime = ref<number | null>(null)
 const showQualityDetails = ref(false)
-
-// Real-time analysis (Stage 12)
 const realtimeAnalysis = ref<TextAnalysisResult | null>(null)
+const autoSaved = ref(false)
+let saveTimer: ReturnType<typeof setTimeout> | null = null
+let autoSavedTimer: ReturnType<typeof setTimeout> | null = null
+let interval: number | null = null
 
-// Start timing when component mounts
-onMounted(() => {
-  startTime.value = Date.now()
+watch(() => props.initialContent, (next) => {
+  if (next !== undefined && next !== content.value) {
+    content.value = next
+    updateWordCount()
+  }
+})
+
+watch(content, () => {
+  if (props.submitted) return
   updateWordCount()
-  
-  // Update time every second
-  const interval = setInterval(() => {
-    if (startTime.value) {
-      timeSpent.value = Math.floor((Date.now() - startTime.value) / 1000)
+  if (saveTimer) clearTimeout(saveTimer)
+  saveTimer = setTimeout(() => {
+    if (content.value.trim()) {
+      emit('saveDraft', content.value, wordCount.value)
+      showAutoSaved()
     }
-  }, 1000)
-  
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+  }, 800)
 })
 
-// Computed properties
 const wordCountPercentage = computed(() => {
-  const target = props.topic.wordCount.min
-  return Math.round((wordCount.value / target) * 100)
+  const target = Math.max(props.topic.wordCount.max, 1)
+  return Math.min(100, Math.round((wordCount.value / target) * 100))
 })
-
-// Temporary: Submittable if word count is between 10 and 20
-// const isSubmittable = computed(() => {
-//   return wordCount.value >= props.topic.wordCount.min && 
-//          wordCount.value <= props.topic.wordCount.max &&
-//          content.value.trim().length > 0
-// })
 
 const isSubmittable = computed(() => {
-  return wordCount.value >= 10 && 
-         wordCount.value <= props.topic.wordCount.max &&
-         content.value.trim().length > 0
+  return wordCount.value >= props.topic.wordCount.min
+    && wordCount.value <= props.topic.wordCount.max
+    && content.value.trim().length > 0
 })
 
-
 const wordCountColor = computed(() => {
-  if (wordCount.value < props.topic.wordCount.min) {
-    return 'text-red-600'
-  } else if (wordCount.value > props.topic.wordCount.max) {
-    return 'text-red-600'
-  } else {
-    return 'text-green-600'
-  }
+  if (wordCount.value === 0) return 'text-base-content/60'
+  if (wordCount.value < props.topic.wordCount.min) return 'text-base-content'
+  if (wordCount.value > props.topic.wordCount.max) return 'text-warning'
+  return 'text-success'
 })
 
 const progressBarColor = computed(() => {
-  if (wordCount.value < props.topic.wordCount.min) {
-    return 'bg-red-400'
-  } else if (wordCount.value > props.topic.wordCount.max) {
-    return 'bg-red-400'
-  } else {
-    return 'bg-green-400'
-  }
+  if (wordCount.value > props.topic.wordCount.max) return 'progress-warning'
+  if (wordCount.value >= props.topic.wordCount.min) return 'progress-success'
+  return 'progress-primary'
 })
 
 const wordCountStatus = computed(() => {
-  if (wordCount.value === 0) {
-    return 'Start writing...'
-  } else if (wordCount.value < props.topic.wordCount.min) {
-    const needed = props.topic.wordCount.min - wordCount.value
-    return `${needed} more words needed`
-  } else if (wordCount.value > props.topic.wordCount.max) {
-    const excess = wordCount.value - props.topic.wordCount.max
-    return `${excess} words over limit`
-  } else {
-    return 'Perfect length!'
-  }
+  if (wordCount.value === 0) return 'Start writing...'
+  if (wordCount.value < props.topic.wordCount.min) return `${props.topic.wordCount.min - wordCount.value} more words needed`
+  if (wordCount.value > props.topic.wordCount.max) return `${wordCount.value - props.topic.wordCount.max} words over limit`
+  return 'Good length for this task'
 })
 
 const textareaClasses = computed(() => {
-  if (wordCount.value > props.topic.wordCount.max) {
-    return 'min-h-[150px] border-red-300 focus:ring-red-500 focus:border-red-500'
-  } else if (wordCount.value >= props.topic.wordCount.min) {
-    return 'min-h-[150px] border-green-300 focus:ring-green-500 focus:border-green-500'
-  } else {
-    return 'min-h-[150px] border-gray-300 focus:ring-purple-500 focus:border-purple-500'
-  }
+  if (wordCount.value > props.topic.wordCount.max) return 'border-warning'
+  if (wordCount.value >= props.topic.wordCount.min) return 'border-success'
+  return 'border-base-300'
 })
 
-const submitButtonClasses = computed(() => {
-  if (isSubmittable.value) {
-    return 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
-  } else {
-    return 'bg-gray-300 text-gray-500 cursor-not-allowed'
-  }
-})
-
-// Quality indicator colors (Stage 12)
 const structureIndicatorColor = computed(() => {
-  if (!realtimeAnalysis.value) return 'bg-gray-300'
+  if (!realtimeAnalysis.value) return 'badge-ghost'
   const score = realtimeAnalysis.value.structureElements.structureScore
-  if (score >= 4) return 'bg-green-500'
-  if (score >= 3) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (score >= 4) return 'badge-success'
+  if (score >= 3) return 'badge-warning'
+  return 'badge-error'
 })
 
 const vocabularyIndicatorColor = computed(() => {
-  if (!realtimeAnalysis.value) return 'bg-gray-300'
+  if (!realtimeAnalysis.value) return 'badge-ghost'
   const diversity = realtimeAnalysis.value.vocabularyMetrics.vocabularyDiversity
-  if (diversity >= 0.7) return 'bg-green-500'
-  if (diversity >= 0.5) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (diversity >= 0.7) return 'badge-success'
+  if (diversity >= 0.5) return 'badge-warning'
+  return 'badge-error'
 })
 
 const lengthIndicatorColor = computed(() => {
-  if (wordCount.value >= props.topic.wordCount.min && wordCount.value <= props.topic.wordCount.max) {
-    return 'bg-green-500'
-  } else if (wordCount.value >= props.topic.wordCount.min * 0.8) {
-    return 'bg-yellow-500'
-  }
-  return 'bg-red-500'
+  if (wordCount.value >= props.topic.wordCount.min && wordCount.value <= props.topic.wordCount.max) return 'badge-success'
+  if (wordCount.value >= props.topic.wordCount.min * 0.8) return 'badge-warning'
+  return 'badge-error'
 })
 
-// Methods
+const analysisStats = computed(() => {
+  if (!realtimeAnalysis.value) return []
+  return [
+    { label: 'Sentences', value: realtimeAnalysis.value.sentenceCount },
+    { label: 'Paragraphs', value: realtimeAnalysis.value.structureElements.paragraphCount },
+    { label: 'Variety', value: `${Math.round(realtimeAnalysis.value.vocabularyMetrics.vocabularyDiversity * 100)}%` },
+    { label: 'Connectors', value: realtimeAnalysis.value.vocabularyMetrics.commonConnectors.length },
+  ]
+})
+
+onMounted(() => {
+  startTime.value = Date.now()
+  updateWordCount()
+  interval = setInterval(() => {
+    if (startTime.value) {
+      timeSpent.value = Math.floor((Date.now() - startTime.value) / 1000)
+    }
+  }, 1000) as unknown as number
+})
+
+onUnmounted(() => {
+  if (interval) clearInterval(interval)
+  if (saveTimer) clearTimeout(saveTimer)
+  if (autoSavedTimer) clearTimeout(autoSavedTimer)
+})
+
 function updateWordCount() {
-  // Simple word counting - split by whitespace and filter empty strings
   const words = content.value.trim().split(/\s+/).filter(word => word.length > 0)
   wordCount.value = content.value.trim() === '' ? 0 : words.length
-  
-  // Real-time analysis for quality indicators (Stage 12)
   if (content.value.trim().length > 20) {
     try {
       realtimeAnalysis.value = analyzeGermanText(content.value, props.topic)
     } catch (error) {
-      // Silently fail for real-time analysis to avoid disrupting user experience
       console.warn('Real-time analysis failed:', error)
     }
   } else {
     realtimeAnalysis.value = null
   }
+}
+
+function showAutoSaved() {
+  autoSaved.value = true
+  if (autoSavedTimer) clearTimeout(autoSavedTimer)
+  autoSavedTimer = setTimeout(() => {
+    autoSaved.value = false
+  }, 3500)
 }
 
 function clearContent() {
@@ -316,6 +274,7 @@ function clearContent() {
 
 function saveDraft() {
   emit('saveDraft', content.value, wordCount.value)
+  showAutoSaved()
 }
 
 function submitWriting() {
@@ -323,5 +282,4 @@ function submitWriting() {
     emit('submit', content.value, wordCount.value, timeSpent.value)
   }
 }
-
 </script>

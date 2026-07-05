@@ -1,0 +1,39 @@
+components:
+  card-layout:
+    description: daisyUI card structure, colored header convention, and stretch/scroll rules for feature cards
+  icons:
+    description: Use @nuxt/icon with heroicons set; contextual size scale; replace legacy inline SVGs when touched
+  import-aliases:
+    description: Always use the ~/ alias for project imports; forbid ../ relative parent paths (ESLint-enforced)
+  shared-label-maps:
+    description: Centralize text/topic type label and badge-class maps in utils/labels.ts; route labels through i18n
+  ssr-hydration-guard:
+    description: Guard client-only reads (localStorage, persisted Pinia, window) with ClientOnly or an isClient ref pattern
+  state-class-helpers:
+    description: Map state to daisyUI utility strings via named computed/function helpers; promote shared logic to composables
+  theme-tokens:
+    description: Use daisyUI semantic color tokens only (base-*, primary, success, ...); forbid raw Tailwind color scales
+
+composables:
+  naming-and-shape:
+    description: use* prefix, feature-scoped; return object with // State and // Methods sections; readonly for singleton state, writable for per-caller
+
+global:
+  localstorage-keys:
+    description: "Prefix localStorage keys with exam-one: and kebab-case paths; one key per skill/mock-exam; keep keys exam-agnostic; no secrets; const at top of owning files"
+  offline-first-core:
+    description: "All exam skills (reading/writing/listening/speaking) + mock exam work offline; multi-language framework; provider-agnostic AI enhancement; read matching product exam references before changing exam behavior; typed seed data in data/{skill}/ with defaults ∪ stored merge"
+  ssr-storage-guards:
+    description: "Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level"
+
+server:
+  ai-response-envelope:
+    description: "Provider-agnostic (bring-your-own-key) AI endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; throw createError for infra"
+
+styling:
+  daisyui-setup:
+    description: Tailwind v4 + daisyUI v5 single-pipeline setup via main.css and @tailwindcss/vite; enable only exposed themes
+  theme-catalog:
+    description: Single source of truth for themes in useTheme.ts (Theme union + LIGHT/DARK arrays); useState + localStorage, not Pinia
+  theming-mechanism:
+    description: Switch themes via data-theme on <html> through useTheme().setTheme; no manual toggles, no dark variants needed

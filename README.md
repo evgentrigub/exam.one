@@ -4,6 +4,8 @@
 
 Practice reading comprehension and writing exercises with authentic exam-style content, instant feedback, and comprehensive progress tracking—all in a beautiful, accessible interface.
 
+use npx --yes serve exam-one-design/project -l 5174 to run desidn locally
+
 ## ✨ Features
 
 ### 📚 Reading Practice

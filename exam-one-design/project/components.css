@@ -1,0 +1,236 @@
+/* ==========================================================================
+   components.css — robust component layer
+   daisyUI 5's component classes do not compile under the Tailwind v3 Play CDN,
+   so we implement the ones this prototype uses directly on top of daisyUI's
+   theme variables (--color-*, --radius-*). Loaded AFTER the daisyUI links.
+   ========================================================================== */
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  height: 2.5rem; padding-inline: 1rem;
+  border-radius: var(--radius-field, .5rem);
+  font-size: .875rem; font-weight: 600; line-height: 1; white-space: nowrap;
+  border: 1px solid transparent; cursor: pointer; user-select: none;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .05s ease;
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+}
+.btn:active { transform: translateY(.5px); }
+.btn:hover { background: color-mix(in oklab, var(--color-base-content) 10%, var(--color-base-200)); }
+
+.btn-lg { height: 3rem; padding-inline: 1.5rem; font-size: 1rem; }
+.btn-sm { height: 2rem; padding-inline: .75rem; font-size: .8125rem; }
+.btn-xs { height: 1.5rem; padding-inline: .5rem; font-size: .75rem; gap: .35rem; border-radius: calc(var(--radius-field, .5rem) * .8); }
+
+.btn-primary { background: var(--color-primary); color: var(--color-primary-content); }
+.btn-primary:hover { background: color-mix(in oklab, var(--color-primary) 88%, black); }
+.btn-secondary { background: var(--color-secondary); color: var(--color-secondary-content); }
+.btn-secondary:hover { background: color-mix(in oklab, var(--color-secondary) 88%, black); }
+.btn-info { background: var(--color-info); color: var(--color-info-content); }
+.btn-info:hover { background: color-mix(in oklab, var(--color-info) 88%, black); }
+.btn-success { background: var(--color-success); color: var(--color-success-content); }
+.btn-success:hover { background: color-mix(in oklab, var(--color-success) 88%, black); }
+.btn-warning { background: var(--color-warning); color: var(--color-warning-content); }
+.btn-warning:hover { background: color-mix(in oklab, var(--color-warning) 88%, black); }
+.btn-error { background: var(--color-error); color: var(--color-error-content); }
+.btn-error:hover { background: color-mix(in oklab, var(--color-error) 88%, black); }
+
+.btn-ghost { background: transparent; border-color: transparent; color: inherit; }
+.btn-ghost:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+
+.btn-outline { background: transparent; border-color: color-mix(in oklab, var(--color-base-content) 18%, transparent); color: var(--color-base-content); }
+.btn-outline:hover { background: color-mix(in oklab, var(--color-base-content) 6%, transparent); border-color: color-mix(in oklab, var(--color-base-content) 30%, transparent); }
+
+.btn-disabled, .btn:disabled, .btn[disabled] {
+  background: color-mix(in oklab, var(--color-base-content) 7%, transparent);
+  color: color-mix(in oklab, var(--color-base-content) 35%, transparent);
+  border-color: transparent; cursor: not-allowed; pointer-events: none;
+}
+
+.btn-circle { width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 9999px; }
+.btn-sm.btn-circle { width: 2rem; height: 2rem; }
+.btn-xs.btn-circle { width: 1.5rem; height: 1.5rem; }
+.btn-square { padding: 0; aspect-ratio: 1; }
+.btn-sm.btn-square { width: 2rem; height: 2rem; }
+.btn-block { width: 100%; }
+.btn-active { background: color-mix(in oklab, var(--color-base-content) 12%, transparent); }
+
+/* ---------- Join (segmented control) ---------- */
+.join {
+  display: inline-flex; align-items: stretch;
+  background: color-mix(in oklab, var(--color-base-content) 6%, transparent);
+  border-radius: var(--radius-field, .5rem);
+  padding: 3px; gap: 3px;
+}
+.join > .join-item {
+  border-radius: calc(var(--radius-field, .5rem) - 2px) !important;
+  border-color: transparent;
+}
+/* ghost items inside a join sit on the track, no own bg until active/hover */
+.join > .btn-ghost { background: transparent; }
+.join > .btn-ghost:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+
+/* ---------- Inputs ---------- */
+.input {
+  display: inline-flex; align-items: center;
+  height: 2.5rem; padding-inline: .875rem;
+  border-radius: var(--radius-field, .5rem);
+  background: var(--color-base-100);
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 15%, transparent);
+  font-size: .875rem; color: var(--color-base-content);
+  width: 100%;
+}
+.input::placeholder { color: color-mix(in oklab, var(--color-base-content) 40%, transparent); }
+.input:focus, .input:focus-visible { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 18%, transparent); }
+.input-bordered { border: 1px solid color-mix(in oklab, var(--color-base-content) 15%, transparent); }
+.input-sm { height: 2rem; padding-inline: .75rem; font-size: .8125rem; }
+.input-xs { height: 1.5rem; padding-inline: .5rem; font-size: .75rem; }
+
+/* ---------- Select ---------- */
+.select {
+  display: inline-flex; align-items: center;
+  height: 2.5rem; padding-inline: .875rem; padding-right: 2rem;
+  border-radius: var(--radius-field, .5rem);
+  background-color: var(--color-base-100);
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 15%, transparent);
+  font-size: .875rem; color: var(--color-base-content);
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .5rem center;
+}
+.select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 18%, transparent); }
+.select-bordered { border: 1px solid color-mix(in oklab, var(--color-base-content) 15%, transparent); }
+.select-sm { height: 2rem; padding-inline: .75rem; padding-right: 1.75rem; font-size: .8125rem; }
+.select-xs { height: 1.6rem; padding-inline: .55rem; padding-right: 1.5rem; font-size: .75rem; }
+
+/* ---------- Textarea ---------- */
+.textarea {
+  border-radius: var(--radius-field, .5rem);
+  background: var(--color-base-100);
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 15%, transparent);
+  padding: .75rem; font-size: .875rem; color: var(--color-base-content);
+}
+.textarea:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 18%, transparent); }
+
+/* ---------- Badge ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: .25rem;
+  height: 1.5rem; padding-inline: .625rem;
+  border-radius: 9999px; font-size: .75rem; font-weight: 600;
+  background: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  color: var(--color-base-content);
+  border: 1px solid transparent;
+}
+.badge-sm { height: 1.25rem; padding-inline: .5rem; font-size: .6875rem; }
+.badge-primary { background: var(--color-primary); color: var(--color-primary-content); }
+.badge-ghost { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); color: var(--color-base-content); }
+.badge-success { background: var(--color-success); color: var(--color-success-content); }
+.badge-warning { background: var(--color-warning); color: var(--color-warning-content); }
+.badge-info { background: var(--color-info); color: var(--color-info-content); }
+.badge-outline { background: transparent; border-color: color-mix(in oklab, var(--color-base-content) 25%, transparent); }
+
+/* ---------- Progress ---------- */
+.progress {
+  -webkit-appearance: none; appearance: none; border: none;
+  width: 100%; height: .5rem; border-radius: 9999px; overflow: hidden;
+  background: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+  color: var(--color-primary);
+}
+.progress::-webkit-progress-bar { background: transparent; }
+.progress::-webkit-progress-value { background: var(--color-primary); border-radius: 9999px; }
+.progress::-moz-progress-bar { background: var(--color-primary); }
+.progress-primary { color: var(--color-primary); }
+.progress-primary::-webkit-progress-value { background: var(--color-primary); }
+.progress-primary::-moz-progress-bar { background: var(--color-primary); }
+.progress-success::-webkit-progress-value { background: var(--color-success); }
+.progress-success::-moz-progress-bar { background: var(--color-success); }
+.progress-info::-webkit-progress-value { background: var(--color-info); }
+.progress-info::-moz-progress-bar { background: var(--color-info); }
+.progress-warning::-webkit-progress-value { background: var(--color-warning); }
+.progress-warning::-moz-progress-bar { background: var(--color-warning); }
+.progress-error::-webkit-progress-value { background: var(--color-error); }
+.progress-error::-moz-progress-bar { background: var(--color-error); }
+
+/* ---------- Card ---------- */
+.card { position: relative; display: flex; flex-direction: column; border-radius: var(--radius-box, .75rem); }
+
+/* ---------- Table ---------- */
+.table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+.table :where(th, td) { padding: .65rem .75rem; text-align: left; vertical-align: middle; }
+.table thead th { font-weight: 600; color: color-mix(in oklab, var(--color-base-content) 60%, transparent); border-bottom: 1px solid var(--color-base-300); }
+.table tbody tr { border-bottom: 1px solid color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+.table tbody tr:last-child { border-bottom: none; }
+.table-sm :where(th, td) { padding: .45rem .6rem; }
+.table .hover:hover, .table tr.hover:hover { background: color-mix(in oklab, var(--color-base-content) 4%, transparent); }
+
+/* ---------- Dropdown + Menu ---------- */
+.dropdown { position: relative; display: inline-flex; }
+.dropdown-content {
+  position: absolute; top: 100%; left: 0;
+  visibility: hidden; opacity: 0; transform: translateY(-4px);
+  transition: opacity .15s ease, transform .15s ease, visibility .15s;
+  z-index: 60;
+}
+.dropdown-end .dropdown-content { left: auto; right: 0; }
+.dropdown:focus-within .dropdown-content,
+.dropdown-content:focus-within,
+.dropdown-content:hover { visibility: visible; opacity: 1; transform: none; }
+
+.menu { display: flex; flex-direction: column; gap: 1px; list-style: none; padding: 0; margin: 0; }
+.menu > li > a, .menu > li > button {
+  display: flex; align-items: center; gap: .5rem;
+  width: 100%; text-align: left;
+  padding: .45rem .65rem; border-radius: var(--radius-field, .5rem);
+  font-size: .875rem; color: var(--color-base-content); cursor: pointer;
+}
+.menu > li > a:hover, .menu > li > button:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+.menu > li > a.active { background: var(--color-primary); color: var(--color-primary-content); }
+
+/* ---------- Alert ---------- */
+.alert {
+  display: flex; align-items: center; gap: .625rem;
+  padding: .75rem 1rem; border-radius: var(--radius-box, .75rem);
+  background: color-mix(in oklab, var(--color-base-content) 6%, transparent);
+  color: var(--color-base-content); font-size: .875rem;
+}
+.alert-info { background: color-mix(in oklab, var(--color-info) 14%, transparent); }
+.alert-success { background: color-mix(in oklab, var(--color-success) 14%, transparent); }
+.alert-warning { background: color-mix(in oklab, var(--color-warning) 16%, transparent); }
+.alert-error { background: color-mix(in oklab, var(--color-error) 14%, transparent); }
+
+/* ---------- Avatar ---------- */
+.avatar > div { overflow: hidden; }
+
+/* ---------- Semantic color utilities ----------
+   The Tailwind v3 Play CDN has no daisyUI color tokens registered, so solid
+   bg-/text-/border- semantic utilities either generate lazily (flash of
+   transparent) or not at all (border-*). Define them on the theme vars so they
+   resolve immediately and consistently. Opacity variants (e.g. bg-primary/10)
+   are handled by Tailwind and left untouched. */
+.bg-primary   { background-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-info      { background-color: var(--color-info); }
+.bg-success   { background-color: var(--color-success); }
+.bg-warning   { background-color: var(--color-warning); }
+.bg-error     { background-color: var(--color-error); }
+
+.text-primary         { color: var(--color-primary); }
+.text-secondary       { color: var(--color-secondary); }
+.text-info            { color: var(--color-info); }
+.text-success         { color: var(--color-success); }
+.text-warning         { color: var(--color-warning); }
+.text-error           { color: var(--color-error); }
+.text-primary-content   { color: var(--color-primary-content); }
+.text-secondary-content { color: var(--color-secondary-content); }
+.text-info-content      { color: var(--color-info-content); }
+.text-success-content   { color: var(--color-success-content); }
+.text-warning-content   { color: var(--color-warning-content); }
+.text-error-content     { color: var(--color-error-content); }
+
+.border-primary   { border-color: var(--color-primary); }
+.border-secondary { border-color: var(--color-secondary); }
+.border-info      { border-color: var(--color-info); }
+.border-success   { border-color: var(--color-success); }
+.border-warning   { border-color: var(--color-warning); }
+.border-error     { border-color: var(--color-error); }
