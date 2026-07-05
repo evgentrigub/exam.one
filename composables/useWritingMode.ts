@@ -12,7 +12,7 @@ export const useWritingMode = () => {
   // Challenge mode timer state
   const challengeTimer = ref(0) // seconds elapsed
   const isTimerRunning = ref(false)
-  const timerInterval = ref<NodeJS.Timeout | null>(null)
+  const timerInterval = ref<number | null>(null)
   
   // Start the challenge timer
   const startTimer = () => {
@@ -21,7 +21,7 @@ export const useWritingMode = () => {
     isTimerRunning.value = true
     timerInterval.value = setInterval(() => {
       challengeTimer.value++
-    }, 1000)
+    }, 1000) as unknown as number
   }
   
   // Stop the timer

@@ -6,12 +6,13 @@
  * OpenAI request is mocked. We still shape the payload as if calling OpenAI
  * and keep a placeholder variable with the composed input.
  *
- * Storage: localStorage under key `writing-reviews`
+ * Storage: localStorage under key `exam-one:writing:reviews`
  */
 
-import type { WritingTopic, AiReviewData } from '~/utils/types'
+import type { WritingExercise, AiReviewData } from '~/utils/types'
 import { ref } from 'vue'
-import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/reviewTextPrompts'
+import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/reviewTextWritingC1'
+import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -27,7 +28,8 @@ interface WritingReviewRecord {
   error?: string
 }
 
-const WRITING_REVIEW_KEY = 'writing-reviews'
+const WRITING_REVIEW_KEY = 'exam-one:writing:reviews'
+const WRITING_REVIEW_LEGACY_KEY = 'writing-reviews'
 
 // Global reactive tick to notify UI of updates to localStorage-backed reviews
 const reviewVersion = ref(0)
@@ -35,7 +37,7 @@ const reviewVersion = ref(0)
 function readAllReviews(): Record<string, WritingReviewRecord> {
   if (!import.meta.client) return {}
   try {
-    const raw = localStorage.getItem(WRITING_REVIEW_KEY)
+    const raw = localStorage.getItem(WRITING_REVIEW_KEY) || localStorage.getItem(WRITING_REVIEW_LEGACY_KEY)
     return raw ? (JSON.parse(raw) as Record<string, WritingReviewRecord>) : {}
   } catch {
     return {}
@@ -44,8 +46,12 @@ function readAllReviews(): Record<string, WritingReviewRecord> {
 
 function writeAllReviews(map: Record<string, WritingReviewRecord>): void {
   if (!import.meta.client) return
-  localStorage.setItem(WRITING_REVIEW_KEY, JSON.stringify(map))
-  reviewVersion.value++
+  try {
+    localStorage.setItem(WRITING_REVIEW_KEY, JSON.stringify(map))
+    reviewVersion.value++
+  } catch (error) {
+    console.warn('Failed to save writing reviews:', error)
+  }
 }
 
 function saveRecord(record: WritingReviewRecord): void {
@@ -73,17 +79,37 @@ export function useWritingReview() {
     return rec?.status === 'ready' && (!!rec?.responseText || !!rec?.responseData)
   }
 
+  function getReviewError(topicId: string): string | null {
+    const rec = getRecord(topicId)
+    return rec?.status === 'error' ? rec.error || 'AI review is unavailable.' : null
+  }
+
   function clearReview(topicId: string): void {
     const all = readAllReviews()
     const { [topicId]: _removed, ...rest } = all
     writeAllReviews(rest)
   }
 
-  function getReviewPrompt(topic: WritingTopic, userContent: string) {
-    if (topic.testingPart === 1) {
-      return reviewPromptC1Teil1(topic, userContent)
+  async function regenerateReview(topic: WritingExercise, userContent: string): Promise<void> {
+    clearReview(topic.id)
+    return requestReview(topic, userContent)
+  }
+
+  function getReviewPrompt(topic: WritingExercise, userContent: string) {
+    // Select prompts based on difficulty level
+    if (topic.difficulty === 'A2') {
+      if (topic.testingPart === 1) {
+        return reviewPromptA2Teil1(topic, userContent)
+      } else {
+        return reviewPromptA2Teil2(topic, userContent)
+      }
     } else {
-      return reviewPromptC1Teil2(topic, userContent)
+      // C1 level
+      if (topic.testingPart === 1) {
+        return reviewPromptC1Teil1(topic, userContent)
+      } else {
+        return reviewPromptC1Teil2(topic, userContent)
+      }
     }
 }
 
@@ -92,42 +118,50 @@ export function useWritingReview() {
    * This function mocks latency and response. If an OpenAI API key is
    * available, the call site is prepared but disabled by default.
    */
-  async function requestReview(topic: WritingTopic, userContent: string): Promise<void> {
+  async function requestReview(topic: WritingExercise, userContent: string): Promise<void> {
     const prompt = getReviewPrompt(topic, userContent)
-    console.log("🚀 ~ requestReview ~ prompt:", prompt)
+    const requestedAt = new Date().toISOString()
     saveRecord({
       topicId: topic.id,
       status: 'pending',
       prompt,
       content: userContent,
-      requestedAt: new Date().toISOString(),
+      requestedAt,
     })
 
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
-      const result = await $fetch(
-        '/api/review',
-        { method: 'POST', body: { topic, userContent, prompt } }
-      ) as { text: string; data?: AiReviewData | null }
+      // Cast through unknown to bypass Nuxt's complex route type inference
+      const response = (await $fetch('/api/review', {
+        method: 'POST',
+        body: { topic, userContent, prompt }
+      }) as unknown) as { text?: string; data?: AiReviewData | null; error?: string | null }
       const current = getRecord(topic.id)
       if (current) {
+        if (current.requestedAt !== requestedAt || current.content !== userContent || current.prompt !== prompt) return
+        if (response.error) throw new Error(response.error)
         const update: WritingReviewRecord = {
           ...current,
           status: 'ready',
           completedAt: new Date().toISOString(),
-          responseText: result?.text || '',
+          responseText: response?.text || '',
         }
-        if (result && result.data) {
-          update.responseData = result.data
+        if (response && response.data) {
+          update.responseData = response.data
         }
-        console.log("🚀 ~ The response from OpenAI is received:", result)
         saveRecord(update)
 
       }
     } catch (error) {
       const current = getRecord(topic.id)
       if (current) {
-        saveRecord({ ...current, status: 'error', completedAt: new Date().toISOString(), error: String(error) })
+        if (current.requestedAt !== requestedAt || current.content !== userContent || current.prompt !== prompt) return
+        saveRecord({
+          ...current,
+          status: 'error',
+          completedAt: new Date().toISOString(),
+          error: error instanceof Error ? error.message : 'AI review is unavailable.',
+        })
       }
     }
   }
@@ -137,9 +171,11 @@ export function useWritingReview() {
     getReview,
     isReviewInProgress,
     hasReview,
+    getReviewError,
     reviewVersion,
     // commands
     requestReview,
+    regenerateReview,
     clearReview,
   }
 }

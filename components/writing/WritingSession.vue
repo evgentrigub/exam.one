@@ -1,378 +1,252 @@
 <template>
-  <div class="flex flex-col h-full">
-    <!-- Layout: Changes based on writing mode -->
-    <div class="max-w-7xl mx-auto w-full p-6 flex-1">
-      <!-- Model Help Mode: 2x2 Grid -->
-      <div v-if="currentMode === 'model-help'" class="grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-6 min-h-[600px]" style="grid-template-rows: 1fr 1fr; height: max(600px, calc(100vh - 200px));">
-        <!-- Top Left: Task Description -->
-        <div class="h-full">
-          <TaskDescriptionCard 
-            :topic="topic" 
-            :current-mode="currentMode"
-            @mode-change="handleModeChange"
-          />
+  <div class="grid grid-cols-12 gap-6 items-start">
+    <div class="col-span-12 lg:col-span-6 space-y-5 lg:sticky lg:top-20">
+      <section class="bg-base-100 rounded-box border border-base-300/70 p-5 sm:p-7">
+        <div class="flex items-center gap-2 text-base-content/70">
+          <FileText :size="14" aria-hidden="true" />
+          <div class="text-sm font-semibold">Description</div>
         </div>
-
-        <!-- Top Right: Instructions -->
-        <div class="h-full">
-          <InstructionsCard 
-            :topic="topic" 
-            :current-mode="currentMode"
-            :timer-display="timerDisplay"
-          />
+        <h2 class="font-display text-xl font-bold mt-3">{{ topic.title }}</h2>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+            <Clock :size="11" aria-hidden="true" />
+            {{ topic.estimatedTime }} minutes
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+            <Type :size="11" aria-hidden="true" />
+            {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70 capitalize">
+            Teil {{ topic.testingPart || 2 }} · {{ topic.topicType }}
+          </span>
         </div>
+        <p class="mt-4 text-[15px] text-base-content/80 leading-relaxed">{{ topic.description }}</p>
+      </section>
 
-        <!-- Bottom Left: Text Editor -->
-        <div class="h-full">
-          <TextEditorCard 
-            :topic="topic"
-            :initial-content="currentDraft"
-            @submit="handleSubmit"
-            @save-draft="handleSaveDraft"
-          />
-        </div>
-
-        <!-- Bottom Right: Model Answer -->
-        <div class="h-full">
-          <ModelAnswerCard :topic="topic" />
-        </div>
-      </div>
-
-      <!-- Quick/Challenge Mode: Original Layout -->
-      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Top Left: Task Description -->
-        <div class="lg:col-span-1 h-full">
-          <TaskDescriptionCard 
-            :topic="topic" 
-            :current-mode="currentMode"
-            @mode-change="handleModeChange"
-          />
-        </div>
-
-        <!-- Top Right: Instructions -->
-        <div class="lg:col-span-1 h-full">
-          <InstructionsCard 
-            :topic="topic" 
-            :current-mode="currentMode"
-            :timer-display="timerDisplay"
-          />
-        </div>
-
-        <!-- Bottom Row: Text Editor (Full Width) -->
-        <div class="lg:col-span-2">
-          <TextEditorCard 
-            :topic="topic"
-            :initial-content="currentDraft"
-            @submit="handleSubmit"
-            @save-draft="handleSaveDraft"
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Mobile Layout Toggle (for smaller screens) -->
-    <div class="lg:hidden fixed bottom-4 right-4 z-10">
-      <div class="bg-white rounded-full shadow-lg border border-gray-200">
-        <button
-          v-for="(tab, index) in mobileTabs"
-          :key="tab.id"
-          class="p-3 rounded-full transition-colors"
-          :class="activeMobileTab === index 
-            ? 'bg-blue-600 text-white' 
-            : 'text-gray-600 hover:bg-gray-100'"
-          :title="tab.label"
-          @click="activeMobileTab = index"
-        >
-          <component :is="tab.icon" class="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Single Card View -->
-    <div class="lg:hidden">
-      <div class="p-4">
-        <!-- Tab Navigation -->
-        <div class="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
+      <section class="bg-base-100 rounded-box border border-base-300/70 overflow-hidden">
+        <div class="flex border-b border-base-300/70 px-3 overflow-x-auto" role="tablist" aria-label="Writing support tabs">
           <button
-            v-for="(tab, index) in mobileTabs"
-            :key="tab.id"
-            class="flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors"
-            :class="activeMobileTab === index 
-              ? 'bg-white text-blue-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'"
-            @click="activeMobileTab = index"
+            v-for="tab in tabs"
+            :key="tab.key"
+            type="button"
+            role="tab"
+            class="relative flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap"
+            :class="activeTab === tab.key ? 'text-primary' : 'text-base-content/60 hover:text-base-content'"
+            :aria-selected="activeTab === tab.key"
+            @click="activeTab = tab.key"
           >
+            <component :is="tab.icon" :size="12" aria-hidden="true" />
             {{ tab.label }}
+            <span v-if="activeTab === tab.key" class="absolute left-3 right-3 -bottom-px h-0.5 bg-primary rounded-full" />
           </button>
         </div>
 
-        <!-- Active Card Content -->
-        <div>
-          <TaskDescriptionCard 
-            v-if="activeMobileTab === 0" 
-            :topic="topic"
-            :current-mode="currentMode"
-            @mode-change="handleModeChange"
-          />
-          <InstructionsCard 
-            v-if="activeMobileTab === 1" 
-            :topic="topic"
-            :current-mode="currentMode"
-            :timer-display="timerDisplay"
-          />
-          <TextEditorCard 
-            v-if="activeMobileTab === 2"
-            :topic="topic"
-            :initial-content="currentDraft"
-            @submit="handleSubmit"
-            @save-draft="handleSaveDraft"
-          />
-          <ModelAnswerCard 
-            v-if="activeMobileTab === 3 && currentMode === 'model-help'"
-            :topic="topic"
-          />
+        <div class="p-5 sm:p-6">
+          <div v-if="activeTab === 'prompt'" class="space-y-5">
+            <div class="p-4 rounded-box bg-success/10 text-[14px] leading-relaxed text-base-content/85">
+              {{ topic.task }}
+            </div>
+            <div>
+              <div class="text-sm font-semibold mb-2">Requirements</div>
+              <ul class="space-y-1.5 text-[14px] text-base-content/80">
+                <li v-for="requirement in topic.requirements" :key="requirement" class="flex items-start gap-2">
+                  <CheckCircle2 :size="13" class="text-success mt-0.5 shrink-0" aria-hidden="true" />
+                  <span>{{ requirement }}</span>
+                </li>
+              </ul>
+            </div>
+            <div v-if="writingTips.length" class="pt-4 border-t border-base-300/70">
+              <div class="text-sm font-semibold mb-2">Writing tips</div>
+              <ul class="space-y-1.5 text-[13px] text-base-content/70">
+                <li v-for="tip in writingTips" :key="tip" class="flex items-start gap-2">
+                  <Lightbulb :size="13" class="text-warning mt-0.5 shrink-0" aria-hidden="true" />
+                  <span>{{ tip }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <ModelAnswerCard v-else-if="activeTab === 'answer'" :topic="topic" />
+
+          <div v-else-if="activeTab === 'ai-review'" class="space-y-4">
+            <div v-if="!isSubmitted" class="text-center py-8 text-sm text-base-content/60">
+              <MessageSquare :size="22" class="mx-auto opacity-40 mb-2" aria-hidden="true" />
+              Submit your answer to see AI review here.
+            </div>
+
+            <div v-else-if="reviewPending" class="flex items-center gap-3 py-2 text-sm text-base-content/70">
+              <span class="loading loading-spinner loading-sm text-primary" aria-hidden="true" />
+              <span>AI review in progress…</span>
+            </div>
+
+            <div v-else-if="reviewError" class="space-y-3">
+              <div class="alert alert-warning items-start text-sm">
+                <AlertTriangle :size="16" class="shrink-0 mt-0.5" aria-hidden="true" />
+                <div class="min-w-0">
+                  <p class="font-medium">AI review unavailable</p>
+                  <p class="text-xs opacity-80">{{ reviewError }}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm w-full gap-1.5 rounded-full"
+                :disabled="reviewPending"
+                @click="handleRegenerate"
+              >
+                <Sparkles :size="14" aria-hidden="true" />
+                Regenerate AI review
+              </button>
+            </div>
+
+            <div v-else-if="reviewReady" class="space-y-3">
+              <div class="flex items-center gap-2 p-3 rounded-box bg-success/10 border border-success/20">
+                <CheckCircle2 :size="14" class="text-success shrink-0" aria-hidden="true" />
+                <p class="text-sm font-medium text-success">AI review ready</p>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm w-full gap-1.5 rounded-full"
+                @click="handleViewDetailedReview"
+              >
+                <Sparkles :size="14" aria-hidden="true" />
+                View detailed AI review
+              </button>
+            </div>
+
+            <div v-else class="space-y-3">
+              <p class="text-sm text-base-content/60 py-2">Preparing your review…</p>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm w-full gap-1.5 rounded-full"
+                :disabled="reviewPending"
+                @click="handleRegenerate"
+              >
+                <Sparkles :size="14" aria-hidden="true" />
+                Regenerate AI review
+              </button>
+            </div>
+          </div>
+
         </div>
-      </div>
+      </section>
     </div>
 
-    <!-- Results Modal -->
-    <div v-if="showResults" class="fixed inset-0 bg-gray-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <!-- Results Header -->
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-xl font-bold text-gray-900">Writing Submitted!</h2>
-                <p class="text-sm text-green-600">{{ topic.title }}</p>
-              </div>
-            </div>
-            <button 
-              class="text-gray-400 hover:text-gray-600 transition-colors"
-              @click="closeResults"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Results Content -->
-        <div class="p-6">
-          <!-- Writing Feedback Component (Stage 12) -->
-          <div v-if="submissionResults?.feedback" class="mb-6">
-            <WritingFeedback 
-              :feedback="submissionResults.feedback"
-              :analysis-result="submissionResults.analysisResult"
-            />
-          </div>
-
-          <!-- Writing Statistics (Basic) -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-blue-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-blue-600">{{ submissionResults?.wordCount || 0 }}</div>
-              <div class="text-sm text-blue-800">Wörter geschrieben</div>
-            </div>
-            <div class="bg-green-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-green-600">{{ formatTime(submissionResults?.timeSpent || 0) }}</div>
-              <div class="text-sm text-green-800">Zeit verwendet</div>
-            </div>
-            <div class="bg-purple-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-purple-600">A2</div>
-              <div class="text-sm text-purple-800">Niveau</div>
-            </div>
-          </div>
-
-          <!-- Completion Message -->
-          <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <h3 class="font-semibold text-green-800 mb-2">Gut gemacht!</h3>
-            <p class="text-green-700 text-sm">
-              You have successfully completed this writing task. 
-              Your text was sent for review and once it is done, you can open it in the writing page.
-            </p>
-          </div>
-
-          <!-- Next Steps -->
-          <div class="flex space-x-3">
-            <button
-              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              @click="tryAnotherTopic"
-            >
-              Back to writing
-            </button>
-            <button
-              class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-              @click="viewDashboard"
-            >
-              Check your progress
-            </button>
-          </div>
-        </div>
-      </div>
+    <div class="col-span-12 lg:col-span-6">
+      <TextEditorCard
+        :topic="topic"
+        :initial-content="currentDraft"
+        :submitted="isSubmitted"
+        @submit="handleSubmit"
+        @save-draft="handleSaveDraft"
+        @finish="handleFinish"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { WritingTopic, WritingFeedbackModel } from '~/utils/types'
-import type { TextAnalysisResult } from '~/utils/textAnalysis'
-import { analyzeGermanText, createWritingFeedback } from '~/utils/textAnalysis'
+import type { Component } from 'vue'
+import { AlertTriangle, CheckCircle2, Clock, FileText, Lightbulb, MessageSquare, Sparkles, Type } from 'lucide-vue-next'
+import type { WritingExercise } from '~/utils/types'
 import { useProgress } from '~/composables/useProgress'
-import { useWritingMode } from '~/composables/useWritingMode'
-import type { WritingMode } from '~/composables/useWritingMode'
-import TaskDescriptionCard from './TaskDescriptionCard.vue'
-import InstructionsCard from './InstructionsCard.vue'
-import TextEditorCard from './TextEditorCard.vue'
-import WritingFeedback from './WritingFeedback.vue'
-import ModelAnswerCard from './ModelAnswerCard.vue'
+import { useWritingReview } from '~/composables/useWritingReview'
+import { getWritingTips } from '~/data/writing/exerciseTips'
+import TextEditorCard from '~/components/writing/TextEditorCard.vue'
+import ModelAnswerCard from '~/components/writing/ModelAnswerCard.vue'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  exit: []
   complete: [topicId: string, content: string, wordCount: number, timeSpent: number]
 }>()
 
-// Progress tracking composable
-const { 
-  saveWritingSubmission, 
-  saveWritingDraft, 
-  getWritingSession, 
-  clearWritingSession: _clearWritingSession 
-} = useProgress()
+const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission } = useProgress()
+const { requestReview, regenerateReview, isReviewInProgress, hasReview, getReviewError, reviewVersion } = useWritingReview()
 
-// Writing mode composable
-const {
-  currentMode,
-  timerDisplay,
-  changeMode
-} = useWritingMode()
+type TabKey = 'prompt' | 'answer' | 'ai-review'
 
-// Reactive state
+const activeTab = ref<TabKey>('prompt')
+const tabs: { key: TabKey; label: string; icon: Component }[] = [
+  { key: 'prompt', label: 'AI Prompt', icon: Sparkles },
+  { key: 'answer', label: 'Ideal Answer', icon: Lightbulb },
+  { key: 'ai-review', label: 'AI Review', icon: MessageSquare },
+]
+
 const currentDraft = ref('')
-const showResults = ref(false)
-const activeMobileTab = ref(0)
-const submissionResults = ref<{
-  wordCount: number
-  timeSpent: number
-  feedback?: WritingFeedbackModel
-  analysisResult?: TextAnalysisResult | undefined
-} | null>(null)
+const isSubmitted = ref(false)
+const submittedContent = ref('')
+const submittedWordCount = ref(0)
+const submittedTimeSpent = ref(0)
 
-// Mobile tab configuration (dynamic based on mode)
-const mobileTabs = computed(() => {
-  const baseTabs = [
-    {
-      id: 'description',
-      label: 'Task',
-      icon: 'svg'
-    },
-    {
-      id: 'instructions',
-      label: 'Instructions',
-      icon: 'svg'
-    },
-    {
-      id: 'editor',
-      label: 'Write',
-      icon: 'svg'
-    }
-  ]
+const writingTips = computed(() => getWritingTips(props.topic.difficulty, props.topic.testingPart))
 
-  // Add Model Answer tab in Model Help mode
-  if (currentMode.value === 'model-help') {
-    baseTabs.push({
-      id: 'model',
-      label: 'Model',
-      icon: 'svg'
-    })
-  }
-
-  return baseTabs
+const reviewPending = computed(() => {
+  void reviewVersion.value
+  return isReviewInProgress(props.topic.id)
 })
 
-// Methods
-function handleSaveDraft(content: string, wordCount: number) {
-  currentDraft.value = content
-  
-  // Save draft to localStorage (Stage 11)
-  saveWritingDraft(props.topic.id, content, wordCount)
-  
-  // Show success feedback
-  const notification = document.createElement('div')
-  notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50'
-  notification.textContent = 'Draft saved!'
-  document.body.appendChild(notification)
-  
-  setTimeout(() => {
-    document.body.removeChild(notification)
-  }, 2000)
-}
+const reviewReady = computed(() => {
+  void reviewVersion.value
+  return hasReview(props.topic.id)
+})
 
-function handleSubmit(content: string, wordCount: number, timeSpent: number) {
-  const analysisResult = analyzeGermanText(content, props.topic)
-  const feedback = createWritingFeedback(analysisResult, props.topic)
-  
-  submissionResults.value = { 
-    wordCount, 
-    timeSpent, 
-    feedback, 
-    analysisResult 
-  }
-  
-  // Save writing submission with feedback to localStorage (Stage 12)
-  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent, feedback)
-  
-  showResults.value = true
-  
-  // Emit completion event for parent component
-  emit('complete', props.topic.id, content, wordCount, timeSpent)
-}
+const reviewError = computed(() => {
+  void reviewVersion.value
+  return getReviewError(props.topic.id)
+})
 
-function closeResults() {
-  showResults.value = false
-  submissionResults.value = null
-}
-
-function tryAnotherTopic() {
-  closeResults()
-  emit('exit')
-}
-
-function viewDashboard() {
-  closeResults()
-  navigateTo('/dashboard')
-}
-
-function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-}
-
-// Handle writing mode change
-function handleModeChange(mode: WritingMode) {
-  changeMode(mode)
-  // Reset mobile tab when switching modes to avoid index issues
-  activeMobileTab.value = 0
-}
-
-// Load any existing draft on mount
 onMounted(() => {
-  // Load existing draft from localStorage (Stage 11)
   const existingSession = getWritingSession(props.topic.id)
   if (existingSession) {
     currentDraft.value = existingSession.content
   }
+
+  const latest = getLatestSubmission(props.topic.id)
+  if (latest && !latest.isDraft) {
+    isSubmitted.value = true
+    submittedContent.value = latest.content
+    submittedWordCount.value = latest.wordCount
+    submittedTimeSpent.value = latest.timeSpent || 0
+    currentDraft.value = latest.content
+  }
 })
+
+function handleSaveDraft(content: string, wordCount: number) {
+  if (isSubmitted.value) return
+  currentDraft.value = content
+  saveWritingDraft(props.topic.id, content, wordCount)
+}
+
+async function handleSubmit(content: string, wordCount: number, timeSpent: number) {
+  isSubmitted.value = true
+  submittedContent.value = content
+  submittedWordCount.value = wordCount
+  submittedTimeSpent.value = timeSpent
+  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent)
+  emit('complete', props.topic.id, content, wordCount, timeSpent)
+  activeTab.value = 'ai-review'
+
+  try {
+    await requestReview(props.topic, content)
+  } catch {
+    // Errors are stored in the review record; UI reads from there.
+  }
+}
+
+async function handleRegenerate() {
+  if (!submittedContent.value) return
+  await regenerateReview(props.topic, submittedContent.value)
+}
+
+function handleViewDetailedReview() {
+  navigateTo(`/writing/${props.topic.id}/checking`)
+}
+
+function handleFinish() {
+  navigateTo('/exercises?skill=writing')
+}
 </script>

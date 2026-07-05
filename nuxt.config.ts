@@ -1,11 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
+  ignore: ['exame-one-design/**'],
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   
   // Modules
   modules: [
-    '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxtjs/i18n'
@@ -19,11 +21,11 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
-    // detectBrowserLanguage: {
-    //   useCookie: true,
-    //   cookieKey: 'i18n_redirected',
-    //   redirectOn: 'root'
-    // },
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'exam-one:locale',
+      redirectOn: 'root'
+    },
     langDir: 'locales',
     // lazy: true
   },
@@ -45,8 +47,6 @@ export default defineNuxtConfig({
     }
   ],
 
-  // Tailwind CSS configuration will be in tailwind.config.js
-
   // Pinia configuration will be in stores/
 
   // Build configuration
@@ -56,6 +56,7 @@ export default defineNuxtConfig({
 
   // Vite configuration for bundle optimization
   vite: {
+    plugins: [tailwindcss()],
     build: {
       rollupOptions: {
         output: {
@@ -78,7 +79,13 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Prepare to exams by practicing reading, writing, listening and speaking with authentic exam-style texts' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap'
+        }
       ]
     }
   },
@@ -88,15 +95,20 @@ export default defineNuxtConfig({
     routeRules: {
       '/**': {
         headers: {
-          'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+          'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;"
         }
       }
     }
   },
 
   runtimeConfig: {
-    // Private (server-only). You can also override at runtime with env var NUXT_OPENAI_API_KEY
-    openaiApiKey: process.env['OPENAI_API_KEY'] || '',
+    // Private (server-only). Override at runtime with env vars NUXT_LLM_PROVIDER, NUXT_LLM_OPENAI_API_KEY, etc.
+    llmProvider: process.env['LLM_PROVIDER'] || 'openrouter',
+    llmOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
+    llmOpenrouterApiKey: process.env['OPENROUTER_API_KEY'] || '',
+    llmOpenaiModel: process.env['OPENAI_MODEL'] || 'gpt-5.5',
+    llmOpenrouterModel: process.env['OPENROUTER_MODEL'] || 'google/gemma-4-26b-a4b-it:free',
+    llmReasoningEffort: process.env['LLM_REASONING_EFFORT'] || 'medium',
     // Public (exposed to client). Leave empty unless you explicitly want to expose something.
     public: {}
   }

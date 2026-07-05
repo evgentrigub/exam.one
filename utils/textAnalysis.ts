@@ -3,7 +3,7 @@
  * Provides basic analysis functions for writing feedback system (Stage 12)
  */
 
-import type { WritingTopic, WritingFeedbackModel } from '~/utils/types'
+import type { WritingExercise, WritingFeedbackModel } from '~/utils/types'
 
 export interface TextAnalysisResult {
   wordCount: number
@@ -32,7 +32,7 @@ export interface VocabularyMetrics {
 /**
  * Analyzes German text for A2-level writing evaluation
  */
-export function analyzeGermanText(content: string, topic: WritingTopic): TextAnalysisResult {
+export function analyzeGermanText(content: string, topic: WritingExercise): TextAnalysisResult {
   const cleanContent = content.trim()
   
   // Basic metrics
@@ -63,7 +63,7 @@ export function analyzeGermanText(content: string, topic: WritingTopic): TextAna
 /**
  * Creates WritingFeedback object for storage
  */
-export function createWritingFeedback(analysisResult: TextAnalysisResult, topic: WritingTopic): WritingFeedbackModel {
+export function createWritingFeedback(analysisResult: TextAnalysisResult, topic: WritingExercise): WritingFeedbackModel {
   const { wordCount, structureElements, suggestions } = analysisResult
   
   // Word count validation
@@ -115,7 +115,7 @@ function splitIntoSentences(text: string): string[] {
 /**
  * Analyze text structure based on writing type
  */
-function analyzeStructure(content: string, topic: WritingTopic): StructureAnalysis {
+function analyzeStructure(content: string, topic: WritingExercise): StructureAnalysis {
   const lowerContent = content.toLowerCase()
   
   // Common German greetings and closings
@@ -226,7 +226,7 @@ function analyzeVocabulary(content: string): VocabularyMetrics {
 /**
  * Calculate completeness score based on topic requirements
  */
-function calculateCompletenessScore(analysis: TextAnalysisResult, topic: WritingTopic): number {
+function calculateCompletenessScore(analysis: TextAnalysisResult, topic: WritingExercise): number {
   let score = 1
   
   // Word count compliance
@@ -263,7 +263,7 @@ function calculateCompletenessScore(analysis: TextAnalysisResult, topic: Writing
  */
 function generateSuggestions(
   content: string, 
-  topic: WritingTopic, 
+  topic: WritingExercise, 
   structure: StructureAnalysis, 
   vocabulary: VocabularyMetrics,
   wordCount: number

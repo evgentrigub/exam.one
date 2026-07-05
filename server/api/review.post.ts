@@ -1,10 +1,106 @@
 import type { H3Event } from 'h3'
-import type { WritingTopic, AiReviewData } from '~/utils/types'
+import type { WritingExercise, AiReviewData } from '~/utils/types'
+import { callLlm, getLlmConfig } from '~/server/utils/llm'
 
 interface ReviewRequestBody {
-  topic: WritingTopic
+  topic: WritingExercise
   userContent: string
   prompt: string
+}
+
+interface ReviewResponse {
+  text: string
+  data: AiReviewData | null
+  error: string | null
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isValidReviewRequest(value: unknown): value is ReviewRequestBody {
+  return isRecord(value)
+    && isRecord(value['topic'])
+    && typeof value['userContent'] === 'string'
+    && value['userContent'].trim().length > 0
+    && typeof value['prompt'] === 'string'
+    && value['prompt'].trim().length > 0
+}
+
+function isCriteriaItem(value: unknown): boolean {
+  return isRecord(value)
+    && typeof value['grade'] === 'string'
+    && typeof value['points'] === 'number'
+    && typeof value['comment'] === 'string'
+}
+
+function isStringArray(value: unknown): boolean {
+  return Array.isArray(value) && value.every(item => typeof item === 'string')
+}
+
+function isExampleArray(value: unknown): boolean {
+  return Array.isArray(value) && value.every(item => (
+    isRecord(item)
+    && typeof item['error'] === 'string'
+    && typeof item['correction'] === 'string'
+    && typeof item['rule'] === 'string'
+  ))
+}
+
+function hasCommonReviewShape(value: Record<string, unknown>): boolean {
+  return typeof value['teil'] === 'number'
+    && typeof value['word_count'] === 'number'
+    && typeof value['teil_rule_applied'] === 'string'
+    && isStringArray(value['priority_fixes'])
+    && isExampleArray(value['examples'])
+    && typeof value['report'] === 'string'
+}
+
+function isValidA2Review(value: unknown): value is AiReviewData {
+  if (!isRecord(value) || !hasCommonReviewShape(value)) return false
+  const criteria = value['criteria']
+  const requiredWordCount = value['required_word_count']
+  const registerCheck = value['register_check']
+  const contentPoints = value['content_points_covered']
+
+  return isRecord(criteria)
+    && isCriteriaItem(criteria['aufgabenerfuellung'])
+    && isCriteriaItem(criteria['sprache'])
+    && typeof value['teil_points_mess'] === 'number'
+    && typeof value['teil_points_result'] === 'number'
+    && isRecord(requiredWordCount)
+    && typeof requiredWordCount['min'] === 'number'
+    && typeof requiredWordCount['max'] === 'number'
+    && isRecord(registerCheck)
+    && typeof registerCheck['expected'] === 'string'
+    && typeof registerCheck['detected'] === 'string'
+    && typeof registerCheck['ok'] === 'boolean'
+    && isRecord(contentPoints)
+    && typeof contentPoints['required'] === 'number'
+    && typeof contentPoints['covered'] === 'number'
+}
+
+function isValidC1Review(value: unknown): value is AiReviewData {
+  if (!isRecord(value) || !hasCommonReviewShape(value)) return false
+  const criteria = value['criteria']
+
+  return isRecord(criteria)
+    && isCriteriaItem(criteria['aufgabenerfuellung'])
+    && isCriteriaItem(criteria['kohaerenz'])
+    && isCriteriaItem(criteria['wortschatz'])
+    && isCriteriaItem(criteria['strukturen'])
+    && typeof value['required_word_count'] === 'number'
+    && typeof value['teil_points'] === 'number'
+    && typeof value['passed_module'] === 'boolean'
+}
+
+function parseReviewCandidate(candidate: string): AiReviewData | null {
+  try {
+    const parsed = JSON.parse(candidate) as unknown
+    return isValidA2Review(parsed) || isValidC1Review(parsed) ? parsed : null
+  } catch {
+    return null
+  }
 }
 
 function tryExtractJsonObject(rawText: string): AiReviewData | null {
@@ -14,11 +110,8 @@ function tryExtractJsonObject(rawText: string): AiReviewData | null {
     const fenceEnd = rawText.indexOf('```', fenceStart)
     if (fenceEnd > fenceStart) {
       const candidate = rawText.slice(fenceStart, fenceEnd).trim()
-      try {
-        return JSON.parse(candidate) as AiReviewData
-      } catch {
-        // fall through to brace scan
-      }
+      const parsed = parseReviewCandidate(candidate)
+      if (parsed) return parsed
     }
   }
   const firstBrace = rawText.indexOf('{')
@@ -26,41 +119,49 @@ function tryExtractJsonObject(rawText: string): AiReviewData | null {
   for (let j = rawText.length - 1; j > firstBrace; j--) {
     if (rawText[j] !== '}') continue
     const candidate = rawText.slice(firstBrace, j + 1)
-    try {
-      return JSON.parse(candidate) as AiReviewData
-    } catch {
-      // continue trying shorter tails
-    }
+    const parsed = parseReviewCandidate(candidate)
+    if (parsed) return parsed
   }
   return null
 }
 
-export default defineEventHandler(async (event: H3Event) => {
-  const { openaiApiKey } = useRuntimeConfig()
-  const body = (await readBody<ReviewRequestBody>(event)) || ({} as ReviewRequestBody)
+export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse> => {
+  const config = useRuntimeConfig()
+  const llmConfig = getLlmConfig(config)
+  const body = await readBody<unknown>(event)
 
-  // Example server-side OpenAI usage (disabled):
-    if (openaiApiKey) {
-        const { OpenAI } = await import('openai')
-        const client = new OpenAI({ apiKey: openaiApiKey })
-        // const completion = await client.chat.completions.create({
-        // model: 'gpt-4o-mini',
-        // messages: [
-        //     { role: 'user', content: body.prompt},
-        // ],
-        // })
-        // const text = completion.choices?.[0]?.message?.content ?? 'No response from OpenAI.'
-        const response = await client.responses.create({
-            model: "gpt-5",
-            input: body.prompt
-        });
-        const rawText = response.output_text ?? 'No response from OpenAI.'
-        const data = tryExtractJsonObject(rawText)
-        return { text: rawText, data }
+  if (!isValidReviewRequest(body)) {
+    return {
+      text: '',
+      data: null,
+      error: 'Invalid writing review request.',
     }
-    // Offline mode: return only text for now; client will keep it as plain text
-    return { text: 'No API key found to use review service.', data: null }
+  }
 
+  if (!llmConfig) {
+    return {
+      text: '',
+      data: null,
+      error: 'AI review is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
+    }
+  }
+
+  try {
+    const rawText = await callLlm(llmConfig, [
+      {
+        role: 'system',
+        content: 'You are an expert Goethe-Institut examiner. Review writing submissions according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'
+      },
+      { role: 'user', content: body.prompt }
+    ])
+    const data = tryExtractJsonObject(rawText)
+    return { text: rawText, data, error: data ? null : 'Failed to parse review from AI response.' }
+  } catch (error) {
+    console.error('Error reviewing writing submission:', error)
+    return {
+      text: '',
+      data: null,
+      error: 'AI review failed. Please check your API key and try again.',
+    }
+  }
 })
-
-

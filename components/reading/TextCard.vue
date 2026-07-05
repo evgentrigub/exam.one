@@ -1,167 +1,134 @@
 <template>
-  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[320px]">
-    <!-- Header with badges -->
-    <div class="px-4 pt-4">
-      <div class="flex items-center justify-between mb-3">
-        <!-- Time indicator always on left -->
-        <div class="flex items-center text-xs text-gray-500">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          {{ text.estimatedReadingTime }} Min
-        </div>
-        
-        <!-- Completion or text type badge always on right -->
-        <span 
-          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
-          :class="textCompleted ? 'bg-green-100 text-green-800' : textTypeStyles[text.textType]"
-        >
-          <!-- Completion check icon for completed texts -->
-          <svg v-if="textCompleted" class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          {{ textCompleted ? 'Completed' : getTextTypeLabel(text.textType) }}
-        </span>
+  <div class="group bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 card-hov h-full min-h-[280px] flex flex-col relative">
+    <button
+      class="btn btn-circle btn-error btn-xs absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+      title="Delete text"
+      aria-label="Delete reading text"
+      @click.stop="$emit('deleteText', text.id)"
+    >
+      <Trash2 :size="13" />
+    </button>
+
+    <div class="flex items-start justify-between gap-3 pr-8">
+      <div class="w-9 h-9 rounded-selector bg-reading-soft text-reading grid place-items-center shrink-0">
+        <component :is="textTypeIcon" :size="16" />
+      </div>
+      <div class="flex items-center gap-2 flex-wrap justify-end">
+        <span class="level-pip">{{ text.difficulty }}</span>
+        <span v-if="text.testingPart" class="level-pip">Teil {{ text.testingPart }}</span>
       </div>
     </div>
 
-    <!-- Content - flexible to fill space -->
-    <div class="px-4 flex-1 flex flex-col">
-      <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+    <div class="mt-4">
+      <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">
+        Reading · {{ getTextTypeLabel(text.textType) }}
+      </div>
+      <h3 class="font-display text-xl font-bold leading-tight mt-1 text-base-content line-clamp-2">
         {{ text.title }}
       </h3>
+    </div>
 
-      <!-- Metadata -->
-      <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
-        <div class="flex items-center space-x-3">
-          <span>{{ text.wordCount }} words</span>
-          <span>•</span>
-          <span>{{ text.difficulty }}</span>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+        <Clock :size="11" />
+        {{ text.estimatedReadingTime }} min
+      </span>
+      <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+        <AlignLeft :size="11" />
+        {{ text.wordCount }} words
+      </span>
+      <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+        <HelpCircle :size="11" />
+        {{ text.questions?.length || 0 }} questions
+      </span>
+    </div>
+
+    <div class="mt-4 flex flex-wrap gap-1.5">
+      <span
+        v-for="topic in displayTopics"
+        :key="topic"
+        class="text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary"
+      >
+        {{ topic }}
+      </span>
+    </div>
+
+    <div v-if="textCompleted" class="mt-4 rounded-box bg-success/10 border border-success/20 p-3 flex items-center gap-3">
+      <CheckCircle :size="18" class="text-success shrink-0" />
+      <div class="min-w-0 flex-1">
+        <div class="text-sm font-semibold text-success">Best score {{ scorePercentage }}%</div>
+        <div class="text-xs text-success/80">
+          {{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
         </div>
-        <div class="flex flex-wrap gap-1 ml-auto">
-          <span 
-            v-for="topic in displayTopics" 
-            :key="topic"
-            class="px-2 py-1 bg-gray-100 rounded text-xs whitespace-nowrap"
-          >
-            {{ topic }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Progress Information -->
-      <div v-if="textCompleted" class="mb-4 p-3 bg-green-50 rounded-lg">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center text-green-700">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <span class="text-sm font-medium">Best Score</span>
-          </div>
-          <div class="text-right">
-            <div class="text-lg font-bold text-green-700">{{ Math.round((bestScore / (text.questions?.length || 4)) * 100) }}%</div>
-            <div class="text-xs text-green-600">
-              {{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Spacer to push button to bottom -->
-      <div class="flex-1"/>
-
-      <!-- Action Button - fixed at bottom -->
-      <div class="pb-4">
-        <button
-          class="w-full px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
-          :class="textCompleted 
-            ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500' 
-            : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500'"
-          @click="$emit('startReading', text.id)"
-        >
-          {{ textCompleted ? $t('practice.textCard.readAgain') : $t('practice.textCard.startReading') }}
-        </button>
       </div>
     </div>
+
+    <div class="flex-1" />
+
+    <button
+      class="btn btn-sm w-full mt-5 gap-1.5"
+      :class="textCompleted ? 'btn-success' : 'btn-primary'"
+      @click="$emit('startReading', text.id)"
+    >
+      {{ textCompleted ? 'Read again' : 'Start reading' }}
+      <ArrowRight :size="13" />
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { GermanText } from '~/utils/types'
+import { AlignLeft, ArrowRight, Bell, CheckCircle, Clock, FileText, HelpCircle, Mail, Megaphone, Newspaper, Trash2 } from 'lucide-vue-next'
+import type { Component } from 'vue'
+import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
-import { computed, ref, onMounted } from 'vue'
 
 interface Props {
-  text: GermanText
+  text: ReadingExercise
 }
 
 const props = defineProps<Props>()
 
 const _emit = defineEmits<{
   startReading: [textId: string]
+  deleteText: [textId: string]
 }>()
 
-// Progress tracking
 const { isTextCompleted, getBestScore, getTextProgress } = useProgress()
-
-// Client-side hydration flag
 const isClient = ref(false)
 
 onMounted(() => {
   isClient.value = true
 })
 
-// Computed properties for progress display (only check after client hydration)
 const textCompleted = computed(() => isClient.value ? isTextCompleted(props.text.id) : false)
 const bestScore = computed(() => isClient.value ? getBestScore(props.text.id) : 0)
 const progress = computed(() => isClient.value ? getTextProgress(props.text.id) : null)
-
-// Filter and process topics for display
-const displayTopics = computed(() => {
-  return props.text.topics
-    .filter(topic => {
-      // Remove overly long topics that break layout
-      const longTopicsToRemove = ['Öffentliche Einrichtungen', 'Bewerbung']
-      return !longTopicsToRemove.includes(topic)
-    })
-    .map(topic => {
-      // Truncate topics longer than 12 characters
-      return topic.length > 12 ? topic.substring(0, 10) + '...' : topic
-    })
-    .slice(0, 2) // Still only show max 2 topics
-})
-
-// Text type styling
-const textTypeStyles = {
-  email: 'bg-blue-100 text-blue-800',
-  notice: 'bg-yellow-100 text-yellow-800', 
-  article: 'bg-green-100 text-green-800',
-  advertisement: 'bg-purple-100 text-purple-800',
-  instructions: 'bg-orange-100 text-orange-800',
-  announcement: 'bg-red-100 text-red-800'
-}
-
-// Text type labels in German
-const textTypeLabels = {
-  email: 'E-Mail',
-  notice: 'Hinweis',
-  article: 'Artikel', 
-  advertisement: 'Anzeige',
-  instructions: 'Anleitung',
-  announcement: 'Ankündigung'
-}
+const scorePercentage = computed(() => Math.round((bestScore.value / (props.text.questions?.length || 1)) * 100))
+const displayTopics = computed(() => props.text.topics.map(topic => topic.length > 18 ? `${topic.slice(0, 16)}…` : topic).slice(0, 3))
+const textTypeIcon = computed<Component>(() => getTextTypeIcon(props.text.textType))
 
 function getTextTypeLabel(type: string) {
-  return textTypeLabels[type as keyof typeof textTypeLabels] || type
+  const labels: Record<string, string> = {
+    email: 'E-Mail',
+    notice: 'Notice',
+    article: 'Article',
+    advertisement: 'Advertisement',
+    instructions: 'Instructions',
+    announcement: 'Announcement'
+  }
+  return labels[type] || type
 }
 
-function _formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('de-DE', { 
-    day: '2-digit', 
-    month: '2-digit', 
-    year: 'numeric' 
-  })
+function getTextTypeIcon(type: string): Component {
+  const icons: Record<string, Component> = {
+    email: Mail,
+    notice: Bell,
+    article: Newspaper,
+    advertisement: Megaphone,
+    instructions: FileText,
+    announcement: Bell
+  }
+  return icons[type] || FileText
 }
 </script>
 
@@ -172,11 +139,4 @@ function _formatDate(dateString: string): string {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style> 
+</style>

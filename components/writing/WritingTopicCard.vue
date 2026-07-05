@@ -1,54 +1,46 @@
 <template>
-  <div class="group bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-[380px] relative">
-    <!-- Delete button - top right corner -->
-    <button
-      class="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-      title="Delete topic"
-      @click.stop="$emit('deleteTopic', topic.id)"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
+  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[380px] group">
+    <div class="card-body p-4 flex flex-col relative">
+      <!-- Delete button - top right corner -->
+      <button
+        class="btn btn-circle btn-error btn-sm absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        title="Delete topic"
+        @click.stop="$emit('deleteTopic', topic.id)"
+      >
+        <X :size="16" aria-hidden="true" />
+      </button>
 
-    <!-- Header with badges -->
-    <div class="px-4 pt-4">
+      <!-- Header with badges -->
       <div class="flex items-center justify-between mb-3">
         <!-- Time indicator always on left -->
-        <div class="flex items-center text-xs text-gray-500">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+        <div class="flex items-center text-xs opacity-60">
+          <Clock :size="12" class="mr-1" aria-hidden="true" />
           {{ topic.estimatedTime }} Min
         </div>
         
         <!-- Completion or topic type badge always on right -->
         <span 
-          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
-          :class="topicCompleted ? 'bg-green-100 text-green-800' : getTopicTypeStyle(topic.topicType)"
+          class="badge gap-1"
+          :class="topicCompleted ? 'badge-success' : getTopicBadgeClass(topic.topicType)"
         >
           <!-- Completion check icon for completed topics -->
-          <svg v-if="topicCompleted" class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
+          <Check v-if="topicCompleted" :size="12" aria-hidden="true" />
           {{ topicCompleted ? 'Completed' : getTopicTypeLabel(topic.topicType) }}
         </span>
       </div>
-    </div>
 
-    <!-- Content - flexible to fill space -->
-    <div class="px-4 flex-1 flex flex-col">
-      <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2" :title="topic.title">
+      <!-- Card Title -->
+      <h3 class="card-title text-lg mb-2 line-clamp-2" :title="topic.title">
         {{ topic.title }}
       </h3>
 
       <!-- Description -->
-      <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+      <p class="text-sm opacity-70 mb-3 line-clamp-2">
         {{ topic.description }}
       </p>
 
       <!-- Metadata -->
-      <div class="flex items-center text-xs text-gray-500 mb-4">
+      <div class="flex items-center text-xs opacity-60 mb-3">
         <div class="flex items-center space-x-3">
           <span>{{ topic.difficulty }}</span>
           <span>•</span>
@@ -57,28 +49,26 @@
           <span>{{ topic.wordCount.min }}-{{ topic.wordCount.max }} Wörter</span>
         </div>
       </div>
-      <div class="flex flex-wrap gap-1">
+      <div class="flex flex-wrap gap-1 mb-4">
         <span 
           v-for="categoryObj in displayCategories" 
           :key="categoryObj.full"
           :title="categoryObj.full"
-          class="px-2 py-1 bg-gray-100 rounded text-xs whitespace-nowrap"
+          class="badge badge-ghost badge-sm"
         >
           {{ categoryObj.display }}
         </span>
       </div>
 
       <!-- Progress Information -->
-      <div v-if="topicCompleted" class="mb-4 mt-4 p-3 bg-green-50 rounded-lg">
+      <div v-if="topicCompleted" class="mb-4 mt-4 p-3 bg-success/10 rounded-lg">
         <div class="flex items-center justify-between">
-          <div class="flex items-center text-green-700">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+          <div class="flex items-center text-success">
+            <CheckCircle2 :size="16" class="mr-2" aria-hidden="true" />
             <span class="text-sm font-medium">Completed</span>
           </div>
           <div class="text-right">
-            <div class="text-sm font-bold text-green-700">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
+            <div class="text-sm font-bold text-success">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
           </div>
         </div>
       </div>
@@ -86,50 +76,46 @@
       <!-- Spacer to push button to bottom -->
       <div class="flex-1"/>
 
-      <!-- Action Button - fixed at bottom -->
-      <div class="pb-4">
-        <div class="flex gap-2">
+      <!-- Action Buttons -->
+      <div class="card-actions">
+        <button
+          v-if="!topicCompleted"
+          class="btn btn-primary flex-1"
+          @click="$emit('startWriting', topic.id)"
+        >
+          Start Writing
+        </button>
+
+        <NuxtLink
+          v-if="topicCompleted && isReady"
+          class="btn btn-success flex-[4]"
+          :to="`/writing/${props.topic.id}/checking`"
+        >
+          {{ $t('writing.checkReview') }}
+        </NuxtLink>
+        <button
+          v-else-if="topicCompleted && isPending"
+          class="btn btn-disabled flex-[4]"
+          disabled
+        >
+          {{ $t('writing.checking') }}
+        </button>
+
+        <Tooltip
+          v-if="topicCompleted && !isPending"
+          :text="$t('writing.repeatExercise')"
+          position="top"
+          class="flex-[1]"
+        >
           <button
-            v-if="!topicCompleted"
-            class="flex-1 px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+            class="btn btn-success btn-circle w-full"
+            :class="isPending ? 'btn-disabled' : ''"
+            :disabled="isPending"
             @click="$emit('startWriting', topic.id)"
           >
-            Start Writing
+            <RotateCcw :size="20" aria-hidden="true" />
           </button>
-
-          <NuxtLink
-            v-if="topicCompleted && isReady"
-            class="flex-[4] px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 text-center"
-            :to="`/writing/${props.topic.id}/checking`"
-          >
-            {{ $t('writing.checkReview') }}
-          </NuxtLink>
-          <button
-            v-else-if="topicCompleted && isPending"
-            class="flex-[4] px-4 py-3 rounded-lg font-medium bg-gray-300 text-gray-600 cursor-not-allowed"
-            disabled
-          >
-            {{ $t('writing.checking') }}
-          </button>
-
-          <Tooltip
-            v-if="topicCompleted && !isPending"
-            :text="$t('writing.repeatExercise')"
-            position="top"
-            class="flex-[1]"
-          >
-            <button
-              class="w-full px-3 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center"
-              :class="(isPending || !isReady) ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'"
-              :disabled="isPending || !isReady"
-              @click="$emit('startWriting', topic.id)"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-              </svg>
-            </button>
-          </Tooltip>
-        </div>
+        </Tooltip>
       </div>
     </div>
   </div>
@@ -138,13 +124,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
-import type { WritingTopic } from '../../utils/types'
-import { useProgress } from '../../composables/useProgress'
+import { Check, CheckCircle2, Clock, RotateCcw, X } from 'lucide-vue-next'
+import type { WritingExercise } from '~/utils/types'
+import { useProgress } from '~/composables/useProgress'
 import { useWritingReview } from '~/composables/useWritingReview'
 
 interface Props {
-  topic: WritingTopic
+  topic: WritingExercise
 }
 
 const props = defineProps<Props>()
@@ -199,24 +185,24 @@ const displayTestingPart = computed(() => {
   return props.topic.testingPart === 1 ? 'Teil 1' : 'Teil 2'
 })
 
-// Topic type styling with fallback
-const topicTypeStyles: Record<string, string> = {
-  email: 'bg-blue-100 text-blue-800',
-  letter: 'bg-purple-100 text-purple-800',
-  essay: 'bg-green-100 text-green-800',
-  form: 'bg-orange-100 text-orange-800',
-  postcard: 'bg-pink-100 text-pink-800',
-  note: 'bg-yellow-100 text-yellow-800',
-  report: 'bg-red-100 text-red-800',
-  review: 'bg-blue-100 text-blue-800',
-  proposal: 'bg-green-100 text-green-800',
-  article: 'bg-orange-100 text-orange-800',
-  post: 'bg-indigo-100 text-indigo-800',
+// Topic type badge styling (daisyUI)
+const topicBadgeClasses: Record<string, string> = {
+  email: 'badge-info',
+  letter: 'badge-secondary',
+  essay: 'badge-success',
+  form: 'badge-accent',
+  postcard: 'badge-secondary',
+  note: 'badge-warning',
+  report: 'badge-error',
+  review: 'badge-info',
+  proposal: 'badge-success',
+  article: 'badge-accent',
+  post: 'badge-primary',
 }
 
-// Fallback style for unknown types
-const getTopicTypeStyle = (type: string): string => {
-  return topicTypeStyles[type] || 'bg-gray-100 text-gray-800'
+// Fallback badge class for unknown types
+function getTopicBadgeClass(type: string): string {
+  return topicBadgeClasses[type] || 'badge-ghost'
 }
 
 // Topic type labels in German with fallback
