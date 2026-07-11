@@ -116,7 +116,7 @@
   </div>
 
   <!-- Language Settings Modal -->
-  <input v-model="isLanguageModalOpen" type="checkbox" class="modal-toggle" />
+  <input v-model="isLanguageModalOpen" type="checkbox" class="modal-toggle" >
   <div class="modal modal-bottom sm:modal-middle">
     <div class="modal-box max-w-lg max-h-[90vh] overflow-y-auto">
       <!-- Modal Header -->
