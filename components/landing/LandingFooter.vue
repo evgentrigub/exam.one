@@ -5,7 +5,7 @@
   >
     <div class="max-w-6xl mx-auto grid md:grid-cols-[1.6fr_1fr_1fr_1fr] gap-8">
       <div>
-        <LandingWordmark :light="light" />
+        <LandingWordmark :light="!!light" />
         <p
           class="text-sm mt-3 max-w-xs"
           :class="light ? 'text-white/55' : 'text-base-content/60'"
