@@ -25,7 +25,7 @@
         :value="currentSec"
         class="w-full accent-info"
         @input="seekTo(Number(($event.target as HTMLInputElement).value))"
-      ></input>
+      >
       <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
         <span>{{ fmt(currentSec) }}</span>
         <span>{{ fmt(durationSec) }}</span>
@@ -56,7 +56,7 @@
         :value="volume"
         class="flex-1 accent-info min-w-0"
         @input="volume = Number(($event.target as HTMLInputElement).value)"
-      ></input>
+      >
 
       <!-- Speed segmented control -->
       <div class="join">

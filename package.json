@@ -1,53 +1,33 @@
 {
-  "name": "nuxt-app",
+  "name": "exam-one",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "type-check": "nuxt typecheck",
-    "prepare": "husky install"
-  },
-  "dependencies": {
-    "@nuxtjs/i18n": "^9.5.5",
-    "@vueuse/core": "^13.4.0",
-    "lucide-vue-next": "^1.0.0",
-    "nuxt": "^3.17.5",
-    "openai": "^5.12.2",
-    "pinia": "^3.0.3",
-    "pinia-plugin-persistedstate": "^4.3.0",
-    "vue": "^3.5.16",
-    "vue-i18n": "^11.1.6",
-    "vue-router": "^4.5.1"
-  },
   "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac",
+  "scripts": {
+    "dev": "pnpm --filter ./apps/frontend --filter ./apps/backend --parallel dev",
+    "dev:frontend": "pnpm --filter ./apps/frontend dev",
+    "dev:backend": "pnpm --filter ./apps/backend dev",
+    "build": "pnpm --recursive --workspace-concurrency=1 build",
+    "build:frontend": "pnpm --filter ./apps/frontend build",
+    "build:backend": "pnpm --filter ./apps/backend build",
+    "lint": "pnpm --recursive lint",
+    "lint:fix": "pnpm --recursive lint:fix",
+    "format": "prettier --write .",
+    "type-check": "pnpm --recursive type-check",
+    "test": "pnpm --recursive test",
+    "test:e2e": "pnpm --filter ./apps/backend test:e2e",
+    "db:generate": "pnpm --filter @exam-one/database db:generate",
+    "db:migrate": "pnpm --filter @exam-one/database db:migrate",
+    "db:migrate:deploy": "pnpm --filter @exam-one/database db:migrate:deploy",
+    "db:seed": "pnpm --filter @exam-one/database db:seed"
+  },
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "@nuxt/eslint-config": "^1.4.1",
-    "@nuxt/typescript-build": "^3.0.2",
-    "@pinia/nuxt": "^0.11.1",
-    "@tailwindcss/vite": "^4.1.14",
-    "@typescript-eslint/eslint-plugin": "^8.34.1",
-    "@typescript-eslint/parser": "^8.34.1",
-    "@vueuse/nuxt": "^13.4.0",
-    "autoprefixer": "^10.4.21",
-    "daisyui": "5.3.7",
-    "eslint": "^9.29.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-vue": "^10.2.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
-    "playwright": "^1.61.1",
-    "postcss": "^8.5.6",
     "prettier": "^3.5.3",
-    "tailwindcss": "4.1.14",
-    "typescript": "^5.8.3",
-    "vue-tsc": "^2.2.10"
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
   }
 }
