@@ -18,12 +18,12 @@ services:
       context: .
       dockerfile: apps/backend/Dockerfile
     environment:
-      PORT: 3001
+      BACKEND_PORT: 3001
       NODE_ENV: production
-      FRONTEND_URL: '${FRONTEND_URL:-http://localhost:3000}'
+      FRONTEND_URL: 'http://localhost:${FRONTEND_PORT:-3000}'
       DATABASE_URL: 'postgresql://${POSTGRES_USER:-exam_one}:${POSTGRES_PASSWORD:-exam_one}@postgres:5432/${POSTGRES_DB:-exam_one}?schema=public'
-    expose:
-      - '3001'
+    ports:
+      - '${BACKEND_PORT:-3001}:3001'
     depends_on:
       postgres:
         condition: service_healthy

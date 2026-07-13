@@ -7,17 +7,14 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "prisma generate && tsc -p tsconfig.json",
+    "build": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate && tsc -p tsconfig.json",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "prisma validate",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
+    "test": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate",
+    "db:validate": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate",
+    "db:migrate": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate dev",
+    "db:migrate:deploy": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts"
-  },
-  "dependencies": {
-    "@prisma/client": "6.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

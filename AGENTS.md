@@ -5,7 +5,7 @@ This file is the working guide for coding agents in this repository. It should b
 ## Project Summary
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework (today: English / Cambridge A2 and German / Goethe A2)
-- Current app shape: Nuxt 3, frontend-only MVP (Phase 1) with offline-first core flows; Phase 2 evolves into a self-hostable full-stack app (NestJS + PostgreSQL via Docker Compose)
+- Current app shape: pnpm monorepo with a Nuxt 3 offline-first frontend, a standalone NestJS backend scaffold, shared libraries, and PostgreSQL via Docker Compose
 - Primary features: reading, writing, listening, and speaking practice; mock exam mode; editable demo prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
 
@@ -24,24 +24,27 @@ This file is the working guide for coding agents in this repository. It should b
 
 Use `pnpm`.
 
-- `pnpm dev` - start local development server
-- `pnpm build` - production build
-- `pnpm preview` - preview production build
-- `pnpm generate` - static generation
-- `pnpm lint` - ESLint
-- `pnpm lint:fix` - ESLint autofix
-- `pnpm format` - Prettier
-- `pnpm type-check` - Nuxt type checking
+- `pnpm dev:infra` - start the persistent development PostgreSQL container
+- `pnpm dev` - start Nuxt and NestJS locally with hot reload
+- `pnpm dev:frontend` - start only Nuxt
+- `pnpm dev:backend` - start only NestJS
+- `pnpm build` - build all workspace projects
+- `pnpm lint` - lint all workspace projects
+- `pnpm lint:fix` - autofix all workspace projects
+- `pnpm format` - run Prettier
+- `pnpm type-check` - type-check all workspace projects
+- `pnpm test` - test all workspace projects
 
 ## Codebase Shape
 
-- `pages/` contains file-based routes
-- `components/` contains feature UI and shared UI
-- `composables/` contains reusable feature logic
-- `stores/` contains Pinia stores
-- `data/` contains bundled typed seed data for offline-first flows
-- `server/api/` contains thin server endpoints, mostly for optional AI features
-- `utils/` contains shared helpers and types
+- `apps/frontend/` contains the Nuxt application, including pages, components, composables, stores, data, frontend utilities, and temporary Nitro AI endpoints
+- `apps/backend/` contains the standalone NestJS API
+- `libraries/contracts/` contains framework-neutral shared API types
+- `libraries/database/` owns the Prisma schema, migrations, and seeds
+- `libraries/exam-content/` is the shared exam-content boundary
+- `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
+- `compose.dev.yaml` runs only PostgreSQL for local development and preserves data in `exam-one-postgres-dev-data`
+- `compose.yaml` runs the fully containerized stack
 - `agent-os/` contains project-specific product context and implementation standards
 
 ## Agent Priorities
@@ -88,7 +91,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ## Data And Persistence Rules
 
-- Seed content belongs in typed modules under `data/`
+- Frontend-owned seed content currently belongs in typed modules under `apps/frontend/data/`; move it to `libraries/exam-content/` only when both applications need it
 - Exam-specific implementation details belong in `agent-os/product/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
 - User progress and drafts are local-first
 - Do not move core user data to a required backend dependency in MVP work
