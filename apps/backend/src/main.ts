@@ -8,7 +8,7 @@ async function bootstrap(): Promise<void> {
   configureApp(app)
 
   const configService = app.get(ConfigService)
-  const port = configService.get<number>('app.PORT', 3000)
+  const port = configService.get<number>('app.BACKEND_PORT', 3001)
   await app.listen(port)
 }
 
