@@ -1,6 +1,6 @@
 # AI Response Envelope
 
-Every `server/api/*.post.ts` endpoint that calls an AI provider must return this shape:
+Every AI endpoint that calls an LLM provider must return this shape:
 
 ```ts
 interface AiResponse<T> {
@@ -9,22 +9,26 @@ interface AiResponse<T> {
 }
 ```
 
-AI is **bring-your-own-key and provider-agnostic** — the key, provider, model, and (optional) base URL come from runtime config supplied by the self-hoster (e.g. OpenAI, Google Gemini, or a local model). Never hard-code a single provider into the endpoint contract; isolate provider specifics behind a helper.
+- **Phase 1 (current):** Nuxt server routes under `server/api/*.post.ts`
+- **Phase 2 onward:** NestJS owns the long-term AI proxy; keep the same envelope so the frontend composables stay stable
+
+AI is **bring-your-own-key** with a provider-agnostic contract — the key, provider, model, and (optional) base URL come from runtime/env config supplied by the self-hoster. **Supported providers today: OpenAI and OpenRouter.** Never hard-code a single provider into the endpoint contract; isolate provider specifics behind a helper.
 
 ## Rules
 
 - **Business failures** (no API key, bad prompt, parse failure, empty AI output) → HTTP 200 with `{ data: null, error: "user-safe message" }`. Do not throw.
-- **Infrastructure / programmer errors** (SDK blew up, invalid body, auth) → throw via `createError({ statusCode: 5xx, statusMessage })`. Let H3 produce the real non-200.
+- **Infrastructure / programmer errors** (SDK blew up, invalid body, auth) → throw via `createError({ statusCode: 5xx, statusMessage })` in Nitro, or the NestJS equivalent. Produce a real non-200 for infra failures.
 - `error` is a short, user-displayable string. Log the full error server-side.
 - `data` is `null` whenever `error` is set, and non-null on success. Never both populated.
-- Read the AI key/config from `useRuntimeConfig()`; treat a missing key as a graceful business failure, not a crash.
+- Read the AI key/config from runtime config; treat a missing key as a graceful business failure, not a crash.
 
-## Example
+## Example (Phase 1 Nitro)
 
 ```ts
 export default defineEventHandler(async (event): Promise<AiResponse<ReadingExercise[]>> => {
-  const { aiApiKey } = useRuntimeConfig()
-  if (!aiApiKey) {
+  const { llmOpenaiApiKey, llmOpenrouterApiKey, llmProvider } = useRuntimeConfig()
+  const apiKey = llmProvider === 'openai' ? llmOpenaiApiKey : llmOpenrouterApiKey
+  if (!apiKey) {
     return { data: null, error: 'AI features are disabled. Add your provider API key to enable them.' }
   }
 
@@ -34,7 +38,7 @@ export default defineEventHandler(async (event): Promise<AiResponse<ReadingExerc
   }
 
   try {
-    // callProvider isolates the provider SDK (OpenAI / Gemini / local) behind one helper.
+    // callProvider isolates OpenAI / OpenRouter behind one helper.
     const raw = await callProvider(body.prompt)
     const parsed = extractJsonArray<ReadingExercise>(raw)
     if (!parsed) {
