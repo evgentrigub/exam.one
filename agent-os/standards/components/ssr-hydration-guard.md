@@ -2,6 +2,8 @@
 
 Any value derived from client-only sources (`localStorage`, `pinia-plugin-persistedstate`, `window`, `document`, timers) must not render differently on server vs client. Pick one of these patterns.
 
+This applies to client-only reads regardless of where authoritative exam data lives (Phase 1 localStorage or Phase 2 API/DB). Hydration guards are about SSR/client mismatch, not about choosing the persistence layer.
+
 ## Prefer: `<ClientOnly>` for whole subtrees
 
 When a block has no meaningful server rendering (progress badges, draft banners, etc.):
