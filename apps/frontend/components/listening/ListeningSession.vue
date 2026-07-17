@@ -5,8 +5,11 @@
       <!-- Shared audio (Teil 2 + 4) -->
       <AudioPlayer
         v-if="model.mode === 'shared'"
+        :key="`shared-${sessionKey}`"
         :transcript="model.sharedTranscript || ''"
         :label="exercise.title"
+        :src="sharedAudioSrc"
+        :replay-limit="replayLimit"
         :reveal-transcript="isFinished"
       />
 
@@ -68,9 +71,12 @@
             <!-- Per-item audio (Teil 1 + 3) -->
             <AudioPlayer
               v-if="model.mode === 'peritem' && q.transcript"
+              :key="`${q.id}-${sessionKey}`"
               class="mb-3"
               :transcript="q.transcript"
               :label="`Audio ${i + 1}`"
+              :src="itemAudioSrc(q.id)"
+              :replay-limit="replayLimit"
               :reveal-transcript="isFinished"
             />
 
@@ -160,6 +166,11 @@
 <script setup lang="ts">
 import { Info, Check, X, Dot, Trophy, ArrowRight, Repeat } from 'lucide-vue-next'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
+import {
+  listeningReplayLimit,
+  resolveItemListeningAudioSrc,
+  resolveSharedListeningAudioSrc,
+} from '~/utils/listening/audioUrls'
 import { useProgress } from '~/composables/useProgress'
 import AudioPlayer from './AudioPlayer.vue'
 
@@ -186,15 +197,24 @@ const { saveListeningCompletion } = useProgress()
 
 const answers = reactive<Record<string, number | undefined>>({})
 const isFinished = ref(false)
+const sessionKey = ref(0)
 
 const model = computed<NormalizedModel>(() => normalize(props.exercise))
+
+const replayLimit = computed(() => listeningReplayLimit(props.exercise.testingPart))
+
+const sharedAudioSrc = computed(() => resolveSharedListeningAudioSrc(props.exercise) ?? '')
+
+function itemAudioSrc(itemId: string): string {
+  return resolveItemListeningAudioSrc(props.exercise, itemId) ?? ''
+}
 
 const instructions = computed(() => {
   switch (props.exercise.testingPart) {
     case 1: return 'Listen to each short message and choose the correct answer. You may replay each audio up to twice.'
-    case 2: return 'Listen to the conversation and match each person to the correct option. The audio plays twice.'
-    case 3: return 'Listen to each short dialogue and choose the correct answer.'
-    case 4: return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein).'
+    case 2: return 'Listen to the conversation and match each person to the correct option. The audio plays once.'
+    case 3: return 'Listen to each short dialogue and choose the correct answer. Each audio plays once.'
+    case 4: return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein). You may replay the audio up to twice.'
     default: return 'Listen and answer the questions.'
   }
 })
@@ -277,6 +297,7 @@ function restart() {
   isFinished.value = false
   model.value.questions.forEach(q => { answers[q.id] = undefined })
   timerRemaining.value = partTimeSec[props.exercise.testingPart] ?? 600
+  sessionKey.value += 1
   startTimer()
 }
 

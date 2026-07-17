@@ -1,4 +1,5 @@
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
+import { buildSeedListeningAudioMap } from '~/utils/listening/audioUrls'
 
 /**
  * Default A2-level German listening exercises (Goethe-Institut, modular 2024 format).
@@ -7,8 +8,11 @@ import type { ListeningA2Exercise } from '~/utils/exercises/listening'
  * - Teil 2: one dialogue with five person-to-option matching tasks (9 options)
  * - Teil 3: five short dialogues, 3-option MCQ each
  * - Teil 4: one radio interview with five true/false statements
+ *
+ * Audio maps point at pre-generated Kokoro German Martin WAVs under public/audio/listening/a2/.
+ * Regenerate with: `pnpm generate:listening-audio` (requires Kokoro TTS via compose.tts.yaml).
  */
-export const defaultListeningTopics: ListeningA2Exercise[] = [
+const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
   {
     id: 'listening-a2-teil1-001',
     title: 'Teil 1: Durchsagen und Ansagen verstehen',
@@ -231,3 +235,10 @@ export const defaultListeningTopics: ListeningA2Exercise[] = [
     ]
   }
 ]
+
+export const defaultListeningTopics: ListeningA2Exercise[] = listeningSeedsWithoutAudio.map(
+  (exercise) => {
+    const audio = buildSeedListeningAudioMap(exercise)
+    return audio ? { ...exercise, audio } : exercise
+  },
+)

@@ -11,7 +11,7 @@
         <p class="font-semibold text-sm leading-tight truncate">{{ label }}</p>
         <p class="text-xs text-base-content/60 mt-0.5">
           {{ playsLeft > 0 ? `${playsLeft} ${playsLeft === 1 ? 'play' : 'plays'} left` : 'No plays left' }}
-          · simulated audio
+          · {{ statusLabel }}
         </p>
       </div>
     </div>
@@ -21,20 +21,20 @@
       <input
         type="range"
         :min="0"
-        :max="durationSec"
+        :max="effectiveDurationSec"
+        step="0.1"
         :value="currentSec"
         class="w-full accent-info"
         @input="seekTo(Number(($event.target as HTMLInputElement).value))"
       >
       <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
         <span>{{ fmt(currentSec) }}</span>
-        <span>{{ fmt(durationSec) }}</span>
+        <span>{{ fmt(effectiveDurationSec) }}</span>
       </div>
     </div>
 
     <!-- Controls row -->
     <div class="mt-4 pt-4 border-t border-base-300/70 flex items-center gap-3">
-      <!-- Play/Pause -->
       <button
         type="button"
         class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0"
@@ -46,7 +46,6 @@
         <Play v-else :size="14" />
       </button>
 
-      <!-- Volume icon + slider (visual only) -->
       <Volume2 :size="13" class="text-base-content/50 shrink-0" />
       <input
         type="range"
@@ -55,10 +54,9 @@
         step="0.01"
         :value="volume"
         class="flex-1 accent-info min-w-0"
-        @input="volume = Number(($event.target as HTMLInputElement).value)"
+        @input="onVolumeInput(Number(($event.target as HTMLInputElement).value))"
       >
 
-      <!-- Speed segmented control -->
       <div class="join">
         <button
           v-for="s in speeds"
@@ -66,7 +64,7 @@
           type="button"
           class="join-item btn btn-xs"
           :class="speed === s ? 'btn-info text-info-content' : 'btn-ghost'"
-          @click="speed = s"
+          @click="setSpeed(s)"
         >
           {{ s }}x
         </button>
@@ -84,43 +82,86 @@
 <script setup lang="ts">
 import { AudioWaveform, Play, Pause, Volume2 } from 'lucide-vue-next'
 
+const PLAYBACK_SPEED_KEY = 'exam-one:listening:playback-speed'
+const speeds = [0.75, 1, 1.25] as const
+
 const props = withDefaults(defineProps<{
   transcript: string
   label?: string
+  /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
+  src?: string
   durationSec?: number
   replayLimit?: number
   revealTranscript?: boolean
 }>(), {
   label: 'Audio',
+  src: '',
   durationSec: 0,
   replayLimit: 2,
   revealTranscript: false,
 })
 
-// Derive a believable duration from transcript length when none is supplied
-// (~13 spoken chars/sec), clamped to a sensible range.
-const durationSec = computed(() =>
+const playing = ref(false)
+const currentSec = ref(0)
+const plays = ref(0)
+const volume = ref(0.6)
+const speed = ref<number>(1)
+const mediaReady = ref(false)
+const mediaFailed = ref(false)
+const mediaDurationSec = ref(0)
+
+let timer: ReturnType<typeof setInterval> | null = null
+let audioEl: HTMLAudioElement | null = null
+
+const useRealAudio = computed(() => Boolean(props.src) && !mediaFailed.value && mediaReady.value)
+
+const simulatedDurationSec = computed(() =>
   props.durationSec > 0
     ? props.durationSec
     : Math.min(180, Math.max(30, Math.round(props.transcript.length / 13))),
 )
 
-const speeds = [0.75, 1, 1.25] as const
-const speed = ref<number>(1)
-const playing = ref(false)
-const currentSec = ref(0)
-const plays = ref(0)
-const volume = ref(0.6)
-
-let timer: ReturnType<typeof setInterval> | null = null
+const effectiveDurationSec = computed(() =>
+  useRealAudio.value && mediaDurationSec.value > 0
+    ? mediaDurationSec.value
+    : simulatedDurationSec.value,
+)
 
 const playsLeft = computed(() => Math.max(0, props.replayLimit - plays.value))
 const canPlay = computed(() => playsLeft.value > 0)
+
+const statusLabel = computed(() => {
+  if (!props.src) return 'Audio not available — simulated playback'
+  if (mediaFailed.value) return 'Audio not available — simulated playback'
+  if (!mediaReady.value) return 'Loading audio…'
+  return 'audio'
+})
 
 function fmt(sec: number): string {
   const m = Math.floor(sec / 60)
   const s = Math.floor(sec % 60)
   return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+function readPersistedSpeed(): number | undefined {
+  if (!import.meta.client) return undefined
+  try {
+    const raw = localStorage.getItem(PLAYBACK_SPEED_KEY)
+    if (!raw) return undefined
+    const value = Number(raw)
+    return speeds.includes(value as (typeof speeds)[number]) ? value : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function persistSpeed(value: number) {
+  if (!import.meta.client) return
+  try {
+    localStorage.setItem(PLAYBACK_SPEED_KEY, String(value))
+  } catch {
+    // ignore quota / private mode
+  }
 }
 
 function stopTimer() {
@@ -130,13 +171,12 @@ function stopTimer() {
   }
 }
 
-function startTimer() {
+function startSimulatedTimer() {
   stopTimer()
-  // 250ms tick scaled by playback speed (simulated playback).
   timer = setInterval(() => {
     currentSec.value += 0.25 * speed.value
-    if (currentSec.value >= durationSec.value) {
-      currentSec.value = durationSec.value
+    if (currentSec.value >= effectiveDurationSec.value) {
+      currentSec.value = effectiveDurationSec.value
       finishPlayback()
     }
   }, 250)
@@ -146,23 +186,152 @@ function finishPlayback() {
   stopTimer()
   playing.value = false
   plays.value += 1
+  if (audioEl) {
+    audioEl.pause()
+  }
+}
+
+function applyAudioSettings() {
+  if (!audioEl) return
+  audioEl.volume = volume.value
+  audioEl.playbackRate = speed.value
+}
+
+function detachAudio() {
+  if (!audioEl) return
+  audioEl.pause()
+  audioEl.removeEventListener('timeupdate', onTimeUpdate)
+  audioEl.removeEventListener('ended', onEnded)
+  audioEl.removeEventListener('loadedmetadata', onLoadedMetadata)
+  audioEl.removeEventListener('error', onError)
+  audioEl.src = ''
+  audioEl = null
+}
+
+function onTimeUpdate() {
+  if (!audioEl) return
+  currentSec.value = audioEl.currentTime
+}
+
+function onEnded() {
+  currentSec.value = effectiveDurationSec.value
+  finishPlayback()
+}
+
+function onLoadedMetadata() {
+  if (!audioEl) return
+  mediaDurationSec.value = Number.isFinite(audioEl.duration) ? audioEl.duration : 0
+  mediaReady.value = true
+  mediaFailed.value = false
+  applyAudioSettings()
+}
+
+function onError() {
+  mediaFailed.value = true
+  mediaReady.value = false
+  playing.value = false
+  stopTimer()
+}
+
+function attachAudio(src: string) {
+  if (!import.meta.client) return
+  detachAudio()
+  mediaReady.value = false
+  mediaFailed.value = false
+  mediaDurationSec.value = 0
+  currentSec.value = 0
+  playing.value = false
+
+  const el = new Audio(src)
+  el.preload = 'metadata'
+  el.addEventListener('timeupdate', onTimeUpdate)
+  el.addEventListener('ended', onEnded)
+  el.addEventListener('loadedmetadata', onLoadedMetadata)
+  el.addEventListener('error', onError)
+  audioEl = el
+  applyAudioSettings()
+  el.load()
 }
 
 function toggle() {
   if (playing.value) {
-    stopTimer()
+    if (useRealAudio.value && audioEl) {
+      audioEl.pause()
+    } else {
+      stopTimer()
+    }
     playing.value = false
     return
   }
+
   if (!canPlay.value) return
-  if (currentSec.value >= durationSec.value) currentSec.value = 0
+
+  if (useRealAudio.value && audioEl) {
+    if (currentSec.value >= effectiveDurationSec.value - 0.05) {
+      audioEl.currentTime = 0
+      currentSec.value = 0
+    }
+    applyAudioSettings()
+    void audioEl.play().then(() => {
+      playing.value = true
+    }).catch(() => {
+      mediaFailed.value = true
+      playing.value = true
+      startSimulatedTimer()
+    })
+    return
+  }
+
+  if (currentSec.value >= effectiveDurationSec.value) currentSec.value = 0
   playing.value = true
-  startTimer()
+  startSimulatedTimer()
 }
 
 function seekTo(sec: number) {
-  currentSec.value = Math.min(sec, durationSec.value)
+  const next = Math.min(Math.max(0, sec), effectiveDurationSec.value)
+  currentSec.value = next
+  if (useRealAudio.value && audioEl) {
+    audioEl.currentTime = next
+  }
 }
 
-onUnmounted(stopTimer)
+function onVolumeInput(value: number) {
+  volume.value = value
+  applyAudioSettings()
+}
+
+function setSpeed(value: number) {
+  speed.value = value
+  persistSpeed(value)
+  applyAudioSettings()
+}
+
+watch(
+  () => props.src,
+  (src) => {
+    stopTimer()
+    playing.value = false
+    plays.value = 0
+    currentSec.value = 0
+    if (src) {
+      attachAudio(src)
+    } else {
+      detachAudio()
+      mediaReady.value = false
+      mediaFailed.value = false
+      mediaDurationSec.value = 0
+    }
+  },
+  { immediate: true },
+)
+
+onMounted(() => {
+  speed.value = readPersistedSpeed() ?? 1
+  applyAudioSettings()
+})
+
+onUnmounted(() => {
+  stopTimer()
+  detachAudio()
+})
 </script>
