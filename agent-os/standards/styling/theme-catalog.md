@@ -22,6 +22,8 @@ export const AVAILABLE_THEMES = [...LIGHT_THEMES, ...DARK_THEMES]
 
 Theme is stored via Nuxt `useState` + direct `localStorage` — **not** the Pinia settings store.
 
+This is intentional even in Phase 2+: theme is a **non-authoritative UI preference**, separate from exam/user data that moves to PostgreSQL (`self-host-persistence.md`).
+
 ```ts
 const theme = useState<Theme>('theme', () => 'bumblebee')
 ```
