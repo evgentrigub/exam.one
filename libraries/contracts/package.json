@@ -1,0 +1,21 @@
+{
+  "name": "@exam-one/contracts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "commonjs",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "echo 'No tests configured'"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "eslint": "^9.29.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1"
+  }
+}
