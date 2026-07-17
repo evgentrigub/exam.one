@@ -121,4 +121,5 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 - Keep reusable data structures exam-agnostic where possible, then map Goethe A2 specifics through exam IDs, module metadata, task definitions, and prompt templates.
 - AI generation and review prompts must encode the trap rules above, not just the surface task format.
 - Mock exam mode should use the module time limits and scoring rules in this document.
-- Core practice must remain offline-first. AI-generated variants are optional enhancements and must degrade gracefully when AI is unavailable.
+- **Phase 1:** core practice is offline-capable without AI (localStorage). AI-generated variants are optional enhancements and must degrade gracefully when AI is unavailable.
+- **Phase 2 onward:** core attempts, drafts, and results live in PostgreSQL via the NestJS API on the local Docker Compose stack; AI remains optional.

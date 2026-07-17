@@ -1,9 +1,11 @@
 # localStorage Keys
 
+> **Phase 1 persistence.** While the app is frontend-only, exam and user data use these keys. **Phase 2 onward:** attempts, drafts, results, progress, prompt overrides, and similar domains move to PostgreSQL via NestJS (see `self-host-persistence.md`). After cutover, do not add new authoritative exam-data keys here — keep localStorage for non-authoritative UI prefs only (for example theme).
+
 All app-owned keys in `localStorage` use the `exam-one:` prefix with a colon separator and kebab-case path.
 
 ```
-exam-one:exam                   # selected exam + level (e.g. cambridge-a2, goethe-a2)
+exam-one:exam                   # selected exam + level (e.g. goethe-a2, goethe-c1)
 exam-one:reading:texts
 exam-one:reading:generation-state
 exam-one:writing:drafts
@@ -15,7 +17,7 @@ exam-one:mock-exam:state
 exam-one:progress
 exam-one:prompt-templates       # user-edited demo prompt templates
 exam-one:ai-settings            # non-secret AI config (provider, model, base URL)
-exam-one:theme
+exam-one:theme                  # UI preference — may remain client-side in Phase 2+
 exam-one:settings
 ```
 

@@ -13,17 +13,19 @@ Anyone preparing for a language certification exam, including:
 - Native speakers earning a certificate in a foreign language
 - People relocating to a new country who need an exam result for official documents
 
-The goal is a **generic framework** that, with light customization, can be adapted to prepare for *any* language exam — not locked to a single language or provider.
+The goal is a **generic, reusable framework** that, with light customization, can be adapted to prepare for *any* language certification exam at *any* difficulty level (any CEFR band or provider format) — not locked to a single language, level, or exam board.
 
 ## Solution
 
-exam.one is an open-source, self-hostable platform for practicing all parts of a language exam — Reading, Writing, Listening, and Speaking — with AI-powered instant feedback. Learners run it on their own machine, configure how exercises are generated and reviewed, and plug in their own LLM API keys so they can generate as many realistic attempts as they want at their own cost.
+exam.one is an open-source, self-hostable platform for practicing all parts of a language exam — Reading, Writing, Listening, and Speaking — with AI-powered instant feedback. Learners run it on their own machine (today as a frontend-only MVP; next as a full local Docker Compose stack), configure how exercises are generated and reviewed, and plug in their own LLM API keys so they can generate as many realistic attempts as they want at their own cost.
+
+Current shipping focus is German (Goethe). That focus is a starting point for content and validation, not a product ceiling — the architecture stays exam-agnostic so additional languages, levels, and providers can be added through seed data, metadata, and prompt templates.
 
 What makes it unique:
 
-- **Open source and self-hosted** — transparent, configurable structure for exercises, review, and skill improvement; serve it locally like n8n.
+- **Open source and self-hosted** — transparent, configurable structure for exercises, review, and skill improvement; serve it locally like n8n or Postiz.
 - **Bring-your-own-key AI** — users supply their own LLM keys for effectively unlimited, low-friction practice attempts.
-- **Generic framework** — designed to adapt to any language exam, not hardcoded to one language or certificate.
+- **Generic framework** — designed to adapt to any language exam and any difficulty level, not hardcoded to one language or certificate.
 - **Realistic, repeatable attempts** — practice structures stay close to the real exam, including a strict mock exam mode.
 
-Alongside the open-source project, a hosted copy will be offered in the cloud under paid price plans for users who prefer not to self-host.
+Alongside the open-source self-hosted project, a hosted cloud copy will be offered later under paid price plans for users who prefer not to self-host.

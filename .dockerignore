@@ -1,0 +1,16 @@
+.git
+.idea
+.nuxt
+.output
+**/.nuxt
+**/.output
+**/dist
+**/node_modules
+node_modules
+graphify-out
+exam-one-design
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store

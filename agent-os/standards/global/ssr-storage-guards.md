@@ -2,6 +2,8 @@
 
 Composables run on both server and client. Any access to `localStorage`, `sessionStorage`, `window`, `document`, `navigator`, or timers must be guarded with `import.meta.client` / `import.meta.server`.
 
+These guards apply wherever browser storage is still used (Phase 1 exam/user data; Phase 2+ UI prefs such as theme). They do not imply that localStorage remains the long-term source of truth for exam data — see `localstorage-keys.md` and `self-host-persistence.md`.
+
 ## Read pattern
 
 ```ts
