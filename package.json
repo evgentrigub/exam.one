@@ -24,9 +24,13 @@
     "db:validate": "pnpm --filter @exam-one/database db:validate",
     "db:migrate": "pnpm --filter @exam-one/database db:migrate",
     "db:migrate:deploy": "pnpm --filter @exam-one/database db:migrate:deploy",
-    "db:seed": "pnpm --filter @exam-one/database db:seed"
+    "db:seed": "pnpm --filter @exam-one/database db:seed",
+    "generate:listening-audio": "node scripts/generate-listening-audio.mjs",
+    "tts:up": "docker compose -f compose.tts.yaml up -d --build --wait",
+    "tts:down": "docker compose -f compose.tts.yaml down"
   },
   "devDependencies": {
+    "jiti": "^2.6.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3"
   },

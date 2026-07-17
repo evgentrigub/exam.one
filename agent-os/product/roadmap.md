@@ -27,7 +27,7 @@ English / Cambridge and other providers are out of scope for Phase 1.
 
 #### 1.1 Goethe A2 core skills
 
-Finish Reading, Writing, Listening, and Speaking practice against modular Goethe A2 rules.
+Finish Reading, Writing, Listening, and Speaking practice against modular Goethe A2 rules. Listening seed audio is pre-generated with Kokoro German Martin (stable WAV files; see `scripts/tts/README.md`).
 
 #### 1.2 Mock exam mode
 

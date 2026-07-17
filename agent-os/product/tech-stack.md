@@ -34,6 +34,13 @@ Vue/Nuxt is retained in part so Phase 2 can reuse existing auth, profile, and ac
 - Prompt templates are bundled as editable demo templates
 - AI is an enhancement layer; core practice flows degrade gracefully when AI is unavailable
 
+## Listening audio (Phase 1)
+
+- Seed listening exercises ship **pre-generated WAV files** (Kokoro German Martin) under `apps/frontend/public/audio/listening/a2/`
+- Playback uses stable files so every replay is identical (not live browser TTS)
+- Optional maintainer tooling: `compose.tts.yaml` + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
+- Phase 2 may run TTS as an optional Compose service when generating new exercises
+
 ## Deployment & Infra
 
 - **Phase 2 (primary):** **Docker Compose** on the user's laptop — orchestrates frontend, NestJS backend, and PostgreSQL with a named data volume
