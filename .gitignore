@@ -1,14 +1,15 @@
 # Nuxt dev/build outputs
-.output
-.data
-.nuxt
-.nitro
-.cache
-dist
-e2e
+**/.output
+**/.data
+**/.nuxt
+**/.nitro
+**/.cache
+**/dist
+apps/frontend/e2e
 
 # Node dependencies
 node_modules
+**/node_modules
 
 # Logs
 logs

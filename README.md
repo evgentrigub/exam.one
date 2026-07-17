@@ -142,73 +142,78 @@ pnpm generate
 
 ## 📁 Project Structure
 
+```text
+exam-one/
+├── apps/
+│   ├── frontend/          # Nuxt 3 application and temporary Nitro AI endpoints
+│   └── backend/           # Standalone NestJS API
+├── libraries/
+│   ├── contracts/         # Framework-neutral shared API contracts
+│   ├── database/          # Prisma schema, migrations, and seeds
+│   ├── exam-content/      # Shared exam content boundary
+│   └── nestjs-libraries/  # Shared backend infrastructure boundary
+├── agent-os/              # Product context and implementation standards
+├── compose.dev.yaml       # Development PostgreSQL only
+├── compose.yaml           # Fully containerized stack
+├── pnpm-workspace.yaml
+└── package.json            # Workspace orchestration scripts
 ```
-exame-one/
-├── components/
-│   ├── reading/          # Reading practice components
-│   │   ├── TextCard.vue
-│   │   ├── QuestionCard.vue
-│   │   ├── QuizSession.vue
-│   │   └── ReadingModal.vue
-│   ├── writing/          # Writing practice components
-│   │   ├── WritingTopicCard.vue
-│   │   ├── TaskDescriptionCard.vue
-│   │   ├── InstructionsCard.vue
-│   │   ├── TextEditorCard.vue
-│   │   ├── WritingSession.vue
-│   │   ├── WritingFeedback.vue
-│   │   └── WritingReview.vue
-│   ├── ui/               # Reusable UI components
-│   └── Navbar.vue        # Top navigation
-├── composables/          # Reusable logic
-│   ├── useProgress.ts    # Progress tracking
-│   ├── useWritingTopics.ts
-│   ├── useWritingReview.ts
-│   └── useModelAnswer.ts
-├── data/                 # Embedded content (offline)
-│   ├── german-texts.ts   # Reading texts & questions
-│   └── writing/          # Writing topics & prompts
-├── pages/                # File-based routing
-│   ├── index.vue         # Landing page
-│   ├── dashboard.vue     # Progress dashboard
-│   ├── reading/
-│   │   ├── index.vue     # Text selection
-│   │   └── [quizId].vue  # Quiz session
-│   └── writing/
-│       ├── index.vue     # Topic selection
-│       └── [topicId]/
-│           └── exam.vue  # Writing interface
-├── server/api/           # Optional API endpoints
-│   ├── review.post.ts    # AI review (requires OpenAI key)
-│   └── generate-model-answer.post.ts
-├── stores/               # Pinia stores
-├── utils/                # Helper functions
-│   ├── textAnalysis.ts   # German text analysis
-│   └── types.ts          # TypeScript interfaces
-└── memory-bank/          # Project documentation
-    ├── projectbrief.md
-    ├── systemPatterns.md
-    ├── techContext.md
-    └── progress.md
+
+## 🧪 Local Development
+
+Use pnpm for Node.js dependencies and local application processes. Do not use npm or create package-local lockfiles.
+
+```bash
+pnpm install
+cp .env.example .env
+pnpm dev:infra
+pnpm dev
 ```
+
+This starts:
+
+- Nuxt with hot reload at `http://localhost:3000`
+- NestJS with watch mode at `http://localhost:3001`
+- API documentation at `http://localhost:3001/api/docs`
+- PostgreSQL in Docker at `localhost:5432`
+
+`compose.dev.yaml` runs only PostgreSQL. Its data is stored in the named Docker volume `exam-one-postgres-dev-data`, so removing or recreating the container does not remove the database. `pnpm dev:infra:down` stops and removes the container while preserving the volume. Data is deleted only if that Docker volume is explicitly removed.
+
+```bash
+pnpm dev:infra          # Start PostgreSQL and wait until healthy
+pnpm dev:infra:logs     # Follow PostgreSQL logs
+pnpm dev:db:shell       # Open psql in the development database
+pnpm dev:infra:down     # Stop PostgreSQL without deleting its volume
+pnpm dev:frontend       # Run only Nuxt with hot reload
+pnpm dev:backend        # Run only NestJS in watch mode
+```
+
+## 🐳 Fully Containerized Stack
+
+Use the production-style Compose stack when testing deployment rather than editing application code:
+
+```bash
+docker compose up --build -d
+docker compose logs -f
+docker compose down
+```
+
+The production-style PostgreSQL data is stored in a separate named volume. Do not pass `--volumes` to `docker compose down` unless the database should be deleted.
 
 ## 🧪 Available Commands
 
 ```bash
-# Development
-pnpm dev              # Start dev server with HMR
-pnpm build            # Build for production
-pnpm preview          # Preview production build
-pnpm generate         # Generate static site
-
-# Code Quality
-pnpm lint             # Run ESLint
-pnpm lint:fix         # Fix ESLint errors automatically
-pnpm format           # Format code with Prettier
-pnpm type-check       # Run TypeScript type checking
-
-# Git Hooks (automatic)
-# Pre-commit runs lint-staged (ESLint + Prettier on changed files)
+pnpm build              # Build all applications and libraries
+pnpm lint               # Lint all workspace packages
+pnpm lint:fix           # Autofix all workspace packages
+pnpm format             # Format the repository
+pnpm type-check         # Type-check all workspace packages
+pnpm test               # Run package tests
+pnpm test:e2e           # Run the NestJS health endpoint e2e test
+pnpm db:validate        # Validate the shared Prisma schema
+pnpm db:migrate         # Create and apply a development migration
+pnpm db:migrate:deploy  # Apply committed migrations
+pnpm db:seed            # Seed the development database
 ```
 
 ## 📊 Project Status

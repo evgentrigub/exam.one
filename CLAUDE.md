@@ -5,23 +5,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev          # start dev server at http://localhost:3000
-pnpm build        # production build
-pnpm preview      # preview production build
-pnpm generate     # static site generation
-pnpm lint         # ESLint
-pnpm lint:fix     # ESLint with autofix
+pnpm dev:infra    # start persistent PostgreSQL in Docker
+pnpm dev          # start Nuxt :3000 and NestJS :3001 with hot reload
+pnpm dev:frontend # start only Nuxt
+pnpm dev:backend  # start only NestJS
+pnpm build        # build all workspace projects
+pnpm lint         # lint all workspace projects
+pnpm lint:fix     # autofix all workspace projects
 pnpm format       # Prettier
-pnpm type-check   # Nuxt type checking (vue-tsc)
+pnpm type-check   # type-check all workspace projects
+pnpm test         # test all workspace projects
 ```
-
-Pre-commit hooks (via Husky + lint-staged) run ESLint and Prettier automatically on changed files.
 
 Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform. The current build (Phase 1) is a **frontend-only, offline-first** Nuxt 3 app — no required backend. Core flows (reading, writing, listening, speaking, mock exam, progress) work without network access. AI is an optional bring-your-own-key enhancement routed through thin Nuxt server routes at `server/api/`.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The offline-first Nuxt 3 frontend remains usable without the standalone NestJS backend. The backend, shared libraries, Prisma boundary, and Docker Compose infrastructure establish the Phase 2 architecture while AI requests still use temporary Nuxt server routes.
 
 Supported exams: English / Cambridge A2, German / Goethe A2.
 
@@ -29,19 +29,19 @@ Supported exams: English / Cambridge A2, German / Goethe A2.
 
 | Path | Purpose |
 |------|---------|
-| `pages/` | File-based routes. Skill index pages + dynamic exercise routes (`[exerciseId]`, `[quizId]`, `[topicId]`) |
-| `components/{skill}/` | Feature components scoped per skill (reading, writing, listening, speaking) |
-| `composables/` | Feature-scoped reactive logic (`use*` prefix). Own localStorage reads/writes. |
-| `data/{skill}/` | Typed TS modules with bundled seed exercises and editable AI prompt templates |
-| `stores/` | Pinia stores with persisted state |
-| `server/api/` | Thin AI proxy endpoints (`review`, `generate-*`) |
-| `utils/` | Shared types (`types.ts`), label maps (`labels.ts`), text analysis, uuid |
-| `agent-os/` | Product context and canonical implementation standards — read before touching exam behavior or a standardized area |
-| `assets/styles/main.css` | Global CSS; Tailwind v4 + daisyUI v5 single-pipeline entry |
+| `apps/frontend/` | Nuxt application: pages, components, composables, stores, data, utilities, and temporary Nitro AI endpoints |
+| `apps/backend/` | Standalone NestJS API; local default port is 3001 |
+| `libraries/contracts/` | Framework-neutral shared API contracts |
+| `libraries/database/` | Prisma schema, migrations, and seed ownership |
+| `libraries/exam-content/` | Shared exam-content boundary |
+| `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary |
+| `compose.dev.yaml` | PostgreSQL-only development infrastructure with a persistent named volume |
+| `compose.yaml` | Fully containerized frontend/backend/database stack |
+| `agent-os/` | Product context and canonical implementation standards |
 
 ### Data lifecycle (seed + merge)
 
-1. On first client load, if localStorage is empty, seed from `data/{skill}/` defaults and persist
+1. On first client load, if localStorage is empty, seed from `apps/frontend/data/{skill}/` defaults and persist
 2. On subsequent loads, merge: `items = defaults ∪ stored.filter(x => !isDefault(x.id))`
 3. Only non-default (user/AI-generated) items are persisted to localStorage
 
@@ -67,7 +67,7 @@ Prefix all keys with `exam-one:` in kebab-case. Define as a `const KEY = 'exam-o
 - Use **daisyUI semantic tokens only** (`bg-base-100`, `text-base-content`, `badge-primary`, etc.)
 - **Never** use raw Tailwind color scales (`bg-blue-500`, `text-gray-700`)
 - Themes switch via `useTheme().setTheme(...)` which writes `data-theme` on `<html>` — never toggle theme classes directly
-- Theme source of truth: `composables/useTheme.ts`
+- Theme source of truth: `apps/frontend/composables/useTheme.ts`
 
 ### Components
 
@@ -83,7 +83,7 @@ Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for bu
 
 - AI is **optional and provider-agnostic** (bring-your-own-key). `OPENAI_API_KEY` in `.env` enables AI features; missing key or upstream failure must degrade gracefully.
 - Never import a provider SDK or call `/api/*` from core flows directly — route through composables that handle missing-key / error cases.
-- Prompt templates live as typed seed data under `data/{skill}/a2/` and are user-editable.
+- Prompt templates currently live as typed seed data under `apps/frontend/data/{skill}/a2/` and are user-editable.
 
 ## Design Reference
 
