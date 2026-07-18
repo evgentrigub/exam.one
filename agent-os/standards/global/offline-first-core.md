@@ -12,6 +12,8 @@ AI is an enhancement layer (exercise generation, review, grading), never a hard 
 
 Every core practice flow must work with **zero network**: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. User/exam data lives in localStorage. Do not introduce a required backend or database for core flows in Phase 1.
 
+**Goethe A2 skill progress:** Reading / Writing / Listening are practice-ready (Listening iteration 1 complete with file-based audio). **Speaking is the next implementation focus** (see `agent-os/product/roadmap.md`). Mock exam follows once Speaking is usable.
+
 ### Phase 2 onward — local self-hosted stack
 
 Core user and exam data (attempts, results, drafts, progress, settings that are not pure UI prefs) live in **PostgreSQL** behind the **NestJS** API. Network access to the **local Docker Compose stack** is expected. See `self-host-persistence.md`. AI remains optional and bring-your-own-key.
