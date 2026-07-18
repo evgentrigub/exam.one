@@ -34,14 +34,24 @@ Vue/Nuxt is retained in part so Phase 2 can reuse existing auth, profile, and ac
 - Prompt templates are bundled as editable demo templates
 - AI is an enhancement layer; core practice flows degrade gracefully when AI is unavailable
 
-## Listening audio (Phase 1)
+## Listening audio (Phase 1 — iteration 1 complete)
+
+Listening practice is **done for Phase 1 iteration 1**. Further listening work is polish / mock-exam integration only unless new gaps appear.
 
 - Seed listening exercises use **pre-generated WAV files** (Kokoro German Martin) under `apps/frontend/public/audio/listening/a2/` (often gitignored; regenerate with `pnpm generate:listening-audio`)
 - Playback uses stable files so every replay is identical (not live browser TTS)
 - Optional maintainer tooling: `compose.tts.yaml` + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
-- In-app: TTS health indicator + **Generate audio** writes `public/audio/listening/generated/` when Kokoro is up
+- In-app: missing-audio sidebar + **Generate audio** writes `public/audio/listening/generated/` when Kokoro is up; practice controls stay locked until files exist
 - AI listening generation still produces transcripts only; audio is generated on demand
 - Phase 2 may run TTS as an optional Compose service when generating new exercises
+
+## Speaking (Phase 1 — next)
+
+Speaking is the **next core-skill focus** after Listening. Current stack pieces to build on:
+
+- Pages / session / `MediaRecorder` scaffold for Teil 1–2 (`apps/frontend/pages/speaking/`, `components/speaking/`)
+- Seed + generate prompts for Teil 1–2; review prompt for Teil 2 exists but is not wired end-to-end
+- Planned: real STT → review, Teil 1 dialogue structure, Teil 3 schedules, optional TTS partner (may reuse Kokoro), pronunciation score — see `roadmap.md` §1.1 Speaking plan and `german-exam-A2.md` Speaking
 
 ## Deployment & Infra
 

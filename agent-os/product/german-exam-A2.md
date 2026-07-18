@@ -41,6 +41,8 @@ Time limit: 30 minutes. The module has four parts and 20 questions total.
 
 ## Listening: Hoeren
 
+> **Implementation status (Phase 1):** **Complete (iteration 1)** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX. Mock-exam integration waits on Speaking + mock exam substages.
+
 Time limit: 30 minutes. The module has four parts and 20 questions total.
 
 ### Part 1: Short Announcements
@@ -88,6 +90,8 @@ Time limit: 30 minutes. The module has two parts. Maximum raw score is 20 `Messp
 ## Speaking: Sprechen
 
 Time limit: 15 minutes. The module has three interactive parts. The app may use STT and TTS for interaction and evaluation. Speaking points are not multiplied.
+
+> **Implementation status (Phase 1):** Listening is complete (iteration 1). Speaking is the **next skill** — Teil 1–2 UI/recorder/seed exist; STT, wired AI review, Teil 3, and pronunciation scoring are still open. See `roadmap.md` §1.1 Speaking plan.
 
 ### Part 1: Interview Or Introduction
 
