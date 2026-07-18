@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-[1180px] mx-auto px-8 py-8">
-    <!-- Header -->
-    <div v-if="exercise" class="flex items-start justify-between gap-4 mb-6">
+    <!-- Header: gate on isClient so SSR/hydration match (exercises hydrate from localStorage) -->
+    <div v-if="isClient && exercise" class="flex items-start justify-between gap-4 mb-6">
       <div class="flex items-start gap-3">
         <NuxtLink
           to="/exercises?skill=listening"
@@ -42,6 +42,11 @@ usePageMeta('Listening Exercise', 'Listening')
 const route = useRoute()
 const router = useRouter()
 const { getExerciseById } = useListeningExercises()
+
+const isClient = ref(false)
+onMounted(() => {
+  isClient.value = true
+})
 
 const exerciseId = computed(() => String(route.params['exerciseId'] || ''))
 const exercise = computed<ListeningA2Exercise | null>(() => getExerciseById(exerciseId.value) || null)

@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "agent-os/product/tech-stack.md": {
-    "mtime": 1784313320.9461246,
-    "ast_hash": "ff407cf5a4a791de89caed47e580ec1a",
+    "mtime": 1784396272.4897444,
+    "ast_hash": "812538ecc22811649e613bb4fef3932e",
     "semantic_hash": ""
   },
   "agent-os/standards/components/card-layout.md": {
@@ -3025,13 +3025,13 @@
     "semantic_hash": ""
   },
   "apps/frontend/components/listening/AudioPlayer.vue": {
-    "mtime": 1784314334.2194512,
-    "ast_hash": "e6e15a942874668258f0184236731ae7",
+    "mtime": 1784396219.3071024,
+    "ast_hash": "95f81a2475a29298f828bd4ed08edca0",
     "semantic_hash": ""
   },
   "apps/frontend/components/listening/ListeningSession.vue": {
-    "mtime": 1784314349.6475651,
-    "ast_hash": "ca9d96208c20aecf3a3cfde3a13bf61d",
+    "mtime": 1784396301.1582415,
+    "ast_hash": "4d78020a469856e77c3c05532a6ecbb9",
     "semantic_hash": ""
   },
   "apps/frontend/components/reading/QuestionCard.vue": {
@@ -3135,8 +3135,8 @@
     "semantic_hash": ""
   },
   "apps/frontend/composables/useListeningExercises.ts": {
-    "mtime": 1781451140.4538655,
-    "ast_hash": "bfa1e8e6281a60b2efa972037ba51858",
+    "mtime": 1784396299.4524477,
+    "ast_hash": "ab28a72af012cacbd452749f547ffe87",
     "semantic_hash": ""
   },
   "apps/frontend/composables/useListeningGeneration.ts": {
@@ -3525,8 +3525,8 @@
     "semantic_hash": ""
   },
   "apps/frontend/utils/listening/audioUrls.ts": {
-    "mtime": 1784313222.6585746,
-    "ast_hash": "b3922ef04730cce8973540c5f091e61b",
+    "mtime": 1784396145.3535533,
+    "ast_hash": "3e82c34ab5f4685e1161ade13dc24f01",
     "semantic_hash": ""
   },
   "apps/frontend/utils/textAnalysis.ts": {
@@ -3755,8 +3755,8 @@
     "semantic_hash": ""
   },
   "scripts/tts/README.md": {
-    "mtime": 1784313280.0143437,
-    "ast_hash": "901851c835a00b235f7ec8614aa16ad6",
+    "mtime": 1784396271.8922682,
+    "ast_hash": "59c71778c9da7c1b92166417547f7695",
     "semantic_hash": ""
   },
   "scripts/tts/kokoro-german/README.md": {
@@ -3837,6 +3837,31 @@
   "apps/frontend/public/audio/listening/a2/listening-a2-teil4-001/shared.wav": {
     "mtime": 1784314261.0462837,
     "ast_hash": "bc713e49aa3447866ce75886d50af45e",
+    "semantic_hash": ""
+  },
+  "apps/frontend/composables/useListeningAudioAvailability.ts": {
+    "mtime": 1784396148.0889013,
+    "ast_hash": "f02b7c0e25f5f33244521525a4b2790c",
+    "semantic_hash": ""
+  },
+  "apps/frontend/composables/useListeningExclusivePlayback.ts": {
+    "mtime": 1784396150.407523,
+    "ast_hash": "f59668d0ff42b1174f48be031317627a",
+    "semantic_hash": ""
+  },
+  "apps/frontend/composables/useTtsHealth.ts": {
+    "mtime": 1784396149.1154938,
+    "ast_hash": "6ef6a4f18c7577301eebe1c21cc4b04d",
+    "semantic_hash": ""
+  },
+  "apps/frontend/server/api/tts/generate-listening-audio.post.ts": {
+    "mtime": 1784396219.0087814,
+    "ast_hash": "cd5e8a93182291b8175a35347e75c460",
+    "semantic_hash": ""
+  },
+  "apps/frontend/server/api/tts/health.get.ts": {
+    "mtime": 1784396150.4304051,
+    "ast_hash": "8482d4a3b169981cc748a5a71fd0df43",
     "semantic_hash": ""
   }
 }

@@ -17,58 +17,64 @@
     </div>
 
     <!-- Scrubber -->
-    <div class="mt-5">
-      <input
-        type="range"
-        :min="0"
-        :max="effectiveDurationSec"
-        step="0.1"
-        :value="currentSec"
-        class="w-full accent-info"
-        @input="seekTo(Number(($event.target as HTMLInputElement).value))"
-      >
-      <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
-        <span>{{ fmt(currentSec) }}</span>
-        <span>{{ fmt(effectiveDurationSec) }}</span>
-      </div>
-    </div>
-
-    <!-- Controls row -->
-    <div class="mt-4 pt-4 border-t border-base-300/70 flex items-center gap-3">
+    <div class="mt-5 flex items-center gap-5">
       <button
         type="button"
-        class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0"
-        :disabled="!canPlay && !playing"
-        :title="playing ? 'Pause' : 'Play'"
+        class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+        :disabled="(!canPlay && !playing) || !!disabled"
+        :title="disabled ? 'Audio unavailable' : playing ? 'Pause' : 'Play'"
         @click="toggle"
       >
         <Pause v-if="playing" :size="14" />
         <Play v-else :size="14" />
       </button>
-
-      <Volume2 :size="13" class="text-base-content/50 shrink-0" />
-      <input
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        :value="volume"
-        class="flex-1 accent-info min-w-0"
-        @input="onVolumeInput(Number(($event.target as HTMLInputElement).value))"
-      >
-
-      <div class="join">
-        <button
-          v-for="s in speeds"
-          :key="s"
-          type="button"
-          class="join-item btn btn-xs"
-          :class="speed === s ? 'btn-info text-info-content' : 'btn-ghost'"
-          @click="setSpeed(s)"
+      <div class="flex-1">
+        <input
+          type="range"
+          :min="0"
+          :max="effectiveDurationSec"
+          step="0.1"
+          :value="currentSec"
+          class="w-full accent-info disabled:opacity-40"
+          :disabled="!!disabled"
+          @input="seekTo(Number(($event.target as HTMLInputElement).value))"
         >
-          {{ s }}x
-        </button>
+        <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
+          <span>{{ fmt(currentSec) }}</span>
+          <span>{{ fmt(effectiveDurationSec) }}</span>
+        </div>
       </div>
+    </div>
+
+    <!-- Controls row -->
+    <div class="mt-4 pt-4 border-t border-base-300/70 flex items-center gap-3">
+      <template v-if="!hideVolumeSpeed">
+        <Volume2 :size="13" class="text-base-content/50 shrink-0" />
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          :value="effectiveVolume"
+          class="flex-1 accent-info min-w-0 disabled:opacity-40"
+          :disabled="!!disabled"
+          @input="onVolumeInput(Number(($event.target as HTMLInputElement).value))"
+        >
+
+        <div class="join">
+          <button
+            v-for="s in speeds"
+            :key="s"
+            type="button"
+            class="join-item btn btn-xs"
+            :class="effectiveSpeed === s ? 'btn-info text-info-content' : 'btn-ghost'"
+            :disabled="!!disabled"
+            @click="onSpeedInput(s)"
+          >
+            {{ s }}x
+          </button>
+        </div>
+      </template>
     </div>
 
     <!-- Transcript (revealed after submit) -->
@@ -82,7 +88,6 @@
 <script setup lang="ts">
 import { AudioWaveform, Play, Pause, Volume2 } from 'lucide-vue-next'
 
-const PLAYBACK_SPEED_KEY = 'exam-one:listening:playback-speed'
 const speeds = [0.75, 1, 1.25] as const
 
 const props = withDefaults(defineProps<{
@@ -93,25 +98,52 @@ const props = withDefaults(defineProps<{
   durationSec?: number
   replayLimit?: number
   revealTranscript?: boolean
+  /** When true, only play + scrubber are shown (volume/speed live in the sidebar). */
+  hideVolumeSpeed?: boolean
+  /** Controlled volume from parent (0–1). */
+  volume?: number
+  /** Controlled playback rate from parent. */
+  speed?: number
+  /** Stable id for exclusive playback coordination. */
+  playerId?: string
+  /** Currently active player id from the session (exclusive play). */
+  activePlayerId?: string | null
+  /** Disable play/scrub/controls (e.g. when audio files are missing). */
+  disabled?: boolean
 }>(), {
   label: 'Audio',
   src: '',
   durationSec: 0,
   replayLimit: 2,
   revealTranscript: false,
+  hideVolumeSpeed: false,
+  volume: 0.6,
+  speed: 1,
+  playerId: '',
+  activePlayerId: null,
+  disabled: false,
 })
+
+const emit = defineEmits<{
+  'update:volume': [value: number]
+  'update:speed': [value: number]
+  play: [playerId: string]
+  pause: [playerId: string]
+  'audio-unavailable': []
+}>()
 
 const playing = ref(false)
 const currentSec = ref(0)
 const plays = ref(0)
-const volume = ref(0.6)
-const speed = ref<number>(1)
 const mediaReady = ref(false)
 const mediaFailed = ref(false)
 const mediaDurationSec = ref(0)
 
 let timer: ReturnType<typeof setInterval> | null = null
 let audioEl: HTMLAudioElement | null = null
+
+const effectiveVolume = computed(() => props.volume)
+const effectiveSpeed = computed(() => props.speed)
 
 const useRealAudio = computed(() => Boolean(props.src) && !mediaFailed.value && mediaReady.value)
 
@@ -128,9 +160,10 @@ const effectiveDurationSec = computed(() =>
 )
 
 const playsLeft = computed(() => Math.max(0, props.replayLimit - plays.value))
-const canPlay = computed(() => playsLeft.value > 0)
+const canPlay = computed(() => !props.disabled && playsLeft.value > 0)
 
 const statusLabel = computed(() => {
+  if (props.disabled) return 'Playback locked — audio missing'
   if (!props.src) return 'Audio not available — simulated playback'
   if (mediaFailed.value) return 'Audio not available — simulated playback'
   if (!mediaReady.value) return 'Loading audio…'
@@ -143,27 +176,6 @@ function fmt(sec: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
-function readPersistedSpeed(): number | undefined {
-  if (!import.meta.client) return undefined
-  try {
-    const raw = localStorage.getItem(PLAYBACK_SPEED_KEY)
-    if (!raw) return undefined
-    const value = Number(raw)
-    return speeds.includes(value as (typeof speeds)[number]) ? value : undefined
-  } catch {
-    return undefined
-  }
-}
-
-function persistSpeed(value: number) {
-  if (!import.meta.client) return
-  try {
-    localStorage.setItem(PLAYBACK_SPEED_KEY, String(value))
-  } catch {
-    // ignore quota / private mode
-  }
-}
-
 function stopTimer() {
   if (timer) {
     clearInterval(timer)
@@ -174,7 +186,7 @@ function stopTimer() {
 function startSimulatedTimer() {
   stopTimer()
   timer = setInterval(() => {
-    currentSec.value += 0.25 * speed.value
+    currentSec.value += 0.25 * effectiveSpeed.value
     if (currentSec.value >= effectiveDurationSec.value) {
       currentSec.value = effectiveDurationSec.value
       finishPlayback()
@@ -189,12 +201,15 @@ function finishPlayback() {
   if (audioEl) {
     audioEl.pause()
   }
+  if (props.playerId) {
+    emit('pause', props.playerId)
+  }
 }
 
 function applyAudioSettings() {
   if (!audioEl) return
-  audioEl.volume = volume.value
-  audioEl.playbackRate = speed.value
+  audioEl.volume = effectiveVolume.value
+  audioEl.playbackRate = effectiveSpeed.value
 }
 
 function detachAudio() {
@@ -231,6 +246,7 @@ function onError() {
   mediaReady.value = false
   playing.value = false
   stopTimer()
+  emit('audio-unavailable')
 }
 
 function attachAudio(src: string) {
@@ -253,18 +269,31 @@ function attachAudio(src: string) {
   el.load()
 }
 
+function pausePlayback() {
+  if (!playing.value) return
+  if (useRealAudio.value && audioEl) {
+    audioEl.pause()
+  } else {
+    stopTimer()
+  }
+  playing.value = false
+  if (props.playerId) {
+    emit('pause', props.playerId)
+  }
+}
+
 function toggle() {
+  if (props.disabled) return
   if (playing.value) {
-    if (useRealAudio.value && audioEl) {
-      audioEl.pause()
-    } else {
-      stopTimer()
-    }
-    playing.value = false
+    pausePlayback()
     return
   }
 
   if (!canPlay.value) return
+
+  if (props.playerId) {
+    emit('play', props.playerId)
+  }
 
   if (useRealAudio.value && audioEl) {
     if (currentSec.value >= effectiveDurationSec.value - 0.05) {
@@ -278,6 +307,7 @@ function toggle() {
       mediaFailed.value = true
       playing.value = true
       startSimulatedTimer()
+      emit('audio-unavailable')
     })
     return
   }
@@ -288,6 +318,7 @@ function toggle() {
 }
 
 function seekTo(sec: number) {
+  if (props.disabled) return
   const next = Math.min(Math.max(0, sec), effectiveDurationSec.value)
   currentSec.value = next
   if (useRealAudio.value && audioEl) {
@@ -296,13 +327,14 @@ function seekTo(sec: number) {
 }
 
 function onVolumeInput(value: number) {
-  volume.value = value
+  if (props.disabled) return
+  emit('update:volume', value)
   applyAudioSettings()
 }
 
-function setSpeed(value: number) {
-  speed.value = value
-  persistSpeed(value)
+function onSpeedInput(value: number) {
+  if (props.disabled) return
+  emit('update:speed', value)
   applyAudioSettings()
 }
 
@@ -320,18 +352,42 @@ watch(
       mediaReady.value = false
       mediaFailed.value = false
       mediaDurationSec.value = 0
+      emit('audio-unavailable')
     }
   },
   { immediate: true },
 )
 
-onMounted(() => {
-  speed.value = readPersistedSpeed() ?? 1
-  applyAudioSettings()
-})
+watch(
+  () => [effectiveVolume.value, effectiveSpeed.value] as const,
+  () => {
+    applyAudioSettings()
+  },
+)
+
+watch(
+  () => props.activePlayerId,
+  (activeId) => {
+    if (!props.playerId || !playing.value) return
+    if (activeId !== null && activeId !== props.playerId) {
+      pausePlayback()
+    }
+  },
+)
+
+watch(
+  () => props.disabled,
+  (locked) => {
+    if (locked && playing.value) {
+      pausePlayback()
+    }
+  },
+)
 
 onUnmounted(() => {
   stopTimer()
   detachAudio()
 })
+
+defineExpose({ pausePlayback })
 </script>

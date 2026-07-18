@@ -6,6 +6,7 @@
 **/.cache
 **/dist
 apps/frontend/e2e
+# Listening WAVs (seed + on-demand generated); regenerate via scripts/tts/README.md
 apps/frontend/public/audio
 
 # Node dependencies
