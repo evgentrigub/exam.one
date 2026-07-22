@@ -8,7 +8,7 @@ import {
 import {
   checkTtsHealth,
   getTtsConfigFromEnv,
-  synthesizeSpeech,
+  synthesizeListeningTranscript,
 } from '~/server/utils/tts/ttsAdapter'
 
 interface AiResponse<T> {
@@ -68,7 +68,7 @@ export default defineEventHandler(
     try {
       let written = 0
       for (const segment of segments) {
-        const bytes = await synthesizeSpeech({ text: segment.transcript }, config)
+        const bytes = await synthesizeListeningTranscript(segment.transcript, config)
         const absolute = path.join(root, segment.relativePath)
         await mkdir(path.dirname(absolute), { recursive: true })
         await writeFile(absolute, bytes)

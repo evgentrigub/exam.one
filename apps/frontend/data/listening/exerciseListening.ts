@@ -9,8 +9,9 @@ import { buildSeedListeningAudioMap } from '~/utils/listening/audioUrls'
  * - Teil 3: five short dialogues, 3-option MCQ each
  * - Teil 4: one radio interview with five true/false statements
  *
- * Audio maps point at pre-generated Kokoro German Martin WAVs under public/audio/listening/a2/.
- * Regenerate with: `pnpm generate:listening-audio` (requires Kokoro TTS via compose.tts.yaml).
+ * Audio maps point at pre-generated Kokoro German Martin/Victoria WAVs under public/audio/listening/a2/.
+ * Dialogue transcripts use Role: labels so multi-voice generation can assign male/female speakers.
+ * Regenerate with: `pnpm generate:listening-audio` (requires `pnpm tts:up` — Martin + Victoria).
  */
 const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
   {
@@ -86,7 +87,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
     createdAt: '2026-06-14',
     context: 'Wie kommen die Personen heute zur Arbeit?',
     transcript:
-      'Sag mal, wie kommt ihr eigentlich morgens alle ins Büro? Na ja, das ist ganz unterschiedlich. Anna wohnt ja gleich um die Ecke, die kommt einfach zu Fuß. Das dauert nur zehn Minuten. Ach so. Und Bernd? Der wohnt doch außerhalb der Stadt, oder? Genau. Bernd ist früher immer mit dem Auto gefahren, aber das wurde ihm zu teuer. Jetzt nimmt er jeden Morgen den Zug. Wirklich? Praktisch. Und Clara? Clara hat sich letztes Jahr ein tolles Fahrrad gekauft. Bei gutem Wetter fährt sie immer damit. Aber wenn es regnet, steigt sie in den Bus. Und heute regnet es ja stark. Stimmt, dann kommt Clara heute bestimmt mit dem Bus. Und David, fährt der immer noch Motorrad? Nein, das Motorrad hat er schon verkauft. Er fährt jetzt mit der U-Bahn, das geht viel schneller. Und du, Eva, wie kommst du? Ich nehme normalerweise die Straßenbahn. Aber mein Auto ist gerade in der Werkstatt, äh, nein, die Straßenbahn meine ich nicht. Heute hat mich ein Taxi gebracht. Oh je, das ist aber teuer! Ja, aber wirklich nur für heute.',
+      'Mann: Sag mal, wie kommt ihr eigentlich morgens alle ins Büro? Frau: Na ja, das ist ganz unterschiedlich. Anna wohnt ja gleich um die Ecke, die kommt einfach zu Fuß. Das dauert nur zehn Minuten. Mann: Ach so. Und Bernd? Der wohnt doch außerhalb der Stadt, oder? Frau: Genau. Bernd ist früher immer mit dem Auto gefahren, aber das wurde ihm zu teuer. Jetzt nimmt er jeden Morgen den Zug. Mann: Wirklich? Praktisch. Und Clara? Frau: Clara hat sich letztes Jahr ein tolles Fahrrad gekauft. Bei gutem Wetter fährt sie immer damit. Aber wenn es regnet, steigt sie in den Bus. Und heute regnet es ja stark. Mann: Stimmt, dann kommt Clara heute bestimmt mit dem Bus. Und David, fährt der immer noch Motorrad? Frau: Nein, das Motorrad hat er schon verkauft. Er fährt jetzt mit der U-Bahn, das geht viel schneller. Mann: Und du, Eva, wie kommst du? Frau: Ich nehme normalerweise die Straßenbahn. Aber mein Auto ist gerade in der Werkstatt, äh, nein, die Straßenbahn meine ich nicht. Heute hat mich ein Taxi gebracht. Mann: Oh je, das ist aber teuer! Frau: Ja, aber wirklich nur für heute.',
     options: ['das Auto', 'der Bus', 'das Fahrrad', 'zu Fuß', 'die U-Bahn', 'der Zug', 'das Motorrad', 'das Taxi', 'die Straßenbahn'],
     questions: [
       {
