@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Clone Kokoro German Martin ONNX sources and download model weights for compose.tts.yaml.
+# Clone Kokoro German Martin ONNX sources and download Victoria (female) weights.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -20,7 +20,7 @@ fi
 cd "$TARGET_DIR"
 
 if [[ ! -f kokoro-martin.onnx || ! -f voices-martin.npz ]]; then
-  echo "[setup-kokoro] Downloading model files from Hugging Face…"
+  echo "[setup-kokoro] Downloading Martin model files from Hugging Face…"
   if [[ -x scripts/download-model-files.sh ]]; then
     sh scripts/download-model-files.sh
   else
@@ -28,8 +28,12 @@ if [[ ! -f kokoro-martin.onnx || ! -f voices-martin.npz ]]; then
     curl -L "${HF_BASE}/voices-martin.npz" -o voices-martin.npz
   fi
 else
-  echo "[setup-kokoro] Model files already present"
+  echo "[setup-kokoro] Martin model files already present"
 fi
 
-echo "[setup-kokoro] Ready. Start TTS with:"
-echo "  docker compose -f compose.tts.yaml up -d --build --wait"
+echo "[setup-kokoro] Downloading Victoria (female) models…"
+bash "${ROOT_DIR}/scripts/tts/victoria/download-models.sh"
+
+echo "[setup-kokoro] Ready. Start dual-voice TTS (Martin :8881 + Victoria :8882) with:"
+echo "  pnpm tts:up"
+echo "Stop with: pnpm tts:down"

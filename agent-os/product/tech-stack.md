@@ -38,9 +38,10 @@ Vue/Nuxt is retained in part so Phase 2 can reuse existing auth, profile, and ac
 
 Listening practice is **done for Phase 1 iteration 1**. Further listening work is polish / mock-exam integration only unless new gaps appear.
 
-- Seed listening exercises use **pre-generated WAV files** (Kokoro German Martin) under `apps/frontend/public/audio/listening/a2/` (often gitignored; regenerate with `pnpm generate:listening-audio`)
+- Seed listening exercises use **pre-generated WAV files** (Kokoro German **Martin** male + optional **Victoria** female) under `apps/frontend/public/audio/listening/a2/` (often gitignored; regenerate with `pnpm generate:listening-audio`)
+- Dialogue transcripts (Teil 2–4) use `Role:` labels; generation splits turns, assigns martin/victoria by speaker gender, strips labels from spoken audio, and concatenates WAVs
 - Playback uses stable files so every replay is identical (not live browser TTS)
-- Optional maintainer tooling: `compose.tts.yaml` + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
+- Optional maintainer tooling: `compose.tts.yaml` (`pnpm tts:up` starts Martin + Victoria; `pnpm tts:down` stops both) + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
 - In-app: missing-audio sidebar + **Generate audio** writes `public/audio/listening/generated/` when Kokoro is up; practice controls stay locked until files exist
 - AI listening generation still produces transcripts only; audio is generated on demand
 - Phase 2 may run TTS as an optional Compose service when generating new exercises

@@ -10,11 +10,17 @@
  *   pnpm generate:listening-audio
  *
  * Env:
- *   TTS_BASE_URL  (default http://127.0.0.1:8881)
- *   TTS_VOICE     (default martin)
- *   TTS_SPEED     (default 1.0)
- *   TTS_LANG      (default de)
- *   FORCE=1       regenerate even when transcript hash matches
+ *   TTS_BASE_URL           (default http://127.0.0.1:8881) — Martin / male
+ *   TTS_FEMALE_BASE_URL    (default http://127.0.0.1:8882) — Victoria / female; falls back to Martin when offline
+ *   TTS_VOICE_MALE         (default martin)
+ *   TTS_VOICE_FEMALE       (default victoria)
+ *   TTS_SPEED              (default 1.0)
+ *   TTS_LANG               (default de)
+ *   TTS_TURN_PAUSE_MS      (default 350)
+ *   FORCE=1                regenerate even when transcript hash matches
+ *
+ * Dialogue transcripts with Role: labels are synthesized turn-by-turn with
+ * male/female voices and concatenated. Unlabeled monologues stay single-voice.
  */
 
 import { createHash } from 'node:crypto'
@@ -44,10 +50,15 @@ const { defaultListeningTopics } = listeningModule
 const ttsModule = await jiti.import(
   path.join(frontendRoot, 'server/utils/tts/ttsAdapter.ts'),
 )
-const { synthesizeSpeech, checkTtsHealth, getTtsConfigFromEnv } = ttsModule
+const {
+  synthesizeListeningTranscript,
+  checkTtsHealth,
+  getTtsConfigFromEnv,
+  listeningTranscriptHashKey,
+} = ttsModule
 
 function hashTranscript(text) {
-  return createHash('sha256').update(text.trim()).digest('hex')
+  return createHash('sha256').update(listeningTranscriptHashKey(text)).digest('hex')
 }
 
 function collectSegments(exercises) {
@@ -127,7 +138,7 @@ async function main() {
     }
 
     console.log(`  synth ${segment.relativePath}`)
-    const audio = await synthesizeSpeech({ text: segment.transcript }, config)
+    const audio = await synthesizeListeningTranscript(segment.transcript, config)
     await writeFile(outPath, audio)
     await writeFile(hashPath, `${nextHash}\n`, 'utf8')
     written += 1

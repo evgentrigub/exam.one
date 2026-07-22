@@ -1,10 +1,16 @@
-# Optional Kokoro German Martin TTS service for generating listening audio assets.
-# Not required for normal app runtime — seed WAVs ship under apps/frontend/public/audio/.
+# Optional dual-voice Kokoro TTS for listening audio generation.
+# Martin (male) on :8881, Victoria (female) on :8882.
+# Not required for normal app runtime — seed WAVs ship under public/audio/.
 #
 # Setup (once):
 #   ./scripts/tts/setup-kokoro.sh
-#   docker compose -f compose.tts.yaml up -d --build --wait
+#   pnpm tts:up          # starts Martin + Victoria
 #   pnpm generate:listening-audio
+#   pnpm tts:down        # stops both
+#
+# Client env (defaults match this compose file):
+#   TTS_BASE_URL=http://127.0.0.1:8881
+#   TTS_FEMALE_BASE_URL=http://127.0.0.1:8882
 
 name: exam-one-tts
 
@@ -44,4 +50,27 @@ services:
       timeout: 5s
       retries: 30
       start_period: 60s
+    restart: unless-stopped
+
+  kokoro-victoria:
+    build:
+      context: ./scripts/tts/victoria
+      dockerfile: Dockerfile
+    ports:
+      - '${TTS_FEMALE_PORT:-8882}:8882'
+    environment:
+      KOKORO_VICTORIA_MODEL_DIR: /app/models
+      KOKORO_VICTORIA_LANG: de
+      KOKORO_VICTORIA_SPEED: '1.0'
+      KOKORO_PAUSE_DURATION: '0.25'
+    volumes:
+      - ./scripts/tts/victoria/models:/app/models:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'curl -fsS http://127.0.0.1:8882/v1/audio/voices >/dev/null'
+      interval: 15s
+      timeout: 10s
+      retries: 40
+      start_period: 180s
     restart: unless-stopped
