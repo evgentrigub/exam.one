@@ -1,12 +1,12 @@
 /**
  * Parse speaker-labeled listening transcripts into dialogue turns and map
- * speakers to Kokoro voices (martin = male, victoria = female).
+ * speakers to Kokoro voices (2 male + 2 female).
  *
  * Expected label shape (Goethe-style seeds / generator prompts):
  *   "Mann: … Frau: …" | "Verkäuferin: …" | "Frau Müller: …" | "Moderatorin: …"
  */
 
-export type DialogueVoiceId = 'martin' | 'victoria'
+export type DialogueVoiceId = 'martin' | 'bernd' | 'victoria' | 'eva'
 export type SpeakerGender = 'male' | 'female' | 'unknown'
 
 export interface DialogueTurn {
@@ -22,6 +22,15 @@ export interface VoicedDialogueTurn extends DialogueTurn {
 /** Speaker label: 1–3 capitalized words ending with a colon. */
 const SPEAKER_LABEL_RE =
   /(?:^|(?<=\s))([A-ZÄÖÜ][A-Za-zÄÖÜäöüß]*(?:\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß]*){0,2}):\s*/g
+
+export const MALE_VOICE_POOL: readonly DialogueVoiceId[] = ['martin', 'bernd']
+export const FEMALE_VOICE_POOL: readonly DialogueVoiceId[] = ['victoria', 'eva']
+export const ALL_VOICE_POOL: readonly DialogueVoiceId[] = [
+  'martin',
+  'victoria',
+  'bernd',
+  'eva',
+]
 
 const FEMALE_ROLES = new Set([
   'frau',
@@ -139,18 +148,46 @@ export function inferSpeakerGender(speaker: string): SpeakerGender {
   return 'unknown'
 }
 
+function pickFromPool(
+  pool: readonly DialogueVoiceId[],
+  index: number,
+): DialogueVoiceId {
+  const voice = pool[index % pool.length]
+  return voice ?? pool[0] ?? 'martin'
+}
+
 /**
- * Map a speaker label to martin (male) or victoria (female).
- * Unknown genders alternate by first appearance so dialogues stay distinct.
+ * Map a speaker to a voice using per-gender pools (order of first appearance).
+ * Unknown genders rotate through the full 4-voice roster.
  */
 export function resolveDialogueVoice(
   speaker: string,
-  unknownVoiceIndex: number,
+  genderIndex: number,
 ): DialogueVoiceId {
   const gender = inferSpeakerGender(speaker)
-  if (gender === 'female') return 'victoria'
-  if (gender === 'male') return 'martin'
-  return unknownVoiceIndex % 2 === 0 ? 'martin' : 'victoria'
+  if (gender === 'female') return pickFromPool(FEMALE_VOICE_POOL, genderIndex)
+  if (gender === 'male') return pickFromPool(MALE_VOICE_POOL, genderIndex)
+  return pickFromPool(ALL_VOICE_POOL, genderIndex)
+}
+
+/**
+ * Same-gender fallback when a preferred voice is offline.
+ * e.g. eva → victoria → martin; bernd → martin
+ */
+export function fallbackVoiceFor(
+  preferred: DialogueVoiceId,
+  available: ReadonlySet<string>,
+): DialogueVoiceId {
+  if (available.has(preferred)) return preferred
+
+  const maleFallbacks: DialogueVoiceId[] = ['martin', 'bernd']
+  const femaleFallbacks: DialogueVoiceId[] = ['victoria', 'eva', 'martin']
+
+  const pool = MALE_VOICE_POOL.includes(preferred) ? maleFallbacks : femaleFallbacks
+  for (const candidate of pool) {
+    if (available.has(candidate)) return candidate
+  }
+  return 'martin'
 }
 
 /**
@@ -161,6 +198,8 @@ export function planDialogueVoices(transcript: string): VoicedDialogueTurn[] | n
   if (!turns) return null
 
   const speakerVoice = new Map<string, DialogueVoiceId>()
+  let maleIndex = 0
+  let femaleIndex = 0
   let unknownIndex = 0
   const voiced: VoicedDialogueTurn[] = []
 
@@ -169,8 +208,16 @@ export function planDialogueVoices(transcript: string): VoicedDialogueTurn[] | n
     let voice = speakerVoice.get(key)
     if (!voice) {
       const gender = inferSpeakerGender(turn.speaker)
-      voice = resolveDialogueVoice(turn.speaker, unknownIndex)
-      if (gender === 'unknown') unknownIndex += 1
+      if (gender === 'male') {
+        voice = resolveDialogueVoice(turn.speaker, maleIndex)
+        maleIndex += 1
+      } else if (gender === 'female') {
+        voice = resolveDialogueVoice(turn.speaker, femaleIndex)
+        femaleIndex += 1
+      } else {
+        voice = resolveDialogueVoice(turn.speaker, unknownIndex)
+        unknownIndex += 1
+      }
       speakerVoice.set(key, voice)
     }
 
