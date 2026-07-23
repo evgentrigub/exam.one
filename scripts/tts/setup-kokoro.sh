@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Clone Kokoro German Martin ONNX sources and download Victoria (female) weights.
+# Clone Kokoro German Martin ONNX + multi-voice PyTorch models (victoria/bernd/eva).
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -31,9 +31,13 @@ else
   echo "[setup-kokoro] Martin model files already present"
 fi
 
-echo "[setup-kokoro] Downloading Victoria (female) models…"
+echo "[setup-kokoro] Downloading multi-voice models (victoria / bernd / eva)…"
 bash "${ROOT_DIR}/scripts/tts/victoria/download-models.sh"
 
-echo "[setup-kokoro] Ready. Start dual-voice TTS (Martin :8881 + Victoria :8882) with:"
-echo "  pnpm tts:up"
-echo "Stop with: pnpm tts:down"
+echo "[setup-kokoro] Ready. Four-voice TTS:"
+echo "  martin   → :8881 (ONNX)"
+echo "  victoria → :8882 (Stage-2)"
+echo "  bernd    → :8882 (base + voicepack)"
+echo "  eva      → :8882 (base + voicepack)"
+echo "Start with: pnpm tts:up"
+echo "Stop with:  pnpm tts:down"

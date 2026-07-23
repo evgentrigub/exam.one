@@ -9,9 +9,9 @@ import { buildSeedListeningAudioMap } from '~/utils/listening/audioUrls'
  * - Teil 3: five short dialogues, 3-option MCQ each
  * - Teil 4: one radio interview with five true/false statements
  *
- * Audio maps point at pre-generated Kokoro German Martin/Victoria WAVs under public/audio/listening/a2/.
+ * Audio maps point at pre-generated Kokoro WAVs (martin/bernd/victoria/eva) under public/audio/listening/a2/.
  * Dialogue transcripts use Role: labels so multi-voice generation can assign male/female speakers.
- * Regenerate with: `pnpm generate:listening-audio` (requires `pnpm tts:up` — Martin + Victoria).
+ * Regenerate with: `FORCE=1 pnpm generate:listening-audio` after `pnpm tts:up`.
  */
 const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
   {

@@ -5,6 +5,7 @@ import {
   buildGeneratedListeningAudioMap,
   collectListeningAudioSegments,
 } from '~/utils/listening/audioUrls'
+import { mapPool } from '~/server/utils/tts/mapPool'
 import {
   checkTtsHealth,
   getTtsConfigFromEnv,
@@ -66,17 +67,15 @@ export default defineEventHandler(
     const root = publicRoot()
 
     try {
-      let written = 0
-      for (const segment of segments) {
+      await mapPool(segments, config.concurrency, async (segment) => {
         const bytes = await synthesizeListeningTranscript(segment.transcript, config)
         const absolute = path.join(root, segment.relativePath)
         await mkdir(path.dirname(absolute), { recursive: true })
         await writeFile(absolute, bytes)
-        written += 1
-      }
+      })
 
       return {
-        data: { audio: audioMap, written },
+        data: { audio: audioMap, written: segments.length },
         error: null,
       }
     } catch (error: unknown) {

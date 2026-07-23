@@ -1,11 +1,15 @@
 /**
- * Thin OpenAI-compatible TTS client for Kokoro (Martin + optional Victoria).
+ * Thin OpenAI-compatible TTS client for Kokoro
+ * (Martin ONNX + multi-voice PyTorch: victoria / bernd / eva).
  * Used by listening audio generation — not required at app runtime for seed playback.
  */
 
 import { concatWavWithPauses } from '~/server/utils/tts/concatWav'
+import { getTtsConcurrency, mapPool } from '~/server/utils/tts/mapPool'
 import {
   dialogueAudioPlanKey,
+  fallbackVoiceFor,
+  MALE_VOICE_POOL,
   planDialogueVoices,
   type DialogueVoiceId,
 } from '~/utils/listening/dialogueTranscript'
@@ -19,44 +23,50 @@ export interface TtsSynthesizeOptions {
 }
 
 export interface TtsConfig {
-  /** Primary / male (Martin) base URL. */
+  /** Martin ONNX (primary male / monologues). */
   baseUrl: string
-  /** Optional female (Victoria) base URL; falls back to baseUrl when unset/unreachable. */
-  femaleBaseUrl: string
+  /** Multi-voice PyTorch service (victoria, bernd, eva). */
+  multiBaseUrl: string
   voice: string
-  maleVoice: DialogueVoiceId
-  femaleVoice: DialogueVoiceId
   speed: number
   lang: string
   /** Silence between dialogue turns in ms. */
   turnPauseMs: number
+  /** Parallel segment / turn concurrency. */
+  concurrency: number
 }
+
+const ONNX_VOICES = new Set<string>(['martin'])
+const MULTI_VOICES = new Set<string>(['victoria', 'bernd', 'eva'])
 
 export function getTtsConfigFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): TtsConfig {
   const baseUrl = (env['TTS_BASE_URL'] ?? 'http://127.0.0.1:8881').replace(/\/$/, '')
-  const femaleBaseUrl = (
-    env['TTS_FEMALE_BASE_URL']
+  const multiBaseUrl = (
+    env['TTS_MULTI_BASE_URL']
+    ?? env['TTS_FEMALE_BASE_URL']
     ?? env['TTS_VICTORIA_BASE_URL']
     ?? 'http://127.0.0.1:8882'
   ).replace(/\/$/, '')
 
   return {
     baseUrl,
-    femaleBaseUrl,
+    multiBaseUrl,
     voice: env['TTS_VOICE'] ?? 'martin',
-    maleVoice: (env['TTS_VOICE_MALE'] as DialogueVoiceId | undefined) ?? 'martin',
-    femaleVoice: (env['TTS_VOICE_FEMALE'] as DialogueVoiceId | undefined) ?? 'victoria',
     speed: Number(env['TTS_SPEED'] ?? '1.0') || 1.0,
     lang: env['TTS_LANG'] ?? 'de',
     turnPauseMs: Number(env['TTS_TURN_PAUSE_MS'] ?? '350') || 350,
+    concurrency: getTtsConcurrency(env),
   }
 }
 
 function resolveBaseUrlForVoice(voice: string, config: TtsConfig): string {
-  if (voice === config.femaleVoice || voice === 'victoria') {
-    return config.femaleBaseUrl
+  if (ONNX_VOICES.has(voice) || voice === 'martin') return config.baseUrl
+  if (MULTI_VOICES.has(voice)) return config.multiBaseUrl
+  // Unknown → route by gender pool membership default
+  if (MALE_VOICE_POOL.includes(voice as DialogueVoiceId) && voice === 'bernd') {
+    return config.multiBaseUrl
   }
   return config.baseUrl
 }
@@ -91,16 +101,15 @@ export async function synthesizeSpeech(
 
   if (!response.ok) {
     const detail = await response.text().catch(() => '')
-    // When Victoria is requested but only Martin is up on the female URL,
-    // retry once with the male voice on the primary URL (labels already stripped).
+    // Multi-voice offline → fall back to Martin ONNX once.
     if (
-      voice === config.femaleVoice
-      && config.femaleBaseUrl !== config.baseUrl
+      voice !== 'martin'
+      && baseUrl === config.multiBaseUrl
       && (response.status === 400 || response.status === 404 || response.status >= 500)
     ) {
       return synthesizeSpeech(
-        { ...options, voice: config.maleVoice },
-        { ...config, femaleBaseUrl: config.baseUrl },
+        { ...options, voice: 'martin' },
+        config,
       )
     }
     throw new Error(
@@ -114,8 +123,8 @@ export async function synthesizeSpeech(
 
 /**
  * Synthesize a listening transcript. Labeled dialogues are split into turns,
- * voiced by gender (martin/victoria), and concatenated with pauses.
- * Unlabeled monologues use a single synthesize call.
+ * voiced from the 4-voice roster, synthesized in parallel, then concatenated.
+ * Unlabeled monologues use a single Martin synthesize call.
  */
 export async function synthesizeListeningTranscript(
   transcript: string,
@@ -123,23 +132,14 @@ export async function synthesizeListeningTranscript(
 ): Promise<Buffer> {
   const plan = planDialogueVoices(transcript)
   if (!plan) {
-    return synthesizeSpeech({ text: transcript }, config)
+    return synthesizeSpeech({ text: transcript, voice: 'martin' }, config)
   }
 
-  const femaleAvailable = await isVoiceServiceAvailable(config.femaleBaseUrl, config.femaleVoice)
-  const wavParts: Buffer[] = []
-
-  for (const turn of plan) {
-    const voice = turn.voice === 'victoria' && !femaleAvailable
-      ? config.maleVoice
-      : (turn.voice === 'victoria' ? config.femaleVoice : config.maleVoice)
-
-    const part = await synthesizeSpeech(
-      { text: turn.text, voice },
-      config,
-    )
-    wavParts.push(part)
-  }
+  const available = await listAvailableVoices(config)
+  const wavParts = await mapPool(plan, config.concurrency, async (turn) => {
+    const voice = fallbackVoiceFor(turn.voice, available)
+    return synthesizeSpeech({ text: turn.text, voice }, config)
+  })
 
   return concatWavWithPauses(wavParts, config.turnPauseMs)
 }
@@ -149,31 +149,41 @@ export function listeningTranscriptHashKey(transcript: string): string {
   return dialogueAudioPlanKey(transcript)
 }
 
-const femaleAvailabilityCache = new Map<string, { checkedAt: number; ok: boolean }>()
-const FEMALE_AVAILABILITY_TTL_MS = 30_000
+const voicesCache = new Map<string, { checkedAt: number; voices: Set<string> }>()
+const VOICES_CACHE_TTL_MS = 30_000
 
-async function isVoiceServiceAvailable(baseUrl: string, voice: string): Promise<boolean> {
-  const cacheKey = `${baseUrl}::${voice}`
-  const cached = femaleAvailabilityCache.get(cacheKey)
-  if (cached && Date.now() - cached.checkedAt < FEMALE_AVAILABILITY_TTL_MS) {
-    return cached.ok
+async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
+  const cached = voicesCache.get(baseUrl)
+  if (cached && Date.now() - cached.checkedAt < VOICES_CACHE_TTL_MS) {
+    return cached.voices
   }
 
   try {
     const response = await fetch(`${baseUrl}/v1/audio/voices`, { method: 'GET' })
     if (!response.ok) {
-      femaleAvailabilityCache.set(cacheKey, { checkedAt: Date.now(), ok: false })
-      return false
+      const empty = new Set<string>()
+      voicesCache.set(baseUrl, { checkedAt: Date.now(), voices: empty })
+      return empty
     }
     const body = await response.json().catch(() => null) as { voices?: string[] } | null
-    const voices = body?.voices
-    const ok = Array.isArray(voices) && voices.includes(voice)
-    femaleAvailabilityCache.set(cacheKey, { checkedAt: Date.now(), ok })
-    return ok
+    const voices = new Set(
+      Array.isArray(body?.voices) ? body.voices.map((v) => String(v).toLowerCase()) : [],
+    )
+    voicesCache.set(baseUrl, { checkedAt: Date.now(), voices })
+    return voices
   } catch {
-    femaleAvailabilityCache.set(cacheKey, { checkedAt: Date.now(), ok: false })
-    return false
+    const empty = new Set<string>()
+    voicesCache.set(baseUrl, { checkedAt: Date.now(), voices: empty })
+    return empty
   }
+}
+
+async function listAvailableVoices(config: TtsConfig): Promise<Set<string>> {
+  const [onnx, multi] = await Promise.all([
+    fetchVoicesFrom(config.baseUrl),
+    fetchVoicesFrom(config.multiBaseUrl),
+  ])
+  return new Set([...onnx, ...multi])
 }
 
 export async function checkTtsHealth(
