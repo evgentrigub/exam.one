@@ -70,7 +70,6 @@
         :transcript="model.sharedTranscript || ''"
         :label="currentExercise.title"
         :src="sharedAudioSrc"
-        :replay-limit="replayLimit"
         :reveal-transcript="isFinished"
         hide-volume-speed
         :volume="volume"
@@ -164,7 +163,6 @@
               :transcript="q.transcript"
               :label="`Audio ${i + 1}`"
               :src="itemAudioSrc(q.id)"
-              :replay-limit="replayLimit"
               :reveal-transcript="isFinished"
               hide-volume-speed
               :volume="volume"
@@ -264,7 +262,6 @@
 import { Info, Check, X, Dot, Trophy, ArrowRight, Repeat, Volume2, AlertCircle } from 'lucide-vue-next'
 import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 import {
-  listeningReplayLimit,
   resolveItemListeningAudioSrc,
   resolveSharedListeningAudioSrc,
 } from '~/utils/listening/audioUrls'
@@ -337,7 +334,6 @@ const {
 } = useListeningAudioAvailability(exerciseRef)
 
 const model = computed<NormalizedModel>(() => normalize(currentExercise.value))
-const replayLimit = computed(() => listeningReplayLimit(currentExercise.value.testingPart))
 const sharedAudioSrc = computed(() => resolveSharedListeningAudioSrc(currentExercise.value) ?? '')
 
 function itemAudioSrc(itemId: string): string {
@@ -366,33 +362,37 @@ const answersDisabled = computed(() => interactionLocked.value || isFinished.val
 watch(
   [checkedAvailability, anyMissing],
   ([checked, missing]) => {
-    if (checked && !missing && !isFinished.value) {
-      startTimer()
-    } else {
+    // Pause while audio is unavailable; resume only if the user already started the clock.
+    if (!checked || missing) {
       stopTimer()
+    } else if (timerStarted.value && !isFinished.value) {
+      startTimer()
     }
   },
 )
 const instructions = computed(() => {
   switch (currentExercise.value.testingPart) {
-    case 1: return 'Listen to each short message and choose the correct answer. You may replay each audio up to twice.'
-    case 2: return 'Listen to the conversation and match each person to the correct option. The audio plays once.'
-    case 3: return 'Listen to each short dialogue and choose the correct answer. Each audio plays once.'
-    case 4: return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein). You may replay the audio up to twice.'
-    default: return 'Listen and answer the questions.'
+    case 1: return 'Listen to each short message and choose the correct answer. Replay the audio as often as you need.'
+    case 2: return 'Listen to the conversation and match each person to the correct option. Replay the audio as often as you need.'
+    case 3: return 'Listen to each short dialogue and choose the correct answer. Replay the audio as often as you need.'
+    case 4: return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein). Replay the audio as often as you need.'
+    default: return 'Listen and answer the questions. Replay the audio as often as you need.'
   }
 })
 
 const partTimeSec: Record<number, number> = { 1: 600, 2: 480, 3: 600, 4: 480 }
 const timerRemaining = ref(partTimeSec[props.exercise.testingPart] ?? 600)
+/** Timer starts only after the user presses play on any audio track. */
+const timerStarted = ref(false)
 let timerHandle: ReturnType<typeof setInterval> | null = null
 
 const timerMM = computed(() => String(Math.floor(timerRemaining.value / 60)).padStart(2, '0'))
 const timerSS = computed(() => String(timerRemaining.value % 60).padStart(2, '0'))
 
 function startTimer() {
-  if (!checkedAvailability.value || anyMissing.value) return
-  stopTimer()
+  if (!checkedAvailability.value || anyMissing.value || isFinished.value) return
+  if (timerHandle) return
+  timerStarted.value = true
   timerHandle = setInterval(() => {
     if (timerRemaining.value > 0 && !isFinished.value) {
       timerRemaining.value--
@@ -402,6 +402,12 @@ function startTimer() {
 
 function stopTimer() {
   if (timerHandle) { clearInterval(timerHandle); timerHandle = null }
+}
+
+function resetTimer() {
+  stopTimer()
+  timerStarted.value = false
+  timerRemaining.value = partTimeSec[currentExercise.value.testingPart] ?? 600
 }
 
 function readPersistedNumber(key: string): number | undefined {
@@ -439,6 +445,7 @@ function setSpeed(value: number) {
 
 function onPlayerPlay(playerId: string) {
   claim(playerId)
+  startTimer()
 }
 
 function onPlayerPause(playerId: string) {
@@ -492,7 +499,6 @@ async function generateAudioForExercise() {
 }
 
 onMounted(() => {
-  startTimer()
   model.value.questions.forEach(q => { answers[q.id] = undefined })
   const storedSpeed = readPersistedNumber(PLAYBACK_SPEED_KEY)
   if (storedSpeed !== undefined && speeds.includes(storedSpeed as (typeof speeds)[number])) {
@@ -566,9 +572,8 @@ function restart() {
   if (interactionLocked.value) return
   isFinished.value = false
   model.value.questions.forEach(q => { answers[q.id] = undefined })
-  timerRemaining.value = partTimeSec[currentExercise.value.testingPart] ?? 600
+  resetTimer()
   sessionKey.value += 1
-  startTimer()
 }
 
 function normalize(ex: ListeningA2Exercise): NormalizedModel {

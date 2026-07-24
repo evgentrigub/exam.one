@@ -1,6 +1,5 @@
 import type {
   ListeningA2Exercise,
-  ListeningA2Part,
   ListeningExerciseAudioMap,
 } from '~/utils/exercises/listening'
 
@@ -24,11 +23,6 @@ export function generatedSharedListeningAudioPath(exerciseId: string): string {
 /** On-demand TTS output path for a per-item segment. */
 export function generatedItemListeningAudioPath(exerciseId: string, itemId: string): string {
   return `/audio/listening/generated/${exerciseId}/${itemId}.${LISTENING_AUDIO_EXT}`
-}
-
-/** Goethe A2 replay limits: Teile 1 & 4 twice, Teile 2 & 3 once. */
-export function listeningReplayLimit(testingPart: ListeningA2Part): 1 | 2 {
-  return testingPart === 1 || testingPart === 4 ? 2 : 1
 }
 
 /**
