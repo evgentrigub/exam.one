@@ -23,7 +23,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 **exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The offline-first Nuxt 3 frontend remains usable without the standalone NestJS backend. The backend, shared libraries, Prisma boundary, and Docker Compose infrastructure establish the Phase 2 architecture while AI requests still use temporary Nuxt server routes.
 
-Supported exams: English / Cambridge A2, German / Goethe A2.
+**Phase 1 (current):** frontend-only MVP for German / Goethe A2 (all skills) + Goethe C1 Writing. Reading / Writing / Listening iteration 1 are done; **Speaking is the next skill** (see `agent-os/product/roadmap.md`). NestJS/Postgres exist as scaffold only until Phase 2 cutover. English / Cambridge is out of scope for Phase 1.
 
 ### Key directories
 

@@ -1,10 +1,25 @@
 # Exam.one 🎓
 
-> A polished language exam preparation platform. The primary availabe language is German exma by Goethe Institut (A2-C1 levels)
+> Open-source, self-hostable language exam prep. Phase 1 shipping focus: German / Goethe A2 (all skills) + Goethe C1 Writing.
 
-Practice reading comprehension and writing exercises with authentic exam-style content, instant feedback, and comprehensive progress tracking—all in a beautiful, accessible interface.
+Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking.
 
-use npx --yes serve exam-one-design/project -l 5174 to run desidn locally
+Design preview: `npx --yes serve exam-one-design/project -l 5174`
+
+## Current status (Phase 1)
+
+Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
+
+| Area | Status |
+|------|--------|
+| Reading (Lesen) | Done (iteration 1) |
+| Writing (Schreiben) | Done (iteration 1) |
+| Listening (Hoeren) | Done (iteration 1) — 4 Teile, file-based Kokoro audio, missing-audio lock UX |
+| Speaking (Sprechen) | **Next** — Teil 1–2 scaffold exists; STT, wired AI review, Teil 3 still open |
+| Mock exam | Not started (after Speaking is practice-ready) |
+| Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
+
+**Next implementation focus:** Speaking — harden Teil 1–2 offline practice, then wire real AI review + STT (see roadmap §1.1).
 
 ## ✨ Features
 
@@ -31,33 +46,43 @@ use npx --yes serve exam-one-design/project -l 5174 to run desidn locally
   - German-specific suggestions
 - **Progress Tracking**: Track submissions, completion rates, and improvement
 
+### 🎧 Listening Practice
+- **Goethe A2 Teile 1–4**: MCQ sessions with shared or per-item audio players
+- **Stable WAV playback**: Pre-generated Kokoro German voices (identical on every replay)
+- **On-demand TTS**: Generate missing audio when Kokoro is up (`pnpm tts:up` + Generate audio)
+- **Optional AI**: Transcript generation separate from audio generation
+
+### 🎤 Speaking Practice (in progress)
+- **Teil 1–2 scaffold**: Prompt cards / keywords, `MediaRecorder`, attempt save
+- **Still open**: Real STT, wired AI review, Teil 3 joint planning, pronunciation score
+
 ### 📊 Progress Dashboard
 - **Comprehensive Statistics**: Completion rates, average scores, best scores
 - **Recent Activity**: Time-based formatting (Today, Yesterday, X days ago)
-- **Separate Analytics**: Independent tracking for reading and writing
+- **Per-skill analytics**: Reading, writing, listening (speaking as it lands)
 - **Visual Indicators**: Completion badges, progress bars, trend displays
 
 ### 🤖 Optional AI Enhancement
-- **Advanced Review**: AI-powered detailed feedback using OpenAI
-- **Model Answers**: Generate example responses for writing topics
+- **Bring-your-own-key**: OpenAI / OpenRouter via thin Nuxt server routes
+- **Generate & review**: Exercises and feedback when keys are configured
+- **Graceful degrade**: Core practice works without AI
 
 ## 🏗️ Architecture
 
 ### Offline-First Core ✅
-All essential features work without internet connection:
-- Reading practice with instant feedback
-- Writing practice with text analysis
+Phase 1 core flows work without internet (localStorage):
+- Reading, writing, and listening practice
+- Speaking practice scaffold (offline record/save; AI/STT optional later)
 - Progress tracking and statistics
 - Draft saving and resume functionality
 - Full navigation and UI
 
 ### Optional Online Enhancement 🌐
-When `OPENAI_API_KEY` is configured (optional):
-- Advanced AI-powered writing review
-- Model answer generation
-- Enhanced feedback with detailed suggestions
+When LLM API keys are configured (optional):
+- Advanced AI-powered review and generation
+- Model answers / enhanced feedback
 
-**Note**: The app gracefully degrades when offline or without API key. Core functionality remains 100% available.
+**Note**: The app gracefully degrades when offline or without API keys. Core functionality remains available.
 
 ## 🚀 Quick Start
 
@@ -218,24 +243,22 @@ pnpm db:seed            # Seed the development database
 
 ## 📊 Project Status
 
-### Completed (12/18 deliverables - 67%) ✅
+Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md) (source of truth). Summary:
 
-- ✅ **Reading Practice** (8/8 stages) - Fully functional with 5 texts, 20 questions
-- ✅ **Writing Practice** (4/4 stages) - Complete 3-card interface with text analysis
-- ✅ **Progress Dashboard** - Comprehensive statistics and activity tracking
-- ✅ **Navigation & Layout** - Consistent navbar, responsive design
-- ✅ **Performance Optimization** - ~600 KB gzipped, < 2s load time
+### Phase 1 — Frontend MVP (current)
 
-### In Planning (Post-MVP) 🎯
+- ✅ Reading / Writing practice (iteration 1)
+- ✅ Listening practice (iteration 1) + Kokoro TTS tooling
+- 🔄 **Speaking** — next substage (Teil 1–2 harden → AI review → STT → Teil 3)
+- ⏳ Mock exam mode (after Speaking is usable)
+- ⏳ Goethe C1 Writing (partial scope)
+- ✅ BYOK AI generate/review for shipped skills; DaisyUI shell / i18n / progress foundations
 
-- ⏳ **Enhanced Analytics** (Stage 13) - Performance trends, charts, weak area identification
-- ⏳ **Content Expansion** (Stage 14) - B1 and B2 level texts and topics
-- ⏳ **PWA Enhancement** (Stage 15) - Service worker, offline caching, install prompt
-- ⏳ **Gamification** (Stage 16) - Streaks, badges, daily goals
-- ⏳ **Advanced Writing** (Stage 17) - Spell check, grammar suggestions, templates
-- ⏳ **Testing & QA** (Stage 18) - Automated tests with Vitest and Playwright
+### Later phases
 
-See [`README_PRD.txt`](./README_PRD.txt) for detailed progress tracking.
+- Phase 2: NestJS + PostgreSQL persistence cutover + Docker Compose self-host
+- Phase 3: Public open-source release + docs site
+- Phase 4: Hosted cloud product
 
 ## 🎨 Design Philosophy
 

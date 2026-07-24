@@ -4,10 +4,17 @@ This file is the working guide for coding agents in this repository. It should b
 
 ## Project Summary
 
-- Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework (today: English / Cambridge A2 and German / Goethe A2)
-- Current app shape: pnpm monorepo with a Nuxt 3 offline-first frontend, a standalone NestJS backend scaffold, shared libraries, and PostgreSQL via Docker Compose
+- Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
+- **Phase 1 (current) shipping focus:** German / Goethe A2 (Reading, Writing, Listening, Speaking + mock exam) and Goethe C1 Writing only. English / Cambridge is out of scope for Phase 1.
+- Current app shape: pnpm monorepo with a Nuxt 3 offline-first frontend (Phase 1 product surface), plus NestJS / Prisma / Compose scaffold ahead of Phase 2 persistence cutover
 - Primary features: reading, writing, listening, and speaking practice; mock exam mode; editable demo prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
+
+## Current focus
+
+- **Done (iteration 1):** Reading, Writing, Listening (incl. file-based Kokoro audio)
+- **Next:** Speaking (`roadmap.md` §1.1) — harden Teil 1–2 offline practice, then wire AI review + STT; Teil 3 and mock exam follow
+- Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
 
