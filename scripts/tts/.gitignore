@@ -1,0 +1,6 @@
+# Kokoro German Martin ONNX sources and model weights (downloaded by setup-kokoro.sh).
+# Used only for optional listening audio generation via compose.tts.yaml.
+kokoro-german/
+
+# Kikiri German Victoria PyTorch weights (downloaded by victoria/download-models.sh).
+victoria/models/

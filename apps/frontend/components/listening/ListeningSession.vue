@@ -2,13 +2,50 @@
   <div class="grid grid-cols-12 gap-6">
     <!-- LEFT SIDEBAR -->
     <div class="col-span-12 lg:col-span-4 space-y-5">
-      <!-- Shared audio (Teil 2 + 4) -->
-      <AudioPlayer
-        v-if="model.mode === 'shared'"
-        :transcript="model.sharedTranscript || ''"
-        :label="exercise.title"
-        :reveal-transcript="isFinished"
-      />
+      <!-- Audio readiness (missing only — hide when files are available) -->
+      <div
+        v-if="checkedAvailability && anyMissing"
+        class="bg-base-100 rounded-box border border-base-300/70 px-4 py-3 flex items-start gap-3"
+      >
+        <div
+          class="w-8 h-8 rounded-full shrink-0 grid place-items-center bg-warning/15 text-warning"
+          title="Audio not generated"
+        >
+          <AlertCircle :size="16" />
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-semibold text-base-content/80">Audio not generated</p>
+          <p class="text-[11px] text-base-content/50 mt-0.5 leading-snug">
+            {{ audioStatusDetail }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Missing audio banner -->
+      <div
+        v-if="checkedAvailability && anyMissing"
+        class="alert alert-warning text-sm shadow-none"
+      >
+        <div class="space-y-2 w-full">
+          <p class="font-semibold">Listening audio files are missing</p>
+          <p class="text-xs opacity-80">
+            {{ missingCount }} of {{ expectedCount }} audio file(s) not found.
+          </p>
+          <button
+            type="button"
+            class="btn btn-sm btn-warning"
+            :disabled="!isTtsReady || isGeneratingAudio"
+            @click="generateAudioForExercise"
+          >
+            <span v-if="isGeneratingAudio" class="loading loading-spinner loading-xs" />
+            {{ generateButtonLabel }}
+          </button>
+          <p v-if="generateError" class="text-xs text-error">{{ generateError }}</p>
+          <p v-else-if="!isTtsReady" class="text-xs opacity-70">
+            Generate audio is disabled while TTS is offline.
+          </p>
+        </div>
+      </div>
 
       <!-- Practice timer -->
       <div class="bg-base-100 rounded-box border border-base-300/70 p-5">
@@ -26,6 +63,62 @@
         </div>
       </div>
 
+      <!-- Shared audio (Teil 2 + 4) — play/scrubber only; volume lives under timer -->
+      <AudioPlayer
+        v-if="model.mode === 'shared'"
+        :key="`shared-${sessionKey}`"
+        :transcript="model.sharedTranscript || ''"
+        :label="currentExercise.title"
+        :src="sharedAudioSrc"
+        :reveal-transcript="isFinished"
+        hide-volume-speed
+        :volume="volume"
+        :speed="speed"
+        :disabled="interactionLocked"
+        player-id="shared"
+        :active-player-id="activePlayerId"
+        @play="onPlayerPlay"
+        @pause="onPlayerPause"
+        @audio-unavailable="onAudioUnavailable"
+      />
+
+      <!-- Shared volume + speed (all Teile) -->
+      <div
+        class="bg-base-100 rounded-box border border-base-300/70 p-5"
+        :class="{ 'opacity-50 pointer-events-none': interactionLocked }"
+      >
+        <div class="text-xs font-semibold text-base-content/70 mb-3">Playback</div>
+        <div class="flex items-center gap-3">
+          <Volume2 :size="14" class="text-base-content/50 shrink-0" />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            :value="volume"
+            class="flex-1 accent-info min-w-0"
+            :disabled="interactionLocked"
+            @input="setVolume(Number(($event.target as HTMLInputElement).value))"
+          >
+        </div>
+        <div class="join mt-3 w-full">
+          <button
+            v-for="s in speeds"
+            :key="s"
+            type="button"
+            class="join-item btn btn-xs flex-1"
+            :class="speed === s ? 'btn-info text-info-content' : 'btn-ghost'"
+            :disabled="interactionLocked"
+            @click="setSpeed(s)"
+          >
+            {{ s }}x
+          </button>
+        </div>
+        <p v-if="interactionLocked" class="text-[11px] text-base-content/50 mt-2">
+          Playback unlocks when audio files are available.
+        </p>
+      </div>
+
       <!-- Instructions -->
       <div class="bg-base-100 rounded-box border border-base-300/70 p-5">
         <div class="flex items-center gap-2 text-sm font-semibold text-base-content/80">
@@ -41,7 +134,6 @@
     <!-- RIGHT CONTENT -->
     <div class="col-span-12 lg:col-span-8">
       <div class="bg-base-100 rounded-box border border-base-300/70 p-7">
-        <!-- Result callout (inline after submit) -->
         <div
           v-if="isFinished"
           class="mb-6 p-4 rounded-box border flex items-center gap-3"
@@ -62,16 +154,25 @@
         </div>
         <p class="text-sm text-base-content/60 mt-1">Listen to the audio and answer the questions below.</p>
 
-        <!-- Questions -->
-        <div class="mt-6 space-y-7">
+        <div class="mt-6 space-y-7" :class="{ 'opacity-60': interactionLocked && !isFinished }">
           <div v-for="(q, i) in model.questions" :key="q.id">
-            <!-- Per-item audio (Teil 1 + 3) -->
             <AudioPlayer
               v-if="model.mode === 'peritem' && q.transcript"
+              :key="`${q.id}-${sessionKey}`"
               class="mb-3"
               :transcript="q.transcript"
               :label="`Audio ${i + 1}`"
+              :src="itemAudioSrc(q.id)"
               :reveal-transcript="isFinished"
+              hide-volume-speed
+              :volume="volume"
+              :speed="speed"
+              :disabled="interactionLocked"
+              :player-id="q.id"
+              :active-player-id="activePlayerId"
+              @play="onPlayerPlay"
+              @pause="onPlayerPause"
+              @audio-unavailable="onAudioUnavailable"
             />
 
             <div class="flex items-baseline gap-2 mb-3">
@@ -79,17 +180,15 @@
               <div class="text-[15px] font-semibold leading-snug">{{ q.prompt }}</div>
             </div>
 
-            <!-- Matching (Teil 2): styled select -->
             <template v-if="model.optionStyle === 'select'">
               <select
                 v-model.number="answers[q.id]"
                 class="select select-bordered select-sm w-full"
-                :disabled="isFinished"
+                :disabled="answersDisabled"
               >
                 <option :value="undefined" disabled>Choose…</option>
                 <option v-for="(opt, oi) in q.options" :key="oi" :value="oi">{{ opt }}</option>
               </select>
-              <!-- Post-submit correctness for select -->
               <div v-if="isFinished" class="mt-2 flex items-center gap-2 text-xs">
                 <span v-if="isCorrect(q)" class="text-success flex items-center gap-1"><Check :size="12" /> Correct</span>
                 <span v-else class="text-error flex items-center gap-1">
@@ -99,7 +198,6 @@
               <p v-if="isFinished" class="text-xs text-base-content/50 mt-1">{{ q.explanation }}</p>
             </template>
 
-            <!-- Lettered option buttons (Teil 1, 3, 4) -->
             <template v-else>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <button
@@ -107,9 +205,9 @@
                   :key="oi"
                   type="button"
                   class="group w-full text-left px-4 py-3 rounded-box border transition-all flex items-center gap-3"
-                  :class="optionClass(q, oi)"
-                  :disabled="isFinished"
-                  @click="answers[q.id] = oi"
+                  :class="[optionClass(q, oi), { 'opacity-60 cursor-not-allowed': answersDisabled }]"
+                  :disabled="answersDisabled"
+                  @click="selectAnswer(q.id, oi)"
                 >
                   <span
                     class="w-5 h-5 rounded-full border grid place-items-center text-[10px] font-mono shrink-0"
@@ -127,7 +225,6 @@
           </div>
         </div>
 
-        <!-- Submit / actions row -->
         <div class="mt-8 pt-5 border-t border-base-300/70 flex items-center gap-3">
           <button class="btn btn-sm rounded-full bg-base-200 border-base-300 hover:bg-base-300" @click="$emit('finish')">
             Save &amp; Exit
@@ -135,7 +232,7 @@
           <template v-if="!isFinished">
             <button
               class="btn btn-info text-info-content btn-sm rounded-full flex-1 gap-1"
-              :disabled="!allAnswered"
+              :disabled="interactionLocked || !allAnswered"
               @click="finish"
             >
               Submit Answers <ArrowRight :size="12" />
@@ -146,7 +243,11 @@
               <div class="text-sm">
                 Score: <strong class="font-mono">{{ score }} / {{ model.questions.length }}</strong> · {{ percentage }}%
               </div>
-              <button class="btn btn-outline btn-sm gap-1 ml-auto" @click="restart">
+              <button
+                class="btn btn-outline btn-sm gap-1 ml-auto"
+                :disabled="interactionLocked"
+                @click="restart"
+              >
                 <Repeat :size="12" /> Retry
               </button>
             </div>
@@ -158,10 +259,22 @@
 </template>
 
 <script setup lang="ts">
-import { Info, Check, X, Dot, Trophy, ArrowRight, Repeat } from 'lucide-vue-next'
-import type { ListeningA2Exercise } from '~/utils/exercises/listening'
+import { Info, Check, X, Dot, Trophy, ArrowRight, Repeat, Volume2, AlertCircle } from 'lucide-vue-next'
+import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
+import {
+  resolveItemListeningAudioSrc,
+  resolveSharedListeningAudioSrc,
+} from '~/utils/listening/audioUrls'
 import { useProgress } from '~/composables/useProgress'
+import { useListeningAudioAvailability } from '~/composables/useListeningAudioAvailability'
+import { useTtsHealth } from '~/composables/useTtsHealth'
+import { useListeningExclusivePlayback } from '~/composables/useListeningExclusivePlayback'
+import { useListeningExercises } from '~/composables/useListeningExercises'
 import AudioPlayer from './AudioPlayer.vue'
+
+const PLAYBACK_SPEED_KEY = 'exam-one:listening:playback-speed'
+const PLAYBACK_VOLUME_KEY = 'exam-one:listening:volume'
+const speeds = [0.75, 1, 1.25] as const
 
 interface NormalizedQuestion {
   id: string
@@ -179,36 +292,107 @@ interface NormalizedModel {
   questions: NormalizedQuestion[]
 }
 
+interface GenerateAudioResponse {
+  data: { audio: ListeningExerciseAudioMap; written: number } | null
+  error: string | null
+}
+
 const props = defineProps<{ exercise: ListeningA2Exercise }>()
 defineEmits<{ finish: [] }>()
 
 const { saveListeningCompletion } = useProgress()
+const { updateExerciseAudio, getExerciseById } = useListeningExercises()
+const { isReady: isTtsReady } = useTtsHealth()
+const { activePlayerId, claim, release } = useListeningExclusivePlayback()
 
 const answers = reactive<Record<string, number | undefined>>({})
 const isFinished = ref(false)
+const sessionKey = ref(0)
+const volume = ref(0.6)
+const speed = ref(1)
+const isGeneratingAudio = ref(false)
+const generateProgress = ref<{ done: number; total: number } | null>(null)
+const generateError = ref<string | null>(null)
 
-const model = computed<NormalizedModel>(() => normalize(props.exercise))
+/** Local working copy so audio map updates remount players without leaving the page. */
+const currentExercise = ref<ListeningA2Exercise>({ ...props.exercise })
 
+watch(
+  () => props.exercise,
+  (next) => {
+    currentExercise.value = { ...next }
+  },
+)
+
+const exerciseRef = computed(() => currentExercise.value)
+const {
+  checked: checkedAvailability,
+  anyMissing,
+  missingCount,
+  expectedCount,
+  refresh: refreshAvailability,
+} = useListeningAudioAvailability(exerciseRef)
+
+const model = computed<NormalizedModel>(() => normalize(currentExercise.value))
+const sharedAudioSrc = computed(() => resolveSharedListeningAudioSrc(currentExercise.value) ?? '')
+
+function itemAudioSrc(itemId: string): string {
+  return resolveItemListeningAudioSrc(currentExercise.value, itemId) ?? ''
+}
+
+const audioStatusDetail = computed(() => {
+  if (isTtsReady.value) {
+    return 'Audio files are missing. Use Generate audio below, or run pnpm generate:listening-audio for seed packs.'
+  }
+  return 'Audio files are missing. Run pnpm tts:up to start TTS, then Generate audio — or pnpm generate:listening-audio for seed packs.'
+})
+
+const generateButtonLabel = computed(() => {
+  if (!isGeneratingAudio.value) return 'Generate audio'
+  if (generateProgress.value) {
+    return `Generating ${generateProgress.value.done}/${generateProgress.value.total}…`
+  }
+  return 'Generating…'
+})
+
+/** Lock practice UI while audio is unchecked or any expected file is missing. */
+const interactionLocked = computed(() => !checkedAvailability.value || anyMissing.value)
+const answersDisabled = computed(() => interactionLocked.value || isFinished.value)
+
+watch(
+  [checkedAvailability, anyMissing],
+  ([checked, missing]) => {
+    // Pause while audio is unavailable; resume only if the user already started the clock.
+    if (!checked || missing) {
+      stopTimer()
+    } else if (timerStarted.value && !isFinished.value) {
+      startTimer()
+    }
+  },
+)
 const instructions = computed(() => {
-  switch (props.exercise.testingPart) {
-    case 1: return 'Listen to each short message and choose the correct answer. You may replay each audio up to twice.'
-    case 2: return 'Listen to the conversation and match each person to the correct option. The audio plays twice.'
-    case 3: return 'Listen to each short dialogue and choose the correct answer.'
-    case 4: return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein).'
-    default: return 'Listen and answer the questions.'
+  switch (currentExercise.value.testingPart) {
+    case 1: return 'Listen to each short message and choose the correct answer. Replay the audio as often as you need.'
+    case 2: return 'Listen to the conversation and match each person to the correct option. Replay the audio as often as you need.'
+    case 3: return 'Listen to each short dialogue and choose the correct answer. Replay the audio as often as you need.'
+    case 4: return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein). Replay the audio as often as you need.'
+    default: return 'Listen and answer the questions. Replay the audio as often as you need.'
   }
 })
 
-// Practice timer (non-blocking, counts down from part-based duration)
 const partTimeSec: Record<number, number> = { 1: 600, 2: 480, 3: 600, 4: 480 }
 const timerRemaining = ref(partTimeSec[props.exercise.testingPart] ?? 600)
+/** Timer starts only after the user presses play on any audio track. */
+const timerStarted = ref(false)
 let timerHandle: ReturnType<typeof setInterval> | null = null
 
 const timerMM = computed(() => String(Math.floor(timerRemaining.value / 60)).padStart(2, '0'))
 const timerSS = computed(() => String(timerRemaining.value % 60).padStart(2, '0'))
 
 function startTimer() {
-  stopTimer()
+  if (!checkedAvailability.value || anyMissing.value || isFinished.value) return
+  if (timerHandle) return
+  timerStarted.value = true
   timerHandle = setInterval(() => {
     if (timerRemaining.value > 0 && !isFinished.value) {
       timerRemaining.value--
@@ -220,7 +404,112 @@ function stopTimer() {
   if (timerHandle) { clearInterval(timerHandle); timerHandle = null }
 }
 
-onMounted(startTimer)
+function resetTimer() {
+  stopTimer()
+  timerStarted.value = false
+  timerRemaining.value = partTimeSec[currentExercise.value.testingPart] ?? 600
+}
+
+function readPersistedNumber(key: string): number | undefined {
+  if (!import.meta.client) return undefined
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return undefined
+    const value = Number(raw)
+    return Number.isFinite(value) ? value : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function persistNumber(key: string, value: number) {
+  if (!import.meta.client) return
+  try {
+    localStorage.setItem(key, String(value))
+  } catch {
+    // ignore
+  }
+}
+
+function setVolume(value: number) {
+  if (interactionLocked.value) return
+  volume.value = value
+  persistNumber(PLAYBACK_VOLUME_KEY, value)
+}
+
+function setSpeed(value: number) {
+  if (interactionLocked.value) return
+  speed.value = value
+  persistNumber(PLAYBACK_SPEED_KEY, value)
+}
+
+function onPlayerPlay(playerId: string) {
+  claim(playerId)
+  startTimer()
+}
+
+function onPlayerPause(playerId: string) {
+  release(playerId)
+}
+
+function onAudioUnavailable() {
+  void refreshAvailability()
+}
+
+async function generateAudioForExercise() {
+  if (!isTtsReady.value || isGeneratingAudio.value) return
+  generateError.value = null
+  isGeneratingAudio.value = true
+  generateProgress.value = { done: 0, total: Math.max(1, expectedCount.value) }
+
+  try {
+    const res = await $fetch<GenerateAudioResponse>('/api/tts/generate-listening-audio', {
+      method: 'POST',
+      body: { exercise: currentExercise.value },
+    })
+
+    if (res.error || !res.data?.audio) {
+      generateError.value = res.error ?? 'Audio generation failed.'
+      return
+    }
+
+    generateProgress.value = {
+      done: res.data.written,
+      total: res.data.written,
+    }
+
+    const id = currentExercise.value.id
+    if (id) {
+      const updated = updateExerciseAudio(id, res.data.audio)
+      currentExercise.value = updated ?? { ...currentExercise.value, audio: res.data.audio }
+      const fromStore = getExerciseById(id)
+      if (fromStore) currentExercise.value = { ...fromStore }
+    } else {
+      currentExercise.value = { ...currentExercise.value, audio: res.data.audio }
+    }
+
+    sessionKey.value += 1
+    await refreshAvailability()
+  } catch (error: unknown) {
+    generateError.value = error instanceof Error ? error.message : 'Audio generation failed.'
+  } finally {
+    isGeneratingAudio.value = false
+    generateProgress.value = null
+  }
+}
+
+onMounted(() => {
+  model.value.questions.forEach(q => { answers[q.id] = undefined })
+  const storedSpeed = readPersistedNumber(PLAYBACK_SPEED_KEY)
+  if (storedSpeed !== undefined && speeds.includes(storedSpeed as (typeof speeds)[number])) {
+    speed.value = storedSpeed
+  }
+  const storedVolume = readPersistedNumber(PLAYBACK_VOLUME_KEY)
+  if (storedVolume !== undefined && storedVolume >= 0 && storedVolume <= 1) {
+    volume.value = storedVolume
+  }
+})
+
 onUnmounted(stopTimer)
 
 const answeredCount = computed(() => model.value.questions.filter(q => answers[q.id] !== undefined).length)
@@ -237,6 +526,11 @@ const scoreMessage = computed(() => {
 })
 
 function letter(i: number) { return String.fromCharCode(65 + i) }
+
+function selectAnswer(questionId: string, optionIndex: number) {
+  if (answersDisabled.value) return
+  answers[questionId] = optionIndex
+}
 
 function isCorrect(q: NormalizedQuestion): boolean {
   return answers[q.id] === q.correctIndex
@@ -268,16 +562,18 @@ function badgeClass(q: NormalizedQuestion, oi: number): string {
 }
 
 function finish() {
+  if (interactionLocked.value || !allAnswered.value) return
   isFinished.value = true
   stopTimer()
-  saveListeningCompletion(props.exercise.id ?? '', score.value, model.value.questions.length)
+  saveListeningCompletion(currentExercise.value.id ?? '', score.value, model.value.questions.length)
 }
 
 function restart() {
+  if (interactionLocked.value) return
   isFinished.value = false
   model.value.questions.forEach(q => { answers[q.id] = undefined })
-  timerRemaining.value = partTimeSec[props.exercise.testingPart] ?? 600
-  startTimer()
+  resetTimer()
+  sessionKey.value += 1
 }
 
 function normalize(ex: ListeningA2Exercise): NormalizedModel {
@@ -311,7 +607,6 @@ function normalize(ex: ListeningA2Exercise): NormalizedModel {
     }
   }
 
-  // Teil 4: Ja / Nein
   return {
     mode: 'shared',
     optionStyle: 'buttons',
@@ -325,8 +620,4 @@ function normalize(ex: ListeningA2Exercise): NormalizedModel {
     })),
   }
 }
-
-onMounted(() => {
-  model.value.questions.forEach(q => { answers[q.id] = undefined })
-})
 </script>

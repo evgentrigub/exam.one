@@ -2,15 +2,20 @@
 
 Use these files as the product reference set before implementing exam behavior, seed content, prompt templates, grading, or mock exam flows.
 
+## Current focus (Phase 1)
+
+- **Listening (Hoeren):** complete for iteration 1 — see `roadmap.md` skill status and `tech-stack.md` Listening audio.
+- **Speaking (Sprechen):** next core skill — follow the ordered plan in `roadmap.md` §1.1 and exam rules in `german-exam-A2.md`.
+
 ## Core Product
 
 - `mission.md` - product problem, audience, positioning, and generic multi-language / multi-level framework goal.
-- `roadmap.md` - phase boundaries, supported exams per phase, and technical substages.
+- `roadmap.md` - phase boundaries, supported exams per phase, skill status, and technical substages.
 - `tech-stack.md` - Phase 1 frontend-only architecture and Phase 2 Docker Compose full-stack target.
 
 ## Exam References
 
-- `german-exam-A2.md` - Goethe A2 module structure, timings, scoring, generation rules, review rules, and mock exam constraints.
+- `german-exam-A2.md` - Goethe A2 module structure, timings, scoring, generation rules, review rules, and mock exam constraints (includes Listening/Speaking implementation status callouts).
 - `german-exam-C1.md` - Goethe C1 Phase 1 scope (Writing only); out-of-scope skills for this phase.
 
 ## Agent Guidance

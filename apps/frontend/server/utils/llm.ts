@@ -81,9 +81,20 @@ export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnect
   }
 }
 
+function readEnv(name: string): string {
+  const value = process.env[name]
+  return typeof value === 'string' ? value.trim() : ''
+}
+
 export function getLlmConfig(runtimeConfig: LlmRuntimeConfig): LlmConfig | null {
-  const provider = runtimeConfig.llmProvider === 'openai' ? 'openai' : 'openrouter'
-  const apiKey = provider === 'openai' ? runtimeConfig.llmOpenaiApiKey : runtimeConfig.llmOpenrouterApiKey
+  // Prefer runtimeConfig (NUXT_* / nuxt.config), then documented root .env names.
+  const providerRaw = (runtimeConfig.llmProvider || readEnv('LLM_PROVIDER') || 'openrouter').trim()
+  const provider: LlmProvider = providerRaw === 'openai' ? 'openai' : 'openrouter'
+  const apiKey = (
+    provider === 'openai'
+      ? runtimeConfig.llmOpenaiApiKey || readEnv('OPENAI_API_KEY')
+      : runtimeConfig.llmOpenrouterApiKey || readEnv('OPENROUTER_API_KEY')
+  ).trim()
 
   if (!apiKey) {
     return null
@@ -91,10 +102,11 @@ export function getLlmConfig(runtimeConfig: LlmRuntimeConfig): LlmConfig | null 
 
   const model =
     provider === 'openai'
-      ? (runtimeConfig.llmOpenaiModel || DEFAULT_OPENAI_MODEL)
-      : (runtimeConfig.llmOpenrouterModel || DEFAULT_OPENROUTER_MODEL)
+      ? (runtimeConfig.llmOpenaiModel || readEnv('OPENAI_MODEL') || DEFAULT_OPENAI_MODEL)
+      : (runtimeConfig.llmOpenrouterModel || readEnv('OPENROUTER_MODEL') || DEFAULT_OPENROUTER_MODEL)
 
-  const configuredEffort = runtimeConfig.llmReasoningEffort || DEFAULT_REASONING_EFFORT
+  const configuredEffort =
+    runtimeConfig.llmReasoningEffort || readEnv('LLM_REASONING_EFFORT') || DEFAULT_REASONING_EFFORT
   const reasoningEffort = REASONING_EFFORT_VALUES.includes(configuredEffort as LlmReasoningEffort)
     ? (configuredEffort as LlmReasoningEffort)
     : DEFAULT_REASONING_EFFORT

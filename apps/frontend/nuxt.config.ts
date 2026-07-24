@@ -4,6 +4,24 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
+
+  // Explicit so startup logs and docs can point at a stable URL
+  devServer: {
+    host: 'localhost',
+    port: 3000,
+  },
+
+  hooks: {
+    listen(_server, listener) {
+      const fromListener = listener && typeof listener === 'object'
+        ? (listener as { url?: string; address?: string | (() => string) })
+        : null
+      const url = fromListener?.url
+        || (typeof fromListener?.address === 'string' ? fromListener.address : undefined)
+        || 'http://localhost:3000'
+      console.info(`[exam.one] Frontend ready at ${url}`)
+    },
+  },
   
   // Modules
   modules: [
@@ -101,7 +119,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Private (server-only). Override at runtime with env vars NUXT_LLM_PROVIDER, NUXT_LLM_OPENAI_API_KEY, etc.
+    // Private (server-only). Defaults come from the monorepo-root `.env` via `nuxt --dotenv ../../.env`.
+    // Also overridable at runtime with NUXT_LLM_PROVIDER, NUXT_LLM_OPENAI_API_KEY, etc.
+    // getLlmConfig() additionally falls back to OPENAI_API_KEY / OPENROUTER_API_KEY process env.
     llmProvider: process.env['LLM_PROVIDER'] || 'openrouter',
     llmOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
     llmOpenrouterApiKey: process.env['OPENROUTER_API_KEY'] || '',

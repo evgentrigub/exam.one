@@ -23,15 +23,47 @@ The first usable, shippable version is **frontend only** — no separate backend
 
 English / Cambridge and other providers are out of scope for Phase 1.
 
+### Skill status (Goethe A2)
+
+| Skill | Status | Notes |
+|-------|--------|--------|
+| Reading | Done (iteration 1) | Seed + practice + optional AI generate |
+| Writing | Done (iteration 1) | Seed + drafts + optional AI generate / review |
+| Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX |
+| Speaking | **Next** | Scaffold for Teil 1–2 only; STT/review/Teil 3 still open — see substages below |
+| Mock exam | Not started | Depends on all four skills being practice-ready |
+
 ### Substages
 
 #### 1.1 Goethe A2 core skills
 
 Finish Reading, Writing, Listening, and Speaking practice against modular Goethe A2 rules.
 
+**Listening (complete — iteration 1):**
+- Teile 1–4 practice sessions with unlimited audio replay and shared/per-item players
+- Pre-generated seed audio (Kokoro German Martin) via `pnpm generate:listening-audio` / `scripts/tts/README.md`
+- In-app **Generate audio** when TTS is up; answers/playback locked until files exist
+- Optional AI listening generation (transcripts); audio remains a separate generation step
+
+**Speaking (in progress — next focus):**
+
+Complete Goethe A2 `Sprechen` so offline practice works without AI, with optional STT/TTS + review when keys/services are available. See `german-exam-A2.md` (Speaking) for exam rules (4 + 8 + 8 + 5 pronunciation = 25, no ×1.25).
+
+Ordered plan:
+
+1. **Harden Teil 1–2 offline practice** — expand seeds, part-specific UX (cards / keywords / timer), attempt history, no dependency on AI.
+2. **Wire real AI review** — speaking review endpoint + composable; replace mock rubrics; store criteria points in progress (Teil 2 first, then Teil 1).
+3. **STT pipeline (graceful degrade)** — transcribe recordings for review; allow manual transcript / submit-without-AI when STT is unavailable.
+4. **Teil 1 dialogue structure** — turn-based ask/answer flow and chat log suitable for review (TTS partner can come later).
+5. **Teil 3 joint planning** — `userSchedule` / `aiSchedule` with guaranteed overlap, propose/decline/agree UI, review of full dialogue log.
+6. **Optional TTS partner + pronunciation score** — reuse listening TTS stack for partner lines; separate 0–5 Aussprache when AI is available.
+7. **Mock-exam speaking module** — 15-minute module timer and 25-point total, aligned with mock exam shell (substage 1.2).
+
+**Speaking Phase 1 “done” cut:** steps 1–3 deliver usable scored Teil 1–2 practice offline + optional AI. Steps 4–5 close Goethe coverage; 6–7 polish into mock exam.
+
 #### 1.2 Mock exam mode
 
-Single-attempt, timed simulation with the same limitations applied in real language exams (no pauses that break exam realism).
+Single-attempt, timed simulation with the same limitations applied in real language exams (no pauses that break exam realism). Start after Speaking practice is usable (at least Teil 1–2 scored).
 
 #### 1.3 Goethe C1 writing (partial)
 
@@ -39,7 +71,7 @@ Writing practice plus review/generation prompt templates only. No full C1 Readin
 
 #### 1.4 Demo prompt templates + BYOK AI
 
-Bundled editable prompt templates for generate / review / grade. Supported providers: **OpenAI** and **OpenRouter**. Graceful degrade when keys are missing or upstream AI fails.
+Bundled editable prompt templates for generate / review / grade. Supported providers: **OpenAI** and **OpenRouter**. Graceful degrade when keys are missing or upstream AI fails. Root `.env` is loaded by Nest (`../../.env`) and by Nuxt via `--dotenv ../../.env`.
 
 #### 1.5 Polish / ship gate
 
