@@ -2,10 +2,11 @@ import { getLlmConfig, verifyLlmConnection } from '~/server/utils/llm'
 
 export default defineNitroPlugin(async () => {
   const runtimeConfig = useRuntimeConfig()
-  const provider = runtimeConfig.llmProvider === 'openai' ? 'openai' : 'openrouter'
   const llmConfig = getLlmConfig(runtimeConfig)
 
   if (!llmConfig) {
+    const providerRaw = String(runtimeConfig.llmProvider || process.env['LLM_PROVIDER'] || 'openrouter').trim()
+    const provider = providerRaw === 'openai' ? 'openai' : 'openrouter'
     const apiKeyEnvVar = provider === 'openai' ? 'OPENAI_API_KEY' : 'OPENROUTER_API_KEY'
     console.info(
       `[exam.one] AI features disabled: no API key configured for provider "${provider}". Set ${apiKeyEnvVar} to enable AI.`

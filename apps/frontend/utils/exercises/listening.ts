@@ -24,12 +24,19 @@ export type ListeningNineOptions = [
   string
 ]
 
+/** Public URL paths for pre-generated listening audio (stable across replays). */
+export interface ListeningExerciseAudioMap {
+  shared?: string
+  items?: Record<string, string> // item id -> audio url
+}
+
 export interface ListeningExerciseBase {
   id?: string
   title: string
   testingPart: ListeningA2Part
   difficulty: ListeningDifficulty
   createdAt?: string
+  audio?: ListeningExerciseAudioMap | undefined
 }
 
 export interface ListeningItemA2Teil1 {

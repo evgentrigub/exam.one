@@ -1,0 +1,207 @@
+#!/usr/bin/env node
+/**
+ * Pre-generate Kokoro WAV files for bundled A2 listening seeds.
+ *
+ * Prerequisites:
+ *   1. bash scripts/tts/victoria/download-models.sh  (or ./scripts/tts/setup-kokoro.sh)
+ *   2. pnpm tts:up
+ *
+ * Usage (from repo root):
+ *   pnpm generate:listening-audio
+ *   FORCE=1 pnpm generate:listening-audio   # after voice-roster / pipeline changes
+ *
+ * Env:
+ *   TTS_BASE_URL           (default http://127.0.0.1:8881) — four-voice PyTorch
+ *   TTS_CONCURRENCY        (default 3) — parallel segment synthesis
+ *   TTS_SPEED              (default 1.0)
+ *   TTS_LANG               (default de)
+ *   TTS_TURN_PAUSE_MS      (default 350)
+ *   FORCE=1                regenerate even when transcript hash matches
+ *
+ * Dialogue transcripts with Role: labels are synthesized turn-by-turn with up to
+ * four voices (2 male / 2 female) and concatenated. Monologues stay Martin.
+ */
+
+import { createHash } from 'node:crypto'
+import { mkdir, readFile, writeFile, access } from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { createJiti } from 'jiti'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const repoRoot = path.resolve(__dirname, '..')
+const frontendRoot = path.join(repoRoot, 'apps/frontend')
+const audioRoot = path.join(frontendRoot, 'public/audio/listening/a2')
+
+const jiti = createJiti(import.meta.url, {
+  alias: {
+    '~': frontendRoot,
+    '~~': frontendRoot,
+    '@': frontendRoot,
+  },
+})
+
+const listeningModule = await jiti.import(
+  path.join(frontendRoot, 'data/listening/exerciseListening.ts'),
+)
+const { defaultListeningTopics } = listeningModule
+
+const ttsModule = await jiti.import(
+  path.join(frontendRoot, 'server/utils/tts/ttsAdapter.ts'),
+)
+const {
+  synthesizeListeningTranscript,
+  checkTtsHealth,
+  getTtsConfigFromEnv,
+  listeningTranscriptHashKey,
+} = ttsModule
+
+const mapPoolModule = await jiti.import(
+  path.join(frontendRoot, 'server/utils/tts/mapPool.ts'),
+)
+const { mapPool, getTtsConcurrency } = mapPoolModule
+
+function hashTranscript(text) {
+  return createHash('sha256').update(listeningTranscriptHashKey(text)).digest('hex')
+}
+
+function collectSegments(exercises) {
+  const segments = []
+
+  for (const exercise of exercises) {
+    const id = exercise.id
+    if (!id) continue
+
+    if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+      for (const item of exercise.items ?? []) {
+        const itemId = item.id
+        if (!itemId || !item.transcript?.trim()) continue
+        segments.push({
+          relativePath: path.join(id, `${itemId}.wav`),
+          transcript: item.transcript,
+        })
+      }
+      continue
+    }
+
+    if (!exercise.transcript?.trim()) continue
+    segments.push({
+      relativePath: path.join(id, 'shared.wav'),
+      transcript: exercise.transcript,
+    })
+  }
+
+  return segments
+}
+
+async function fileExists(filePath) {
+  try {
+    await access(filePath)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function formatDuration(ms) {
+  if (ms < 1000) return `${Math.round(ms)}ms`
+  const seconds = ms / 1000
+  if (seconds < 60) return `${seconds.toFixed(1)}s`
+  const minutes = Math.floor(seconds / 60)
+  const rem = seconds - minutes * 60
+  return `${minutes}m ${rem.toFixed(1)}s`
+}
+
+async function main() {
+  const force = process.env.FORCE === '1' || process.env.FORCE === 'true'
+  const config = getTtsConfigFromEnv()
+  const concurrency = getTtsConcurrency()
+  const runStartedAt = Date.now()
+
+  console.log(`[generate-listening-audio] TTS: ${config.baseUrl}`)
+  console.log(`[generate-listening-audio] concurrency: ${concurrency}`)
+
+  const healthy = await checkTtsHealth(config)
+  if (!healthy) {
+    console.error(
+      '[generate-listening-audio] Kokoro TTS is not reachable.\n' +
+        '  1. Run: bash scripts/tts/victoria/download-models.sh\n' +
+        '  2. Run: pnpm tts:up\n' +
+        '  3. Re-run: pnpm generate:listening-audio',
+    )
+    process.exit(1)
+  }
+
+  const segments = collectSegments(defaultListeningTopics)
+  console.log(`[generate-listening-audio] ${segments.length} segment(s) to consider`)
+
+  const work = []
+  let skipped = 0
+
+  for (const segment of segments) {
+    const outPath = path.join(audioRoot, segment.relativePath)
+    const hashPath = `${outPath}.hash`
+    const nextHash = hashTranscript(segment.transcript)
+
+    await mkdir(path.dirname(outPath), { recursive: true })
+
+    if (!force && (await fileExists(outPath)) && (await fileExists(hashPath))) {
+      const prevHash = (await readFile(hashPath, 'utf8')).trim()
+      if (prevHash === nextHash) {
+        console.log(`  skip  ${segment.relativePath}`)
+        skipped += 1
+        continue
+      }
+    }
+
+    work.push({ segment, outPath, hashPath, nextHash })
+  }
+
+  console.log(`[generate-listening-audio] ${work.length} segment(s) to synthesize`)
+  const synthStartedAt = Date.now()
+  console.log(
+    `[generate-listening-audio] synthesis started at ${new Date(synthStartedAt).toISOString()}`,
+  )
+
+  const errors = []
+  let written = 0
+
+  await mapPool(work, concurrency, async (job) => {
+    const { segment, outPath, hashPath, nextHash } = job
+    const fileStartedAt = Date.now()
+    console.log(`  start ${segment.relativePath}`)
+    try {
+      const audio = await synthesizeListeningTranscript(segment.transcript, config)
+      await writeFile(outPath, audio)
+      await writeFile(hashPath, `${nextHash}\n`, 'utf8')
+      written += 1
+      const elapsed = Date.now() - fileStartedAt
+      console.log(`  done  ${segment.relativePath} (${formatDuration(elapsed)})`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      const elapsed = Date.now() - fileStartedAt
+      console.error(`  fail  ${segment.relativePath} after ${formatDuration(elapsed)}: ${message}`)
+      errors.push({ path: segment.relativePath, message })
+    }
+  })
+
+  const synthElapsed = Date.now() - synthStartedAt
+  const totalElapsed = Date.now() - runStartedAt
+  console.log(
+    `[generate-listening-audio] synthesis finished at ${new Date().toISOString()} `
+    + `(${formatDuration(synthElapsed)})`,
+  )
+  console.log(
+    `[generate-listening-audio] done — wrote ${written}, skipped ${skipped}, failed ${errors.length} `
+    + `(total ${formatDuration(totalElapsed)})`,
+  )
+
+  if (errors.length > 0) {
+    process.exit(1)
+  }
+}
+
+main().catch((error) => {
+  console.error('[generate-listening-audio] failed', error)
+  process.exit(1)
+})
