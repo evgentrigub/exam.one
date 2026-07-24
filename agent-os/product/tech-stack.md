@@ -41,7 +41,7 @@ Listening practice is **done for Phase 1 iteration 1**. Further listening work i
 - Seed listening exercises use **pre-generated WAV files** (Kokoro German **four-voice** roster: `martin` / `bernd` male, `victoria` / `eva` female) under `apps/frontend/public/audio/listening/a2/` (often gitignored; regenerate with `pnpm generate:listening-audio`; use `FORCE=1` after voice-roster changes)
 - Dialogue transcripts (Teil 2–4) use `Role:` labels; generation splits turns, assigns voices by gender + order of appearance, strips labels from spoken audio, and concatenates WAVs (parallel via `TTS_CONCURRENCY`)
 - Playback uses stable files so every replay is identical (not live browser TTS)
-- Optional maintainer tooling: `compose.tts.yaml` (`pnpm tts:up` starts Martin ONNX `:8881` + multi-voice PyTorch `:8882`; `pnpm tts:down` stops both) + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
+- Optional maintainer tooling: `compose.tts.yaml` (`pnpm tts:up` starts four-voice PyTorch Kokoro on `:8881` — martin / bernd / victoria / eva; `pnpm tts:down` stops it) + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
 - In-app: missing-audio sidebar + **Generate audio** writes `public/audio/listening/generated/` when Kokoro is up; practice controls stay locked until files exist
 - AI listening generation still produces transcripts only; audio is generated on demand
 - Phase 2 may run TTS as an optional Compose service when generating new exercises

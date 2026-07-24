@@ -1,14 +1,18 @@
-# Listening audio generation (four-voice Kokoro + parallel synth)
+# Listening audio generation (four-voice PyTorch Kokoro)
 
 Listening practice plays **stable WAV files** (identical on every replay). Kokoro is only
 needed when generating or regenerating those files.
 
-`pnpm tts:up` starts **both** TTS containers:
+`pnpm tts:up` starts a **single** PyTorch service on `:8881` with four German voices:
 
-| Port | Service | Voices |
-|------|---------|--------|
-| `:8881` | Martin ONNX | `martin` (primary male / monologues) |
-| `:8882` | Multi-voice PyTorch | `victoria`, `bernd`, `eva` |
+| Voice | Gender | Backbone |
+|-------|--------|----------|
+| `martin` | male 1 | Kikiri Stage-2 |
+| `bernd` | male 2 | Kikiri base + voicepack |
+| `victoria` | female 1 | Kikiri Stage-2 |
+| `eva` | female 2 | Kikiri base + voicepack |
+
+German text→phonemes uses `phonemizer` + espeak-ng `de` (same path as the former Martin ONNX stack).
 
 Dialogue transcripts that use `Role:` labels (Teil 2–4) are synthesized **turn-by-turn**
 with up to **two male + two female** voices (assigned by gender and order of appearance),
@@ -19,10 +23,11 @@ Example: `Mann` → martin, `Frau` → victoria, `Verkäuferin` → eva.
 ## Seed audio (maintainer)
 
 ```bash
-# One-time: download Martin ONNX + victoria/bernd/eva weights
-./scripts/tts/setup-kokoro.sh
+# One-time: download martin / victoria / bernd / eva weights
+bash scripts/tts/victoria/download-models.sh
+# or: ./scripts/tts/setup-kokoro.sh
 
-# Start four-voice TTS stack (downloads multi-voice models if missing, then starts containers)
+# Start four-voice TTS (downloads models if missing, then starts the container)
 pnpm tts:up
 
 # Synthesize WAVs for default A2 listening seeds → public/audio/listening/a2/
@@ -56,15 +61,15 @@ Env overrides:
 
 | Variable | Default | Meaning |
 |----------|---------|---------|
-| `TTS_BASE_URL` | `http://127.0.0.1:8881` | Martin ONNX |
-| `TTS_MULTI_BASE_URL` | `http://127.0.0.1:8882` | victoria / bernd / eva |
-| `TTS_FEMALE_BASE_URL` | (alias) | Same as `TTS_MULTI_BASE_URL` |
+| `TTS_BASE_URL` | `http://127.0.0.1:8881` | Four-voice PyTorch service |
 | `TTS_CONCURRENCY` | `3` | Parallel segment + turn synthesis |
 | `TTS_SPEED` | `1.0` | Speaking rate |
 | `TTS_LANG` | `de` | Language hint |
 | `TTS_TURN_PAUSE_MS` | `350` | Silence between dialogue turns |
 
-Upstream Martin: [Kokoro-82M-ONNX-German-Martin](https://github.com/Godelaune/Kokoro-82M-ONNX-German-Martin).
+Upstream Martin: [kikiri-german-martin](https://huggingface.co/kikiri-tts/kikiri-german-martin).
 Upstream Victoria: [kikiri-german-victoria](https://huggingface.co/kikiri-tts/kikiri-german-victoria).
 Bernd / Eva voicepacks: recovered via [r1di/kokoro-fastapi-german](https://github.com/r1di/kokoro-fastapi-german) (Apache-2.0).
 Multi-speaker base: [kikiri-german-base-51speakers-synthetic](https://huggingface.co/kikiri-tts/kikiri-german-base-51speakers-synthetic).
+
+Legacy Martin ONNX scripts remain under `scripts/tts/kokoro-german/` but are not used by `pnpm tts:up`.
