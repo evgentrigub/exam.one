@@ -2,7 +2,7 @@ import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 
 /**
  * Default A2-level German speaking topics (Goethe-Institut, modular 2024 format).
- * One topic per Teil: Teil 1 (Gespräch zur Kontaktaufnahme, interview cards)
+ * One topic per Teil: Teil 1 (practice-adapted contact interview)
  * and Teil 2 (Über sich sprechen, monologue keywords).
  */
 export const defaultSpeakingTopics: SpeakingA2Topic[] = [
@@ -12,8 +12,19 @@ export const defaultSpeakingTopics: SpeakingA2Topic[] = [
     topicType: 'interview',
     difficulty: 'A2',
     theme: 'Einkaufen',
-    cards: ['Supermarkt', 'Geld', 'Kleidung', 'Markt'],
-    createdAt: '2026-06-14'
+    answerQuestions: [
+      'Wo kaufst du normalerweise Lebensmittel ein?',
+      'Wie oft gehst du einkaufen?',
+      'Was kaufst du gern auf dem Markt?',
+      'Kaufst du Kleidung lieber im Geschäft oder online?',
+    ],
+    askQuestions: [
+      'Gehst du gern in den Supermarkt?',
+      'Wie viel Geld gibst du pro Woche für Essen aus?',
+      'Wann kaufst du neue Kleidung?',
+      'Gibt es in deiner Nähe einen Wochenmarkt?',
+    ],
+    createdAt: '2026-06-14',
   },
 
   {
@@ -23,6 +34,6 @@ export const defaultSpeakingTopics: SpeakingA2Topic[] = [
     difficulty: 'A2',
     theme: 'Wie wohnen Sie?',
     keywords: ['Wohnung oder Haus?', 'Wie viele Zimmer?', 'Mit wem?', 'In welcher Stadt?'],
-    createdAt: '2026-06-14'
-  }
+    createdAt: '2026-06-14',
+  },
 ]

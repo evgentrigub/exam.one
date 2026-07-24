@@ -12,14 +12,16 @@ export interface SpeakingTopicBase {
   createdAt: string
 }
 
-/** Teil 1: Gespräch zur Kontaktaufnahme — ask & answer using 4 prompt cards. */
+/** Teil 1: practice-adapted contact interview with explicit answer/ask questions. */
 export interface SpeakingTopicA2Teil1 extends SpeakingTopicBase {
   testingPart: 1
   topicType: 'interview'
   /** Overall theme, e.g. "Alltag" or "Hobby". */
   theme: string
-  /** Exactly four single-word prompt cards. */
-  cards: SpeakingFourCards
+  /** Exactly four questions the learner answers aloud. */
+  answerQuestions: SpeakingFourCards
+  /** Exactly four questions the learner asks aloud. */
+  askQuestions: SpeakingFourCards
 }
 
 /** Teil 2: Über sich sprechen — short monologue guided by 4 keywords. */
@@ -33,3 +35,27 @@ export interface SpeakingTopicA2Teil2 extends SpeakingTopicBase {
 }
 
 export type SpeakingA2Topic = SpeakingTopicA2Teil1 | SpeakingTopicA2Teil2
+
+export interface SpeakingTranscripts {
+  answers?: string
+  questions?: string
+  monologue?: string
+}
+
+export interface SpeakingReviewCriterion {
+  id: 'answers' | 'questions' | 'taskCompletion' | 'language'
+  label: string
+  points: number
+  maxPoints: number
+  comment: string
+}
+
+export interface SpeakingReviewData {
+  teil: SpeakingA2Part
+  totalPoints: number
+  maxPoints: 4 | 8
+  criteria: SpeakingReviewCriterion[]
+  strengths: string[]
+  improvements: string[]
+  summary: string
+}

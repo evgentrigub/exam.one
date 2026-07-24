@@ -46,13 +46,24 @@ Listening practice is **done for Phase 1 iteration 1**. Further listening work i
 - AI listening generation still produces transcripts only; audio is generated on demand
 - Phase 2 may run TTS as an optional Compose service when generating new exercises
 
-## Speaking (Phase 1 — next)
+## Speaking (Phase 1 — Teil 1–2 iteration)
 
-Speaking is the **next core-skill focus** after Listening. Current stack pieces to build on:
-
-- Pages / session / `MediaRecorder` scaffold for Teil 1–2 (`apps/frontend/pages/speaking/`, `components/speaking/`)
-- Seed + generate prompts for Teil 1–2; review prompt for Teil 2 exists but is not wired end-to-end
-- Planned: real STT → review, Teil 1 dialogue structure, Teil 3 schedules, optional TTS partner (may reuse Kokoro), pronunciation score — see `roadmap.md` §1.1 Speaking plan and `german-exam-A2.md` Speaking
+- Teil 1 uses two recordings: answers to four explicit practice questions, then
+  four questions spoken aloud. Teil 2 uses one monologue recording.
+- Recordings can be transcribed through a provider-neutral Nuxt STT adapter:
+  local Parakeet (`STT_PROVIDER=local`) or OpenAI Whisper
+  (`STT_PROVIDER=openai`). The transcript is always editable and can be entered
+  manually when STT is unavailable.
+- Optional local STT runs as the separate `compose.stt.yaml` stack on `:8882`.
+  `pnpm stt:up` downloads `nvidia/parakeet-tdt-0.6b-v3` to the host project at
+  `scripts/stt/parakeet/models/` and mounts the snapshot read-only; `pnpm
+stt:down` stops the service without deleting the model.
+- Optional LLM review is wired for Teil 1 (4 points) and Teil 2 (8 points).
+  Attempts and successful criteria reviews are saved locally even though audio
+  blobs are not retained.
+- Teil 3, pronunciation scoring, a TTS partner, and mock-exam speaking remain
+  later work. Teil 3 is visible in exam format but unavailable in practice and
+  generation.
 
 ## Deployment & Infra
 

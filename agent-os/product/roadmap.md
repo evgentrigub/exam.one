@@ -20,6 +20,7 @@ The first usable, shippable version is **frontend only** for product flows — p
 > **Note:** The monorepo already contains NestJS / Prisma / Compose scaffolding from early Phase 2 groundwork. That does not change Phase 1 skill work: keep reading/writing/listening/speaking on localStorage until Phase 2 persistence cutover.
 
 **Supported exams in this phase:**
+
 - **German / Goethe A2** — full skills (Reading, Writing, Listening, Speaking) + mock exam (see `german-exam-A2.md`)
 - **German / Goethe C1** — **Writing only** (partial; see `german-exam-C1.md`)
 
@@ -27,13 +28,13 @@ English / Cambridge and other providers are out of scope for Phase 1.
 
 ### Skill status (Goethe A2)
 
-| Skill | Status | Notes |
-|-------|--------|--------|
-| Reading | Done (iteration 1) | Seed + practice + optional AI generate |
-| Writing | Done (iteration 1) | Seed + drafts + optional AI generate / review |
-| Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX |
-| Speaking | **Next** | Scaffold for Teil 1–2 only; STT/review/Teil 3 still open — see substages below |
-| Mock exam | Not started | Depends on all four skills being practice-ready |
+| Skill     | Status                 | Notes                                                                                                                                  |
+| --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Reading   | Done (iteration 1)     | Seed + practice + optional AI generate                                                                                                 |
+| Writing   | Done (iteration 1)     | Seed + drafts + optional AI generate / review                                                                                          |
+| Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX                                                          |
+| Speaking  | **In progress**        | Teil 1–2 recording → STT/manual transcript → optional LLM review is implemented; Teil 3 and pronunciation remain — see substages below |
+| Mock exam | Not started            | Depends on all four skills being practice-ready                                                                                        |
 
 ### Substages
 
@@ -42,6 +43,7 @@ English / Cambridge and other providers are out of scope for Phase 1.
 Finish Reading, Writing, Listening, and Speaking practice against modular Goethe A2 rules.
 
 **Listening (complete — iteration 1):**
+
 - Teile 1–4 practice sessions with unlimited audio replay and shared/per-item players
 - Pre-generated seed audio (Kokoro German Martin) via `pnpm generate:listening-audio` / `scripts/tts/README.md`
 - In-app **Generate audio** when TTS is up; answers/playback locked until files exist
@@ -53,10 +55,16 @@ Complete Goethe A2 `Sprechen` so offline practice works without AI, with optiona
 
 Ordered plan:
 
-1. **Harden Teil 1–2 offline practice** — expand seeds, part-specific UX (cards / keywords / timer), attempt history, no dependency on AI.
-2. **Wire real AI review** — speaking review endpoint + composable; replace mock rubrics; store criteria points in progress (Teil 2 first, then Teil 1).
-3. **STT pipeline (graceful degrade)** — transcribe recordings for review; allow manual transcript / submit-without-AI when STT is unavailable.
-4. **Teil 1 dialogue structure** — turn-based ask/answer flow and chat log suitable for review (TTS partner can come later).
+1. **Done: harden Teil 1–2 offline practice** — part-specific two-recording
+   Teil 1 and monologue Teil 2 UX, editable/manual transcripts, and local attempts
+   with no dependency on AI.
+2. **Done: wire real AI review** — speaking review endpoint + composable,
+   criteria points stored with successful Teil 1–2 reviews, and save-without-AI.
+3. **Done: STT pipeline (graceful degrade)** — provider-selected local Parakeet
+   or OpenAI Whisper, health UI, and manual transcript fallback.
+4. **Done for solo iteration: Teil 1 ask/answer structure** — separate answer and
+   question recordings suitable for joint review. A live/turn-based partner can
+   come later.
 5. **Teil 3 joint planning** — `userSchedule` / `aiSchedule` with guaranteed overlap, propose/decline/agree UI, review of full dialogue log.
 6. **Optional TTS partner + pronunciation score** — reuse listening TTS stack for partner lines; separate 0–5 Aussprache when AI is available.
 7. **Mock-exam speaking module** — 15-minute module timer and 25-point total, aligned with mock exam shell (substage 1.2).
@@ -88,6 +96,7 @@ i18n, settings, and progress UX solid enough that Phase 2 can freeze the product
 Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). Like Postiz / n8n, a self-hosted instance supports signing up a single operator who then uses the app. AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
 
 **Stack:**
+
 - **Frontend** — Vue.js (Nuxt)
 - **Backend** — NestJS API replacing the thin Nuxt AI proxy for long-term ownership
 - **Database** — PostgreSQL for users, exercises, attempts, results, drafts, and settings

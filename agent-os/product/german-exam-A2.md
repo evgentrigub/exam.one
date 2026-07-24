@@ -91,14 +91,25 @@ Time limit: 30 minutes. The module has two parts. Maximum raw score is 20 `Messp
 
 Time limit: 15 minutes. The module has three interactive parts. The app may use STT and TTS for interaction and evaluation. Speaking points are not multiplied.
 
-> **Implementation status (Phase 1):** Listening is complete (iteration 1). Speaking is the **next skill** — Teil 1–2 UI/recorder/seed exist; STT, wired AI review, Teil 3, and pronunciation scoring are still open. See `roadmap.md` §1.1 Speaking plan.
+> **Implementation status (Phase 1):** Teil 1–2 practice now supports recording,
+> optional local Parakeet or OpenAI STT, editable/manual transcripts, optional
+> LLM review, and local attempt persistence. Teil 3 is shown as coming later;
+> pronunciation scoring and mock-exam integration are still open. See
+> `roadmap.md` §1.1 Speaking plan.
 
 ### Part 1: Interview Or Introduction
 
 - Points: 4.
-- Format: 4 prompt cards containing single words, such as `Internet` or `Urlaub`, centered around a common theme.
-- Task: the user formulates 4 questions based on the cards and gives detailed answers to the partner's questions, not single-word responses.
-- Generation rule: ideal answer scripts should include natural conversational reactions such as `Ach so`, `Aha`, or `Toll` before moving to the next question.
+- Exam format: 4 prompt cards containing single words, such as `Internet` or
+  `Urlaub`, centered around a common theme.
+- Current solo-practice adaptation: the prompt-card task is expressed as four
+  explicit questions to answer and four explicit questions to ask. The learner
+  makes one answer recording and one question recording; this preserves the two
+  assessed skills without pretending a live partner is present.
+- Task: answer in short complete sentences, then ask all four supplied questions
+  clearly in `du` form.
+- Review rule: score answers and question formation separately for a direct
+  maximum of 4 points. Do not infer or score pronunciation from an STT transcript.
 
 ### Part 2: Monologue
 
@@ -108,6 +119,9 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 - Review rule: evaluate task completion across all 4 points and linguistic realization, especially use of simple conjunctions for a fluid narrative.
 
 ### Part 3: Joint Planning
+
+> **App availability:** Coming later. Part 3 is documented and shown in the exam
+> map, but it is excluded from practice filters and AI exercise generation.
 
 - Points: 8.
 - Format: interactive dialogue to arrange a meeting or activity. Both partners have individual schedules containing occupied slots.
