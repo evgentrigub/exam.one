@@ -12,6 +12,80 @@ const STORAGE_KEY = 'exam-one:speaking:exercises'
 const topics = ref<SpeakingA2Topic[]>([])
 const isInitialized = ref(false)
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isFourStrings(value: unknown): value is [string, string, string, string] {
+  return Array.isArray(value) && value.length === 4 && value.every(item => typeof item === 'string')
+}
+
+function normaliseStoredTopic(value: unknown): SpeakingA2Topic | null {
+  if (!isRecord(value)) return null
+
+  if (
+    value['testingPart'] === 1 &&
+    value['topicType'] === 'interview' &&
+    typeof value['id'] === 'string' &&
+    typeof value['theme'] === 'string' &&
+    typeof value['createdAt'] === 'string'
+  ) {
+    const answerQuestions = isFourStrings(value['answerQuestions'])
+      ? value['answerQuestions']
+      : isFourStrings(value['cards'])
+        ? (value['cards'].map(card => `Was kannst du über ${card} erzählen?`) as [
+            string,
+            string,
+            string,
+            string,
+          ])
+        : null
+    const askQuestions = isFourStrings(value['askQuestions'])
+      ? value['askQuestions']
+      : isFourStrings(value['cards'])
+        ? (value['cards'].map(card => `Was denkst du über ${card}?`) as [
+            string,
+            string,
+            string,
+            string,
+          ])
+        : null
+
+    if (!answerQuestions || !askQuestions) return null
+    return {
+      id: value['id'],
+      testingPart: 1,
+      topicType: 'interview',
+      difficulty: 'A2',
+      theme: value['theme'],
+      answerQuestions,
+      askQuestions,
+      createdAt: value['createdAt'],
+    }
+  }
+
+  if (
+    value['testingPart'] === 2 &&
+    value['topicType'] === 'monologue' &&
+    typeof value['id'] === 'string' &&
+    typeof value['theme'] === 'string' &&
+    typeof value['createdAt'] === 'string' &&
+    isFourStrings(value['keywords'])
+  ) {
+    return {
+      id: value['id'],
+      testingPart: 2,
+      topicType: 'monologue',
+      difficulty: 'A2',
+      theme: value['theme'],
+      keywords: value['keywords'],
+      createdAt: value['createdAt'],
+    }
+  }
+
+  return null
+}
+
 export const useSpeakingExercises = () => {
   const initialize = () => {
     if (isInitialized.value || import.meta.server) return
@@ -19,9 +93,12 @@ export const useSpeakingExercises = () => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
-        const parsed = JSON.parse(stored) as SpeakingA2Topic[]
+        const parsed = JSON.parse(stored) as unknown
         const defaultIds = new Set(defaultSpeakingTopics.map(t => t.id))
-        const uniqueStored = parsed.filter(t => !defaultIds.has(t.id))
+        const uniqueStored = (Array.isArray(parsed) ? parsed : [])
+          .map(normaliseStoredTopic)
+          .filter((topic): topic is SpeakingA2Topic => topic !== null)
+          .filter(t => !defaultIds.has(t.id))
         topics.value = [...defaultSpeakingTopics, ...uniqueStored]
       } else {
         topics.value = [...defaultSpeakingTopics]

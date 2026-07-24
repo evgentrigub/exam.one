@@ -262,7 +262,8 @@
     "min": "Min.",
     "goal": "Ziel",
     "skillTested": "Geprüfte Fertigkeit",
-    "practice": "Üben"
+    "practice": "Üben",
+    "comingLater": "Kommt später"
   },
   "generation": {
     "statusQueued": "Wartend",
@@ -329,4 +330,4 @@
       "generateButton": "Musterantwort generieren"
     }
   }
-} 
+}

@@ -32,12 +32,16 @@
         <span v-for="n in 7" :key="n" class="wave-bar" style="height: 100%" />
       </div>
       <p class="text-sm font-medium mt-3 font-mono">{{ fmt(seconds) }} / {{ maxLabel }}</p>
-      <p v-if="simulated" class="text-[11px] text-base-content/40 mt-1">Microphone unavailable — simulated recording</p>
+      <p v-if="simulated" class="text-[11px] text-base-content/40 mt-1">
+        Microphone unavailable — simulated recording
+      </p>
     </template>
 
     <!-- Done -->
     <template v-else>
-      <div class="w-16 h-16 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">
+      <div
+        class="w-16 h-16 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center"
+      >
         <Check :size="28" />
       </div>
       <p class="text-sm font-medium mt-3">Recording complete · {{ fmt(seconds) }}</p>
@@ -65,7 +69,9 @@
 import { Mic, Square, Check, Play, RotateCcw } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<{ maxSeconds?: number }>(), { maxSeconds: 30 })
-const emit = defineEmits<{ done: [payload: { durationSec: number; audioUrl: string | null }] }>()
+const emit = defineEmits<{
+  done: [payload: { durationSec: number; audioUrl: string | null; blob: Blob | null }]
+}>()
 
 type Phase = 'ready' | 'recording' | 'done'
 const phase = ref<Phase>('ready')
@@ -78,6 +84,7 @@ let mediaRecorder: MediaRecorder | null = null
 let stream: MediaStream | null = null
 let chunks: BlobPart[] = []
 let audioEl: HTMLAudioElement | null = null
+let stopping = false
 
 function fmt(sec: number) {
   const m = Math.floor(sec / 60)
@@ -105,6 +112,8 @@ function stopTimer() {
 async function start() {
   seconds.value = 0
   chunks = []
+  stopping = false
+  if (audioUrl.value) URL.revokeObjectURL(audioUrl.value)
   audioUrl.value = null
   simulated.value = false
 
@@ -113,16 +122,26 @@ async function start() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       mediaRecorder = new MediaRecorder(stream)
-      mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data) }
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data)
+      }
       mediaRecorder.onstop = () => {
+        let blob: Blob | null = null
         if (chunks.length) {
-          const blob = new Blob(chunks, { type: mediaRecorder?.mimeType || 'audio/webm' })
+          blob = new Blob(chunks, { type: mediaRecorder?.mimeType || 'audio/webm' })
           audioUrl.value = URL.createObjectURL(blob)
         }
         releaseStream()
+        phase.value = 'done'
+        emit('done', {
+          durationSec: seconds.value,
+          audioUrl: audioUrl.value,
+          blob,
+        })
       }
       mediaRecorder.start()
     } catch {
+      releaseStream()
       simulated.value = true
     }
   } else {
@@ -134,19 +153,26 @@ async function start() {
 }
 
 function stop() {
+  if (stopping) return
+  stopping = true
   stopTimer()
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop()
   } else {
     releaseStream()
+    phase.value = 'done'
+    emit('done', {
+      durationSec: seconds.value,
+      audioUrl: null,
+      blob: null,
+    })
   }
-  phase.value = 'done'
-  emit('done', { durationSec: seconds.value, audioUrl: audioUrl.value })
 }
 
 function reset() {
   stopTimer()
   releaseStream()
+  stopping = false
   if (audioUrl.value) {
     URL.revokeObjectURL(audioUrl.value)
     audioUrl.value = null

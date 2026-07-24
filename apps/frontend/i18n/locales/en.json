@@ -262,7 +262,8 @@
     "min": "min",
     "goal": "Goal",
     "skillTested": "Skill tested",
-    "practice": "Practice"
+    "practice": "Practice",
+    "comingLater": "Coming later"
   },
   "generation": {
     "statusQueued": "Queued",
@@ -329,4 +330,4 @@
       "generateButton": "Generate Model Answer"
     }
   }
-} 
+}

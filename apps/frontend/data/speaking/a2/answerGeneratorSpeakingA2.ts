@@ -1,17 +1,16 @@
 const dataAnswerRuleSpeakingA2Part1 = `
 Ein Gespräch zur Kontaktaufnahme (Sprechen, Teil 1).
-In Sprechen, Teil 1 sollen Sie sehr kurze Kontaktgespräche führen. Sie bekommen 4 Karten mit Wörtern zu einem Thema und müssen Fragen stellen und auf Fragen antworten.
+In Sprechen, Teil 1 sollen Sie sehr kurze Kontaktgespräche führen. Für diese selbstständige Übung bekommen Sie 4 konkrete Fragen, die Sie beantworten, und 4 konkrete Fragen, die Sie selbst stellen.
 
 ВАЖНЫЕ ПРАВИЛА ДЛЯ ГЕНЕРАЦИИ (ИДЕАЛЬНЫЙ ОТВЕТ):
-1. Беседа представляет собой диалог между Партнером А (задает вопросы) и Партнером Б (отвечает). Используйте неформальное обращение на "ты" (Du-Form).
-2. Постановка вопросов: К каждому из 4 предложенных слов сформулируйте понятный, естественный вопрос уровня A2 (вопрос с вопросительным словом или вопрос типа да/нет).
-3. Развернутые ответы: Ответы НИКОГДА не должны состоять только из одного слова! Партнер Б должен отвечать полными предложениями и добавлять детали (по 1-2 предложения на каждый ответ).
-4. Естественные реакции: Партнер А должен коротко и естественно реагировать на каждый ответ Партнера Б перед тем, как задать следующий вопрос (например, с помощью слов-реакций "Ach so", "Aha", "Interessant", "Toll", "Wirklich?").
-5. Диалог должен звучать связно (плавно) и аутентично.
-`;
+1. Ответьте на все 4 вопроса из answerQuestions полными предложениями и добавьте по одной уместной детали.
+2. Затем произнесите все 4 вопроса из askQuestions грамматически правильно и естественно, используя Du-Form.
+3. Не добавляйте ответы вымышленного партнёра: пример должен соответствовать двум самостоятельным записям ученика.
+4. Речь должна звучать естественно для уровня A2, а не как письменное сочинение.
+`
 
-export const generateModelAnswerSpeakingA2Teil1 = (topicTask: string, topicId: string) => { 
-    return `
+export const generateModelAnswerSpeakingA2Teil1 = (topicTask: string, topicId: string) => {
+  return `
   Ты — опытный преподаватель Goethe-Institut (уровень A2). 
   Ранее ты сгенерировал следующее задание для устной части (Sprechen Teil 1):
   ${topicTask}
@@ -26,13 +25,13 @@ export const generateModelAnswerSpeakingA2Teil1 = (topicTask: string, topicId: s
   \`\`\`json
   {
     "topicId": "${topicId}",
-    "content": "Скрипт диалога. Например:\nPartner A: Hallo! Unsere Thema ist 'Wochenende'. Meine erste Karte ist 'Sport'. Machst du am Wochenende Sport?\nPartner B: Ja, ich spiele am Samstag oft Fußball mit meinen Freunden. Das macht viel Spaß.\nPartner A: Ach so, toll! Meine zweite Karte ist...",
+    "content": "Antworten:\n1. Ich kaufe meistens im Supermarkt ein, weil er nah bei mir ist. ...\n\nFragen:\n1. Gehst du gern in den Supermarkt?\n2. ...",
     "wordCount": 80,
     "highlights": {
       "greeting": "приветствие в начале",
-      "mainPoints": ["Укажи здесь, почему этот ответ идеален (например: 'Использованы полные предложения', 'Есть реакции на ответы')"],
-      "closing": "завершение диалога (например: 'Danke für das Gespräch')",
-      "keyPhrases": ["Ключевые разговорные фразы из текста, например: 'Ach so', 'Das finde ich auch'"]
+      "mainPoints": ["Укажи здесь, почему этот ответ идеален (например: 'Даны полные ответы на все вопросы', 'Все вопросы сформулированы правильно')"],
+      "closing": "короткое завершение упражнения",
+      "keyPhrases": ["Ключевые разговорные фразы из ответов"]
     }
   }
   \`\`\`
@@ -40,7 +39,7 @@ export const generateModelAnswerSpeakingA2Teil1 = (topicTask: string, topicId: s
   wordCount - количество слов в content (целое число, не строка).
   Важное: ответы должны звучать как реальная живая речь, а не как текст из учебника. Выводи ТОЛЬКО JSON.
   `
-  };
+}
 
 const dataAnswerRuleSpeakingA2Part2 = `
 ВАЖНЫЕ ПРАВИЛА ДЛЯ ГЕНЕРАЦИИ (ИДЕАЛЬНЫЙ ОТВЕТ):
@@ -48,9 +47,9 @@ const dataAnswerRuleSpeakingA2Part2 = `
 2. Формат монолога: Кандидат должен говорить полными предложениями от первого лица ("Ich..."). Обязательно использование простых коннекторов (und, oder, aber, danach, deshalb), чтобы речь звучала связно (плавно), а не как список изолированных слов.
 3. Естественность: Речь должна звучать аутентично для уровня A2, допускаются небольшие разговорные вводные слова (Also, Naja).
 4. Вопросы экзаменатора: Экзаменатор обращается к Кандидату на "Вы" (Sie-Form).
-`;
+`
 
-export const generateModelAnswerSpeakingA2Teil2 = (topicTask: string, topicId: string) => { 
+export const generateModelAnswerSpeakingA2Teil2 = (topicTask: string, topicId: string) => {
   return `
 Ты — опытный преподаватель Goethe-Institut (уровень A2). 
 Ранее ты сгенерировал следующее задание для устной части (Sprechen Teil 2 - Монолог):
@@ -76,5 +75,5 @@ ${dataAnswerRuleSpeakingA2Part2}
   }
 }
 \`\`\`
-` 
-};
+`
+}

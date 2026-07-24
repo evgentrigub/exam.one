@@ -130,7 +130,7 @@
             </span>
             <h3 class="font-display text-3xl font-bold mt-3 leading-tight">Record, transcribe, and get scored like the real thing</h3>
             <p class="text-base-content/65 mt-3 leading-relaxed max-w-md">
-              Answer prompt cards out loud. Exam.one transcribes you live and rates fluency, range and accuracy — so you build confidence before you ever face an examiner.
+              Answer practice questions out loud. Exam.one can transcribe each take and review the editable transcript — so you build confidence before you ever face an examiner.
             </p>
             <ul class="mt-5 space-y-2.5 text-sm">
               <li v-for="f in speakingFeatures" :key="f" class="flex gap-2.5">
