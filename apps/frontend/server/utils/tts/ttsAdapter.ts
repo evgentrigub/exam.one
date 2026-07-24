@@ -1,6 +1,6 @@
 /**
- * Thin OpenAI-compatible TTS client for Kokoro
- * (Martin ONNX + multi-voice PyTorch: victoria / bernd / eva).
+ * Thin OpenAI-compatible TTS client for the four-voice PyTorch Kokoro service
+ * (martin / bernd / victoria / eva on :8881).
  * Used by listening audio generation — not required at app runtime for seed playback.
  */
 
@@ -9,24 +9,20 @@ import { getTtsConcurrency, mapPool } from '~/server/utils/tts/mapPool'
 import {
   dialogueAudioPlanKey,
   fallbackVoiceFor,
-  MALE_VOICE_POOL,
   planDialogueVoices,
-  type DialogueVoiceId,
 } from '~/utils/listening/dialogueTranscript'
 
 export interface TtsSynthesizeOptions {
   text: string
   voice?: string
   speed?: number
-  /** Optional language hint (Kokoro German accepts `de`). */
+  /** Optional language hint (German service expects `de`). */
   lang?: string
 }
 
 export interface TtsConfig {
-  /** Martin ONNX (primary male / monologues). */
+  /** Four-voice PyTorch service. */
   baseUrl: string
-  /** Multi-voice PyTorch service (victoria, bernd, eva). */
-  multiBaseUrl: string
   voice: string
   speed: number
   lang: string
@@ -36,39 +32,19 @@ export interface TtsConfig {
   concurrency: number
 }
 
-const ONNX_VOICES = new Set<string>(['martin'])
-const MULTI_VOICES = new Set<string>(['victoria', 'bernd', 'eva'])
-
 export function getTtsConfigFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): TtsConfig {
   const baseUrl = (env['TTS_BASE_URL'] ?? 'http://127.0.0.1:8881').replace(/\/$/, '')
-  const multiBaseUrl = (
-    env['TTS_MULTI_BASE_URL']
-    ?? env['TTS_FEMALE_BASE_URL']
-    ?? env['TTS_VICTORIA_BASE_URL']
-    ?? 'http://127.0.0.1:8882'
-  ).replace(/\/$/, '')
 
   return {
     baseUrl,
-    multiBaseUrl,
     voice: env['TTS_VOICE'] ?? 'martin',
     speed: Number(env['TTS_SPEED'] ?? '1.0') || 1.0,
     lang: env['TTS_LANG'] ?? 'de',
     turnPauseMs: Number(env['TTS_TURN_PAUSE_MS'] ?? '350') || 350,
     concurrency: getTtsConcurrency(env),
   }
-}
-
-function resolveBaseUrlForVoice(voice: string, config: TtsConfig): string {
-  if (ONNX_VOICES.has(voice) || voice === 'martin') return config.baseUrl
-  if (MULTI_VOICES.has(voice)) return config.multiBaseUrl
-  // Unknown → route by gender pool membership default
-  if (MALE_VOICE_POOL.includes(voice as DialogueVoiceId) && voice === 'bernd') {
-    return config.multiBaseUrl
-  }
-  return config.baseUrl
 }
 
 /**
@@ -84,8 +60,7 @@ export async function synthesizeSpeech(
   }
 
   const voice = options.voice ?? config.voice
-  const baseUrl = resolveBaseUrlForVoice(voice, config)
-  const url = `${baseUrl}/v1/audio/speech`
+  const url = `${config.baseUrl}/v1/audio/speech`
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -101,17 +76,6 @@ export async function synthesizeSpeech(
 
   if (!response.ok) {
     const detail = await response.text().catch(() => '')
-    // Multi-voice offline → fall back to Martin ONNX once.
-    if (
-      voice !== 'martin'
-      && baseUrl === config.multiBaseUrl
-      && (response.status === 400 || response.status === 404 || response.status >= 500)
-    ) {
-      return synthesizeSpeech(
-        { ...options, voice: 'martin' },
-        config,
-      )
-    }
     throw new Error(
       `TTS request failed (${response.status} ${response.statusText})${detail ? `: ${detail}` : ''}`,
     )
@@ -179,11 +143,7 @@ async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
 }
 
 async function listAvailableVoices(config: TtsConfig): Promise<Set<string>> {
-  const [onnx, multi] = await Promise.all([
-    fetchVoicesFrom(config.baseUrl),
-    fetchVoicesFrom(config.multiBaseUrl),
-  ])
-  return new Set([...onnx, ...multi])
+  return fetchVoicesFrom(config.baseUrl)
 }
 
 export async function checkTtsHealth(

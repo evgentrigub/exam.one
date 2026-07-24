@@ -3,7 +3,7 @@
  * Pre-generate Kokoro WAV files for bundled A2 listening seeds.
  *
  * Prerequisites:
- *   1. ./scripts/tts/setup-kokoro.sh
+ *   1. bash scripts/tts/victoria/download-models.sh  (or ./scripts/tts/setup-kokoro.sh)
  *   2. pnpm tts:up
  *
  * Usage (from repo root):
@@ -11,9 +11,7 @@
  *   FORCE=1 pnpm generate:listening-audio   # after voice-roster / pipeline changes
  *
  * Env:
- *   TTS_BASE_URL           (default http://127.0.0.1:8881) — Martin ONNX
- *   TTS_MULTI_BASE_URL     (default http://127.0.0.1:8882) — victoria / bernd / eva
- *   TTS_FEMALE_BASE_URL    alias for TTS_MULTI_BASE_URL
+ *   TTS_BASE_URL           (default http://127.0.0.1:8881) — four-voice PyTorch
  *   TTS_CONCURRENCY        (default 3) — parallel segment synthesis
  *   TTS_SPEED              (default 1.0)
  *   TTS_LANG               (default de)
@@ -120,15 +118,14 @@ async function main() {
   const concurrency = getTtsConcurrency()
   const runStartedAt = Date.now()
 
-  console.log(`[generate-listening-audio] TTS Martin: ${config.baseUrl}`)
-  console.log(`[generate-listening-audio] TTS multi:  ${config.multiBaseUrl}`)
+  console.log(`[generate-listening-audio] TTS: ${config.baseUrl}`)
   console.log(`[generate-listening-audio] concurrency: ${concurrency}`)
 
   const healthy = await checkTtsHealth(config)
   if (!healthy) {
     console.error(
       '[generate-listening-audio] Kokoro TTS is not reachable.\n' +
-        '  1. Run: ./scripts/tts/setup-kokoro.sh\n' +
+        '  1. Run: bash scripts/tts/victoria/download-models.sh\n' +
         '  2. Run: pnpm tts:up\n' +
         '  3. Re-run: pnpm generate:listening-audio',
     )

@@ -2073,7 +2073,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_readingmodal",
-      "community": 0,
+      "community": 66,
       "norm_label": "readingmodal.vue"
     },
     {
@@ -2083,7 +2083,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "reading_readingmodal_gettexttypelabel",
-      "community": 0,
+      "community": 66,
       "norm_label": "gettexttypelabel()"
     },
     {
@@ -2093,7 +2093,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "reading_readingmodal_gettexttypeicon",
-      "community": 0,
+      "community": 66,
       "norm_label": "gettexttypeicon()"
     },
     {
@@ -2103,7 +2103,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_textcard",
-      "community": 14,
+      "community": 50,
       "norm_label": "textcard.vue"
     },
     {
@@ -2113,7 +2113,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "reading_textcard_isclient",
-      "community": 14,
+      "community": 50,
       "norm_label": "isclient"
     },
     {
@@ -2123,7 +2123,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "reading_textcard_textcompleted",
-      "community": 14,
+      "community": 50,
       "norm_label": "textcompleted"
     },
     {
@@ -2133,7 +2133,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "reading_textcard_bestscore",
-      "community": 14,
+      "community": 50,
       "norm_label": "bestscore"
     },
     {
@@ -2143,7 +2143,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "reading_textcard_progress",
-      "community": 14,
+      "community": 50,
       "norm_label": "progress"
     },
     {
@@ -2153,7 +2153,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "reading_textcard_scorepercentage",
-      "community": 14,
+      "community": 50,
       "norm_label": "scorepercentage"
     },
     {
@@ -2163,7 +2163,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "reading_textcard_displaytopics",
-      "community": 14,
+      "community": 50,
       "norm_label": "displaytopics"
     },
     {
@@ -2173,7 +2173,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "reading_textcard_gettexttypelabel",
-      "community": 14,
+      "community": 50,
       "norm_label": "gettexttypelabel()"
     },
     {
@@ -2183,7 +2183,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "reading_textcard_gettexttypeicon",
-      "community": 14,
+      "community": 50,
       "norm_label": "gettexttypeicon()"
     },
     {
@@ -3033,7 +3033,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "composables_uselisteningexercises_uselisteningexercises",
-      "community": 692,
+      "community": 50,
       "norm_label": "uselisteningexercises()"
     },
     {
@@ -3303,7 +3303,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "composables_useprogress_useprogress",
-      "community": 243,
+      "community": 50,
       "norm_label": "useprogress()"
     },
     {
@@ -3323,7 +3323,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "composables_usereadinggeneration_readinggenerationoptions",
-      "community": 0,
+      "community": 66,
       "norm_label": "readinggenerationoptions"
     },
     {
@@ -3343,7 +3343,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "composables_usereadingtexts",
-      "community": 692,
+      "community": 34,
       "norm_label": "usereadingtexts.ts"
     },
     {
@@ -3353,7 +3353,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "composables_usereadingtexts_texts",
-      "community": 692,
+      "community": 34,
       "norm_label": "texts"
     },
     {
@@ -3363,7 +3363,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "composables_usereadingtexts_isinitialized",
-      "community": 692,
+      "community": 34,
       "norm_label": "isinitialized"
     },
     {
@@ -3373,7 +3373,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "composables_usereadingtexts_usereadingtexts",
-      "community": 692,
+      "community": 50,
       "norm_label": "usereadingtexts()"
     },
     {
@@ -3383,7 +3383,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "composables_useskillstats",
-      "community": 692,
+      "community": 50,
       "norm_label": "useskillstats.ts"
     },
     {
@@ -3413,7 +3413,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "composables_useskillstats_useskillstats",
-      "community": 692,
+      "community": 50,
       "norm_label": "useskillstats()"
     },
     {
@@ -3423,7 +3423,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "composables_usespeakingexercises",
-      "community": 140,
+      "community": 77,
       "norm_label": "usespeakingexercises.ts"
     },
     {
@@ -3433,7 +3433,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "composables_usespeakingexercises_topics",
-      "community": 140,
+      "community": 77,
       "norm_label": "topics"
     },
     {
@@ -3443,7 +3443,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "composables_usespeakingexercises_isinitialized",
-      "community": 140,
+      "community": 77,
       "norm_label": "isinitialized"
     },
     {
@@ -3453,7 +3453,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "composables_usespeakingexercises_usespeakingexercises",
-      "community": 140,
+      "community": 50,
       "norm_label": "usespeakingexercises()"
     },
     {
@@ -3473,7 +3473,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "composables_usespeakinggeneration_speakinggenerationoptions",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakinggenerationoptions"
     },
     {
@@ -3773,7 +3773,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "composables_usewritingtopics_usewritingtopics",
-      "community": 692,
+      "community": 50,
       "norm_label": "usewritingtopics()"
     },
     {
@@ -3983,7 +3983,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2",
-      "community": 0,
+      "community": 81,
       "norm_label": "exercisegeneratorreadinga2.ts"
     },
     {
@@ -3993,7 +3993,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_readingoutputprelude",
-      "community": 0,
+      "community": 81,
       "norm_label": "readingoutputprelude()"
     },
     {
@@ -4003,7 +4003,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_generatereadinga2teil1",
-      "community": 0,
+      "community": 81,
       "norm_label": "generatereadinga2teil1()"
     },
     {
@@ -4013,7 +4013,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_generatereadinga2teil2",
-      "community": 0,
+      "community": 81,
       "norm_label": "generatereadinga2teil2()"
     },
     {
@@ -4023,7 +4023,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_generatereadinga2teil3",
-      "community": 0,
+      "community": 81,
       "norm_label": "generatereadinga2teil3()"
     },
     {
@@ -4033,7 +4033,7 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_generatereadinga2teil4",
-      "community": 0,
+      "community": 81,
       "norm_label": "generatereadinga2teil4()"
     },
     {
@@ -4043,7 +4043,7 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_readinga2parts",
-      "community": 0,
+      "community": 81,
       "norm_label": "readinga2parts()"
     },
     {
@@ -4053,7 +4053,7 @@
       "source_location": "L268",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadinga2_dataa2readingexamples",
-      "community": 0,
+      "community": 81,
       "norm_label": "dataa2readingexamples"
     },
     {
@@ -4093,7 +4093,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_exercisereading",
-      "community": 0,
+      "community": 34,
       "norm_label": "exercisereading.ts"
     },
     {
@@ -4103,7 +4103,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "reading_exercisereading_defaultreadingtopics",
-      "community": 0,
+      "community": 34,
       "norm_label": "defaultreadingtopics"
     },
     {
@@ -4143,7 +4143,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "a2_exercisegeneratorspeakinga2",
-      "community": 140,
+      "community": 77,
       "norm_label": "exercisegeneratorspeakinga2.ts"
     },
     {
@@ -4153,7 +4153,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "a2_exercisegeneratorspeakinga2_generatespeakinga2teil1",
-      "community": 140,
+      "community": 77,
       "norm_label": "generatespeakinga2teil1()"
     },
     {
@@ -4163,7 +4163,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "a2_exercisegeneratorspeakinga2_generatespeakinga2teil2",
-      "community": 140,
+      "community": 77,
       "norm_label": "generatespeakinga2teil2()"
     },
     {
@@ -4173,7 +4173,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "a2_exercisegeneratorspeakinga2_speakinga2parts",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakinga2parts()"
     },
     {
@@ -4203,7 +4203,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "speaking_exercisespeaking",
-      "community": 140,
+      "community": 77,
       "norm_label": "exercisespeaking.ts"
     },
     {
@@ -4213,7 +4213,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "speaking_exercisespeaking_defaultspeakingtopics",
-      "community": 140,
+      "community": 77,
       "norm_label": "defaultspeakingtopics"
     },
     {
@@ -11883,7 +11883,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "api_generate_listening_post_extractarrayfromresponse",
-      "community": 140,
+      "community": 136,
       "norm_label": "extractarrayfromresponse()"
     },
     {
@@ -11903,7 +11903,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "api_generate_listening_post_generateforpart",
-      "community": 140,
+      "community": 136,
       "norm_label": "generateforpart()"
     },
     {
@@ -11923,7 +11923,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_modelanswerrequestbody",
-      "community": 140,
+      "community": 20,
       "norm_label": "modelanswerrequestbody"
     },
     {
@@ -12003,7 +12003,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_generate_reading_post",
-      "community": 0,
+      "community": 78,
       "norm_label": "generate-reading.post.ts"
     },
     {
@@ -12013,7 +12013,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "api_generate_reading_post_isrecord",
-      "community": 0,
+      "community": 78,
       "norm_label": "isrecord()"
     },
     {
@@ -12023,7 +12023,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "api_generate_reading_post_isdifficulty",
-      "community": 0,
+      "community": 78,
       "norm_label": "isdifficulty()"
     },
     {
@@ -12033,7 +12033,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "api_generate_reading_post_isreadinga2part",
-      "community": 0,
+      "community": 78,
       "norm_label": "isreadinga2part()"
     },
     {
@@ -12043,7 +12043,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "api_generate_reading_post_isreadingtexttype",
-      "community": 0,
+      "community": 78,
       "norm_label": "isreadingtexttype()"
     },
     {
@@ -12053,7 +12053,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "api_generate_reading_post_isreadingquestiontype",
-      "community": 0,
+      "community": 78,
       "norm_label": "isreadingquestiontype()"
     },
     {
@@ -12063,7 +12063,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "api_generate_reading_post_isanswerindex",
-      "community": 0,
+      "community": 78,
       "norm_label": "isanswerindex()"
     },
     {
@@ -12073,7 +12073,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "api_generate_reading_post_isgeneratedreadingquestion",
-      "community": 0,
+      "community": 78,
       "norm_label": "isgeneratedreadingquestion()"
     },
     {
@@ -12083,7 +12083,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "api_generate_reading_post_isgeneratedreadingexercise",
-      "community": 0,
+      "community": 78,
       "norm_label": "isgeneratedreadingexercise()"
     },
     {
@@ -12093,7 +12093,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "api_generate_reading_post_parsegeneratedreadingexercises",
-      "community": 0,
+      "community": 78,
       "norm_label": "parsegeneratedreadingexercises()"
     },
     {
@@ -12103,7 +12103,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "api_generate_reading_post_generatereadingrequestbody",
-      "community": 0,
+      "community": 78,
       "norm_label": "generatereadingrequestbody"
     },
     {
@@ -12113,7 +12113,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "api_generate_reading_post_generatereadingresponse",
-      "community": 0,
+      "community": 66,
       "norm_label": "generatereadingresponse"
     },
     {
@@ -12123,7 +12123,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "api_generate_reading_post_extracttextsfromresponse",
-      "community": 0,
+      "community": 78,
       "norm_label": "extracttextsfromresponse()"
     },
     {
@@ -12133,7 +12133,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "api_generate_reading_post_normalisetext",
-      "community": 0,
+      "community": 78,
       "norm_label": "normalisetext()"
     },
     {
@@ -12143,7 +12143,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "api_generate_reading_post_generateforprompt",
-      "community": 0,
+      "community": 78,
       "norm_label": "generateforprompt()"
     },
     {
@@ -12163,7 +12163,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "api_generate_speaking_post_speakingpromptpart",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakingpromptpart"
     },
     {
@@ -12183,7 +12183,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "api_generate_speaking_post_generatespeakingresponse",
-      "community": 140,
+      "community": 77,
       "norm_label": "generatespeakingresponse"
     },
     {
@@ -12363,7 +12363,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_review_post",
-      "community": 140,
+      "community": 79,
       "norm_label": "review.post.ts"
     },
     {
@@ -12393,7 +12393,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "api_review_post_isrecord",
-      "community": 140,
+      "community": 79,
       "norm_label": "isrecord()"
     },
     {
@@ -12403,7 +12403,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "api_review_post_isvalidreviewrequest",
-      "community": 140,
+      "community": 79,
       "norm_label": "isvalidreviewrequest()"
     },
     {
@@ -12413,7 +12413,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "api_review_post_iscriteriaitem",
-      "community": 140,
+      "community": 79,
       "norm_label": "iscriteriaitem()"
     },
     {
@@ -12423,7 +12423,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "api_review_post_isstringarray",
-      "community": 140,
+      "community": 79,
       "norm_label": "isstringarray()"
     },
     {
@@ -12433,7 +12433,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "api_review_post_isexamplearray",
-      "community": 140,
+      "community": 79,
       "norm_label": "isexamplearray()"
     },
     {
@@ -12443,7 +12443,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "api_review_post_hascommonreviewshape",
-      "community": 140,
+      "community": 79,
       "norm_label": "hascommonreviewshape()"
     },
     {
@@ -12453,7 +12453,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "api_review_post_isvalida2review",
-      "community": 140,
+      "community": 79,
       "norm_label": "isvalida2review()"
     },
     {
@@ -12463,7 +12463,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "api_review_post_isvalidc1review",
-      "community": 140,
+      "community": 79,
       "norm_label": "isvalidc1review()"
     },
     {
@@ -12473,7 +12473,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "api_review_post_parsereviewcandidate",
-      "community": 140,
+      "community": 79,
       "norm_label": "parsereviewcandidate()"
     },
     {
@@ -12483,7 +12483,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "api_review_post_tryextractjsonobject",
-      "community": 140,
+      "community": 79,
       "norm_label": "tryextractjsonobject()"
     },
     {
@@ -12880,7 +12880,7 @@
       "label": "TtsSynthesizeOptions",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L17",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "tts_ttsadapter_ttssynthesizeoptions",
       "community": 619,
@@ -12890,57 +12890,27 @@
       "label": "TtsConfig",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L25",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "tts_ttsadapter_ttsconfig",
       "community": 619,
       "norm_label": "ttsconfig"
     },
     {
-      "label": "ONNX_VOICES",
-      "file_type": "code",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "tts_ttsadapter_onnx_voices",
-      "community": 619,
-      "norm_label": "onnx_voices"
-    },
-    {
-      "label": "MULTI_VOICES",
-      "file_type": "code",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "tts_ttsadapter_multi_voices",
-      "community": 619,
-      "norm_label": "multi_voices"
-    },
-    {
       "label": "getTtsConfigFromEnv()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L42",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "tts_ttsadapter_getttsconfigfromenv",
       "community": 619,
       "norm_label": "getttsconfigfromenv()"
     },
     {
-      "label": "resolveBaseUrlForVoice()",
-      "file_type": "code",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L64",
-      "_origin": "ast",
-      "id": "tts_ttsadapter_resolvebaseurlforvoice",
-      "community": 619,
-      "norm_label": "resolvebaseurlforvoice()"
-    },
-    {
       "label": "synthesizeSpeech()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L77",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "tts_ttsadapter_synthesizespeech",
       "community": 619,
@@ -12950,7 +12920,7 @@
       "label": "synthesizeListeningTranscript()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L129",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "tts_ttsadapter_synthesizelisteningtranscript",
       "community": 619,
@@ -12960,7 +12930,7 @@
       "label": "listeningTranscriptHashKey()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L148",
+      "source_location": "L112",
       "_origin": "ast",
       "id": "tts_ttsadapter_listeningtranscripthashkey",
       "community": 619,
@@ -12970,7 +12940,7 @@
       "label": "voicesCache",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L152",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "tts_ttsadapter_voicescache",
       "community": 619,
@@ -12980,7 +12950,7 @@
       "label": "fetchVoicesFrom()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L155",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "tts_ttsadapter_fetchvoicesfrom",
       "community": 619,
@@ -12990,7 +12960,7 @@
       "label": "listAvailableVoices()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L181",
+      "source_location": "L145",
       "_origin": "ast",
       "id": "tts_ttsadapter_listavailablevoices",
       "community": 619,
@@ -13000,7 +12970,7 @@
       "label": "checkTtsHealth()",
       "file_type": "code",
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L189",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "tts_ttsadapter_checkttshealth",
       "community": 619,
@@ -13013,7 +12983,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "stores_settings",
-      "community": 692,
+      "community": 50,
       "norm_label": "settings.ts"
     },
     {
@@ -13023,7 +12993,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "stores_settings_usesettingsstore",
-      "community": 692,
+      "community": 50,
       "norm_label": "usesettingsstore"
     },
     {
@@ -13293,7 +13263,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "exercises_listening_listeningquestiona2teil2",
-      "community": 29,
+      "community": 136,
       "norm_label": "listeningquestiona2teil2"
     },
     {
@@ -13373,7 +13343,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "exercises_reading_readinga2part",
-      "community": 0,
+      "community": 81,
       "norm_label": "readinga2part"
     },
     {
@@ -13383,7 +13353,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "exercises_reading_readingtexttype",
-      "community": 0,
+      "community": 78,
       "norm_label": "readingtexttype"
     },
     {
@@ -13393,7 +13363,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "exercises_reading_readingquestiontype",
-      "community": 0,
+      "community": 78,
       "norm_label": "readingquestiontype"
     },
     {
@@ -13453,7 +13423,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "exercises_reading_readingpromptpart",
-      "community": 0,
+      "community": 78,
       "norm_label": "readingpromptpart"
     },
     {
@@ -13503,7 +13473,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "exercises_reading_readingexercise",
-      "community": 0,
+      "community": 66,
       "norm_label": "readingexercise"
     },
     {
@@ -13603,7 +13573,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "exercises_reading_readinga2exercise",
-      "community": 0,
+      "community": 34,
       "norm_label": "readinga2exercise"
     },
     {
@@ -13613,7 +13583,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "exercises_speaking",
-      "community": 140,
+      "community": 77,
       "norm_label": "speaking.ts"
     },
     {
@@ -13623,7 +13593,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "exercises_speaking_speakinga2part",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakinga2part"
     },
     {
@@ -13633,7 +13603,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "exercises_speaking_speakingdifficulty",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakingdifficulty"
     },
     {
@@ -13643,7 +13613,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "exercises_speaking_speakingfourcards",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakingfourcards"
     },
     {
@@ -13653,7 +13623,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "exercises_speaking_speakingtopicbase",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakingtopicbase"
     },
     {
@@ -13663,7 +13633,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "exercises_speaking_speakingtopica2teil1",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakingtopica2teil1"
     },
     {
@@ -13673,7 +13643,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "exercises_speaking_speakingtopica2teil2",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakingtopica2teil2"
     },
     {
@@ -13683,7 +13653,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "exercises_speaking_speakinga2topic",
-      "community": 140,
+      "community": 77,
       "norm_label": "speakinga2topic"
     },
     {
@@ -13763,7 +13733,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_labels",
-      "community": 35,
+      "community": 50,
       "norm_label": "labels.ts"
     },
     {
@@ -13783,7 +13753,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "utils_labels_exercisestatus",
-      "community": 35,
+      "community": 50,
       "norm_label": "exercisestatus"
     },
     {
@@ -13793,7 +13763,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "utils_labels_skillmeta",
-      "community": 35,
+      "community": 50,
       "norm_label": "skillmeta"
     },
     {
@@ -13803,7 +13773,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "utils_labels_skills",
-      "community": 35,
+      "community": 50,
       "norm_label": "skills"
     },
     {
@@ -13813,7 +13783,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "utils_labels_skill_ids",
-      "community": 35,
+      "community": 50,
       "norm_label": "skill_ids"
     },
     {
@@ -13823,7 +13793,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "utils_labels_getskillmeta",
-      "community": 35,
+      "community": 50,
       "norm_label": "getskillmeta()"
     },
     {
@@ -13833,7 +13803,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "utils_labels_translatefn",
-      "community": 35,
+      "community": 50,
       "norm_label": "translatefn"
     },
     {
@@ -13843,7 +13813,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "utils_labels_titlecase",
-      "community": 35,
+      "community": 50,
       "norm_label": "titlecase()"
     },
     {
@@ -13853,7 +13823,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "utils_labels_getskilllabel",
-      "community": 35,
+      "community": 50,
       "norm_label": "getskilllabel()"
     },
     {
@@ -13863,7 +13833,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "utils_labels_gettypelabel",
-      "community": 35,
+      "community": 50,
       "norm_label": "gettypelabel()"
     },
     {
@@ -13873,7 +13843,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "utils_labels_getstatuslabel",
-      "community": 35,
+      "community": 50,
       "norm_label": "getstatuslabel()"
     },
     {
@@ -13883,7 +13853,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "utils_labels_getstatusclass",
-      "community": 35,
+      "community": 50,
       "norm_label": "getstatusclass()"
     },
     {
@@ -13893,7 +13863,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "utils_labels_getscoretier",
-      "community": 35,
+      "community": 50,
       "norm_label": "getscoretier()"
     },
     {
@@ -13903,7 +13873,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "utils_labels_getscoretextclass",
-      "community": 35,
+      "community": 50,
       "norm_label": "getscoretextclass()"
     },
     {
@@ -14603,7 +14573,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_uuid",
-      "community": 140,
+      "community": 697,
       "norm_label": "uuid.ts"
     },
     {
@@ -14613,7 +14583,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "utils_uuid_generateuuid",
-      "community": 140,
+      "community": 697,
       "norm_label": "generateuuid()"
     },
     {
@@ -14623,7 +14593,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "utils_uuid_generatetopicid",
-      "community": 140,
+      "community": 697,
       "norm_label": "generatetopicid()"
     },
     {
@@ -14633,7 +14603,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "utils_uuid_generatereadingid",
-      "community": 0,
+      "community": 78,
       "norm_label": "generatereadingid()"
     },
     {
@@ -17350,7 +17320,7 @@
       "label": "__dirname",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L33",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_dirname",
       "community": 619,
@@ -17360,7 +17330,7 @@
       "label": "repoRoot",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L34",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_reporoot",
       "community": 619,
@@ -17370,7 +17340,7 @@
       "label": "frontendRoot",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L35",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_frontendroot",
       "community": 619,
@@ -17380,7 +17350,7 @@
       "label": "audioRoot",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L36",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_audioroot",
       "community": 619,
@@ -17390,7 +17360,7 @@
       "label": "jiti",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L38",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_jiti",
       "community": 619,
@@ -17400,7 +17370,7 @@
       "label": "hashTranscript()",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L66",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_hashtranscript",
       "community": 619,
@@ -17410,7 +17380,7 @@
       "label": "collectSegments()",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L70",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_collectsegments",
       "community": 619,
@@ -17420,17 +17390,27 @@
       "label": "fileExists()",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L99",
+      "source_location": "L97",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_fileexists",
       "community": 619,
       "norm_label": "fileexists()"
     },
     {
+      "label": "formatDuration()",
+      "file_type": "code",
+      "source_file": "scripts/generate-listening-audio.mjs",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "scripts_generate_listening_audio_formatduration",
+      "community": 619,
+      "norm_label": "formatduration()"
+    },
+    {
       "label": "main()",
       "file_type": "code",
       "source_file": "scripts/generate-listening-audio.mjs",
-      "source_location": "L108",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "scripts_generate_listening_audio_main",
       "community": 619,
@@ -17978,7 +17958,7 @@
       "label": "download_if_missing()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/download-models.sh",
-      "source_location": "L14",
+      "source_location": "L15",
       "metadata": {
         "language": "bash",
         "kind": "bash_function"
@@ -18002,7 +17982,7 @@
       "label": "wav_bytes()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L44",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "victoria_main_wav_bytes",
       "community": 696,
@@ -18012,57 +17992,97 @@
       "label": "ndarray",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L44",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "scripts_tts_victoria_main_py_ndarray",
       "community": 696,
       "norm_label": "ndarray"
     },
     {
+      "label": "zero_crossing_rate()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "victoria_main_zero_crossing_rate",
+      "community": 696,
+      "norm_label": "zero_crossing_rate()"
+    },
+    {
       "label": "split_into_sentences()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L57",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "victoria_main_split_into_sentences",
       "community": 696,
       "norm_label": "split_into_sentences()"
     },
     {
-      "label": "normalize_simple()",
+      "label": "normalize_text()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L69",
+      "source_location": "L82",
       "_origin": "ast",
-      "id": "victoria_main_normalize_simple",
+      "id": "victoria_main_normalize_text",
       "community": 696,
-      "norm_label": "normalize_simple()"
+      "norm_label": "normalize_text()"
     },
     {
-      "label": "load_kmodel()",
+      "label": "patch_espeak_wrapper()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L76",
+      "source_location": "L97",
       "_origin": "ast",
-      "id": "victoria_main_load_kmodel",
+      "id": "victoria_main_patch_espeak_wrapper",
       "community": 696,
-      "norm_label": "load_kmodel()"
+      "norm_label": "patch_espeak_wrapper()"
+    },
+    {
+      "label": "remap_weight_norm_keys()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L125",
+      "_origin": "ast",
+      "id": "victoria_main_remap_weight_norm_keys",
+      "community": 696,
+      "norm_label": "remap_weight_norm_keys()"
+    },
+    {
+      "label": "prepare_kokoro_checkpoint()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L140",
+      "_origin": "ast",
+      "id": "victoria_main_prepare_kokoro_checkpoint",
+      "community": 696,
+      "norm_label": "prepare_kokoro_checkpoint()"
     },
     {
       "label": "Path",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L76",
+      "source_location": "L140",
       "_origin": "ast",
       "id": "scripts_tts_victoria_main_py_path",
       "community": 696,
       "norm_label": "path"
     },
     {
+      "label": "load_kmodel()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L159",
+      "_origin": "ast",
+      "id": "victoria_main_load_kmodel",
+      "community": 696,
+      "norm_label": "load_kmodel()"
+    },
+    {
       "label": "load_voice_tensor()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L86",
+      "source_location": "L180",
       "_origin": "ast",
       "id": "victoria_main_load_voice_tensor",
       "community": 696,
@@ -18072,47 +18092,87 @@
       "label": "Tensor",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L86",
+      "source_location": "L180",
       "_origin": "ast",
       "id": "tensor",
       "community": 696,
       "norm_label": "tensor"
     },
     {
-      "label": "load_pipelines()",
+      "label": "init_phonemizer()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L102",
+      "source_location": "L195",
       "_origin": "ast",
-      "id": "victoria_main_load_pipelines",
+      "id": "victoria_main_init_phonemizer",
       "community": 696,
-      "norm_label": "load_pipelines()"
+      "norm_label": "init_phonemizer()"
     },
     {
-      "label": "pipeline_for()",
+      "label": "phonemize_german()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L150",
+      "source_location": "L209",
       "_origin": "ast",
-      "id": "victoria_main_pipeline_for",
+      "id": "victoria_main_phonemize_german",
       "community": 696,
-      "norm_label": "pipeline_for()"
+      "norm_label": "phonemize_german()"
+    },
+    {
+      "label": "chunk_phonemes()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L217",
+      "_origin": "ast",
+      "id": "victoria_main_chunk_phonemes",
+      "community": 696,
+      "norm_label": "chunk_phonemes()"
+    },
+    {
+      "label": "synthesize_phonemes()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L236",
+      "_origin": "ast",
+      "id": "victoria_main_synthesize_phonemes",
+      "community": 696,
+      "norm_label": "synthesize_phonemes()"
     },
     {
       "label": "synthesize_sentence()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L156",
+      "source_location": "L253",
       "_origin": "ast",
       "id": "victoria_main_synthesize_sentence",
       "community": 696,
       "norm_label": "synthesize_sentence()"
     },
     {
+      "label": "load_models()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L275",
+      "_origin": "ast",
+      "id": "victoria_main_load_models",
+      "community": 696,
+      "norm_label": "load_models()"
+    },
+    {
+      "label": "resolve_voice()",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L340",
+      "_origin": "ast",
+      "id": "victoria_main_resolve_voice",
+      "community": 696,
+      "norm_label": "resolve_voice()"
+    },
+    {
       "label": "startup()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L174",
+      "source_location": "L361",
       "_origin": "ast",
       "id": "victoria_main_startup",
       "community": 696,
@@ -18122,7 +18182,7 @@
       "label": "list_voices()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L179",
+      "source_location": "L366",
       "_origin": "ast",
       "id": "victoria_main_list_voices",
       "community": 696,
@@ -18132,7 +18192,7 @@
       "label": "health()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L184",
+      "source_location": "L371",
       "_origin": "ast",
       "id": "victoria_main_health",
       "community": 696,
@@ -18142,7 +18202,7 @@
       "label": "generate_speech()",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L189",
+      "source_location": "L377",
       "_origin": "ast",
       "id": "victoria_main_generate_speech",
       "community": 696,
@@ -18152,21 +18212,1181 @@
       "label": "Request",
       "file_type": "code",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L189",
+      "source_location": "L377",
       "_origin": "ast",
       "id": "scripts_tts_victoria_main_py_request",
       "community": 696,
       "norm_label": "request"
     },
     {
-      "label": "OpenAI-compatible FastAPI multi-voice German TTS sidecar.  Serves:   - victoria",
+      "label": "OpenAI-compatible FastAPI multi-voice German TTS (PyTorch / Kikiri).  Voices:",
       "file_type": "rationale",
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L1",
       "_origin": "ast",
       "id": "victoria_main_rationale_1",
       "community": 696,
-      "norm_label": "openai-compatible fastapi multi-voice german tts sidecar.  serves:   - victoria"
+      "norm_label": "openai-compatible fastapi multi-voice german tts (pytorch / kikiri).  voices:"
+    },
+    {
+      "label": "phonemizer 3.3+ / misaki / espeakng_loader fight over EspeakWrapper paths.     P",
+      "file_type": "rationale",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L98",
+      "_origin": "ast",
+      "id": "victoria_main_rationale_98",
+      "community": 696,
+      "norm_label": "phonemizer 3.3+ / misaki / espeakng_loader fight over espeakwrapper paths.     p"
+    },
+    {
+      "label": "Kikiri checkpoints are saved with modern torch parametrizations weight_norm",
+      "file_type": "rationale",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L126",
+      "_origin": "ast",
+      "id": "victoria_main_rationale_126",
+      "community": 696,
+      "norm_label": "kikiri checkpoints are saved with modern torch parametrizations weight_norm"
+    },
+    {
+      "label": "Rewrite checkpoint keys so KModel.load_state_dict can consume them.",
+      "file_type": "rationale",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "victoria_main_rationale_141",
+      "community": 696,
+      "norm_label": "rewrite checkpoint keys so kmodel.load_state_dict can consume them."
+    },
+    {
+      "label": "Match kokoro-onnx Tokenizer.phonemize(lang='de'): espeak IPA filtered to vocab.",
+      "file_type": "rationale",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L210",
+      "_origin": "ast",
+      "id": "victoria_main_rationale_210",
+      "community": 696,
+      "norm_label": "match kokoro-onnx tokenizer.phonemize(lang='de'): espeak ipa filtered to vocab."
+    },
+    {
+      "label": "config.json",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "models_config",
+      "community": 69,
+      "norm_label": "config.json"
+    },
+    {
+      "label": "istftnet",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "models_config_istftnet",
+      "community": 69,
+      "norm_label": "istftnet"
+    },
+    {
+      "label": "upsample_kernel_sizes",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "models_config_istftnet_upsample_kernel_sizes",
+      "community": 69,
+      "norm_label": "upsample_kernel_sizes"
+    },
+    {
+      "label": "upsample_rates",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "models_config_istftnet_upsample_rates",
+      "community": 69,
+      "norm_label": "upsample_rates"
+    },
+    {
+      "label": "gen_istft_hop_size",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "models_config_istftnet_gen_istft_hop_size",
+      "community": 69,
+      "norm_label": "gen_istft_hop_size"
+    },
+    {
+      "label": "gen_istft_n_fft",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "models_config_istftnet_gen_istft_n_fft",
+      "community": 69,
+      "norm_label": "gen_istft_n_fft"
+    },
+    {
+      "label": "resblock_dilation_sizes",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "models_config_istftnet_resblock_dilation_sizes",
+      "community": 69,
+      "norm_label": "resblock_dilation_sizes"
+    },
+    {
+      "label": "resblock_kernel_sizes",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "models_config_istftnet_resblock_kernel_sizes",
+      "community": 69,
+      "norm_label": "resblock_kernel_sizes"
+    },
+    {
+      "label": "upsample_initial_channel",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "models_config_istftnet_upsample_initial_channel",
+      "community": 69,
+      "norm_label": "upsample_initial_channel"
+    },
+    {
+      "label": "dim_in",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "models_config_dim_in",
+      "community": 69,
+      "norm_label": "dim_in"
+    },
+    {
+      "label": "dropout",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "models_config_dropout",
+      "community": 69,
+      "norm_label": "dropout"
+    },
+    {
+      "label": "hidden_dim",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "models_config_hidden_dim",
+      "community": 69,
+      "norm_label": "hidden_dim"
+    },
+    {
+      "label": "max_conv_dim",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "models_config_max_conv_dim",
+      "community": 69,
+      "norm_label": "max_conv_dim"
+    },
+    {
+      "label": "max_dur",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "models_config_max_dur",
+      "community": 69,
+      "norm_label": "max_dur"
+    },
+    {
+      "label": "multispeaker",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "models_config_multispeaker",
+      "community": 69,
+      "norm_label": "multispeaker"
+    },
+    {
+      "label": "n_layer",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "models_config_n_layer",
+      "community": 69,
+      "norm_label": "n_layer"
+    },
+    {
+      "label": "n_mels",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "models_config_n_mels",
+      "community": 69,
+      "norm_label": "n_mels"
+    },
+    {
+      "label": "n_token",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "models_config_n_token",
+      "community": 69,
+      "norm_label": "n_token"
+    },
+    {
+      "label": "style_dim",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "models_config_style_dim",
+      "community": 69,
+      "norm_label": "style_dim"
+    },
+    {
+      "label": "text_encoder_kernel_size",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "models_config_text_encoder_kernel_size",
+      "community": 69,
+      "norm_label": "text_encoder_kernel_size"
+    },
+    {
+      "label": "plbert",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "models_config_plbert",
+      "community": 69,
+      "norm_label": "plbert"
+    },
+    {
+      "label": "hidden_size",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "models_config_plbert_hidden_size",
+      "community": 69,
+      "norm_label": "hidden_size"
+    },
+    {
+      "label": "num_attention_heads",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "models_config_plbert_num_attention_heads",
+      "community": 69,
+      "norm_label": "num_attention_heads"
+    },
+    {
+      "label": "intermediate_size",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "models_config_plbert_intermediate_size",
+      "community": 69,
+      "norm_label": "intermediate_size"
+    },
+    {
+      "label": "max_position_embeddings",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "models_config_plbert_max_position_embeddings",
+      "community": 69,
+      "norm_label": "max_position_embeddings"
+    },
+    {
+      "label": "num_hidden_layers",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "models_config_plbert_num_hidden_layers",
+      "community": 69,
+      "norm_label": "num_hidden_layers"
+    },
+    {
+      "label": "dropout",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "models_config_plbert_dropout",
+      "community": 69,
+      "norm_label": "dropout"
+    },
+    {
+      "label": "vocab",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "models_config_vocab",
+      "community": 35,
+      "norm_label": "vocab"
+    },
+    {
+      "label": "\\u0303",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "models_config_vocab_u0303",
+      "community": 35,
+      "norm_label": "\\u0303"
+    },
+    {
+      "label": "\u02a3",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02a3",
+      "community": 35,
+      "norm_label": "\u02a3"
+    },
+    {
+      "label": "\u02a5",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02a5",
+      "community": 35,
+      "norm_label": "\u02a5"
+    },
+    {
+      "label": "\u02a6",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02a6",
+      "community": 35,
+      "norm_label": "\u02a6"
+    },
+    {
+      "label": "\u02a8",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02a8",
+      "community": 35,
+      "norm_label": "\u02a8"
+    },
+    {
+      "label": "\u1d5d",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u03b2",
+      "community": 35,
+      "norm_label": "\u03b2"
+    },
+    {
+      "label": "\\uAB67",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "models_config_vocab_uab67",
+      "community": 35,
+      "norm_label": "\\uab67"
+    },
+    {
+      "label": "A",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "models_config_vocab_a",
+      "community": 35,
+      "norm_label": "a"
+    },
+    {
+      "label": "I",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "models_config_vocab_i",
+      "community": 35,
+      "norm_label": "i"
+    },
+    {
+      "label": "O",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "models_config_vocab_o",
+      "community": 35,
+      "norm_label": "o"
+    },
+    {
+      "label": "Q",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "models_config_vocab_q",
+      "community": 35,
+      "norm_label": "q"
+    },
+    {
+      "label": "S",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "models_config_vocab_s",
+      "community": 35,
+      "norm_label": "s"
+    },
+    {
+      "label": "T",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "models_config_vocab_t",
+      "community": 35,
+      "norm_label": "t"
+    },
+    {
+      "label": "W",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "models_config_vocab_w",
+      "community": 35,
+      "norm_label": "w"
+    },
+    {
+      "label": "Y",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "models_config_vocab_y",
+      "community": 35,
+      "norm_label": "y"
+    },
+    {
+      "label": "\u1d4a",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0259",
+      "community": 35,
+      "norm_label": "\u0259"
+    },
+    {
+      "label": "b",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "models_config_vocab_b",
+      "community": 35,
+      "norm_label": "b"
+    },
+    {
+      "label": "c",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "models_config_vocab_c",
+      "community": 35,
+      "norm_label": "c"
+    },
+    {
+      "label": "d",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "models_config_vocab_d",
+      "community": 35,
+      "norm_label": "d"
+    },
+    {
+      "label": "e",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "models_config_vocab_e",
+      "community": 35,
+      "norm_label": "e"
+    },
+    {
+      "label": "f",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "models_config_vocab_f",
+      "community": 35,
+      "norm_label": "f"
+    },
+    {
+      "label": "h",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "models_config_vocab_h",
+      "community": 35,
+      "norm_label": "h"
+    },
+    {
+      "label": "j",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "models_config_vocab_j",
+      "community": 35,
+      "norm_label": "j"
+    },
+    {
+      "label": "k",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "models_config_vocab_k",
+      "community": 35,
+      "norm_label": "k"
+    },
+    {
+      "label": "l",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "models_config_vocab_l",
+      "community": 35,
+      "norm_label": "l"
+    },
+    {
+      "label": "m",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "models_config_vocab_m",
+      "community": 35,
+      "norm_label": "m"
+    },
+    {
+      "label": "n",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "models_config_vocab_n",
+      "community": 35,
+      "norm_label": "n"
+    },
+    {
+      "label": "p",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "models_config_vocab_p",
+      "community": 35,
+      "norm_label": "p"
+    },
+    {
+      "label": "r",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "models_config_vocab_r",
+      "community": 35,
+      "norm_label": "r"
+    },
+    {
+      "label": "u",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "models_config_vocab_u",
+      "community": 35,
+      "norm_label": "u"
+    },
+    {
+      "label": "v",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L85",
+      "_origin": "ast",
+      "id": "models_config_vocab_v",
+      "community": 35,
+      "norm_label": "v"
+    },
+    {
+      "label": "x",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L87",
+      "_origin": "ast",
+      "id": "models_config_vocab_x",
+      "community": 35,
+      "norm_label": "x"
+    },
+    {
+      "label": "z",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "models_config_vocab_z",
+      "community": 35,
+      "norm_label": "z"
+    },
+    {
+      "label": "\u0251",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L90",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0251",
+      "community": 35,
+      "norm_label": "\u0251"
+    },
+    {
+      "label": "\u0250",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L91",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0250",
+      "community": 35,
+      "norm_label": "\u0250"
+    },
+    {
+      "label": "\u0252",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L92",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0252",
+      "community": 35,
+      "norm_label": "\u0252"
+    },
+    {
+      "label": "\u00e6",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L93",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u00e6",
+      "community": 35,
+      "norm_label": "\u00e6"
+    },
+    {
+      "label": "\u0254",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0254",
+      "community": 35,
+      "norm_label": "\u0254"
+    },
+    {
+      "label": "\u0255",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L96",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0255",
+      "community": 35,
+      "norm_label": "\u0255"
+    },
+    {
+      "label": "\u00e7",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u00e7",
+      "community": 35,
+      "norm_label": "c"
+    },
+    {
+      "label": "\u0256",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L98",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0256",
+      "community": 35,
+      "norm_label": "\u0256"
+    },
+    {
+      "label": "\u00f0",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L99",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u00f0",
+      "community": 35,
+      "norm_label": "\u00f0"
+    },
+    {
+      "label": "\u02a4",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02a4",
+      "community": 35,
+      "norm_label": "\u02a4"
+    },
+    {
+      "label": "\u025a",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u025a",
+      "community": 35,
+      "norm_label": "\u025a"
+    },
+    {
+      "label": "\u025b",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u025b",
+      "community": 35,
+      "norm_label": "\u025b"
+    },
+    {
+      "label": "\u025c",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u025c",
+      "community": 35,
+      "norm_label": "\u025c"
+    },
+    {
+      "label": "\u025f",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u025f",
+      "community": 35,
+      "norm_label": "\u025f"
+    },
+    {
+      "label": "\u0261",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0261",
+      "community": 35,
+      "norm_label": "\u0261"
+    },
+    {
+      "label": "\u0265",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L107",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0265",
+      "community": 35,
+      "norm_label": "\u0265"
+    },
+    {
+      "label": "\u0268",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0268",
+      "community": 35,
+      "norm_label": "\u0268"
+    },
+    {
+      "label": "\u026a",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u026a",
+      "community": 35,
+      "norm_label": "\u026a"
+    },
+    {
+      "label": "\u029d",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L110",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u029d",
+      "community": 35,
+      "norm_label": "\u029d"
+    },
+    {
+      "label": "\u026f",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L111",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u026f",
+      "community": 35,
+      "norm_label": "\u026f"
+    },
+    {
+      "label": "\u0270",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L112",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0270",
+      "community": 35,
+      "norm_label": "\u0270"
+    },
+    {
+      "label": "\u014b",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u014b",
+      "community": 35,
+      "norm_label": "\u014b"
+    },
+    {
+      "label": "\u0273",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L114",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0273",
+      "community": 35,
+      "norm_label": "\u0273"
+    },
+    {
+      "label": "\u0272",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L115",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0272",
+      "community": 35,
+      "norm_label": "\u0272"
+    },
+    {
+      "label": "\u0274",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L116",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0274",
+      "community": 35,
+      "norm_label": "\u0274"
+    },
+    {
+      "label": "\u00f8",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L117",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u00f8",
+      "community": 35,
+      "norm_label": "\u00f8"
+    },
+    {
+      "label": "\u0278",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0278",
+      "community": 35,
+      "norm_label": "\u0278"
+    },
+    {
+      "label": "\u03b8",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L119",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u03b8",
+      "community": 35,
+      "norm_label": "\u03b8"
+    },
+    {
+      "label": "\u0153",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L120",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0153",
+      "community": 35,
+      "norm_label": "\u0153"
+    },
+    {
+      "label": "\u0279",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L121",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0279",
+      "community": 35,
+      "norm_label": "\u0279"
+    },
+    {
+      "label": "\u027e",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u027e",
+      "community": 35,
+      "norm_label": "\u027e"
+    },
+    {
+      "label": "\u027b",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L123",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u027b",
+      "community": 35,
+      "norm_label": "\u027b"
+    },
+    {
+      "label": "\u0281",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L124",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0281",
+      "community": 35,
+      "norm_label": "\u0281"
+    },
+    {
+      "label": "\u027d",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L125",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u027d",
+      "community": 35,
+      "norm_label": "\u027d"
+    },
+    {
+      "label": "\u0282",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L126",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0282",
+      "community": 35,
+      "norm_label": "\u0282"
+    },
+    {
+      "label": "\u0283",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L127",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0283",
+      "community": 35,
+      "norm_label": "\u0283"
+    },
+    {
+      "label": "\u0288",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L128",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0288",
+      "community": 35,
+      "norm_label": "\u0288"
+    },
+    {
+      "label": "\u02a7",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L129",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02a7",
+      "community": 35,
+      "norm_label": "\u02a7"
+    },
+    {
+      "label": "\u028a",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L130",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u028a",
+      "community": 35,
+      "norm_label": "\u028a"
+    },
+    {
+      "label": "\u028b",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L131",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u028b",
+      "community": 35,
+      "norm_label": "\u028b"
+    },
+    {
+      "label": "\u028c",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L132",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u028c",
+      "community": 35,
+      "norm_label": "\u028c"
+    },
+    {
+      "label": "\u0263",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L133",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0263",
+      "community": 35,
+      "norm_label": "\u0263"
+    },
+    {
+      "label": "\u0264",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L134",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0264",
+      "community": 35,
+      "norm_label": "\u0264"
+    },
+    {
+      "label": "\u03c7",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L135",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u03c7",
+      "community": 35,
+      "norm_label": "\u03c7"
+    },
+    {
+      "label": "\u028e",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L136",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u028e",
+      "community": 35,
+      "norm_label": "\u028e"
+    },
+    {
+      "label": "\u0292",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L137",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0292",
+      "community": 35,
+      "norm_label": "\u0292"
+    },
+    {
+      "label": "\u0294",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L138",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u0294",
+      "community": 35,
+      "norm_label": "\u0294"
+    },
+    {
+      "label": "\u02c8",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L139",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02c8",
+      "community": 35,
+      "norm_label": "\u02c8"
+    },
+    {
+      "label": "\u02cc",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L140",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02cc",
+      "community": 35,
+      "norm_label": "\u02cc"
+    },
+    {
+      "label": "\u02d0",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u02d0",
+      "community": 35,
+      "norm_label": "\u02d0"
+    },
+    {
+      "label": "\u1d7b",
+      "file_type": "code",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L148",
+      "_origin": "ast",
+      "id": "models_config_vocab_\u1d7b",
+      "community": 35,
+      "norm_label": "\u1d7b"
     },
     {
       "label": "tsconfig.base.json",
@@ -18965,7 +20185,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agent_os_plan_product",
-      "community": 13,
+      "community": 84,
       "norm_label": "plan-product.md"
     },
     {
@@ -18975,7 +20195,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agent_os_plan_product_plan_product",
-      "community": 13,
+      "community": 84,
       "norm_label": "plan product"
     },
     {
@@ -18985,7 +20205,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "agent_os_plan_product_important_guidelines",
-      "community": 13,
+      "community": 84,
       "norm_label": "important guidelines"
     },
     {
@@ -18995,7 +20215,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "agent_os_plan_product_process",
-      "community": 13,
+      "community": 80,
       "norm_label": "process"
     },
     {
@@ -19005,7 +20225,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "agent_os_plan_product_step_1_check_for_existing_product_docs",
-      "community": 13,
+      "community": 80,
       "norm_label": "step 1: check for existing product docs"
     },
     {
@@ -19015,7 +20235,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "agent_os_plan_product_step_2_gather_product_vision_for_mission_md",
-      "community": 13,
+      "community": 80,
       "norm_label": "step 2: gather product vision (for mission.md)"
     },
     {
@@ -19025,7 +20245,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "agent_os_plan_product_step_3_gather_roadmap_for_roadmap_md",
-      "community": 13,
+      "community": 80,
       "norm_label": "step 3: gather roadmap (for roadmap.md)"
     },
     {
@@ -19035,7 +20255,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "agent_os_plan_product_step_4_establish_tech_stack_for_tech_stack_md",
-      "community": 13,
+      "community": 80,
       "norm_label": "step 4: establish tech stack (for tech-stack.md)"
     },
     {
@@ -19045,7 +20265,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "agent_os_plan_product_step_5_generate_files",
-      "community": 13,
+      "community": 80,
       "norm_label": "step 5: generate files"
     },
     {
@@ -19055,7 +20275,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "agent_os_plan_product_mission_md",
-      "community": 13,
+      "community": 80,
       "norm_label": "mission.md"
     },
     {
@@ -19065,7 +20285,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "agent_os_plan_product_roadmap_md",
-      "community": 13,
+      "community": 80,
       "norm_label": "roadmap.md"
     },
     {
@@ -19075,7 +20295,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "agent_os_plan_product_tech_stack_md",
-      "community": 13,
+      "community": 80,
       "norm_label": "tech-stack.md"
     },
     {
@@ -19085,7 +20305,7 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "agent_os_plan_product_step_6_confirm_completion",
-      "community": 13,
+      "community": 80,
       "norm_label": "step 6: confirm completion"
     },
     {
@@ -19095,7 +20315,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "agent_os_plan_product_tips",
-      "community": 13,
+      "community": 84,
       "norm_label": "tips"
     },
     {
@@ -19705,7 +20925,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "readme_quick_start",
-      "community": 498,
+      "community": 8,
       "norm_label": "\ud83d\ude80 quick start"
     },
     {
@@ -19715,7 +20935,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "readme_prerequisites",
-      "community": 498,
+      "community": 8,
       "norm_label": "prerequisites"
     },
     {
@@ -19725,7 +20945,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "readme_installation",
-      "community": 498,
+      "community": 8,
       "norm_label": "installation"
     },
     {
@@ -19735,7 +20955,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "readme_development",
-      "community": 498,
+      "community": 8,
       "norm_label": "development"
     },
     {
@@ -19745,7 +20965,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "readme_optional_enable_ai_features",
-      "community": 498,
+      "community": 8,
       "norm_label": "optional: enable ai features"
     },
     {
@@ -19755,7 +20975,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "readme_production_build",
-      "community": 498,
+      "community": 8,
       "norm_label": "production build"
     },
     {
@@ -19765,7 +20985,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "readme_tech_stack",
-      "community": 497,
+      "community": 8,
       "norm_label": "\ud83d\udee0\ufe0f tech stack"
     },
     {
@@ -19775,7 +20995,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "readme_core_framework",
-      "community": 497,
+      "community": 8,
       "norm_label": "core framework"
     },
     {
@@ -19785,7 +21005,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "readme_ui_styling",
-      "community": 497,
+      "community": 8,
       "norm_label": "ui & styling"
     },
     {
@@ -19795,7 +21015,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "readme_state_management",
-      "community": 497,
+      "community": 8,
       "norm_label": "state management"
     },
     {
@@ -19805,7 +21025,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "readme_internationalization",
-      "community": 497,
+      "community": 8,
       "norm_label": "internationalization"
     },
     {
@@ -19815,7 +21035,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "readme_development_tools",
-      "community": 497,
+      "community": 8,
       "norm_label": "development tools"
     },
     {
@@ -19825,7 +21045,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "readme_project_structure",
-      "community": 69,
+      "community": 8,
       "norm_label": "\ud83d\udcc1 project structure"
     },
     {
@@ -19865,7 +21085,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "readme_project_status",
-      "community": 594,
+      "community": 8,
       "norm_label": "\ud83d\udcca project status"
     },
     {
@@ -19875,7 +21095,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "readme_completed_12_18_deliverables_67",
-      "community": 594,
+      "community": 8,
       "norm_label": "completed (12/18 deliverables - 67%) \u2705"
     },
     {
@@ -19885,7 +21105,7 @@
       "source_location": "L229",
       "_origin": "ast",
       "id": "readme_in_planning_post_mvp",
-      "community": 594,
+      "community": 8,
       "norm_label": "in planning (post-mvp) \ud83c\udfaf"
     },
     {
@@ -19925,7 +21145,7 @@
       "source_location": "L254",
       "_origin": "ast",
       "id": "readme_contributing",
-      "community": 522,
+      "community": 8,
       "norm_label": "\ud83e\udd1d contributing"
     },
     {
@@ -19935,7 +21155,7 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "readme_code_style",
-      "community": 522,
+      "community": 8,
       "norm_label": "code style"
     },
     {
@@ -19945,7 +21165,7 @@
       "source_location": "L264",
       "_origin": "ast",
       "id": "readme_component_guidelines",
-      "community": 522,
+      "community": 8,
       "norm_label": "component guidelines"
     },
     {
@@ -19955,7 +21175,7 @@
       "source_location": "L270",
       "_origin": "ast",
       "id": "readme_git_workflow",
-      "community": 522,
+      "community": 8,
       "norm_label": "git workflow"
     },
     {
@@ -19965,7 +21185,7 @@
       "source_location": "L275",
       "_origin": "ast",
       "id": "readme_testing_coming_in_stage_18",
-      "community": 522,
+      "community": 8,
       "norm_label": "testing (coming in stage 18)"
     },
     {
@@ -19985,7 +21205,7 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "readme_roadmap",
-      "community": 69,
+      "community": 8,
       "norm_label": "\ud83c\udfaf roadmap"
     },
     {
@@ -19995,7 +21215,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "readme_current_focus",
-      "community": 69,
+      "community": 8,
       "norm_label": "current focus"
     },
     {
@@ -20005,7 +21225,7 @@
       "source_location": "L296",
       "_origin": "ast",
       "id": "readme_next_steps_in_priority_order",
-      "community": 69,
+      "community": 8,
       "norm_label": "next steps (in priority order)"
     },
     {
@@ -21175,7 +22395,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "global_offline_first_core_static_seed_data",
-      "community": 349,
+      "community": 82,
       "norm_label": "static seed data"
     },
     {
@@ -21569,20 +22789,20 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Listening audio generation (four-voice Kokoro + parallel synth)",
+      "label": "Listening audio generation (four-voice PyTorch Kokoro)",
       "file_type": "document",
       "source_file": "scripts/tts/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "tts_readme_listening_audio_generation_four_voice_kokoro_parallel_synth",
+      "id": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
       "community": 658,
-      "norm_label": "listening audio generation (four-voice kokoro + parallel synth)"
+      "norm_label": "listening audio generation (four-voice pytorch kokoro)"
     },
     {
       "label": "Seed audio (maintainer)",
       "file_type": "document",
       "source_file": "scripts/tts/README.md",
-      "source_location": "L19",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "tts_readme_seed_audio_maintainer",
       "community": 658,
@@ -21592,7 +22812,7 @@
       "label": "In-app Generate audio",
       "file_type": "document",
       "source_file": "scripts/tts/README.md",
-      "source_location": "L42",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "tts_readme_in_app_generate_audio",
       "community": 658,
@@ -21843,7 +23063,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 349,
+      "community": 82,
       "norm_label": "nuxt 3 mvp",
       "id": "agents_nuxt3_mvp"
     },
@@ -21856,7 +23076,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 349,
+      "community": 82,
       "norm_label": "offline-first core flows",
       "id": "agents_offline_first_core"
     },
@@ -21869,7 +23089,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 349,
+      "community": 82,
       "norm_label": "optional ai enhancement",
       "id": "agents_optional_ai_enhancement"
     },
@@ -21908,7 +23128,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 69,
+      "community": 8,
       "norm_label": "post-mvp planning",
       "id": "readme_post_mvp_planning"
     },
@@ -22090,7 +23310,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 13,
+      "community": 85,
       "norm_label": "tech stack document",
       "id": "agent_os_plan_product_tech_stack_doc"
     },
@@ -22298,7 +23518,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 13,
+      "community": 85,
       "norm_label": "current frontend stack",
       "id": "product_tech_stack_current_frontend"
     },
@@ -22311,7 +23531,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 13,
+      "community": 85,
       "norm_label": "current state and persistence",
       "id": "product_tech_stack_current_state_persistence"
     },
@@ -22350,7 +23570,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 13,
+      "community": 85,
       "norm_label": "no current database",
       "id": "product_tech_stack_no_current_database"
     },
@@ -22857,7 +24077,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 349,
+      "community": 82,
       "norm_label": "offline-first core standard",
       "id": "global_offline_first_core_offline_first_core_standard"
     },
@@ -22870,7 +24090,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 349,
+      "community": 82,
       "norm_label": "ai enhancement layer",
       "id": "global_offline_first_core_ai_enhancement_layer"
     },
@@ -39955,9 +41175,9 @@
       "source_file": "apps/frontend/server/api/tts/generate-listening-audio.post.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_generate_listening_audio_post",
-      "target": "tts_mappool",
-      "confidence_score": 1.0
+      "target": "tts_mappool"
     },
     {
       "relation": "imports",
@@ -39966,9 +41186,9 @@
       "source_file": "apps/frontend/server/api/tts/generate-listening-audio.post.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_generate_listening_audio_post",
-      "target": "tts_mappool_mappool",
-      "confidence_score": 1.0
+      "target": "tts_mappool_mappool"
     },
     {
       "relation": "imports_from",
@@ -40491,9 +41711,9 @@
       "source_file": "apps/frontend/server/utils/tts/mapPool.ts",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_mappool",
-      "target": "tts_mappool_getttsconcurrency",
-      "confidence_score": 1.0
+      "target": "tts_mappool_getttsconcurrency"
     },
     {
       "relation": "contains",
@@ -40501,9 +41721,9 @@
       "source_file": "apps/frontend/server/utils/tts/mapPool.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_mappool",
-      "target": "tts_mappool_mappool",
-      "confidence_score": 1.0
+      "target": "tts_mappool_mappool"
     },
     {
       "relation": "imports_from",
@@ -40512,9 +41732,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "tts_mappool",
-      "confidence_score": 1.0
+      "target": "tts_mappool"
     },
     {
       "relation": "calls",
@@ -40534,9 +41754,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "tts_mappool_mappool",
-      "confidence_score": 1.0
+      "target": "tts_mappool_mappool"
     },
     {
       "relation": "calls",
@@ -40567,9 +41787,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "tts_mappool_getttsconcurrency",
-      "confidence_score": 1.0
+      "target": "tts_mappool_getttsconcurrency"
     },
     {
       "relation": "calls",
@@ -40622,9 +41842,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "listening_dialoguetranscript_fallbackvoicefor",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_fallbackvoicefor"
     },
     {
       "relation": "imports",
@@ -40633,9 +41853,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "listening_dialoguetranscript_male_voice_pool",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_male_voice_pool"
     },
     {
       "relation": "imports",
@@ -40664,9 +41884,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "tts_ttsadapter_fetchvoicesfrom",
-      "confidence_score": 1.0
+      "target": "tts_ttsadapter_fetchvoicesfrom"
     },
     {
       "relation": "contains",
@@ -40684,9 +41904,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "tts_ttsadapter_listavailablevoices",
-      "confidence_score": 1.0
+      "target": "tts_ttsadapter_listavailablevoices"
     },
     {
       "relation": "contains",
@@ -40697,36 +41917,6 @@
       "confidence_score": 1.0,
       "source": "tts_ttsadapter",
       "target": "tts_ttsadapter_listeningtranscripthashkey"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L40",
-      "weight": 1.0,
-      "source": "tts_ttsadapter",
-      "target": "tts_ttsadapter_multi_voices",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "tts_ttsadapter",
-      "target": "tts_ttsadapter_onnx_voices",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L54",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tts_ttsadapter",
-      "target": "tts_ttsadapter_resolvebaseurlforvoice"
     },
     {
       "relation": "contains",
@@ -40774,9 +41964,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L152",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter",
-      "target": "tts_ttsadapter_voicescache",
-      "confidence_score": 1.0
+      "target": "tts_ttsadapter_voicescache"
     },
     {
       "relation": "references",
@@ -40799,17 +41989,6 @@
       "weight": 1.0,
       "source": "scripts_generate_listening_audio_main",
       "target": "tts_ttsadapter_getttsconfigfromenv"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
-      "source_location": "L74",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tts_ttsadapter_synthesizespeech",
-      "target": "tts_ttsadapter_resolvebaseurlforvoice"
     },
     {
       "relation": "calls",
@@ -40862,9 +42041,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter_synthesizelisteningtranscript",
-      "target": "tts_ttsadapter_listavailablevoices",
-      "confidence_score": 1.0
+      "target": "tts_ttsadapter_listavailablevoices"
     },
     {
       "relation": "calls",
@@ -40895,9 +42074,9 @@
       "source_file": "apps/frontend/server/utils/tts/ttsAdapter.ts",
       "source_location": "L183",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_ttsadapter_listavailablevoices",
-      "target": "tts_ttsadapter_fetchvoicesfrom",
-      "confidence_score": 1.0
+      "target": "tts_ttsadapter_fetchvoicesfrom"
     },
     {
       "relation": "calls",
@@ -42240,9 +43419,9 @@
       "source_file": "apps/frontend/utils/listening/dialogueTranscript.ts",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "listening_dialoguetranscript",
-      "target": "listening_dialoguetranscript_all_voice_pool",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_all_voice_pool"
     },
     {
       "relation": "contains",
@@ -42280,9 +43459,9 @@
       "source_file": "apps/frontend/utils/listening/dialogueTranscript.ts",
       "source_location": "L177",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "listening_dialoguetranscript",
-      "target": "listening_dialoguetranscript_fallbackvoicefor",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_fallbackvoicefor"
     },
     {
       "relation": "contains",
@@ -42310,9 +43489,9 @@
       "source_file": "apps/frontend/utils/listening/dialogueTranscript.ts",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "listening_dialoguetranscript",
-      "target": "listening_dialoguetranscript_female_voice_pool",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_female_voice_pool"
     },
     {
       "relation": "contains",
@@ -42350,9 +43529,9 @@
       "source_file": "apps/frontend/utils/listening/dialogueTranscript.ts",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "listening_dialoguetranscript",
-      "target": "listening_dialoguetranscript_male_voice_pool",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_male_voice_pool"
     },
     {
       "relation": "contains",
@@ -42370,9 +43549,9 @@
       "source_file": "apps/frontend/utils/listening/dialogueTranscript.ts",
       "source_location": "L151",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "listening_dialoguetranscript",
-      "target": "listening_dialoguetranscript_pickfrompool",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_pickfrompool"
     },
     {
       "relation": "contains",
@@ -42465,9 +43644,9 @@
       "source_file": "apps/frontend/utils/listening/dialogueTranscript.ts",
       "source_location": "L168",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "listening_dialoguetranscript_resolvedialoguevoice",
-      "target": "listening_dialoguetranscript_pickfrompool",
-      "confidence_score": 1.0
+      "target": "listening_dialoguetranscript_pickfrompool"
     },
     {
       "relation": "calls",
@@ -45817,6 +46996,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/generate-listening-audio.mjs",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "scripts_generate_listening_audio",
+      "target": "scripts_generate_listening_audio_formatduration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/generate-listening-audio.mjs",
       "source_location": "L28",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -45895,6 +47084,17 @@
       "confidence_score": 1.0,
       "source": "scripts_generate_listening_audio_main",
       "target": "scripts_generate_listening_audio_fileexists"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/generate-listening-audio.mjs",
+      "source_location": "L192",
+      "weight": 1.0,
+      "source": "scripts_generate_listening_audio_main",
+      "target": "scripts_generate_listening_audio_formatduration",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -46653,6 +47853,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L217",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_chunk_phonemes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L124",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -46673,6 +47883,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_init_phonemizer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L114",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -46685,18 +47905,18 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_load_kmodel",
-      "confidence_score": 1.0
+      "target": "victoria_main_load_kmodel"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L102",
+      "source_location": "L275",
       "weight": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_load_pipelines",
+      "target": "victoria_main_load_models",
       "confidence_score": 1.0
     },
     {
@@ -46705,28 +47925,68 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_load_voice_tensor",
+      "target": "victoria_main_load_voice_tensor"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_normalize_text",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L58",
+      "source_location": "L97",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_normalize_simple"
+      "target": "victoria_main_patch_espeak_wrapper",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L150",
+      "source_location": "L209",
       "weight": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_pipeline_for",
+      "target": "victoria_main_phonemize_german",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_prepare_kokoro_checkpoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_remap_weight_norm_keys",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L340",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_resolve_voice",
       "confidence_score": 1.0
     },
     {
@@ -46753,6 +48013,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L236",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_synthesize_phonemes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L95",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -46768,6 +48038,16 @@
       "confidence_score": 1.0,
       "source": "victoria_main",
       "target": "victoria_main_wav_bytes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "victoria_main",
+      "target": "victoria_main_zero_crossing_rate",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -46806,11 +48086,55 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L236",
+      "weight": 1.0,
+      "source": "victoria_main_synthesize_phonemes",
+      "target": "scripts_tts_victoria_main_py_ndarray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L95",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "victoria_main_synthesize_sentence",
       "target": "scripts_tts_victoria_main_py_ndarray"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "victoria_main_zero_crossing_rate",
+      "target": "scripts_tts_victoria_main_py_ndarray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L409",
+      "weight": 1.0,
+      "source": "victoria_main_generate_speech",
+      "target": "victoria_main_zero_crossing_rate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L325",
+      "weight": 1.0,
+      "source": "victoria_main_load_models",
+      "target": "victoria_main_zero_crossing_rate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -46828,11 +48152,107 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L127",
+      "source_location": "L380",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "victoria_main_generate_speech",
-      "target": "victoria_main_normalize_simple"
+      "target": "victoria_main_normalize_text",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L197",
+      "weight": 1.0,
+      "source": "victoria_main_init_phonemizer",
+      "target": "victoria_main_patch_espeak_wrapper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "victoria_main_load_kmodel",
+      "target": "victoria_main_patch_espeak_wrapper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "victoria_main_patch_espeak_wrapper",
+      "target": "scripts_tts_victoria_main_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "victoria_main_rationale_98",
+      "target": "victoria_main_patch_espeak_wrapper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L149",
+      "weight": 1.0,
+      "source": "victoria_main_prepare_kokoro_checkpoint",
+      "target": "victoria_main_remap_weight_norm_keys",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "victoria_main_rationale_126",
+      "target": "victoria_main_remap_weight_norm_keys",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "victoria_main_load_kmodel",
+      "target": "victoria_main_prepare_kokoro_checkpoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "victoria_main_prepare_kokoro_checkpoint",
+      "target": "scripts_tts_victoria_main_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "victoria_main_rationale_141",
+      "target": "victoria_main_prepare_kokoro_checkpoint",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -46841,20 +48261,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_kmodel",
-      "target": "scripts_tts_victoria_main_py_path",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L116",
-      "weight": 1.0,
-      "source": "victoria_main_load_pipelines",
-      "target": "victoria_main_load_kmodel",
-      "confidence_score": 1.0
+      "target": "scripts_tts_victoria_main_py_path"
     },
     {
       "relation": "references",
@@ -46863,8 +48272,19 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_voice_tensor",
-      "target": "scripts_tts_victoria_main_py_path",
+      "target": "scripts_tts_victoria_main_py_path"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L293",
+      "weight": 1.0,
+      "source": "victoria_main_load_models",
+      "target": "victoria_main_load_kmodel",
       "confidence_score": 1.0
     },
     {
@@ -46872,9 +48292,9 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L118",
+      "source_location": "L294",
       "weight": 1.0,
-      "source": "victoria_main_load_pipelines",
+      "source": "victoria_main_load_models",
       "target": "victoria_main_load_voice_tensor",
       "confidence_score": 1.0
     },
@@ -46885,7 +48305,18 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_voice_tensor",
+      "target": "tensor"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L236",
+      "weight": 1.0,
+      "source": "victoria_main_synthesize_phonemes",
       "target": "tensor",
       "confidence_score": 1.0
     },
@@ -46894,10 +48325,20 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L218",
+      "source_location": "L314",
       "weight": 1.0,
-      "source": "victoria_main_generate_speech",
-      "target": "victoria_main_load_pipelines",
+      "source": "victoria_main_load_models",
+      "target": "victoria_main_init_phonemizer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "victoria_main_rationale_210",
+      "target": "victoria_main_phonemize_german",
       "confidence_score": 1.0
     },
     {
@@ -46905,21 +48346,32 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L175",
-      "weight": 1.0,
-      "source": "victoria_main_startup",
-      "target": "victoria_main_load_pipelines",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/tts/victoria/main.py",
-      "source_location": "L157",
+      "source_location": "L261",
       "weight": 1.0,
       "source": "victoria_main_synthesize_sentence",
-      "target": "victoria_main_pipeline_for",
+      "target": "victoria_main_phonemize_german",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L266",
+      "weight": 1.0,
+      "source": "victoria_main_synthesize_sentence",
+      "target": "victoria_main_chunk_phonemes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L267",
+      "weight": 1.0,
+      "source": "victoria_main_synthesize_sentence",
+      "target": "victoria_main_synthesize_phonemes",
       "confidence_score": 1.0
     },
     {
@@ -46934,6 +48386,50 @@
       "target": "victoria_main_synthesize_sentence"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L324",
+      "weight": 1.0,
+      "source": "victoria_main_load_models",
+      "target": "victoria_main_synthesize_sentence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L389",
+      "weight": 1.0,
+      "source": "victoria_main_generate_speech",
+      "target": "victoria_main_load_models",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L362",
+      "weight": 1.0,
+      "source": "victoria_main_startup",
+      "target": "victoria_main_load_models",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/main.py",
+      "source_location": "L381",
+      "weight": 1.0,
+      "source": "victoria_main_generate_speech",
+      "target": "victoria_main_resolve_voice",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
@@ -46943,6 +48439,1116 @@
       "confidence_score": 1.0,
       "source": "victoria_main_generate_speech",
       "target": "scripts_tts_victoria_main_py_request"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_dim_in",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_dropout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_hidden_dim",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_istftnet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_max_conv_dim",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_max_dur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_multispeaker",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_n_layer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_n_mels",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_n_token",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_plbert",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_style_dim",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_text_encoder_kernel_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "models_config",
+      "target": "models_config_vocab",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_gen_istft_hop_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_gen_istft_n_fft",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_resblock_dilation_sizes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_resblock_kernel_sizes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_upsample_initial_channel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_upsample_kernel_sizes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "models_config_istftnet",
+      "target": "models_config_istftnet_upsample_rates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "models_config_plbert",
+      "target": "models_config_plbert_dropout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "models_config_plbert",
+      "target": "models_config_plbert_hidden_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "models_config_plbert",
+      "target": "models_config_plbert_intermediate_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "models_config_plbert",
+      "target": "models_config_plbert_max_position_embeddings",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "models_config_plbert",
+      "target": "models_config_plbert_num_attention_heads",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "models_config_plbert",
+      "target": "models_config_plbert_num_hidden_layers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_b",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_d",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_e",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_f",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_h",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_i",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_j",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_k",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_l",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_m",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_p",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L80",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_q",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_r",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_s",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_t",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_u",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_u0303",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_uab67",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_v",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_w",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_x",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_y",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_z",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u00e6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u00e7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u00f0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u00f8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u014b",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0153",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0250",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0251",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0252",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0254",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0255",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0256",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0259",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u025a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u025b",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u025c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u025f",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0261",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0263",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L134",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0264",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L107",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0265",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0268",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u026a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u026f",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L112",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0270",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0272",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0273",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0274",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0278",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0279",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u027b",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u027d",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u027e",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0281",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0282",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0283",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0288",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u028a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u028b",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u028c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L136",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u028e",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0292",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u0294",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u029d",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02a3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02a4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02a5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02a6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02a7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02a8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02c8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02cc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u02d0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u03b2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u03b8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L135",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u03c7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/tts/victoria/models/config.json",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "models_config_vocab",
+      "target": "models_config_vocab_\u1d7b",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -50431,16 +53037,16 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "tts_readme",
-      "target": "tts_readme_listening_audio_generation_four_voice_kokoro_parallel_synth",
+      "target": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/README.md",
-      "source_location": "L42",
+      "source_location": "L47",
       "weight": 1.0,
-      "source": "tts_readme_listening_audio_generation_four_voice_kokoro_parallel_synth",
+      "source": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
       "target": "tts_readme_in_app_generate_audio",
       "confidence_score": 1.0
     },
@@ -50448,9 +53054,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/tts/README.md",
-      "source_location": "L19",
+      "source_location": "L23",
       "weight": 1.0,
-      "source": "tts_readme_listening_audio_generation_four_voice_kokoro_parallel_synth",
+      "source": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
       "target": "tts_readme_seed_audio_maintainer",
       "confidence_score": 1.0
     },
@@ -52059,5 +54665,5 @@
       "source_file": "exam-one-design/project/Redesign.html"
     }
   ],
-  "built_at_commit": "cda999cc2ebbf379994a14f0a407cad2bcd3c10a"
+  "built_at_commit": "28d57a5c591bdc791985d4d0082a231a969db7c4"
 }

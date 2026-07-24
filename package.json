@@ -26,8 +26,8 @@
     "db:migrate:deploy": "pnpm --filter @exam-one/database db:migrate:deploy",
     "db:seed": "pnpm --filter @exam-one/database db:seed",
     "generate:listening-audio": "node scripts/generate-listening-audio.mjs",
-    "tts:up": "bash scripts/tts/victoria/download-models.sh && docker compose -f compose.tts.yaml up -d --build --wait",
-    "tts:down": "docker compose -f compose.tts.yaml down"
+    "tts:up": "bash scripts/tts/victoria/download-models.sh && docker compose -f compose.tts.yaml up -d --build --wait --remove-orphans",
+    "tts:down": "docker compose -f compose.tts.yaml down --remove-orphans"
   },
   "devDependencies": {
     "jiti": "^2.6.1",

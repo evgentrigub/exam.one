@@ -1,77 +1,42 @@
 # Optional four-voice Kokoro TTS for listening audio generation.
-# Martin (male) ONNX on :8881; multi-voice PyTorch on :8882 (victoria, bernd, eva).
+# Single PyTorch service on :8881 (martin, bernd, victoria, eva).
 # Not required for normal app runtime — seed WAVs ship under public/audio/.
 #
 # Setup (once):
-#   ./scripts/tts/setup-kokoro.sh
-#   pnpm tts:up          # starts Martin + multi-voice
+#   bash scripts/tts/victoria/download-models.sh
+#   pnpm tts:up
 #   pnpm generate:listening-audio
-#   pnpm tts:down        # stops both
+#   pnpm tts:down
 #
 # Client env (defaults match this compose file):
 #   TTS_BASE_URL=http://127.0.0.1:8881
-#   TTS_MULTI_BASE_URL=http://127.0.0.1:8882
 #   TTS_CONCURRENCY=3
 
 name: exam-one-tts
 
 services:
-  kokoro-tts:
-    build:
-      context: ./scripts/tts/kokoro-german
-      dockerfile: onnx-docker/Dockerfile
-    ports:
-      - '${TTS_PORT:-8881}:8881'
-    environment:
-      KOKORO_ONNX_THREADS: '2'
-      KOKORO_ONNX_INTRA_OP_THREADS: '2'
-      KOKORO_ONNX_INTER_OP_THREADS: '1'
-      KOKORO_ONNX_EXECUTION_MODE: sequential
-      KOKORO_ONNX_GRAPH_OPT: all
-      KOKORO_ONNX_SPEED: '1.0'
-      KOKORO_ONNX_TRIM: 'true'
-      KOKORO_ONNX_VOICE: martin
-      KOKORO_ONNX_LANG: de
-      OMP_NUM_THREADS: '2'
-      OPENBLAS_NUM_THREADS: '2'
-      MKL_NUM_THREADS: '2'
-      NUMEXPR_NUM_THREADS: '2'
-      OMP_WAIT_POLICY: PASSIVE
-      KOKORO_PAUSE_DURATION: '0.25'
-      KOKORO_WORKERS: '1'
-      KOKORO_ONNX_ALLOW_SPINNING: '0'
-      KOKORO_WARMUP_TEXT: Hallo.
-    volumes:
-      - ./scripts/tts/kokoro-german/german_text_rules.py:/app/german_text_rules.py:ro
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - 'curl -fsS http://127.0.0.1:8881/v1/audio/voices >/dev/null'
-      interval: 10s
-      timeout: 5s
-      retries: 30
-      start_period: 60s
-    restart: unless-stopped
-
   kokoro-voices:
     build:
       context: ./scripts/tts/victoria
       dockerfile: Dockerfile
     ports:
-      - '${TTS_MULTI_PORT:-8882}:8882'
+      - '${TTS_PORT:-8881}:8881'
     environment:
       KOKORO_VICTORIA_MODEL_DIR: /app/models
-      KOKORO_MULTI_LANG: de
       KOKORO_MULTI_SPEED: '1.0'
       KOKORO_PAUSE_DURATION: '0.25'
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      NUMEXPR_NUM_THREADS: '2'
     volumes:
       - ./scripts/tts/victoria/models:/app/models:ro
     healthcheck:
       test:
         - CMD-SHELL
-        - 'curl -fsS http://127.0.0.1:8882/v1/audio/voices >/dev/null'
+        - 'curl -fsS http://127.0.0.1:8881/v1/audio/voices >/dev/null'
       interval: 15s
       timeout: 10s
       retries: 40
-      start_period: 240s
+      start_period: 300s
     restart: unless-stopped

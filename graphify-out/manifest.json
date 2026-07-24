@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784737036.0670013,
-    "ast_hash": "6b0de3e3a592d0a91bc1e36b9dc9848c",
+    "mtime": 1784836080.4759219,
+    "ast_hash": "f0c6191307639afdb0eb7e2db98a23c8",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "agent-os/product/tech-stack.md": {
-    "mtime": 1784739371.2275858,
-    "ast_hash": "c3d71149f8d8ec200b7910f22378991c",
+    "mtime": 1784838594.2863705,
+    "ast_hash": "4bc2bfd7e95d85d78624d426a151f078",
     "semantic_hash": ""
   },
   "agent-os/standards/components/card-layout.md": {
@@ -925,8 +925,8 @@
     "semantic_hash": ""
   },
   "apps/frontend/server/utils/tts/ttsAdapter.ts": {
-    "mtime": 1784739221.960535,
-    "ast_hash": "d77f8233e63fb82d60d33293b4c7d788",
+    "mtime": 1784838567.8431807,
+    "ast_hash": "70ef97c8ddbe02d5409f7b23f865f0e5",
     "semantic_hash": ""
   },
   "apps/frontend/stores/settings.ts": {
@@ -1120,8 +1120,8 @@
     "semantic_hash": ""
   },
   "scripts/generate-listening-audio.mjs": {
-    "mtime": 1784739353.6002452,
-    "ast_hash": "cdb7d8e450ff77b897f08f1732285266",
+    "mtime": 1784838594.2865758,
+    "ast_hash": "806985c220d7dbcb62ff3db1932f962a",
     "semantic_hash": ""
   },
   "scripts/tts/kokoro-german/german_text_rules.py": {
@@ -1150,8 +1150,8 @@
     "semantic_hash": ""
   },
   "scripts/tts/setup-kokoro.sh": {
-    "mtime": 1784739314.2730558,
-    "ast_hash": "49f938ed4ce443b8a1a444b79f8018c8",
+    "mtime": 1784838589.7504585,
+    "ast_hash": "2ee7aa2c4afce4c983de80a878556633",
     "semantic_hash": ""
   },
   "tsconfig.base.json": {
@@ -1180,8 +1180,8 @@
     "semantic_hash": ""
   },
   "compose.tts.yaml": {
-    "mtime": 1784739392.4063928,
-    "ast_hash": "c86cb1a724f16e9016cf278dd1708d3d",
+    "mtime": 1784838566.8133278,
+    "ast_hash": "86601d98deb6eb2aace51e520644acf9",
     "semantic_hash": ""
   },
   "compose.yaml": {
@@ -1200,8 +1200,8 @@
     "semantic_hash": ""
   },
   "scripts/tts/README.md": {
-    "mtime": 1784739369.306476,
-    "ast_hash": "4a88545af8e9eac2d21e4eb0e6b51599",
+    "mtime": 1784838585.5475588,
+    "ast_hash": "7f61e47ad5420593647b37084db7b093",
     "semantic_hash": ""
   },
   "scripts/tts/kokoro-german/README.md": {
@@ -1320,23 +1320,28 @@
     "semantic_hash": ""
   },
   "scripts/tts/victoria/download-models.sh": {
-    "mtime": 1784739298.2219648,
-    "ast_hash": "f89441083b51dfadc3aa788374fd6dbc",
+    "mtime": 1784839236.1220174,
+    "ast_hash": "3975dda8715df011b4b8666dcacacc46",
     "semantic_hash": ""
   },
   "scripts/tts/victoria/main.py": {
-    "mtime": 1784739329.5927718,
-    "ast_hash": "666c712890b6a61db77a3691088d85cd",
+    "mtime": 1784839221.1948235,
+    "ast_hash": "0c8540ffed9cf23389e53af1d7a747f5",
     "semantic_hash": ""
   },
   "scripts/tts/victoria/requirements.txt": {
-    "mtime": 1784734944.9028013,
-    "ast_hash": "d0499adbfd07e349acc3390a481f79dd",
+    "mtime": 1784838540.7400093,
+    "ast_hash": "f9edc22dd4f9a277d2fce7039fb7458b",
     "semantic_hash": ""
   },
   "apps/frontend/server/utils/tts/mapPool.ts": {
     "mtime": 1784739221.696495,
     "ast_hash": "bfd50f1961c7f05a2d1e50b3601ebe42",
+    "semantic_hash": ""
+  },
+  "scripts/tts/victoria/models/config.json": {
+    "mtime": 1784835985.7192335,
+    "ast_hash": "3d5541c086389fe2ad3c3fad0229b833",
     "semantic_hash": ""
   }
 }
