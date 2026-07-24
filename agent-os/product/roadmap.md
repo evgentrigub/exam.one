@@ -40,7 +40,7 @@ English / Cambridge and other providers are out of scope for Phase 1.
 Finish Reading, Writing, Listening, and Speaking practice against modular Goethe A2 rules.
 
 **Listening (complete — iteration 1):**
-- Teile 1–4 practice sessions with Goethe replay limits and shared/per-item players
+- Teile 1–4 practice sessions with unlimited audio replay and shared/per-item players
 - Pre-generated seed audio (Kokoro German Martin) via `pnpm generate:listening-audio` / `scripts/tts/README.md`
 - In-app **Generate audio** when TTS is up; answers/playback locked until files exist
 - Optional AI listening generation (transcripts); audio remains a separate generation step

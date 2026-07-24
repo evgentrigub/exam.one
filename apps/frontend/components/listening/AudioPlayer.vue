@@ -2,17 +2,8 @@
   <div class="bg-base-100 rounded-box border border-base-300/70 p-5">
     <!-- Artwork + label -->
     <div class="flex items-start gap-3">
-      <div
-        class="w-12 h-12 rounded-box shrink-0 grid place-items-center bg-listening-soft"
-      >
-        <AudioWaveform :size="18" class="text-listening" />
-      </div>
       <div class="min-w-0">
         <p class="font-semibold text-sm leading-tight truncate">{{ label }}</p>
-        <p class="text-xs text-base-content/60 mt-0.5">
-          {{ playsLeft > 0 ? `${playsLeft} ${playsLeft === 1 ? 'play' : 'plays'} left` : 'No plays left' }}
-          · {{ statusLabel }}
-        </p>
       </div>
     </div>
 
@@ -86,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { AudioWaveform, Play, Pause, Volume2 } from 'lucide-vue-next'
+import { Play, Pause, Volume2 } from 'lucide-vue-next'
 
 const speeds = [0.75, 1, 1.25] as const
 
@@ -96,7 +87,6 @@ const props = withDefaults(defineProps<{
   /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
   src?: string
   durationSec?: number
-  replayLimit?: number
   revealTranscript?: boolean
   /** When true, only play + scrubber are shown (volume/speed live in the sidebar). */
   hideVolumeSpeed?: boolean
@@ -114,7 +104,6 @@ const props = withDefaults(defineProps<{
   label: 'Audio',
   src: '',
   durationSec: 0,
-  replayLimit: 2,
   revealTranscript: false,
   hideVolumeSpeed: false,
   volume: 0.6,
@@ -134,7 +123,6 @@ const emit = defineEmits<{
 
 const playing = ref(false)
 const currentSec = ref(0)
-const plays = ref(0)
 const mediaReady = ref(false)
 const mediaFailed = ref(false)
 const mediaDurationSec = ref(0)
@@ -159,16 +147,7 @@ const effectiveDurationSec = computed(() =>
     : simulatedDurationSec.value,
 )
 
-const playsLeft = computed(() => Math.max(0, props.replayLimit - plays.value))
-const canPlay = computed(() => !props.disabled && playsLeft.value > 0)
-
-const statusLabel = computed(() => {
-  if (props.disabled) return 'Playback locked — audio missing'
-  if (!props.src) return 'Audio not available — simulated playback'
-  if (mediaFailed.value) return 'Audio not available — simulated playback'
-  if (!mediaReady.value) return 'Loading audio…'
-  return 'audio'
-})
+const canPlay = computed(() => !props.disabled)
 
 function fmt(sec: number): string {
   const m = Math.floor(sec / 60)
@@ -197,7 +176,6 @@ function startSimulatedTimer() {
 function finishPlayback() {
   stopTimer()
   playing.value = false
-  plays.value += 1
   if (audioEl) {
     audioEl.pause()
   }
@@ -343,7 +321,6 @@ watch(
   (src) => {
     stopTimer()
     playing.value = false
-    plays.value = 0
     currentSec.value = 0
     if (src) {
       attachAudio(src)
