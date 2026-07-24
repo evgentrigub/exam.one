@@ -1590,7 +1590,7 @@
       "label": "props",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L93",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "listening_audioplayer_props",
       "community": 53,
@@ -1600,27 +1600,17 @@
       "label": "currentSec",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L136",
+      "source_location": "L125",
       "_origin": "ast",
       "id": "listening_audioplayer_currentsec",
       "community": 53,
       "norm_label": "currentsec"
     },
     {
-      "label": "plays",
-      "file_type": "code",
-      "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L137",
-      "_origin": "ast",
-      "id": "listening_audioplayer_plays",
-      "community": 53,
-      "norm_label": "plays"
-    },
-    {
       "label": "mediaReady",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L138",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "listening_audioplayer_mediaready",
       "community": 53,
@@ -1630,7 +1620,7 @@
       "label": "mediaFailed",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L139",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "listening_audioplayer_mediafailed",
       "community": 53,
@@ -1640,7 +1630,7 @@
       "label": "mediaDurationSec",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L140",
+      "source_location": "L128",
       "_origin": "ast",
       "id": "listening_audioplayer_mediadurationsec",
       "community": 53,
@@ -1650,7 +1640,7 @@
       "label": "effectiveVolume",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L145",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "listening_audioplayer_effectivevolume",
       "community": 53,
@@ -1660,7 +1650,7 @@
       "label": "effectiveSpeed",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L146",
+      "source_location": "L134",
       "_origin": "ast",
       "id": "listening_audioplayer_effectivespeed",
       "community": 53,
@@ -1670,7 +1660,7 @@
       "label": "useRealAudio",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L148",
+      "source_location": "L136",
       "_origin": "ast",
       "id": "listening_audioplayer_userealaudio",
       "community": 53,
@@ -1680,7 +1670,7 @@
       "label": "simulatedDurationSec",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L150",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "listening_audioplayer_simulateddurationsec",
       "community": 53,
@@ -1690,47 +1680,27 @@
       "label": "effectiveDurationSec",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L156",
+      "source_location": "L144",
       "_origin": "ast",
       "id": "listening_audioplayer_effectivedurationsec",
       "community": 53,
       "norm_label": "effectivedurationsec"
     },
     {
-      "label": "playsLeft",
-      "file_type": "code",
-      "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L162",
-      "_origin": "ast",
-      "id": "listening_audioplayer_playsleft",
-      "community": 53,
-      "norm_label": "playsleft"
-    },
-    {
       "label": "canPlay",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L163",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "listening_audioplayer_canplay",
       "community": 53,
       "norm_label": "canplay"
     },
     {
-      "label": "statusLabel",
-      "file_type": "code",
-      "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L165",
-      "_origin": "ast",
-      "id": "listening_audioplayer_statuslabel",
-      "community": 53,
-      "norm_label": "statuslabel"
-    },
-    {
       "label": "fmt()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L173",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "listening_audioplayer_fmt",
       "community": 53,
@@ -1740,7 +1710,7 @@
       "label": "stopTimer()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L179",
+      "source_location": "L158",
       "_origin": "ast",
       "id": "listening_audioplayer_stoptimer",
       "community": 53,
@@ -1750,7 +1720,7 @@
       "label": "startSimulatedTimer()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L186",
+      "source_location": "L165",
       "_origin": "ast",
       "id": "listening_audioplayer_startsimulatedtimer",
       "community": 53,
@@ -1760,7 +1730,7 @@
       "label": "finishPlayback()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L197",
+      "source_location": "L176",
       "_origin": "ast",
       "id": "listening_audioplayer_finishplayback",
       "community": 53,
@@ -1770,7 +1740,7 @@
       "label": "applyAudioSettings()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L209",
+      "source_location": "L187",
       "_origin": "ast",
       "id": "listening_audioplayer_applyaudiosettings",
       "community": 53,
@@ -1780,7 +1750,7 @@
       "label": "detachAudio()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L215",
+      "source_location": "L193",
       "_origin": "ast",
       "id": "listening_audioplayer_detachaudio",
       "community": 53,
@@ -1790,7 +1760,7 @@
       "label": "onTimeUpdate()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L226",
+      "source_location": "L204",
       "_origin": "ast",
       "id": "listening_audioplayer_ontimeupdate",
       "community": 53,
@@ -1800,7 +1770,7 @@
       "label": "onEnded()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L231",
+      "source_location": "L209",
       "_origin": "ast",
       "id": "listening_audioplayer_onended",
       "community": 53,
@@ -1810,7 +1780,7 @@
       "label": "onLoadedMetadata()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L236",
+      "source_location": "L214",
       "_origin": "ast",
       "id": "listening_audioplayer_onloadedmetadata",
       "community": 53,
@@ -1820,7 +1790,7 @@
       "label": "onError()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L244",
+      "source_location": "L222",
       "_origin": "ast",
       "id": "listening_audioplayer_onerror",
       "community": 53,
@@ -1830,7 +1800,7 @@
       "label": "attachAudio()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L252",
+      "source_location": "L230",
       "_origin": "ast",
       "id": "listening_audioplayer_attachaudio",
       "community": 53,
@@ -1840,7 +1810,7 @@
       "label": "pausePlayback()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L272",
+      "source_location": "L250",
       "_origin": "ast",
       "id": "listening_audioplayer_pauseplayback",
       "community": 53,
@@ -1850,7 +1820,7 @@
       "label": "toggle()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L285",
+      "source_location": "L263",
       "_origin": "ast",
       "id": "listening_audioplayer_toggle",
       "community": 53,
@@ -1860,7 +1830,7 @@
       "label": "seekTo()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L320",
+      "source_location": "L298",
       "_origin": "ast",
       "id": "listening_audioplayer_seekto",
       "community": 53,
@@ -1870,7 +1840,7 @@
       "label": "onVolumeInput()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L329",
+      "source_location": "L307",
       "_origin": "ast",
       "id": "listening_audioplayer_onvolumeinput",
       "community": 53,
@@ -1880,7 +1850,7 @@
       "label": "onSpeedInput()",
       "file_type": "code",
       "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L335",
+      "source_location": "L313",
       "_origin": "ast",
       "id": "listening_audioplayer_onspeedinput",
       "community": 53,
@@ -1893,7 +1863,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "listening_listeningsession",
-      "community": 243,
+      "community": 14,
       "norm_label": "listeningsession.vue"
     },
     {
@@ -1903,7 +1873,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_questioncard",
-      "community": 0,
+      "community": 95,
       "norm_label": "questioncard.vue"
     },
     {
@@ -1913,7 +1883,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "reading_questioncard_selectanswer",
-      "community": 0,
+      "community": 95,
       "norm_label": "selectanswer()"
     },
     {
@@ -1923,7 +1893,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "reading_questioncard_getoptionclass",
-      "community": 0,
+      "community": 95,
       "norm_label": "getoptionclass()"
     },
     {
@@ -1933,7 +1903,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "reading_questioncard_getletterpillclass",
-      "community": 0,
+      "community": 95,
       "norm_label": "getletterpillclass()"
     },
     {
@@ -2073,7 +2043,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_readingmodal",
-      "community": 66,
+      "community": 90,
       "norm_label": "readingmodal.vue"
     },
     {
@@ -2083,7 +2053,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "reading_readingmodal_gettexttypelabel",
-      "community": 66,
+      "community": 90,
       "norm_label": "gettexttypelabel()"
     },
     {
@@ -2093,7 +2063,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "reading_readingmodal_gettexttypeicon",
-      "community": 66,
+      "community": 90,
       "norm_label": "gettexttypeicon()"
     },
     {
@@ -2103,7 +2073,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_textcard",
-      "community": 50,
+      "community": 14,
       "norm_label": "textcard.vue"
     },
     {
@@ -2113,7 +2083,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "reading_textcard_isclient",
-      "community": 50,
+      "community": 14,
       "norm_label": "isclient"
     },
     {
@@ -2123,7 +2093,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "reading_textcard_textcompleted",
-      "community": 50,
+      "community": 14,
       "norm_label": "textcompleted"
     },
     {
@@ -2133,7 +2103,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "reading_textcard_bestscore",
-      "community": 50,
+      "community": 14,
       "norm_label": "bestscore"
     },
     {
@@ -2143,7 +2113,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "reading_textcard_progress",
-      "community": 50,
+      "community": 14,
       "norm_label": "progress"
     },
     {
@@ -2153,7 +2123,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "reading_textcard_scorepercentage",
-      "community": 50,
+      "community": 14,
       "norm_label": "scorepercentage"
     },
     {
@@ -2163,7 +2133,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "reading_textcard_displaytopics",
-      "community": 50,
+      "community": 14,
       "norm_label": "displaytopics"
     },
     {
@@ -2173,7 +2143,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "reading_textcard_gettexttypelabel",
-      "community": 50,
+      "community": 14,
       "norm_label": "gettexttypelabel()"
     },
     {
@@ -2183,7 +2153,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "reading_textcard_gettexttypeicon",
-      "community": 50,
+      "community": 14,
       "norm_label": "gettexttypeicon()"
     },
     {
@@ -2303,7 +2273,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "writing_modelanswercard",
-      "community": 15,
+      "community": 92,
       "norm_label": "modelanswercard.vue"
     },
     {
@@ -2313,7 +2283,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "writing_modelanswercard_isloading",
-      "community": 15,
+      "community": 92,
       "norm_label": "isloading"
     },
     {
@@ -2323,7 +2293,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "writing_modelanswercard_errormessage",
-      "community": 15,
+      "community": 92,
       "norm_label": "errormessage"
     },
     {
@@ -2333,7 +2303,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "writing_modelanswercard_highlights",
-      "community": 15,
+      "community": 92,
       "norm_label": "highlights"
     },
     {
@@ -2343,7 +2313,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "writing_modelanswercard_keyphrases",
-      "community": 15,
+      "community": 92,
       "norm_label": "keyphrases"
     },
     {
@@ -2353,7 +2323,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "writing_modelanswercard_handlegeneratemodelanswer",
-      "community": 15,
+      "community": 92,
       "norm_label": "handlegeneratemodelanswer()"
     },
     {
@@ -3033,7 +3003,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "composables_uselisteningexercises_uselisteningexercises",
-      "community": 50,
+      "community": 89,
       "norm_label": "uselisteningexercises()"
     },
     {
@@ -3093,7 +3063,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "composables_usemodelanswer_modelanswerrecord",
-      "community": 15,
+      "community": 88,
       "norm_label": "modelanswerrecord"
     },
     {
@@ -3183,7 +3153,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "composables_usemodelanswer_usemodelanswer",
-      "community": 15,
+      "community": 92,
       "norm_label": "usemodelanswer()"
     },
     {
@@ -3303,7 +3273,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "composables_useprogress_useprogress",
-      "community": 50,
+      "community": 14,
       "norm_label": "useprogress()"
     },
     {
@@ -3323,7 +3293,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "composables_usereadinggeneration_readinggenerationoptions",
-      "community": 66,
+      "community": 90,
       "norm_label": "readinggenerationoptions"
     },
     {
@@ -3343,7 +3313,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "composables_usereadingtexts",
-      "community": 34,
+      "community": 89,
       "norm_label": "usereadingtexts.ts"
     },
     {
@@ -3353,7 +3323,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "composables_usereadingtexts_texts",
-      "community": 34,
+      "community": 89,
       "norm_label": "texts"
     },
     {
@@ -3363,7 +3333,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "composables_usereadingtexts_isinitialized",
-      "community": 34,
+      "community": 89,
       "norm_label": "isinitialized"
     },
     {
@@ -3373,7 +3343,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "composables_usereadingtexts_usereadingtexts",
-      "community": 50,
+      "community": 89,
       "norm_label": "usereadingtexts()"
     },
     {
@@ -3383,7 +3353,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "composables_useskillstats",
-      "community": 50,
+      "community": 89,
       "norm_label": "useskillstats.ts"
     },
     {
@@ -3413,7 +3383,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "composables_useskillstats_useskillstats",
-      "community": 50,
+      "community": 89,
       "norm_label": "useskillstats()"
     },
     {
@@ -3453,7 +3423,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "composables_usespeakingexercises_usespeakingexercises",
-      "community": 50,
+      "community": 77,
       "norm_label": "usespeakingexercises()"
     },
     {
@@ -3603,7 +3573,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "composables_usewritinggeneration",
-      "community": 341,
+      "community": 91,
       "norm_label": "usewritinggeneration.ts"
     },
     {
@@ -3623,7 +3593,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "composables_usewritinggeneration_writinggenerationoptions",
-      "community": 20,
+      "community": 91,
       "norm_label": "writinggenerationoptions"
     },
     {
@@ -3633,7 +3603,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "composables_usewritinggeneration_usewritinggeneration",
-      "community": 341,
+      "community": 91,
       "norm_label": "usewritinggeneration()"
     },
     {
@@ -3693,7 +3663,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "composables_usewritingreview_writingreviewrecord",
-      "community": 27,
+      "community": 79,
       "norm_label": "writingreviewrecord"
     },
     {
@@ -3773,7 +3743,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "composables_usewritingtopics_usewritingtopics",
-      "community": 50,
+      "community": 89,
       "norm_label": "usewritingtopics()"
     },
     {
@@ -4063,7 +4033,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadingc1",
-      "community": 341,
+      "community": 90,
       "norm_label": "exercisegeneratorreadingc1.ts"
     },
     {
@@ -4073,7 +4043,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadingc1_generatereadingc1",
-      "community": 341,
+      "community": 90,
       "norm_label": "generatereadingc1()"
     },
     {
@@ -4083,7 +4053,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "a2_exercisegeneratorreadingc1_datac1readingexamples",
-      "community": 341,
+      "community": 90,
       "norm_label": "datac1readingexamples"
     },
     {
@@ -4093,7 +4063,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "reading_exercisereading",
-      "community": 34,
+      "community": 0,
       "norm_label": "exercisereading.ts"
     },
     {
@@ -4103,7 +4073,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "reading_exercisereading_defaultreadingtopics",
-      "community": 34,
+      "community": 0,
       "norm_label": "defaultreadingtopics"
     },
     {
@@ -4253,7 +4223,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "a2_exercisegeneratorwritinga2",
-      "community": 341,
+      "community": 91,
       "norm_label": "exercisegeneratorwritinga2.ts"
     },
     {
@@ -4263,7 +4233,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "a2_exercisegeneratorwritinga2_generatetopicsa2part1",
-      "community": 341,
+      "community": 91,
       "norm_label": "generatetopicsa2part1()"
     },
     {
@@ -4273,7 +4243,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "a2_exercisegeneratorwritinga2_generatetopicsa2part2",
-      "community": 341,
+      "community": 91,
       "norm_label": "generatetopicsa2part2()"
     },
     {
@@ -4283,7 +4253,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "a2_exercisegeneratorwritinga2_dataa2part1topics",
-      "community": 341,
+      "community": 91,
       "norm_label": "dataa2part1topics"
     },
     {
@@ -4293,7 +4263,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "a2_exercisegeneratorwritinga2_dataa2part2topics",
-      "community": 341,
+      "community": 91,
       "norm_label": "dataa2part2topics"
     },
     {
@@ -11913,7 +11883,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_generate_model_answer_post",
-      "community": 140,
+      "community": 88,
       "norm_label": "generate-model-answer.post.ts"
     },
     {
@@ -11923,7 +11893,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_modelanswerrequestbody",
-      "community": 20,
+      "community": 88,
       "norm_label": "modelanswerrequestbody"
     },
     {
@@ -11933,7 +11903,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_modelanswerresponse",
-      "community": 15,
+      "community": 88,
       "norm_label": "modelanswerresponse"
     },
     {
@@ -11943,7 +11913,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_isrecord",
-      "community": 140,
+      "community": 88,
       "norm_label": "isrecord()"
     },
     {
@@ -11953,7 +11923,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_isvalidmodelanswerrequest",
-      "community": 140,
+      "community": 88,
       "norm_label": "isvalidmodelanswerrequest()"
     },
     {
@@ -11963,7 +11933,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_stringarray",
-      "community": 140,
+      "community": 88,
       "norm_label": "stringarray()"
     },
     {
@@ -11973,7 +11943,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_normalizemodelanswer",
-      "community": 140,
+      "community": 88,
       "norm_label": "normalizemodelanswer()"
     },
     {
@@ -11983,7 +11953,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_parsemodelanswercandidate",
-      "community": 140,
+      "community": 88,
       "norm_label": "parsemodelanswercandidate()"
     },
     {
@@ -11993,7 +11963,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "api_generate_model_answer_post_tryextractjsonobject",
-      "community": 140,
+      "community": 88,
       "norm_label": "tryextractjsonobject()"
     },
     {
@@ -12113,7 +12083,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "api_generate_reading_post_generatereadingresponse",
-      "community": 66,
+      "community": 90,
       "norm_label": "generatereadingresponse"
     },
     {
@@ -12153,7 +12123,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_generate_speaking_post",
-      "community": 140,
+      "community": 86,
       "norm_label": "generate-speaking.post.ts"
     },
     {
@@ -12173,7 +12143,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "api_generate_speaking_post_generatespeakingrequestbody",
-      "community": 140,
+      "community": 86,
       "norm_label": "generatespeakingrequestbody"
     },
     {
@@ -12193,7 +12163,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "api_generate_speaking_post_isrecord",
-      "community": 140,
+      "community": 86,
       "norm_label": "isrecord()"
     },
     {
@@ -12203,7 +12173,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "api_generate_speaking_post_isdifficulty",
-      "community": 140,
+      "community": 86,
       "norm_label": "isdifficulty()"
     },
     {
@@ -12213,7 +12183,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "api_generate_speaking_post_isspeakinga2part",
-      "community": 140,
+      "community": 86,
       "norm_label": "isspeakinga2part()"
     },
     {
@@ -12223,7 +12193,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "api_generate_speaking_post_nonemptystring",
-      "community": 140,
+      "community": 86,
       "norm_label": "nonemptystring()"
     },
     {
@@ -12233,7 +12203,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "api_generate_speaking_post_isfourcards",
-      "community": 140,
+      "community": 86,
       "norm_label": "isfourcards()"
     },
     {
@@ -12243,7 +12213,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "api_generate_speaking_post_extractarrayfromresponse",
-      "community": 140,
+      "community": 86,
       "norm_label": "extractarrayfromresponse()"
     },
     {
@@ -12253,7 +12223,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "api_generate_speaking_post_normalisetopic",
-      "community": 140,
+      "community": 86,
       "norm_label": "normalisetopic()"
     },
     {
@@ -12263,7 +12233,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "api_generate_speaking_post_generateforpart",
-      "community": 140,
+      "community": 86,
       "norm_label": "generateforpart()"
     },
     {
@@ -12293,7 +12263,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "api_generate_topics_post_generatetopicsresponse",
-      "community": 20,
+      "community": 697,
       "norm_label": "generatetopicsresponse"
     },
     {
@@ -12383,7 +12353,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "api_review_post_reviewresponse",
-      "community": 27,
+      "community": 79,
       "norm_label": "reviewresponse"
     },
     {
@@ -12733,7 +12703,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "utils_llm_callllm",
-      "community": 140,
+      "community": 86,
       "norm_label": "callllm()"
     },
     {
@@ -12983,7 +12953,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "stores_settings",
-      "community": 50,
+      "community": 89,
       "norm_label": "settings.ts"
     },
     {
@@ -12993,7 +12963,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "stores_settings_usesettingsstore",
-      "community": 50,
+      "community": 89,
       "norm_label": "usesettingsstore"
     },
     {
@@ -13263,7 +13233,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "exercises_listening_listeningquestiona2teil2",
-      "community": 136,
+      "community": 29,
       "norm_label": "listeningquestiona2teil2"
     },
     {
@@ -13443,7 +13413,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "exercises_reading_readingquestion",
-      "community": 0,
+      "community": 95,
       "norm_label": "readingquestion"
     },
     {
@@ -13453,7 +13423,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "exercises_reading_generatedreadingquestion",
-      "community": 0,
+      "community": 78,
       "norm_label": "generatedreadingquestion"
     },
     {
@@ -13473,7 +13443,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "exercises_reading_readingexercise",
-      "community": 66,
+      "community": 90,
       "norm_label": "readingexercise"
     },
     {
@@ -13483,7 +13453,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "exercises_reading_generatedreadingexercise",
-      "community": 0,
+      "community": 78,
       "norm_label": "generatedreadingexercise"
     },
     {
@@ -13573,7 +13543,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "exercises_reading_readinga2exercise",
-      "community": 34,
+      "community": 0,
       "norm_label": "readinga2exercise"
     },
     {
@@ -13733,7 +13703,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_labels",
-      "community": 50,
+      "community": 85,
       "norm_label": "labels.ts"
     },
     {
@@ -13753,7 +13723,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "utils_labels_exercisestatus",
-      "community": 50,
+      "community": 85,
       "norm_label": "exercisestatus"
     },
     {
@@ -13763,7 +13733,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "utils_labels_skillmeta",
-      "community": 50,
+      "community": 85,
       "norm_label": "skillmeta"
     },
     {
@@ -13773,7 +13743,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "utils_labels_skills",
-      "community": 50,
+      "community": 85,
       "norm_label": "skills"
     },
     {
@@ -13783,7 +13753,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "utils_labels_skill_ids",
-      "community": 50,
+      "community": 85,
       "norm_label": "skill_ids"
     },
     {
@@ -13793,7 +13763,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "utils_labels_getskillmeta",
-      "community": 50,
+      "community": 85,
       "norm_label": "getskillmeta()"
     },
     {
@@ -13803,7 +13773,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "utils_labels_translatefn",
-      "community": 50,
+      "community": 85,
       "norm_label": "translatefn"
     },
     {
@@ -13813,7 +13783,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "utils_labels_titlecase",
-      "community": 50,
+      "community": 85,
       "norm_label": "titlecase()"
     },
     {
@@ -13823,7 +13793,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "utils_labels_getskilllabel",
-      "community": 50,
+      "community": 85,
       "norm_label": "getskilllabel()"
     },
     {
@@ -13833,7 +13803,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "utils_labels_gettypelabel",
-      "community": 50,
+      "community": 85,
       "norm_label": "gettypelabel()"
     },
     {
@@ -13843,7 +13813,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "utils_labels_getstatuslabel",
-      "community": 50,
+      "community": 85,
       "norm_label": "getstatuslabel()"
     },
     {
@@ -13853,7 +13823,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "utils_labels_getstatusclass",
-      "community": 50,
+      "community": 85,
       "norm_label": "getstatusclass()"
     },
     {
@@ -13863,7 +13833,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "utils_labels_getscoretier",
-      "community": 50,
+      "community": 85,
       "norm_label": "getscoretier()"
     },
     {
@@ -13873,7 +13843,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "utils_labels_getscoretextclass",
-      "community": 50,
+      "community": 85,
       "norm_label": "getscoretextclass()"
     },
     {
@@ -13890,7 +13860,7 @@
       "label": "LISTENING_AUDIO_EXT",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L7",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "listening_audiourls_listening_audio_ext",
       "community": 243,
@@ -13900,7 +13870,7 @@
       "label": "sharedListeningAudioPath()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L10",
+      "source_location": "L9",
       "_origin": "ast",
       "id": "listening_audiourls_sharedlisteningaudiopath",
       "community": 243,
@@ -13910,7 +13880,7 @@
       "label": "itemListeningAudioPath()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L15",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "listening_audiourls_itemlisteningaudiopath",
       "community": 243,
@@ -13920,7 +13890,7 @@
       "label": "generatedSharedListeningAudioPath()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L20",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "listening_audiourls_generatedsharedlisteningaudiopath",
       "community": 243,
@@ -13930,27 +13900,17 @@
       "label": "generatedItemListeningAudioPath()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L25",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "listening_audiourls_generateditemlisteningaudiopath",
       "community": 243,
       "norm_label": "generateditemlisteningaudiopath()"
     },
     {
-      "label": "listeningReplayLimit()",
-      "file_type": "code",
-      "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "listening_audiourls_listeningreplaylimit",
-      "community": 243,
-      "norm_label": "listeningreplaylimit()"
-    },
-    {
       "label": "resolveSharedListeningAudioSrc()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L38",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "listening_audiourls_resolvesharedlisteningaudiosrc",
       "community": 243,
@@ -13960,7 +13920,7 @@
       "label": "resolveItemListeningAudioSrc()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L49",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "listening_audiourls_resolveitemlisteningaudiosrc",
       "community": 243,
@@ -13970,7 +13930,7 @@
       "label": "collectListeningAudioSrcs()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L60",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "listening_audiourls_collectlisteningaudiosrcs",
       "community": 243,
@@ -13980,7 +13940,7 @@
       "label": "buildSeedListeningAudioMap()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L76",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "listening_audiourls_buildseedlisteningaudiomap",
       "community": 243,
@@ -13990,7 +13950,7 @@
       "label": "buildGeneratedListeningAudioMap()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L96",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "listening_audiourls_buildgeneratedlisteningaudiomap",
       "community": 243,
@@ -14000,7 +13960,7 @@
       "label": "ListeningAudioSegment",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L115",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "listening_audiourls_listeningaudiosegment",
       "community": 243,
@@ -14010,7 +13970,7 @@
       "label": "collectListeningAudioSegments()",
       "file_type": "code",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L122",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "listening_audiourls_collectlisteningaudiosegments",
       "community": 243,
@@ -14523,7 +14483,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "utils_types_modelanswer",
-      "community": 15,
+      "community": 88,
       "norm_label": "modelanswer"
     },
     {
@@ -14533,7 +14493,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "utils_types_aireviewdata",
-      "community": 27,
+      "community": 79,
       "norm_label": "aireviewdata"
     },
     {
@@ -14623,7 +14583,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "utils_uuid_generatespeakingid",
-      "community": 140,
+      "community": 86,
       "norm_label": "generatespeakingid()"
     },
     {
@@ -14693,7 +14653,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "project_exam_structure",
-      "community": 656,
+      "community": 3,
       "norm_label": "exam-structure.jsx"
     },
     {
@@ -14703,7 +14663,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "project_exam_structure_structurestat",
-      "community": 656,
+      "community": 3,
       "norm_label": "structurestat()"
     },
     {
@@ -14713,7 +14673,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "project_exam_structure_skillstructure",
-      "community": 656,
+      "community": 3,
       "norm_label": "skillstructure()"
     },
     {
@@ -14733,7 +14693,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "project_exercise_interior",
-      "community": 632,
+      "community": 3,
       "norm_label": "exercise-interior.jsx"
     },
     {
@@ -14743,7 +14703,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "project_exercise_interior_calmcard",
-      "community": 632,
+      "community": 3,
       "norm_label": "calmcard()"
     },
     {
@@ -14753,7 +14713,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "project_exercise_interior_metapill",
-      "community": 632,
+      "community": 3,
       "norm_label": "metapill()"
     },
     {
@@ -14763,7 +14723,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "project_exercise_interior_questionoption",
-      "community": 632,
+      "community": 3,
       "norm_label": "questionoption()"
     },
     {
@@ -14773,7 +14733,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "project_exercise_interior_exammodebanner",
-      "community": 632,
+      "community": 3,
       "norm_label": "exammodebanner()"
     },
     {
@@ -14783,7 +14743,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "project_exercise_interior_examcompletebar",
-      "community": 632,
+      "community": 3,
       "norm_label": "examcompletebar()"
     },
     {
@@ -14793,7 +14753,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "project_exercise_interior_exerciseheader",
-      "community": 632,
+      "community": 3,
       "norm_label": "exerciseheader()"
     },
     {
@@ -14843,7 +14803,7 @@
       "source_location": "L713",
       "_origin": "ast",
       "id": "project_exercise_interior_generateexammodal",
-      "community": 632,
+      "community": 3,
       "norm_label": "generateexammodal()"
     },
     {
@@ -14863,7 +14823,7 @@
       "source_location": "L848",
       "_origin": "ast",
       "id": "project_exercise_interior_progress",
-      "community": 632,
+      "community": 3,
       "norm_label": "progress()"
     },
     {
@@ -14893,7 +14853,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "project_exercises_partinfocard",
-      "community": 648,
+      "community": 626,
       "norm_label": "partinfocard()"
     },
     {
@@ -14923,7 +14883,7 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "project_exercises_exerciseslist",
-      "community": 3,
+      "community": 648,
       "norm_label": "exerciseslist()"
     },
     {
@@ -15313,7 +15273,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "project_mock_exam_mockexam",
-      "community": 3,
+      "community": 639,
       "norm_label": "mockexam()"
     },
     {
@@ -20539,10 +20499,20 @@
       "norm_label": "project summary"
     },
     {
+      "label": "Current focus",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "agents_current_focus",
+      "community": 173,
+      "norm_label": "current focus"
+    },
+    {
       "label": "Stack",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L12",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "agents_stack",
       "community": 173,
@@ -20552,7 +20522,7 @@
       "label": "Package Manager And Commands",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L23",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "agents_package_manager_and_commands",
       "community": 173,
@@ -20562,7 +20532,7 @@
       "label": "Codebase Shape",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L38",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "agents_codebase_shape",
       "community": 349,
@@ -20572,7 +20542,7 @@
       "label": "Agent Priorities",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L50",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "agents_agent_priorities",
       "community": 173,
@@ -20582,7 +20552,7 @@
       "label": "Required Standards",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L57",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "agents_required_standards",
       "community": 349,
@@ -20592,7 +20562,7 @@
       "label": "Global",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L61",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "agents_global",
       "community": 349,
@@ -20602,7 +20572,7 @@
       "label": "Components",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L67",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "agents_components",
       "community": 349,
@@ -20612,7 +20582,7 @@
       "label": "Composables",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L74",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "agents_composables",
       "community": 349,
@@ -20622,7 +20592,7 @@
       "label": "Server",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L80",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "agents_server",
       "community": 349,
@@ -20632,7 +20602,7 @@
       "label": "UI And Styling Rules",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L85",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "agents_ui_and_styling_rules",
       "community": 173,
@@ -20642,7 +20612,7 @@
       "label": "Data And Persistence Rules",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L92",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "agents_data_and_persistence_rules",
       "community": 173,
@@ -20652,7 +20622,7 @@
       "label": "AI Integration Rules",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L99",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "agents_ai_integration_rules",
       "community": 173,
@@ -20662,7 +20632,7 @@
       "label": "Before Finishing A Change",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L106",
+      "source_location": "L113",
       "_origin": "ast",
       "id": "agents_before_finishing_a_change",
       "community": 173,
@@ -20672,7 +20642,7 @@
       "label": "Useful Context Files",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L115",
+      "source_location": "L122",
       "_origin": "ast",
       "id": "agents_useful_context_files",
       "community": 173,
@@ -20825,7 +20795,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "readme",
-      "community": 8,
+      "community": 87,
       "norm_label": "readme.md"
     },
     {
@@ -20835,14 +20805,24 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "readme_exam_one",
-      "community": 8,
+      "community": 87,
       "norm_label": "exam.one \ud83c\udf93"
+    },
+    {
+      "label": "Current status (Phase 1)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "readme_current_status_phase_1",
+      "community": 87,
+      "norm_label": "current status (phase 1)"
     },
     {
       "label": "\u2728 Features",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L9",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "readme_features",
       "community": 8,
@@ -20852,7 +20832,7 @@
       "label": "\ud83d\udcda Reading Practice",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L11",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "readme_reading_practice",
       "community": 8,
@@ -20862,17 +20842,37 @@
       "label": "\u270d\ufe0f Writing Practice",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L21",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "readme_writing_practice",
       "community": 8,
       "norm_label": "\u270d\ufe0f writing practice"
     },
     {
+      "label": "\ud83c\udfa7 Listening Practice",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "readme_listening_practice",
+      "community": 8,
+      "norm_label": "\ud83c\udfa7 listening practice"
+    },
+    {
+      "label": "\ud83c\udfa4 Speaking Practice (in progress)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "readme_speaking_practice_in_progress",
+      "community": 8,
+      "norm_label": "\ud83c\udfa4 speaking practice (in progress)"
+    },
+    {
       "label": "\ud83d\udcca Progress Dashboard",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L34",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "readme_progress_dashboard",
       "community": 8,
@@ -20882,7 +20882,7 @@
       "label": "\ud83e\udd16 Optional AI Enhancement",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L40",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "readme_optional_ai_enhancement",
       "community": 8,
@@ -20892,7 +20892,7 @@
       "label": "\ud83c\udfd7\ufe0f Architecture",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L44",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "readme_architecture",
       "community": 8,
@@ -20902,7 +20902,7 @@
       "label": "Offline-First Core \u2705",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L46",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "readme_offline_first_core",
       "community": 8,
@@ -20912,7 +20912,7 @@
       "label": "Optional Online Enhancement \ud83c\udf10",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L54",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "readme_optional_online_enhancement",
       "community": 8,
@@ -20922,340 +20922,340 @@
       "label": "\ud83d\ude80 Quick Start",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L62",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "readme_quick_start",
-      "community": 8,
+      "community": 94,
       "norm_label": "\ud83d\ude80 quick start"
     },
     {
       "label": "Prerequisites",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L64",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "readme_prerequisites",
-      "community": 8,
+      "community": 94,
       "norm_label": "prerequisites"
     },
     {
       "label": "Installation",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L68",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "readme_installation",
-      "community": 8,
+      "community": 94,
       "norm_label": "installation"
     },
     {
       "label": "Development",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L82",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "readme_development",
-      "community": 8,
+      "community": 94,
       "norm_label": "development"
     },
     {
       "label": "Optional: Enable AI Features",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L91",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "readme_optional_enable_ai_features",
-      "community": 8,
+      "community": 94,
       "norm_label": "optional: enable ai features"
     },
     {
       "label": "Production Build",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L105",
+      "source_location": "L130",
       "_origin": "ast",
       "id": "readme_production_build",
-      "community": 8,
+      "community": 94,
       "norm_label": "production build"
     },
     {
       "label": "\ud83d\udee0\ufe0f Tech Stack",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L118",
+      "source_location": "L143",
       "_origin": "ast",
       "id": "readme_tech_stack",
-      "community": 8,
+      "community": 93,
       "norm_label": "\ud83d\udee0\ufe0f tech stack"
     },
     {
       "label": "Core Framework",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L120",
+      "source_location": "L145",
       "_origin": "ast",
       "id": "readme_core_framework",
-      "community": 8,
+      "community": 93,
       "norm_label": "core framework"
     },
     {
       "label": "UI & Styling",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L125",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "readme_ui_styling",
-      "community": 8,
+      "community": 93,
       "norm_label": "ui & styling"
     },
     {
       "label": "State Management",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L129",
+      "source_location": "L154",
       "_origin": "ast",
       "id": "readme_state_management",
-      "community": 8,
+      "community": 93,
       "norm_label": "state management"
     },
     {
       "label": "Internationalization",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L133",
+      "source_location": "L158",
       "_origin": "ast",
       "id": "readme_internationalization",
-      "community": 8,
+      "community": 93,
       "norm_label": "internationalization"
     },
     {
       "label": "Development Tools",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L137",
+      "source_location": "L162",
       "_origin": "ast",
       "id": "readme_development_tools",
-      "community": 8,
+      "community": 93,
       "norm_label": "development tools"
     },
     {
       "label": "\ud83d\udcc1 Project Structure",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L143",
+      "source_location": "L168",
       "_origin": "ast",
       "id": "readme_project_structure",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83d\udcc1 project structure"
     },
     {
       "label": "\ud83e\uddea Local Development",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L162",
+      "source_location": "L187",
       "_origin": "ast",
       "id": "readme_local_development",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83e\uddea local development"
     },
     {
       "label": "\ud83d\udc33 Fully Containerized Stack",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L191",
+      "source_location": "L216",
       "_origin": "ast",
       "id": "readme_fully_containerized_stack",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83d\udc33 fully containerized stack"
     },
     {
       "label": "\ud83e\uddea Available Commands",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L203",
+      "source_location": "L228",
       "_origin": "ast",
       "id": "readme_available_commands",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83e\uddea available commands"
     },
     {
       "label": "\ud83d\udcca Project Status",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L219",
+      "source_location": "L244",
       "_origin": "ast",
       "id": "readme_project_status",
-      "community": 8,
+      "community": 99,
       "norm_label": "\ud83d\udcca project status"
     },
     {
-      "label": "Completed (12/18 deliverables - 67%) \u2705",
+      "label": "Phase 1 \u2014 Frontend MVP (current)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L221",
+      "source_location": "L248",
       "_origin": "ast",
-      "id": "readme_completed_12_18_deliverables_67",
-      "community": 8,
-      "norm_label": "completed (12/18 deliverables - 67%) \u2705"
+      "id": "readme_phase_1_frontend_mvp_current",
+      "community": 99,
+      "norm_label": "phase 1 \u2014 frontend mvp (current)"
     },
     {
-      "label": "In Planning (Post-MVP) \ud83c\udfaf",
+      "label": "Later phases",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L229",
+      "source_location": "L257",
       "_origin": "ast",
-      "id": "readme_in_planning_post_mvp",
-      "community": 8,
-      "norm_label": "in planning (post-mvp) \ud83c\udfaf"
+      "id": "readme_later_phases",
+      "community": 99,
+      "norm_label": "later phases"
     },
     {
       "label": "\ud83c\udfa8 Design Philosophy",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L240",
+      "source_location": "L263",
       "_origin": "ast",
       "id": "readme_design_philosophy",
-      "community": 8,
+      "community": 98,
       "norm_label": "\ud83c\udfa8 design philosophy"
     },
     {
       "label": "User Experience Principles",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L242",
+      "source_location": "L265",
       "_origin": "ast",
       "id": "readme_user_experience_principles",
-      "community": 8,
+      "community": 98,
       "norm_label": "user experience principles"
     },
     {
       "label": "Technical Principles",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L248",
+      "source_location": "L271",
       "_origin": "ast",
       "id": "readme_technical_principles",
-      "community": 8,
+      "community": 98,
       "norm_label": "technical principles"
     },
     {
       "label": "\ud83e\udd1d Contributing",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L254",
+      "source_location": "L277",
       "_origin": "ast",
       "id": "readme_contributing",
-      "community": 8,
+      "community": 96,
       "norm_label": "\ud83e\udd1d contributing"
     },
     {
       "label": "Code Style",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L258",
+      "source_location": "L281",
       "_origin": "ast",
       "id": "readme_code_style",
-      "community": 8,
+      "community": 96,
       "norm_label": "code style"
     },
     {
       "label": "Component Guidelines",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L264",
+      "source_location": "L287",
       "_origin": "ast",
       "id": "readme_component_guidelines",
-      "community": 8,
+      "community": 96,
       "norm_label": "component guidelines"
     },
     {
       "label": "Git Workflow",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L270",
+      "source_location": "L293",
       "_origin": "ast",
       "id": "readme_git_workflow",
-      "community": 8,
+      "community": 96,
       "norm_label": "git workflow"
     },
     {
       "label": "Testing (Coming in Stage 18)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L275",
+      "source_location": "L298",
       "_origin": "ast",
       "id": "readme_testing_coming_in_stage_18",
-      "community": 8,
+      "community": 96,
       "norm_label": "testing (coming in stage 18)"
     },
     {
       "label": "\ud83d\udcda Documentation",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L280",
+      "source_location": "L303",
       "_origin": "ast",
       "id": "readme_documentation",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83d\udcda documentation"
     },
     {
       "label": "\ud83c\udfaf Roadmap",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L291",
+      "source_location": "L314",
       "_origin": "ast",
       "id": "readme_roadmap",
-      "community": 8,
+      "community": 97,
       "norm_label": "\ud83c\udfaf roadmap"
     },
     {
       "label": "Current Focus",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L293",
+      "source_location": "L316",
       "_origin": "ast",
       "id": "readme_current_focus",
-      "community": 8,
+      "community": 97,
       "norm_label": "current focus"
     },
     {
       "label": "Next Steps (In Priority Order)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L296",
+      "source_location": "L319",
       "_origin": "ast",
       "id": "readme_next_steps_in_priority_order",
-      "community": 8,
+      "community": 97,
       "norm_label": "next steps (in priority order)"
     },
     {
       "label": "\ud83d\udcdd License",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L302",
+      "source_location": "L325",
       "_origin": "ast",
       "id": "readme_license",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83d\udcdd license"
     },
     {
       "label": "\ud83d\ude4f Acknowledgments",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L306",
+      "source_location": "L329",
       "_origin": "ast",
       "id": "readme_acknowledgments",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83d\ude4f acknowledgments"
     },
     {
       "label": "\ud83d\udce7 Contact",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L312",
+      "source_location": "L335",
       "_origin": "ast",
       "id": "readme_contact",
-      "community": 8,
+      "community": 87,
       "norm_label": "\ud83d\udce7 contact"
     },
     {
@@ -21682,7 +21682,7 @@
       "label": "Skill status (Goethe A2)",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L26",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "product_roadmap_skill_status_goethe_a2",
       "community": 430,
@@ -21692,7 +21692,7 @@
       "label": "Substages",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L36",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "product_roadmap_substages",
       "community": 430,
@@ -21702,7 +21702,7 @@
       "label": "1.1 Goethe A2 core skills",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "product_roadmap_1_1_goethe_a2_core_skills",
       "community": 430,
@@ -21712,7 +21712,7 @@
       "label": "1.2 Mock exam mode",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L64",
+      "source_location": "L66",
       "_origin": "ast",
       "id": "product_roadmap_1_2_mock_exam_mode",
       "community": 430,
@@ -21722,7 +21722,7 @@
       "label": "1.3 Goethe C1 writing (partial)",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L68",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "product_roadmap_1_3_goethe_c1_writing_partial",
       "community": 430,
@@ -21732,7 +21732,7 @@
       "label": "1.4 Demo prompt templates + BYOK AI",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L72",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "product_roadmap_1_4_demo_prompt_templates_byok_ai",
       "community": 430,
@@ -21742,7 +21742,7 @@
       "label": "1.5 Polish / ship gate",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L76",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "product_roadmap_1_5_polish_ship_gate",
       "community": 430,
@@ -21752,7 +21752,7 @@
       "label": "Phase 2: Self-Hostable Full-Stack App (localhost first)",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L84",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "product_roadmap_phase_2_self_hostable_full_stack_app_localhost_first",
       "community": 430,
@@ -21762,9 +21762,9 @@
       "label": "Substages",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L95",
+      "source_location": "L97",
       "_origin": "ast",
-      "id": "product_roadmap_substages_95",
+      "id": "product_roadmap_substages_97",
       "community": 430,
       "norm_label": "substages"
     },
@@ -21772,7 +21772,7 @@
       "label": "2.1 Backend foundation",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L97",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "product_roadmap_2_1_backend_foundation",
       "community": 430,
@@ -21782,7 +21782,7 @@
       "label": "2.2 Auth and account UI",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L101",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "product_roadmap_2_2_auth_and_account_ui",
       "community": 430,
@@ -21792,7 +21792,7 @@
       "label": "2.3 Persistence cutover",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L105",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "product_roadmap_2_3_persistence_cutover",
       "community": 430,
@@ -21802,7 +21802,7 @@
       "label": "2.4 AI move to NestJS",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L109",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "product_roadmap_2_4_ai_move_to_nestjs",
       "community": 430,
@@ -21812,7 +21812,7 @@
       "label": "2.5 Docker Compose packaging",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L113",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "product_roadmap_2_5_docker_compose_packaging",
       "community": 430,
@@ -21822,7 +21822,7 @@
       "label": "2.6 Self-host runbook",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L117",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "product_roadmap_2_6_self_host_runbook",
       "community": 430,
@@ -21832,7 +21832,7 @@
       "label": "Phase 3: Open-Source Release, Community, and Cloud Prep",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L125",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "product_roadmap_phase_3_open_source_release_community_and_cloud_prep",
       "community": 430,
@@ -21842,9 +21842,9 @@
       "label": "Substages",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L129",
+      "source_location": "L131",
       "_origin": "ast",
-      "id": "product_roadmap_substages_129",
+      "id": "product_roadmap_substages_131",
       "community": 430,
       "norm_label": "substages"
     },
@@ -21852,7 +21852,7 @@
       "label": "3.1 Public GitHub release",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L131",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "product_roadmap_3_1_public_github_release",
       "community": 430,
@@ -21862,7 +21862,7 @@
       "label": "3.2 Community loop",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L135",
+      "source_location": "L137",
       "_origin": "ast",
       "id": "product_roadmap_3_2_community_loop",
       "community": 430,
@@ -21872,7 +21872,7 @@
       "label": "3.3 Docusaurus docs site",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L139",
+      "source_location": "L141",
       "_origin": "ast",
       "id": "product_roadmap_3_3_docusaurus_docs_site",
       "community": 430,
@@ -21882,7 +21882,7 @@
       "label": "3.4 Open-source product enhancements",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L143",
+      "source_location": "L145",
       "_origin": "ast",
       "id": "product_roadmap_3_4_open_source_product_enhancements",
       "community": 430,
@@ -21892,7 +21892,7 @@
       "label": "3.5 Cloud groundwork",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L147",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "product_roadmap_3_5_cloud_groundwork",
       "community": 430,
@@ -21902,7 +21902,7 @@
       "label": "Phase 4: Hosted Cloud Product",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L155",
+      "source_location": "L157",
       "_origin": "ast",
       "id": "product_roadmap_phase_4_hosted_cloud_product",
       "community": 430,
@@ -21912,9 +21912,9 @@
       "label": "Substages",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L159",
+      "source_location": "L161",
       "_origin": "ast",
-      "id": "product_roadmap_substages_159",
+      "id": "product_roadmap_substages_161",
       "community": 430,
       "norm_label": "substages"
     },
@@ -21922,7 +21922,7 @@
       "label": "4.1 Managed hosting",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L161",
+      "source_location": "L163",
       "_origin": "ast",
       "id": "product_roadmap_4_1_managed_hosting",
       "community": 430,
@@ -21932,7 +21932,7 @@
       "label": "4.2 Exam expansion",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L165",
+      "source_location": "L167",
       "_origin": "ast",
       "id": "product_roadmap_4_2_exam_expansion",
       "community": 430,
@@ -21942,7 +21942,7 @@
       "label": "4.3 Collaboration features",
       "file_type": "document",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L169",
+      "source_location": "L171",
       "_origin": "ast",
       "id": "product_roadmap_4_3_collaboration_features",
       "community": 430,
@@ -23037,7 +23037,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 349,
+      "community": 82,
       "norm_label": "exam.one",
       "id": "agents_exam_one"
     },
@@ -23128,7 +23128,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 8,
+      "community": 87,
       "norm_label": "post-mvp planning",
       "id": "readme_post_mvp_planning"
     },
@@ -23271,7 +23271,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 13,
+      "community": 84,
       "norm_label": "product documentation",
       "id": "agent_os_plan_product_product_documentation"
     },
@@ -23284,7 +23284,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 13,
+      "community": 84,
       "norm_label": "mission document",
       "id": "agent_os_plan_product_mission_doc"
     },
@@ -23310,7 +23310,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 85,
+      "community": 84,
       "norm_label": "tech stack document",
       "id": "agent_os_plan_product_tech_stack_doc"
     },
@@ -23518,7 +23518,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 85,
+      "community": 84,
       "norm_label": "current frontend stack",
       "id": "product_tech_stack_current_frontend"
     },
@@ -23531,7 +23531,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 85,
+      "community": 84,
       "norm_label": "current state and persistence",
       "id": "product_tech_stack_current_state_persistence"
     },
@@ -23570,7 +23570,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 85,
+      "community": 84,
       "norm_label": "no current database",
       "id": "product_tech_stack_no_current_database"
     },
@@ -26526,26 +26526,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/listening/AudioPlayer.vue",
-      "source_location": "L100",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "listening_audioplayer",
-      "target": "listening_audioplayer_plays"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/listening/AudioPlayer.vue",
-      "source_location": "L104",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "listening_audioplayer",
-      "target": "listening_audioplayer_playsleft"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/listening/AudioPlayer.vue",
       "source_location": "L75",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -26581,16 +26561,6 @@
       "confidence_score": 1.0,
       "source": "listening_audioplayer",
       "target": "listening_audioplayer_startsimulatedtimer"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/components/listening/AudioPlayer.vue",
-      "source_location": "L133",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "listening_audioplayer",
-      "target": "listening_audioplayer_statuslabel"
     },
     {
       "relation": "contains",
@@ -26852,17 +26822,6 @@
       "confidence_score": 1.0,
       "source": "listening_listeningsession",
       "target": "listening_audiourls"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/components/listening/ListeningSession.vue",
-      "source_location": "L169",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "listening_listeningsession",
-      "target": "listening_audiourls_listeningreplaylimit"
     },
     {
       "relation": "imports",
@@ -43289,16 +43248,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "apps/frontend/utils/listening/audioUrls.ts",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "listening_audiourls",
-      "target": "listening_audiourls_listeningreplaylimit"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/frontend/utils/listening/audioUrls.ts",
       "source_location": "L38",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -46998,9 +46947,9 @@
       "source_file": "scripts/generate-listening-audio.mjs",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_generate_listening_audio",
-      "target": "scripts_generate_listening_audio_formatduration",
-      "confidence_score": 1.0
+      "target": "scripts_generate_listening_audio_formatduration"
     },
     {
       "relation": "contains",
@@ -47092,9 +47041,9 @@
       "source_file": "scripts/generate-listening-audio.mjs",
       "source_location": "L192",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_generate_listening_audio_main",
-      "target": "scripts_generate_listening_audio_formatduration",
-      "confidence_score": 1.0
+      "target": "scripts_generate_listening_audio_formatduration"
     },
     {
       "relation": "contains",
@@ -47855,9 +47804,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L217",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_chunk_phonemes",
-      "confidence_score": 1.0
+      "target": "victoria_main_chunk_phonemes"
     },
     {
       "relation": "contains",
@@ -47885,9 +47834,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L195",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_init_phonemizer",
-      "confidence_score": 1.0
+      "target": "victoria_main_init_phonemizer"
     },
     {
       "relation": "contains",
@@ -47915,9 +47864,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L275",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_load_models",
-      "confidence_score": 1.0
+      "target": "victoria_main_load_models"
     },
     {
       "relation": "contains",
@@ -47935,9 +47884,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_normalize_text",
-      "confidence_score": 1.0
+      "target": "victoria_main_normalize_text"
     },
     {
       "relation": "contains",
@@ -47945,9 +47894,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_patch_espeak_wrapper",
-      "confidence_score": 1.0
+      "target": "victoria_main_patch_espeak_wrapper"
     },
     {
       "relation": "contains",
@@ -47955,9 +47904,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L209",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_phonemize_german",
-      "confidence_score": 1.0
+      "target": "victoria_main_phonemize_german"
     },
     {
       "relation": "contains",
@@ -47965,9 +47914,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_prepare_kokoro_checkpoint",
-      "confidence_score": 1.0
+      "target": "victoria_main_prepare_kokoro_checkpoint"
     },
     {
       "relation": "contains",
@@ -47975,9 +47924,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_remap_weight_norm_keys",
-      "confidence_score": 1.0
+      "target": "victoria_main_remap_weight_norm_keys"
     },
     {
       "relation": "contains",
@@ -47985,9 +47934,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L340",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_resolve_voice",
-      "confidence_score": 1.0
+      "target": "victoria_main_resolve_voice"
     },
     {
       "relation": "contains",
@@ -48015,9 +47964,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L236",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_synthesize_phonemes",
-      "confidence_score": 1.0
+      "target": "victoria_main_synthesize_phonemes"
     },
     {
       "relation": "contains",
@@ -48045,9 +47994,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main",
-      "target": "victoria_main_zero_crossing_rate",
-      "confidence_score": 1.0
+      "target": "victoria_main_zero_crossing_rate"
     },
     {
       "relation": "rationale_for",
@@ -48088,9 +48037,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L236",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_synthesize_phonemes",
-      "target": "scripts_tts_victoria_main_py_ndarray",
-      "confidence_score": 1.0
+      "target": "scripts_tts_victoria_main_py_ndarray"
     },
     {
       "relation": "references",
@@ -48110,9 +48059,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_zero_crossing_rate",
-      "target": "scripts_tts_victoria_main_py_ndarray",
-      "confidence_score": 1.0
+      "target": "scripts_tts_victoria_main_py_ndarray"
     },
     {
       "relation": "calls",
@@ -48121,9 +48070,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L409",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_generate_speech",
-      "target": "victoria_main_zero_crossing_rate",
-      "confidence_score": 1.0
+      "target": "victoria_main_zero_crossing_rate"
     },
     {
       "relation": "calls",
@@ -48132,9 +48081,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L325",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_models",
-      "target": "victoria_main_zero_crossing_rate",
-      "confidence_score": 1.0
+      "target": "victoria_main_zero_crossing_rate"
     },
     {
       "relation": "calls",
@@ -48154,9 +48103,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L380",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_generate_speech",
-      "target": "victoria_main_normalize_text",
-      "confidence_score": 1.0
+      "target": "victoria_main_normalize_text"
     },
     {
       "relation": "calls",
@@ -48165,9 +48114,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L197",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_init_phonemizer",
-      "target": "victoria_main_patch_espeak_wrapper",
-      "confidence_score": 1.0
+      "target": "victoria_main_patch_espeak_wrapper"
     },
     {
       "relation": "calls",
@@ -48176,9 +48125,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L160",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_kmodel",
-      "target": "victoria_main_patch_espeak_wrapper",
-      "confidence_score": 1.0
+      "target": "victoria_main_patch_espeak_wrapper"
     },
     {
       "relation": "calls",
@@ -48187,9 +48136,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_patch_espeak_wrapper",
-      "target": "scripts_tts_victoria_main_py_path",
-      "confidence_score": 1.0
+      "target": "scripts_tts_victoria_main_py_path"
     },
     {
       "relation": "rationale_for",
@@ -48197,9 +48146,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_rationale_98",
-      "target": "victoria_main_patch_espeak_wrapper",
-      "confidence_score": 1.0
+      "target": "victoria_main_patch_espeak_wrapper"
     },
     {
       "relation": "calls",
@@ -48208,9 +48157,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_prepare_kokoro_checkpoint",
-      "target": "victoria_main_remap_weight_norm_keys",
-      "confidence_score": 1.0
+      "target": "victoria_main_remap_weight_norm_keys"
     },
     {
       "relation": "rationale_for",
@@ -48218,9 +48167,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_rationale_126",
-      "target": "victoria_main_remap_weight_norm_keys",
-      "confidence_score": 1.0
+      "target": "victoria_main_remap_weight_norm_keys"
     },
     {
       "relation": "calls",
@@ -48229,9 +48178,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_kmodel",
-      "target": "victoria_main_prepare_kokoro_checkpoint",
-      "confidence_score": 1.0
+      "target": "victoria_main_prepare_kokoro_checkpoint"
     },
     {
       "relation": "references",
@@ -48240,9 +48189,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_prepare_kokoro_checkpoint",
-      "target": "scripts_tts_victoria_main_py_path",
-      "confidence_score": 1.0
+      "target": "scripts_tts_victoria_main_py_path"
     },
     {
       "relation": "rationale_for",
@@ -48250,9 +48199,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_rationale_141",
-      "target": "victoria_main_prepare_kokoro_checkpoint",
-      "confidence_score": 1.0
+      "target": "victoria_main_prepare_kokoro_checkpoint"
     },
     {
       "relation": "references",
@@ -48283,9 +48232,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L293",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_models",
-      "target": "victoria_main_load_kmodel",
-      "confidence_score": 1.0
+      "target": "victoria_main_load_kmodel"
     },
     {
       "relation": "calls",
@@ -48294,9 +48243,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L294",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_models",
-      "target": "victoria_main_load_voice_tensor",
-      "confidence_score": 1.0
+      "target": "victoria_main_load_voice_tensor"
     },
     {
       "relation": "references",
@@ -48316,9 +48265,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L236",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_synthesize_phonemes",
-      "target": "tensor",
-      "confidence_score": 1.0
+      "target": "tensor"
     },
     {
       "relation": "calls",
@@ -48327,9 +48276,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L314",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_models",
-      "target": "victoria_main_init_phonemizer",
-      "confidence_score": 1.0
+      "target": "victoria_main_init_phonemizer"
     },
     {
       "relation": "rationale_for",
@@ -48337,9 +48286,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L210",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_rationale_210",
-      "target": "victoria_main_phonemize_german",
-      "confidence_score": 1.0
+      "target": "victoria_main_phonemize_german"
     },
     {
       "relation": "calls",
@@ -48348,9 +48297,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L261",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_synthesize_sentence",
-      "target": "victoria_main_phonemize_german",
-      "confidence_score": 1.0
+      "target": "victoria_main_phonemize_german"
     },
     {
       "relation": "calls",
@@ -48359,9 +48308,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L266",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_synthesize_sentence",
-      "target": "victoria_main_chunk_phonemes",
-      "confidence_score": 1.0
+      "target": "victoria_main_chunk_phonemes"
     },
     {
       "relation": "calls",
@@ -48370,9 +48319,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L267",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_synthesize_sentence",
-      "target": "victoria_main_synthesize_phonemes",
-      "confidence_score": 1.0
+      "target": "victoria_main_synthesize_phonemes"
     },
     {
       "relation": "calls",
@@ -48392,9 +48341,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L324",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_load_models",
-      "target": "victoria_main_synthesize_sentence",
-      "confidence_score": 1.0
+      "target": "victoria_main_synthesize_sentence"
     },
     {
       "relation": "calls",
@@ -48403,9 +48352,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L389",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_generate_speech",
-      "target": "victoria_main_load_models",
-      "confidence_score": 1.0
+      "target": "victoria_main_load_models"
     },
     {
       "relation": "calls",
@@ -48414,9 +48363,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L362",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_startup",
-      "target": "victoria_main_load_models",
-      "confidence_score": 1.0
+      "target": "victoria_main_load_models"
     },
     {
       "relation": "calls",
@@ -48425,9 +48374,9 @@
       "source_file": "scripts/tts/victoria/main.py",
       "source_location": "L381",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "victoria_main_generate_speech",
-      "target": "victoria_main_resolve_voice",
-      "confidence_score": 1.0
+      "target": "victoria_main_resolve_voice"
     },
     {
       "relation": "references",
@@ -48446,9 +48395,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_dim_in",
-      "confidence_score": 1.0
+      "target": "models_config_dim_in"
     },
     {
       "relation": "contains",
@@ -48456,9 +48405,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_dropout",
-      "confidence_score": 1.0
+      "target": "models_config_dropout"
     },
     {
       "relation": "contains",
@@ -48466,9 +48415,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_hidden_dim",
-      "confidence_score": 1.0
+      "target": "models_config_hidden_dim"
     },
     {
       "relation": "contains",
@@ -48476,9 +48425,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_istftnet",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet"
     },
     {
       "relation": "contains",
@@ -48486,9 +48435,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_max_conv_dim",
-      "confidence_score": 1.0
+      "target": "models_config_max_conv_dim"
     },
     {
       "relation": "contains",
@@ -48496,9 +48445,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_max_dur",
-      "confidence_score": 1.0
+      "target": "models_config_max_dur"
     },
     {
       "relation": "contains",
@@ -48506,9 +48455,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_multispeaker",
-      "confidence_score": 1.0
+      "target": "models_config_multispeaker"
     },
     {
       "relation": "contains",
@@ -48516,9 +48465,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_n_layer",
-      "confidence_score": 1.0
+      "target": "models_config_n_layer"
     },
     {
       "relation": "contains",
@@ -48526,9 +48475,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_n_mels",
-      "confidence_score": 1.0
+      "target": "models_config_n_mels"
     },
     {
       "relation": "contains",
@@ -48536,9 +48485,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_n_token",
-      "confidence_score": 1.0
+      "target": "models_config_n_token"
     },
     {
       "relation": "contains",
@@ -48546,9 +48495,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_plbert",
-      "confidence_score": 1.0
+      "target": "models_config_plbert"
     },
     {
       "relation": "contains",
@@ -48556,9 +48505,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_style_dim",
-      "confidence_score": 1.0
+      "target": "models_config_style_dim"
     },
     {
       "relation": "contains",
@@ -48566,9 +48515,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_text_encoder_kernel_size",
-      "confidence_score": 1.0
+      "target": "models_config_text_encoder_kernel_size"
     },
     {
       "relation": "contains",
@@ -48576,9 +48525,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config",
-      "target": "models_config_vocab",
-      "confidence_score": 1.0
+      "target": "models_config_vocab"
     },
     {
       "relation": "contains",
@@ -48586,9 +48535,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_gen_istft_hop_size",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_gen_istft_hop_size"
     },
     {
       "relation": "contains",
@@ -48596,9 +48545,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_gen_istft_n_fft",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_gen_istft_n_fft"
     },
     {
       "relation": "contains",
@@ -48606,9 +48555,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_resblock_dilation_sizes",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_resblock_dilation_sizes"
     },
     {
       "relation": "contains",
@@ -48616,9 +48565,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_resblock_kernel_sizes",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_resblock_kernel_sizes"
     },
     {
       "relation": "contains",
@@ -48626,9 +48575,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_upsample_initial_channel",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_upsample_initial_channel"
     },
     {
       "relation": "contains",
@@ -48636,9 +48585,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_upsample_kernel_sizes",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_upsample_kernel_sizes"
     },
     {
       "relation": "contains",
@@ -48646,9 +48595,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_istftnet",
-      "target": "models_config_istftnet_upsample_rates",
-      "confidence_score": 1.0
+      "target": "models_config_istftnet_upsample_rates"
     },
     {
       "relation": "contains",
@@ -48656,9 +48605,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_plbert",
-      "target": "models_config_plbert_dropout",
-      "confidence_score": 1.0
+      "target": "models_config_plbert_dropout"
     },
     {
       "relation": "contains",
@@ -48666,9 +48615,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_plbert",
-      "target": "models_config_plbert_hidden_size",
-      "confidence_score": 1.0
+      "target": "models_config_plbert_hidden_size"
     },
     {
       "relation": "contains",
@@ -48676,9 +48625,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_plbert",
-      "target": "models_config_plbert_intermediate_size",
-      "confidence_score": 1.0
+      "target": "models_config_plbert_intermediate_size"
     },
     {
       "relation": "contains",
@@ -48686,9 +48635,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_plbert",
-      "target": "models_config_plbert_max_position_embeddings",
-      "confidence_score": 1.0
+      "target": "models_config_plbert_max_position_embeddings"
     },
     {
       "relation": "contains",
@@ -48696,9 +48645,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_plbert",
-      "target": "models_config_plbert_num_attention_heads",
-      "confidence_score": 1.0
+      "target": "models_config_plbert_num_attention_heads"
     },
     {
       "relation": "contains",
@@ -48706,9 +48655,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_plbert",
-      "target": "models_config_plbert_num_hidden_layers",
-      "confidence_score": 1.0
+      "target": "models_config_plbert_num_hidden_layers"
     },
     {
       "relation": "contains",
@@ -48716,9 +48665,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_a",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_a"
     },
     {
       "relation": "contains",
@@ -48726,9 +48675,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_b",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_b"
     },
     {
       "relation": "contains",
@@ -48736,9 +48685,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_c",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_c"
     },
     {
       "relation": "contains",
@@ -48746,9 +48695,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_d",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_d"
     },
     {
       "relation": "contains",
@@ -48756,9 +48705,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_e",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_e"
     },
     {
       "relation": "contains",
@@ -48766,9 +48715,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L70",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_f",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_f"
     },
     {
       "relation": "contains",
@@ -48776,9 +48725,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_h",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_h"
     },
     {
       "relation": "contains",
@@ -48786,9 +48735,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_i",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_i"
     },
     {
       "relation": "contains",
@@ -48796,9 +48745,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_j",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_j"
     },
     {
       "relation": "contains",
@@ -48806,9 +48755,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_k",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_k"
     },
     {
       "relation": "contains",
@@ -48816,9 +48765,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_l",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_l"
     },
     {
       "relation": "contains",
@@ -48826,9 +48775,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_m",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_m"
     },
     {
       "relation": "contains",
@@ -48836,9 +48785,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_n",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_n"
     },
     {
       "relation": "contains",
@@ -48846,9 +48795,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_o",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_o"
     },
     {
       "relation": "contains",
@@ -48856,9 +48805,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_p",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_p"
     },
     {
       "relation": "contains",
@@ -48866,9 +48815,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_q",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_q"
     },
     {
       "relation": "contains",
@@ -48876,9 +48825,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_r",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_r"
     },
     {
       "relation": "contains",
@@ -48886,9 +48835,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_s",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_s"
     },
     {
       "relation": "contains",
@@ -48896,9 +48845,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_t",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_t"
     },
     {
       "relation": "contains",
@@ -48906,9 +48855,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_u",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_u"
     },
     {
       "relation": "contains",
@@ -48916,9 +48865,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_u0303",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_u0303"
     },
     {
       "relation": "contains",
@@ -48926,9 +48875,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_uab67",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_uab67"
     },
     {
       "relation": "contains",
@@ -48936,9 +48885,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_v",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_v"
     },
     {
       "relation": "contains",
@@ -48946,9 +48895,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_w",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_w"
     },
     {
       "relation": "contains",
@@ -48956,9 +48905,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_x",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_x"
     },
     {
       "relation": "contains",
@@ -48966,9 +48915,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L88",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_y",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_y"
     },
     {
       "relation": "contains",
@@ -48976,9 +48925,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_z",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_z"
     },
     {
       "relation": "contains",
@@ -48986,9 +48935,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u00e6",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u00e6"
     },
     {
       "relation": "contains",
@@ -48996,9 +48945,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u00e7",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u00e7"
     },
     {
       "relation": "contains",
@@ -49006,9 +48955,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u00f0",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u00f0"
     },
     {
       "relation": "contains",
@@ -49016,9 +48965,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L117",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u00f8",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u00f8"
     },
     {
       "relation": "contains",
@@ -49026,9 +48975,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u014b",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u014b"
     },
     {
       "relation": "contains",
@@ -49036,9 +48985,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0153",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0153"
     },
     {
       "relation": "contains",
@@ -49046,9 +48995,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0250",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0250"
     },
     {
       "relation": "contains",
@@ -49056,9 +49005,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0251",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0251"
     },
     {
       "relation": "contains",
@@ -49066,9 +49015,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0252",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0252"
     },
     {
       "relation": "contains",
@@ -49076,9 +49025,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0254",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0254"
     },
     {
       "relation": "contains",
@@ -49086,9 +49035,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L96",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0255",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0255"
     },
     {
       "relation": "contains",
@@ -49096,9 +49045,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0256",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0256"
     },
     {
       "relation": "contains",
@@ -49106,9 +49055,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0259",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0259"
     },
     {
       "relation": "contains",
@@ -49116,9 +49065,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u025a",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u025a"
     },
     {
       "relation": "contains",
@@ -49126,9 +49075,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L103",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u025b",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u025b"
     },
     {
       "relation": "contains",
@@ -49136,9 +49085,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u025c",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u025c"
     },
     {
       "relation": "contains",
@@ -49146,9 +49095,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u025f",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u025f"
     },
     {
       "relation": "contains",
@@ -49156,9 +49105,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0261",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0261"
     },
     {
       "relation": "contains",
@@ -49166,9 +49115,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0263",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0263"
     },
     {
       "relation": "contains",
@@ -49176,9 +49125,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0264",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0264"
     },
     {
       "relation": "contains",
@@ -49186,9 +49135,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L107",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0265",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0265"
     },
     {
       "relation": "contains",
@@ -49196,9 +49145,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0268",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0268"
     },
     {
       "relation": "contains",
@@ -49206,9 +49155,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u026a",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u026a"
     },
     {
       "relation": "contains",
@@ -49216,9 +49165,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L111",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u026f",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u026f"
     },
     {
       "relation": "contains",
@@ -49226,9 +49175,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0270",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0270"
     },
     {
       "relation": "contains",
@@ -49236,9 +49185,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0272",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0272"
     },
     {
       "relation": "contains",
@@ -49246,9 +49195,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0273",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0273"
     },
     {
       "relation": "contains",
@@ -49256,9 +49205,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0274",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0274"
     },
     {
       "relation": "contains",
@@ -49266,9 +49215,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L118",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0278",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0278"
     },
     {
       "relation": "contains",
@@ -49276,9 +49225,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0279",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0279"
     },
     {
       "relation": "contains",
@@ -49286,9 +49235,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u027b",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u027b"
     },
     {
       "relation": "contains",
@@ -49296,9 +49245,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u027d",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u027d"
     },
     {
       "relation": "contains",
@@ -49306,9 +49255,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u027e",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u027e"
     },
     {
       "relation": "contains",
@@ -49316,9 +49265,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L124",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0281",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0281"
     },
     {
       "relation": "contains",
@@ -49326,9 +49275,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0282",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0282"
     },
     {
       "relation": "contains",
@@ -49336,9 +49285,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L127",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0283",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0283"
     },
     {
       "relation": "contains",
@@ -49346,9 +49295,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0288",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0288"
     },
     {
       "relation": "contains",
@@ -49356,9 +49305,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u028a",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u028a"
     },
     {
       "relation": "contains",
@@ -49366,9 +49315,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u028b",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u028b"
     },
     {
       "relation": "contains",
@@ -49376,9 +49325,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L132",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u028c",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u028c"
     },
     {
       "relation": "contains",
@@ -49386,9 +49335,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u028e",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u028e"
     },
     {
       "relation": "contains",
@@ -49396,9 +49345,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L137",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0292",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0292"
     },
     {
       "relation": "contains",
@@ -49406,9 +49355,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u0294",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u0294"
     },
     {
       "relation": "contains",
@@ -49416,9 +49365,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u029d",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u029d"
     },
     {
       "relation": "contains",
@@ -49426,9 +49375,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02a3",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02a3"
     },
     {
       "relation": "contains",
@@ -49436,9 +49385,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02a4",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02a4"
     },
     {
       "relation": "contains",
@@ -49446,9 +49395,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02a5",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02a5"
     },
     {
       "relation": "contains",
@@ -49456,9 +49405,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02a6",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02a6"
     },
     {
       "relation": "contains",
@@ -49466,9 +49415,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02a7",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02a7"
     },
     {
       "relation": "contains",
@@ -49476,9 +49425,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02a8",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02a8"
     },
     {
       "relation": "contains",
@@ -49486,9 +49435,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02c8",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02c8"
     },
     {
       "relation": "contains",
@@ -49496,9 +49445,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02cc",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02cc"
     },
     {
       "relation": "contains",
@@ -49506,9 +49455,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u02d0",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u02d0"
     },
     {
       "relation": "contains",
@@ -49516,9 +49465,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u03b2",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u03b2"
     },
     {
       "relation": "contains",
@@ -49526,9 +49475,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u03b8",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u03b8"
     },
     {
       "relation": "contains",
@@ -49536,9 +49485,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u03c7",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u03c7"
     },
     {
       "relation": "contains",
@@ -49546,9 +49495,9 @@
       "source_file": "scripts/tts/victoria/models/config.json",
       "source_location": "L148",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_config_vocab",
-      "target": "models_config_vocab_\u1d7b",
-      "confidence_score": 1.0
+      "target": "models_config_vocab_\u1d7b"
     },
     {
       "relation": "contains",
@@ -50824,6 +50773,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "AGENTS.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "agents_agents_md",
+      "target": "agents_current_focus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "AGENTS.md",
       "source_location": "L89",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -51164,6 +51123,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "readme_exam_one",
+      "target": "readme_current_status_phase_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
       "source_location": "L235",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -51314,6 +51283,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "readme_features",
+      "target": "readme_listening_practice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
       "source_location": "L40",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -51339,6 +51318,16 @@
       "confidence_score": 1.0,
       "source": "readme_features",
       "target": "readme_reading_practice"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "readme_features",
+      "target": "readme_speaking_practice_in_progress",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -51564,21 +51553,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L216",
+      "source_location": "L257",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "readme_project_status",
-      "target": "readme_completed_12_18_deliverables_67"
+      "target": "readme_later_phases",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L224",
+      "source_location": "L248",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "readme_project_status",
-      "target": "readme_in_planning_post_mvp"
+      "target": "readme_phase_1_frontend_mvp_current",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -52124,81 +52113,71 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L95",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_phase_2_self_hostable_full_stack_app_localhost_first",
-      "target": "product_roadmap_substages_95"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "agent-os/product/roadmap.md",
       "source_location": "L97",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_95",
-      "target": "product_roadmap_2_1_backend_foundation"
+      "source": "product_roadmap_phase_2_self_hostable_full_stack_app_localhost_first",
+      "target": "product_roadmap_substages_97",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L101",
+      "source_location": "L99",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_95",
-      "target": "product_roadmap_2_2_auth_and_account_ui"
+      "source": "product_roadmap_substages_97",
+      "target": "product_roadmap_2_1_backend_foundation",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L105",
+      "source_location": "L103",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_95",
-      "target": "product_roadmap_2_3_persistence_cutover"
+      "source": "product_roadmap_substages_97",
+      "target": "product_roadmap_2_2_auth_and_account_ui",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L109",
+      "source_location": "L107",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_95",
-      "target": "product_roadmap_2_4_ai_move_to_nestjs"
+      "source": "product_roadmap_substages_97",
+      "target": "product_roadmap_2_3_persistence_cutover",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L113",
+      "source_location": "L111",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_95",
-      "target": "product_roadmap_2_5_docker_compose_packaging"
+      "source": "product_roadmap_substages_97",
+      "target": "product_roadmap_2_4_ai_move_to_nestjs",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L117",
+      "source_location": "L115",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_95",
-      "target": "product_roadmap_2_6_self_host_runbook"
+      "source": "product_roadmap_substages_97",
+      "target": "product_roadmap_2_5_docker_compose_packaging",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L129",
+      "source_location": "L119",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_phase_3_open_source_release_community_and_cloud_prep",
-      "target": "product_roadmap_substages_129"
+      "source": "product_roadmap_substages_97",
+      "target": "product_roadmap_2_6_self_host_runbook",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -52206,59 +52185,59 @@
       "source_file": "agent-os/product/roadmap.md",
       "source_location": "L131",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_129",
-      "target": "product_roadmap_3_1_public_github_release"
+      "source": "product_roadmap_phase_3_open_source_release_community_and_cloud_prep",
+      "target": "product_roadmap_substages_131",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L135",
+      "source_location": "L133",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_129",
-      "target": "product_roadmap_3_2_community_loop"
+      "source": "product_roadmap_substages_131",
+      "target": "product_roadmap_3_1_public_github_release",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L139",
+      "source_location": "L137",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_129",
-      "target": "product_roadmap_3_3_docusaurus_docs_site"
+      "source": "product_roadmap_substages_131",
+      "target": "product_roadmap_3_2_community_loop",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L143",
+      "source_location": "L141",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_129",
-      "target": "product_roadmap_3_4_open_source_product_enhancements"
+      "source": "product_roadmap_substages_131",
+      "target": "product_roadmap_3_3_docusaurus_docs_site",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L147",
+      "source_location": "L145",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_129",
-      "target": "product_roadmap_3_5_cloud_groundwork"
+      "source": "product_roadmap_substages_131",
+      "target": "product_roadmap_3_4_open_source_product_enhancements",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L159",
+      "source_location": "L149",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_phase_4_hosted_cloud_product",
-      "target": "product_roadmap_substages_159"
+      "source": "product_roadmap_substages_131",
+      "target": "product_roadmap_3_5_cloud_groundwork",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -52266,29 +52245,39 @@
       "source_file": "agent-os/product/roadmap.md",
       "source_location": "L161",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_159",
-      "target": "product_roadmap_4_1_managed_hosting"
+      "source": "product_roadmap_phase_4_hosted_cloud_product",
+      "target": "product_roadmap_substages_161",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L165",
+      "source_location": "L163",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_159",
-      "target": "product_roadmap_4_2_exam_expansion"
+      "source": "product_roadmap_substages_161",
+      "target": "product_roadmap_4_1_managed_hosting",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "agent-os/product/roadmap.md",
-      "source_location": "L169",
+      "source_location": "L167",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "product_roadmap_substages_159",
-      "target": "product_roadmap_4_3_collaboration_features"
+      "source": "product_roadmap_substages_161",
+      "target": "product_roadmap_4_2_exam_expansion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "agent-os/product/roadmap.md",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "product_roadmap_substages_161",
+      "target": "product_roadmap_4_3_collaboration_features",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -53036,9 +53025,9 @@
       "source_file": "scripts/tts/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_readme",
-      "target": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
-      "confidence_score": 1.0
+      "target": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro"
     },
     {
       "relation": "contains",
@@ -53046,9 +53035,9 @@
       "source_file": "scripts/tts/README.md",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
-      "target": "tts_readme_in_app_generate_audio",
-      "confidence_score": 1.0
+      "target": "tts_readme_in_app_generate_audio"
     },
     {
       "relation": "contains",
@@ -53056,9 +53045,9 @@
       "source_file": "scripts/tts/README.md",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tts_readme_listening_audio_generation_four_voice_pytorch_kokoro",
-      "target": "tts_readme_seed_audio_maintainer",
-      "confidence_score": 1.0
+      "target": "tts_readme_seed_audio_maintainer"
     },
     {
       "relation": "contains",
@@ -54665,5 +54654,5 @@
       "source_file": "exam-one-design/project/Redesign.html"
     }
   ],
-  "built_at_commit": "28d57a5c591bdc791985d4d0082a231a969db7c4"
+  "built_at_commit": "91621f42844792bf9ff0a33daceabb147bceaf1c"
 }

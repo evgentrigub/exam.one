@@ -15,7 +15,9 @@ flowchart LR
 
 ## Phase 1: Frontend-Only MVP (current)
 
-The first usable, shippable version is **frontend only** — no separate backend and no database. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
+The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
+
+> **Note:** The monorepo already contains NestJS / Prisma / Compose scaffolding from early Phase 2 groundwork. That does not change Phase 1 skill work: keep reading/writing/listening/speaking on localStorage until Phase 2 persistence cutover.
 
 **Supported exams in this phase:**
 - **German / Goethe A2** — full skills (Reading, Writing, Listening, Speaking) + mock exam (see `german-exam-A2.md`)
