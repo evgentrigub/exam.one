@@ -103,6 +103,8 @@
         <div class="space-y-4 p-5">
           <SpeakingRecorder
             :max-seconds="segment.maxSeconds"
+            :disabled="recorderDisabled(segment.key)"
+            @recording-change="isRecording => onRecordingChange(segment.key, isRecording)"
             @done="payload => onRecorded(segment.key, payload)"
           />
 
@@ -149,7 +151,9 @@
           <button
             type="button"
             class="btn btn-outline flex-1 gap-2"
-            :disabled="!canSubmit || isReviewing || transcribingPhase !== null"
+            :disabled="
+              !canSubmit || isReviewing || transcribingPhase !== null || activeRecording !== null
+            "
             @click="saveWithoutReview"
           >
             <Save :size="15" />
@@ -158,7 +162,9 @@
           <button
             type="button"
             class="btn btn-warning flex-1 gap-2 text-warning-content"
-            :disabled="!canSubmit || isReviewing || transcribingPhase !== null"
+            :disabled="
+              !canSubmit || isReviewing || transcribingPhase !== null || activeRecording !== null
+            "
             @click="reviewAndSave"
           >
             <span v-if="isReviewing" class="loading loading-spinner loading-sm" />
@@ -292,6 +298,7 @@ const transcriptionErrors = reactive<Record<SegmentKey, string | null>>({
   monologue: null,
 })
 const transcribingPhase = ref<SegmentKey | null>(null)
+const activeRecording = ref<SegmentKey | null>(null)
 const submitted = ref(false)
 const recordingEpoch = ref(0)
 
@@ -377,6 +384,23 @@ const healthStatusClass = computed(() => {
   return health.value?.ready ? 'badge-success' : 'badge-warning'
 })
 
+function recorderDisabled(key: SegmentKey): boolean {
+  return (
+    submitted.value ||
+    isReviewing.value ||
+    transcribingPhase.value !== null ||
+    (activeRecording.value !== null && activeRecording.value !== key)
+  )
+}
+
+function onRecordingChange(key: SegmentKey, isRecording: boolean): void {
+  if (isRecording) {
+    activeRecording.value = key
+  } else if (activeRecording.value === key) {
+    activeRecording.value = null
+  }
+}
+
 async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<void> {
   durations[key] = payload.durationSec
   transcriptionErrors[key] = null
@@ -428,13 +452,13 @@ function saveAttempt(withReview = false): void {
 }
 
 function saveWithoutReview(): void {
-  if (!canSubmit.value || transcribingPhase.value !== null) return
+  if (!canSubmit.value || transcribingPhase.value !== null || activeRecording.value !== null) return
   clearReview()
   saveAttempt(false)
 }
 
 async function reviewAndSave(): Promise<void> {
-  if (!canSubmit.value || transcribingPhase.value !== null) return
+  if (!canSubmit.value || transcribingPhase.value !== null || activeRecording.value !== null) return
   const result = await requestReview(props.topic, attemptTranscripts())
   if (result) saveAttempt(true)
 }
@@ -446,6 +470,7 @@ function retry(): void {
     transcriptionErrors[key] = null
   }
   transcribingPhase.value = null
+  activeRecording.value = null
   submitted.value = false
   recordingEpoch.value += 1
   clearReview()

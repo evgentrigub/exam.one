@@ -463,10 +463,10 @@ async function generateAudioForExercise() {
   generateProgress.value = { done: 0, total: Math.max(1, expectedCount.value) }
 
   try {
-    const res = await $fetch<GenerateAudioResponse>('/api/tts/generate-listening-audio', {
+    const res = (await $fetch('/api/tts/generate-listening-audio', {
       method: 'POST',
       body: { exercise: currentExercise.value },
-    })
+    })) as unknown as GenerateAudioResponse
 
     if (res.error || !res.data?.audio) {
       generateError.value = res.error ?? 'Audio generation failed.'

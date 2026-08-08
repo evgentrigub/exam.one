@@ -25,10 +25,10 @@ export function useSpeakingReview() {
     error.value = null
 
     try {
-      const response = await $fetch<SpeakingReviewResponse>('/api/review-speaking', {
+      const response = (await $fetch('/api/review-speaking', {
         method: 'POST',
         body: { topic, transcripts },
-      })
+      })) as unknown as SpeakingReviewResponse
 
       if (response.error || !response.data) {
         throw new Error(response.error || 'AI review is unavailable.')

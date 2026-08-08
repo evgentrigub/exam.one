@@ -8,10 +8,16 @@ COMPLETE_FILE="${TARGET_DIR}/.complete"
 
 snapshot_is_complete() {
   [[ -f "${TARGET_DIR}/config.json" ]] \
-    && find "${TARGET_DIR}" -maxdepth 1 -name '*.safetensors' -type f -print -quit | grep -q .
+    && [[ -f "${TARGET_DIR}/generation_config.json" ]] \
+    && [[ -f "${TARGET_DIR}/processor_config.json" ]] \
+    && [[ -f "${TARGET_DIR}/tokenizer.json" ]] \
+    && [[ -f "${TARGET_DIR}/tokenizer_config.json" ]] \
+    && [[ -f "${TARGET_DIR}/model.safetensors" ]]
 }
 
-if [[ -f "${COMPLETE_FILE}" ]] && snapshot_is_complete; then
+if [[ -f "${COMPLETE_FILE}" ]] \
+  && [[ "$(<"${COMPLETE_FILE}")" == "${MODEL_ID}" ]] \
+  && snapshot_is_complete; then
   echo "[stt] Parakeet snapshot already present at ${TARGET_DIR}"
   exit 0
 fi
@@ -29,7 +35,7 @@ docker run --rm \
   -e HF_HUB_DISABLE_XET=1 \
   -v "${TARGET_DIR}:/models" \
   python:3.12-slim \
-  sh -c 'pip install --quiet "huggingface-hub>=0.34,<2" && hf download "$1" --local-dir /models' \
+  sh -c 'pip install --quiet "huggingface-hub>=0.34,<2" && hf download "$1" --local-dir /models --include "*.json" --include "*.safetensors"' \
   -- "${MODEL_ID}"
 
 if ! snapshot_is_complete; then
@@ -37,5 +43,5 @@ if ! snapshot_is_complete; then
   exit 1
 fi
 
-touch "${COMPLETE_FILE}"
+printf '%s\n' "${MODEL_ID}" > "${COMPLETE_FILE}"
 echo "[stt] Parakeet snapshot ready at ${TARGET_DIR}"

@@ -23,7 +23,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 **exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The offline-first Nuxt 3 frontend remains usable without the standalone NestJS backend. The backend, shared libraries, Prisma boundary, and Docker Compose infrastructure establish the Phase 2 architecture while AI requests still use temporary Nuxt server routes.
 
-**Phase 1 (current):** frontend-only MVP for German / Goethe A2 (all skills) + Goethe C1 Writing. Reading / Writing / Listening iteration 1 are done; **Speaking is the next skill** (see `agent-os/product/roadmap.md`). NestJS/Postgres exist as scaffold only until Phase 2 cutover. English / Cambridge is out of scope for Phase 1.
+**Phase 1 (current):** frontend-only MVP for German / Goethe A2 (all skills) + Goethe C1 Writing. Reading / Writing / Listening iteration 1 and Speaking Teil 1–2 are done; **Speaking Teil 3 is next** (see `agent-os/product/roadmap.md`). NestJS/Postgres exist as scaffold only until Phase 2 cutover. English / Cambridge is out of scope for Phase 1.
 
 ### Key directories
 
@@ -35,8 +35,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 | `libraries/database/` | Prisma schema, migrations, and seed ownership |
 | `libraries/exam-content/` | Shared exam-content boundary |
 | `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary |
-| `compose.dev.yaml` | PostgreSQL-only development infrastructure with a persistent named volume |
-| `compose.yaml` | Fully containerized frontend/backend/database stack |
+| `compose.yaml` | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/` | Product context and canonical implementation standards |
 
 ### Data lifecycle (seed + merge)

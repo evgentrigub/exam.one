@@ -15,11 +15,11 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Reading (Lesen) | Done (iteration 1) |
 | Writing (Schreiben) | Done (iteration 1) |
 | Listening (Hoeren) | Done (iteration 1) — 4 Teile, file-based Kokoro audio, missing-audio lock UX |
-| Speaking (Sprechen) | **Next** — Teil 1–2 scaffold exists; STT, wired AI review, Teil 3 still open |
+| Speaking (Sprechen) | **In progress** — Teil 1–2 recording, STT/manual transcripts, AI review; Teil 3 still open |
 | Mock exam | Not started (after Speaking is practice-ready) |
 | Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
 
-**Next implementation focus:** Speaking — harden Teil 1–2 offline practice, then wire real AI review + STT (see roadmap §1.1).
+**Next implementation focus:** Speaking — implement Teil 3 joint planning, then pronunciation and mock-exam integration (see roadmap §1.1).
 
 ## ✨ Features
 
@@ -53,13 +53,15 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **Optional AI**: Transcript generation separate from audio generation
 
 ### 🎤 Speaking Practice (in progress)
-- **Teil 1–2 scaffold**: Prompt cards / keywords, `MediaRecorder`, attempt save
-- **Still open**: Real STT, wired AI review, Teil 3 joint planning, pronunciation score
+- **Teil 1–2 practice**: Two-phase interview and monologue recording with editable transcripts
+- **Optional STT**: Local Parakeet (`pnpm stt:up`) or OpenAI Whisper, with manual-text fallback
+- **Optional AI review**: Direct-point criteria and local attempt persistence; save-without-AI remains available
+- **Still open**: Teil 3 joint planning, pronunciation score, and mock-exam integration
 
 ### 📊 Progress Dashboard
 - **Comprehensive Statistics**: Completion rates, average scores, best scores
 - **Recent Activity**: Time-based formatting (Today, Yesterday, X days ago)
-- **Per-skill analytics**: Reading, writing, listening (speaking as it lands)
+- **Per-skill analytics**: Reading, writing, listening, and speaking progress foundations
 - **Visual Indicators**: Completion badges, progress bars, trend displays
 
 ### 🤖 Optional AI Enhancement
@@ -72,7 +74,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 ### Offline-First Core ✅
 Phase 1 core flows work without internet (localStorage):
 - Reading, writing, and listening practice
-- Speaking practice scaffold (offline record/save; AI/STT optional later)
+- Speaking Teil 1–2 practice with manual transcripts and local attempt saving
 - Progress tracking and statistics
 - Draft saving and resume functionality
 - Full navigation and UI
@@ -87,7 +89,7 @@ When LLM API keys are configured (optional):
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js**: v18.x or higher (LTS recommended)
+- **Node.js**: v20.x or higher (LTS recommended)
 - **pnpm**: v10.12.1+ (recommended) or npm/yarn
 
 ### Installation
@@ -178,8 +180,7 @@ exam-one/
 │   ├── exam-content/      # Shared exam content boundary
 │   └── nestjs-libraries/  # Shared backend infrastructure boundary
 ├── agent-os/              # Product context and implementation standards
-├── compose.dev.yaml       # Development PostgreSQL only
-├── compose.yaml           # Fully containerized stack
+├── compose.yaml           # App + PostgreSQL + Kokoro TTS + Parakeet STT
 ├── pnpm-workspace.yaml
 └── package.json            # Workspace orchestration scripts
 ```
@@ -202,7 +203,10 @@ This starts:
 - API documentation at `http://localhost:3001/api/docs`
 - PostgreSQL in Docker at `localhost:5432`
 
-`compose.dev.yaml` runs only PostgreSQL. Its data is stored in the named Docker volume `exam-one-postgres-dev-data`, so removing or recreating the container does not remove the database. `pnpm dev:infra:down` stops and removes the container while preserving the volume. Data is deleted only if that Docker volume is explicitly removed.
+The root `compose.yaml` is the repository's only Compose file. `pnpm dev:infra`
+selects just its `postgres` service for local hot-reload development. PostgreSQL
+data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down`
+only stops the service and does not delete its data.
 
 ```bash
 pnpm dev:infra          # Start PostgreSQL and wait until healthy
@@ -213,17 +217,48 @@ pnpm dev:frontend       # Run only Nuxt with hot reload
 pnpm dev:backend        # Run only NestJS in watch mode
 ```
 
-## 🐳 Fully Containerized Stack
+## 🐳 Unified Docker Compose Stack
 
-Use the production-style Compose stack when testing deployment rather than editing application code:
+The root stack includes Nuxt, NestJS, PostgreSQL, four-voice Kokoro TTS, and
+Parakeet STT. Use the pnpm wrapper on first start: it downloads both speech-model
+sets into the gitignored host directories and then starts every service from
+`compose.yaml`.
 
 ```bash
-docker compose up --build -d
-docker compose logs -f
-docker compose down
+cp .env.example .env
+pnpm stack:up
+pnpm stack:ps
+pnpm stack:logs
+pnpm stack:down
 ```
 
-The production-style PostgreSQL data is stored in a separate named volume. Do not pass `--volumes` to `docker compose down` unless the database should be deleted.
+The first run downloads several gigabytes of TTS/STT weights and builds the
+PyTorch images, so it can take a while. Later starts reuse the host model folders:
+
+- TTS models: `scripts/tts/victoria/models/`
+- STT model: `scripts/stt/parakeet/models/`
+
+After the models exist, `docker compose up -d --build --wait` is also sufficient.
+The services are exposed at:
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:3001`
+- PostgreSQL: `localhost:5432`
+- Kokoro TTS: `http://localhost:8881/v1/audio/voices`
+- Parakeet STT: `http://localhost:8882/health`
+
+For a single speech service, the existing shortcuts now select that service from
+the same root Compose file:
+
+```bash
+pnpm tts:up     # download/start only Kokoro
+pnpm tts:down   # stop only Kokoro
+pnpm stt:up     # download/start only Parakeet
+pnpm stt:down   # stop only Parakeet
+```
+
+PostgreSQL and generated listening audio use named volumes. Do not pass
+`--volumes` to `docker compose down` unless both should be deleted.
 
 ## 🧪 Available Commands
 
@@ -235,6 +270,12 @@ pnpm format             # Format the repository
 pnpm type-check         # Type-check all workspace packages
 pnpm test               # Run package tests
 pnpm test:e2e           # Run the NestJS health endpoint e2e test
+pnpm stack:up           # Download speech models and start the complete Compose stack
+pnpm stack:down         # Stop the complete stack without deleting named volumes
+pnpm stack:logs         # Follow logs for all Compose services
+pnpm stack:ps           # Show service and health status
+pnpm tts:up             # Start only local Kokoro TTS from compose.yaml
+pnpm stt:up             # Start only local Parakeet STT from compose.yaml
 pnpm db:validate        # Validate the shared Prisma schema
 pnpm db:migrate         # Create and apply a development migration
 pnpm db:migrate:deploy  # Apply committed migrations
@@ -249,7 +290,7 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 
 - ✅ Reading / Writing practice (iteration 1)
 - ✅ Listening practice (iteration 1) + Kokoro TTS tooling
-- 🔄 **Speaking** — next substage (Teil 1–2 harden → AI review → STT → Teil 3)
+- 🔄 **Speaking** — Teil 1–2 practice, STT, and AI review done; Teil 3 is next
 - ⏳ Mock exam mode (after Speaking is usable)
 - ⏳ Goethe C1 Writing (partial scope)
 - ✅ BYOK AI generate/review for shipped skills; DaisyUI shell / i18n / progress foundations
