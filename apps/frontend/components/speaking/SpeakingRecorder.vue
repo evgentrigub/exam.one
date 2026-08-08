@@ -6,12 +6,23 @@
         type="button"
         class="w-20 h-20 mx-auto rounded-full bg-warning text-warning-content flex items-center justify-center shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warning"
         title="Start recording"
+        :disabled="starting || !!disabled"
         @click="start"
       >
-        <Mic :size="30" />
+        <span v-if="starting" class="loading loading-spinner loading-md" />
+        <Mic v-else :size="30" />
       </button>
-      <p class="text-sm font-medium mt-4">Tap to start recording</p>
-      <p class="text-xs text-base-content/50 mt-1">Speak for about {{ maxSeconds }} seconds</p>
+      <p class="text-sm font-medium mt-4">
+        {{ starting ? 'Requesting microphone access…' : 'Tap to start recording' }}
+      </p>
+      <p class="text-xs text-base-content/50 mt-1">Record for up to {{ maxSeconds }} seconds</p>
+      <div
+        v-if="recorderError"
+        class="alert mt-4 border border-warning/30 bg-warning/10 text-left text-sm"
+      >
+        <TriangleAlert :size="16" class="shrink-0 text-warning" />
+        <span>{{ recorderError }} You can still enter the transcript manually below.</span>
+      </div>
     </template>
 
     <!-- Recording -->
@@ -32,9 +43,6 @@
         <span v-for="n in 7" :key="n" class="wave-bar" style="height: 100%" />
       </div>
       <p class="text-sm font-medium mt-3 font-mono">{{ fmt(seconds) }} / {{ maxLabel }}</p>
-      <p v-if="simulated" class="text-[11px] text-base-content/40 mt-1">
-        Microphone unavailable — simulated recording
-      </p>
     </template>
 
     <!-- Done -->
@@ -56,7 +64,12 @@
           <Play :size="14" />
           Play back
         </button>
-        <button type="button" class="btn btn-sm btn-ghost gap-1.5" @click="reset">
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost gap-1.5"
+          :disabled="!!disabled"
+          @click="reset"
+        >
           <RotateCcw :size="14" />
           Re-record
         </button>
@@ -66,17 +79,22 @@
 </template>
 
 <script setup lang="ts">
-import { Mic, Square, Check, Play, RotateCcw } from 'lucide-vue-next'
+import { Check, Mic, Play, RotateCcw, Square, TriangleAlert } from 'lucide-vue-next'
 
-const props = withDefaults(defineProps<{ maxSeconds?: number }>(), { maxSeconds: 30 })
+const props = withDefaults(defineProps<{ maxSeconds?: number; disabled?: boolean }>(), {
+  maxSeconds: 30,
+  disabled: false,
+})
 const emit = defineEmits<{
   done: [payload: { durationSec: number; audioUrl: string | null; blob: Blob | null }]
+  recordingChange: [isRecording: boolean]
 }>()
 
 type Phase = 'ready' | 'recording' | 'done'
 const phase = ref<Phase>('ready')
 const seconds = ref(0)
-const simulated = ref(false)
+const starting = ref(false)
+const recorderError = ref<string | null>(null)
 const audioUrl = ref<string | null>(null)
 
 let timer: ReturnType<typeof setInterval> | null = null
@@ -85,6 +103,7 @@ let stream: MediaStream | null = null
 let chunks: BlobPart[] = []
 let audioEl: HTMLAudioElement | null = null
 let stopping = false
+let disposed = false
 
 function fmt(sec: number) {
   const m = Math.floor(sec / 60)
@@ -110,46 +129,79 @@ function stopTimer() {
 }
 
 async function start() {
+  if (props.disabled || starting.value || phase.value !== 'ready') return
+
   seconds.value = 0
   chunks = []
   stopping = false
+  recorderError.value = null
   if (audioUrl.value) URL.revokeObjectURL(audioUrl.value)
   audioUrl.value = null
-  simulated.value = false
 
-  // Real capture when available; gracefully fall back to a simulated session.
-  if (import.meta.client && navigator.mediaDevices?.getUserMedia && 'MediaRecorder' in window) {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaRecorder = new MediaRecorder(stream)
-      mediaRecorder.ondataavailable = e => {
-        if (e.data.size > 0) chunks.push(e.data)
-      }
-      mediaRecorder.onstop = () => {
-        let blob: Blob | null = null
-        if (chunks.length) {
-          blob = new Blob(chunks, { type: mediaRecorder?.mimeType || 'audio/webm' })
-          audioUrl.value = URL.createObjectURL(blob)
-        }
-        releaseStream()
-        phase.value = 'done'
-        emit('done', {
-          durationSec: seconds.value,
-          audioUrl: audioUrl.value,
-          blob,
-        })
-      }
-      mediaRecorder.start()
-    } catch {
-      releaseStream()
-      simulated.value = true
-    }
-  } else {
-    simulated.value = true
+  if (
+    !import.meta.client ||
+    !navigator.mediaDevices?.getUserMedia ||
+    !('MediaRecorder' in window)
+  ) {
+    recorderError.value = 'Audio recording is not supported in this browser.'
+    return
   }
 
-  phase.value = 'recording'
-  startTimer()
+  starting.value = true
+  emit('recordingChange', true)
+  try {
+    const capturedStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    if (disposed) {
+      capturedStream.getTracks().forEach(track => track.stop())
+      return
+    }
+
+    stream = capturedStream
+    const recorder = new MediaRecorder(capturedStream)
+    mediaRecorder = recorder
+    recorder.ondataavailable = event => {
+      if (event.data.size > 0) chunks.push(event.data)
+    }
+    recorder.onerror = () => {
+      recorder.onstop = null
+      stopTimer()
+      releaseStream()
+      phase.value = 'ready'
+      recorderError.value = 'The browser could not finish the audio recording.'
+      emit('recordingChange', false)
+    }
+    recorder.onstop = () => {
+      if (disposed) return
+
+      if (!chunks.length) {
+        releaseStream()
+        phase.value = 'ready'
+        recorderError.value = 'No audio was captured.'
+        emit('recordingChange', false)
+        return
+      }
+
+      const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' })
+      audioUrl.value = URL.createObjectURL(blob)
+      releaseStream()
+      phase.value = 'done'
+      emit('recordingChange', false)
+      emit('done', {
+        durationSec: seconds.value,
+        audioUrl: audioUrl.value,
+        blob,
+      })
+    }
+    recorder.start()
+    phase.value = 'recording'
+    startTimer()
+  } catch (error: unknown) {
+    releaseStream()
+    recorderError.value = microphoneErrorMessage(error)
+    emit('recordingChange', false)
+  } finally {
+    starting.value = false
+  }
 }
 
 function stop() {
@@ -160,12 +212,9 @@ function stop() {
     mediaRecorder.stop()
   } else {
     releaseStream()
-    phase.value = 'done'
-    emit('done', {
-      durationSec: seconds.value,
-      audioUrl: null,
-      blob: null,
-    })
+    phase.value = 'ready'
+    recorderError.value = 'The browser stopped the recording before audio was captured.'
+    emit('recordingChange', false)
   }
 }
 
@@ -178,6 +227,7 @@ function reset() {
     audioUrl.value = null
   }
   seconds.value = 0
+  recorderError.value = null
   phase.value = 'ready'
 }
 
@@ -194,8 +244,27 @@ function releaseStream() {
   mediaRecorder = null
 }
 
+function microphoneErrorMessage(error: unknown): string {
+  if (error instanceof DOMException) {
+    if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+      return 'Microphone access was denied.'
+    }
+    if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+      return 'No microphone was found.'
+    }
+  }
+  return 'The microphone could not be started.'
+}
+
 onUnmounted(() => {
+  disposed = true
   stopTimer()
+  if (mediaRecorder) {
+    mediaRecorder.ondataavailable = null
+    mediaRecorder.onstop = null
+    mediaRecorder.onerror = null
+    if (mediaRecorder.state !== 'inactive') mediaRecorder.stop()
+  }
   releaseStream()
   audioEl?.pause()
   if (audioUrl.value) URL.revokeObjectURL(audioUrl.value)

@@ -41,12 +41,14 @@ Listening practice is **done for Phase 1 iteration 1**. Further listening work i
 - Seed listening exercises use **pre-generated WAV files** (Kokoro German **four-voice** roster: `martin` / `bernd` male, `victoria` / `eva` female) under `apps/frontend/public/audio/listening/a2/` (often gitignored; regenerate with `pnpm generate:listening-audio`; use `FORCE=1` after voice-roster changes)
 - Dialogue transcripts (Teil 2–4) use `Role:` labels; generation splits turns, assigns voices by gender + order of appearance, strips labels from spoken audio, and concatenates WAVs (parallel via `TTS_CONCURRENCY`)
 - Playback uses stable files so every replay is identical (not live browser TTS)
-- Optional maintainer tooling: `compose.tts.yaml` (`pnpm tts:up` starts four-voice PyTorch Kokoro on `:8881` — martin / bernd / victoria / eva; `pnpm tts:down` stops it) + `pnpm generate:listening-audio` (see `scripts/tts/README.md`)
+- Optional maintainer tooling: the root `compose.yaml` owns the four-voice PyTorch Kokoro service on `:8881`; `pnpm tts:up` / `pnpm tts:down` select only that service, and `pnpm generate:listening-audio` generates seed WAVs (see `scripts/tts/README.md`)
 - In-app: missing-audio sidebar + **Generate audio** writes `public/audio/listening/generated/` when Kokoro is up; practice controls stay locked until files exist
 - AI listening generation still produces transcripts only; audio is generated on demand
 - Phase 2 may run TTS as an optional Compose service when generating new exercises
 
-## Speaking (Phase 1 — Teil 1–2 iteration)
+## Speaking (Phase 1 — Teil 1–2 iteration complete)
+
+Speaking Teil 1–2 is **done for this iteration**. The next product stage is Teil 3 joint planning, followed by pronunciation and mock-exam integration.
 
 - Teil 1 uses two recordings: answers to four explicit practice questions, then
   four questions spoken aloud. Teil 2 uses one monologue recording.
@@ -54,10 +56,10 @@ Listening practice is **done for Phase 1 iteration 1**. Further listening work i
   local Parakeet (`STT_PROVIDER=local`) or OpenAI Whisper
   (`STT_PROVIDER=openai`). The transcript is always editable and can be entered
   manually when STT is unavailable.
-- Optional local STT runs as the separate `compose.stt.yaml` stack on `:8882`.
+- Optional local STT runs as the `parakeet` service in the root `compose.yaml` on `:8882`.
   `pnpm stt:up` downloads `nvidia/parakeet-tdt-0.6b-v3` to the host project at
-  `scripts/stt/parakeet/models/` and mounts the snapshot read-only; `pnpm
-stt:down` stops the service without deleting the model.
+  `scripts/stt/parakeet/models/` and mounts the snapshot read-only;
+  `pnpm stt:down` stops the service without deleting the model.
 - Optional LLM review is wired for Teil 1 (4 points) and Teil 2 (8 points).
   Attempts and successful criteria reviews are saved locally even though audio
   blobs are not retained.
@@ -67,6 +69,9 @@ stt:down` stops the service without deleting the model.
 
 ## Deployment & Infra
 
+- A single root `compose.yaml` defines frontend, backend, PostgreSQL, Kokoro TTS,
+  and Parakeet STT. `pnpm stack:up` downloads host-persisted speech models and
+  starts the complete stack; per-service pnpm commands select from the same file.
 - **Phase 2 (primary):** **Docker Compose** on the user's laptop — orchestrates frontend, NestJS backend, and PostgreSQL with a named data volume
 - **Phase 2 runbook:** README + env templates for first-user setup and LLM keys (full Docusaurus docs site in Phase 3)
 - **Phase 4:** separately hosted cloud copy under paid plans

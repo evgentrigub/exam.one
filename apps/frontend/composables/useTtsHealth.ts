@@ -22,7 +22,7 @@ export function useTtsHealth() {
     if (!import.meta.client || inFlight) return
     inFlight = true
     try {
-      const res = await $fetch<TtsHealthEnvelope>('/api/tts/health')
+      const res = (await $fetch('/api/tts/health')) as unknown as TtsHealthEnvelope
       status.value = res.data?.ok ? 'ready' : 'offline'
       lastCheckedAt.value = new Date().toISOString()
     } catch {

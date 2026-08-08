@@ -33,7 +33,7 @@ export function useSpeechTranscription() {
   async function refreshHealth(): Promise<void> {
     checkingHealth.value = true
     try {
-      const response = await $fetch<SttHealthResponse>('/api/stt/health')
+      const response = (await $fetch('/api/stt/health')) as unknown as SttHealthResponse
       health.value = response.data
       error.value = response.error
     } catch (requestError: unknown) {
@@ -51,10 +51,10 @@ export function useSpeechTranscription() {
     try {
       const form = new FormData()
       form.append('file', blob, audioFileName(blob))
-      const response = await $fetch<TranscriptionResponse>('/api/transcribe', {
+      const response = (await $fetch('/api/transcribe', {
         method: 'POST',
         body: form,
-      })
+      })) as unknown as TranscriptionResponse
       if (response.error || !response.data) {
         throw new Error(response.error || 'Transcription failed.')
       }

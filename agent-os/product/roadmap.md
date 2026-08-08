@@ -28,13 +28,13 @@ English / Cambridge and other providers are out of scope for Phase 1.
 
 ### Skill status (Goethe A2)
 
-| Skill     | Status                 | Notes                                                                                                                                  |
-| --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Reading   | Done (iteration 1)     | Seed + practice + optional AI generate                                                                                                 |
-| Writing   | Done (iteration 1)     | Seed + drafts + optional AI generate / review                                                                                          |
-| Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX                                                          |
-| Speaking  | **In progress**        | Teil 1–2 recording → STT/manual transcript → optional LLM review is implemented; Teil 3 and pronunciation remain — see substages below |
-| Mock exam | Not started            | Depends on all four skills being practice-ready                                                                                        |
+| Skill | Status | Notes |
+| --- | --- | --- |
+| Reading | Done (iteration 1) | Seed + practice + optional AI generate |
+| Writing | Done (iteration 1) | Seed + drafts + optional AI generate / review |
+| Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX |
+| Speaking | **Done (Teil 1–2 iteration)** | Recording → STT/manual transcript → optional LLM review and local attempts shipped; Teil 3 and pronunciation remain |
+| Mock exam | Not started | Depends on all four skills being practice-ready |
 
 ### Substages
 
@@ -49,9 +49,9 @@ Finish Reading, Writing, Listening, and Speaking practice against modular Goethe
 - In-app **Generate audio** when TTS is up; answers/playback locked until files exist
 - Optional AI listening generation (transcripts); audio remains a separate generation step
 
-**Speaking (in progress — next focus):**
+**Speaking (Teil 1–2 iteration complete — Teil 3 next):**
 
-Complete Goethe A2 `Sprechen` so offline practice works without AI, with optional STT/TTS + review when keys/services are available. See `german-exam-A2.md` (Speaking) for exam rules (4 + 8 + 8 + 5 pronunciation = 25, no ×1.25).
+Complete Goethe A2 `Sprechen` so offline practice works without AI, with optional STT and review when keys/services are available. See `german-exam-A2.md` (Speaking) for exam rules (4 + 8 + 8 + 5 pronunciation = 25, no ×1.25).
 
 Ordered plan:
 
@@ -65,15 +65,15 @@ Ordered plan:
 4. **Done for solo iteration: Teil 1 ask/answer structure** — separate answer and
    question recordings suitable for joint review. A live/turn-based partner can
    come later.
-5. **Teil 3 joint planning** — `userSchedule` / `aiSchedule` with guaranteed overlap, propose/decline/agree UI, review of full dialogue log.
-6. **Optional TTS partner + pronunciation score** — reuse listening TTS stack for partner lines; separate 0–5 Aussprache when AI is available.
-7. **Mock-exam speaking module** — 15-minute module timer and 25-point total, aligned with mock exam shell (substage 1.2).
+5. **Next: Teil 3 joint planning** — `userSchedule` / `aiSchedule` with guaranteed overlap, propose/decline/agree UI, review of full dialogue log.
+6. **Pending: optional TTS partner + pronunciation score** — reuse listening TTS stack for partner lines; separate 0–5 Aussprache when AI is available.
+7. **Pending: mock-exam speaking module** — 15-minute module timer and 25-point total, aligned with mock exam shell (substage 1.2).
 
-**Speaking Phase 1 “done” cut:** steps 1–3 deliver usable scored Teil 1–2 practice offline + optional AI. Steps 4–5 close Goethe coverage; 6–7 polish into mock exam.
+**Teil 1–2 iteration exit criteria: met.** Steps 1–4 deliver usable scored solo practice offline with optional STT and AI. Full Goethe A2 Speaking coverage still requires Teil 3 (step 5); steps 6–7 add pronunciation/partner polish and mock-exam integration.
 
 #### 1.2 Mock exam mode
 
-Single-attempt, timed simulation with the same limitations applied in real language exams (no pauses that break exam realism). Start after Speaking practice is usable (at least Teil 1–2 scored).
+Single-attempt, timed simulation with the same limitations applied in real language exams (no pauses that break exam realism). The minimum Speaking prerequisite (scored Teil 1–2 practice) is now met; implementation remains scheduled after Teil 3 coverage.
 
 #### 1.3 Goethe C1 writing (partial)
 
@@ -123,7 +123,7 @@ Retire Nitro as the long-term AI proxy. OpenAI and OpenRouter adapters behind th
 
 #### 2.5 Docker Compose packaging
 
-Production compose for frontend, backend, and Postgres. Named volume for Postgres data (removing containers must not wipe user data). Env templates for LLM keys. `compose.dev.yaml` remains Postgres-for-local-development.
+One root `compose.yaml` for frontend, backend, Postgres, Kokoro TTS, and Parakeet STT. Named volumes preserve Postgres data and generated listening audio; host model directories preserve speech weights. Local development selects only the root file's `postgres` service.
 
 #### 2.6 Self-host runbook
 

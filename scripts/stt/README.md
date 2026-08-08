@@ -12,10 +12,14 @@ pnpm stt:up
 pnpm stt:down
 ```
 
+These commands select the `parakeet` service from the root `compose.yaml`. To
+download both speech-model sets and start the application, database, TTS, and
+STT together, run `pnpm stack:up`.
+
 `stt:up` first downloads and verifies the Hugging Face snapshot under
 `scripts/stt/parakeet/models/`, then builds and starts the service on `:8882`.
 The directory is on the host project disk and mounted read-only into the
-container. `docker compose down` does not delete it.
+container. `pnpm stack:down` does not delete it.
 
 Verify:
 

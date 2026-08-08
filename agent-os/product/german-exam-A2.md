@@ -91,7 +91,7 @@ Time limit: 30 minutes. The module has two parts. Maximum raw score is 20 `Messp
 
 Time limit: 15 minutes. The module has three interactive parts. The app may use STT and TTS for interaction and evaluation. Speaking points are not multiplied.
 
-> **Implementation status (Phase 1):** Teil 1–2 practice now supports recording,
+> **Implementation status (Phase 1):** **Complete (Teil 1–2 iteration)** — practice supports recording,
 > optional local Parakeet or OpenAI STT, editable/manual transcripts, optional
 > LLM review, and local attempt persistence. Teil 3 is shown as coming later;
 > pronunciation scoring and mock-exam integration are still open. See

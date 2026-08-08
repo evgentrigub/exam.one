@@ -5,7 +5,8 @@ Use these files as the product reference set before implementing exam behavior, 
 ## Current focus (Phase 1)
 
 - **Listening (Hoeren):** complete for iteration 1 — see `roadmap.md` skill status and `tech-stack.md` Listening audio.
-- **Speaking (Sprechen):** next core skill — follow the ordered plan in `roadmap.md` §1.1 and exam rules in `german-exam-A2.md`.
+- **Speaking (Sprechen):** Teil 1–2 iteration complete — recording, manual/local/cloud STT transcripts, optional LLM review, and local attempt persistence are shipped.
+- **Next product stage:** implement Speaking Teil 3 joint planning, then pronunciation and mock-exam integration; follow `roadmap.md` §1.1 and `german-exam-A2.md`.
 
 ## Core Product
 
