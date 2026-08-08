@@ -226,14 +226,17 @@ sets into the gitignored host directories and then starts every service from
 
 ```bash
 cp .env.example .env
+pnpm stack:setup       # Download and verify TTS and STT models only
 pnpm stack:up
 pnpm stack:ps
 pnpm stack:logs
 pnpm stack:down
 ```
 
-The first run downloads several gigabytes of TTS/STT weights and builds the
-PyTorch images, so it can take a while. Later starts reuse the host model folders:
+The first run downloads about 1.7 GB of speech weights: roughly 984 MB for the
+four-voice PyTorch TTS stack and 740 MB for the Handy Parakeet Q8 GGUF. It also
+builds the TTS image and the lightweight `transcribe.cpp` STT runtime, so it can
+take a while. Later starts reuse the host model folders:
 
 - TTS models: `scripts/tts/victoria/models/`
 - STT model: `scripts/stt/parakeet/models/`
@@ -251,8 +254,10 @@ For a single speech service, the existing shortcuts now select that service from
 the same root Compose file:
 
 ```bash
+pnpm tts:setup  # download/verify only Kokoro models
 pnpm tts:up     # download/start only Kokoro
 pnpm tts:down   # stop only Kokoro
+pnpm stt:setup  # download/verify only the Parakeet model
 pnpm stt:up     # download/start only Parakeet
 pnpm stt:down   # stop only Parakeet
 ```
@@ -270,11 +275,14 @@ pnpm format             # Format the repository
 pnpm type-check         # Type-check all workspace packages
 pnpm test               # Run package tests
 pnpm test:e2e           # Run the NestJS health endpoint e2e test
+pnpm stack:setup        # Download and verify all speech models without starting Compose
 pnpm stack:up           # Download speech models and start the complete Compose stack
 pnpm stack:down         # Stop the complete stack without deleting named volumes
 pnpm stack:logs         # Follow logs for all Compose services
 pnpm stack:ps           # Show service and health status
+pnpm tts:setup          # Download and verify only local Kokoro TTS models
 pnpm tts:up             # Start only local Kokoro TTS from compose.yaml
+pnpm stt:setup          # Download and verify only the local Parakeet GGUF
 pnpm stt:up             # Start only local Parakeet STT from compose.yaml
 pnpm db:validate        # Validate the shared Prisma schema
 pnpm db:migrate         # Create and apply a development migration

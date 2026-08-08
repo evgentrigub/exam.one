@@ -21,7 +21,7 @@ services:
       NUXT_LLM_REASONING_EFFORT: '${LLM_REASONING_EFFORT:-medium}'
       NUXT_STT_PROVIDER: '${STT_PROVIDER:-local}'
       NUXT_STT_BASE_URL: 'http://parakeet:8882'
-      NUXT_STT_MODEL: '${STT_MODEL:-nvidia/parakeet-tdt-0.6b-v3}'
+      NUXT_STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
       NUXT_STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
       NUXT_STT_OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
       TTS_BASE_URL: 'http://kokoro-voices:8881'
@@ -119,11 +119,9 @@ services:
       dockerfile: Dockerfile
     environment:
       PARAKEET_MODEL_DIR: /app/models
-      PARAKEET_MODEL_ID: '${STT_MODEL:-nvidia/parakeet-tdt-0.6b-v3}'
-      OMP_NUM_THREADS: '${STT_CPU_THREADS:-4}'
-      TOKENIZERS_PARALLELISM: 'false'
-      TRANSFORMERS_OFFLINE: '1'
-      HF_HUB_OFFLINE: '1'
+      PARAKEET_MODEL_FILE: parakeet-tdt-0.6b-v3-Q8_0.gguf
+      PARAKEET_MODEL_ID: handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
+      STT_CPU_THREADS: '${STT_CPU_THREADS:-4}'
     ports:
       - '${STT_PORT:-8882}:8882'
     volumes:
@@ -137,8 +135,7 @@ services:
       interval: 15s
       timeout: 10s
       retries: 40
-      start_period: 600s
-    shm_size: 1gb
+      start_period: 180s
     restart: unless-stopped
 
 volumes:

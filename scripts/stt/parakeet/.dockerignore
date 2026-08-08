@@ -1,4 +1,4 @@
-models
-.venv
-__pycache__
+models/
+.venv/
+__pycache__/
 *.pyc

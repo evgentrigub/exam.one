@@ -1,5 +1,6 @@
 const DEFAULT_LOCAL_BASE_URL = 'http://127.0.0.1:8882'
-const DEFAULT_LOCAL_MODEL = 'nvidia/parakeet-tdt-0.6b-v3'
+const DEFAULT_LOCAL_MODEL = 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0'
+const LEGACY_LOCAL_MODEL = 'nvidia/parakeet-tdt-0.6b-v3'
 const DEFAULT_OPENAI_MODEL = 'whisper-1'
 const OPENAI_TRANSCRIPTIONS_URL = 'https://api.openai.com/v1/audio/transcriptions'
 
@@ -45,6 +46,8 @@ export function getSttConfig(runtimeConfig: SttRuntimeConfig): SttConfig {
   }
 
   const provider: SttProvider = providerValue
+  const configuredLocalModel =
+    runtimeConfig.sttModel || readEnv('STT_MODEL') || DEFAULT_LOCAL_MODEL
   return {
     provider,
     baseUrl: (
@@ -54,7 +57,9 @@ export function getSttConfig(runtimeConfig: SttRuntimeConfig): SttConfig {
     ).replace(/\/+$/, ''),
     model:
       provider === 'local'
-        ? runtimeConfig.sttModel || readEnv('STT_MODEL') || DEFAULT_LOCAL_MODEL
+        ? configuredLocalModel === LEGACY_LOCAL_MODEL
+          ? DEFAULT_LOCAL_MODEL
+          : configuredLocalModel
         : runtimeConfig.sttOpenaiModel || readEnv('STT_OPENAI_MODEL') || DEFAULT_OPENAI_MODEL,
     apiKey: runtimeConfig.sttOpenaiApiKey || readEnv('OPENAI_API_KEY'),
   }
