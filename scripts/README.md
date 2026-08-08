@@ -12,13 +12,16 @@ Both services, the applications, and PostgreSQL are defined in the single root
 
 ```bash
 cp .env.example .env
+pnpm stack:setup
 pnpm stack:up
 pnpm stack:ps
 ```
 
-`stack:up` downloads missing speech models to the host project before starting
-Compose. The first run downloads several gigabytes and builds two PyTorch images;
-subsequent starts reuse those files.
+`stack:setup` only downloads and verifies the models. `stack:up` performs that
+setup automatically before starting Compose. The first run downloads about 1.7
+GB of weights and builds the PyTorch
+TTS image plus the lightweight `transcribe.cpp` STT runtime; subsequent starts
+reuse those files.
 
 ```bash
 pnpm stack:logs
@@ -30,9 +33,11 @@ Stopping the stack preserves PostgreSQL, generated listening audio, and model we
 ## Start only one speech service
 
 ```bash
+pnpm tts:setup
 pnpm tts:up
 pnpm tts:down
 
+pnpm stt:setup
 pnpm stt:up
 pnpm stt:down
 ```

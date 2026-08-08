@@ -57,8 +57,10 @@ Speaking Teil 1–2 is **done for this iteration**. The next product stage is Te
   (`STT_PROVIDER=openai`). The transcript is always editable and can be entered
   manually when STT is unavailable.
 - Optional local STT runs as the `parakeet` service in the root `compose.yaml` on `:8882`.
-  `pnpm stt:up` downloads `nvidia/parakeet-tdt-0.6b-v3` to the host project at
-  `scripts/stt/parakeet/models/` and mounts the snapshot read-only;
+  `pnpm stt:up` downloads Handy's Q8 GGUF conversion of
+  `nvidia/parakeet-tdt-0.6b-v3` (about 740 MB), verifies its fixed checksum,
+  and runs it with pinned `transcribe.cpp`. The host project model directory at
+  `scripts/stt/parakeet/models/` is mounted read-only;
   `pnpm stt:down` stops the service without deleting the model.
 - Optional LLM review is wired for Teil 1 (4 points) and Teil 2 (8 points).
   Attempts and successful criteria reviews are saved locally even though audio

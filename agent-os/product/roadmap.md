@@ -61,7 +61,8 @@ Ordered plan:
 2. **Done: wire real AI review** — speaking review endpoint + composable,
    criteria points stored with successful Teil 1–2 reviews, and save-without-AI.
 3. **Done: STT pipeline (graceful degrade)** — provider-selected local Parakeet
-   or OpenAI Whisper, health UI, and manual transcript fallback.
+   via Handy Q8 GGUF + `transcribe.cpp`, or OpenAI Whisper, with health UI and
+   manual transcript fallback.
 4. **Done for solo iteration: Teil 1 ask/answer structure** — separate answer and
    question recordings suitable for joint review. A live/turn-based partner can
    come later.
@@ -123,7 +124,7 @@ Retire Nitro as the long-term AI proxy. OpenAI and OpenRouter adapters behind th
 
 #### 2.5 Docker Compose packaging
 
-One root `compose.yaml` for frontend, backend, Postgres, Kokoro TTS, and Parakeet STT. Named volumes preserve Postgres data and generated listening audio; host model directories preserve speech weights. Local development selects only the root file's `postgres` service.
+One root `compose.yaml` for frontend, backend, Postgres, Kokoro TTS, and Parakeet STT. Named volumes preserve Postgres data and generated listening audio; host model directories preserve speech weights. Local Parakeet uses the sub-1 GB Handy Q8 GGUF with a pinned `transcribe.cpp` runtime. Local development selects only the root file's `postgres` service.
 
 #### 2.6 Self-host runbook
 
