@@ -3,7 +3,8 @@
 Listening practice plays **stable WAV files** (identical on every replay). Kokoro is only
 needed when generating or regenerating those files.
 
-`pnpm tts:up` starts a **single** PyTorch service on `:8881` with four German voices:
+`pnpm tts:up` selects and starts the **single** `kokoro-voices` service from the
+root `compose.yaml` on `:8881`, with four German voices:
 
 | Voice | Gender | Backbone |
 |-------|--------|----------|
@@ -41,6 +42,10 @@ TTS_CONCURRENCY=4 FORCE=1 pnpm generate:listening-audio
 
 pnpm tts:down
 ```
+
+To start the application, database, TTS, and STT together, use `pnpm stack:up`.
+All services are defined in the root `compose.yaml`; there is no speech-specific
+Compose file.
 
 Seed WAVs are typically gitignored; each machine regenerates them once.
 

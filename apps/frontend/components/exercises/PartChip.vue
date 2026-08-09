@@ -3,10 +3,9 @@
     ref="chipRef"
     type="button"
     class="part-chip inline-flex items-center gap-1.5 h-7 px-2.5 rounded-selector text-xs border whitespace-nowrap"
-    :class="active
-      ? `part-chip-${skill} is-active font-semibold`
-      : 'bg-base-100 border-base-300 hover:border-base-content/30'"
-    @click="emit('toggle')"
+    :class="chipClass"
+    :disabled="part?.available === false"
+    @click="toggle"
     @mouseenter="openPopover"
     @mouseleave="hover = false"
     @focus="openPopover"
@@ -21,21 +20,32 @@
     <div
       v-if="hover && part"
       class="fixed w-72 pointer-events-none z-[80]"
-      :style="{ left: `${pos.x}px`, top: `${pos.y}px`, transform: 'translateX(-50%)', animation: 'fadeIn 120ms ease-out' }"
+      :style="{
+        left: `${pos.x}px`,
+        top: `${pos.y}px`,
+        transform: 'translateX(-50%)',
+        animation: 'fadeIn 120ms ease-out',
+      }"
     >
       <div class="bg-base-100 rounded-box border border-base-300 shadow-xl overflow-hidden">
-        <div class="flex items-center gap-2 px-3 py-2 border-b border-base-300" :class="`bg-${skill}-tint`">
+        <div
+          class="flex items-center gap-2 px-3 py-2 border-b border-base-300"
+          :class="`bg-${skill}-tint`"
+        >
           <span
             class="w-6 h-6 rounded-field grid place-items-center font-display font-bold text-[12px]"
             :class="`module-chip-${skill} is-active`"
-          >{{ n }}</span>
+            >{{ n }}</span
+          >
           <span class="text-[11px] font-semibold uppercase tracking-wider" :class="`text-${skill}`">
             {{ skillLabel }} · Part {{ n }}
           </span>
         </div>
         <div class="p-3">
           <div class="font-display font-bold text-[15px] leading-tight">{{ part.title }}</div>
-          <div class="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-mono text-base-content/70 bg-base-200 rounded-selector px-2 py-0.5">
+          <div
+            class="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-mono text-base-content/70 bg-base-200 rounded-selector px-2 py-0.5"
+          >
             <ListChecks :size="11" /> {{ part.format }}
           </div>
           <p class="text-[12.5px] text-base-content/75 leading-snug mt-2">{{ part.short }}</p>
@@ -64,13 +74,27 @@ const hover = ref(false)
 const pos = ref({ x: 0, y: 0 })
 
 const part = computed(() =>
-  goetheA2Structure.find(m => m.id === props.skill)?.parts.find(p => p.n === props.n),
+  goetheA2Structure.find(m => m.id === props.skill)?.parts.find(p => p.n === props.n)
 )
 
 const skillLabel = computed(() => {
   const raw = goetheA2Structure.find(m => m.id === props.skill)?.label ?? props.skill
   return raw.replace(/\s*\(.*\)\s*/, '')
 })
+
+const chipClass = computed(() => {
+  if (part.value?.available === false) {
+    return 'bg-base-200 border-base-300 text-base-content/40 cursor-not-allowed'
+  }
+  return props.active
+    ? `part-chip-${props.skill} is-active font-semibold`
+    : 'bg-base-100 border-base-300 hover:border-base-content/30'
+})
+
+function toggle() {
+  if (part.value?.available === false) return
+  emit('toggle')
+}
 
 function openPopover() {
   const r = chipRef.value?.getBoundingClientRect()

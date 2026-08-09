@@ -1,25 +1,38 @@
 <template>
   <div class="max-w-[1240px] mx-auto p-6 space-y-5">
-
     <!-- Filter panel -->
-    <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3 overflow-visible">
+    <div
+      class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3 overflow-visible"
+    >
       <!-- Module chips row -->
       <div class="flex items-center gap-2 flex-wrap">
-        <span class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mr-1">{{ $t('exercisesUi.module') }}</span>
+        <span
+          class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mr-1"
+          >{{ $t('exercisesUi.module') }}</span
+        >
         <button
           v-for="s in moduleFilters"
           :key="s.key"
           class="module-chip inline-flex items-center gap-2 h-9 px-3 rounded-field border text-sm font-medium"
-          :class="activeSkill === s.key
-            ? `module-chip-${s.key} is-active`
-            : 'bg-base-100 border-base-300 hover:border-base-content/30 text-base-content/80'"
+          :class="
+            activeSkill === s.key
+              ? `module-chip-${s.key} is-active`
+              : 'bg-base-100 border-base-300 hover:border-base-content/30 text-base-content/80'
+          "
           @click="setActiveSkill(s.key)"
         >
           <component :is="s.icon" :size="14" />
           {{ s.label }}
-          <span v-if="isMounted" class="text-[10px]" :class="activeSkill === s.key ? 'opacity-80' : 'opacity-50'">{{ s.count }}</span>
+          <span
+            v-if="isMounted"
+            class="text-[10px]"
+            :class="activeSkill === s.key ? 'opacity-80' : 'opacity-50'"
+            >{{ s.count }}</span
+          >
         </button>
-        <button class="btn btn-ghost btn-xs" @click="setActiveSkill('all')">{{ $t('exercisesUi.all') }}</button>
+        <button class="btn btn-ghost btn-xs" @click="setActiveSkill('all')">
+          {{ $t('exercisesUi.all') }}
+        </button>
         <button class="btn btn-primary btn-sm rounded-full gap-2 ml-auto" @click="genOpen = true">
           <Sparkles :size="14" /> {{ $t('exercisesUi.generate') }}
         </button>
@@ -27,23 +40,23 @@
 
       <!-- Part filter row -->
       <div class="flex items-start gap-2 flex-wrap border-t border-base-300 pt-3">
-        <div class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mr-1 mt-2 flex items-center gap-1">
+        <div
+          class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mr-1 mt-2 flex items-center gap-1"
+        >
           {{ $t('exercisesUi.part') }}
           <span class="tooltip tooltip-right normal-case" :data-tip="$t('exercisesUi.partHint')">
             <Info :size="12" class="opacity-50" />
           </span>
         </div>
         <div class="flex flex-col gap-2">
-          <div
-            v-for="sk in partFilterSkills"
-            :key="sk"
-            class="flex items-center gap-1.5 flex-wrap"
-          >
+          <div v-for="sk in partFilterSkills" :key="sk" class="flex items-center gap-1.5 flex-wrap">
             <span
               v-if="partFilterSkills.length > 1"
               class="inline-flex items-center gap-1.5 text-[11px] font-medium text-base-content/55 w-[68px] shrink-0 capitalize"
             >
-              <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${sk}`" />{{ getSkillLabel(sk, t) }}
+              <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${sk}`" />{{
+                getSkillLabel(sk, t)
+              }}
             </span>
             <PartChip
               v-for="p in partsForSkill(sk)"
@@ -55,7 +68,11 @@
             />
           </div>
         </div>
-        <button v-if="activeParts.length > 0" class="btn btn-ghost btn-xs ml-1 mt-1" @click="activeParts = []">
+        <button
+          v-if="activeParts.length > 0"
+          class="btn btn-ghost btn-xs ml-1 mt-1"
+          @click="activeParts = []"
+        >
           {{ $t('exercisesUi.clearParts') }}
         </button>
       </div>
@@ -67,21 +84,26 @@
           v-for="st in statusFilters"
           :key="st.key"
           class="h-8 px-3 rounded-full text-xs font-medium border whitespace-nowrap transition-colors"
-          :class="activeStatus === st.key
-            ? 'bg-primary text-primary-content border-primary'
-            : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'"
+          :class="
+            activeStatus === st.key
+              ? 'bg-primary text-primary-content border-primary'
+              : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'
+          "
           @click="activeStatus = st.key"
         >
           {{ st.label }}
         </button>
         <div class="relative flex-1 max-w-xs">
-          <Search :size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
-          <input
-            v-model="search"
-            type="text"
-            :placeholder="$t('exercisesUi.search')"
-            class="input input-sm input-bordered w-full pl-8 text-sm"
-          >
+          <Search
+            :size="14"
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"
+          />
+        <input
+          v-model="search"
+          type="text"
+          :placeholder="$t('exercisesUi.search')"
+          class="input input-sm input-bordered w-full pl-8 text-sm"
+        >
         </div>
         <select v-model="sortBy" class="select select-sm select-bordered text-sm">
           <option value="default">{{ $t('exercisesUi.sortDefault') }}</option>
@@ -162,7 +184,10 @@
           @click="openExercise(ex)"
         >
           <div class="flex items-start justify-between mb-3">
-            <div class="w-9 h-9 rounded-selector flex items-center justify-center" :class="`bg-${ex.skill}-soft`">
+            <div
+              class="w-9 h-9 rounded-selector flex items-center justify-center"
+              :class="`bg-${ex.skill}-soft`"
+            >
               <component :is="skillIcon(ex.skill)" :size="16" :class="`text-${ex.skill}`" />
             </div>
             <div class="flex items-center gap-2">
@@ -181,7 +206,10 @@
           </div>
           <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
           <p class="text-xs text-base-content/50 capitalize mb-3">
-            {{ $t('skill.' + ex.skill) }} · {{ getTypeLabel(ex.type, t) }}<span v-if="ex.part" class="uppercase"> · {{ $t('exercisesUi.part') }} {{ ex.part }}</span>
+            {{ $t('skill.' + ex.skill) }} · {{ getTypeLabel(ex.type, t)
+            }}<span v-if="ex.part" class="uppercase">
+              · {{ $t('exercisesUi.part') }} {{ ex.part }}</span
+            >
           </p>
 
           <div class="flex items-center gap-3 text-xs text-base-content/50 mb-3">
@@ -196,12 +224,18 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <progress class="progress flex-1 h-1.5" :class="progressClass(ex.skill)" :value="ex.pct" max="100" />
+            <progress
+              class="progress flex-1 h-1.5"
+              :class="progressClass(ex.skill)"
+              :value="ex.pct"
+              max="100"
+            />
             <span class="text-xs font-mono text-base-content/40 w-8 text-right">{{ ex.pct }}%</span>
             <span
               class="text-[10px] font-semibold px-1.5 py-0.5 rounded-selector"
               :class="statusClass(ex.status)"
-            >{{ statusLabel(ex.status) }}</span>
+              >{{ statusLabel(ex.status) }}</span
+            >
           </div>
           <button
             v-if="ex.skill === 'writing' && ex.status === 'mastered'"
@@ -217,7 +251,9 @@
         <div v-if="filtered.length === 0" class="col-span-3 py-16 text-center">
           <BookOpen :size="32" class="mx-auto text-base-content/20 mb-3" />
           <p class="text-sm text-base-content/50">{{ $t('exercisesUi.noMatches') }}</p>
-          <button class="btn btn-ghost btn-sm mt-2" @click="resetFilters">{{ $t('exercisesUi.clearFilters') }}</button>
+          <button class="btn btn-ghost btn-sm mt-2" @click="resetFilters">
+            {{ $t('exercisesUi.clearFilters') }}
+          </button>
         </div>
       </div>
 
@@ -246,19 +282,32 @@
                 <span class="text-sm font-medium">{{ ex.title }}</span>
               </td>
               <td class="py-3">
-                <span class="flex items-center gap-1.5 text-xs font-medium capitalize" :class="`text-${ex.skill}`">
+                <span
+                  class="flex items-center gap-1.5 text-xs font-medium capitalize"
+                  :class="`text-${ex.skill}`"
+                >
                   <component :is="skillIcon(ex.skill)" :size="12" />
                   {{ $t('skill.' + ex.skill) }}
                 </span>
               </td>
               <td class="py-3 text-xs text-base-content/60 capitalize">
-                {{ getTypeLabel(ex.type, t) }}<span v-if="ex.part"> · {{ $t('exercisesUi.part') }} {{ ex.part }}</span>
+                {{ getTypeLabel(ex.type, t)
+                }}<span v-if="ex.part"> · {{ $t('exercisesUi.part') }} {{ ex.part }}</span>
               </td>
-              <td class="py-3"><span class="level-pip">{{ ex.difficulty }}</span></td>
-              <td class="py-3 text-xs text-base-content/60">{{ ex.minutes }} {{ $t('exercisesUi.min') }}</td>
+              <td class="py-3">
+                <span class="level-pip">{{ ex.difficulty }}</span>
+              </td>
+              <td class="py-3 text-xs text-base-content/60">
+                {{ ex.minutes }} {{ $t('exercisesUi.min') }}
+              </td>
               <td class="py-3">
                 <div class="flex items-center gap-2 w-28">
-                  <progress class="progress flex-1 h-1" :class="progressClass(ex.skill)" :value="ex.pct" max="100" />
+                  <progress
+                    class="progress flex-1 h-1"
+                    :class="progressClass(ex.skill)"
+                    :value="ex.pct"
+                    max="100"
+                  />
                   <span class="text-xs font-mono text-base-content/40">{{ ex.pct }}%</span>
                 </div>
               </td>
@@ -268,7 +317,11 @@
                   type="button"
                   @click.stop="openExercise(ex)"
                 >
-                  {{ ex.skill === 'writing' && ex.status === 'mastered' ? $t('exercisesUi.review') : $t('exercisesUi.start') }}
+                  {{
+                    ex.skill === 'writing' && ex.status === 'mastered'
+                      ? $t('exercisesUi.review')
+                      : $t('exercisesUi.start')
+                  }}
                   <ChevronRight :size="12" />
                 </button>
                 <button
@@ -293,7 +346,9 @@
             <tr v-if="filtered.length === 0">
               <td colspan="7" class="py-12 text-center text-sm text-base-content/50">
                 {{ $t('exercisesUi.noMatches') }}.
-                <button class="btn btn-ghost btn-xs ml-2" @click="resetFilters">{{ $t('exercisesUi.clear') }}</button>
+                <button class="btn btn-ghost btn-xs ml-2" @click="resetFilters">
+                  {{ $t('exercisesUi.clear') }}
+                </button>
               </td>
             </tr>
           </tbody>
@@ -306,14 +361,27 @@
         </div>
       </template>
     </ClientOnly>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { BookOpen, PencilLine, Headphones, Mic, Search, LayoutGrid, List, Clock, AlignLeft, ChevronRight, Trash2, Info, Sparkles } from 'lucide-vue-next'
+import {
+  BookOpen,
+  PencilLine,
+  Headphones,
+  Mic,
+  Search,
+  LayoutGrid,
+  List,
+  Clock,
+  AlignLeft,
+  ChevronRight,
+  Trash2,
+  Info,
+  Sparkles,
+} from 'lucide-vue-next'
 import type { Component } from 'vue'
-import { goetheA2Structure } from '~/data/examStructure/goetheA2'
+import { getAvailableExamParts } from '~/data/examStructure/goetheA2'
 import type { ExerciseStatus, SkillId } from '~/utils/labels'
 import { parseSkillPartKeys } from '~/utils/generation/partJobs'
 import { storeToRefs } from 'pinia'
@@ -355,7 +423,10 @@ const {
 } = useProgress()
 
 const LISTENING_TYPE_BY_PART: Record<number, string> = {
-  1: 'announcement', 2: 'matching', 3: 'dialog', 4: 'interview',
+  1: 'announcement',
+  2: 'matching',
+  3: 'dialog',
+  4: 'interview',
 }
 const LISTENING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7, 3: 5, 4: 8 }
 const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
@@ -365,24 +436,24 @@ const {
   generateReading,
   isGenerating: isGeneratingReading,
   generationJobs: readingGenerationJobs,
-  generationError: readingGenerationError
+  generationError: readingGenerationError,
 } = useReadingGeneration()
 const {
   generateWriting,
   isGenerating: isGeneratingWriting,
-  generationJobs: writingGenerationJobs
+  generationJobs: writingGenerationJobs,
 } = useWritingGeneration()
 const {
   generateListening,
   isGenerating: isGeneratingListening,
   generationJobs: listeningGenerationJobs,
-  generationError: listeningGenerationError
+  generationError: listeningGenerationError,
 } = useListeningGeneration()
 const {
   generateSpeaking,
   isGenerating: isGeneratingSpeaking,
   generationJobs: speakingGenerationJobs,
-  generationError: speakingGenerationError
+  generationError: speakingGenerationError,
 } = useSpeakingGeneration()
 
 // Generate exercises modal
@@ -406,7 +477,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         const parts = parseSkillPartKeys('reading', payload.parts)
         await generateReading(examLevel.value, {
           parts: parts.length ? parts : undefined,
-          onPartComplete: (items) => addTexts(items)
+          onPartComplete: items => addTexts(items),
         })
         if (readingGenerationError.value) {
           alert(readingGenerationError.value)
@@ -419,13 +490,13 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         const partsToGenerate: (1 | 2)[] = selectedParts.length ? selectedParts : [1, 2]
         await generateWriting(examLevel.value, {
           parts: partsToGenerate,
-          onPartComplete: (items) => addTopics(items)
+          onPartComplete: items => addTopics(items),
         })
       } else if (skill === 'listening' && examLevel.value === 'A2') {
         const parts = parseSkillPartKeys('listening', payload.parts)
         await generateListening(examLevel.value, {
           parts: parts.length ? parts : undefined,
-          onPartComplete: (items) => addListening(items)
+          onPartComplete: items => addListening(items),
         })
         if (listeningGenerationError.value) {
           alert(listeningGenerationError.value)
@@ -434,7 +505,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         const parts = parseSkillPartKeys('speaking', payload.parts)
         await generateSpeaking(examLevel.value, {
           parts: parts.length ? parts : undefined,
-          onPartComplete: (items) => addSpeaking(items)
+          onPartComplete: items => addSpeaking(items),
         })
         if (speakingGenerationError.value) {
           alert(speakingGenerationError.value)
@@ -442,13 +513,21 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
       }
     } catch (error: unknown) {
       console.error(`Failed to generate ${skill} exercises:`, error)
-      alert(error instanceof Error ? error.message : t('generation.skillErrorFallback', { skill: t('skill.' + skill) }))
+      alert(
+        error instanceof Error
+          ? error.message
+          : t('generation.skillErrorFallback', { skill: t('skill.' + skill) })
+      )
     }
   }
 }
 
-const isAnyGenerating = computed(() =>
-  isGeneratingReading.value || isGeneratingListening.value || isGeneratingSpeaking.value || isGeneratingWriting.value
+const isAnyGenerating = computed(
+  () =>
+    isGeneratingReading.value ||
+    isGeneratingListening.value ||
+    isGeneratingSpeaking.value ||
+    isGeneratingWriting.value
 )
 
 type UnifiedJob = {
@@ -504,11 +583,11 @@ function togglePart(skill: string, n: number) {
 
 // Skills shown in the Part filter row: the active module, or all four when 'All'
 const partFilterSkills = computed<SkillId[]>(() =>
-  activeSkill.value === 'all' ? SKILL_KEYS : [activeSkill.value as SkillId],
+  activeSkill.value === 'all' ? SKILL_KEYS : [activeSkill.value as SkillId]
 )
 
 function partsForSkill(skill: SkillId) {
-  return goetheA2Structure.find(m => m.id === skill)?.parts ?? []
+  return getAvailableExamParts(skill)
 }
 
 // Apply ?skill= and ?part= query params
@@ -552,42 +631,48 @@ type UnifiedExercise = {
 
 const allExercises = computed<UnifiedExercise[]>(() => {
   const rStats = getProgressStats()
-  const readingList = getTexts().filter(t => t.difficulty === examLevel.value).map(t => {
-    const activity = rStats.recentActivity?.find((a: { textId: string; percentage: number }) => a.textId === t.id)
-    const pct = activity ? activity.percentage : 0
-    const completed = isTextCompleted(t.id)
-    return {
-      id: t.id,
-      skill: 'reading',
-      title: t.title,
-      type: t.textType,
-      difficulty: t.difficulty,
-      minutes: t.estimatedReadingTime,
-      words: t.wordCount,
-      pct,
-      status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
-      part: t.testingPart
-    } as UnifiedExercise
-  })
+  const readingList = getTexts()
+    .filter(t => t.difficulty === examLevel.value)
+    .map(t => {
+      const activity = rStats.recentActivity?.find(
+        (a: { textId: string; percentage: number }) => a.textId === t.id
+      )
+      const pct = activity ? activity.percentage : 0
+      const completed = isTextCompleted(t.id)
+      return {
+        id: t.id,
+        skill: 'reading',
+        title: t.title,
+        type: t.textType,
+        difficulty: t.difficulty,
+        minutes: t.estimatedReadingTime,
+        words: t.wordCount,
+        pct,
+        status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
+        part: t.testingPart,
+      } as UnifiedExercise
+    })
 
   const draftTopicIds = new Set(getAllWritingSessions().map(session => session.topicId))
-  const writingList = getTopics().filter(t => t.difficulty === examLevel.value).map(t => {
-    const completed = isWritingTopicCompleted(t.id)
-    const progress = getWritingTopicProgress(t.id)
-    const hasDraft = draftTopicIds.has(t.id)
-    return {
-      id: t.id,
-      skill: 'writing',
-      title: t.title,
-      type: t.topicType,
-      difficulty: t.difficulty,
-      minutes: t.estimatedTime,
-      words: t.wordCount.max,
-      pct: completed ? 100 : hasDraft ? 50 : progress ? 25 : 0,
-      status: completed ? 'mastered' : hasDraft || progress ? 'inprogress' : 'new',
-      part: t.testingPart,
-    } as UnifiedExercise
-  })
+  const writingList = getTopics()
+    .filter(t => t.difficulty === examLevel.value)
+    .map(t => {
+      const completed = isWritingTopicCompleted(t.id)
+      const progress = getWritingTopicProgress(t.id)
+      const hasDraft = draftTopicIds.has(t.id)
+      return {
+        id: t.id,
+        skill: 'writing',
+        title: t.title,
+        type: t.topicType,
+        difficulty: t.difficulty,
+        minutes: t.estimatedTime,
+        words: t.wordCount.max,
+        pct: completed ? 100 : hasDraft ? 50 : progress ? 25 : 0,
+        status: completed ? 'mastered' : hasDraft || progress ? 'inprogress' : 'new',
+        part: t.testingPart,
+      } as UnifiedExercise
+    })
 
   const listeningList = getListening()
     .filter(e => e.difficulty === examLevel.value)
@@ -631,10 +716,30 @@ const allExercises = computed<UnifiedExercise[]>(() => {
 
 // Module (skill) filter options — color-coded chips
 const moduleFilters = computed(() => [
-  { key: 'reading', label: getSkillLabel('reading', t), icon: BookOpen, count: allExercises.value.filter(e => e.skill === 'reading').length },
-  { key: 'writing', label: getSkillLabel('writing', t), icon: PencilLine, count: allExercises.value.filter(e => e.skill === 'writing').length },
-  { key: 'listening', label: getSkillLabel('listening', t), icon: Headphones, count: allExercises.value.filter(e => e.skill === 'listening').length },
-  { key: 'speaking', label: getSkillLabel('speaking', t), icon: Mic, count: allExercises.value.filter(e => e.skill === 'speaking').length },
+  {
+    key: 'reading',
+    label: getSkillLabel('reading', t),
+    icon: BookOpen,
+    count: allExercises.value.filter(e => e.skill === 'reading').length,
+  },
+  {
+    key: 'writing',
+    label: getSkillLabel('writing', t),
+    icon: PencilLine,
+    count: allExercises.value.filter(e => e.skill === 'writing').length,
+  },
+  {
+    key: 'listening',
+    label: getSkillLabel('listening', t),
+    icon: Headphones,
+    count: allExercises.value.filter(e => e.skill === 'listening').length,
+  },
+  {
+    key: 'speaking',
+    label: getSkillLabel('speaking', t),
+    icon: Mic,
+    count: allExercises.value.filter(e => e.skill === 'speaking').length,
+  },
 ])
 
 const statusFilters = computed(() => [
@@ -674,7 +779,12 @@ const filtered = computed(() => {
 })
 
 function skillIcon(skill: string): Component {
-  const map: Record<string, Component> = { reading: BookOpen, writing: PencilLine, listening: Headphones, speaking: Mic }
+  const map: Record<string, Component> = {
+    reading: BookOpen,
+    writing: PencilLine,
+    listening: Headphones,
+    speaking: Mic,
+  }
   return map[skill] ?? BookOpen
 }
 
@@ -686,14 +796,15 @@ function statusClass(status: string) {
   const map: Record<string, string> = {
     new: 'bg-base-200 text-base-content/50',
     inprogress: 'bg-warning/20 text-warning',
-    mastered: 'bg-success/20 text-success'
+    mastered: 'bg-success/20 text-success',
   }
   return map[status] ?? ''
 }
 
 function openExercise(ex: UnifiedExercise) {
   if (ex.skill === 'reading') router.push(`/reading/${ex.id}`)
-  else if (ex.skill === 'writing') router.push(ex.status === 'mastered' ? `/writing/${ex.id}/checking` : `/writing/${ex.id}/exam`)
+  else if (ex.skill === 'writing')
+    router.push(ex.status === 'mastered' ? `/writing/${ex.id}/checking` : `/writing/${ex.id}/exam`)
   else if (ex.skill === 'listening') router.push(`/listening/${ex.id}`)
   else if (ex.skill === 'speaking') router.push(`/speaking/${ex.id}`)
 }
@@ -729,7 +840,7 @@ function statusKey(status: PartStatus) {
     queued: 'generation.statusQueued',
     running: 'generation.statusRunning',
     done: 'generation.statusDone',
-    failed: 'generation.statusFailed'
+    failed: 'generation.statusFailed',
   }
   return keys[status]
 }
@@ -739,7 +850,7 @@ function jobStatusClass(status: PartStatus) {
     queued: 'text-base-content/50',
     running: 'text-primary font-medium',
     done: 'text-success',
-    failed: 'text-error'
+    failed: 'text-error',
   }
   return classes[status]
 }

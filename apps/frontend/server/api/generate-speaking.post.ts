@@ -1,9 +1,5 @@
 import type { H3Event } from 'h3'
-import type {
-  SpeakingA2Part,
-  SpeakingA2Topic,
-  SpeakingFourCards
-} from '~/utils/exercises/speaking'
+import type { SpeakingA2Part, SpeakingA2Topic, SpeakingFourCards } from '~/utils/exercises/speaking'
 import type { Difficulty } from '~/utils/types'
 import { generateSpeakingId } from '~/utils/uuid'
 import { callLlm, getLlmConfig, type LlmConfig } from '~/server/utils/llm'
@@ -98,15 +94,16 @@ function normaliseTopic(
   const supportedDifficulty = 'A2' as const
 
   if (part === 1) {
-    if (!isFourCards(value['cards'])) return null
+    if (!isFourCards(value['answerQuestions']) || !isFourCards(value['askQuestions'])) return null
     return {
       id,
       testingPart: 1,
       topicType: 'interview',
       difficulty: supportedDifficulty,
       theme: value['theme'],
-      cards: value['cards'],
-      createdAt
+      answerQuestions: value['answerQuestions'],
+      askQuestions: value['askQuestions'],
+      createdAt,
     }
   }
 
@@ -118,7 +115,7 @@ function normaliseTopic(
     difficulty: supportedDifficulty,
     theme: value['theme'],
     keywords: value['keywords'],
-    createdAt
+    createdAt,
   }
 }
 
@@ -133,9 +130,9 @@ async function generateForPart(
       {
         role: 'system',
         content:
-          'You are an expert Goethe-Institut exam creator. Generate speaking topics according to the specifications provided. Return ONLY a valid JSON array of topic objects, no additional text.'
+          'You are an expert Goethe-Institut exam creator. Generate speaking topics according to the specifications provided. Return ONLY a valid JSON array of topic objects, no additional text.',
       },
-      { role: 'user', content: job.prompt }
+      { role: 'user', content: job.prompt },
     ],
     { temperature: 0.8, maxTokens: 2000 }
   )
@@ -156,12 +153,14 @@ async function generateForPart(
 export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeakingResponse> => {
   const config = useRuntimeConfig()
   const llmConfig = getLlmConfig(config)
-  const body = (await readBody<GenerateSpeakingRequestBody>(event)) || ({} as GenerateSpeakingRequestBody)
+  const body =
+    (await readBody<GenerateSpeakingRequestBody>(event)) || ({} as GenerateSpeakingRequestBody)
 
   if (!llmConfig) {
     return {
       topics: [],
-      error: 'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
+      error:
+        'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
@@ -170,7 +169,8 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeaki
   }
 
   const jobs = (Array.isArray(body.prompts) ? body.prompts : []).filter(
-    (job): job is SpeakingPromptPart => isRecord(job) && isSpeakingA2Part(job.part) && nonEmptyString(job.prompt)
+    (job): job is SpeakingPromptPart =>
+      isRecord(job) && isSpeakingA2Part(job.part) && nonEmptyString(job.prompt)
   )
 
   if (jobs.length === 0) {
@@ -198,10 +198,15 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateSpeaki
     }
 
     if (topics.length === 0) {
-      return { topics: [], error: 'Failed to parse speaking topics from AI response. Please try again.' }
+      return {
+        topics: [],
+        error: 'Failed to parse speaking topics from AI response. Please try again.',
+      }
     }
 
-    console.log(`[exam.one][speaking] complete topics=${topics.length} difficulty=${body.difficulty} parts=${jobs.length}`)
+    console.log(
+      `[exam.one][speaking] complete topics=${topics.length} difficulty=${body.difficulty} parts=${jobs.length}`
+    )
     return { topics }
   } catch (error: unknown) {
     if (error instanceof Error) {

@@ -8,6 +8,8 @@
 apps/frontend/e2e
 # Listening WAVs (seed + on-demand generated); regenerate via scripts/tts/README.md
 apps/frontend/public/audio
+# Local Parakeet model snapshot; regenerate via pnpm stt:up
+scripts/stt/parakeet/models/
 
 # Node dependencies
 node_modules

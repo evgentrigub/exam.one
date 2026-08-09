@@ -13,7 +13,8 @@ This file is the working guide for coding agents in this repository. It should b
 ## Current focus
 
 - **Done (iteration 1):** Reading, Writing, Listening (incl. file-based Kokoro audio)
-- **Next:** Speaking (`roadmap.md` §1.1) — harden Teil 1–2 offline practice, then wire AI review + STT; Teil 3 and mock exam follow
+- **Done:** Speaking Teil 1–2 iteration — offline/manual practice, local or cloud STT, optional AI review, and local attempts
+- **Next:** Speaking Teil 3 joint planning (`roadmap.md` §1.1), then pronunciation and mock-exam integration
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
@@ -50,8 +51,8 @@ Use `pnpm`.
 - `libraries/database/` owns the Prisma schema, migrations, and seeds
 - `libraries/exam-content/` is the shared exam-content boundary
 - `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
-- `compose.dev.yaml` runs only PostgreSQL for local development and preserves data in `exam-one-postgres-dev-data`
-- `compose.yaml` runs the fully containerized stack
+- `compose.yaml` is the only Compose file; it defines frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT
+- `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the complete stack after ensuring host-persisted speech models are present
 - `agent-os/` contains project-specific product context and implementation standards
 
 ## Agent Priorities

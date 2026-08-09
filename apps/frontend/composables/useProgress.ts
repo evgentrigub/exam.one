@@ -1,4 +1,5 @@
 import type { WritingSubmission, WritingFeedbackModel } from '~/utils/types'
+import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
 
 interface QuizProgress {
   textId: string
@@ -31,8 +32,6 @@ interface WritingProgress {
   submissions: WritingSubmission[]
 }
 
-
-
 interface WritingStats {
   totalTopicsCompleted: number
   totalSubmissions: number
@@ -53,12 +52,14 @@ export interface WritingSessionModel {
 // Listening progress (MCQ-scored, mirrors reading quiz model)
 export type ListeningProgress = QuizProgress
 
-// Speaking progress (attempt-based: recordings are mocked, no auto score yet)
-interface SpeakingAttempt {
+// Speaking progress (attempt-based, with optional STT transcripts + AI review)
+export interface SpeakingAttempt {
   id: string
   topicId: string
   durationSec: number
   transcript?: string
+  transcripts?: SpeakingTranscripts
+  review?: SpeakingReviewData
   selfScore?: number // optional 1-5 self assessment
   submittedAt: string
 }
@@ -68,6 +69,8 @@ interface SpeakingProgress {
   completed: boolean
   attemptCount: number
   bestSelfScore?: number
+  bestPoints?: number
+  bestMaxPoints?: number
   completedAt?: string
   attempts: SpeakingAttempt[]
 }
@@ -75,7 +78,7 @@ interface SpeakingProgress {
 export const useProgress = () => {
   const STORAGE_KEY = 'quiz-progress'
   const SESSION_STORAGE_KEY = 'quiz-session'
-  
+
   // Writing progress storage keys (Stage 11)
   const WRITING_STORAGE_KEY = 'exam-one:writing:progress'
   const WRITING_STORAGE_LEGACY_KEY = 'writing-progress'
@@ -105,10 +108,10 @@ export const useProgress = () => {
 
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
-    
+
     const existingProgress = getProgressData()
     const currentProgress = existingProgress[textId]
-    
+
     const newProgress: QuizProgress = {
       textId,
       completed: true,
@@ -117,9 +120,9 @@ export const useProgress = () => {
       percentage,
       completedAt,
       attemptCount: (currentProgress?.attemptCount || 0) + 1,
-      bestScore: Math.max(currentProgress?.bestScore || 0, score)
+      bestScore: Math.max(currentProgress?.bestScore || 0, score),
     }
-    
+
     existingProgress[textId] = newProgress
     localStorage.setItem(STORAGE_KEY, JSON.stringify(existingProgress))
   }
@@ -127,16 +130,20 @@ export const useProgress = () => {
   /**
    * Save incomplete session for resume functionality
    */
-  const saveSession = (textId: string, currentQuestionIndex: number, answers: Record<string, number>) => {
+  const saveSession = (
+    textId: string,
+    currentQuestionIndex: number,
+    answers: Record<string, number>
+  ) => {
     if (!import.meta.client) return
 
     const session = {
       textId,
       currentQuestionIndex,
       answers,
-      startedAt: new Date().toISOString()
+      startedAt: new Date().toISOString(),
     }
-    
+
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session))
   }
 
@@ -145,7 +152,7 @@ export const useProgress = () => {
    */
   const getSession = () => {
     if (!import.meta.client) return null
-    
+
     const data = localStorage.getItem(SESSION_STORAGE_KEY)
     return data ? JSON.parse(data) : null
   }
@@ -164,7 +171,7 @@ export const useProgress = () => {
   const getProgressStats = (): ProgressStats => {
     const progressData = getProgressData()
     const completedTexts = Object.values(progressData).filter(p => p.completed)
-    
+
     if (completedTexts.length === 0) {
       return {
         totalTextsCompleted: 0,
@@ -172,14 +179,14 @@ export const useProgress = () => {
         averageScore: 0,
         bestScore: 0,
         recentActivity: [],
-        completionRate: 0
+        completionRate: 0,
       }
     }
 
     const totalAttempts = completedTexts.reduce((sum, p) => sum + (p.attemptCount || 1), 0)
     const totalPossibleScore = completedTexts.reduce((sum, p) => sum + p.totalQuestions, 0)
     const totalActualScore = completedTexts.reduce((sum, p) => sum + (p.bestScore || p.score), 0)
-    
+
     // Recent activity (last 5 completed quizzes, sorted by completion date)
     const recentActivity = completedTexts
       .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime())
@@ -191,7 +198,8 @@ export const useProgress = () => {
       averageScore: Math.round((totalActualScore / totalPossibleScore) * 100),
       bestScore: Math.max(...completedTexts.map(p => p.percentage)),
       recentActivity,
-      completionRate: Math.round((completedTexts.length / Object.keys(progressData).length) * 100) || 0
+      completionRate:
+        Math.round((completedTexts.length / Object.keys(progressData).length) * 100) || 0,
     }
   }
 
@@ -227,7 +235,9 @@ export const useProgress = () => {
     if (!import.meta.client) return {}
 
     try {
-      const data = localStorage.getItem(WRITING_STORAGE_KEY) || localStorage.getItem(WRITING_STORAGE_LEGACY_KEY)
+      const data =
+        localStorage.getItem(WRITING_STORAGE_KEY) ||
+        localStorage.getItem(WRITING_STORAGE_LEGACY_KEY)
       return data ? JSON.parse(data) : {}
     } catch {
       return {}
@@ -243,56 +253,62 @@ export const useProgress = () => {
   const getWritingProgressData = (): Record<string, WritingProgress> => readWritingProgressStorage()
 
   /**
- * Save writing submission to localStorage with evaluation (Stage 12)
- */
-const saveWritingSubmission = (topicId: string, content: string, wordCount: number, timeSpent?: number, feedback?: WritingFeedbackModel) => {
-  if (!import.meta.client) return
+   * Save writing submission to localStorage with evaluation (Stage 12)
+   */
+  const saveWritingSubmission = (
+    topicId: string,
+    content: string,
+    wordCount: number,
+    timeSpent?: number,
+    feedback?: WritingFeedbackModel
+  ) => {
+    if (!import.meta.client) return
 
-  const submissionId = `${topicId}-${Date.now()}`
-  const submittedAt = new Date().toISOString()
-  
-  const existingProgress = getWritingProgressData()
-  const currentProgress = existingProgress[topicId] || {
-    topicId,
-    completed: false,
-    attemptCount: 0,
-    submissions: []
+    const submissionId = `${topicId}-${Date.now()}`
+    const submittedAt = new Date().toISOString()
+
+    const existingProgress = getWritingProgressData()
+    const currentProgress = existingProgress[topicId] || {
+      topicId,
+      completed: false,
+      attemptCount: 0,
+      submissions: [],
+    }
+
+    const newSubmission: WritingSubmission = {
+      id: submissionId,
+      topicId,
+      content,
+      wordCount,
+      submittedAt,
+      timeSpent: timeSpent || 0,
+      isDraft: false,
+      ...(feedback && { feedback }), // Stage 12: Store evaluation results (only if provided)
+    }
+
+    const updatedProgress: WritingProgress = {
+      ...currentProgress,
+      completed: true,
+      attemptCount: currentProgress.attemptCount + 1,
+      bestWordCount: Math.max(currentProgress.bestWordCount || 0, wordCount),
+      completedAt: submittedAt,
+      timeSpent: (currentProgress.timeSpent || 0) + (timeSpent || 0),
+      submissions: [...currentProgress.submissions, newSubmission],
+    }
+
+    const updatedProgressData = {
+      ...existingProgress,
+      [topicId]: updatedProgress,
+    }
+    try {
+      localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(updatedProgressData))
+    } catch (error) {
+      console.warn('Failed to save writing progress:', error)
+    }
+
+    // Clear any draft for this topic
+    clearWritingSession(topicId)
   }
-  
-  const newSubmission: WritingSubmission = {
-    id: submissionId,
-    topicId,
-    content,
-    wordCount,
-    submittedAt,
-    timeSpent: timeSpent || 0,
-    isDraft: false,
-    ...(feedback && { feedback }) // Stage 12: Store evaluation results (only if provided)
-  }
-  
-  const updatedProgress: WritingProgress = {
-    ...currentProgress,
-    completed: true,
-    attemptCount: currentProgress.attemptCount + 1,
-    bestWordCount: Math.max(currentProgress.bestWordCount || 0, wordCount),
-    completedAt: submittedAt,
-    timeSpent: (currentProgress.timeSpent || 0) + (timeSpent || 0),
-    submissions: [...currentProgress.submissions, newSubmission]
-  }
-  
-  const updatedProgressData = {
-    ...existingProgress,
-    [topicId]: updatedProgress
-  }
-  try {
-    localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(updatedProgressData))
-  } catch (error) {
-    console.warn('Failed to save writing progress:', error)
-  }
-  
-  // Clear any draft for this topic
-  clearWritingSession(topicId)
-}
 
   /**
    * Save writing draft to localStorage
@@ -305,9 +321,9 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
       content,
       wordCount,
       startedAt: new Date().toISOString(),
-      lastSavedAt: new Date().toISOString()
+      lastSavedAt: new Date().toISOString(),
     }
-    
+
     try {
       localStorage.setItem(getWritingSessionKey(topicId), JSON.stringify(session))
     } catch (error) {
@@ -320,9 +336,11 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
    */
   const getWritingSession = (topicId: string): WritingSessionModel | null => {
     if (!import.meta.client) return null
-    
+
     try {
-      const data = localStorage.getItem(getWritingSessionKey(topicId)) || localStorage.getItem(getLegacyWritingSessionKey(topicId))
+      const data =
+        localStorage.getItem(getWritingSessionKey(topicId)) ||
+        localStorage.getItem(getLegacyWritingSessionKey(topicId))
       return data ? JSON.parse(data) : null
     } catch {
       return null
@@ -343,13 +361,17 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
    */
   const getAllWritingSessions = (): WritingSessionModel[] => {
     if (!import.meta.client) return []
-    
+
     const sessions: WritingSessionModel[] = []
-    
+
     // Look for all writing session keys in localStorage
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
-      if (key && (key.startsWith(`${WRITING_SESSION_KEY}:`) || key.startsWith(`${WRITING_SESSION_LEGACY_KEY}-`))) {
+      if (
+        key &&
+        (key.startsWith(`${WRITING_SESSION_KEY}:`) ||
+          key.startsWith(`${WRITING_SESSION_LEGACY_KEY}-`))
+      ) {
         try {
           const sessionData = localStorage.getItem(key)
           if (sessionData) {
@@ -362,8 +384,10 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
         }
       }
     }
-    
-    return sessions.sort((a, b) => new Date(b.lastSavedAt).getTime() - new Date(a.lastSavedAt).getTime())
+
+    return sessions.sort(
+      (a, b) => new Date(b.lastSavedAt).getTime() - new Date(a.lastSavedAt).getTime()
+    )
   }
 
   /**
@@ -372,7 +396,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
   const getWritingStats = (): WritingStats => {
     const progressData = getWritingProgressData()
     const completedTopics = Object.values(progressData).filter(p => p.completed)
-    
+
     if (completedTopics.length === 0) {
       return {
         totalTopicsCompleted: 0,
@@ -380,14 +404,14 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
         averageWordCount: 0,
         totalTimeSpent: 0,
         recentActivity: [],
-        completionRate: 0
+        completionRate: 0,
       }
     }
 
     const totalSubmissions = completedTopics.reduce((sum, p) => sum + p.submissions.length, 0)
     const totalWords = completedTopics.reduce((sum, p) => sum + (p.bestWordCount || 0), 0)
     const totalTime = completedTopics.reduce((sum, p) => sum + (p.timeSpent || 0), 0)
-    
+
     // Recent activity (last 5 completed topics, sorted by completion date)
     const recentActivity = completedTopics
       .filter(p => p.completedAt)
@@ -403,7 +427,7 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
       averageWordCount: Math.round(totalWords / completedTopics.length),
       totalTimeSpent: totalTime,
       recentActivity,
-      completionRate: Math.round((completedTopics.length / totalAvailableTopics) * 100)
+      completionRate: Math.round((completedTopics.length / totalAvailableTopics) * 100),
     }
   }
 
@@ -437,10 +461,11 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
   const getLatestSubmission = (topicId: string): WritingSubmission | null => {
     const progress = getWritingTopicProgress(topicId)
     if (!progress || progress.submissions.length === 0) return null
-    
-    const latest = [...progress.submissions]
-      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())[0]
-    
+
+    const latest = [...progress.submissions].sort(
+      (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+    )[0]
+
     return latest || null
   }
 
@@ -493,15 +518,25 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
 
   const getSpeakingProgressData = (): Record<string, SpeakingProgress> => {
     if (import.meta.client) {
-      const data = localStorage.getItem(SPEAKING_STORAGE_KEY)
-      return data ? JSON.parse(data) : {}
+      try {
+        const data = localStorage.getItem(SPEAKING_STORAGE_KEY)
+        return data ? JSON.parse(data) : {}
+      } catch {
+        return {}
+      }
     }
     return {}
   }
 
   const saveSpeakingAttempt = (
     topicId: string,
-    attempt: { durationSec: number; transcript?: string; selfScore?: number },
+    attempt: {
+      durationSec: number
+      transcript?: string
+      transcripts?: SpeakingTranscripts
+      review?: SpeakingReviewData
+      selfScore?: number
+    }
   ) => {
     if (!import.meta.client) return
 
@@ -520,6 +555,8 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
       durationSec: attempt.durationSec,
       submittedAt,
       ...(attempt.transcript !== undefined && { transcript: attempt.transcript }),
+      ...(attempt.transcripts !== undefined && { transcripts: attempt.transcripts }),
+      ...(attempt.review !== undefined && { review: attempt.review }),
       ...(attempt.selfScore !== undefined && { selfScore: attempt.selfScore }),
     }
 
@@ -531,10 +568,18 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
       ...(attempt.selfScore !== undefined && {
         bestSelfScore: Math.max(current.bestSelfScore || 0, attempt.selfScore),
       }),
+      ...(attempt.review !== undefined && {
+        bestPoints: Math.max(current.bestPoints || 0, attempt.review.totalPoints),
+        bestMaxPoints: attempt.review.maxPoints,
+      }),
       attempts: [...current.attempts, newAttempt],
     }
 
-    localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(existing))
+    try {
+      localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(existing))
+    } catch (error) {
+      console.warn('Failed to save speaking progress:', error)
+    }
   }
 
   const getSpeakingProgress = (topicId: string): SpeakingProgress | null => {
@@ -551,12 +596,12 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     saveQuizCompletion,
     getProgressStats,
     getTextProgress,
-    
+
     // Session management (Reading)
     saveSession,
     getSession,
     clearSession,
-    
+
     // Utility functions (Reading)
     isTextCompleted,
     getBestScore,
@@ -584,6 +629,6 @@ const saveWritingSubmission = (topicId: string, content: string, wordCount: numb
     getSpeakingProgressData,
     saveSpeakingAttempt,
     getSpeakingProgress,
-    isSpeakingCompleted
+    isSpeakingCompleted,
   }
-} 
+}

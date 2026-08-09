@@ -1,3 +1,10 @@
+name: exam-one
+
+# One Compose project for the application, database, text-to-speech, and
+# speech-to-text services. On the first run, use `pnpm stack:up` so the TTS and
+# STT model snapshots are downloaded to their gitignored host directories
+# before Docker starts the read-only model mounts.
+
 services:
   frontend:
     build:
@@ -6,10 +13,32 @@ services:
     environment:
       NITRO_HOST: 0.0.0.0
       NITRO_PORT: 3000
+      NUXT_LLM_PROVIDER: '${LLM_PROVIDER:-openrouter}'
+      NUXT_LLM_OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
+      NUXT_LLM_OPENROUTER_API_KEY: '${OPENROUTER_API_KEY:-}'
+      NUXT_LLM_OPENAI_MODEL: '${OPENAI_MODEL:-gpt-5.5}'
+      NUXT_LLM_OPENROUTER_MODEL: '${OPENROUTER_MODEL:-google/gemma-4-26b-a4b-it:free}'
+      NUXT_LLM_REASONING_EFFORT: '${LLM_REASONING_EFFORT:-medium}'
+      NUXT_STT_PROVIDER: '${STT_PROVIDER:-local}'
+      NUXT_STT_BASE_URL: 'http://parakeet:8882'
+      NUXT_STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
+      NUXT_STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
+      NUXT_STT_OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
+      TTS_BASE_URL: 'http://kokoro-voices:8881'
+      TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
+      TTS_SPEED: '${TTS_SPEED:-1.0}'
+      TTS_LANG: '${TTS_LANG:-de}'
+      TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
     ports:
       - '${FRONTEND_PORT:-3000}:3000'
+    volumes:
+      - generated_listening_audio:/app/public/audio/listening/generated
     depends_on:
       backend:
+        condition: service_healthy
+      kokoro-voices:
+        condition: service_healthy
+      parakeet:
         condition: service_healthy
     restart: unless-stopped
 
@@ -45,16 +74,71 @@ services:
       POSTGRES_DB: '${POSTGRES_DB:-exam_one}'
       POSTGRES_USER: '${POSTGRES_USER:-exam_one}'
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-exam_one}'
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test:
         - CMD-SHELL
         - 'pg_isready -U ${POSTGRES_USER:-exam_one} -d ${POSTGRES_DB:-exam_one}'
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+    restart: unless-stopped
+
+  kokoro-voices:
+    build:
+      context: ./scripts/tts/victoria
+      dockerfile: Dockerfile
+    environment:
+      KOKORO_VICTORIA_MODEL_DIR: /app/models
+      KOKORO_MULTI_SPEED: '${TTS_SPEED:-1.0}'
+      KOKORO_PAUSE_DURATION: '${TTS_PAUSE_DURATION:-0.25}'
+      OMP_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
+      OPENBLAS_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
+      MKL_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
+      NUMEXPR_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
+    ports:
+      - '${TTS_PORT:-8881}:8881'
+    volumes:
+      - ./scripts/tts/victoria/models:/app/models:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'curl -fsS http://127.0.0.1:8881/v1/audio/voices >/dev/null'
+      interval: 15s
+      timeout: 10s
+      retries: 40
+      start_period: 300s
+    restart: unless-stopped
+
+  parakeet:
+    build:
+      context: ./scripts/stt/parakeet
+      dockerfile: Dockerfile
+    environment:
+      PARAKEET_MODEL_DIR: /app/models
+      PARAKEET_MODEL_FILE: parakeet-tdt-0.6b-v3-Q8_0.gguf
+      PARAKEET_MODEL_ID: handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
+      STT_CPU_THREADS: '${STT_CPU_THREADS:-4}'
+    ports:
+      - '${STT_PORT:-8882}:8882'
+    volumes:
+      - ./scripts/stt/parakeet/models:/app/models:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python -c "import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8882/health', timeout=5).read()"
+      interval: 15s
+      timeout: 10s
+      retries: 40
+      start_period: 180s
     restart: unless-stopped
 
 volumes:
   postgres_data:
+    name: '${POSTGRES_VOLUME_NAME:-exam-one-postgres-dev-data}'
+  generated_listening_audio:
