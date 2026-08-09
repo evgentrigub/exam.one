@@ -4,8 +4,8 @@
     <template v-if="phase === 'ready'">
       <button
         type="button"
-        class="w-20 h-20 mx-auto rounded-full bg-warning text-warning-content flex items-center justify-center shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warning"
-        title="Start recording"
+        class="w-20 h-20 mx-auto rounded-full bg-warning text-warning-content flex items-center justify-center shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warning disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+        :title="disabled ? disabledReason || 'Recording unavailable' : 'Start recording'"
         :disabled="starting || !!disabled"
         @click="start"
       >
@@ -13,7 +13,13 @@
         <Mic v-else :size="30" />
       </button>
       <p class="text-sm font-medium mt-4">
-        {{ starting ? 'Requesting microphone access…' : 'Tap to start recording' }}
+        {{
+          starting
+            ? 'Requesting microphone access…'
+            : disabled
+              ? disabledReason || 'Recording unavailable'
+              : 'Tap to start recording'
+        }}
       </p>
       <p class="text-xs text-base-content/50 mt-1">Record for up to {{ maxSeconds }} seconds</p>
       <div
@@ -53,16 +59,26 @@
         <Check :size="28" />
       </div>
       <p class="text-sm font-medium mt-3">Recording complete · {{ fmt(seconds) }}</p>
+      <audio
+        ref="audioPlayer"
+        :src="audioUrl || ''"
+        preload="metadata"
+        @play="isPlaying = true"
+        @pause="isPlaying = false"
+        @ended="isPlaying = false"
+        @error="onPlaybackError"
+      />
       <div class="flex items-center justify-center gap-2 mt-4">
         <button
           type="button"
           class="btn btn-sm btn-outline gap-1.5"
           :disabled="!audioUrl"
           :title="audioUrl ? 'Play back' : 'Playback unavailable'"
-          @click="playback"
+          @click="togglePlayback"
         >
-          <Play :size="14" />
-          Play back
+          <Pause v-if="isPlaying" :size="14" />
+          <Play v-else :size="14" />
+          {{ isPlaying ? 'Pause' : 'Play back' }}
         </button>
         <button
           type="button"
@@ -74,17 +90,22 @@
           Re-record
         </button>
       </div>
+      <p v-if="playbackError" class="mt-3 text-xs text-error">{{ playbackError }}</p>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Check, Mic, Play, RotateCcw, Square, TriangleAlert } from 'lucide-vue-next'
+import { Check, Mic, Pause, Play, RotateCcw, Square, TriangleAlert } from 'lucide-vue-next'
 
-const props = withDefaults(defineProps<{ maxSeconds?: number; disabled?: boolean }>(), {
-  maxSeconds: 30,
-  disabled: false,
-})
+const props = withDefaults(
+  defineProps<{ maxSeconds?: number; disabled?: boolean; disabledReason?: string }>(),
+  {
+    maxSeconds: 30,
+    disabled: false,
+    disabledReason: '',
+  }
+)
 const emit = defineEmits<{
   done: [payload: { durationSec: number; audioUrl: string | null; blob: Blob | null }]
   recordingChange: [isRecording: boolean]
@@ -96,12 +117,14 @@ const seconds = ref(0)
 const starting = ref(false)
 const recorderError = ref<string | null>(null)
 const audioUrl = ref<string | null>(null)
+const audioPlayer = ref<HTMLAudioElement | null>(null)
+const isPlaying = ref(false)
+const playbackError = ref<string | null>(null)
 
 let timer: ReturnType<typeof setInterval> | null = null
 let mediaRecorder: MediaRecorder | null = null
 let stream: MediaStream | null = null
 let chunks: BlobPart[] = []
-let audioEl: HTMLAudioElement | null = null
 let stopping = false
 let disposed = false
 
@@ -135,6 +158,7 @@ async function start() {
   chunks = []
   stopping = false
   recorderError.value = null
+  playbackError.value = null
   if (audioUrl.value) URL.revokeObjectURL(audioUrl.value)
   audioUrl.value = null
 
@@ -222,6 +246,7 @@ function reset() {
   stopTimer()
   releaseStream()
   stopping = false
+  stopPlayback()
   if (audioUrl.value) {
     URL.revokeObjectURL(audioUrl.value)
     audioUrl.value = null
@@ -231,11 +256,36 @@ function reset() {
   phase.value = 'ready'
 }
 
-function playback() {
-  if (!audioUrl.value) return
-  audioEl?.pause()
-  audioEl = new Audio(audioUrl.value)
-  void audioEl.play()
+async function togglePlayback(): Promise<void> {
+  const player = audioPlayer.value
+  if (!audioUrl.value || !player) return
+
+  playbackError.value = null
+  if (!player.paused) {
+    player.pause()
+    return
+  }
+
+  try {
+    await player.play()
+  } catch {
+    isPlaying.value = false
+    playbackError.value = 'The browser could not play this recording.'
+  }
+}
+
+function stopPlayback(): void {
+  const player = audioPlayer.value
+  if (player) {
+    player.pause()
+    player.currentTime = 0
+  }
+  isPlaying.value = false
+}
+
+function onPlaybackError(): void {
+  isPlaying.value = false
+  playbackError.value = 'The browser could not play this recording.'
 }
 
 function releaseStream() {
@@ -266,7 +316,7 @@ onUnmounted(() => {
     if (mediaRecorder.state !== 'inactive') mediaRecorder.stop()
   }
   releaseStream()
-  audioEl?.pause()
+  stopPlayback()
   if (audioUrl.value) URL.revokeObjectURL(audioUrl.value)
 })
 

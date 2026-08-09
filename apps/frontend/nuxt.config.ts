@@ -115,7 +115,7 @@ export default defineNuxtConfig({
       '/**': {
         headers: {
           'Content-Security-Policy':
-            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;",
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:;",
         },
       },
     },
@@ -133,8 +133,7 @@ export default defineNuxtConfig({
     llmReasoningEffort: process.env['LLM_REASONING_EFFORT'] || 'medium',
     sttProvider: process.env['STT_PROVIDER'] || 'local',
     sttBaseUrl: process.env['STT_BASE_URL'] || 'http://127.0.0.1:8882',
-    sttModel:
-      process.env['STT_MODEL'] || 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
+    sttModel: process.env['STT_MODEL'] || 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
     sttOpenaiModel: process.env['STT_OPENAI_MODEL'] || 'whisper-1',
     sttOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
     // Public (exposed to client). Leave empty unless you explicitly want to expose something.

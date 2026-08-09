@@ -9,7 +9,9 @@ import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 
 const STORAGE_KEY = 'exam-one:speaking:exercises'
 
-const topics = ref<SpeakingA2Topic[]>([])
+// Keep the SSR and pre-hydration client render deterministic. Stored topics are
+// merged after mount so localStorage cannot change the hydration tree.
+const topics = ref<SpeakingA2Topic[]>([...defaultSpeakingTopics])
 const isInitialized = ref(false)
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -134,7 +136,7 @@ export const useSpeakingExercises = () => {
   }
 
   if (import.meta.client && !isInitialized.value) {
-    initialize()
+    onMounted(initialize)
   }
 
   return {
