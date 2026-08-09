@@ -66,7 +66,8 @@
               {{ health?.detail || sttError || 'Checking the configured STT provider…' }}
             </p>
             <p class="mt-1 text-[11px] text-base-content/45">
-              Transcription is optional. You can always type or edit the text manually.
+              Using internal tool is optional. You can always use any whisper tools you would like.
+              Just don't type as a simple writing exercise. Your goal is speaking practice.
             </p>
           </div>
           <button
@@ -104,6 +105,7 @@
           <SpeakingRecorder
             :max-seconds="segment.maxSeconds"
             :disabled="recorderDisabled(segment.key)"
+            :disabled-reason="recordingDisabledReason"
             @recording-change="isRecording => onRecordingChange(segment.key, isRecording)"
             @done="payload => onRecorded(segment.key, payload)"
           />
@@ -383,9 +385,15 @@ const healthStatusClass = computed(() => {
   if (checkingHealth.value) return 'badge-ghost'
   return health.value?.ready ? 'badge-success' : 'badge-warning'
 })
+const recordingDisabledReason = computed(() => {
+  if (checkingHealth.value) return 'Checking speech-to-text availability…'
+  if (!health.value?.ready) return 'Recording requires an available speech-to-text tool.'
+  return ''
+})
 
 function recorderDisabled(key: SegmentKey): boolean {
   return (
+    !health.value?.ready ||
     submitted.value ||
     isReviewing.value ||
     transcribingPhase.value !== null ||
