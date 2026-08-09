@@ -145,12 +145,12 @@ const MOCK_EXAMS = [
 
 // Subscription plans (no functional difference in the prototype UI).
 const PLANS = [
-  { id:'free', name:'Free', price:'€0', period:'forever',
-    blurb:'Get started with the core exercises.',
+  { id:'free', name:'Open Source', price:'€0', period:'forever',
+    blurb:'Use your AI provider and local environment to practice',
     features:['All practice exercises','Self‑checked feedback','Basic progress tracking','1 mock exam per level'] },
   { id:'pro', name:'Pro', price:'€9.90', period:'per month',
-    blurb:'Everything, with unlimited AI review.',
-    features:['Everything in Free','Unlimited AI writing & speaking review','Full mock‑exam library','Weak‑spot drills & insights'] },
+    blurb:'Cloud option with AI credits',
+    features:['Everything in Open Source','Unlimited AI writing & speaking review','Full mock‑exam library','Weak‑spot drills & insights'] },
 ];
 
 const SKILLS = [

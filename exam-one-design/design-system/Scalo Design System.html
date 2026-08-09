@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Scalo × daisyUI — Design System Reference</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"/>
+<link rel="stylesheet" href="components.css"/>
+<link rel="stylesheet" href="scalo.css"/>
+<style>
+body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--color-primary)}a:hover{color:color-mix(in oklab,var(--color-primary) 80%,black)}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.recipe{display:block;background:color-mix(in oklab,var(--color-base-content) 5%,transparent);border-left:2px solid color-mix(in oklab,var(--color-primary) 45%,transparent);border-radius:.4rem;padding:.7rem .85rem;font-size:.72rem;line-height:1.65;color:color-mix(in oklab,var(--color-base-content) 78%,transparent);white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+.spec{display:grid;grid-template-columns:9.5rem 1fr;gap:.35rem 1rem;font-size:.8rem}
+.spec dt{color:color-mix(in oklab,var(--color-base-content) 55%,transparent)}
+.spec dd{margin:0}
+.demo{background:var(--color-base-200);border:1px solid var(--color-base-300);border-radius:1rem;padding:1.5rem}
+.sec{scroll-margin-top:1.5rem}
+.eyebrow{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.22em;color:var(--color-primary)}
+.navlink{display:block;padding:.3rem .6rem;border-radius:.4rem;font-size:.8rem;color:color-mix(in oklab,var(--color-base-content) 70%,transparent);text-decoration:none}
+.navlink:hover{background:color-mix(in oklab,var(--color-base-content) 7%,transparent);color:var(--color-base-content)}
+.swatch{height:3.5rem;border-radius:.6rem;display:flex;align-items:flex-end;padding:.4rem .55rem;font-size:.7rem;font-weight:600}
+.tag{display:inline-block;padding:.1rem .45rem;border-radius:.3rem;font-size:.68rem;font-weight:600;background:color-mix(in oklab,var(--color-base-content) 10%,transparent);color:color-mix(in oklab,var(--color-base-content) 70%,transparent)}
+</style>
+</head>
+<body class="bg-base-200 text-base-content">
+<div class="flex min-h-screen">
+
+<!-- ============ SIDE NAV ============ -->
+<aside class="hidden lg:block w-60 shrink-0 border-r border-base-300 bg-base-100">
+<div class="sticky top-0 max-h-screen overflow-y-auto p-5 flex flex-col gap-4">
+<div>
+<p class="text-sm font-bold leading-tight">Scalo × daisyUI</p>
+<p class="text-xs opacity-55 mt-0.5">Design system reference</p>
+</div>
+<button id="themeBtn" class="btn btn-sm btn-outline w-full">Toggle theme</button>
+<nav class="flex flex-col gap-0.5">
+<p class="text-[.65rem] font-semibold uppercase tracking-wider opacity-45 px-1.5 pt-2 pb-1">Foundations</p>
+<a class="navlink" href="#stack">Stack &amp; theming</a>
+<a class="navlink" href="#color">Color tokens</a>
+<a class="navlink" href="#type">Type &amp; muting</a>
+<a class="navlink" href="#surface">Surfaces &amp; radius</a>
+<a class="navlink" href="#icons">Icons</a>
+<p class="text-[.65rem] font-semibold uppercase tracking-wider opacity-45 px-1.5 pt-3 pb-1">Primitives</p>
+<a class="navlink" href="#buttons">Buttons</a>
+<a class="navlink" href="#fields">Form fields</a>
+<a class="navlink" href="#controls">Checkbox / toggle / select</a>
+<a class="navlink" href="#chips">Badges &amp; icon chips</a>
+<a class="navlink" href="#alerts">Alerts</a>
+<p class="text-[.65rem] font-semibold uppercase tracking-wider opacity-45 px-1.5 pt-3 pb-1">Auth</p>
+<a class="navlink" href="#authlayout">AuthLayout shell</a>
+<a class="navlink" href="#authform">Form composition</a>
+<a class="navlink" href="#authvalidation">Validation contract</a>
+<p class="text-[.65rem] font-semibold uppercase tracking-wider opacity-45 px-1.5 pt-3 pb-1">Settings</p>
+<a class="navlink" href="#settingsshell">Page shell</a>
+<a class="navlink" href="#settingssidebar">Sidebar</a>
+<a class="navlink" href="#settingsblocks">Section blocks</a>
+<a class="navlink" href="#danger">Danger zone</a>
+<a class="navlink" href="#plans">Plan cards</a>
+<p class="text-[.65rem] font-semibold uppercase tracking-wider opacity-45 px-1.5 pt-3 pb-1">Company</p>
+<a class="navlink" href="#hero">Page hero</a>
+<a class="navlink" href="#sectionhead">Section header</a>
+<a class="navlink" href="#cards">Content cards</a>
+<a class="navlink" href="#faq">FAQ accordion</a>
+<a class="navlink" href="#legal">Legal / timeline</a>
+<p class="text-[.65rem] font-semibold uppercase tracking-wider opacity-45 px-1.5 pt-3 pb-1">Notes</p>
+<a class="navlink" href="#rules">Rules &amp; conventions</a>
+<a class="navlink" href="#gaps">Gaps &amp; inconsistencies</a>
+</nav>
+</div>
+</aside>
+
+<!-- ============ CONTENT ============ -->
+<main class="flex-1 min-w-0">
+<div class="max-w-4xl mx-auto px-5 md:px-10 py-10 flex flex-col gap-14">
+
+<header class="flex flex-col gap-4">
+<p class="eyebrow">Component analysis</p>
+<h1 class="text-4xl md:text-5xl font-bold leading-tight">Scalo UI patterns, read from source</h1>
+<p class="text-lg text-base-content/70 max-w-2xl" style="text-wrap:pretty">Every class string below was lifted from <code class="mono text-sm">evgentrigub/scalo-ui-template-repeat</code> — the settings, auth, and company components. This is the vocabulary to reuse when we build authentication and user profile for Exam.one.</p>
+<div class="flex flex-wrap gap-2 pt-1">
+<span class="badge badge-outline">4 settings pages</span>
+<span class="badge badge-outline">6 auth pages</span>
+<span class="badge badge-outline">8 company pages</span>
+<span class="badge badge-outline">daisyUI 5</span>
+</div>
+</header>
+
+<!-- ================= FOUNDATIONS ================= -->
+<section id="stack" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Stack &amp; theming</h2>
+<p class="text-base-content/70">There is no bespoke design system — daisyUI 5 <em>is</em> the system, unmodified. No custom theme is registered, no brand palette is overridden, no font family is configured. Everything inherits daisyUI defaults, which is why the whole template retint by swapping one attribute.</p>
+<dl class="spec bg-base-100 rounded-2xl p-5 ring-1 ring-base-300">
+<dt>Framework</dt><dd>Nuxt 3 + Vue 3, <code class="mono text-xs">&lt;script setup lang="ts"&gt;</code> only</dd>
+<dt>CSS</dt><dd>Tailwind 4 via <code class="mono text-xs">@tailwindcss/vite</code></dd>
+<dt>Components</dt><dd>daisyUI 5 as a Tailwind plugin — <code class="mono text-xs">@plugin "daisyui"</code></dd>
+<dt>Themes</dt><dd>All 32 stock themes registered; <code class="mono text-xs">darkTheme: "dark"</code></dd>
+<dt>Theme switch</dt><dd><code class="mono text-xs">@nuxtjs/color-mode</code> writing <code class="mono text-xs">data-theme</code> on <code class="mono text-xs">&lt;html&gt;</code></dd>
+<dt>Icons</dt><dd><code class="mono text-xs">nuxt-icon</code> + Lucide — <code class="mono text-xs">&lt;Icon name="lucide:user" size="20px"/&gt;</code></dd>
+<dt>Typeface</dt><dd class="text-base-content/60">Not configured — Tailwind's default sans stack</dd>
+</dl>
+<p class="text-sm text-base-content/70">One custom utility exists, in <code class="mono text-xs">app.css</code>: <code class="mono text-xs">.dark-invert</code> applies <code class="mono text-xs">filter:brightness(0) invert(1)</code> under twelve named dark themes, so monochrome brand SVGs (Google, GitHub, Apple, X) flip to white without a second asset.</p>
+<code class="recipe">/* app.css */
+@import "tailwindcss";
+@plugin "daisyui";
+@import "./scalo-tw.css";
+@custom-variant dark (&amp;:where([data-theme="dark"], [data-theme="dark"] *));</code>
+</section>
+
+<section id="color" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Color tokens</h2>
+<p class="text-base-content/70">Only semantic daisyUI tokens are used. There is not a single raw hex in the component layer — the one exception is <code class="mono text-xs">AuthLayout</code>, which reaches for Tailwind palette colors for its decorative blur circles.</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="swatch bg-primary text-primary-content">primary</div>
+<div class="swatch bg-secondary text-secondary-content">secondary</div>
+<div class="swatch bg-success text-success-content">success</div>
+<div class="swatch bg-warning text-warning-content">warning</div>
+<div class="swatch bg-error text-error-content">error</div>
+<div class="swatch bg-info text-info-content">info</div>
+<div class="swatch bg-base-100 ring-1 ring-base-300">base-100</div>
+<div class="swatch bg-base-200 ring-1 ring-base-300">base-200</div>
+</div>
+<div class="grid md:grid-cols-2 gap-3">
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300">
+<p class="text-sm font-semibold mb-2">Role assignments observed</p>
+<ul class="text-sm text-base-content/70 flex flex-col gap-1.5">
+<li><span class="tag">primary</span> CTAs, eyebrows, active nav, current plan</li>
+<li><span class="tag">error</span> destructive actions, logout, danger zone, validation</li>
+<li><span class="tag">warning</span> attention states, star ratings, deactivate</li>
+<li><span class="tag">success</span> 2FA enabled, selected-plan check</li>
+<li><span class="tag">secondary</span> upgrade CTA only</li>
+</ul>
+</div>
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300">
+<p class="text-sm font-semibold mb-2">Tint conventions</p>
+<ul class="text-sm text-base-content/70 flex flex-col gap-1.5">
+<li><code class="mono text-xs">bg-primary/10</code> — icon chip fill</li>
+<li><code class="mono text-xs">bg-primary/5</code> + <code class="mono text-xs">border-primary/40</code> — dashed invite cards</li>
+<li><code class="mono text-xs">bg-error/10</code> + <code class="mono text-xs">border-error/20</code> — alert + danger container</li>
+<li><code class="mono text-xs">bg-error/5</code> → <code class="mono text-xs">hover:bg-error/10</code> — delete row</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section id="type" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Type scale &amp; text muting</h2>
+<div class="demo flex flex-col gap-3">
+<p class="text-4xl md:text-5xl font-bold leading-tight">Page hero — text-4xl md:text-5xl</p>
+<p class="text-3xl font-bold">Auth heading — text-3xl font-bold</p>
+<p class="text-2xl font-bold">Page / panel title — text-2xl font-bold</p>
+<p class="text-xl font-semibold">Card title — text-xl font-semibold</p>
+<p class="eyebrow">Eyebrow — uppercase tracking-[0.22em] text-primary</p>
+<p class="text-sm font-semibold opacity-60">Settings section label — text-sm font-semibold opacity-60</p>
+<p class="text-base-content/70">Body copy — text-base-content/70</p>
+<p class="text-sm text-base-content/60">Meta / caption — text-sm text-base-content/60</p>
+</div>
+<p class="text-sm text-base-content/70">Muting is done with the token's alpha channel rather than a gray: <code class="mono text-xs">/80</code> emphasis body, <code class="mono text-xs">/75</code> long-form, <code class="mono text-xs">/70</code> default body, <code class="mono text-xs">/65</code>–<code class="mono text-xs">/60</code> meta and labels. Bare <code class="mono text-xs">opacity-60</code> appears in settings and is the older form of the same idea.</p>
+</section>
+
+<section id="surface" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Surfaces &amp; the radius ladder</h2>
+<p class="text-base-content/70"><code class="mono text-xs">bg-base-200</code> is always the page floor; <code class="mono text-xs">bg-base-100</code> is always the thing sitting on it. Elevation is expressed three different ways depending on the area — worth normalising before we build.</p>
+<div class="grid md:grid-cols-3 gap-4">
+<div class="card bg-base-100 shadow-xl p-5"><p class="font-semibold text-sm mb-1">Settings</p><p class="text-xs text-base-content/60 mb-3">Shadow, no border</p><code class="recipe">card bg-base-100 shadow-xl</code></div>
+<div class="card border border-base-300 bg-base-100 shadow-sm p-5"><p class="font-semibold text-sm mb-1">Company cards</p><p class="text-xs text-base-content/60 mb-3">Border + soft shadow</p><code class="recipe">card border border-base-300
+bg-base-100 shadow-sm</code></div>
+<div class="rounded-3xl bg-base-100 p-5 shadow-sm ring-1 ring-base-300"><p class="font-semibold text-sm mb-1">Long-form panels</p><p class="text-xs text-base-content/60 mb-3">Ring instead of border</p><code class="recipe">rounded-3xl bg-base-100 p-8
+shadow-sm ring-1 ring-base-300</code></div>
+</div>
+<div class="bg-base-100 rounded-2xl p-5 ring-1 ring-base-300">
+<p class="text-sm font-semibold mb-3">Radius increases with the size of the thing</p>
+<div class="flex flex-wrap items-end gap-3">
+<div class="grid place-items-center bg-base-200 ring-1 ring-base-300 rounded-lg w-24 h-16 text-xs">rounded-lg<br/>rows</div>
+<div class="grid place-items-center bg-base-200 ring-1 ring-base-300 rounded-xl w-24 h-16 text-xs">rounded-xl<br/>tiles</div>
+<div class="grid place-items-center bg-base-200 ring-1 ring-base-300 rounded-2xl w-24 h-16 text-xs">rounded-2xl<br/>chips, plans</div>
+<div class="grid place-items-center bg-base-200 ring-1 ring-base-300 rounded-3xl w-24 h-16 text-xs">rounded-3xl<br/>panels</div>
+<div class="grid place-items-center bg-base-200 ring-1 ring-base-300 w-28 h-16 text-xs" style="border-radius:2rem">rounded-[2rem]<br/>hero media</div>
+</div>
+</div>
+</section>
+
+<section id="icons" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Icon sizing</h2>
+<p class="text-base-content/70">Two conventions coexist. Settings and auth pass an explicit pixel <code class="mono text-xs">size</code>; company components use Tailwind's <code class="mono text-xs">size-*</code> classes. Same icon set either way.</p>
+<dl class="spec bg-base-100 rounded-2xl p-5 ring-1 ring-base-300">
+<dt>16px / size-4</dt><dd>Inline affordances — chevrons, password eye, button icons</dd>
+<dt>20px / size-5</dt><dd>Field prefixes, nav items, card icon chips</dd>
+<dt>24px</dt><dd>Selected-plan check badge</dd>
+<dt>32px</dt><dd>Feature rows — 2FA, deactivate, delete</dd>
+</dl>
+</section>
+
+<!-- ================= PRIMITIVES ================= -->
+<section id="buttons" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Buttons</h2>
+<div class="demo flex flex-col gap-4">
+<div class="flex flex-wrap items-center gap-2">
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-secondary">Secondary</button>
+<button class="btn btn-error">Error</button>
+<button class="btn btn-outline">Outline</button>
+<button class="btn btn-ghost">Ghost</button>
+<button class="btn" disabled>Disabled</button>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="btn btn-sm btn-primary">btn-sm primary</button>
+<button class="btn btn-sm btn-error btn-soft">btn-sm error soft</button>
+<button class="btn btn-sm">btn-sm neutral</button>
+<button class="btn btn-xs btn-ghost btn-circle">×</button>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-3">
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300"><p class="text-sm font-semibold mb-2">Size by context</p><p class="text-sm text-base-content/70">Settings pages use <code class="mono text-xs">btn-sm</code> almost exclusively — dense admin surfaces. Auth and company pages use the default height, and auth CTAs are always full-width.</p></div>
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300"><p class="text-sm font-semibold mb-2">The soft variant</p><p class="text-sm text-base-content/70"><code class="mono text-xs">btn-soft</code> marks secondary-destructive or pending actions — "Remove", "Change Password", "Connecting…". Solid <code class="mono text-xs">btn-error</code> is reserved for the real commit.</p></div>
+</div>
+<code class="recipe">Auth CTA      btn btn-primary w-full gap-2   + lucide:arrow-right, :disabled="!isFormValid"
+Settings save btn btn-sm btn-primary
+Destructive   btn btn-sm btn-error            (soft variant = one step back)
+Social icon   btn btn-ghost btn-square border border-base-300</code>
+</section>
+
+<section id="fields" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Form fields</h2>
+<p class="text-base-content/70">The signature pattern of this template: the <code class="mono text-xs">input</code> class is on a <strong>wrapping label</strong>, not the input. The icon and any trailing button are siblings of a borderless <code class="mono text-xs">input.grow</code>. Copy this exactly — it is used on every form in the repo.</p>
+<div class="demo grid md:grid-cols-2 gap-4">
+<div class="form-control">
+<label class="label pb-1" for="d_email"><span class="label-text">Email Address</span></label>
+<label class="input input-bordered flex items-center gap-2 w-full">
+<svg class="opacity-70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+<input id="d_email" type="email" placeholder="Email Address" class="grow"/>
+</label>
+</div>
+<div class="form-control">
+<label class="label pb-1" for="d_pw"><span class="label-text">Password</span></label>
+<label class="input input-bordered flex items-center gap-2 w-full">
+<svg class="opacity-70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+<input id="d_pw" type="password" placeholder="Password" class="grow" value="secret123"/>
+<button class="btn btn-xs btn-ghost btn-circle" type="button" aria-label="Toggle password">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+</button>
+</label>
+</div>
+<div class="form-control md:col-span-2">
+<label class="label pb-1" for="d_err"><span class="label-text">With validation error</span></label>
+<label class="input input-bordered flex items-center gap-2 w-full">
+<svg class="opacity-70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+<input id="d_err" type="email" placeholder="Email Address" class="grow" value="not-an-email"/>
+</label>
+<label class="label"><span class="label-text-alt text-error">Please enter a valid email address</span></label>
+</div>
+</div>
+<code class="recipe">&lt;div class="form-control"&gt;
+  &lt;label class="label pb-1" for="email"&gt;&lt;span class="label-text"&gt;Email Address&lt;/span&gt;&lt;/label&gt;
+  &lt;label class="input input-bordered flex items-center gap-2 w-full"&gt;
+    &lt;Icon name="lucide:mail" size="20px" class="opacity-70" /&gt;
+    &lt;input v-model="email" class="grow" @blur="validateEmailField" /&gt;
+    &lt;!-- optional: btn btn-xs btn-ghost btn-circle --&gt;
+  &lt;/label&gt;
+  &lt;label v-if="emailError" class="label"&gt;
+    &lt;span class="label-text-alt text-error"&gt;{{ emailError }}&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/div&gt;
+
+Field grid:  grid grid-cols-1 gap-4 md:grid-cols-2</code>
+</section>
+
+<section id="controls" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Checkbox, toggle, select</h2>
+<div class="demo grid md:grid-cols-2 gap-4">
+<div class="flex items-center gap-3"><input type="checkbox" class="checkbox checkbox-sm" id="c1" checked/><label for="c1" class="cursor-pointer">Product Updates</label></div>
+<div class="flex items-center gap-3"><input type="checkbox" class="checkbox checkbox-sm checkbox-primary" id="c2" checked/><label for="c2" class="cursor-pointer"><span class="label-text">I agree with <span class="font-semibold text-primary">terms and conditions</span></span></label></div>
+<div class="flex items-center gap-3"><input type="checkbox" class="toggle toggle-sm" id="c3"/><label for="c3" class="cursor-pointer">Notification Sound</label></div>
+<div class="flex items-center gap-3"><label for="c4" class="w-32">Quiet Hours</label><select id="c4" class="select select-bordered select-sm flex-1"><option>None</option><option>Night (10 PM - 6 AM)</option></select></div>
+</div>
+<p class="text-sm text-base-content/70">Preference lists are plain <code class="mono text-xs">flex items-center gap-3</code> rows in a two-column grid — no card, no divider per row. <code class="mono text-xs">checkbox-primary</code> is used only for the auth terms agreement; settings checkboxes stay neutral. A <code class="mono text-xs">toggle</code> (not a checkbox) marks a setting that takes effect immediately.</p>
+</section>
+
+<section id="chips" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Badges &amp; icon chips</h2>
+<div class="demo flex flex-col gap-5">
+<div class="flex flex-wrap items-center gap-2">
+<span class="badge badge-outline badge-sm">Hero eyebrow badge</span>
+<span class="badge badge-outline">Category</span>
+<span class="badge badge-primary">Trending</span>
+<span class="badge badge-ghost">Tag</span>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="grid size-9 place-items-center rounded-2xl bg-primary/10 text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg></div>
+<div class="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></div>
+<div class="grid size-9 shrink-0 place-items-center rounded-2xl bg-base-200 text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+</div>
+</div>
+<code class="recipe">Icon chip (hero features)  grid size-9  place-items-center rounded-2xl bg-primary/10 text-primary
+Icon chip (card headers)   grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary
+Icon chip (FAQ item)       grid size-9 shrink-0 place-items-center rounded-2xl bg-base-200 text-primary</code>
+</section>
+
+<section id="alerts" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Alerts</h2>
+<div class="demo flex flex-col gap-3">
+<div role="alert" class="alert alert-error border border-error/20 bg-error/10">
+<svg class="text-error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+<span class="text-sm">This page contains important details, so make changes with caution.</span>
+</div>
+<div class="alert border border-primary/20 bg-primary/5">
+<svg class="text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 1.9 5.8L20 10l-5.2 3.1L16 19l-4-3.3L8 19l1.2-5.9L4 10l6.1-1.2Z"/></svg>
+<span>Editorial callout used inside long-form article sections.</span>
+</div>
+</div>
+<p class="text-sm text-base-content/70">Note the template never uses the bare daisyUI alert colors — it always pairs a low-alpha tint with a matching low-alpha border, producing a much quieter alert than stock.</p>
+</section>
+
+<!-- ================= AUTH ================= -->
+<section id="authlayout" class="sec flex flex-col gap-4">
+<p class="eyebrow">Auth</p>
+<h2 class="text-2xl font-bold">AuthLayout shell</h2>
+<p class="text-base-content/70">One wrapper serves all six auth pages. Every page supplies only the inner form; the split card, artwork, testimonial, and logo are fixed. Two-column above <code class="mono text-xs">lg</code>, form-only below.</p>
+<div class="demo">
+<div class="card bg-base-100 shadow-2xl w-full overflow-hidden">
+<div class="grid lg:grid-cols-2" style="min-height:320px">
+<div class="relative hidden lg:block bg-gradient-to-br from-base-300 to-base-200">
+<div class="absolute inset-0 grid place-items-center text-xs text-base-content/40">auth-side.jpg · object-cover</div>
+<div class="absolute bottom-6 left-6 right-6 bg-base-100/95 border border-base-300 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
+<p class="text-sm mb-3">This platform transformed the way we work.</p>
+<div class="flex items-center gap-3">
+<div class="avatar"><div class="mask mask-squircle w-9"><img src="../public/images/auth/3.png" alt="Avatar"/></div></div>
+<div class="grow"><p class="font-semibold text-sm">John Doe</p><p class="text-xs text-base-content/60">CEO@TechCorp</p></div>
+<div class="flex gap-0.5 text-warning">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.8-5.6 5 1.6 7.3L12 18.3 5.5 22l1.6-7.3-5.6-5 7.5-.8Z"/></svg>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.8-5.6 5 1.6 7.3L12 18.3 5.5 22l1.6-7.3-5.6-5 7.5-.8Z"/></svg>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.8-5.6 5 1.6 7.3L12 18.3 5.5 22l1.6-7.3-5.6-5 7.5-.8Z"/></svg>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.8-5.6 5 1.6 7.3L12 18.3 5.5 22l1.6-7.3-5.6-5 7.5-.8Z"/></svg>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.8-5.6 5 1.6 7.3L12 18.3 5.5 22l1.6-7.3-5.6-5 7.5-.8Z"/></svg>
+</div>
+</div>
+</div>
+</div>
+<div class="relative flex flex-col p-6">
+<div class="flex items-center justify-between mb-6"><div class="h-7 w-24 rounded bg-base-300 grid place-items-center text-[.6rem] text-base-content/50">logo</div></div>
+<div class="flex-1 flex items-center justify-center">
+<div class="w-full max-w-sm text-center">
+<h3 class="text-2xl font-bold mb-1">Welcome Back!</h3>
+<p class="text-base-content/60 text-sm">Sign in to continue your AI-powered experience</p>
+<p class="mt-4 text-xs text-base-content/45">↑ this region is the <code class="mono">&lt;slot /&gt;</code></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<code class="recipe">Outer      relative flex-1 flex items-center justify-center p-4 lg:p-8
+Card       card bg-base-100 shadow-2xl w-full max-w-6xl overflow-hidden
+Grid       grid lg:grid-cols-2 min-h-[720px]
+Left       relative hidden lg:block  + img absolute inset-0 object-cover (light/dark pair)
+Quote      absolute bottom-12 left-12 right-12 bg-white/95 dark:bg-base-300/95
+           backdrop-blur-sm border border-base-300 rounded-2xl p-6 shadow-xl
+Right      relative flex flex-col p-8 lg:p-12  →  slot in .w-full.max-w-sm
+Decor      3 × fixed w-96 h-96 rounded-full blur-3xl pointer-events-none
+           blue-500/20 (-left-48 -top-48), purple-500/20 (-right-48 -bottom-48), pink-500/10 (centered)</code>
+<p class="text-sm text-base-content/70"><strong>Note:</strong> those decorative circles are the only place raw Tailwind palette colors appear. They also use <code class="mono text-xs">fixed</code>, so they anchor to the viewport rather than the card.</p>
+</section>
+
+<section id="authform" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Auth form composition</h2>
+<p class="text-base-content/70">Each auth page is the same eight-part stack. Login uses all of it; the narrower pages drop parts from the middle but keep the order.</p>
+<div class="demo flex justify-center">
+<div class="w-full max-w-sm flex flex-col gap-6">
+<div class="text-center">
+<h3 class="text-3xl font-bold mb-2">Welcome Back!</h3>
+<p class="text-base-content/60">Sign in to continue your AI-powered experience</p>
+</div>
+<div class="flex flex-col gap-4">
+<div class="form-control">
+<label class="label pb-1" for="a_email"><span class="label-text">Email Address</span></label>
+<label class="input input-bordered flex items-center gap-2 w-full">
+<svg class="opacity-70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+<input id="a_email" class="grow" placeholder="Email Address"/>
+</label>
+</div>
+<div class="text-right"><a href="#authform" class="label-text text-base-content/60 hover:text-primary">Forgot Password?</a></div>
+<label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="checkbox checkbox-sm checkbox-primary"/><span class="label-text">I agree with <span class="font-semibold text-primary">terms and conditions</span></span></label>
+<button class="btn btn-primary w-full gap-2">Sign In <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+<div class="ds-rule"><hr/><span class="text-base-content/60 text-sm">Or sign in with</span><hr/></div>
+<div class="flex items-center justify-center gap-3">
+<button class="btn btn-ghost btn-square border border-base-300"><img src="../public/images/auth/google.svg" alt="Google" class="w-5 h-5 dark-invert"/></button>
+<button class="btn btn-ghost btn-square border border-base-300"><img src="../public/images/auth/apple.svg" alt="Apple" class="w-5 h-5 dark-invert"/></button>
+<button class="btn btn-ghost btn-square border border-base-300"><img src="../public/images/auth/github.svg" alt="Github" class="w-5 h-5 dark-invert"/></button>
+<button class="btn btn-ghost btn-square border border-base-300"><img src="../public/images/auth/x.svg" alt="X" class="w-4 h-4 dark-invert"/></button>
+</div>
+<p class="text-center text-base-content/60 text-sm">Don't have an account? <a href="#authform" class="font-semibold text-primary hover:underline">Create One</a></p>
+</div>
+</div>
+</div>
+<code class="recipe">1  wrapper           space-y-6
+2  header            text-center → h1.text-3xl.font-bold.mb-2 + p.text-base-content/60
+3  form              space-y-4
+4  fields            form-control + wrapping input label (see Form fields)
+5  utility link      text-right → label-text text-base-content/60 hover:text-primary
+6  agreement         checkbox checkbox-sm checkbox-primary in a cursor-pointer label
+7  submit            btn btn-primary w-full gap-2 + arrow-right, :disabled="!isFormValid"
+8  divider + social  flex items-center gap-4 / hr.flex-1.border-base-300
+9  footer            text-center text-sm → link font-semibold text-primary hover:underline</code>
+<div class="grid md:grid-cols-2 gap-3">
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300"><p class="text-sm font-semibold mb-1">Per-page deltas</p><ul class="text-sm text-base-content/70 flex flex-col gap-1 mt-1"><li><strong>Register</strong> — adds a <code class="mono text-xs">md:grid-cols-2</code> row for name + username</li><li><strong>Forgot</strong> — email only, "Need help?" link, no social</li><li><strong>Reset</strong> — two password fields, no social</li><li><strong>Verify</strong> — one <code class="mono text-xs">maxlength="6"</code> digit-filtered field + Resend</li><li><strong>2FA</strong> — not built, renders <code class="mono text-xs">PlaceholderSoon</code></li></ul></div>
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300"><p class="text-sm font-semibold mb-1">Social row</p><p class="text-sm text-base-content/70">Four square ghost buttons, always Google · Apple · GitHub · X in that order. Icons are <code class="mono text-xs">w-5 h-5</code> except X at <code class="mono text-xs">w-4 h-4</code>, and all carry <code class="mono text-xs">dark-invert</code>.</p></div>
+</div>
+</section>
+
+<section id="authvalidation" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Validation contract</h2>
+<p class="text-base-content/70">A single composable backs every form. Each validator returns <code class="mono text-xs">{ valid, error }</code>; pages hold one <code class="mono text-xs">ref</code> per error, validate on <code class="mono text-xs">@blur</code>, and gate the submit button on a <code class="mono text-xs">computed</code>.</p>
+<code class="recipe">useFormValidation()
+  validateEmail(email)              required + /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  validatePassword(password)        required + min 8 characters
+  validateRequired(value, field?)   non-empty after trim, field defaults to "This field"
+
+Page shape:  ref per field · ref per error · @blur validator · computed isFormValid
+             → :disabled="!isFormValid" on the submit button</code>
+<p class="text-sm text-base-content/70">Worth knowing: <code class="mono text-xs">isFormValid</code> also requires the terms checkbox on login and register, so the CTA stays disabled until it is ticked. Verify overrides the generic check with an exact-six-digits rule.</p>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section id="settingsshell" class="sec flex flex-col gap-4">
+<p class="eyebrow">Settings</p>
+<h2 class="text-2xl font-bold">Page shell</h2>
+<p class="text-base-content/70">All four settings pages render inside <code class="mono text-xs">SettingsPageContent</code>, which owns the gray floor, the sidebar, and a fixed-width content card. Pages supply only the inner blocks.</p>
+<code class="recipe">&lt;div class="flex-1 bg-base-200"&gt;
+  &lt;div class="container mx-auto max-w-[1536px] px-4 py-8 lg:px-24 lg:py-16"&gt;
+    &lt;div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:px-20"&gt;
+      &lt;div class="hidden lg:block"&gt;&lt;SettingsSidebar /&gt;&lt;/div&gt;
+      &lt;div class="flex w-full justify-center lg:block"&gt;
+        &lt;div class="card w-full bg-base-100 shadow-xl lg:w-[824px]"&gt;
+          &lt;div class="card-body gap-6 p-4 md:p-8"&gt;&lt;slot /&gt;&lt;/div&gt;</code>
+<p class="text-sm text-base-content/70">The content card is pinned at <code class="mono text-xs">824px</code> on desktop — a hard number, not a fraction. <code class="mono text-xs">card-body gap-6</code> is what spaces every block inside, so pages rarely add their own vertical margins.</p>
+</section>
+
+<section id="settingssidebar" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Settings sidebar</h2>
+<div class="demo">
+<div class="card bg-base-100 shadow h-fit" style="max-width:20rem">
+<div class="card-body p-4 gap-2">
+<p class="text-lg font-bold">Settings</p>
+<p class="text-sm opacity-60 font-semibold">General</p>
+<ul class="menu rounded-lg p-2 w-full">
+<li><a class="flex items-center gap-3 active bg-base-200"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><p class="grow">Profile</p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+<li><a class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg><p class="grow">Account</p><span class="tooltip tooltip-warning" data-tip="Need your attention"><svg class="text-warning" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span></a></li>
+<li><a class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg><p class="grow">Notification</p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+</ul>
+<p class="text-sm opacity-60 mb-2 font-semibold">Workspace</p>
+<ul class="menu rounded-lg p-2"><li><a class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16.02 12 5.48 3.13a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74L7.98 12"/><path d="M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z"/></svg><p class="grow">Manage Plan</p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li></ul>
+<ul class="menu rounded-lg p-2"><li><a class="text-error flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg><p class="grow">Logout</p></a></li></ul>
+<hr class="border-base-300 my-4"/>
+<p class="text-sm opacity-60 font-semibold">Switch Account</p>
+<div class="hover:bg-base-300 rounded-lg flex items-center gap-3 p-3 cursor-pointer">
+<div class="avatar"><div class="mask mask-squircle w-10"><img src="../public/images/auth/1.png" alt="Avatar"/></div></div>
+<div class="grow"><p class="font-semibold">Denish</p><p class="text-sm opacity-60">@withden</p></div>
+<svg class="opacity-60" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+</div>
+</div>
+</div>
+</div>
+<code class="recipe">Shell     card bg-base-100 sticky top-24 h-fit shadow min-w-64 max-w-xs lg:block hidden
+Group     p.text-sm.opacity-60.font-semibold  +  ul.menu.rounded-lg.p-2.w-full
+Item      flex items-center gap-3 → 20px icon · p.grow label · 16px chevron
+Active    :class="{ 'active bg-base-200': currentRoute === '/settings/profile' }"
+Logout    text-error hover:bg-error/10   (own ul, separated)
+Switcher  dropdown dropdown-hover dropdown-center dropdown-top  ·  mask mask-squircle w-10</code>
+<p class="text-sm text-base-content/70">Two details to carry over: the active state is applied inconsistently in the source (Profile gets <code class="mono text-xs">active bg-base-200</code>, the others only <code class="mono text-xs">active</code>), and the Account row swaps its chevron for a warning tooltip when attention is needed — a nice pattern for surfacing unverified email or a missing 2FA setup.</p>
+</section>
+
+<section id="settingsblocks" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Section blocks</h2>
+<p class="text-base-content/70">Inside the card, every page repeats the same rhythm: page header with breadcrumbs, then labelled sections separated by rules, then a right-aligned action row.</p>
+<div class="demo flex flex-col gap-6">
+<div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:justify-between">
+<p class="text-2xl font-bold">Profile</p>
+<div class="breadcrumbs text-sm"><ul><li><a href="#settingsblocks">Home</a></li><li class="opacity-60">Settings</li><li>Profile</li></ul></div>
+</div>
+<div>
+<p class="text-sm font-semibold tracking-wide text-base-content/60">Public Avatar</p>
+<div class="mt-4 flex items-center gap-4">
+<div class="avatar"><div class="mask mask-squircle w-16"><img src="../public/images/auth/1.png" alt="Avatar"/></div></div>
+<button class="btn btn-sm btn-primary">Change Avatar</button>
+<button class="btn btn-sm btn-error btn-soft">Remove</button>
+</div>
+</div>
+<hr class="border-base-300"/>
+<div class="flex flex-col gap-4">
+<p class="text-sm font-semibold tracking-wide text-base-content/60">Personal Information</p>
+<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+<div class="form-control"><label class="fieldset-label pb-1">Full Name</label><label class="input input-bordered flex items-center gap-2 w-full"><svg class="opacity-70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><input class="grow" value="Denish"/></label></div>
+<div class="form-control"><label class="fieldset-label pb-1">Username</label><label class="input input-bordered flex items-center gap-2 w-full"><svg class="opacity-70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg><input class="grow" value="withden"/></label></div>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-end gap-3">
+<button class="btn btn-error btn-sm btn-soft">Change Password</button>
+<button class="btn btn-sm btn-primary">Save Changes</button>
+</div>
+</div>
+<code class="recipe">Header    flex flex-col items-start gap-2 md:flex-row md:items-center md:justify-between
+          p.text-2xl.font-bold  +  div.breadcrumbs.text-sm (Home / Settings / Page)
+Label     text-sm font-semibold tracking-wide text-base-content/60      ← profile
+          text-sm font-semibold opacity-60                              ← account, notification, plan
+Grid      grid grid-cols-1 gap-4 md:grid-cols-2
+Rule      hr.border-base-300  between every section
+Actions   mt-2 flex items-center justify-end gap-3  (destructive left, primary right)
+Avatar    mask mask-squircle w-16  +  btn-sm btn-primary  +  btn-sm btn-error btn-soft</code>
+</section>
+
+<section id="danger" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Feature rows &amp; danger zone</h2>
+<p class="text-base-content/70">Navigational settings — 2FA, deactivate, delete — are rows, not cards: a 32px status-colored icon, a two-line label block, a chevron. The danger zone wraps them in an error-tinted border and escalates the final row's background.</p>
+<div class="demo flex flex-col gap-5">
+<div class="flex items-center gap-4 rounded-lg">
+<svg class="text-success" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+<div class="grow"><p class="mb-1 font-semibold">Enable 2FA Authentication</p><p class="text-sm opacity-60">Add an extra layer of security to your account.</p></div>
+<svg class="opacity-60" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+</div>
+<div class="flex flex-col gap-2">
+<p class="font-semibold text-error">Danger zone</p>
+<div class="rounded-lg border border-error/20">
+<div class="flex cursor-pointer items-center gap-4 rounded-lg p-4">
+<svg class="text-warning" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M10 15V9"/><path d="M14 15V9"/></svg>
+<div class="grow"><p class="mb-1 font-semibold">Deactivate Account</p><p class="text-sm opacity-60">Temporarily disable your account and restore it anytime.</p></div>
+<svg class="opacity-60" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+</div>
+<div class="flex cursor-pointer items-center gap-4 rounded-lg bg-error/5 p-4 transition-colors hover:bg-error/10">
+<svg class="text-error" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+<div class="grow"><p class="mb-1 font-semibold">Permanently Delete Account</p><p class="text-sm opacity-60">This action is irreversible. All your data will be lost.</p></div>
+<svg class="opacity-60" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+</div>
+</div>
+</div>
+</div>
+<code class="recipe">Row        flex items-center gap-4 rounded-lg p-4  ·  32px icon · div.grow (label + text-sm opacity-60) · 20px chevron
+Container  p.font-semibold.text-error  +  div.rounded-lg.border.border-error/20
+Escalate   final row: bg-error/5 transition-colors hover:bg-error/10</code>
+</section>
+
+<section id="plans" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Plan cards &amp; billing toggle</h2>
+<div class="demo flex flex-col gap-5">
+<div class="grid gap-4 rounded-lg bg-base-200 p-6 md:grid-cols-[1fr_auto] md:items-center" style="background:color-mix(in oklab,var(--color-base-content) 6%,transparent)">
+<div><p class="mb-1 font-semibold">Want to save more in the long run?</p><p class="text-sm opacity-60">Switch to annual billing and get 2 months free!</p></div>
+<div class="flex items-center justify-end gap-3"><span class="label-text">Monthly</span><input type="checkbox" class="toggle"/><span class="label-text opacity-60">Yearly</span></div>
+</div>
+<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+<div class="rounded-2xl border border-base-300 bg-base-200 p-6"><p class="mb-4 text-xl font-bold">Basic</p><p class="mb-2 text-4xl font-bold"><span class="text-sm font-semibold opacity-60">$</span>29</p><p class="mb-6 text-sm opacity-60">/user/month</p><button class="btn btn-sm w-full">Downgrade</button></div>
+<div class="relative rounded-2xl border-2 border-primary bg-primary p-6 text-primary-content"><div class="absolute top-3 right-3"><svg class="text-success" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div><p class="mb-4 text-xl font-bold">Pro</p><p class="mb-2 text-4xl font-bold"><span class="text-sm font-semibold opacity-60">$</span>49</p><p class="mb-6 text-sm opacity-60">/user/month</p><button class="btn btn-sm btn-primary w-full">Selected</button></div>
+<div class="rounded-2xl border border-base-300 bg-base-200 p-6"><p class="mb-4 text-xl font-bold">Enterprise</p><p class="mb-2 text-4xl font-bold"><span class="text-sm font-semibold opacity-60">$</span>79</p><p class="mb-6 text-sm opacity-60">/user/month</p><button class="btn btn-sm btn-secondary w-full">Upgrade</button></div>
+</div>
+</div>
+<code class="recipe">Plan card   rounded-2xl border border-base-300 bg-base-200 p-6
+Current     relative rounded-2xl border-2 border-primary bg-primary p-6 text-primary-content
+            + absolute top-3 right-3 check-circle-2 (24px, text-success)
+Price       text-4xl font-bold, currency as text-sm font-semibold opacity-60 span
+CTA verbs   Downgrade (neutral) · Selected (primary) · Upgrade (secondary)</code>
+</section>
+
+<!-- ================= COMPANY ================= -->
+<section id="hero" class="sec flex flex-col gap-4">
+<p class="eyebrow">Company</p>
+<h2 class="text-2xl font-bold">Page hero</h2>
+<p class="text-base-content/70">One configurable hero drives Who We Are, Storyline, and Blogs. Everything past badge/title/description is optional — feature list, quote block, and up to two actions.</p>
+<div class="demo">
+<div class="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+<div class="flex flex-col gap-5">
+<div class="badge badge-outline badge-sm">Who we are</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-3xl md:text-4xl font-bold leading-tight">Built by people who ship</h3>
+<p class="text-base-content/70">A small team with an unreasonable bias for shipping useful things.</p>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-start gap-3"><div class="grid size-9 place-items-center rounded-2xl bg-primary/10 text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg></div><p class="text-base-content/80">Remote-first since day one</p></div>
+<div class="flex items-start gap-3"><div class="grid size-9 place-items-center rounded-2xl bg-primary/10 text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg></div><p class="text-base-content/80">Every engineer talks to customers</p></div>
+</div>
+<div class="rounded-3xl bg-base-200 p-5"><p class="italic leading-7 text-base-content/80">We optimise for the thing that survives contact with real users.</p><p class="mt-3 text-sm font-semibold text-base-content/70">- Denish, Founder</p></div>
+</div>
+<div class="relative"><div class="grid place-items-center h-56 w-full bg-base-300 text-xs text-base-content/50" style="border-radius:2rem">hero image · rounded-[2rem] object-cover shadow-xl</div></div>
+</div>
+</div>
+<code class="recipe">Section   container mx-auto px-4 py-12 md:py-16
+Grid      grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]
+Badge     badge badge-outline badge-sm
+Title     text-4xl font-bold leading-tight md:text-5xl  ·  max-w-3xl
+Lead      text-lg text-base-content/70  ·  max-w-2xl
+Feature   flex items-start gap-3 → size-9 chip + p.text-base-content/80
+Quote     rounded-3xl bg-base-200 p-6 → italic leading-7 + "- Author" text-sm font-semibold
+Media     rounded-[2rem] object-cover shadow-xl + inset ring-1 ring-base-100/40 overlay</code>
+</section>
+
+<section id="sectionhead" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Section header</h2>
+<p class="text-base-content/70">Two lines, used to open every content section on the company pages. The eyebrow is the only place letter-spacing is customised anywhere in the template.</p>
+<div class="demo"><div class="max-w-2xl flex flex-col gap-3"><p class="eyebrow">Our values</p><p class="text-3xl font-bold leading-tight md:text-4xl">The principles we actually argue about</p></div></div>
+<code class="recipe">&lt;div class="max-w-2xl space-y-3"&gt;
+  &lt;p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary"&gt;{{ title }}&lt;/p&gt;
+  &lt;p class="text-3xl font-bold leading-tight md:text-4xl"&gt;{{ description }}&lt;/p&gt;
+&lt;/div&gt;</code>
+</section>
+
+<section id="cards" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Content cards</h2>
+<div class="demo grid md:grid-cols-3 gap-5">
+<div class="card border border-base-300 bg-base-100 shadow-sm"><div class="card-body p-5 flex flex-col gap-2"><div class="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/></svg></div><h3 class="text-xl font-semibold">Value card</h3><p class="text-base-content/70 text-sm">Icon chip, title, body. Used for values, contact methods, FAQ categories.</p></div></div>
+<div class="card overflow-hidden border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><figure class="aspect-[4/3] bg-base-300 grid place-items-center text-xs text-base-content/50">aspect-[4/3]</figure><div class="card-body p-5 flex flex-col gap-3"><div class="flex items-center justify-between gap-3"><span class="badge badge-outline">Product</span><span class="text-sm text-base-content/60">6 min</span></div><h3 class="text-lg font-semibold leading-tight">Blog card</h3><div class="flex justify-end text-primary"><span class="inline-flex items-center gap-2 font-medium text-sm">Read more <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div></div></div>
+<div class="card border border-dashed border-primary/40 bg-primary/5 shadow-sm"><div class="card-body p-5 flex flex-col gap-3"><div class="grid size-14 place-items-center rounded-3xl bg-base-100 shadow-sm"><svg class="text-primary" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div><p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Start here</p><h3 class="text-xl font-semibold">Invite card</h3><p class="text-base-content/70 text-sm">Dashed variant that closes a grid with a call to action.</p></div></div>
+</div>
+<code class="recipe">Standard  card border border-base-300 bg-base-100 shadow-sm
+Media     + overflow-hidden, figure.aspect-[4/3], transition hover:-translate-y-1 hover:shadow-lg
+Invite    card border border-dashed border-primary/40 bg-primary/5 shadow-sm
+Grid      grid gap-6 md:grid-cols-2 xl:grid-cols-3   (or xl:grid-cols-4 for compact tiles)
+Read-more card-actions justify-end text-primary → inline-flex items-center gap-2 font-medium</code>
+</section>
+
+<section id="faq" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">FAQ accordion</h2>
+<p class="text-base-content/70">Radio inputs sharing one <code class="mono text-xs">name</code>, so opening an item closes the rest. The whole FAQ page is client-filtered against a single query <code class="mono text-xs">ref</code> matched on both question and answer.</p>
+<div class="demo flex flex-col gap-3">
+<div class="collapse collapse-plus border border-base-300 bg-base-100">
+<input type="radio" name="ds-faq" checked/>
+<div class="collapse-title text-lg font-semibold"><div class="flex items-start gap-3"><div class="grid size-9 shrink-0 place-items-center rounded-2xl bg-base-200 text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div><span>How does the accordion behave?</span></div></div>
+<div class="collapse-content text-base-content/70">Radio-based, so exactly one item is open per group at a time.</div>
+</div>
+<div class="collapse collapse-plus border border-base-300 bg-base-100">
+<input type="radio" name="ds-faq"/>
+<div class="collapse-title text-lg font-semibold"><div class="flex items-start gap-3"><div class="grid size-9 shrink-0 place-items-center rounded-2xl bg-base-200 text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/></svg></div><span>Where does the icon chip come from?</span></div></div>
+<div class="collapse-content text-base-content/70">Same size-9 chip as the hero features, but filled base-200 instead of primary/10.</div>
+</div>
+</div>
+<code class="recipe">collapse collapse-plus border border-base-300 bg-base-100
+  &gt; input type="radio" :name="group"
+  &gt; .collapse-title.text-lg.font-semibold → flex items-start gap-3 + size-9 chip
+  &gt; .collapse-content.text-base-content/70</code>
+</section>
+
+<section id="legal" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Legal layout &amp; timeline</h2>
+<div class="grid md:grid-cols-2 gap-4">
+<div class="flex flex-col gap-3">
+<p class="text-sm font-semibold">Legal pages (privacy, terms)</p>
+<p class="text-sm text-base-content/70">Sticky table of contents beside anchored article panels. Both pages are pure data — same component, different section array.</p>
+<code class="recipe">grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]
+aside     lg:sticky lg:top-24 lg:self-start
+TOC       card border border-base-300 bg-base-100 shadow-sm → ul.menu
+Article   rounded-3xl bg-base-100 p-6 shadow-sm ring-1 ring-base-300
+Body      space-y-4 leading-7 text-base-content/75</code>
+</div>
+<div class="flex flex-col gap-3">
+<p class="text-sm font-semibold">Storyline timeline</p>
+<div class="demo">
+<ul class="ds-timeline">
+<li><div class="ds-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></div><div class="badge badge-outline mb-2">Founded</div><div class="card border border-base-300 bg-base-100 shadow-sm"><div class="card-body p-4 flex flex-col gap-1"><p class="text-sm font-semibold text-primary">2021</p><h4 class="text-lg font-semibold">Two people, one repo</h4></div></div></li>
+<li><div class="ds-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-3 8h6l-3 12"/></svg></div><div class="badge badge-primary badge-outline mb-2">Future</div><div class="card border border-base-300 bg-base-100 shadow-sm"><div class="card-body p-4 flex flex-col gap-1"><h4 class="text-lg font-semibold">What's next</h4></div></div></li>
+</ul>
+</div>
+<code class="recipe">ul.timeline.timeline-snap-icon.timeline-vertical.max-md:timeline-compact
+alternating: index % 2 === 0 ? 'timeline-start md:text-end' : 'timeline-end'
+dot: grid size-10 place-items-center rounded-full bg-primary text-primary-content shadow</code>
+</div>
+</div>
+<p class="text-xs text-base-content/50">The timeline above is a simplified rail for this reference page — production uses daisyUI's real <code class="mono">timeline</code> classes shown in the recipe.</p>
+</section>
+
+<!-- ================= NOTES ================= -->
+<section id="rules" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Rules to follow when extending</h2>
+<div class="grid md:grid-cols-2 gap-3">
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300"><p class="text-sm font-semibold mb-2">Code</p><ul class="text-sm text-base-content/70 flex flex-col gap-1.5"><li>Always <code class="mono text-xs">&lt;script setup lang="ts"&gt;</code> — never Options API</li><li>No <code class="mono text-xs">&lt;style scoped&gt;</code> — Tailwind utilities only</li><li>Components auto-import; never write import statements for them</li><li><code class="mono text-xs">&lt;NuxtLink&gt;</code> for internal links, never <code class="mono text-xs">&lt;a href&gt;</code></li><li>Components PascalCase, pages kebab-case, composables <code class="mono text-xs">useX.ts</code></li></ul></div>
+<div class="bg-base-100 rounded-xl p-4 ring-1 ring-base-300"><p class="text-sm font-semibold mb-2">Design</p><ul class="text-sm text-base-content/70 flex flex-col gap-1.5"><li>Semantic tokens only — no hex, no gray-500</li><li>Mute with <code class="mono text-xs">text-base-content/NN</code>, not a gray token</li><li>Page floor <code class="mono text-xs">base-200</code>, surfaces <code class="mono text-xs">base-100</code></li><li>Radius grows with element size</li><li>Content data lives in <code class="mono text-xs">constants/</code>, not in templates</li><li>New routes get an entry in <code class="mono text-xs">constants/nav.ts</code></li></ul></div>
+</div>
+</section>
+
+<section id="gaps" class="sec flex flex-col gap-4">
+<h2 class="text-2xl font-bold">Gaps &amp; inconsistencies found</h2>
+<p class="text-base-content/70">Things to decide on before reusing these patterns for Exam.one, rather than copying the drift forward.</p>
+<div class="flex flex-col gap-2.5">
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-warning badge-sm mt-0.5">Label</span><p class="text-sm text-base-content/75"><code class="mono text-xs">label</code> + <code class="mono text-xs">span.label-text</code> on auth pages vs bare <code class="mono text-xs">fieldset-label</code> on settings/profile, with settings/account mixing both. Pick one.</p></div>
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-warning badge-sm mt-0.5">Muting</span><p class="text-sm text-base-content/75"><code class="mono text-xs">text-base-content/60</code> and bare <code class="mono text-xs">opacity-60</code> are used interchangeably for the same section labels — the second also fades borders and icons.</p></div>
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-warning badge-sm mt-0.5">Active</span><p class="text-sm text-base-content/75">Sidebar Profile uses <code class="mono text-xs">active bg-base-200</code>; Account, Notification, and Manage Plan use only <code class="mono text-xs">active</code>, so the current page renders differently by route.</p></div>
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-warning badge-sm mt-0.5">Routes</span><p class="text-sm text-base-content/75">Auth lives under <code class="mono text-xs">/account/*</code> but the settings account page is <code class="mono text-xs">/settings/account</code>; the sidebar links Manage Plan as <code class="mono text-xs">/settings/manage-plan</code> while nav uses <code class="mono text-xs">/settings/plan</code> (redirected in config).</p></div>
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-error badge-sm mt-0.5">Missing</span><p class="text-sm text-base-content/75">2FA is a <code class="mono text-xs">PlaceholderSoon</code> stub, yet settings/account advertises an "Enable 2FA Authentication" row that goes nowhere. If Exam.one needs 2FA, it is a net-new design.</p></div>
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-sm mt-0.5">Hardcode</span><p class="text-sm text-base-content/75">The sidebar's links, avatars, and account switcher are hardcoded, and settings state is local <code class="mono text-xs">ref</code>s only — no store, no persistence. Real wiring is entirely ahead of us.</p></div>
+<div class="flex items-start gap-3 rounded-lg bg-base-100 p-4 ring-1 ring-base-300"><span class="badge badge-sm mt-0.5">A11y</span><p class="text-sm text-base-content/75">Feature rows and danger-zone rows are <code class="mono text-xs">div</code>s with <code class="mono text-xs">cursor-pointer</code> — not focusable or keyboard-operable. Make them buttons or links when we rebuild.</p></div>
+</div>
+</section>
+
+<footer class="pt-4 pb-10 border-t border-base-300">
+<p class="text-sm text-base-content/60">Source: <code class="mono text-xs">evgentrigub/scalo-ui-template-repeat</code> @ <code class="mono text-xs">0122065</code> · analysed 24 Jul 2026 · see <code class="mono text-xs">github.md</code></p>
+</footer>
+
+</div>
+</main>
+</div>
+
+<script>
+(function(){
+  var KEY='ds-scalo-theme';
+  var html=document.documentElement;
+  try{var saved=localStorage.getItem(KEY);if(saved)html.setAttribute('data-theme',saved);}catch(e){}
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    try{localStorage.setItem(KEY,next);}catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

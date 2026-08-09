@@ -1,6 +1,7 @@
 // App entry — routing + top-level composition
 const { L, useState, useEffect, AppCtx, Sidebar, Topbar, Dashboard, ExercisesList,
-  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account, ExamStructure, GenQueueHost } = window;
+  ReadingExercise, WritingExercise, ListeningExercise, SpeakingExercise, Exams, MockExam, Progress, Account, ExamStructure, GenQueueHost,
+  AuthRoot, Settings } = window;
 
 function App() {
   const [route, setRoute] = useState(() => {
@@ -13,12 +14,14 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('exam:theme') || 'light');
   const [plan, setPlan] = useState(() => localStorage.getItem('exam:plan') || 'pro');
   const [lang, setLang] = useState(() => localStorage.getItem('exam:lang') || 'en');
+  const [authed, setAuthed] = useState(() => localStorage.getItem('exam:authed') === '1');
 
   useEffect(()=>{ localStorage.setItem('exam:route', JSON.stringify(route)); }, [route]);
   useEffect(()=>{ localStorage.setItem('exam:level', level); }, [level]);
   useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('exam:theme', theme); }, [theme]);
   useEffect(()=>{ localStorage.setItem('exam:plan', plan); }, [plan]);
   useEffect(()=>{ localStorage.setItem('exam:lang', lang); }, [lang]);
+  useEffect(()=>{ localStorage.setItem('exam:authed', authed ? '1' : '0'); }, [authed]);
 
   const go = (r) => {
     // carry initial filter into ExercisesList via window (one-shot)
@@ -29,7 +32,8 @@ function App() {
   // after any route change, remount icons
   useEffect(()=>{ if (window.lucide) setTimeout(()=>window.lucide.createIcons(), 30); }, [route, theme, plan, lang]);
 
-  const ctx = { route, go, level, setLevel, theme, setTheme, plan, setPlan, lang, setLang };
+  const signOut = () => { setAuthed(false); setRoute({ name:'dashboard' }); };
+  const ctx = { route, go, level, setLevel, theme, setTheme, plan, setPlan, lang, setLang, signOut };
 
   const Screen = (() => {
     switch(route.name) {
@@ -48,9 +52,12 @@ function App() {
       case 'mock':           return <MockExam key={route.id || 'm'}/>;
       case 'progress':       return <Progress/>;
       case 'account':        return <Account/>;
+      case 'settings':       return <Settings/>;
       default:               return <Dashboard/>;
     }
   })();
+
+  if (!authed) return <AuthRoot onAuthed={()=>setAuthed(true)}/>;
 
   return (
     <AppCtx.Provider value={ctx}>
@@ -62,7 +69,7 @@ function App() {
             {Screen}
             <footer className="max-w-[1240px] mx-auto px-6 py-6 text-[11px] text-base-content/50 flex items-center justify-between">
               <span>Exam.one · interactive prototype</span>
-              <span>German exam prep · Goethe · telc · ÖSD</span>
+              <span>Language exam prep · Goethe</span>
             </footer>
           </main>
         </div>

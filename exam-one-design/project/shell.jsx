@@ -87,7 +87,7 @@ function Sidebar() {
 }
 
 function Topbar() {
-  const { route, go, theme, setTheme, level, plan, lang, setLang } = useApp();
+  const { route, go, theme, setTheme, level, plan, lang, setLang, signOut } = useApp();
   useIcons([route, theme, plan, lang]);
   const title = (() => {
     switch(route.name) {
@@ -100,7 +100,8 @@ function Topbar() {
       case 'speaking':  return { t:'Speaking practice', s:'' };
       case 'exams':     return { t:'Mock exams', s:'Full‑length timed exams, exam‑authentic conditions.' };
       case 'progress':  return { t:'Progress', s:'Track your performance across skills.' };
-      case 'account':   return { t:'Account', s:'Profile and subscription.' };
+      case 'account':   return { t:'Account', s:'Your profile, plan and AI prompt library.' };
+      case 'settings':  return { t:'Settings', s:'Your profile, plan and how Exam.one works for you.' };
       default: return { t:'Exam.one', s:'' };
     }
   })();
@@ -112,11 +113,6 @@ function Topbar() {
         {title.s && <div className="text-xs text-base-content/60 leading-none mt-1 truncate">{title.s}</div>}
       </div>
 
-      <div className="relative">
-        <Ic name="search" size={14} cls="absolute left-3 top-1/2 -translate-y-1/2 opacity-50"/>
-        <input placeholder="Search exercises, topics…" className="input input-sm input-bordered w-72 pl-8 rounded-field"/>
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono text-base-content/50 kbd-shadow px-1.5 py-0.5 rounded bg-base-200 border border-base-300">⌘K</span>
-      </div>
 
       {/* interface language switcher */}
       <div className="dropdown dropdown-end">
@@ -151,12 +147,14 @@ function Topbar() {
         </ul>
       </div>
 
-      <div className="dropdown dropdown-end">
-        <button tabIndex="0" className="flex items-center gap-2 rounded-full pl-1 pr-2 h-9 hover:bg-base-200" aria-label="Account">
-          <span className="w-8 h-8 rounded-full bg-primary/10 grid place-items-center text-primary font-semibold text-xs">LB</span>
+      <div className="dropdown dropdown-end flex items-center">
+        <button onClick={()=>go({ name:'account' })}
+          className="w-9 h-9 rounded-full bg-primary/10 grid place-items-center text-primary font-semibold text-xs hover:bg-primary/20 transition-colors"
+          aria-label="Account overview" title="Account overview">LB</button>
+        <button tabIndex="0" className="btn btn-xs btn-ghost btn-circle ml-0.5" aria-label="Account menu">
           <Ic name="chevron-down" size={14} cls="opacity-50"/>
         </button>
-        <div tabIndex="0" className="dropdown-content bg-base-100 rounded-box z-30 w-60 p-1.5 mt-1 border border-base-300 shadow">
+        <div tabIndex="0" className="dropdown-content bg-base-100 rounded-box z-30 w-60 p-1.5 mt-1 border border-base-300 shadow top-full">
           <div className="px-3 py-2 flex items-center gap-3">
             <span className="w-9 h-9 rounded-full bg-primary/10 grid place-items-center text-primary font-semibold text-xs">LB</span>
             <div className="min-w-0">
@@ -169,13 +167,16 @@ function Topbar() {
           </div>
           <div className="h-px bg-base-300 my-1"/>
           <button onClick={()=>go({ name:'account' })} className="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200">
-            <Ic name="user" size={15}/> Account & subscription
+            <Ic name="user" size={15}/> Account overview
+          </button>
+          <button onClick={()=>go({ name:'settings', section:'profile' })} className="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200">
+            <Ic name="settings" size={15}/> Settings
           </button>
           <button onClick={()=>go({ name:'progress' })} className="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200">
             <Ic name="trending-up" size={15}/> My progress
           </button>
           <div className="h-px bg-base-300 my-1"/>
-          <button className="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm text-base-content/70 hover:bg-base-200">
+          <button onClick={signOut} className="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm text-base-content/70 hover:bg-base-200">
             <Ic name="log-out" size={15}/> Sign out
           </button>
         </div>

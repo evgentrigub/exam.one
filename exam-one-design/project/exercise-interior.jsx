@@ -1004,7 +1004,7 @@ function Progress() {
 // ACCOUNT + SUBSCRIPTION
 // =====================================================================
 function Account() {
-  const { plan, setPlan, level } = useApp();
+  const { plan, setPlan, level, go } = useApp();
   useIcons([plan]);
   const current = PLANS.find(p => p.id === plan) || PLANS[0];
 
@@ -1018,7 +1018,7 @@ function Account() {
             <h2 className="font-display text-2xl font-bold">Lena Bauer</h2>
             <div className="text-sm text-base-content/60">lena.bauer@email.de · Learning German · Target {level}</div>
           </div>
-          <button className="btn btn-outline btn-sm rounded-full gap-1.5"><Ic name="pencil" size={13}/> Edit profile</button>
+          <button onClick={()=>go({ name:'settings', section:'profile' })} className="btn btn-outline btn-sm rounded-full gap-1.5"><Ic name="pencil" size={13}/> Edit profile</button>
         </div>
         <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
           {[['Member since','Jan 2026'],['Current plan',current.name],['Exam target','Goethe '+level],['Streak','12 days']].map(([l,v])=>(
@@ -1029,9 +1029,6 @@ function Account() {
           ))}
         </div>
       </CalmCard>
-
-      {/* AI prompt settings */}
-      <PromptSettings defaultLevel={level} />
 
       {/* Subscription */}
       <div>
