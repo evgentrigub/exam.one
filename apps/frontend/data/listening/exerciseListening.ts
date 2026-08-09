@@ -243,3 +243,22 @@ export const defaultListeningTopics: ListeningA2Exercise[] = listeningSeedsWitho
     return audio ? { ...exercise, audio } : exercise
   },
 )
+
+/**
+ * Dedicated Set 1 exercises. The audio map deliberately references the bundled
+ * seed WAVs, so the first mock set remains usable offline without duplicating
+ * identical binary assets.
+ */
+export const mockExamListeningTopics: ListeningA2Exercise[] = defaultListeningTopics.map(
+  (exercise): ListeningA2Exercise => ({
+    ...exercise,
+    id: `mock-a2-set1-listening-teil${exercise.testingPart}`,
+    title: `Modellprüfung Set 1 · ${exercise.title}`,
+    examOnly: true,
+  }),
+)
+
+export const allDefaultListeningTopics: ListeningA2Exercise[] = [
+  ...defaultListeningTopics,
+  ...mockExamListeningTopics,
+]

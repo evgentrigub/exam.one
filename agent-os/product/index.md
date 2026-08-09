@@ -6,7 +6,8 @@ Use these files as the product reference set before implementing exam behavior, 
 
 - **Listening (Hoeren):** complete for iteration 1 — see `roadmap.md` skill status and `tech-stack.md` Listening audio.
 - **Speaking (Sprechen):** Teil 1–2 iteration complete — recording, manual/local/cloud STT transcripts, optional LLM review, and local attempt persistence are shipped.
-- **Next product stage:** implement Speaking Teil 3 joint planning, then pronunciation and mock-exam integration; follow `roadmap.md` §1.1 and `german-exam-A2.md`.
+- **Mock exam:** Goethe A2 Set 1 iteration is shipped with module timers, sequential task locks, separate local persistence, and provisional Teil 1–2 Speaking scoring.
+- **Next product stage:** implement Speaking Teil 3 joint planning, then pronunciation and full Speaking mock scoring; follow `roadmap.md` §1.1 and `german-exam-A2.md`.
 
 ## Core Product
 

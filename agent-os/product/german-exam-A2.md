@@ -41,7 +41,7 @@ Time limit: 30 minutes. The module has four parts and 20 questions total.
 
 ## Listening: Hoeren
 
-> **Implementation status (Phase 1):** **Complete (iteration 1)** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX. Mock-exam integration waits on Speaking + mock exam substages.
+> **Implementation status (Phase 1):** **Complete (iteration 1)** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX, plus timed Set 1 mock-exam integration with official replay limits.
 
 Time limit: 30 minutes. The module has four parts and 20 questions total.
 
@@ -94,7 +94,8 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 > **Implementation status (Phase 1):** **Complete (Teil 1–2 iteration)** — practice supports recording,
 > optional local Parakeet or OpenAI STT, editable/manual transcripts, optional
 > LLM review, and local attempt persistence. Teil 3 is shown as coming later;
-> pronunciation scoring and mock-exam integration are still open. See
+> pronunciation scoring remains open. Mock-exam integration is shipped provisionally
+> for Teil 1–2 (12 direct points). See
 > `roadmap.md` §1.1 Speaking plan.
 
 ### Part 1: Interview Or Introduction

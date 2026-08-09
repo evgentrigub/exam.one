@@ -4,7 +4,7 @@
  * stored in localStorage. Mirrors useReadingTexts (defaults ∪ stored non-defaults).
  */
 
-import { defaultListeningTopics } from '~/data/listening/exerciseListening'
+import { allDefaultListeningTopics } from '~/data/listening/exerciseListening'
 import type {
   ListeningA2Exercise,
   ListeningExerciseAudioMap,
@@ -58,19 +58,19 @@ export const useListeningExercises = () => {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored) as ListeningA2Exercise[]
-        const defaultIds = new Set(defaultListeningTopics.map(e => e.id))
+        const defaultIds = new Set(allDefaultListeningTopics.map(e => e.id))
         const uniqueStored = parsed.filter(e => !defaultIds.has(e.id))
         exercises.value = applyAudioOverrides(
-          [...defaultListeningTopics, ...uniqueStored],
+          [...allDefaultListeningTopics, ...uniqueStored],
           overrides,
         )
       } else {
-        exercises.value = applyAudioOverrides([...defaultListeningTopics], overrides)
+        exercises.value = applyAudioOverrides([...allDefaultListeningTopics], overrides)
       }
       isInitialized.value = true
     } catch (error) {
       console.error('Failed to load listening exercises from localStorage:', error)
-      exercises.value = [...defaultListeningTopics]
+      exercises.value = [...allDefaultListeningTopics]
       isInitialized.value = true
     }
   }
@@ -78,7 +78,7 @@ export const useListeningExercises = () => {
   const saveToStorage = () => {
     if (import.meta.server) return
     try {
-      const defaultIds = new Set(defaultListeningTopics.map(e => e.id))
+      const defaultIds = new Set(allDefaultListeningTopics.map(e => e.id))
       const toSave = exercises.value.filter(e => e.id && !defaultIds.has(e.id))
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
 
@@ -94,7 +94,7 @@ export const useListeningExercises = () => {
     }
   }
 
-  const getExercises = (): ListeningA2Exercise[] => exercises.value
+  const getExercises = (): ListeningA2Exercise[] => exercises.value.filter(e => !e.examOnly)
 
   const getExerciseById = (id: string): ListeningA2Exercise | undefined =>
     exercises.value.find(e => e.id === id)
@@ -131,7 +131,7 @@ export const useListeningExercises = () => {
 
   return {
     // State
-    exercises: readonly(exercises),
+    exercises: computed(() => exercises.value.filter(e => !e.examOnly)),
     isInitialized: readonly(isInitialized),
 
     // Methods

@@ -34,7 +34,7 @@ English / Cambridge and other providers are out of scope for Phase 1.
 | Writing | Done (iteration 1) | Seed + drafts + optional AI generate / review |
 | Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX |
 | Speaking | **Done (Teil 1–2 iteration)** | Recording → STT/manual transcript → optional LLM review and local attempts shipped; Teil 3 and pronunciation remain |
-| Mock exam | Not started | Depends on all four skills being practice-ready |
+| Mock exam | **Done (iteration 1)** | Timed Set 1 with sequential locks, reload-safe module deadlines, offline auto-scoring, and retryable AI grading; Speaking is provisional (Teil 1–2, 12 pts) |
 
 ### Substages
 
@@ -68,13 +68,15 @@ Ordered plan:
    come later.
 5. **Next: Teil 3 joint planning** — `userSchedule` / `aiSchedule` with guaranteed overlap, propose/decline/agree UI, review of full dialogue log.
 6. **Pending: optional TTS partner + pronunciation score** — reuse listening TTS stack for partner lines; separate 0–5 Aussprache when AI is available.
-7. **Pending: mock-exam speaking module** — 15-minute module timer and 25-point total, aligned with mock exam shell (substage 1.2).
+7. **Done (provisional): mock-exam speaking module** — 15-minute module timer and Teil 1–2 AI grading up to 12 direct points. The full 25-point total still depends on Teil 3 and pronunciation.
 
 **Teil 1–2 iteration exit criteria: met.** Steps 1–4 deliver usable scored solo practice offline with optional STT and AI. Full Goethe A2 Speaking coverage still requires Teil 3 (step 5); steps 6–7 add pronunciation/partner polish and mock-exam integration.
 
 #### 1.2 Mock exam mode
 
-Single-attempt, timed simulation with the same limitations applied in real language exams (no pauses that break exam realism). The minimum Speaking prerequisite (scored Teil 1–2 practice) is now met; implementation remains scheduled after Teil 3 coverage.
+**Done (iteration 1):** Goethe A2 Set 1 ships as a local-first, single-attempt simulation. Each module has a reload-safe countdown (Reading 30, Listening 30, Writing 30, Speaking 15 minutes), exercises unlock in order, submitted exercises and completed modules lock, and expiry locks the current module with its saved answer snapshot. Reading and Listening are scored automatically with the official ×1.25 conversion. Writing and Speaking use optional AI grading and remain retryably pending when AI is unavailable.
+
+Speaking results are explicitly provisional: the mock currently covers Teil 1–2 for 12 direct points. Teil 3 and the separate 5-point pronunciation score remain in §1.1; until those ship, the overall result is labeled provisional and still displayed on the full 100-point exam scale.
 
 #### 1.3 Goethe C1 writing (partial)
 

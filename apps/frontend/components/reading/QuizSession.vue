@@ -18,13 +18,14 @@
           :question-number="i + 1"
           :selected-answer="answeredQuestions[q.id] ?? null"
           :submitted="isFinished"
+          :show-feedback="!examMode"
           @answer-selected="handleAnswerSelected"
         />
       </div>
 
       <!-- Submit row -->
       <div class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap">
-        <button class="btn btn-ghost btn-sm" @click="saveAndExit">Save & Exit</button>
+        <button class="btn btn-ghost btn-sm" @click="saveAndExit">{{ examMode ? 'Back to module' : 'Save & Exit' }}</button>
         <button
           v-if="!isFinished"
           class="btn btn-primary btn-sm flex-1 gap-1"
@@ -34,7 +35,7 @@
           Submit Answers
           <ArrowRight :size="12" />
         </button>
-        <div v-else class="flex-1 flex items-center gap-3 flex-wrap">
+        <div v-else-if="!examMode" class="flex-1 flex items-center gap-3 flex-wrap">
           <div class="text-sm">
             Score: <b class="font-mono" :class="getScoreTextColor()">{{ score }} / {{ questions.length }}</b> · {{ scorePercentage }}%
           </div>
@@ -51,7 +52,7 @@
     </div>
 
     <!-- Results screen -->
-    <div v-if="isFinished" class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden">
+    <div v-if="isFinished && !examMode" class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden">
       <!-- Score header -->
       <div class="p-6 text-center border-b border-base-300">
         <div
@@ -110,6 +111,8 @@ import QuestionCard from '~/components/reading/QuestionCard.vue'
 
 interface Props {
   text: ReadingExercise
+  examMode?: boolean
+  initialAnswers?: Record<string, number | undefined>
 }
 
 interface QuizResult {
@@ -118,9 +121,16 @@ interface QuizResult {
   isCorrect: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  examMode: false,
+  initialAnswers: () => ({}),
+})
 
-const emit = defineEmits<{ finish: [] }>()
+const emit = defineEmits<{
+  finish: []
+  progress: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
+  examComplete: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
+}>()
 
 const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
 
@@ -144,6 +154,12 @@ const score = computed(() => results.value.filter(result => result.isCorrect).le
 const scorePercentage = computed(() => questions.value.length ? Math.round((score.value / questions.value.length) * 100) : 0)
 
 onMounted(() => {
+  if (props.examMode) {
+    answeredQuestions.value = Object.fromEntries(
+      Object.entries(props.initialAnswers).filter((entry): entry is [string, number] => typeof entry[1] === 'number'),
+    )
+    return
+  }
   const session = getSession()
   if (session && session.textId === props.text.id) {
     answeredQuestions.value = session.answers || {}
@@ -155,18 +171,34 @@ function handleAnswerSelected(questionId: string, selectedAnswer: number) {
     ...answeredQuestions.value,
     [questionId]: selectedAnswer
   }
-  saveSession(props.text.id, 0, answeredQuestions.value)
+  if (props.examMode) {
+    emit('progress', {
+      answers: { ...answeredQuestions.value },
+      score: score.value,
+      total: questions.value.length,
+    })
+  } else {
+    saveSession(props.text.id, 0, answeredQuestions.value)
+  }
 }
 
 function finishQuiz() {
   if (!allAnswered.value) return
   isFinished.value = true
+  if (props.examMode) {
+    emit('examComplete', {
+      answers: { ...answeredQuestions.value },
+      score: score.value,
+      total: questions.value.length,
+    })
+    return
+  }
   saveQuizCompletion(props.text.id, score.value, questions.value.length)
   clearSession()
 }
 
 function saveAndExit() {
-  saveSession(props.text.id, 0, answeredQuestions.value)
+  if (!props.examMode) saveSession(props.text.id, 0, answeredQuestions.value)
   emit('finish')
 }
 

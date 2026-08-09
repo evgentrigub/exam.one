@@ -42,6 +42,8 @@ export interface WritingExercise {
   description: string // What type of text they should write
   task: string // The actual writing prompt/task
   requirements: string[] // Specific requirements (format, length, etc.)
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 

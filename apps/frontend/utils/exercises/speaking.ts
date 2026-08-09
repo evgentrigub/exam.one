@@ -10,6 +10,8 @@ export interface SpeakingTopicBase {
   id: string
   difficulty: SpeakingDifficulty
   createdAt: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 /** Teil 1: practice-adapted contact interview with explicit answer/ask questions. */
