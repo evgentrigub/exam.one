@@ -4,14 +4,14 @@
  * stored in localStorage. Mirrors useReadingTexts (defaults ∪ stored non-defaults).
  */
 
-import { defaultSpeakingTopics } from '~/data/speaking/exerciseSpeaking'
+import { allDefaultSpeakingTopics } from '~/data/speaking/exerciseSpeaking'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 
 const STORAGE_KEY = 'exam-one:speaking:exercises'
 
 // Keep the SSR and pre-hydration client render deterministic. Stored topics are
 // merged after mount so localStorage cannot change the hydration tree.
-const topics = ref<SpeakingA2Topic[]>([...defaultSpeakingTopics])
+const topics = ref<SpeakingA2Topic[]>([...allDefaultSpeakingTopics])
 const isInitialized = ref(false)
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -96,19 +96,19 @@ export const useSpeakingExercises = () => {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored) as unknown
-        const defaultIds = new Set(defaultSpeakingTopics.map(t => t.id))
+        const defaultIds = new Set(allDefaultSpeakingTopics.map(t => t.id))
         const uniqueStored = (Array.isArray(parsed) ? parsed : [])
           .map(normaliseStoredTopic)
           .filter((topic): topic is SpeakingA2Topic => topic !== null)
           .filter(t => !defaultIds.has(t.id))
-        topics.value = [...defaultSpeakingTopics, ...uniqueStored]
+        topics.value = [...allDefaultSpeakingTopics, ...uniqueStored]
       } else {
-        topics.value = [...defaultSpeakingTopics]
+        topics.value = [...allDefaultSpeakingTopics]
       }
       isInitialized.value = true
     } catch (error) {
       console.error('Failed to load speaking topics from localStorage:', error)
-      topics.value = [...defaultSpeakingTopics]
+      topics.value = [...allDefaultSpeakingTopics]
       isInitialized.value = true
     }
   }
@@ -116,7 +116,7 @@ export const useSpeakingExercises = () => {
   const saveToStorage = () => {
     if (import.meta.server) return
     try {
-      const defaultIds = new Set(defaultSpeakingTopics.map(t => t.id))
+      const defaultIds = new Set(allDefaultSpeakingTopics.map(t => t.id))
       const toSave = topics.value.filter(t => !defaultIds.has(t.id))
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
     } catch (error) {
@@ -124,7 +124,7 @@ export const useSpeakingExercises = () => {
     }
   }
 
-  const getTopics = (): SpeakingA2Topic[] => topics.value
+  const getTopics = (): SpeakingA2Topic[] => topics.value.filter(t => !t.examOnly)
 
   const getTopicById = (id: string): SpeakingA2Topic | undefined =>
     topics.value.find(t => t.id === id)
@@ -141,7 +141,7 @@ export const useSpeakingExercises = () => {
 
   return {
     // State
-    topics: readonly(topics),
+    topics: computed(() => topics.value.filter(t => !t.examOnly)),
     isInitialized: readonly(isInitialized),
 
     // Methods

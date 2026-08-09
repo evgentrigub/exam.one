@@ -47,8 +47,8 @@
         </div>
       </div>
 
-      <!-- Practice timer -->
-      <div class="bg-base-100 rounded-box border border-base-300/70 p-5">
+      <!-- Practice timer (the mock shell owns the module timer in exam mode) -->
+      <div v-if="!examMode" class="bg-base-100 rounded-box border border-base-300/70 p-5">
         <div class="text-xs font-semibold text-base-content/70 text-center">Time Remaining</div>
         <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2 mt-3">
           <div class="p-3 rounded-box bg-base-200/60 text-center">
@@ -70,7 +70,9 @@
         :transcript="model.sharedTranscript || ''"
         :label="currentExercise.title"
         :src="sharedAudioSrc"
-        :reveal-transcript="isFinished"
+        :reveal-transcript="isFinished && !examMode"
+        :max-plays="examMode ? replayLimit : null"
+        :disable-seeking="examMode ?? false"
         hide-volume-speed
         :volume="volume"
         :speed="speed"
@@ -135,7 +137,7 @@
     <div class="col-span-12 lg:col-span-8">
       <div class="bg-base-100 rounded-box border border-base-300/70 p-7">
         <div
-          v-if="isFinished"
+          v-if="isFinished && !examMode"
           class="mb-6 p-4 rounded-box border flex items-center gap-3"
           :class="percentage >= 50 ? 'bg-success/5 border-success/30' : 'bg-error/5 border-error/30'"
         >
@@ -163,7 +165,9 @@
               :transcript="q.transcript"
               :label="`Audio ${i + 1}`"
               :src="itemAudioSrc(q.id)"
-              :reveal-transcript="isFinished"
+              :reveal-transcript="isFinished && !examMode"
+              :max-plays="examMode ? replayLimit : null"
+              :disable-seeking="examMode ?? false"
               hide-volume-speed
               :volume="volume"
               :speed="speed"
@@ -189,13 +193,13 @@
                 <option :value="undefined" disabled>Choose…</option>
                 <option v-for="(opt, oi) in q.options" :key="oi" :value="oi">{{ opt }}</option>
               </select>
-              <div v-if="isFinished" class="mt-2 flex items-center gap-2 text-xs">
+              <div v-if="isFinished && !examMode" class="mt-2 flex items-center gap-2 text-xs">
                 <span v-if="isCorrect(q)" class="text-success flex items-center gap-1"><Check :size="12" /> Correct</span>
                 <span v-else class="text-error flex items-center gap-1">
                   <X :size="12" /> Wrong — correct: <strong>{{ optionText(q, q.correctIndex) }}</strong>
                 </span>
               </div>
-              <p v-if="isFinished" class="text-xs text-base-content/50 mt-1">{{ q.explanation }}</p>
+              <p v-if="isFinished && !examMode" class="text-xs text-base-content/50 mt-1">{{ q.explanation }}</p>
             </template>
 
             <template v-else>
@@ -213,21 +217,21 @@
                     class="w-5 h-5 rounded-full border grid place-items-center text-[10px] font-mono shrink-0"
                     :class="badgeClass(q, oi)"
                   >
-                    <Check v-if="isFinished && oi === q.correctIndex" :size="10" />
-                    <X v-else-if="isFinished && answers[q.id] === oi && oi !== q.correctIndex" :size="10" />
+                  <Check v-if="isFinished && !examMode && oi === q.correctIndex" :size="10" />
+                  <X v-else-if="isFinished && !examMode && answers[q.id] === oi && oi !== q.correctIndex" :size="10" />
                     <span v-else class="opacity-70">{{ letter(oi) }}</span>
                   </span>
                   <span class="text-sm flex-1">{{ opt }}</span>
                 </button>
               </div>
-              <p v-if="isFinished" class="text-xs text-base-content/50 mt-2">{{ q.explanation }}</p>
+              <p v-if="isFinished && !examMode" class="text-xs text-base-content/50 mt-2">{{ q.explanation }}</p>
             </template>
           </div>
         </div>
 
         <div class="mt-8 pt-5 border-t border-base-300/70 flex items-center gap-3">
           <button class="btn btn-sm rounded-full bg-base-200 border-base-300 hover:bg-base-300" @click="$emit('finish')">
-            Save &amp; Exit
+            {{ examMode ? 'Back to module' : 'Save & Exit' }}
           </button>
           <template v-if="!isFinished">
             <button
@@ -238,7 +242,7 @@
               Submit Answers <ArrowRight :size="12" />
             </button>
           </template>
-          <template v-else>
+          <template v-else-if="!examMode">
             <div class="flex-1 flex items-center gap-3">
               <div class="text-sm">
                 Score: <strong class="font-mono">{{ score }} / {{ model.questions.length }}</strong> · {{ percentage }}%
@@ -297,8 +301,19 @@ interface GenerateAudioResponse {
   error: string | null
 }
 
-const props = defineProps<{ exercise: ListeningA2Exercise }>()
-defineEmits<{ finish: [] }>()
+const props = withDefaults(defineProps<{
+  exercise: ListeningA2Exercise
+  examMode?: boolean
+  initialAnswers?: Record<string, number | undefined>
+}>(), {
+  examMode: false,
+  initialAnswers: () => ({}),
+})
+const emit = defineEmits<{
+  finish: []
+  progress: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
+  examComplete: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
+}>()
 
 const { saveListeningCompletion } = useProgress()
 const { updateExerciseAudio, getExerciseById } = useListeningExercises()
@@ -371,6 +386,9 @@ watch(
   },
 )
 const instructions = computed(() => {
+  if (props.examMode) {
+    return `Use the permitted ${replayLimit.value === 1 ? 'single play' : `${replayLimit.value} plays`} and answer every question before submitting.`
+  }
   switch (currentExercise.value.testingPart) {
     case 1: return 'Listen to each short message and choose the correct answer. Replay the audio as often as you need.'
     case 2: return 'Listen to the conversation and match each person to the correct option. Replay the audio as often as you need.'
@@ -379,6 +397,10 @@ const instructions = computed(() => {
     default: return 'Listen and answer the questions. Replay the audio as often as you need.'
   }
 })
+
+const replayLimit = computed(() =>
+  currentExercise.value.testingPart === 1 || currentExercise.value.testingPart === 4 ? 2 : 1,
+)
 
 const partTimeSec: Record<number, number> = { 1: 600, 2: 480, 3: 600, 4: 480 }
 const timerRemaining = ref(partTimeSec[props.exercise.testingPart] ?? 600)
@@ -390,6 +412,7 @@ const timerMM = computed(() => String(Math.floor(timerRemaining.value / 60)).pad
 const timerSS = computed(() => String(timerRemaining.value % 60).padStart(2, '0'))
 
 function startTimer() {
+  if (props.examMode) return
   if (!checkedAvailability.value || anyMissing.value || isFinished.value) return
   if (timerHandle) return
   timerStarted.value = true
@@ -499,7 +522,9 @@ async function generateAudioForExercise() {
 }
 
 onMounted(() => {
-  model.value.questions.forEach(q => { answers[q.id] = undefined })
+  model.value.questions.forEach(q => {
+    answers[q.id] = props.examMode ? props.initialAnswers[q.id] : undefined
+  })
   const storedSpeed = readPersistedNumber(PLAYBACK_SPEED_KEY)
   if (storedSpeed !== undefined && speeds.includes(storedSpeed as (typeof speeds)[number])) {
     speed.value = storedSpeed
@@ -509,6 +534,19 @@ onMounted(() => {
     volume.value = storedVolume
   }
 })
+
+watch(
+  answers,
+  () => {
+    if (!props.examMode) return
+    emit('progress', {
+      answers: { ...answers },
+      score: score.value,
+      total: model.value.questions.length,
+    })
+  },
+  { deep: true },
+)
 
 onUnmounted(stopTimer)
 
@@ -542,7 +580,7 @@ function optionText(q: NormalizedQuestion, index: number | undefined): string {
 }
 
 function optionClass(q: NormalizedQuestion, oi: number): string {
-  if (isFinished.value) {
+  if (isFinished.value && !props.examMode) {
     if (oi === q.correctIndex) return 'border-success bg-success/5'
     if (answers[q.id] === oi && oi !== q.correctIndex) return 'border-error bg-error/5'
     return 'border-base-300 bg-base-100'
@@ -552,7 +590,7 @@ function optionClass(q: NormalizedQuestion, oi: number): string {
 }
 
 function badgeClass(q: NormalizedQuestion, oi: number): string {
-  if (isFinished.value) {
+  if (isFinished.value && !props.examMode) {
     if (oi === q.correctIndex) return 'border-success bg-success text-success-content'
     if (answers[q.id] === oi && oi !== q.correctIndex) return 'border-error bg-error text-error-content'
     return 'border-base-300 bg-base-100'
@@ -565,6 +603,14 @@ function finish() {
   if (interactionLocked.value || !allAnswered.value) return
   isFinished.value = true
   stopTimer()
+  if (props.examMode) {
+    emit('examComplete', {
+      answers: { ...answers },
+      score: score.value,
+      total: model.value.questions.length,
+    })
+    return
+  }
   saveListeningCompletion(currentExercise.value.id ?? '', score.value, model.value.questions.length)
 }
 

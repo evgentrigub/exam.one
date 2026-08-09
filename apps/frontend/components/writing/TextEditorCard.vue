@@ -27,7 +27,7 @@
       <progress class="progress w-full h-1.5" :class="progressBarColor" :value="wordCountPercentage" max="100" />
     </div>
 
-    <div v-if="content.trim().length > 20 && !props.submitted" class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3">
+    <div v-if="content.trim().length > 20 && !props.submitted && !props.examMode" class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3">
       <div class="flex items-center justify-between gap-3 mb-2">
         <span class="text-xs font-semibold uppercase tracking-wider text-base-content/50">Writing quality</span>
         <button class="btn btn-ghost btn-xs" type="button" @click="showQualityDetails = !showQualityDetails">
@@ -118,6 +118,7 @@ interface Props {
   topic: WritingExercise
   initialContent?: string
   submitted?: boolean
+  examMode?: boolean
 }
 
 const props = defineProps<Props>()
@@ -149,6 +150,10 @@ watch(() => props.initialContent, (next) => {
 watch(content, () => {
   if (props.submitted) return
   updateWordCount()
+  if (props.examMode) {
+    emit('saveDraft', content.value, wordCount.value)
+    return
+  }
   if (saveTimer) clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
     if (content.value.trim()) {
@@ -164,6 +169,7 @@ const wordCountPercentage = computed(() => {
 })
 
 const isSubmittable = computed(() => {
+  if (props.examMode) return content.value.trim().length > 0
   return wordCount.value >= props.topic.wordCount.min
     && wordCount.value <= props.topic.wordCount.max
     && content.value.trim().length > 0

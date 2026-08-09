@@ -37,3 +37,42 @@ export const defaultSpeakingTopics: SpeakingA2Topic[] = [
     createdAt: '2026-06-14',
   },
 ]
+
+export const mockExamSpeakingTopics: SpeakingA2Topic[] = [
+  {
+    id: 'mock-a2-set1-speaking-teil1',
+    testingPart: 1,
+    topicType: 'interview',
+    difficulty: 'A2',
+    theme: 'Freizeit und Wochenende',
+    answerQuestions: [
+      'Was machst du am Wochenende?',
+      'Mit wem verbringst du deine Freizeit?',
+      'Welches Hobby hast du?',
+      'Wie oft machst du Sport?',
+    ],
+    askQuestions: [
+      'Gehst du gern ins Kino?',
+      'Was machst du am Sonntag?',
+      'Triffst du oft Freunde?',
+      'Welche Musik hörst du gern?',
+    ],
+    createdAt: '2026-08-09',
+    examOnly: true,
+  },
+  {
+    id: 'mock-a2-set1-speaking-teil2',
+    testingPart: 2,
+    topicType: 'monologue',
+    difficulty: 'A2',
+    theme: 'Wie lernen Sie Deutsch?',
+    keywords: ['Seit wann?', 'Wo und wie?', 'Was ist leicht?', 'Was ist schwierig?'],
+    createdAt: '2026-08-09',
+    examOnly: true,
+  },
+]
+
+export const allDefaultSpeakingTopics: SpeakingA2Topic[] = [
+  ...defaultSpeakingTopics,
+  ...mockExamSpeakingTopics,
+]

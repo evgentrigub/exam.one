@@ -35,7 +35,7 @@
         </ol>
       </div>
 
-      <div class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft">
+      <div v-if="!examMode" class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft">
         <p class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
           Useful phrases
         </p>
@@ -151,6 +151,7 @@
         </p>
         <div class="flex flex-col gap-2 sm:flex-row">
           <button
+            v-if="!examMode"
             type="button"
             class="btn btn-outline flex-1 gap-2"
             :disabled="
@@ -171,7 +172,7 @@
           >
             <span v-if="isReviewing" class="loading loading-spinner loading-sm" />
             <Sparkles v-else :size="15" />
-            {{ isReviewing ? 'Reviewing…' : 'Review & save' }}
+            {{ isReviewing ? 'Reviewing…' : examMode ? 'Submit for grading' : 'Review & save' }}
           </button>
         </div>
       </div>
@@ -265,8 +266,19 @@ interface SessionSegment {
   maxSeconds: number
 }
 
-const props = defineProps<{ topic: SpeakingA2Topic }>()
-const emit = defineEmits<{ finish: [] }>()
+const props = withDefaults(defineProps<{
+  topic: SpeakingA2Topic
+  examMode?: boolean
+  initialTranscripts?: SpeakingTranscripts
+}>(), {
+  examMode: false,
+  initialTranscripts: () => ({}),
+})
+const emit = defineEmits<{
+  finish: []
+  progress: [payload: { transcripts: SpeakingTranscripts; durationSec: number }]
+  examComplete: [payload: { transcripts: SpeakingTranscripts; durationSec: number }]
+}>()
 
 const { saveSpeakingAttempt } = useProgress()
 const {
@@ -285,9 +297,9 @@ const {
 } = useSpeakingReview()
 
 const transcripts = reactive<Record<SegmentKey, string>>({
-  answers: '',
-  questions: '',
-  monologue: '',
+  answers: props.initialTranscripts.answers ?? '',
+  questions: props.initialTranscripts.questions ?? '',
+  monologue: props.initialTranscripts.monologue ?? '',
 })
 const durations = reactive<Record<SegmentKey, number>>({
   answers: 0,
@@ -363,6 +375,18 @@ const usefulPhrases = computed(() =>
 
 const requiredSegmentKeys = computed<SegmentKey[]>(() =>
   props.topic.testingPart === 1 ? ['answers', 'questions'] : ['monologue']
+)
+
+watch(
+  transcripts,
+  () => {
+    if (!props.examMode) return
+    emit('progress', {
+      transcripts: attemptTranscripts(),
+      durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
+    })
+  },
+  { deep: true },
 )
 const canSubmit = computed(() =>
   requiredSegmentKeys.value.every(key => transcripts[key].trim().length > 0)
@@ -450,6 +474,14 @@ function combinedTranscript(): string {
 }
 
 function saveAttempt(withReview = false): void {
+  if (props.examMode) {
+    submitted.value = true
+    emit('examComplete', {
+      transcripts: attemptTranscripts(),
+      durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
+    })
+    return
+  }
   saveSpeakingAttempt(props.topic.id, {
     durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
     transcript: combinedTranscript(),
@@ -467,6 +499,11 @@ function saveWithoutReview(): void {
 
 async function reviewAndSave(): Promise<void> {
   if (!canSubmit.value || transcribingPhase.value !== null || activeRecording.value !== null) return
+  if (props.examMode) {
+    clearReview()
+    saveAttempt(false)
+    return
+  }
   const result = await requestReview(props.topic, attemptTranscripts())
   if (result) saveAttempt(true)
 }
