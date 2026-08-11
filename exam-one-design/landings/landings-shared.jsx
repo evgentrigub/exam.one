@@ -20,6 +20,31 @@ function useIcons(deps = []) {
   useEffect(() => { if (window.lucide) { try { window.lucide.createIcons(); } catch (e) {} } }, deps);
 }
 
+// ---------- Theme (light / dark) ----------
+const THEME_KEY = 'examone.theme';
+function useTheme() {
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem(THEME_KEY) || 'light'; } catch (e) { return 'light'; }
+  });
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+  }, [theme]);
+  return [theme, setTheme];
+}
+
+const ThemeToggle = ({ cls = '' }) => {
+  const [theme, setTheme] = useTheme();
+  const dark = theme === 'dark';
+  return (
+    <button type="button" aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      onClick={() => setTheme(dark ? 'light' : 'dark')}
+      className={`btn btn-sm btn-ghost btn-circle text-base-content/70 hover:text-base-content ${cls}`}>
+      <Ic name={dark ? 'sun' : 'moon'} size={16} />
+    </button>
+  );
+};
+
 // reveal-on-scroll hook
 function useReveal() {
   useEffect(() => {
@@ -119,26 +144,53 @@ const ReadinessPanel = ({ compact = false }) => (
   </div>
 );
 
-// ---------- Product mock: AI writing feedback ----------
+// ---------- Product mock: AI writing review ----------
+const ScoreTile = ({ label, value, color }) => (
+  <div className="rounded-field border border-base-200 bg-base-200/40 p-2.5 text-center">
+    <div className="text-[10px] uppercase tracking-wider text-base-content/50">{label}</div>
+    <div className="font-mono text-xl font-bold mt-0.5">{value}</div>
+    <div className="mt-2 h-1.5 rounded-full bg-base-300 overflow-hidden">
+      <div className="h-full rounded-full" style={{ width: `${value}%`, background: color }} />
+    </div>
+  </div>
+);
+
 const WritingFeedbackMock = () => (
   <div className="bg-base-100 rounded-box border border-base-300 ring-soft overflow-hidden text-left">
     <div className="px-4 h-11 flex items-center gap-2 border-b border-base-300">
-      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-writing"><Ic name="pen-line" size={13} /> Writing · Formal email</span>
-      <span className="ml-auto level-pip">Sie · 30–40 words</span>
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-writing"><Ic name="pen-line" size={13} /> Writing · Informal message</span>
+      <span className="ml-auto level-pip">Submitted</span>
     </div>
-    <div className="p-4 text-sm leading-relaxed text-base-content/85">
-      Sehr geehrte Damen und Herren, <mark className="fb-good">ich möchte einen Termin</mark> für nächste Woche <mark className="fb-bad">vereinbahren</mark>. Können Sie mir <mark className="fb-good">am Dienstag</mark> einen Platz <mark className="fb-bad">gében</mark>? Mit freundlichen Grüßen, Lena.
+    <div className="px-4 pt-3 flex items-center gap-1 text-xs">
+      {[['at-sign', 'AI Prompt'], ['lightbulb', 'Ideal Answer'], ['message-square', 'AI Feedback']].map(([i, l], idx) => (
+        <span key={l} className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-field ${idx === 2 ? 'bg-primary/10 text-primary font-semibold' : 'text-base-content/50'}`}>
+          <Ic name={i} size={12} /> {l}
+        </span>
+      ))}
     </div>
-    <div className="mx-4 mb-4 rounded-field bg-base-200/70 border border-base-300 p-3">
-      <div className="flex items-center gap-2 mb-2">
-        <Ic name="sparkles" size={14} cls="text-primary" />
-        <span className="text-xs font-semibold">AI review · CEFR rubric</span>
-        <span className="ml-auto font-mono text-sm font-bold text-success">4.4<span className="text-base-content/40">/5</span></span>
+    <div className="p-4">
+      <div className="flex items-center gap-3">
+        <div className="font-mono text-3xl font-extrabold leading-none">86<span className="text-base font-medium text-base-content/40">/100</span></div>
+        <div className="text-sm">
+          <div className="font-semibold leading-tight">Solid response — small grammar issues</div>
+          <div className="text-xs text-base-content/60 mt-0.5">Reviewed against the CEFR rubric for this task.</div>
+        </div>
       </div>
-      <ul className="text-xs text-base-content/70 space-y-1.5">
-        <li className="flex gap-2"><Ic name="check" size={13} cls="text-success shrink-0 mt-0.5" /> Register and greeting fit a formal email.</li>
-        <li className="flex gap-2"><Ic name="x" size={13} cls="text-error shrink-0 mt-0.5" /> Spelling: <i>vereinbahren → vereinbaren</i>, <i>gében → geben</i>.</li>
-      </ul>
+      <div className="grid grid-cols-3 gap-2 mt-4">
+        <ScoreTile label="Grammar" value={82} color="var(--color-warning)" />
+        <ScoreTile label="Vocab" value={91} color="var(--color-success)" />
+        <ScoreTile label="Structure" value={88} color="var(--color-primary)" />
+      </div>
+      <div className="mt-4 rounded-field bg-base-200/70 border border-base-300 p-3">
+        <div className="flex items-center gap-2 mb-2">
+          <Ic name="sparkles" size={14} cls="text-primary" />
+          <span className="text-xs font-semibold">What to fix next</span>
+        </div>
+        <ul className="text-xs text-base-content/70 space-y-1.5">
+          <li className="flex gap-2"><Ic name="check" size={13} cls="text-success shrink-0 mt-0.5" /> Greeting, closing and tone fit an informal message.</li>
+          <li className="flex gap-2"><Ic name="alert-circle" size={13} cls="text-warning shrink-0 mt-0.5" /> Two dative endings after <i>mit</i> and <i>zu</i> need attention.</li>
+        </ul>
+      </div>
     </div>
   </div>
 );
@@ -150,21 +202,25 @@ const SpeakingMock = () => {
     <div className="bg-base-100 rounded-box border border-base-300 ring-soft overflow-hidden text-left">
       <div className="px-4 h-11 flex items-center gap-2 border-b border-base-300">
         <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-speaking"><Ic name="mic" size={13} /> Speaking · Monologue</span>
-        <span className="ml-auto font-mono text-xs text-base-content/50">0:48 / 1:30</span>
+        <span className="ml-auto font-mono text-xs text-base-content/50">Recording · 0:48 / 2:00</span>
       </div>
       <div className="p-4">
-        <div className="flex items-center gap-3 mb-3">
-          <button className="btn btn-circle btn-sm bg-warning text-warning-content border-0"><Ic name="pause" size={15} /></button>
-          <div className="flex items-end gap-[3px] h-8 text-warning flex-1">
-            {bars.map((h, i) => <span key={i} className="wave-bar" style={{ height: `${h * 5}%`, opacity: i < 11 ? 1 : .35 }} />)}
-          </div>
+        <div className="rounded-field border border-base-200 bg-base-200/50 p-3">
+          <div className="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1.5">Sprich über folgende Punkte</div>
+          <ol className="text-sm text-base-content/80 space-y-1">
+            {['Erzähle, was dein Hobby ist.', 'Beschreibe, wie oft du es machst.'].map((p, i) => (
+              <li key={i} className="flex gap-2"><span className="font-mono text-xs font-bold text-primary mt-0.5">{i + 1}.</span> {p}</li>
+            ))}
+          </ol>
         </div>
-        <div className="rounded-field bg-base-200/70 border border-base-300 p-3">
-          <div className="text-[10px] uppercase tracking-wide font-semibold text-base-content/50 mb-1">Live transcript</div>
-          <p className="text-sm text-base-content/85 leading-relaxed">„Ich heiße Lena und ich komme aus München. In meiner Freizeit <span className="text-base-content/40">…</span>"</p>
-          <div className="mt-2 flex items-center gap-2">
-            <span className="badge badge-sm badge-warning badge-soft gap-1"><Ic name="gauge" size={11} /> Fluency 3.9</span>
-            <span className="badge badge-sm badge-ghost gap-1"><Ic name="spell-check" size={11} /> 2 corrections</span>
+        <div className="mt-4 text-center py-2">
+          <div className="w-20 h-20 rounded-full bg-error text-error-content grid place-items-center mx-auto shadow-lg" style={{ boxShadow: '0 0 0 8px color-mix(in oklab, var(--color-error) 12%, transparent)' }}>
+            <Ic name="mic" size={26} />
+          </div>
+          <div className="mt-3 font-semibold text-sm">Recording…</div>
+          <div className="font-mono text-xs text-base-content/55">Tap to stop when you're done</div>
+          <div className="flex items-end justify-center gap-[3px] h-8 text-speaking mt-3">
+            {bars.map((h, i) => <span key={i} className="wave-bar" style={{ height: `${h * 5}%`, opacity: i < 11 ? 1 : .35 }} />)}
           </div>
         </div>
       </div>
@@ -190,7 +246,7 @@ const MockExamStrip = () => (
       ))}
     </div>
     <div className="mt-3 text-[11px] text-base-content/55 flex items-center gap-1.5">
-      <Ic name="lock" size={12} /> No pauses · no transcript until submit · single attempt
+      <Ic name="lock" size={12} /> No pauses · no feedback until submit · single attempt
     </div>
   </div>
 );
@@ -251,6 +307,6 @@ const LandingFooter = ({ light = false }) => {
 
 Object.assign(window, {
   R, useState, useEffect, useRef, Ic, useIcons, useReveal,
-  SKILLS, READINESS, Wordmark, Spark, RingProg, GhStars,
-  ReadinessPanel, WritingFeedbackMock, SpeakingMock, MockExamStrip, TerminalMock, LandingFooter,
+  SKILLS, READINESS, Wordmark, Spark, RingProg, GhStars, useTheme, ThemeToggle,
+  ReadinessPanel, ScoreTile, WritingFeedbackMock, SpeakingMock, MockExamStrip, TerminalMock, LandingFooter,
 });

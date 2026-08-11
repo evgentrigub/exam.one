@@ -11,6 +11,7 @@
 </svg>
 </template>
 
+<script>try{var t=localStorage.getItem('examone.theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Exam.one — Landing page directions</title>
@@ -78,6 +79,15 @@
      foreground to the matching content token. */
   .btn-neutral { color: var(--color-neutral-content) !important; }
   .btn-primary { color: var(--color-primary-content) !important; }
+  /* Preflight's button{background-color:transparent} outranks daisyUI's :where() rule. */
+  button.btn-neutral { background-color: var(--color-neutral); }
+  button.btn-primary { background-color: var(--color-primary); }
+  /* Same gap for outline buttons: preflight zeroes border-width, and base-300 isn't a Tailwind palette color. */
+  .btn-outline { border-width: 1px; border-style: solid; border-color: color-mix(in oklab, var(--color-base-content) 20%, transparent); }
+  .btn-outline:hover { border-color: color-mix(in oklab, var(--color-base-content) 32%, transparent); }
+  /* Tailwind's own .collapse utility (visibility:collapse) hides daisyUI accordions. */
+  .collapse { visibility: visible !important; }
+  .collapse-title, .collapse-content { visibility: visible !important; }
 
   /* waveform */
   .wave-bar { background: currentColor; border-radius: 2px; display:inline-block; width: 3px; }
@@ -100,7 +110,6 @@
   <div id="root"></div>
 
   <script type="text/babel" data-presets="env,react" src="landings-shared.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="landing-a.jsx"></script>
   <script type="text/babel" data-presets="env,react" src="landing-b.jsx"></script>
   <script type="text/babel" data-presets="env,react" src="landings-app.jsx"></script>
 </body>
