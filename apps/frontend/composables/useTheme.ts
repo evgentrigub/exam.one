@@ -3,6 +3,8 @@
  * Manages daisyUI theme switching and persistence
  */
 
+const STORAGE_KEY = 'exam-one:theme'
+
 export type Theme = 'light' | 'cupcake'
 
 export const LIGHT_THEMES: { value: Theme; label: string; icon: string }[] = [
@@ -31,7 +33,11 @@ export const useTheme = () => {
       document.documentElement.setAttribute('data-theme', newTheme)
       
       // Persist to localStorage
-      localStorage.setItem('theme', newTheme)
+      try {
+        localStorage.setItem(STORAGE_KEY, newTheme)
+      } catch (error) {
+        console.error(`[${STORAGE_KEY}] write failed`, error)
+      }
     }
   }
   
@@ -40,9 +46,14 @@ export const useTheme = () => {
    */
   const initTheme = () => {
     if (import.meta.client) {
-      const savedTheme = localStorage.getItem('theme')
-      const defaultTheme: Theme = isValidTheme(savedTheme) ? savedTheme : 'light'
-      setTheme(defaultTheme)
+      try {
+        const savedTheme = localStorage.getItem(STORAGE_KEY)
+        const defaultTheme: Theme = isValidTheme(savedTheme) ? savedTheme : 'light'
+        setTheme(defaultTheme)
+      } catch (error) {
+        console.error(`[${STORAGE_KEY}] read failed`, error)
+        setTheme('light')
+      }
     }
   }
   
@@ -71,4 +82,3 @@ export const useTheme = () => {
     darkThemes: DARK_THEMES
   }
 }
-
