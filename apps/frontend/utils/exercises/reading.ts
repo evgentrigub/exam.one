@@ -71,6 +71,8 @@ export interface ReadingExerciseBase<
   wordCount: number
   topics: string[]
   createdAt: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
   questions?: TQuestion[]
 }
 

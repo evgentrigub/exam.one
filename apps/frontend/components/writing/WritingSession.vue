@@ -24,7 +24,7 @@
       </section>
 
       <section class="bg-base-100 rounded-box border border-base-300/70 overflow-hidden">
-        <div class="flex border-b border-base-300/70 px-3 overflow-x-auto" role="tablist" aria-label="Writing support tabs">
+        <div v-if="!examMode" class="flex border-b border-base-300/70 px-3 overflow-x-auto" role="tablist" aria-label="Writing support tabs">
           <button
             v-for="tab in tabs"
             :key="tab.key"
@@ -55,7 +55,7 @@
                 </li>
               </ul>
             </div>
-            <div v-if="writingTips.length" class="pt-4 border-t border-base-300/70">
+            <div v-if="writingTips.length && !examMode" class="pt-4 border-t border-base-300/70">
               <div class="text-sm font-semibold mb-2">Writing tips</div>
               <ul class="space-y-1.5 text-[13px] text-base-content/70">
                 <li v-for="tip in writingTips" :key="tip" class="flex items-start gap-2">
@@ -136,6 +136,7 @@
         :topic="topic"
         :initial-content="currentDraft"
         :submitted="isSubmitted"
+        :exam-mode="examMode ?? false"
         @submit="handleSubmit"
         @save-draft="handleSaveDraft"
         @finish="handleFinish"
@@ -156,12 +157,20 @@ import ModelAnswerCard from '~/components/writing/ModelAnswerCard.vue'
 
 interface Props {
   topic: WritingExercise
+  examMode?: boolean
+  initialContent?: string
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  examMode: false,
+  initialContent: '',
+})
 
 const emit = defineEmits<{
   complete: [topicId: string, content: string, wordCount: number, timeSpent: number]
+  progress: [payload: { content: string; wordCount: number }]
+  examComplete: [payload: { content: string; wordCount: number; timeSpent: number }]
+  finish: []
 }>()
 
 const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission } = useProgress()
@@ -176,7 +185,7 @@ const tabs: { key: TabKey; label: string; icon: Component }[] = [
   { key: 'ai-review', label: 'AI Review', icon: MessageSquare },
 ]
 
-const currentDraft = ref('')
+const currentDraft = ref(props.initialContent)
 const isSubmitted = ref(false)
 const submittedContent = ref('')
 const submittedWordCount = ref(0)
@@ -200,6 +209,7 @@ const reviewError = computed(() => {
 })
 
 onMounted(() => {
+  if (props.examMode) return
   const existingSession = getWritingSession(props.topic.id)
   if (existingSession) {
     currentDraft.value = existingSession.content
@@ -218,7 +228,11 @@ onMounted(() => {
 function handleSaveDraft(content: string, wordCount: number) {
   if (isSubmitted.value) return
   currentDraft.value = content
-  saveWritingDraft(props.topic.id, content, wordCount)
+  if (props.examMode) {
+    emit('progress', { content, wordCount })
+  } else {
+    saveWritingDraft(props.topic.id, content, wordCount)
+  }
 }
 
 async function handleSubmit(content: string, wordCount: number, timeSpent: number) {
@@ -226,6 +240,10 @@ async function handleSubmit(content: string, wordCount: number, timeSpent: numbe
   submittedContent.value = content
   submittedWordCount.value = wordCount
   submittedTimeSpent.value = timeSpent
+  if (props.examMode) {
+    emit('examComplete', { content, wordCount, timeSpent })
+    return
+  }
   saveWritingSubmission(props.topic.id, content, wordCount, timeSpent)
   emit('complete', props.topic.id, content, wordCount, timeSpent)
   activeTab.value = 'ai-review'
@@ -247,6 +265,10 @@ function handleViewDetailedReview() {
 }
 
 function handleFinish() {
+  if (props.examMode) {
+    emit('finish')
+    return
+  }
   navigateTo('/exercises?skill=writing')
 }
 </script>

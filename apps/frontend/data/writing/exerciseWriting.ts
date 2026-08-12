@@ -60,3 +60,41 @@ Verwenden Sie eine passende Anrede und Grußformel. Schreiben Sie 30–40 Wörte
     ]
   }
 ]
+
+export const mockExamWritingTopics: WritingExercise[] = [
+  {
+    id: 'mock-a2-set1-writing-teil1',
+    title: 'SMS: Verspätung beim Treffen',
+    topicType: 'note',
+    difficulty: 'A2',
+    testingPart: 1,
+    estimatedTime: 15,
+    wordCount: { min: 20, max: 30 },
+    category: ['Freizeit', 'Verabredung'],
+    createdAt: '2026-08-09',
+    description: 'Kurznachricht (SMS) in der du-Form.',
+    task: `Sie treffen heute Ihren Freund Amir im Café. Ihr Bus hat Verspätung. Schreiben Sie Amir eine SMS.\n- Entschuldigen Sie sich.\n- Erklären Sie die Verspätung.\n- Sagen Sie, wann Sie kommen.\nSchreiben Sie 20–30 Wörter.`,
+    requirements: ['Du-Form', '3 Inhaltspunkte', '20–30 Wörter'],
+    examOnly: true,
+  },
+  {
+    id: 'mock-a2-set1-writing-teil2',
+    title: 'E-Mail: Termin in der Sprachschule',
+    topicType: 'email',
+    difficulty: 'A2',
+    testingPart: 2,
+    estimatedTime: 15,
+    wordCount: { min: 30, max: 40 },
+    category: ['Deutschlernen', 'Termin'],
+    createdAt: '2026-08-09',
+    description: '(Halb-)formelle E-Mail in der Sie-Form.',
+    task: `Ihre Sprachschule lädt Sie am Dienstag zu einem Beratungstermin ein. Sie können an diesem Tag nicht. Schreiben Sie Frau König eine E-Mail.\n- Bedanken Sie sich für die Einladung.\n- Erklären Sie, warum Sie nicht kommen können.\n- Bitten Sie um einen neuen Termin.\nSchreiben Sie 30–40 Wörter.`,
+    requirements: ['Sie-Form', 'Anrede und Grußformel', '3 Inhaltspunkte', '30–40 Wörter'],
+    examOnly: true,
+  },
+]
+
+export const allDefaultWritingTopics: WritingExercise[] = [
+  ...defaultWritingTopics,
+  ...mockExamWritingTopics,
+]

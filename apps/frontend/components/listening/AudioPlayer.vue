@@ -27,7 +27,7 @@
           step="0.1"
           :value="currentSec"
           class="w-full accent-info disabled:opacity-40"
-          :disabled="!!disabled"
+          :disabled="!!disabled || !!disableSeeking"
           @input="seekTo(Number(($event.target as HTMLInputElement).value))"
         >
         <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
@@ -36,6 +36,10 @@
         </div>
       </div>
     </div>
+
+    <p v-if="maxPlays" class="mt-2 text-[11px] text-base-content/50">
+      Plays: {{ playCount }}/{{ maxPlays }}
+    </p>
 
     <!-- Controls row -->
     <div class="mt-4 pt-4 border-t border-base-300/70 flex items-center gap-3">
@@ -100,6 +104,9 @@ const props = withDefaults(defineProps<{
   activePlayerId?: string | null
   /** Disable play/scrub/controls (e.g. when audio files are missing). */
   disabled?: boolean
+  /** Optional exam replay cap. Pausing and resuming the same play does not consume another play. */
+  maxPlays?: number | null
+  disableSeeking?: boolean
 }>(), {
   label: 'Audio',
   src: '',
@@ -111,6 +118,8 @@ const props = withDefaults(defineProps<{
   playerId: '',
   activePlayerId: null,
   disabled: false,
+  maxPlays: null,
+  disableSeeking: false,
 })
 
 const emit = defineEmits<{
@@ -126,6 +135,7 @@ const currentSec = ref(0)
 const mediaReady = ref(false)
 const mediaFailed = ref(false)
 const mediaDurationSec = ref(0)
+const playCount = ref(0)
 
 let timer: ReturnType<typeof setInterval> | null = null
 let audioEl: HTMLAudioElement | null = null
@@ -147,7 +157,12 @@ const effectiveDurationSec = computed(() =>
     : simulatedDurationSec.value,
 )
 
-const canPlay = computed(() => !props.disabled)
+const canPlay = computed(() => {
+  if (props.disabled) return false
+  if (!props.maxPlays) return true
+  const resuming = currentSec.value > 0 && currentSec.value < effectiveDurationSec.value
+  return resuming || playCount.value < props.maxPlays
+})
 
 function fmt(sec: number): string {
   const m = Math.floor(sec / 60)
@@ -235,6 +250,7 @@ function attachAudio(src: string) {
   mediaDurationSec.value = 0
   currentSec.value = 0
   playing.value = false
+  playCount.value = 0
 
   const el = new Audio(src)
   el.preload = 'metadata'
@@ -269,6 +285,9 @@ function toggle() {
 
   if (!canPlay.value) return
 
+  const isNewPlay = currentSec.value <= 0 || currentSec.value >= effectiveDurationSec.value - 0.05
+  if (isNewPlay && props.maxPlays) playCount.value += 1
+
   if (props.playerId) {
     emit('play', props.playerId)
   }
@@ -296,7 +315,7 @@ function toggle() {
 }
 
 function seekTo(sec: number) {
-  if (props.disabled) return
+  if (props.disabled || props.disableSeeking) return
   const next = Math.min(Math.max(0, sec), effectiveDurationSec.value)
   currentSec.value = next
   if (useRealAudio.value && audioEl) {

@@ -5,16 +5,16 @@ This file is the working guide for coding agents in this repository. It should b
 ## Project Summary
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
-- **Phase 1 (current) shipping focus:** German / Goethe A2 (Reading, Writing, Listening, Speaking + mock exam) and Goethe C1 Writing only. English / Cambridge is out of scope for Phase 1.
-- Current app shape: pnpm monorepo with a Nuxt 3 offline-first frontend (Phase 1 product surface), plus NestJS / Prisma / Compose scaffold ahead of Phase 2 persistence cutover
-- Primary features: reading, writing, listening, and speaking practice; mock exam mode; editable demo prompt templates; progress tracking
+- **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
+- Current app shape: pnpm monorepo with a completed Nuxt 3 offline-first frontend, plus NestJS / Prisma / Compose foundations for the active Phase 2 persistence cutover
+- Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
 
-## Current focus
+## Current Focus
 
-- **Done (iteration 1):** Reading, Writing, Listening (incl. file-based Kokoro audio)
-- **Done:** Speaking Teil 1–2 iteration — offline/manual practice, local or cloud STT, optional AI review, and local attempts
-- **Next:** Speaking Teil 3 joint planning (`roadmap.md` §1.1), then pronunciation and mock-exam integration
+- **Done:** German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
+- **Done:** Mock exam offline Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
+- **Current:** Phase 2 NestJS/PostgreSQL persistence and self-hosting cutover; preserve the finished frontend behavior while migrating domains deliberately
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
@@ -26,7 +26,7 @@ This file is the working guide for coding agents in this repository. It should b
 - Tailwind CSS 4
 - DaisyUI 5
 - `@nuxtjs/i18n`
-- Provider-agnostic, bring-your-own-key LLM access (e.g. OpenAI, Google Gemini, or local models) for optional AI-backed generation, review, and grading
+- Provider-agnostic, bring-your-own-key LLM access through OpenAI or OpenRouter for optional AI-backed generation, review, and grading
 
 ## Package Manager And Commands
 
@@ -42,6 +42,10 @@ Use `pnpm`.
 - `pnpm format` - run Prettier
 - `pnpm type-check` - type-check all workspace projects
 - `pnpm test` - test all workspace projects
+- `pnpm stack:up` - prepare speech models and start the complete Docker Compose stack
+- `pnpm stack:down` - stop the complete stack without deleting named volumes
+- `pnpm tts:up` - prepare and start only Kokoro TTS
+- `pnpm stt:up` - prepare and start only Parakeet STT
 
 ## Codebase Shape
 
@@ -57,10 +61,11 @@ Use `pnpm`.
 
 ## Agent Priorities
 
-1. Preserve offline-first behavior. Core reading, writing, listening, speaking, mock exam, navigation, and progress flows must not require network access.
+1. Preserve completed product behavior. Unmigrated Phase 1 domains remain offline-capable; explicitly migrated Phase 2 domains may require the local Compose API/PostgreSQL stack but must not require cloud infrastructure.
 2. Treat AI as optional and provider-agnostic (bring-your-own-key). If no API key is configured or an AI request fails, the app should degrade gracefully.
 3. Keep changes aligned with existing Nuxt, Vue, and DaisyUI patterns instead of introducing a parallel architecture.
 4. Prefer small, local changes over broad refactors unless the task explicitly requires structural work.
+5. During Phase 2, preserve compatibility with completed local-first flows and migrate persistence one domain at a time without maintaining two authoritative sources.
 
 ## Required Standards
 
@@ -68,7 +73,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Global
 
-- Offline-first core: core features must work with zero network
+- Phase-aware core: unmigrated frontend domains work with zero network; migrated Phase 2 domains may use the local self-hosted API/database
 - SSR storage guards: guard `localStorage`, `window`, and `document` access with `import.meta.client` and `try/catch`
 - Local storage keys: prefix with `exam-one:`
 
@@ -101,8 +106,9 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 - Frontend-owned seed content currently belongs in typed modules under `apps/frontend/data/`; move it to `libraries/exam-content/` only when both applications need it
 - Exam-specific implementation details belong in `agent-os/product/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
-- User progress and drafts are local-first
-- Do not move core user data to a required backend dependency in MVP work
+- Existing user progress, drafts, attempts, generated sets, and reviews remain local-first until their Phase 2 domain is explicitly migrated
+- Phase 2 persistence work should move an entire domain behind shared contracts and NestJS/PostgreSQL ownership, with a deliberate compatibility or migration path
+- Bundled mock-exam Set 1 must remain usable without an LLM key, network connection, or speech service
 
 ## AI Integration Rules
 
@@ -110,6 +116,9 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 - Keep AI provider-agnostic (bring-your-own-key); do not hard-code a single provider into core or endpoint contracts
 - Avoid blocking UI completion on AI responses
 - Handle missing API keys and upstream failures explicitly
+- Generated mock sets require LLM configuration/connection and Docker TTS preflight checks; preserve completed artifacts and resumable pipeline state on failure
+- Writing and Speaking mock grading starts automatically and persists the full validated review alongside the score
+- Aggregate mock-exam AI review is optional and must never invalidate or block completed exam results
 
 ## Before Finishing A Change
 

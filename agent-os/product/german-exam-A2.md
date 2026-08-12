@@ -4,6 +4,8 @@ This is the implementation reference for German / Goethe A2 exam content in `exa
 
 Keep the app architecture exam-agnostic, but keep Goethe A2 content faithful to this structure.
 
+> **Product status:** The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. Bundled practice remains local-first; generation, speech services, and AI reviews are optional enhancements.
+
 ## General Scoring
 
 The exam has four modules worth 25 points each, for 100 points total.
@@ -41,7 +43,7 @@ Time limit: 30 minutes. The module has four parts and 20 questions total.
 
 ## Listening: Hoeren
 
-> **Implementation status (Phase 1):** **Complete (iteration 1)** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX. Mock-exam integration waits on Speaking + mock exam substages.
+> **Implementation status:** **Complete and tested** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX, timed offline Set 1 integration, and locally generated mock sets with Docker TTS audio and official replay limits.
 
 Time limit: 30 minutes. The module has four parts and 20 questions total.
 
@@ -91,11 +93,10 @@ Time limit: 30 minutes. The module has two parts. Maximum raw score is 20 `Messp
 
 Time limit: 15 minutes. The module has three interactive parts. The app may use STT and TTS for interaction and evaluation. Speaking points are not multiplied.
 
-> **Implementation status (Phase 1):** **Complete (Teil 1–2 iteration)** — practice supports recording,
+> **Implementation status:** **Complete and tested** — practice supports recording,
 > optional local Parakeet or OpenAI STT, editable/manual transcripts, optional
-> LLM review, and local attempt persistence. Teil 3 is shown as coming later;
-> pronunciation scoring and mock-exam integration are still open. See
-> `roadmap.md` §1.1 Speaking plan.
+> LLM review, local attempt persistence, automatic mock-exam grading, and detailed
+> result review.
 
 ### Part 1: Interview Or Introduction
 
@@ -120,9 +121,6 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 
 ### Part 3: Joint Planning
 
-> **App availability:** Coming later. Part 3 is documented and shown in the exam
-> map, but it is excluded from practice filters and AI exercise generation.
-
 - Points: 8.
 - Format: interactive dialogue to arrange a meeting or activity. Both partners have individual schedules containing occupied slots.
 - Task: propose meeting times, politely decline conflicting times while giving a reason, and eventually agree on a shared free slot.
@@ -139,5 +137,7 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 - Keep reusable data structures exam-agnostic where possible, then map Goethe A2 specifics through exam IDs, module metadata, task definitions, and prompt templates.
 - AI generation and review prompts must encode the trap rules above, not just the surface task format.
 - Mock exam mode should use the module time limits and scoring rules in this document.
-- **Phase 1:** core practice is offline-capable without AI (localStorage). AI-generated variants are optional enhancements and must degrade gracefully when AI is unavailable.
+- Keep bundled Set 1 available without AI. Additional mock sets may be generated locally only after LLM and TTS readiness checks; store each completed set as an immutable content snapshot so result reviews remain stable.
+- Completed attempts may request a concise provider-agnostic aggregate AI overview. This review is optional and must not block access to scores or per-module exercise details.
+- **Completed Phase 1:** core practice is offline-capable without AI (localStorage). AI-generated variants are optional enhancements and must degrade gracefully when AI is unavailable.
 - **Phase 2 onward:** core attempts, drafts, and results live in PostgreSQL via the NestJS API on the local Docker Compose stack; AI remains optional.
