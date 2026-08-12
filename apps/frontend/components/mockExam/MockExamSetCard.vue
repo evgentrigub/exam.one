@@ -6,7 +6,7 @@
           <span class="level-pip">{{ set.level }}</span>
           <h2 class="mt-2 font-display text-xl font-bold">{{ set.title }}</h2>
           <p v-if="set.generated" class="mt-1 text-xs text-base-content/45">
-            {{ $t('mockExam.generatedOn', { date: formattedDate }) }}
+            {{ formattedDate }}
           </p>
         </div>
         <div class="flex items-center gap-2">
