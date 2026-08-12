@@ -1,6 +1,6 @@
 # Tech Stack
 
-> **Phase 1 (current) is frontend-only**: a Nuxt/Vue app with thin Nuxt server routes proxying user-supplied (bring-your-own-key) LLM providers, and localStorage for all user data — no separate backend or database. The **Backend**, **Database**, and **Deployment** sections below describe the Phase 2 full-stack, Docker Compose self-hostable target (localhost first). Cloud hosting is Phase 4.
+> **Phase 1 is complete** as a frontend-only Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers and localStorage for user data. **Phase 2 is current:** the Backend, Database, and Deployment sections describe the full-stack Docker Compose persistence cutover. Cloud hosting remains Phase 4.
 
 ## Frontend
 
@@ -18,13 +18,13 @@ Vue/Nuxt is retained in part so Phase 2 can reuse existing auth, profile, and ac
 
 ## Backend
 
-- **Phase 1 (current):** thin **Nuxt server routes** (`server/api/`) that proxy requests to the configured LLM provider — no standalone backend
-- **Phase 2:** **NestJS** — Node.js backend framework (REST and/or GraphQL), single-operator signup model for self-hosted instances (similar to n8n / Postiz)
+- **Completed Phase 1:** thin **Nuxt server routes** (`server/api/`) proxy requests to the configured LLM provider
+- **Current Phase 2:** **NestJS** — Node.js backend framework (REST and/or GraphQL), single-operator signup model for self-hosted instances (similar to n8n / Postiz)
 
 ## Database
 
-- **Phase 1 (current):** none — all user data is stored client-side in localStorage (offline-capable core practice)
-- **Phase 2:** **PostgreSQL** — primary relational database (users, exercises, attempts, results, drafts, settings). Exam/user data fully replaces localStorage for those domains. Postgres runs in Docker Compose with a **named volume** so data survives container recreation.
+- **Completed Phase 1:** all user data is stored client-side in localStorage for offline-capable core practice
+- **Current Phase 2:** **PostgreSQL** — primary relational database (users, exercises, attempts, results, drafts, settings). API-backed data replaces localStorage for those domains. Postgres runs in Docker Compose with a **named volume** so data survives container recreation.
 
 ## AI
 
@@ -34,9 +34,9 @@ Vue/Nuxt is retained in part so Phase 2 can reuse existing auth, profile, and ac
 - Prompt templates are bundled as editable demo templates
 - AI is an enhancement layer; core practice flows degrade gracefully when AI is unavailable
 
-## Listening audio (Phase 1 — iteration 1 complete)
+## Listening audio (complete and tested)
 
-Listening practice is **done for Phase 1 iteration 1**. Further listening work is polish / mock-exam integration only unless new gaps appear.
+Listening practice and mock-exam integration are complete and tested for the German / Goethe A2 product.
 
 - Seed listening exercises use **pre-generated WAV files** (Kokoro German **four-voice** roster: `martin` / `bernd` male, `victoria` / `eva` female) under `apps/frontend/public/audio/listening/a2/` (often gitignored; regenerate with `pnpm generate:listening-audio`; use `FORCE=1` after voice-roster changes)
 - Dialogue transcripts (Teil 2–4) use `Role:` labels; generation splits turns, assigns voices by gender + order of appearance, strips labels from spoken audio, and concatenates WAVs (parallel via `TTS_CONCURRENCY`)
@@ -46,9 +46,9 @@ Listening practice is **done for Phase 1 iteration 1**. Further listening work i
 - AI listening generation still produces transcripts only; audio is generated on demand
 - Phase 2 may run TTS as an optional Compose service when generating new exercises
 
-## Speaking (Phase 1 — Teil 1–2 iteration complete)
+## Speaking (complete and tested)
 
-Speaking Teil 1–2 is **done for this iteration**. The next product stage is Teil 3 joint planning, followed by pronunciation and mock-exam integration.
+The core Speaking practice and mock-exam experience is complete and tested for the German / Goethe A2 product.
 
 - Teil 1 uses two recordings: answers to four explicit practice questions, then
   four questions spoken aloud. Teil 2 uses one monologue recording.
@@ -62,12 +62,11 @@ Speaking Teil 1–2 is **done for this iteration**. The next product stage is Te
   and runs it with pinned `transcribe.cpp`. The host project model directory at
   `scripts/stt/parakeet/models/` is mounted read-only;
   `pnpm stt:down` stops the service without deleting the model.
-- Optional LLM review is wired for Teil 1 (4 points) and Teil 2 (8 points).
-  Attempts and successful criteria reviews are saved locally even though audio
-  blobs are not retained.
-- Teil 3, pronunciation scoring, a TTS partner, and mock-exam speaking remain
-  later work. Teil 3 is visible in exam format but unavailable in practice and
-  generation.
+- Optional LLM review returns direct criteria points, explanations, strengths,
+  and improvements. Attempts and successful criteria reviews are saved locally
+  even though audio blobs are not retained.
+- Mock-exam Speaking grading starts automatically, persists its full review,
+  and feeds the completed module review and aggregate exam overview.
 
 ## Deployment & Infra
 

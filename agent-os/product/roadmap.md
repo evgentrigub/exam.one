@@ -1,6 +1,6 @@
 # Product Roadmap
 
-exam.one ships in four phases: finish a frontend-only German MVP, then a localhost Docker Compose full stack, then a public open-source release with community docs, then a hosted cloud product. Orientation (not a 1:1 copy): successful self-host → community → cloud patterns such as [Postiz](https://github.com/gitroomhq/postiz-app).
+exam.one ships in four phases: a completed frontend-only German MVP, a localhost Docker Compose full stack, a public open-source release with community docs, and a hosted cloud product. Orientation (not a 1:1 copy): successful self-host → community → cloud patterns such as [Postiz](https://github.com/gitroomhq/postiz-app).
 
 ```mermaid
 flowchart LR
@@ -13,90 +13,55 @@ flowchart LR
 
 ---
 
-## Phase 1: Frontend-Only MVP (current)
+## Phase 1: Frontend-Only MVP (complete)
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** The monorepo already contains NestJS / Prisma / Compose scaffolding from early Phase 2 groundwork. That does not change Phase 1 skill work: keep reading/writing/listening/speaking on localStorage until Phase 2 persistence cutover.
+> **Note:** The monorepo already contains NestJS / Prisma / Compose scaffolding from early Phase 2 groundwork. The completed Phase 1 flows remain on localStorage until each domain is deliberately moved during the Phase 2 persistence cutover.
 
-**Supported exams in this phase:**
-
-- **German / Goethe A2** — full skills (Reading, Writing, Listening, Speaking) + mock exam (see `german-exam-A2.md`)
-- **German / Goethe C1** — **Writing only** (partial; see `german-exam-C1.md`)
-
-English / Cambridge and other providers are out of scope for Phase 1.
+The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. The architecture remains exam-agnostic so later phases can add other levels, languages, and providers without changing the completed Phase 1 definition.
 
 ### Skill status (Goethe A2)
 
 | Skill | Status | Notes |
 | --- | --- | --- |
-| Reading | Done (iteration 1) | Seed + practice + optional AI generate |
-| Writing | Done (iteration 1) | Seed + drafts + optional AI generate / review |
-| Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX |
-| Speaking | **Done (Teil 1–2 iteration)** | Recording → STT/manual transcript → optional LLM review and local attempts shipped; Teil 3 and pronunciation remain |
-| Mock exam | **Done (iteration 2)** | Offline Set 1 plus serial AI/TTS-generated local sets, reload-safe generation and attempts, exercise review pages, and on-demand aggregate AI overview; Speaking is provisional (Teil 1–2, 12 pts) |
+| Reading | **Complete and tested** | Seed content, practice, scoring, explanations, progress, and optional AI generation |
+| Writing | **Complete and tested** | Seed content, drafts, optional AI grading, persisted detailed reviews, and generation |
+| Listening | **Complete and tested** | Four exam parts, automatic scoring, stable WAVs, replay rules, and optional Docker TTS |
+| Speaking | **Complete and tested** | Recording, local/cloud STT or manual transcripts, optional AI grading, persisted reviews, and local attempts |
+| Mock exam | **Complete and tested** | Offline Set 1, generated local sets, resumable pipeline, automatic grading, module reviews, and aggregate AI overview |
 
 ### Substages
 
 #### 1.1 Goethe A2 core skills
 
-Finish Reading, Writing, Listening, and Speaking practice against modular Goethe A2 rules.
+**Complete and tested:** Reading, Writing, Listening, and Speaking provide local-first practice against the product's modular Goethe A2 rules.
 
-**Listening (complete — iteration 1):**
-
-- Teile 1–4 practice sessions with unlimited audio replay and shared/per-item players
-- Pre-generated seed audio (Kokoro German Martin) via `pnpm generate:listening-audio` / `scripts/tts/README.md`
-- In-app **Generate audio** when TTS is up; answers/playback locked until files exist
-- Optional AI listening generation (transcripts); audio remains a separate generation step
-
-**Speaking (Teil 1–2 iteration complete — Teil 3 next):**
-
-Complete Goethe A2 `Sprechen` so offline practice works without AI, with optional STT and review when keys/services are available. See `german-exam-A2.md` (Speaking) for exam rules (4 + 8 + 8 + 5 pronunciation = 25, no ×1.25).
-
-Ordered plan:
-
-1. **Done: harden Teil 1–2 offline practice** — part-specific two-recording
-   Teil 1 and monologue Teil 2 UX, editable/manual transcripts, and local attempts
-   with no dependency on AI.
-2. **Done: wire real AI review** — speaking review endpoint + composable,
-   criteria points stored with successful Teil 1–2 reviews, and save-without-AI.
-3. **Done: STT pipeline (graceful degrade)** — provider-selected local Parakeet
-   via Handy Q8 GGUF + `transcribe.cpp`, or OpenAI Whisper, with health UI and
-   manual transcript fallback.
-4. **Done for solo iteration: Teil 1 ask/answer structure** — separate answer and
-   question recordings suitable for joint review. A live/turn-based partner can
-   come later.
-5. **Next: Teil 3 joint planning** — `userSchedule` / `aiSchedule` with guaranteed overlap, propose/decline/agree UI, review of full dialogue log.
-6. **Pending: optional TTS partner + pronunciation score** — reuse listening TTS stack for partner lines; separate 0–5 Aussprache when AI is available.
-7. **Done (provisional): mock-exam speaking module** — 15-minute module timer and Teil 1–2 AI grading up to 12 direct points. The full 25-point total still depends on Teil 3 and pronunciation.
-
-**Teil 1–2 iteration exit criteria: met.** Steps 1–4 deliver usable scored solo practice offline with optional STT and AI. Full Goethe A2 Speaking coverage still requires Teil 3 (step 5); steps 6–7 add pronunciation/partner polish and mock-exam integration.
+- Reading provides exam-style content, scored questions, explanations, progress, and optional generation.
+- Writing provides drafts, word-count rules, optional automatic AI grading, detailed feedback, and persisted results.
+- Listening provides all four exam parts, stable seed audio, official replay behavior in mock exams, and optional Docker TTS generation.
+- Speaking provides recording, provider-neutral local/cloud STT, editable/manual transcripts, automatic optional AI grading, detailed feedback, and persisted attempts.
+- Every core skill remains usable without a cloud AI provider; optional enhancements fail gracefully.
 
 #### 1.2 Mock exam mode
 
-**Done (iteration 1):** Goethe A2 Set 1 ships as a local-first, single-attempt simulation. Each module has a reload-safe countdown (Reading 30, Listening 30, Writing 30, Speaking 15 minutes), exercises unlock in order, submitted exercises and completed modules lock, and expiry locks the current module with its saved answer snapshot. Reading and Listening are scored automatically with the official ×1.25 conversion. Writing and Speaking use optional AI grading and remain retryably pending when AI is unavailable.
+**Complete and tested:** Goethe A2 Set 1 ships as a local-first simulation with reload-safe timers, ordered and locked exercises, immutable answer snapshots, and module scoring. It remains usable without an LLM or TTS service.
 
-**Done (iteration 2):** Set 1 remains the offline-ready fallback. Users can generate additional immutable sets after a preflight confirms the LLM key, provider connection, and Docker TTS health. Reading, Listening (content plus audio), Writing, and Speaking run serially in a persisted pipeline that resumes from failures. Finished attempts expose read-only exercise review pages and an optional aggregate AI overview in the active UI language.
+Users can generate additional immutable sets after preflight verifies the LLM configuration, provider connection, and Docker TTS health. Reading, Listening content/audio, Writing, and Speaking run serially through a persisted, resumable pipeline with expandable module progress. Completed attempts provide automatic scores, read-only exercise review pages, persisted Writing/Speaking AI review details, and an optional aggregate AI overview in the active UI language.
 
-Speaking results are explicitly provisional: the mock currently covers Teil 1–2 for 12 direct points. Teil 3 and the separate 5-point pronunciation score remain in §1.1; until those ship, the overall result is labeled provisional and still displayed on the full 100-point exam scale.
-
-#### 1.3 Goethe C1 writing (partial)
-
-Writing practice plus review/generation prompt templates only. No full C1 Reading, Listening, Speaking, or C1 mock exam in this phase.
-
-#### 1.4 Demo prompt templates + BYOK AI
+#### 1.3 Demo prompt templates + BYOK AI
 
 Bundled editable prompt templates for generate / review / grade. Supported providers: **OpenAI** and **OpenRouter**. Graceful degrade when keys are missing or upstream AI fails. Root `.env` is loaded by Nest (`../../.env`) and by Nuxt via `--dotenv ../../.env`.
 
-#### 1.5 Polish / ship gate
+#### 1.4 Polish / ship gate
 
 i18n, settings, and progress UX solid enough that Phase 2 can freeze the product surface and migrate persistence without redesigning core practice flows.
 
-**Exit criteria:** Goethe A2 all skills + mock exam, Goethe C1 writing, and BYOK AI work end-to-end in the frontend-only architecture.
+**Exit criteria: met.** German / Goethe A2 Reading, Writing, Listening, Speaking, mock exam mode, local persistence, and optional BYOK AI work end-to-end in the frontend-only architecture. Phase 1 is complete.
 
 ---
 
-## Phase 2: Self-Hostable Full-Stack App (localhost first)
+## Phase 2: Self-Hostable Full-Stack App (current)
 
 Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). Like Postiz / n8n, a self-hosted instance supports signing up a single operator who then uses the app. AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
 
@@ -180,7 +145,7 @@ Managed accounts, cloud sync across devices, and paid plans.
 
 #### 4.2 Exam expansion
 
-More Goethe levels beyond A2 and C1-writing; additional language certifications and difficulty levels via the generic framework.
+More Goethe levels beyond A2, plus additional language certifications and difficulty levels via the generic framework.
 
 #### 4.3 Collaboration features
 

@@ -1,25 +1,26 @@
 # Exam.one 🎓
 
-> Open-source, self-hostable language exam prep. Phase 1 shipping focus: German / Goethe A2 (all skills) + Goethe C1 Writing.
+> Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking.
 
 Design preview: `npx --yes serve exam-one-design/project -l 5174`
 
-## Current status (Phase 1)
+## Current status
 
 Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
 
 | Area | Status |
 |------|--------|
-| Reading (Lesen) | Done (iteration 1) |
-| Writing (Schreiben) | Done (iteration 1) |
-| Listening (Hoeren) | Done (iteration 1) — 4 Teile, file-based Kokoro audio, missing-audio lock UX |
-| Speaking (Sprechen) | **In progress** — Teil 1–2 recording, STT/manual transcripts, AI review; Teil 3 still open |
-| Mock exam | Goethe A2 iteration 2: offline Set 1 + generated local sets and result review |
+| Phase 1 frontend MVP | **Complete and tested** |
+| Reading (Lesen) | Complete — practice, scoring, explanations, progress, and optional generation |
+| Writing (Schreiben) | Complete — drafts, submissions, optional AI grading, and detailed review |
+| Listening (Hoeren) | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS |
+| Speaking (Sprechen) | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review |
+| Mock exam | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
 | Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
 
-**Next implementation focus:** Speaking — implement Teil 3 joint planning, then pronunciation and mock-exam integration (see roadmap §1.1).
+**Current implementation focus:** Phase 2 persistence and self-hosting work. See the roadmap for the NestJS/PostgreSQL cutover plan.
 
 ## ✨ Features
 
@@ -52,11 +53,11 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **On-demand TTS**: Generate missing audio when Kokoro is up (`pnpm tts:up` + Generate audio)
 - **Optional AI**: Transcript generation separate from audio generation
 
-### 🎤 Speaking Practice (in progress)
-- **Teil 1–2 practice**: Two-phase interview and monologue recording with editable transcripts
+### 🎤 Speaking Practice
+- **Exam-oriented speaking sessions**: Structured interview/question and monologue recording with editable transcripts
 - **Optional STT**: Local Parakeet (`pnpm stt:up`) or OpenAI Whisper, with manual-text fallback
-- **Optional AI review**: Direct-point criteria and local attempt persistence; save-without-AI remains available
-- **Still open**: Teil 3 joint planning, pronunciation score, and mock-exam integration
+- **Optional AI review**: Direct-point criteria, explanations, strengths, improvements, and local attempt persistence
+- **Mock exam integration**: Automatic grading and persisted detailed review on completed attempts
 
 ### 📊 Progress Dashboard
 - **Comprehensive Statistics**: Completion rates, average scores, best scores
@@ -72,9 +73,9 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 ## 🏗️ Architecture
 
 ### Offline-First Core ✅
-Phase 1 core flows work without internet (localStorage):
-- Reading, writing, and listening practice
-- Speaking Teil 1–2 practice with manual transcripts and local attempt saving
+The completed Phase 1 core flows work without internet (localStorage):
+- Reading, writing, listening, and speaking practice
+- Goethe A2 mock exam Set 1
 - Progress tracking and statistics
 - Draft saving and resume functionality
 - Full navigation and UI
@@ -294,18 +295,18 @@ pnpm db:seed            # Seed the development database
 
 Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md) (source of truth). Summary:
 
-### Phase 1 — Frontend MVP (current)
+### Phase 1 — Frontend MVP (complete)
 
-- ✅ Reading / Writing practice (iteration 1)
-- ✅ Listening practice (iteration 1) + Kokoro TTS tooling
-- 🔄 **Speaking** — Teil 1–2 practice, STT, and AI review done; Teil 3 is next
-- ✅ Goethe A2 mock exam mode (offline Set 1, optional generated sets, per-module review, AI overview)
-- ⏳ Goethe C1 Writing (partial scope)
-- ✅ BYOK AI generate/review for shipped skills; DaisyUI shell / i18n / progress foundations
+- ✅ German / Goethe A2 Reading, Writing, Listening, and Speaking practice
+- ✅ Offline-first progress, drafts, attempts, scoring, and local persistence
+- ✅ Optional BYOK AI generation, grading, and detailed exercise reviews
+- ✅ Goethe A2 mock exam mode with offline Set 1 and locally generated sets
+- ✅ Persisted generation pipeline, automatic grading, per-module reviews, and aggregate AI overview
+- ✅ English/German UI, responsive layouts, and graceful offline/AI-unavailable behavior
 
 ### Later phases
 
-- Phase 2: NestJS + PostgreSQL persistence cutover + Docker Compose self-host
+- **Current — Phase 2:** NestJS + PostgreSQL persistence cutover + Docker Compose self-host
 - Phase 3: Public open-source release + docs site
 - Phase 4: Hosted cloud product
 
@@ -344,10 +345,11 @@ Contributions are welcome! Please follow these guidelines:
 - **Commit format**: Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`)
 - **Pre-commit hooks**: Automatic linting and formatting via Husky
 
-### Testing (Coming in Stage 18)
-- Unit tests for composables and utilities (Vitest)
-- Component tests for key user flows (Vue Test Utils)
-- E2E tests for critical journeys (Playwright)
+### Quality Checks
+- Repository-wide lint and strict TypeScript checks
+- Production builds for all workspace applications and libraries
+- Manual end-to-end checks of the completed German / Goethe A2 practice and mock-exam flows
+- Backend health endpoint E2E coverage for the Phase 2 scaffold
 
 ## 📚 Documentation
 
@@ -363,13 +365,13 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 ## 🎯 Roadmap
 
 ### Current Focus
-Project is in **post-MVP planning phase**. Core reading and writing features are complete and polished.
+Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack cutover** while preserving the finished German / Goethe A2 product behavior.
 
 ### Next Steps (In Priority Order)
-1. **Testing Infrastructure** - Set up Vitest for automated testing
-2. **PWA Enhancement** - Add service worker for better offline experience
-3. **Content Expansion** - Create B1 and B2 level materials
-4. **Advanced Analytics** - Add performance trends and visualizations
+1. **Persistence Cutover** - Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
+2. **Account Flows** - Connect authentication, profile, and settings to the backend
+3. **AI API Migration** - Move provider adapters from temporary Nuxt routes to NestJS
+4. **Self-Host Runbook** - Complete single-command Docker Compose setup and backup/restore documentation
 
 ## 📝 License
 

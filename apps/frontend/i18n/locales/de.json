@@ -411,7 +411,6 @@
     "finishAll": "Sperre alle vier Module, um das Ergebnis anzusehen.",
     "viewResults": "Ergebnis ansehen",
     "close": "Schließen",
-    "generatedOn": "Erstellt am {date}",
     "deleteSet": "Generierten Satz löschen",
     "deleteSetConfirm": "{title}, den gespeicherten Versuch und die lokal generierten Inhalte löschen?",
     "generateMockSet": "Modellprüfung generieren",

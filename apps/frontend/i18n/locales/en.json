@@ -411,7 +411,6 @@
     "finishAll": "Lock all four modules to view the result.",
     "viewResults": "View results",
     "close": "Close",
-    "generatedOn": "Generated {date}",
     "deleteSet": "Delete generated set",
     "deleteSetConfirm": "Delete {title}, its saved attempt, and locally generated content?",
     "generateMockSet": "Generate mock exam set",
