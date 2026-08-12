@@ -38,12 +38,6 @@ html, body {
   background-image: radial-gradient(color-mix(in oklab, var(--color-base-content) 12%, transparent) 1px, transparent 1px);
   background-size: 14px 14px;
 }
-.grid-pattern {
-  background-image:
-    linear-gradient(color-mix(in oklab, var(--color-base-content) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--color-base-content) 5%, transparent) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
 .stripe-bg {
   background-image: repeating-linear-gradient(135deg,
     color-mix(in oklab, var(--color-primary) 8%, transparent) 0 10px,
@@ -172,34 +166,3 @@ html, body {
 
 /* ─── Selection color ─── */
 ::selection { background: color-mix(in oklab, var(--color-primary) 30%, transparent); }
-
-/* ─── Landing utilities ─── */
-.hero-noise {
-  background-image: radial-gradient(color-mix(in oklab, #ffffff 6%, transparent) 1px, transparent 1px);
-  background-size: 18px 18px;
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity .6s cubic-bezier(0,0,.2,1), transform .6s cubic-bezier(0,0,.2,1);
-}
-.reveal.in {
-  opacity: 1;
-  transform: none;
-}
-
-mark.fb-good {
-  background: color-mix(in oklab, var(--color-success) 24%, transparent);
-  color: inherit;
-  border-radius: 3px;
-  padding: 0 2px;
-}
-mark.fb-bad {
-  background: color-mix(in oklab, var(--color-error) 22%, transparent);
-  color: inherit;
-  border-radius: 3px;
-  padding: 0 2px;
-  text-decoration: underline wavy color-mix(in oklab, var(--color-error) 60%, transparent);
-  text-underline-offset: 3px;
-}

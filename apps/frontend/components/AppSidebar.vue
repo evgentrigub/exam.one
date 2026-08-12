@@ -1,12 +1,18 @@
 <template>
   <aside class="w-60 shrink-0 h-full flex flex-col bg-base-100 border-r border-base-300 overflow-y-auto">
     <!-- Logo -->
-    <div class="flex items-center gap-2.5 px-4 h-14 shrink-0 border-b border-base-300">
+    <a
+      :href="landingUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Open the Exam.one landing page"
+      class="flex items-center gap-2.5 px-4 h-14 shrink-0 border-b border-base-300 transition-colors hover:bg-base-200"
+    >
       <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
         <span class="text-primary-content font-bold text-sm font-display">E</span>
       </div>
       <span class="font-display text-base font-semibold tracking-tight">Exam.one</span>
-    </div>
+    </a>
 
     <!-- Main nav -->
     <nav class="flex flex-col gap-0.5 px-2 pt-3 pb-1">
@@ -160,8 +166,15 @@ import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 
 const route = useRoute()
 const router = useRouter()
+const runtimeConfig = useRuntimeConfig()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+
+const landingUrl = computed(() => {
+  const configuredUrl = String(runtimeConfig.public.frontendLandingUrl || '').trim()
+  if (/^https?:\/\//i.test(configuredUrl)) return configuredUrl
+  return `http://${configuredUrl || 'localhost:3001'}`
+})
 
 function selectLevel(level: 'A2' | 'C1') {
   examLevel.value = level
