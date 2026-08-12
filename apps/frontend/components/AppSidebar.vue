@@ -48,14 +48,14 @@
         <TrendingUp :size="16" />
         {{ $t('nav.progress') }}
       </NuxtLink>
-      <!-- Mock exams deferred to a later milestone -->
-      <span
-        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium opacity-40 cursor-not-allowed"
-        :title="$t('shell.comingSoon')"
+      <NuxtLink
+        to="/mock-exam"
+        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
+        :class="isActive('/mock-exam') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <FileText :size="16" />
         {{ $t('nav.mockExams') }}
-      </span>
+      </NuxtLink>
     </nav>
 
     <!-- Practice by skill -->
@@ -200,7 +200,7 @@ const listeningCount = computed(() => isClient.value ? getListening().length : 0
 const speakingCount = computed(() => isClient.value ? getSpeaking().filter(t => t.difficulty === examLevel.value).length : 0)
 
 function isActive(path: string) {
-  return route.path === path
+  return route.path === path || route.path.startsWith(`${path}/`)
 }
 
 function isSkillActive(skill: string) {

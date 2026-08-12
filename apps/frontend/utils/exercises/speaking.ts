@@ -10,6 +10,8 @@ export interface SpeakingTopicBase {
   id: string
   difficulty: SpeakingDifficulty
   createdAt: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 /** Teil 1: practice-adapted contact interview with explicit answer/ask questions. */
@@ -54,8 +56,8 @@ export interface SpeakingReviewData {
   teil: SpeakingA2Part
   totalPoints: number
   maxPoints: 4 | 8
-  criteria: SpeakingReviewCriterion[]
-  strengths: string[]
-  improvements: string[]
+  criteria: readonly SpeakingReviewCriterion[]
+  strengths: readonly string[]
+  improvements: readonly string[]
   summary: string
 }

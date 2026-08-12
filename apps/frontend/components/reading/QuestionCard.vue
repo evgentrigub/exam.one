@@ -21,8 +21,8 @@
           class="w-5 h-5 rounded-full border grid place-items-center text-[10px] font-mono shrink-0"
           :class="getLetterPillClass(i)"
         >
-          <Check v-if="submitted && i === question.correctAnswer" :size="10" />
-          <X v-else-if="submitted && selectedAnswer === i && i !== question.correctAnswer" :size="10" />
+          <Check v-if="submitted && showFeedback && i === question.correctAnswer" :size="10" />
+          <X v-else-if="submitted && showFeedback && selectedAnswer === i && i !== question.correctAnswer" :size="10" />
           <span v-else class="opacity-70">{{ String.fromCharCode(65 + i) }}</span>
         </span>
         <span class="text-sm flex-1 leading-snug">{{ option }}</span>
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Inline feedback -->
-    <div v-if="submitted" class="mt-3 text-xs flex items-start gap-1.5">
+    <div v-if="submitted && showFeedback" class="mt-3 text-xs flex items-start gap-1.5">
       <span :class="isCorrect ? 'text-success' : 'text-error'">
         {{ isCorrect ? 'Correct!' : `Correct answer: ${String.fromCharCode(65 + question.correctAnswer)}` }}
       </span>
@@ -48,9 +48,10 @@ interface Props {
   questionNumber: number
   selectedAnswer: number | null
   submitted: boolean
+  showFeedback?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { showFeedback: true })
 
 const emit = defineEmits<{
   answerSelected: [questionId: string, selectedAnswer: number]
@@ -64,10 +65,10 @@ function selectAnswer(index: number) {
 }
 
 function getOptionClass(index: number) {
-  if (props.submitted && index === props.question.correctAnswer) {
+  if (props.submitted && props.showFeedback && index === props.question.correctAnswer) {
     return 'border-success bg-success/5'
   }
-  if (props.submitted && props.selectedAnswer === index && index !== props.question.correctAnswer) {
+  if (props.submitted && props.showFeedback && props.selectedAnswer === index && index !== props.question.correctAnswer) {
     return 'border-error bg-error/5'
   }
   if (props.selectedAnswer === index) {
@@ -77,8 +78,8 @@ function getOptionClass(index: number) {
 }
 
 function getLetterPillClass(index: number) {
-  if (props.submitted && index === props.question.correctAnswer) return 'border-success bg-success text-success-content'
-  if (props.submitted && props.selectedAnswer === index && index !== props.question.correctAnswer) return 'border-error bg-error text-error-content'
+  if (props.submitted && props.showFeedback && index === props.question.correctAnswer) return 'border-success bg-success text-success-content'
+  if (props.submitted && props.showFeedback && props.selectedAnswer === index && index !== props.question.correctAnswer) return 'border-error bg-error text-error-content'
   if (props.selectedAnswer === index) return 'border-primary bg-primary text-primary-content'
   return 'border-base-300 bg-base-100'
 }

@@ -294,3 +294,26 @@ f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Par
     ]
   }
 ]
+
+/** Dedicated Set 1 content. Kept out of practice lists via `examOnly`. */
+export const mockExamReadingTopics: ReadingA2Exercise[] = defaultReadingTopics.map(
+  (exercise): ReadingA2Exercise => {
+    const id = `mock-a2-set1-reading-teil${exercise.testingPart}`
+    return {
+      ...exercise,
+      id,
+      title: `Modellprüfung Set 1 · ${exercise.title}`,
+      examOnly: true,
+      questions: exercise.questions.map((question, index) => ({
+        ...question,
+        id: `${id}-q${index + 1}`,
+        textId: id,
+      })),
+    } as ReadingA2Exercise
+  },
+)
+
+export const allDefaultReadingTopics: ReadingA2Exercise[] = [
+  ...defaultReadingTopics,
+  ...mockExamReadingTopics,
+]

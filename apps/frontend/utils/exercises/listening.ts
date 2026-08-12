@@ -36,6 +36,8 @@ export interface ListeningExerciseBase {
   testingPart: ListeningA2Part
   difficulty: ListeningDifficulty
   createdAt?: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
   audio?: ListeningExerciseAudioMap | undefined
 }
 

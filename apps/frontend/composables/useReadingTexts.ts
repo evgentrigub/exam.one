@@ -4,10 +4,11 @@
  * Integrates with existing germanTexts and supports AI generation
  */
 
-import { defaultReadingTopics } from '~/data/reading/exerciseReading'
+import { allDefaultReadingTopics } from '~/data/reading/exerciseReading'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 
-const STORAGE_KEY = 'exame-one-reading-texts'
+const STORAGE_KEY = 'exam-one:reading:texts'
+const LEGACY_STORAGE_KEY = 'exame-one-reading-texts'
 
 // Shared state (singleton pattern)
 const texts = ref<ReadingExercise[]>([])
@@ -22,17 +23,17 @@ export const useReadingTexts = () => {
     if (isInitialized.value || import.meta.server) return
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      const stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY)
       
       if (stored) {
         const storedTexts = JSON.parse(stored)
         // Merge stored texts with defaults, avoiding duplicates
-        const defaultIds = new Set(defaultReadingTopics.map(t => t.id))
+        const defaultIds = new Set(allDefaultReadingTopics.map(t => t.id))
         const uniqueStoredTexts = storedTexts.filter((t: ReadingExercise) => !defaultIds.has(t.id))
-        texts.value = [...defaultReadingTopics, ...uniqueStoredTexts]
+        texts.value = [...allDefaultReadingTopics, ...uniqueStoredTexts]
       } else {
         // First time: seed with default texts
-        texts.value = [...defaultReadingTopics]
+        texts.value = [...allDefaultReadingTopics]
         saveToStorage()
       }
       
@@ -40,7 +41,7 @@ export const useReadingTexts = () => {
     } catch (error) {
       console.error('Failed to load reading texts from localStorage:', error)
       // Fallback to default texts
-      texts.value = [...defaultReadingTopics]
+      texts.value = [...allDefaultReadingTopics]
       isInitialized.value = true
     }
   }
@@ -53,7 +54,7 @@ export const useReadingTexts = () => {
 
     try {
       // Only save non-default texts to localStorage
-      const defaultIds = new Set(defaultReadingTopics.map(t => t.id))
+      const defaultIds = new Set(allDefaultReadingTopics.map(t => t.id))
       const textsToSave = texts.value.filter(t => !defaultIds.has(t.id))
       localStorage.setItem(STORAGE_KEY, JSON.stringify(textsToSave))
     } catch (error) {
@@ -65,7 +66,7 @@ export const useReadingTexts = () => {
    * Get all texts
    */
   const getTexts = (): ReadingExercise[] => {
-    return texts.value
+    return texts.value.filter(text => !text.examOnly)
   }
 
   /**
@@ -80,7 +81,7 @@ export const useReadingTexts = () => {
    */
   const deleteText = (id: string): boolean => {
     // Prevent deletion of default texts
-    const isDefaultText = defaultReadingTopics.some(t => t.id === id)
+    const isDefaultText = allDefaultReadingTopics.some(t => t.id === id)
     if (isDefaultText) {
       console.warn('Cannot delete default text')
       return false
@@ -138,7 +139,7 @@ export const useReadingTexts = () => {
    * Reset to default texts (useful for testing or reset feature)
    */
   const resetToDefaults = (): void => {
-    texts.value = [...defaultReadingTopics]
+    texts.value = [...allDefaultReadingTopics]
     if (import.meta.client) {
       localStorage.removeItem(STORAGE_KEY)
     }
@@ -148,7 +149,7 @@ export const useReadingTexts = () => {
    * Get texts count
    */
   const getTextsCount = (): number => {
-    return texts.value.length
+    return getTexts().length
   }
 
   // Initialize immediately if on client and not initialized
@@ -158,7 +159,7 @@ export const useReadingTexts = () => {
 
   return {
     // State
-    texts: readonly(texts),
+    texts: computed(() => texts.value.filter(text => !text.examOnly)),
     isInitialized: readonly(isInitialized),
 
     // Methods

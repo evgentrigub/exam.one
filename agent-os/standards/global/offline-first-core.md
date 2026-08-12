@@ -12,7 +12,7 @@ AI is an enhancement layer (exercise generation, review, grading), never a hard 
 
 Every core practice flow must work with **zero network**: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. User/exam data lives in localStorage. Do not introduce a required backend or database for core flows in Phase 1.
 
-**Goethe A2 skill progress:** Reading / Writing / Listening are practice-ready. Speaking Teil 1–2 is practice-ready with offline manual transcripts and optional STT/AI; **Teil 3 joint planning is the next implementation focus** (see `agent-os/product/roadmap.md`). Pronunciation and mock-exam integration follow.
+**Goethe A2 skill progress:** Reading / Writing / Listening are practice-ready. Speaking Teil 1–2 is practice-ready with offline manual transcripts and optional STT/AI; **Teil 3 joint planning is the next implementation focus** (see `agent-os/product/roadmap.md`). Mock-exam Set 1 is shipped with provisional Teil 1–2 Speaking scoring; pronunciation and full Speaking scoring follow.
 
 ### Phase 2 onward — local self-hosted stack
 
