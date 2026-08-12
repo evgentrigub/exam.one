@@ -41,7 +41,7 @@ Time limit: 30 minutes. The module has four parts and 20 questions total.
 
 ## Listening: Hoeren
 
-> **Implementation status (Phase 1):** **Complete (iteration 1)** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX, plus timed Set 1 mock-exam integration with official replay limits.
+> **Implementation status (Phase 1):** **Complete (iteration 2)** — Teile 1–4 practice, seed/on-demand audio, missing-audio lock UX, timed offline Set 1 integration, and locally generated mock sets with Docker TTS audio and official replay limits.
 
 Time limit: 30 minutes. The module has four parts and 20 questions total.
 
@@ -140,5 +140,7 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 - Keep reusable data structures exam-agnostic where possible, then map Goethe A2 specifics through exam IDs, module metadata, task definitions, and prompt templates.
 - AI generation and review prompts must encode the trap rules above, not just the surface task format.
 - Mock exam mode should use the module time limits and scoring rules in this document.
+- Keep bundled Set 1 available without AI. Additional mock sets may be generated locally only after LLM and TTS readiness checks; store each completed set as an immutable content snapshot so result reviews remain stable.
+- Completed attempts may request a concise provider-agnostic aggregate AI overview. This review is optional and must not block access to scores or per-module exercise details.
 - **Phase 1:** core practice is offline-capable without AI (localStorage). AI-generated variants are optional enhancements and must degrade gracefully when AI is unavailable.
 - **Phase 2 onward:** core attempts, drafts, and results live in PostgreSQL via the NestJS API on the local Docker Compose stack; AI remains optional.

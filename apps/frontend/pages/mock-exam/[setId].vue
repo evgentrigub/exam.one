@@ -30,7 +30,15 @@
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">
-      <article v-for="definition in set.modules" :key="definition.skill" class="card border border-base-300 bg-base-100 ring-soft">
+      <article
+        v-for="definition in set.modules"
+        :key="definition.skill"
+        class="card cursor-pointer border border-base-300 bg-base-100 ring-soft transition-colors hover:border-primary/50"
+        role="link"
+        tabindex="0"
+        @click="openModuleReview(definition.skill)"
+        @keydown.enter="openModuleReview(definition.skill)"
+      >
         <div class="card-body gap-3 p-5">
           <div class="flex items-center gap-3">
             <div class="grid h-10 w-10 place-items-center rounded-field" :class="moduleIconClass(definition.skill)">
@@ -43,6 +51,7 @@
             <div class="ml-auto font-mono text-lg font-bold">
               {{ scoreLabel(definition.skill) }}
             </div>
+            <ChevronRight :size="20" class="text-base-content/35" />
           </div>
           <progress
             class="progress h-2 w-full"
@@ -55,7 +64,7 @@
             type="button"
             class="btn btn-outline btn-sm gap-2"
             :disabled="gradingSkill === definition.skill"
-            @click="retryGrading(definition.skill)"
+            @click.stop="retryGrading(definition.skill)"
           >
             <span v-if="gradingSkill === definition.skill" class="loading loading-spinner loading-xs" />
             <Sparkles v-else :size="14" />
@@ -64,6 +73,75 @@
         </div>
       </article>
     </div>
+
+    <details class="collapse-arrow collapse border border-base-300 bg-base-100" :open="overviewExpanded" @toggle="handleOverviewToggle">
+      <summary class="collapse-title flex items-center gap-3 pr-12">
+        <span class="grid h-9 w-9 place-items-center rounded-field bg-primary/10 text-primary">
+          <Sparkles :size="20" />
+        </span>
+        <span>
+          <span class="block font-semibold">{{ $t('mockExam.aiOverviewTitle') }}</span>
+          <span class="block text-xs font-normal text-base-content/50">{{ $t('mockExam.aiOverviewDescription') }}</span>
+        </span>
+      </summary>
+      <div class="collapse-content">
+        <div v-if="state.aiOverview.status === 'idle'" class="rounded-box bg-base-200/50 p-5 text-center">
+          <p class="text-sm text-base-content/60">{{ $t('mockExam.aiOverviewEmpty') }}</p>
+          <button class="btn btn-primary btn-sm mt-4" @click="generateOverview">
+            <Sparkles :size="16" />
+            {{ $t('mockExam.generateAiOverview') }}
+          </button>
+        </div>
+
+        <div v-else-if="state.aiOverview.status === 'loading'" class="flex items-center justify-center gap-3 rounded-box bg-base-200/50 p-8 text-sm">
+          <span class="loading loading-spinner loading-md text-primary" />
+          {{ $t('mockExam.generatingAiOverview') }}
+        </div>
+
+        <div v-else-if="state.aiOverview.status === 'error'" class="alert border border-error/30 bg-error/10">
+          <CircleAlert :size="20" class="text-error" />
+          <div class="min-w-0 flex-1">
+            <div class="font-medium">{{ $t('mockExam.aiOverviewFailed') }}</div>
+            <div class="text-xs">{{ state.aiOverview.error }}</div>
+          </div>
+          <button class="btn btn-error btn-outline btn-sm" @click="generateOverview">{{ $t('mockExam.tryAgain') }}</button>
+        </div>
+
+        <div v-else-if="state.aiOverview.data" class="space-y-5">
+          <p class="leading-7">{{ state.aiOverview.data.summary }}</p>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <section class="rounded-box border border-success/30 bg-success/5 p-4">
+              <h3 class="flex items-center gap-2 font-semibold text-success">
+                <CircleCheck :size="20" />
+                {{ $t('mockExam.strengths') }}
+              </h3>
+              <ul class="mt-3 space-y-2 text-sm">
+                <li v-for="item in state.aiOverview.data.strengths" :key="`${item.skill}-${item.text}`">
+                  <span class="font-semibold">{{ $t(`skill.${item.skill}`) }}:</span> {{ item.text }}
+                </li>
+              </ul>
+            </section>
+            <section class="rounded-box border border-warning/30 bg-warning/5 p-4">
+              <h3 class="flex items-center gap-2 font-semibold text-warning">
+                <TrendingUp :size="20" />
+                {{ $t('mockExam.focusAreas') }}
+              </h3>
+              <ul class="mt-3 space-y-2 text-sm">
+                <li v-for="item in state.aiOverview.data.focusAreas" :key="`${item.skill}-${item.text}`">
+                  <span class="font-semibold">{{ $t(`skill.${item.skill}`) }}:</span> {{ item.text }}
+                </li>
+              </ul>
+            </section>
+          </div>
+          <section>
+            <h3 class="font-semibold">{{ $t('mockExam.nextSteps') }}</h3>
+            <ol class="mt-2 list-decimal space-y-1 pl-5 text-sm">
+              <li v-for="step in state.aiOverview.data.nextSteps" :key="step">{{ step }}</li>
+            </ol>
+          </section>
+        </div>
+      </div>
+    </details>
 
     <div class="flex flex-wrap justify-between gap-3">
       <NuxtLink to="/mock-exam" class="btn btn-ghost btn-sm gap-2"><ArrowLeft :size="14" /> {{ $t('mockExam.backToList') }}</NuxtLink>
@@ -258,6 +336,9 @@ import {
   ArrowRight,
   BookOpen,
   Check,
+  ChevronRight,
+  CircleAlert,
+  CircleCheck,
   Clock,
   Headphones,
   Info,
@@ -267,6 +348,7 @@ import {
   Play,
   RotateCcw,
   Sparkles,
+  TrendingUp,
   Trophy,
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
@@ -275,12 +357,9 @@ import ListeningSession from '~/components/listening/ListeningSession.vue'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
-import { mockExamReadingTopics } from '~/data/reading/exerciseReading'
-import { mockExamListeningTopics } from '~/data/listening/exerciseListening'
-import { mockExamWritingTopics } from '~/data/writing/exerciseWriting'
-import { mockExamSpeakingTopics } from '~/data/speaking/exerciseSpeaking'
-import { getMockExamSet, goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
+import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
 import type { MockExamExerciseDefinition, MockExamModuleDefinition } from '~/data/mockExam/goetheA2'
+import type { MockExamOverview, MockExamOverviewInput } from '~/data/mockExam/reviewMockExamA2'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
 import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
@@ -292,14 +371,15 @@ import type { SkillId } from '~/utils/labels'
 type ViewName = 'overview' | 'part' | 'exercise' | 'result'
 
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const requestedSetId = String(route.params['setId'] || '')
-const foundSet = getMockExamSet(requestedSetId)
-const set = foundSet ?? goetheA2MockExamSet1
-const validSet = Boolean(foundSet)
+const { getSet, isInitialized: setsInitialized } = useMockExamSets()
+const foundSet = computed(() => getSet(requestedSetId))
+const set = computed(() => foundSet.value ?? goetheA2MockExamSet1)
+const validSet = computed(() => Boolean(foundSet.value) || !setsInitialized.value)
 
 usePageMeta('Mock exam', 'Timed Goethe A2 simulation')
-useHead({ title: computed(() => `${set.title} – Mock exam`) })
+useHead({ title: computed(() => `${set.value.title} – Mock exam`) })
 
 const {
   state,
@@ -316,6 +396,9 @@ const {
   finishExam,
   resetExam,
   remainingSeconds,
+  startOverview,
+  completeOverview,
+  failOverview,
 } = useMockExam(set)
 
 const view = ref<ViewName>('overview')
@@ -324,10 +407,11 @@ const activeIndex = ref(0)
 const nowTick = ref(Date.now())
 const notice = ref('')
 const gradingSkill = ref<'writing' | 'speaking' | null>(null)
+const overviewExpanded = ref(true)
 let timerHandle: ReturnType<typeof setInterval> | null = null
 
 const activeModule = computed<MockExamModuleDefinition | null>(() =>
-  set.modules.find(module => module.skill === activeSkill.value) ?? null,
+  set.value.modules.find(module => module.skill === activeSkill.value) ?? null,
 )
 const activeModuleState = computed(() => activeSkill.value ? state.value.modules[activeSkill.value] : null)
 const activeDone = computed(() => activeModuleState.value?.done ?? [])
@@ -344,7 +428,7 @@ const remaining = computed(() => {
   return activeSkill.value ? remainingSeconds(activeSkill.value) : 0
 })
 const doneCount = computed(() => activeModuleState.value?.done.filter(Boolean).length ?? 0)
-const lockedCount = computed(() => set.modules.filter(module => state.value.modules[module.skill].locked).length)
+const lockedCount = computed(() => set.value.modules.filter(module => state.value.modules[module.skill].locked).length)
 const roundedOverall = computed(() => Math.round(overallPoints.value))
 const resultBannerClass = computed(() =>
   roundedOverall.value >= 60
@@ -353,16 +437,16 @@ const resultBannerClass = computed(() =>
 )
 
 const readingExercise = computed<ReadingExercise | undefined>(() =>
-  activeExercise.value ? mockExamReadingTopics.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
+  activeExercise.value ? set.value.content.reading.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
 )
 const listeningExercise = computed<ListeningA2Exercise | undefined>(() =>
-  activeExercise.value ? mockExamListeningTopics.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
+  activeExercise.value ? set.value.content.listening.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
 )
 const writingExercise = computed<WritingExercise | undefined>(() =>
-  activeExercise.value ? mockExamWritingTopics.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
+  activeExercise.value ? set.value.content.writing.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
 )
 const speakingExercise = computed<SpeakingA2Topic | undefined>(() =>
-  activeExercise.value ? mockExamSpeakingTopics.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
+  activeExercise.value ? set.value.content.speaking.find(exercise => exercise.id === activeExercise.value?.id) : undefined,
 )
 
 onMounted(() => {
@@ -374,6 +458,10 @@ onMounted(() => {
 })
 onUnmounted(() => {
   if (timerHandle) clearInterval(timerHandle)
+})
+
+watch(() => state.value.finished, (finished) => {
+  if (finished) view.value = 'result'
 })
 
 function moduleIcon(skill: SkillId): Component {
@@ -404,10 +492,63 @@ function moduleCardClass(skill: SkillId): string {
 }
 
 function scoreLabel(skill: SkillId): string {
-  const definition = set.modules.find(module => module.skill === skill)
+  const definition = set.value.modules.find(module => module.skill === skill)
   const score = state.value.modules[skill].scoreFinal
   if (!definition || score === null) return `—/${definition?.maxFinalPoints ?? 0}`
   return `${Number(score.toFixed(2))}/${definition.maxFinalPoints}`
+}
+
+function openModuleReview(skill: SkillId): void {
+  void navigateTo(`/mock-exam/review/${set.value.id}/${skill}`)
+}
+
+function handleOverviewToggle(event: Event): void {
+  overviewExpanded.value = (event.currentTarget as HTMLDetailsElement).open
+}
+
+function overviewInput(): MockExamOverviewInput {
+  return {
+    overallPoints: roundedOverall.value,
+    modules: set.value.modules.map(definition => ({
+      skill: definition.skill,
+      score: state.value.modules[definition.skill].scoreFinal,
+      maximum: definition.maxFinalPoints,
+      grading: state.value.modules[definition.skill].grading,
+      exercises: definition.exercises.map(exercise => {
+        const response = state.value.modules[definition.skill].responses[exercise.id]
+        return {
+          part: exercise.part,
+          score: response?.rawScore ?? response?.score ?? null,
+          total: response?.total ?? exercise.maxRawPoints,
+          ...(typeof response?.wordCount === 'number' ? { wordCount: response.wordCount } : {}),
+          ...(response?.content ? { content: response.content } : {}),
+          ...(response?.transcripts ? { transcripts: { ...response.transcripts } } : {}),
+        }
+      }),
+    })),
+  }
+}
+
+async function generateOverview(): Promise<void> {
+  if (state.value.aiOverview.status === 'loading') return
+  startOverview()
+  try {
+    const fetchApi = $fetch as unknown as (
+      url: string,
+      options?: { method?: string; body?: unknown },
+    ) => Promise<unknown>
+    const response = await fetchApi('/api/review-mock-exam', {
+      method: 'POST',
+      body: {
+        locale: locale.value === 'de' ? 'de' : 'en',
+        result: overviewInput(),
+      },
+    }) as unknown as { data: MockExamOverview | null; error: string | null }
+    if (response.error || !response.data) throw new Error(response.error || 'AI overview is unavailable.')
+    completeOverview(response.data)
+  } catch (error: unknown) {
+    failOverview(error instanceof Error ? error.message : 'AI overview is unavailable.')
+  }
 }
 
 function gradingLabel(skill: SkillId): string {
@@ -515,7 +656,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
   if (!response || typeof response.rawScore === 'number') return
 
   if (skill === 'writing') {
-    const topic = mockExamWritingTopics.find(item => item.id === exerciseId)
+    const topic = set.value.content.writing.find(item => item.id === exerciseId)
     if (!topic || !response.content?.trim()) return
     try {
       const prompt = topic.testingPart === 1
@@ -533,7 +674,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
     return
   }
 
-  const topic = mockExamSpeakingTopics.find(item => item.id === exerciseId)
+  const topic = set.value.content.speaking.find(item => item.id === exerciseId)
   if (!topic || !response.transcripts) return
   try {
     const review = await $fetch('/api/review-speaking', {
@@ -550,7 +691,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
 async function retryGrading(skill: 'writing' | 'speaking'): Promise<void> {
   gradingSkill.value = skill
   try {
-    const definition = set.modules.find(module => module.skill === skill)
+    const definition = set.value.modules.find(module => module.skill === skill)
     for (const exercise of definition?.exercises ?? []) await gradeResponse(skill, exercise.id)
   } finally {
     gradingSkill.value = null

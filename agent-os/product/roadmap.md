@@ -34,7 +34,7 @@ English / Cambridge and other providers are out of scope for Phase 1.
 | Writing | Done (iteration 1) | Seed + drafts + optional AI generate / review |
 | Listening | **Done (iteration 1)** | 4 Teile, MCQ scoring, seed WAVs + on-demand Kokoro TTS, missing-audio lock UX |
 | Speaking | **Done (Teil 1–2 iteration)** | Recording → STT/manual transcript → optional LLM review and local attempts shipped; Teil 3 and pronunciation remain |
-| Mock exam | **Done (iteration 1)** | Timed Set 1 with sequential locks, reload-safe module deadlines, offline auto-scoring, and retryable AI grading; Speaking is provisional (Teil 1–2, 12 pts) |
+| Mock exam | **Done (iteration 2)** | Offline Set 1 plus serial AI/TTS-generated local sets, reload-safe generation and attempts, exercise review pages, and on-demand aggregate AI overview; Speaking is provisional (Teil 1–2, 12 pts) |
 
 ### Substages
 
@@ -75,6 +75,8 @@ Ordered plan:
 #### 1.2 Mock exam mode
 
 **Done (iteration 1):** Goethe A2 Set 1 ships as a local-first, single-attempt simulation. Each module has a reload-safe countdown (Reading 30, Listening 30, Writing 30, Speaking 15 minutes), exercises unlock in order, submitted exercises and completed modules lock, and expiry locks the current module with its saved answer snapshot. Reading and Listening are scored automatically with the official ×1.25 conversion. Writing and Speaking use optional AI grading and remain retryably pending when AI is unavailable.
+
+**Done (iteration 2):** Set 1 remains the offline-ready fallback. Users can generate additional immutable sets after a preflight confirms the LLM key, provider connection, and Docker TTS health. Reading, Listening (content plus audio), Writing, and Speaking run serially in a persisted pipeline that resumes from failures. Finished attempts expose read-only exercise review pages and an optional aggregate AI overview in the active UI language.
 
 Speaking results are explicitly provisional: the mock currently covers Teil 1–2 for 12 direct points. Teil 3 and the separate 5-point pronunciation score remain in §1.1; until those ship, the overall result is labeled provisional and still displayed on the full 100-point exam scale.
 
