@@ -1,7 +1,8 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
 import type { MockExamOverview } from '~/data/mockExam/reviewMockExamA2'
-import type { SpeakingTranscripts } from '~/utils/exercises/speaking'
+import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
+import type { AiReviewDataA2 } from '~/utils/types'
 
 export type MockGradingStatus = 'auto' | 'pending' | 'done' | 'unavailable'
 
@@ -16,6 +17,8 @@ export interface MockExerciseResult {
   rawScore?: number | null
   grading?: MockGradingStatus
   error?: string | null
+  writingReview?: AiReviewDataA2
+  speakingReview?: SpeakingReviewData
 }
 
 export interface MockModuleState {
@@ -61,9 +64,8 @@ function blankModule(count: number, grading: MockGradingStatus): MockModuleState
 export function createBlankMockExamState(set: MockExamSet): MockExamState {
   const modules = {} as Record<SkillId, MockModuleState>
   for (const definition of set.modules) {
-    const grading = definition.skill === 'reading' || definition.skill === 'listening'
-      ? 'auto'
-      : 'pending'
+    const grading =
+      definition.skill === 'reading' || definition.skill === 'listening' ? 'auto' : 'pending'
     modules[definition.skill] = blankModule(definition.exercises.length, grading)
   }
   return {
@@ -136,7 +138,11 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   }
 
   const initialize = (force = false): void => {
-    if ((!force && isInitialized.value && initializedSetId.value === currentSet.value.id) || import.meta.server) return
+    if (
+      (!force && isInitialized.value && initializedSetId.value === currentSet.value.id) ||
+      import.meta.server
+    )
+      return
     try {
       const raw = localStorage.getItem(storageKey.value)
       if (raw) {
@@ -145,18 +151,22 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
         state.value = {
           ...blank,
           ...stored,
-          modules: Object.fromEntries(currentSet.value.modules.map(definition => {
-            const saved = stored.modules?.[definition.skill]
-            return [definition.skill, {
-              ...blank.modules[definition.skill],
-              ...saved,
-              done: Array.from(
-                { length: definition.exercises.length },
-                (_, index) => Boolean(saved?.done?.[index]),
-              ),
-              responses: saved?.responses ?? {},
-            }]
-          })) as Record<SkillId, MockModuleState>,
+          modules: Object.fromEntries(
+            currentSet.value.modules.map(definition => {
+              const saved = stored.modules?.[definition.skill]
+              return [
+                definition.skill,
+                {
+                  ...blank.modules[definition.skill],
+                  ...saved,
+                  done: Array.from({ length: definition.exercises.length }, (_, index) =>
+                    Boolean(saved?.done?.[index])
+                  ),
+                  responses: saved?.responses ?? {},
+                },
+              ]
+            })
+          ) as Record<SkillId, MockModuleState>,
           aiOverview: {
             ...blank.aiOverview,
             ...stored.aiOverview,
@@ -175,7 +185,11 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
 
     for (const definition of currentSet.value.modules) {
       const moduleState = state.value.modules[definition.skill]
-      if (!moduleState.locked && moduleState.endsAt && Date.parse(moduleState.endsAt) <= Date.now()) {
+      if (
+        !moduleState.locked &&
+        moduleState.endsAt &&
+        Date.parse(moduleState.endsAt) <= Date.now()
+      ) {
         expireModule(definition.skill)
       }
     }
@@ -200,7 +214,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   const saveExerciseProgress = (
     skill: SkillId,
     exerciseId: string,
-    result: Omit<MockExerciseResult, 'exerciseId'>,
+    result: Omit<MockExerciseResult, 'exerciseId'>
   ): void => {
     const moduleState = state.value.modules[skill]
     if (moduleState.locked) return
@@ -212,11 +226,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     persist()
   }
 
-  const completeExercise = (
-    skill: SkillId,
-    index: number,
-    result: MockExerciseResult,
-  ): void => {
+  const completeExercise = (skill: SkillId, index: number, result: MockExerciseResult): void => {
     const moduleState = state.value.modules[skill]
     if (moduleState.locked || index < 0 || index >= moduleState.done.length) return
     moduleState.responses[result.exerciseId] = result
@@ -230,6 +240,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     exerciseId: string,
     rawScore: number | null,
     error: string | null = null,
+    review: AiReviewDataA2 | SpeakingReviewData | null = null
   ): void => {
     const moduleState = state.value.modules[skill]
     const current = moduleState.responses[exerciseId]
@@ -239,6 +250,8 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
       rawScore,
       grading: rawScore === null ? 'pending' : 'done',
       error,
+      ...(skill === 'writing' && review ? { writingReview: review as AiReviewDataA2 } : {}),
+      ...(skill === 'speaking' && review ? { speakingReview: review as SpeakingReviewData } : {}),
     }
     calculateModuleScore(skill)
     persist()
@@ -319,30 +332,33 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   }
 
   const allLocked = computed(() =>
-    currentSet.value.modules.every(module => state.value.modules[module.skill].locked),
+    currentSet.value.modules.every(module => state.value.modules[module.skill].locked)
   )
   const doneExerciseCount = computed(() =>
     currentSet.value.modules.reduce(
       (sum, module) => sum + state.value.modules[module.skill].done.filter(Boolean).length,
-      0,
-    ),
+      0
+    )
   )
   const totalExerciseCount = computed(() =>
-    currentSet.value.modules.reduce((sum, module) => sum + module.exercises.length, 0),
+    currentSet.value.modules.reduce((sum, module) => sum + module.exercises.length, 0)
   )
   const overallPoints = computed(() =>
     currentSet.value.modules.reduce(
       (sum, module) => sum + (state.value.modules[module.skill].scoreFinal ?? 0),
-      0,
-    ),
+      0
+    )
   )
 
   if (import.meta.client && !isInitialized.value) {
     onMounted(() => initialize())
-    watch(() => currentSet.value.id, () => {
-      state.value = createBlankMockExamState(currentSet.value)
-      initialize(true)
-    })
+    watch(
+      () => currentSet.value.id,
+      () => {
+        state.value = createBlankMockExamState(currentSet.value)
+        initialize(true)
+      }
+    )
   }
 
   return {

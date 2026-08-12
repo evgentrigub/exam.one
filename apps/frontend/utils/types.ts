@@ -46,20 +46,19 @@ export interface WritingExercise {
   examOnly?: boolean
 }
 
-
-export type WritingTopicTypes = 
-| 'report'
-| 'review'
-| 'proposal'
-| 'article'
-| 'note'
-| 'form'
-| 'email'
-| 'letter'
-| 'essay'
-| 'postcard'
-| 'post'
-| string  // Allow any string to ensure all generated topics are saved
+export type WritingTopicTypes =
+  | 'report'
+  | 'review'
+  | 'proposal'
+  | 'article'
+  | 'note'
+  | 'form'
+  | 'email'
+  | 'letter'
+  | 'essay'
+  | 'postcard'
+  | 'post'
+  | string // Allow any string to ensure all generated topics are saved
 
 export interface WritingProgress {
   topicId: string
@@ -88,7 +87,7 @@ export interface WritingFeedbackModel {
   completenessScore: number // 1-5 scale
   suggestions: string[]
   overallScore: number // 1-5 scale
-} 
+}
 
 // --- AI Review Types ---
 export type TeilRuleApplied = 'none' | 'E_zero_rule' | 'wordcount_lt_50' | 'off_topic'
@@ -139,8 +138,8 @@ export interface AiReviewDataC1 {
   teil_points: number
   teil_rule_applied: TeilRuleApplied
   passed_module: boolean
-  priority_fixes: string[]
-  examples: AiReviewExampleItem[]
+  priority_fixes: readonly string[]
+  examples: readonly AiReviewExampleItem[]
   report: string
 }
 
@@ -155,8 +154,8 @@ export interface AiReviewDataA2 {
   teil_rule_applied: TeilRuleApplied
   register_check: RegisterCheck
   content_points_covered: ContentPointsCovered
-  priority_fixes: string[]
-  examples: AiReviewExampleItem[]
+  priority_fixes: readonly string[]
+  examples: readonly AiReviewExampleItem[]
   report: string
 }
 
@@ -177,7 +176,6 @@ export interface ModelAnswer {
     keyPhrases?: string[]
   }
 }
-
 
 // Union type for both A2 and C1 reviews
 export type AiReviewData = AiReviewDataC1 | AiReviewDataA2

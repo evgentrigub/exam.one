@@ -193,31 +193,8 @@
         </div>
 
         <template v-if="reviewData">
-          <div class="divide-y divide-base-200">
-            <div
-              v-for="criterion in reviewData.criteria"
-              :key="criterion.id"
-              class="flex items-start justify-between gap-4 p-4"
-            >
-              <div>
-                <p class="text-sm font-medium">{{ criterion.label }}</p>
-                <p class="mt-1 text-xs text-base-content/55">{{ criterion.comment }}</p>
-              </div>
-              <span class="badge badge-warning shrink-0">
-                {{ criterion.points }}/{{ criterion.maxPoints }}
-              </span>
-            </div>
-          </div>
-          <div class="space-y-3 border-t border-base-300 p-4">
-            <p class="text-sm">{{ reviewData.summary }}</p>
-            <div v-if="reviewData.improvements.length">
-              <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/45">
-                Next improvements
-              </p>
-              <ul class="mt-1 list-disc space-y-1 pl-5 text-xs text-base-content/70">
-                <li v-for="item in reviewData.improvements" :key="item">{{ item }}</li>
-              </ul>
-            </div>
+          <div class="border-t border-base-300 p-4">
+            <SpeakingReviewDetails :review="reviewData" />
           </div>
         </template>
 
@@ -245,6 +222,7 @@ import {
   Sparkles,
 } from 'lucide-vue-next'
 import SpeakingRecorder from '~/components/speaking/SpeakingRecorder.vue'
+import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import { useProgress } from '~/composables/useProgress'
 import { useSpeakingReview } from '~/composables/useSpeakingReview'
 import { useSpeechTranscription } from '~/composables/useSpeechTranscription'
@@ -266,14 +244,17 @@ interface SessionSegment {
   maxSeconds: number
 }
 
-const props = withDefaults(defineProps<{
-  topic: SpeakingA2Topic
-  examMode?: boolean
-  initialTranscripts?: SpeakingTranscripts
-}>(), {
-  examMode: false,
-  initialTranscripts: () => ({}),
-})
+const props = withDefaults(
+  defineProps<{
+    topic: SpeakingA2Topic
+    examMode?: boolean
+    initialTranscripts?: SpeakingTranscripts
+  }>(),
+  {
+    examMode: false,
+    initialTranscripts: () => ({}),
+  }
+)
 const emit = defineEmits<{
   finish: []
   progress: [payload: { transcripts: SpeakingTranscripts; durationSec: number }]
@@ -386,7 +367,7 @@ watch(
       durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
     })
   },
-  { deep: true },
+  { deep: true }
 )
 const canSubmit = computed(() =>
   requiredSegmentKeys.value.every(key => transcripts[key].trim().length > 0)

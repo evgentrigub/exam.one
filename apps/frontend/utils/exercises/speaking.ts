@@ -56,8 +56,8 @@ export interface SpeakingReviewData {
   teil: SpeakingA2Part
   totalPoints: number
   maxPoints: 4 | 8
-  criteria: SpeakingReviewCriterion[]
-  strengths: string[]
-  improvements: string[]
+  criteria: readonly SpeakingReviewCriterion[]
+  strengths: readonly string[]
+  improvements: readonly string[]
   summary: string
 }
