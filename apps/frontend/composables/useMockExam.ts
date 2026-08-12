@@ -1,4 +1,5 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
+import type { MockExamOverview } from '~/data/mockExam/reviewMockExamA2'
 import type { SpeakingTranscripts } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 
@@ -27,11 +28,22 @@ export interface MockModuleState {
   responses: Record<string, MockExerciseResult>
 }
 
+export type MockOverviewStatus = 'idle' | 'loading' | 'ready' | 'error'
+
+export interface MockOverviewState {
+  status: MockOverviewStatus
+  data: MockExamOverview | null
+  error: string | null
+  requestedAt: string | null
+  completedAt: string | null
+}
+
 export interface MockExamState {
   modules: Record<SkillId, MockModuleState>
   finished: boolean
   startedAt: string | null
   finishedAt: string | null
+  aiOverview: MockOverviewState
 }
 
 function blankModule(count: number, grading: MockGradingStatus): MockModuleState {
@@ -54,29 +66,43 @@ export function createBlankMockExamState(set: MockExamSet): MockExamState {
       : 'pending'
     modules[definition.skill] = blankModule(definition.exercises.length, grading)
   }
-  return { modules, finished: false, startedAt: null, finishedAt: null }
+  return {
+    modules,
+    finished: false,
+    startedAt: null,
+    finishedAt: null,
+    aiOverview: {
+      status: 'idle',
+      data: null,
+      error: null,
+      requestedAt: null,
+      completedAt: null,
+    },
+  }
 }
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
 
-export const useMockExam = (set: MockExamSet) => {
-  const STORAGE_KEY = `exam-one:mock-exam:${set.id}`
-  const state = ref<MockExamState>(createBlankMockExamState(set))
+export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
+  const currentSet = computed(() => toValue(setSource))
+  const storageKey = computed(() => `exam-one:mock-exam:${currentSet.value.id}`)
+  const state = ref<MockExamState>(createBlankMockExamState(currentSet.value))
   const isInitialized = ref(false)
+  const initializedSetId = ref<string | null>(null)
 
   const persist = (): void => {
     if (import.meta.server) return
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.value))
+      localStorage.setItem(storageKey.value, JSON.stringify(state.value))
     } catch (error) {
-      console.error(`[${STORAGE_KEY}] write failed`, error)
+      console.error(`[${storageKey.value}] write failed`, error)
     }
   }
 
   const calculateModuleScore = (skill: SkillId): void => {
-    const definition = set.modules.find(module => module.skill === skill)
+    const definition = currentSet.value.modules.find(module => module.skill === skill)
     if (!definition) return
     const moduleState = state.value.modules[skill]
     const responses = Object.values(moduleState.responses)
@@ -109,17 +135,17 @@ export const useMockExam = (set: MockExamSet) => {
     persist()
   }
 
-  const initialize = (): void => {
-    if (isInitialized.value || import.meta.server) return
+  const initialize = (force = false): void => {
+    if ((!force && isInitialized.value && initializedSetId.value === currentSet.value.id) || import.meta.server) return
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
+      const raw = localStorage.getItem(storageKey.value)
       if (raw) {
         const stored = JSON.parse(raw) as MockExamState
-        const blank = createBlankMockExamState(set)
+        const blank = createBlankMockExamState(currentSet.value)
         state.value = {
           ...blank,
           ...stored,
-          modules: Object.fromEntries(set.modules.map(definition => {
+          modules: Object.fromEntries(currentSet.value.modules.map(definition => {
             const saved = stored.modules?.[definition.skill]
             return [definition.skill, {
               ...blank.modules[definition.skill],
@@ -131,15 +157,23 @@ export const useMockExam = (set: MockExamSet) => {
               responses: saved?.responses ?? {},
             }]
           })) as Record<SkillId, MockModuleState>,
+          aiOverview: {
+            ...blank.aiOverview,
+            ...stored.aiOverview,
+            ...(stored.aiOverview?.status === 'loading'
+              ? { status: 'error' as const, error: 'AI overview generation was interrupted.' }
+              : {}),
+          },
         }
       }
     } catch (error) {
-      console.warn(`[${STORAGE_KEY}] read failed`, error)
-      state.value = createBlankMockExamState(set)
+      console.warn(`[${storageKey.value}] read failed`, error)
+      state.value = createBlankMockExamState(currentSet.value)
     }
     isInitialized.value = true
+    initializedSetId.value = currentSet.value.id
 
-    for (const definition of set.modules) {
+    for (const definition of currentSet.value.modules) {
       const moduleState = state.value.modules[definition.skill]
       if (!moduleState.locked && moduleState.endsAt && Date.parse(moduleState.endsAt) <= Date.now()) {
         expireModule(definition.skill)
@@ -153,7 +187,7 @@ export const useMockExam = (set: MockExamSet) => {
   }
 
   const startModule = (skill: SkillId): void => {
-    const definition = set.modules.find(module => module.skill === skill)
+    const definition = currentSet.value.modules.find(module => module.skill === skill)
     const moduleState = state.value.modules[skill]
     if (!definition || moduleState.locked) return
     startExam()
@@ -225,17 +259,17 @@ export const useMockExam = (set: MockExamSet) => {
   }
 
   const finishExam = (): void => {
-    if (!set.modules.every(module => state.value.modules[module.skill].locked)) return
+    if (!currentSet.value.modules.every(module => state.value.modules[module.skill].locked)) return
     state.value.finished = true
     state.value.finishedAt = new Date().toISOString()
     persist()
   }
 
   const resetExam = (): void => {
-    state.value = createBlankMockExamState(set)
+    state.value = createBlankMockExamState(currentSet.value)
     if (import.meta.client) {
       try {
-        localStorage.removeItem(STORAGE_KEY)
+        localStorage.removeItem(storageKey.value)
       } catch {
         // The in-memory reset still succeeds when browser storage is unavailable.
       }
@@ -246,31 +280,70 @@ export const useMockExam = (set: MockExamSet) => {
     const moduleState = state.value.modules[skill]
     if (moduleState.locked) return 0
     if (!moduleState.endsAt) {
-      return (set.modules.find(module => module.skill === skill)?.minutes ?? 0) * 60
+      return (currentSet.value.modules.find(module => module.skill === skill)?.minutes ?? 0) * 60
     }
     return Math.max(0, Math.ceil((Date.parse(moduleState.endsAt) - Date.now()) / 1000))
   }
 
+  const startOverview = (): void => {
+    state.value.aiOverview = {
+      status: 'loading',
+      data: null,
+      error: null,
+      requestedAt: new Date().toISOString(),
+      completedAt: null,
+    }
+    persist()
+  }
+
+  const completeOverview = (data: MockExamOverview): void => {
+    state.value.aiOverview = {
+      ...state.value.aiOverview,
+      status: 'ready',
+      data,
+      error: null,
+      completedAt: new Date().toISOString(),
+    }
+    persist()
+  }
+
+  const failOverview = (error: string): void => {
+    state.value.aiOverview = {
+      ...state.value.aiOverview,
+      status: 'error',
+      data: null,
+      error,
+      completedAt: null,
+    }
+    persist()
+  }
+
   const allLocked = computed(() =>
-    set.modules.every(module => state.value.modules[module.skill].locked),
+    currentSet.value.modules.every(module => state.value.modules[module.skill].locked),
   )
   const doneExerciseCount = computed(() =>
-    set.modules.reduce(
+    currentSet.value.modules.reduce(
       (sum, module) => sum + state.value.modules[module.skill].done.filter(Boolean).length,
       0,
     ),
   )
   const totalExerciseCount = computed(() =>
-    set.modules.reduce((sum, module) => sum + module.exercises.length, 0),
+    currentSet.value.modules.reduce((sum, module) => sum + module.exercises.length, 0),
   )
   const overallPoints = computed(() =>
-    set.modules.reduce(
+    currentSet.value.modules.reduce(
       (sum, module) => sum + (state.value.modules[module.skill].scoreFinal ?? 0),
       0,
     ),
   )
 
-  if (import.meta.client && !isInitialized.value) onMounted(initialize)
+  if (import.meta.client && !isInitialized.value) {
+    onMounted(() => initialize())
+    watch(() => currentSet.value.id, () => {
+      state.value = createBlankMockExamState(currentSet.value)
+      initialize(true)
+    })
+  }
 
   return {
     // State
@@ -294,5 +367,8 @@ export const useMockExam = (set: MockExamSet) => {
     finishExam,
     resetExam,
     remainingSeconds,
+    startOverview,
+    completeOverview,
+    failOverview,
   }
 }

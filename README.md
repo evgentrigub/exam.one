@@ -16,7 +16,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Writing (Schreiben) | Done (iteration 1) |
 | Listening (Hoeren) | Done (iteration 1) — 4 Teile, file-based Kokoro audio, missing-audio lock UX |
 | Speaking (Sprechen) | **In progress** — Teil 1–2 recording, STT/manual transcripts, AI review; Teil 3 still open |
-| Mock exam | Not started (after Speaking is practice-ready) |
+| Mock exam | Goethe A2 iteration 2: offline Set 1 + generated local sets and result review |
 | Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
 
 **Next implementation focus:** Speaking — implement Teil 3 joint planning, then pronunciation and mock-exam integration (see roadmap §1.1).
@@ -299,7 +299,7 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 - ✅ Reading / Writing practice (iteration 1)
 - ✅ Listening practice (iteration 1) + Kokoro TTS tooling
 - 🔄 **Speaking** — Teil 1–2 practice, STT, and AI review done; Teil 3 is next
-- ⏳ Mock exam mode (after Speaking is usable)
+- ✅ Goethe A2 mock exam mode (offline Set 1, optional generated sets, per-module review, AI overview)
 - ⏳ Goethe C1 Writing (partial scope)
 - ✅ BYOK AI generate/review for shipped skills; DaisyUI shell / i18n / progress foundations
 
