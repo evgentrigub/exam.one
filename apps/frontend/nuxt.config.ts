@@ -136,7 +136,9 @@ export default defineNuxtConfig({
     sttModel: process.env['STT_MODEL'] || 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
     sttOpenaiModel: process.env['STT_OPENAI_MODEL'] || 'whisper-1',
     sttOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
-    // Public (exposed to client). Leave empty unless you explicitly want to expose something.
-    public: {},
+    // Public (exposed to client).
+    public: {
+      frontendLandingUrl: process.env['FRONTEND_LANDING_URL'] || 'http://localhost:3001',
+    },
   },
 })
