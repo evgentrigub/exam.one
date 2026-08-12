@@ -1,850 +1,899 @@
-# Graph Report - exam-one  (2026-07-24)
+# Graph Report - .  (2026-08-12)
 
 ## Corpus Check
-- 247 files · ~118,786 words
+- 269 files · ~137,507 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2439 nodes · 2891 edges · 239 communities (200 shown, 39 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 60 edges (avg confidence: 0.82)
+- 2777 nodes · 3658 edges · 214 communities (194 shown, 20 thin omitted)
+- Extraction: 93% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 234 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
-## Graph Freshness
-- Built from commit: `91621f42`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
-
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_AI Reading Generation|AI Reading Generation]]
-- [[_COMMUNITY_German Locale Copy|German Locale Copy]]
-- [[_COMMUNITY_English Locale Copy|English Locale Copy]]
-- [[_COMMUNITY_Design Prototype Views|Design Prototype Views]]
-- [[_COMMUNITY_Prototype App Model|Prototype App Model]]
-- [[_COMMUNITY_German Writing Copy|German Writing Copy]]
-- [[_COMMUNITY_English Writing Copy|English Writing Copy]]
-- [[_COMMUNITY_Nuxt Dependencies|Nuxt Dependencies]]
-- [[_COMMUNITY_Project Guide|Project Guide]]
-- [[_COMMUNITY_Writing Text Analysis|Writing Text Analysis]]
-- [[_COMMUNITY_German Product Copy|German Product Copy]]
-- [[_COMMUNITY_English Product Copy|English Product Copy]]
-- [[_COMMUNITY_Tooling Dependencies|Tooling Dependencies]]
-- [[_COMMUNITY_Product Roadmap|Product Roadmap]]
-- [[_COMMUNITY_AI Review Types|AI Review Types]]
-- [[_COMMUNITY_Model Answer Generation|Model Answer Generation]]
-- [[_COMMUNITY_German Reading Practice|German Reading Practice]]
-- [[_COMMUNITY_German Quiz Copy|German Quiz Copy]]
-- [[_COMMUNITY_English Reading Practice|English Reading Practice]]
-- [[_COMMUNITY_English Quiz Copy|English Quiz Copy]]
-- [[_COMMUNITY_Writing Review Prompts|Writing Review Prompts]]
-- [[_COMMUNITY_TypeScript Strictness|TypeScript Strictness]]
-- [[_COMMUNITY_Writing Topic UI|Writing Topic UI]]
-- [[_COMMUNITY_Agent OS Commands|Agent OS Commands]]
-- [[_COMMUNITY_A2 Reading Generators|A2 Reading Generators]]
-- [[_COMMUNITY_Writing Topic Data|Writing Topic Data]]
-- [[_COMMUNITY_Component Standards|Component Standards]]
-- [[_COMMUNITY_Writing Exam Flow|Writing Exam Flow]]
-- [[_COMMUNITY_Composable Standards|Composable Standards]]
-- [[_COMMUNITY_Progress Tracking|Progress Tracking]]
-- [[_COMMUNITY_Storage Standards|Storage Standards]]
-- [[_COMMUNITY_Quiz Session UI|Quiz Session UI]]
-- [[_COMMUNITY_Standards Discovery|Standards Discovery]]
-- [[_COMMUNITY_Reading Text Card|Reading Text Card]]
-- [[_COMMUNITY_AI Writing Endpoints|AI Writing Endpoints]]
-- [[_COMMUNITY_UI Card Standards|UI Card Standards]]
-- [[_COMMUNITY_Theme Composable|Theme Composable]]
-- [[_COMMUNITY_Question Card UI|Question Card UI]]
-- [[_COMMUNITY_Hydration Guards|Hydration Guards]]
-- [[_COMMUNITY_Design Handoff|Design Handoff]]
-- [[_COMMUNITY_Writing Mode|Writing Mode]]
-- [[_COMMUNITY_Prototype Root App|Prototype Root App]]
-- [[_COMMUNITY_A2 Part 1 Types|A2 Part 1 Types]]
-- [[_COMMUNITY_A2 Part 2 Types|A2 Part 2 Types]]
-- [[_COMMUNITY_A2 Part 3 Types|A2 Part 3 Types]]
-- [[_COMMUNITY_A2 Part 4 Types|A2 Part 4 Types]]
-- [[_COMMUNITY_Open Source Model|Open Source Model]]
-- [[_COMMUNITY_Robots Policy|Robots Policy]]
-- [[_COMMUNITY_TypeScript Config|TypeScript Config]]
-- [[_COMMUNITY_Settings Store|Settings Store]]
-- [[_COMMUNITY_Theme Types|Theme Types]]
-- [[_COMMUNITY_Theme Persistence|Theme Persistence]]
-- [[_COMMUNITY_Root Vue App|Root Vue App]]
-- [[_COMMUNITY_App Sidebar|App Sidebar]]
-- [[_COMMUNITY_Default Layout|Default Layout]]
-- [[_COMMUNITY_Nuxt Config|Nuxt Config]]
-- [[_COMMUNITY_Quiz Route|Quiz Route]]
-- [[_COMMUNITY_Reading Modal|Reading Modal]]
-- [[_COMMUNITY_Checking Page|Checking Page]]
-- [[_COMMUNITY_Writing Review UI|Writing Review UI]]
-- [[_COMMUNITY_Community 76|Community 76]]
-- [[_COMMUNITY_Community 77|Community 77]]
-- [[_COMMUNITY_Community 78|Community 78]]
-- [[_COMMUNITY_Community 79|Community 79]]
-- [[_COMMUNITY_Community 80|Community 80]]
-- [[_COMMUNITY_Community 81|Community 81]]
-- [[_COMMUNITY_Community 82|Community 82]]
-- [[_COMMUNITY_Community 83|Community 83]]
-- [[_COMMUNITY_Community 84|Community 84]]
-- [[_COMMUNITY_Community 85|Community 85]]
-- [[_COMMUNITY_Community 86|Community 86]]
-- [[_COMMUNITY_Community 87|Community 87]]
-- [[_COMMUNITY_Community 88|Community 88]]
-- [[_COMMUNITY_Community 89|Community 89]]
-- [[_COMMUNITY_Community 90|Community 90]]
-- [[_COMMUNITY_Community 91|Community 91]]
-- [[_COMMUNITY_Community 92|Community 92]]
-- [[_COMMUNITY_Community 93|Community 93]]
-- [[_COMMUNITY_Community 94|Community 94]]
-- [[_COMMUNITY_Community 95|Community 95]]
-- [[_COMMUNITY_Community 96|Community 96]]
-- [[_COMMUNITY_Community 97|Community 97]]
-- [[_COMMUNITY_Community 98|Community 98]]
-- [[_COMMUNITY_Community 99|Community 99]]
-- [[_COMMUNITY_Community 119|Community 119]]
-- [[_COMMUNITY_Community 136|Community 136]]
-- [[_COMMUNITY_Community 140|Community 140]]
-- [[_COMMUNITY_Community 170|Community 170]]
-- [[_COMMUNITY_Community 173|Community 173]]
-- [[_COMMUNITY_Community 175|Community 175]]
-- [[_COMMUNITY_Community 187|Community 187]]
-- [[_COMMUNITY_Community 188|Community 188]]
-- [[_COMMUNITY_Community 203|Community 203]]
-- [[_COMMUNITY_Community 205|Community 205]]
-- [[_COMMUNITY_Community 240|Community 240]]
-- [[_COMMUNITY_Community 243|Community 243]]
-- [[_COMMUNITY_Community 258|Community 258]]
-- [[_COMMUNITY_Community 262|Community 262]]
-- [[_COMMUNITY_Community 282|Community 282]]
-- [[_COMMUNITY_Community 283|Community 283]]
-- [[_COMMUNITY_Community 288|Community 288]]
-- [[_COMMUNITY_Community 289|Community 289]]
-- [[_COMMUNITY_Community 312|Community 312]]
-- [[_COMMUNITY_Community 329|Community 329]]
-- [[_COMMUNITY_Community 336|Community 336]]
-- [[_COMMUNITY_Community 340|Community 340]]
-- [[_COMMUNITY_Community 341|Community 341]]
-- [[_COMMUNITY_Community 349|Community 349]]
-- [[_COMMUNITY_Community 367|Community 367]]
-- [[_COMMUNITY_Community 371|Community 371]]
-- [[_COMMUNITY_Community 372|Community 372]]
-- [[_COMMUNITY_Community 386|Community 386]]
-- [[_COMMUNITY_Community 387|Community 387]]
-- [[_COMMUNITY_Community 395|Community 395]]
-- [[_COMMUNITY_Community 396|Community 396]]
-- [[_COMMUNITY_Community 397|Community 397]]
-- [[_COMMUNITY_Community 430|Community 430]]
-- [[_COMMUNITY_Community 449|Community 449]]
-- [[_COMMUNITY_Community 457|Community 457]]
-- [[_COMMUNITY_Community 458|Community 458]]
-- [[_COMMUNITY_Community 485|Community 485]]
-- [[_COMMUNITY_Community 496|Community 496]]
-- [[_COMMUNITY_Community 505|Community 505]]
-- [[_COMMUNITY_Community 508|Community 508]]
-- [[_COMMUNITY_Community 513|Community 513]]
-- [[_COMMUNITY_Community 514|Community 514]]
-- [[_COMMUNITY_Community 518|Community 518]]
-- [[_COMMUNITY_Community 536|Community 536]]
-- [[_COMMUNITY_Community 542|Community 542]]
-- [[_COMMUNITY_Community 543|Community 543]]
-- [[_COMMUNITY_Community 569|Community 569]]
-- [[_COMMUNITY_Community 571|Community 571]]
-- [[_COMMUNITY_Community 582|Community 582]]
-- [[_COMMUNITY_Community 583|Community 583]]
-- [[_COMMUNITY_Community 584|Community 584]]
-- [[_COMMUNITY_Community 585|Community 585]]
-- [[_COMMUNITY_Community 595|Community 595]]
-- [[_COMMUNITY_Community 598|Community 598]]
-- [[_COMMUNITY_Community 601|Community 601]]
-- [[_COMMUNITY_Community 602|Community 602]]
-- [[_COMMUNITY_Community 603|Community 603]]
-- [[_COMMUNITY_Community 604|Community 604]]
-- [[_COMMUNITY_Community 606|Community 606]]
-- [[_COMMUNITY_Community 607|Community 607]]
-- [[_COMMUNITY_Community 608|Community 608]]
-- [[_COMMUNITY_Community 619|Community 619]]
-- [[_COMMUNITY_Community 621|Community 621]]
-- [[_COMMUNITY_Community 622|Community 622]]
-- [[_COMMUNITY_Community 624|Community 624]]
-- [[_COMMUNITY_Community 625|Community 625]]
-- [[_COMMUNITY_Community 626|Community 626]]
-- [[_COMMUNITY_Community 628|Community 628]]
-- [[_COMMUNITY_Community 629|Community 629]]
-- [[_COMMUNITY_Community 630|Community 630]]
-- [[_COMMUNITY_Community 631|Community 631]]
-- [[_COMMUNITY_Community 634|Community 634]]
-- [[_COMMUNITY_Community 635|Community 635]]
-- [[_COMMUNITY_Community 637|Community 637]]
-- [[_COMMUNITY_Community 638|Community 638]]
-- [[_COMMUNITY_Community 639|Community 639]]
-- [[_COMMUNITY_Community 640|Community 640]]
-- [[_COMMUNITY_Community 641|Community 641]]
-- [[_COMMUNITY_Community 642|Community 642]]
-- [[_COMMUNITY_Community 643|Community 643]]
-- [[_COMMUNITY_Community 645|Community 645]]
-- [[_COMMUNITY_Community 646|Community 646]]
-- [[_COMMUNITY_Community 647|Community 647]]
-- [[_COMMUNITY_Community 648|Community 648]]
-- [[_COMMUNITY_Community 651|Community 651]]
-- [[_COMMUNITY_Community 652|Community 652]]
-- [[_COMMUNITY_Community 654|Community 654]]
-- [[_COMMUNITY_Community 655|Community 655]]
-- [[_COMMUNITY_Community 657|Community 657]]
-- [[_COMMUNITY_Community 658|Community 658]]
-- [[_COMMUNITY_Community 660|Community 660]]
-- [[_COMMUNITY_Community 663|Community 663]]
-- [[_COMMUNITY_Community 664|Community 664]]
-- [[_COMMUNITY_Community 665|Community 665]]
-- [[_COMMUNITY_Community 666|Community 666]]
-- [[_COMMUNITY_Community 668|Community 668]]
-- [[_COMMUNITY_Community 691|Community 691]]
-- [[_COMMUNITY_Community 693|Community 693]]
-- [[_COMMUNITY_Community 696|Community 696]]
-- [[_COMMUNITY_Community 697|Community 697]]
-- [[_COMMUNITY_Community 706|Community 706]]
+- [[_COMMUNITY_Mock Exam i18n EN|Mock Exam i18n EN]]
+- [[_COMMUNITY_Mock Exam i18n DE|Mock Exam i18n DE]]
+- [[_COMMUNITY_TTS Vocab Rules|TTS Vocab Rules]]
+- [[_COMMUNITY_Speaking A2 Generators|Speaking A2 Generators]]
+- [[_COMMUNITY_Kokoro ONNX Legacy|Kokoro ONNX Legacy]]
+- [[_COMMUNITY_Kokoro PyTorch Runtime|Kokoro PyTorch Runtime]]
+- [[_COMMUNITY_Root Package Tooling|Root Package Tooling]]
+- [[_COMMUNITY_Frontend Package Deps|Frontend Package Deps]]
+- [[_COMMUNITY_Dashboard i18n EN|Dashboard i18n EN]]
+- [[_COMMUNITY_Exercises UI i18n EN|Exercises UI i18n EN]]
+- [[_COMMUNITY_Dashboard i18n DE|Dashboard i18n DE]]
+- [[_COMMUNITY_Exercises UI i18n DE|Exercises UI i18n DE]]
+- [[_COMMUNITY_Product Docs A2|Product Docs A2]]
+- [[_COMMUNITY_Practice i18n EN|Practice i18n EN]]
+- [[_COMMUNITY_Practice i18n DE|Practice i18n DE]]
+- [[_COMMUNITY_Design Exercise Interior|Design Exercise Interior]]
+- [[_COMMUNITY_Writing Topics Composable|Writing Topics Composable]]
+- [[_COMMUNITY_Listening Audio Player|Listening Audio Player]]
+- [[_COMMUNITY_Generation i18n EN|Generation i18n EN]]
+- [[_COMMUNITY_Writing Review i18n EN|Writing Review i18n EN]]
+- [[_COMMUNITY_Generation i18n DE|Generation i18n DE]]
+- [[_COMMUNITY_Writing Review i18n DE|Writing Review i18n DE]]
+- [[_COMMUNITY_Kokoro Model Config|Kokoro Model Config]]
+- [[_COMMUNITY_Base TypeScript Config|Base TypeScript Config]]
+- [[_COMMUNITY_Scalo Design System|Scalo Design System]]
+- [[_COMMUNITY_Frontend App Shell|Frontend App Shell]]
+- [[_COMMUNITY_Home Page i18n EN|Home Page i18n EN]]
+- [[_COMMUNITY_Home Page i18n DE|Home Page i18n DE]]
+- [[_COMMUNITY_Writing Exercise Tips|Writing Exercise Tips]]
+- [[_COMMUNITY_Listening TTS Pipeline|Listening TTS Pipeline]]
+- [[_COMMUNITY_Design Auth Screens|Design Auth Screens]]
+- [[_COMMUNITY_Writing Topic Generators|Writing Topic Generators]]
+- [[_COMMUNITY_Listening Audio Availability|Listening Audio Availability]]
+- [[_COMMUNITY_Database Package Tooling|Database Package Tooling]]
+- [[_COMMUNITY_Reading Exercise Types|Reading Exercise Types]]
+- [[_COMMUNITY_Speaking Recorder UI|Speaking Recorder UI]]
+- [[_COMMUNITY_Writing A2 Review Prompts|Writing A2 Review Prompts]]
+- [[_COMMUNITY_Listening Generation API|Listening Generation API]]
+- [[_COMMUNITY_Nitro LLM API Routes|Nitro LLM API Routes]]
+- [[_COMMUNITY_Parakeet STT Service|Parakeet STT Service]]
+- [[_COMMUNITY_Reading Quiz Session|Reading Quiz Session]]
+- [[_COMMUNITY_Model Answer Generators|Model Answer Generators]]
+- [[_COMMUNITY_Reading Generation API|Reading Generation API]]
+- [[_COMMUNITY_STT Transcribe API|STT Transcribe API]]
+- [[_COMMUNITY_Backend Tooling Config|Backend Tooling Config]]
+- [[_COMMUNITY_Resumable AI Generation|Resumable AI Generation]]
+- [[_COMMUNITY_Writing Review Details|Writing Review Details]]
+- [[_COMMUNITY_Shared Library Boundaries|Shared Library Boundaries]]
+- [[_COMMUNITY_Backend TSConfig|Backend TSConfig]]
+- [[_COMMUNITY_Product Roadmap Standards|Product Roadmap Standards]]
+- [[_COMMUNITY_Local Persistence Catalog|Local Persistence Catalog]]
+- [[_COMMUNITY_Dialogue Voice Mapping|Dialogue Voice Mapping]]
+- [[_COMMUNITY_Exam Format i18n EN|Exam Format i18n EN]]
+- [[_COMMUNITY_Exam Format i18n DE|Exam Format i18n DE]]
+- [[_COMMUNITY_Mock Exam Set Page|Mock Exam Set Page]]
+- [[_COMMUNITY_NestJS Backend Bootstrap|NestJS Backend Bootstrap]]
+- [[_COMMUNITY_Listening Exercises Store|Listening Exercises Store]]
+- [[_COMMUNITY_Exam Structure Stats|Exam Structure Stats]]
+- [[_COMMUNITY_Mock Exam Sets Catalog|Mock Exam Sets Catalog]]
+- [[_COMMUNITY_Reading Texts Store|Reading Texts Store]]
+- [[_COMMUNITY_Contracts Package Tooling|Contracts Package Tooling]]
+- [[_COMMUNITY_Exam Content Tooling|Exam Content Tooling]]
+- [[_COMMUNITY_Listening Exercise Types|Listening Exercise Types]]
+- [[_COMMUNITY_Quiz i18n EN|Quiz i18n EN]]
+- [[_COMMUNITY_Quiz i18n DE|Quiz i18n DE]]
+- [[_COMMUNITY_NestJS Libraries Tooling|NestJS Libraries Tooling]]
+- [[_COMMUNITY_SSR Storage Standards|SSR Storage Standards]]
+- [[_COMMUNITY_Mock Exam State|Mock Exam State]]
+- [[_COMMUNITY_Exercise Types i18n EN|Exercise Types i18n EN]]
+- [[_COMMUNITY_Speaking Gen i18n EN|Speaking Gen i18n EN]]
+- [[_COMMUNITY_Exercise Types i18n DE|Exercise Types i18n DE]]
+- [[_COMMUNITY_Speaking Gen i18n DE|Speaking Gen i18n DE]]
+- [[_COMMUNITY_Score Label Helpers|Score Label Helpers]]
+- [[_COMMUNITY_German Text Analysis|German Text Analysis]]
+- [[_COMMUNITY_Frontend Strict TSConfig|Frontend Strict TSConfig]]
+- [[_COMMUNITY_LLM Health Adapter|LLM Health Adapter]]
+- [[_COMMUNITY_Shell i18n EN|Shell i18n EN]]
+- [[_COMMUNITY_Writing i18n EN|Writing i18n EN]]
+- [[_COMMUNITY_Shell i18n DE|Shell i18n DE]]
+- [[_COMMUNITY_Writing i18n DE|Writing i18n DE]]
+- [[_COMMUNITY_Writing 80|Writing 80]]
+- [[_COMMUNITY_Reading 81|Reading 81]]
+- [[_COMMUNITY_Listening 82|Listening 82]]
+- [[_COMMUNITY_Mock Exam 83|Mock Exam 83]]
+- [[_COMMUNITY_Mock Exam 84|Mock Exam 84]]
+- [[_COMMUNITY_Design Prototype 85|Design Prototype 85]]
+- [[_COMMUNITY_Design Prototype 86|Design Prototype 86]]
+- [[_COMMUNITY_Frontend 87|Frontend 87]]
+- [[_COMMUNITY_Frontend 88|Frontend 88]]
+- [[_COMMUNITY_Backend 89|Backend 89]]
+- [[_COMMUNITY_Backend 90|Backend 90]]
+- [[_COMMUNITY_Frontend 91|Frontend 91]]
+- [[_COMMUNITY_Frontend 92|Frontend 92]]
+- [[_COMMUNITY_Listening 93|Listening 93]]
+- [[_COMMUNITY_Mock Exam 94|Mock Exam 94]]
+- [[_COMMUNITY_Frontend 95|Frontend 95]]
+- [[_COMMUNITY_Frontend 96|Frontend 96]]
+- [[_COMMUNITY_UsersEugene 97|Users/Eugene 97]]
+- [[_COMMUNITY_Writing 98|Writing 98]]
+- [[_COMMUNITY_Frontend 99|Frontend 99]]
+- [[_COMMUNITY_Package Manifest 100|Package Manifest 100]]
+- [[_COMMUNITY_Listening 101|Listening 101]]
+- [[_COMMUNITY_Frontend 102|Frontend 102]]
+- [[_COMMUNITY_Listening 103|Listening 103]]
+- [[_COMMUNITY_Frontend 104|Frontend 104]]
+- [[_COMMUNITY_Design Prototype 105|Design Prototype 105]]
+- [[_COMMUNITY_UsersEugene 106|Users/Eugene 106]]
+- [[_COMMUNITY_Frontend 107|Frontend 107]]
+- [[_COMMUNITY_Listening 108|Listening 108]]
+- [[_COMMUNITY_Reading 109|Reading 109]]
+- [[_COMMUNITY_Health Checks 110|Health Checks 110]]
+- [[_COMMUNITY_Mock Exam 111|Mock Exam 111]]
+- [[_COMMUNITY_Backend 112|Backend 112]]
+- [[_COMMUNITY_Frontend 113|Frontend 113]]
+- [[_COMMUNITY_TypeScript Config 114|TypeScript Config 114]]
+- [[_COMMUNITY_TypeScript Config 115|TypeScript Config 115]]
+- [[_COMMUNITY_TypeScript Config 116|TypeScript Config 116]]
+- [[_COMMUNITY_Design Prototype 117|Design Prototype 117]]
+- [[_COMMUNITY_Frontend 118|Frontend 118]]
+- [[_COMMUNITY_UsersEugene 119|Users/Eugene 119]]
+- [[_COMMUNITY_UsersEugene 120|Users/Eugene 120]]
+- [[_COMMUNITY_Listening 121|Listening 121]]
+- [[_COMMUNITY_TypeScript Config 122|TypeScript Config 122]]
+- [[_COMMUNITY_Listening 123|Listening 123]]
+- [[_COMMUNITY_Health Checks 124|Health Checks 124]]
+- [[_COMMUNITY_Speaking 125|Speaking 125]]
+- [[_COMMUNITY_Speaking 126|Speaking 126]]
+- [[_COMMUNITY_Backend 127|Backend 127]]
+- [[_COMMUNITY_Backend 128|Backend 128]]
+- [[_COMMUNITY_TypeScript Config 129|TypeScript Config 129]]
+- [[_COMMUNITY_Speaking 130|Speaking 130]]
+- [[_COMMUNITY_Mock Exam 131|Mock Exam 131]]
+- [[_COMMUNITY_Mock Exam 132|Mock Exam 132]]
+- [[_COMMUNITY_UsersEugene 133|Users/Eugene 133]]
+- [[_COMMUNITY_Package Manifest 134|Package Manifest 134]]
+- [[_COMMUNITY_Listening 135|Listening 135]]
+- [[_COMMUNITY_UsersEugene 136|Users/Eugene 136]]
+- [[_COMMUNITY_STT 137|STT 137]]
+- [[_COMMUNITY_Listening 138|Listening 138]]
+- [[_COMMUNITY_Frontend 139|Frontend 139]]
+- [[_COMMUNITY_Frontend 140|Frontend 140]]
+- [[_COMMUNITY_Frontend 141|Frontend 141]]
+- [[_COMMUNITY_Frontend 142|Frontend 142]]
+- [[_COMMUNITY_Frontend 143|Frontend 143]]
+- [[_COMMUNITY_Writing 144|Writing 144]]
+- [[_COMMUNITY_STT 145|STT 145]]
+- [[_COMMUNITY_STT 146|STT 146]]
+- [[_COMMUNITY_Locale Strings 147|Locale Strings 147]]
+- [[_COMMUNITY_Design Prototype 148|Design Prototype 148]]
+- [[_COMMUNITY_Agents.Md 149|Agents.Md 149]]
+- [[_COMMUNITY_TTS 150|TTS 150]]
+- [[_COMMUNITY_TypeScript Config 151|TypeScript Config 151]]
+- [[_COMMUNITY_TypeScript Config 152|TypeScript Config 152]]
+- [[_COMMUNITY_.ClaudeSettings.Local.Json 153|.Claude/Settings.Local.Json 153]]
+- [[_COMMUNITY_Frontend 154|Frontend 154]]
+- [[_COMMUNITY_Frontend 155|Frontend 155]]
+- [[_COMMUNITY_Reading 156|Reading 156]]
+- [[_COMMUNITY_TTS 157|TTS 157]]
+- [[_COMMUNITY_Build excludes tests and specs|Build excludes tests and specs]]
+- [[_COMMUNITY_claudesettingslocaljson|claudesettingslocaljson]]
+- [[_COMMUNITY_startQuestions emit|startQuestions emit]]
+- [[_COMMUNITY_tsconfigbase Shared Compiler O|tsconfigbase Shared Compiler O]]
+- [[_COMMUNITY_huskysh|huskysh]]
+- [[_COMMUNITY_defaultvue|defaultvue]]
+- [[_COMMUNITY_MockExamSetCard|MockExamSetCard]]
+- [[_COMMUNITY_Agent and Skill Command Roster|Agent and Skill Command Roster]]
+- [[_COMMUNITY_tsconfigjson|tsconfigjson]]
+- [[_COMMUNITY_deletelisteningaudiopostts|deletelisteningaudiopostts]]
+- [[_COMMUNITY_Chrome DevTools WellKnown Stub|Chrome DevTools WellKnown Stub]]
+- [[_COMMUNITY_Root ESLint config|Root ESLint config]]
+- [[_COMMUNITY_Frontend strict TypeScript con|Frontend strict TypeScript con]]
+- [[_COMMUNITY_Tooltip Demo Page|Tooltip Demo Page]]
+- [[_COMMUNITY_robotstxt allowall|robotstxt allowall]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `vocab` - 85 edges
-2. `exercisesUi` - 41 edges
-3. `exercisesUi` - 41 edges
-4. `dashboard` - 38 edges
-5. `dashboard` - 38 edges
-6. `practice` - 29 edges
-7. `practice` - 29 edges
-8. `generation` - 27 edges
-9. `generation` - 27 edges
-10. `scripts` - 24 edges
+1. `mockExam` - 108 edges
+2. `mockExam` - 108 edges
+3. `vocab` - 85 edges
+4. `exercisesUi` - 41 edges
+5. `exercisesUi` - 41 edges
+6. `dashboard` - 38 edges
+7. `dashboard` - 38 edges
+8. `useIcons()` - 35 edges
+9. `scripts` - 34 edges
+10. `practice` - 29 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Schreiben Hilfen PDF` --conceptually_related_to--> `✍️ Writing Practice`  [AMBIGUOUS]
-  Schreiben_Hilfen.pdf → README.md
-- `Offline-First Core ✅` --semantically_similar_to--> `Offline-First Core Standard`  [INFERRED] [semantically similar]
-  README.md → agent-os/standards/global/offline-first-core.md
-- `🤖 Optional AI Enhancement` --semantically_similar_to--> `Current AI Stack`  [INFERRED] [semantically similar]
-  README.md → agent-os/product/tech-stack.md
-- `Offline-First Core Standard` --semantically_similar_to--> `Offline-First Core Flows`  [INFERRED] [semantically similar]
-  agent-os/standards/global/offline-first-core.md → AGENTS.md
-- `AI Enhancement Layer` --semantically_similar_to--> `Optional AI Enhancement`  [INFERRED] [semantically similar]
-  agent-os/standards/global/offline-first-core.md → AGENTS.md
+- `buildGeneratedListeningAudioMap()` --conceptually_related_to--> `generated_listening_audio volume`  [INFERRED]
+  apps/frontend/utils/listening/audioUrls.ts → compose.yaml
+- `generate_speech()` --semantically_similar_to--> `OpenAI-Compatible /v1/audio/speech`  [INFERRED] [semantically similar]
+  scripts/tts/victoria/main.py → scripts/tts/kokoro-german/onnx-docker/README.md
+- `exam-one-backend Package` --implements--> `NestJS Backend API`  [INFERRED]
+  apps/backend/package.json → agent-os/product/roadmap.md
+- `AppModule` --conceptually_related_to--> `NestJS Backend API`  [INFERRED]
+  apps/backend/src/app.module.ts → agent-os/product/roadmap.md
+- `App()` --semantically_similar_to--> `useSettingsStore`  [INFERRED] [semantically similar]
+  exam-one-design/project/app.jsx → apps/frontend/stores/settings.ts
 
 ## Import Cycles
-- None detected.
+- 1-file cycle: `scripts/stt/parakeet/main.py -> scripts/stt/parakeet/main.py`
 
 ## Hyperedges (group relationships)
-- **Offline-First MVP Pattern** — agents_offline_first_core, readme_offline_first_core, product_mission_frontend_only_offline_mvp, product_roadmap_phase_1_mvp, product_tech_stack_current_state_persistence, global_offline_first_core_offline_first_core_standard [INFERRED 0.95]
 - **Agent OS Standards Workflow** — agent_os_discover_standards_discover_standards, agent_os_index_standards_index_standards, agent_os_inject_standards_inject_standards, agent_os_shape_spec_shape_spec, standards_index_standards_index [INFERRED 0.95]
-- **Component UI Standards** — components_card_layout_card_layout_standard, components_icons_icons_standard, components_import_aliases_import_aliases_standard, components_shared_label_maps_shared_label_maps_standard, components_ssr_hydration_guard_ssr_hydration_guard_standard, components_state_class_helpers_state_class_helpers_standard [EXTRACTED 1.00]
 - **Styling Theme System** — styling_daisyui_setup_single_styling_toolchain, styling_theme_catalog_theme_catalog, styling_theming_mechanism_theming_mechanism, styling_theming_mechanism_data_theme_attribute, styling_theming_mechanism_daisyui_semantic_tokens [EXTRACTED 1.00]
-- **A2 Reading Prompt Generators** — data_updated_topicgeneratorreadinga2_generatereadinga2teil1, data_updated_topicgeneratorreadinga2_generatereadinga2part2, data_updated_topicgeneratorreadinga2_generatereadinga2teil3, data_updated_topicgeneratorreadinga2_generatereadinga2teil4, data_updated_topicgeneratorreadinga2_goethe_a2_lesen_generation_rules [EXTRACTED 1.00]
-- **Redesign Product Direction** — project_redesign_coach_plan_for_today, project_redesign_exam_date_anchor, project_redesign_one_page_per_decision, project_redesign_status_not_statistics, project_redesign_progress_that_teaches [EXTRACTED 1.00]
+- **Goethe A2 four skill modules** — product_german_exam_a2_lesen, product_german_exam_a2_hoeren, product_german_exam_a2_schreiben, product_german_exam_a2_sprechen [EXTRACTED 1.00]
+- **Compose stack speech services** — root_agents_compose_stack, root_agents_kokoro_tts, root_agents_parakeet_stt [EXTRACTED 1.00]
+- **Phase 2 persistence cutover stack** — root_agents_phase2, root_agents_nestjs_backend, root_agents_prisma_database [EXTRACTED 1.00]
+- **Four-Phase Product Roadmap** — product_roadmap_phase_1_frontend_mvp, product_roadmap_phase_2_compose_stack, product_roadmap_phase_3_opensource, product_roadmap_phase_4_hosted_cloud [EXTRACTED 1.00]
+- **Phase 2 Self-Host Persistence Stack** — product_roadmap_nestjs_backend, product_roadmap_postgresql, product_tech_stack_compose_yaml, global_self_host_persistence_named_volume [INFERRED 0.85]
+- **NestJS Backend Bootstrap Foundation** — src_app_module_appmodule, src_bootstrap_configureapp, interceptors_request_id_interceptor_requestidinterceptor, config_app_config_appconfig [INFERRED 0.85]
+- **Backend health readiness stack** — health_health_controller_healthcontroller, health_health_module_healthmodule, src_main_bootstrap, src_main_health_url, test_app_e2e_spec_health_e2e [EXTRACTED 1.00]
+- **Listening audio practice flow** — listening_listeningsession_listeningsession, listening_audioplayer_audioplayer, listening_listeningsession_generate_audio, listening_listeningsession_interaction_lock, listening_audioplayer_max_plays [INFERRED 0.85]
+- **Mock exam generation gate and pipeline** — mockexam_mockgenerationpreflightmodal_mockgenerationpreflightmodal, mockexam_mockgenerationpreflightmodal_preflight_checks, mockexam_mockgenerationpipeline_mockgenerationpipeline, mockexam_mockexamsetcard_mockexamsetcard [INFERRED 0.75]
+- **Reading practice UI flow** — reading_textcard_textcard, reading_readingmodal_readingmodal, reading_quizsession_quizsession, reading_questioncard_questioncard [INFERRED 0.85]
+- **Writing practice UI flow** — writing_writingtopiccard_writingtopiccard, writing_writingsession_writingsession, writing_texteditorcard_texteditorcard, writing_writingreview_writingreview, writing_writingreviewdetails_writingreviewdetails [INFERRED 0.85]
+- **Speaking practice with STT and AI review** — speaking_speakingsession_speakingsession, speaking_speakingrecorder_speakingrecorder, speaking_speakingreviewdetails_speakingreviewdetails, speaking_speakingsession_optional_stt [INFERRED 0.85]
+- **Skill Part AI Generation Pipeline** — composables_usereadinggeneration_usereadinggeneration, composables_uselisteninggeneration_uselisteninggeneration, composables_usespeakinggeneration_usespeakinggeneration, composables_usewritinggeneration_usewritinggeneration, composables_chunk_part_job_generation_pattern [INFERRED 0.95]
+- **Mock Exam Generation Orchestration** — composables_usemockexamgeneration_usemockexamgeneration, composables_usemockexamsets_usemockexamsets, composables_usemockexamgeneration_llm_tts_preflight, composables_usemockexamgeneration_resumable_pipeline, composables_usemockexam_usemockexam [INFERRED 0.95]
+- **Dashboard Skill Stats Aggregation** — composables_useskillstats_useskillstats, composables_useprogress_useprogress, composables_usereadingtexts_usereadingtexts, composables_uselisteningexercises_uselisteningexercises, composables_usespeakingexercises_usespeakingexercises, composables_useskillstats_offline_readiness_model [EXTRACTED 1.00]
+- **A2 per-Teil prompt parts helpers** — a2_exercisegeneratorreadinga2_readinga2parts, a2_exercisegeneratorlisteninga2_listeninga2parts, a2_exercisegeneratorspeakinga2_speakinga2parts, chunk_a2_skill_prompt_parts_pattern [INFERRED 0.95]
+- **Writing AI review prompt routing** — composables_usewritingreview_getreviewprompt, a2_reviewwritinga2_reviewprompta2teil1, a2_reviewwritinga2_reviewprompta2teil2, c1_reviewtextwritingc1_reviewpromptc1teil1, c1_reviewtextwritingc1_reviewpromptc1teil2 [EXTRACTED 1.00]
+- **Goethe A2 mock exam Set 1 content bundle** — mockexam_goethea2_goethea2mockexamset1, reading_exercisereading_mockexamreadingtopics, listening_exerciselistening_mockexamlisteningtopics, speaking_exercisespeaking_mockexamspeakingtopics [EXTRACTED 1.00]
+- **Legacy Skill Indexes Redirect To Exercises Hub** — listening_index_legacy_redirect, speaking_index_legacy_redirect, pages_exercises_exercises_hub, pages_routing_unified_exercises_hub_concept [EXTRACTED 1.00]
+- **Skill Practice Hub And Session Routing** — pages_exercises_exercises_hub, reading__quizid__quiz_session_page, listening__exerciseid__listening_session_page, speaking__topicid__speaking_session_page [EXTRACTED 1.00]
+- **i18n Shell Layout And Locale Catalogs** — frontend_nuxt_config_i18n_config, layouts_default_default_layout, locales_en_english_catalog, locales_de_german_catalog, layouts_default_translated_page_meta [INFERRED 0.85]
+- **LLM Skill Content Generation Endpoints** — api_generate_listening_post_handler, api_generate_reading_post_handler, api_generate_speaking_post_handler, api_generate_topics_post_handler, utils_llm_callllm [EXTRACTED 1.00]
+- **LLM Review And Grading Endpoints** — api_review_post_handler, api_review_speaking_post_handler, api_review_mock_exam_post_handler, utils_llm_callllm [EXTRACTED 1.00]
+- **TTS STT And LLM Health Adapters** — llm_health_get_handler, tts_health_get_handler, stt_health_get_handler, tts_generate_listening_audio_post_handler, api_transcribe_post_handler [INFERRED 0.85]
+- **Listening TTS synthesis pipeline** — tts_ttsadapter_synthesizelisteningtranscript, listening_dialoguetranscript_plandialoguevoices, tts_mappool_mappool, tts_ttsadapter_synthesizespeech, tts_concatwav_concatwavwithpauses [EXTRACTED 1.00]
+- **Compose speech-enabled application stack** — compose_frontend, compose_kokoro_voices, compose_parakeet, compose_backend, compose_postgres [EXTRACTED 1.00]
+- **STT transcription and health flow** — stt_sttadapter_getsttconfig, stt_sttadapter_transcribeaudio, stt_sttadapter_checkstthealth, compose_parakeet, stt_sttadapter_local_parakeet_stt [INFERRED 0.95]
+- **Four-Skill Exercise Practice Interiors** — project_exercise_interior_readingexercise, project_exercise_interior_writingexercise, project_exercise_interior_listeningexercise, project_exercise_interior_speakingexercise, project_shared_skills [EXTRACTED 1.00]
+- **Exam.one Prototype App Shell Screens** — project_shell_sidebar, project_shell_topbar, project_dashboard_dashboard, project_exercises_exerciseslist, project_exam_structure_examstructure, project_mock_exam_mockexam, project_settings_settings [INFERRED 0.85]
+- **Shared API Contracts Surface** — api_response_apiresponse, api_response_apierror, exam_difficulty_examdifficulty, llm_types_llmprovider, llm_types_llmcompletionrequest, llm_types_llmcompletionresponse [EXTRACTED 1.00]
+- **Phase 2 shared library package boundaries** — database_package_exam_one_database, exam_content_package_exam_one_exam_content, nestjs_libraries_package_exam_one_nestjs_libraries, package_workspace_libraries [INFERRED 0.85]
+- **Speech pipeline Compose stack** — scripts_readme_kokoro_tts, scripts_readme_parakeet_stt, scripts_readme_compose_stack, scripts_readme_stack_setup, package_speech_scripts [EXTRACTED 1.00]
+- **Parakeet STT inference flow** — parakeet_main_create_transcription, parakeet_main_convert_to_wav, parakeet_main_parakeetservice, parakeet_main_load_wav_mono_16k, stt_readme_parakeet_gguf [EXTRACTED 1.00]
+- **Four-Voice PyTorch TTS Setup and Runtime** — tts_setup_kokoro_setup_kokoro, victoria_download_models_download_if_missing, victoria_main_four_voice_fastapi, tts_readme_kokoro_voices_service, tts_readme_four_voice_pytorch_kokoro [EXTRACTED 1.00]
+- **Legacy ONNX + Wyoming Home Assistant Stack** — kokoro_german_docker_compose_kokoro_onnx, kokoro_german_docker_compose_wyoming_bridge, kokoro_german_readme_german_text_rules, wyoming_openai_german_separator_readme_sentence_boundary_patch [EXTRACTED 1.00]
+- **Listening Seed and In-App Audio Generation** — tts_readme_listening_audio_generation, tts_readme_dialogue_turn_synthesis, tts_readme_in_app_generate_audio, tts_readme_stable_seed_wavs, tts_readme_four_voice_pytorch_kokoro [EXTRACTED 1.00]
 
-## Communities (239 total, 39 thin omitted)
+## Communities (214 total, 20 thin omitted)
 
-### Community 0 - "AI Reading Generation"
-Cohesion: 0.13
-Nodes (17): ReadingA2Exercise, ReadingExerciseA2Teil1, ReadingExerciseA2Teil2, ReadingExerciseA2Teil3, ReadingExerciseA2Teil4, ReadingExerciseBase, ReadingFiveQuestions, ReadingMatchingAnswerIndex (+9 more)
+### Community 0 - "Mock Exam i18n EN"
+Cohesion: 0.02
+Nodes (106): mockExam, aiGraded, aiOverviewDescription, aiOverviewEmpty, aiOverviewFailed, aiOverviewTitle, aiProvisional, aiReviewFailedDescription (+98 more)
 
-### Community 1 - "German Locale Copy"
-Cohesion: 0.05
-Nodes (41): dashboard, allExercises, average, averageScore, best, bestScore, browseExercises, completionRate (+33 more)
+### Community 1 - "Mock Exam i18n DE"
+Cohesion: 0.02
+Nodes (106): mockExam, aiGraded, aiOverviewDescription, aiOverviewEmpty, aiOverviewFailed, aiOverviewTitle, aiProvisional, aiReviewFailedDescription (+98 more)
 
-### Community 2 - "English Locale Copy"
-Cohesion: 0.05
-Nodes (41): dashboard, allExercises, average, averageScore, best, bestScore, browseExercises, completionRate (+33 more)
+### Community 2 - "TTS Vocab Rules"
+Cohesion: 0.02
+Nodes (84): vocab, A, b, c, d, e, f, h (+76 more)
 
-### Community 3 - "Design Prototype Views"
-Cohesion: 0.13
-Nodes (15): Dashboard(), ExamStructure(), SkillStructure(), Account(), Exams(), GenerateExamModal(), ListeningExercise(), Progress() (+7 more)
-
-### Community 4 - "Prototype App Model"
-Cohesion: 0.05
-Nodes (42): App, AppCtx, AuditView, Coach That Has a Plan for Today, Dashboard, Exam Date Is the Anchor, Exams, EXERCISES (+34 more)
-
-### Community 5 - "German Writing Copy"
+### Community 3 - "Speaking A2 Generators"
 Cohesion: 0.06
-Nodes (34): canGenerate, closing, generateButton, generating, greeting, keyFeatures, keyPhrases, mainPoints (+26 more)
+Nodes (52): generateSpeakingA2Teil1(), generateSpeakingA2Teil2(), speakingA2Parts(), outputRules(), reviewPromptSpeakingA2Teil1(), reviewPromptSpeakingA2Teil2(), STT-transcript-only speaking grading, extractArrayFromResponse() (+44 more)
 
-### Community 6 - "English Writing Copy"
-Cohesion: 0.06
-Nodes (34): canGenerate, closing, generateButton, generating, greeting, keyFeatures, keyPhrases, mainPoints (+26 more)
+### Community 4 - "Kokoro ONNX Legacy"
+Cohesion: 0.05
+Nodes (54): _protect_german_separator_dots, _segment_text patch, download-model-files.sh (ONNX Martin), Kokoro, kokoro-onnx Compose Service, wyoming_openai_onnx Compose Service, German Text Normalization, german_text_rules.py Shared Rules (+46 more)
 
-### Community 7 - "Nuxt Dependencies"
+### Community 5 - "Kokoro PyTorch Runtime"
+Cohesion: 0.07
+Nodes (43): Kokoro Multispeaker Config, ndarray, Path, Request, Tensor, Turn-by-Turn Dialogue Synthesis, Four-Voice PyTorch Kokoro TTS, German G2P via phonemizer+espeak-ng (+35 more)
+
+### Community 6 - "Root Package Tooling"
+Cohesion: 0.04
+Nodes (46): devDependencies, jiti, prettier, typescript, engines, node, pnpm, name (+38 more)
+
+### Community 7 - "Frontend Package Deps"
 Cohesion: 0.04
 Nodes (45): dependencies, lucide-vue-next, nuxt, @nuxtjs/i18n, openai, pinia, pinia-plugin-persistedstate, vue (+37 more)
 
-### Community 8 - "Project Guide"
-Cohesion: 0.19
-Nodes (13): Current AI Stack, Current Backend, 🏗️ Architecture, ✨ Features, 🎧 Listening Practice, Offline-First Core ✅, 🤖 Optional AI Enhancement, Optional Online Enhancement 🌐 (+5 more)
+### Community 8 - "Dashboard i18n EN"
+Cohesion: 0.05
+Nodes (41): dashboard, allExercises, average, averageScore, best, bestScore, browseExercises, completionRate (+33 more)
 
-### Community 9 - "Writing Text Analysis"
+### Community 9 - "Exercises UI i18n EN"
+Cohesion: 0.05
+Nodes (41): exercisesUi, all, cancel, challenging, clear, clearFilters, clearParts, deleteWritingConfirm (+33 more)
+
+### Community 10 - "Dashboard i18n DE"
+Cohesion: 0.05
+Nodes (41): dashboard, allExercises, average, averageScore, best, bestScore, browseExercises, completionRate (+33 more)
+
+### Community 11 - "Exercises UI i18n DE"
+Cohesion: 0.05
+Nodes (41): exercisesUi, all, cancel, challenging, clear, clearFilters, clearParts, deleteWritingConfirm (+33 more)
+
+### Community 12 - "Product Docs A2"
 Cohesion: 0.09
-Nodes (15): getWritingTips(), writingTipsA2Teil1, writingTipsA2Teil2, writingTipsC1Teil1, writingTipsC1Teil2, currentDraft, isSubmitted, { requestReview, regenerateReview, isReviewInProgress, hasReview, getReviewError, reviewVersion } (+7 more)
+Nodes (30): Husky Hook Dispatcher (h), Goethe-Zertifikat A2 Exam Reference, Goethe-Zertifikat A2, Hoeren Module, Lesen Module, Messpunkte to Ergebnispunkte, Bundled Mock Exam Set 1, Schreiben Module (+22 more)
 
-### Community 10 - "German Product Copy"
-Cohesion: 0.08
-Nodes (24): description, title, items, title, authentic, feedback, progress, title (+16 more)
-
-### Community 11 - "English Product Copy"
-Cohesion: 0.08
-Nodes (24): description, title, items, title, authentic, feedback, progress, title (+16 more)
-
-### Community 12 - "Tooling Dependencies"
-Cohesion: 0.08
-Nodes (35): Kokoro, create_tts(), generate_speech(), get_process_pool(), get_tts(), init_process_worker(), make_session_options(), process_sentence() (+27 more)
-
-### Community 13 - "Product Roadmap"
-Cohesion: 0.25
-Nodes (8): Roadmap Document, Four-Skill Exam Prep Gap, Frontend-Only Offline MVP, Planned Full-Stack SaaS, Self-Studying Goethe Learners, Unified Exam Prep Platform, Mock Exam Mode, Phase 1 MVP
-
-### Community 14 - "AI Review Types"
-Cohesion: 0.10
-Nodes (17): ListeningProgress, ProgressStats, QuizProgress, SpeakingAttempt, SpeakingProgress, useProgress(), WritingProgress, WritingSessionModel (+9 more)
-
-### Community 15 - "Model Answer Generation"
-Cohesion: 0.20
-Nodes (13): generateModelAnswerA2Part1(), generateModelAnswerA2Part2(), generateModelAnswerC1Part1(), generateModelAnswerC1Part2(), GenerationStatus, getRecord(), isRecord(), modelAnswerVersion (+5 more)
-
-### Community 16 - "German Reading Practice"
+### Community 13 - "Practice i18n EN"
 Cohesion: 0.06
 Nodes (33): practice, allTopics, allTypes, back, bestScore, completed, completionStatus, deleteConfirm (+25 more)
 
-### Community 17 - "German Quiz Copy"
-Cohesion: 0.12
-Nodes (16): quiz, backToPractice, correct, finish, incorrect, next, of, previous (+8 more)
-
-### Community 18 - "English Reading Practice"
+### Community 14 - "Practice i18n DE"
 Cohesion: 0.06
 Nodes (33): practice, allTopics, allTypes, back, bestScore, completed, completionStatus, deleteConfirm (+25 more)
 
-### Community 19 - "English Quiz Copy"
+### Community 15 - "Design Exercise Interior"
 Cohesion: 0.12
-Nodes (16): quiz, backToPractice, correct, finish, incorrect, next, of, previous (+8 more)
+Nodes (24): Account(), ExamModeBanner(), Exams(), GenerateExamModal(), ListeningExercise(), Progress(), ReadingExercise(), SpeakingExercise() (+16 more)
 
-### Community 20 - "Writing Review Prompts"
-Cohesion: 0.15
-Nodes (10): ReviewRequestBody, useWritingReview(), { getTopicById, isInitialized }, route, topicId, { getTopicById, isInitialized }, route, topicId (+2 more)
+### Community 16 - "Writing Topics Composable"
+Cohesion: 0.07
+Nodes (24): isInitialized, topics, { getTopicById, isInitialized }, route, topicId, { getTopicById, isInitialized }, route, topicId (+16 more)
 
-### Community 21 - "TypeScript Strictness"
-Cohesion: 0.50
-Nodes (3): extends, files, references
-
-### Community 22 - "Writing Topic UI"
-Cohesion: 0.05
-Nodes (41): exercisesUi, all, cancel, challenging, clear, clearFilters, clearParts, deleteWritingConfirm (+33 more)
-
-### Community 23 - "Agent OS Commands"
-Cohesion: 0.15
-Nodes (12): Important Guidelines, Output Structure, Plan Mode Prerequisite, Prerequisites, references.md Content, Save Spec Documentation Task, shape.md Content, Shape Spec (+4 more)
-
-### Community 24 - "A2 Reading Generators"
-Cohesion: 0.13
-Nodes (16): generateReadingA2Part2, generateReadingA2Teil1, generateReadingA2Teil3, generateReadingA2Teil4, Goethe A2 Lesen Generation Rules, selektives Lesen, sorgfaltig-genaues Lesen, AI Response Envelope (+8 more)
-
-### Community 26 - "Component Standards"
-Cohesion: 0.18
-Nodes (12): Card Layout Standard, Colored Header Convention, DaisyUI Card Structure, Stretch And Scroll Rules, Contextual Icon Size Scale, Icons Standard, No Inline SVG Icons, Nuxt Icon Heroicons (+4 more)
-
-### Community 27 - "Writing Exam Flow"
-Cohesion: 0.24
-Nodes (10): reviewPromptA2Teil1(), reviewPromptA2Teil2(), reviewPromptC1Teil1(), reviewPromptC1Teil2(), getRecord(), readAllReviews(), ReviewStatus, reviewVersion (+2 more)
-
-### Community 28 - "Composable Standards"
-Cohesion: 0.22
-Nodes (9): Composable Promotion, Named Class Helpers, State Class Helpers Standard, Composable Naming And Shape Standard, Feature-Scoped Composables, Readonly Singleton State, State Methods Return Shape, use Prefix (+1 more)
-
-### Community 29 - "Progress Tracking"
-Cohesion: 0.16
-Nodes (15): ListeningDifficulty, ListeningExerciseA2Teil1, ListeningExerciseA2Teil2, ListeningExerciseA2Teil3, ListeningExerciseA2Teil4, ListeningExerciseBase, ListeningFiveItems, ListeningItemA2Teil1 (+7 more)
-
-### Community 30 - "Storage Standards"
-Cohesion: 0.25
-Nodes (9): exam-one Prefix, Legacy Keys Grandfathered, localStorage Keys Standard, One Key Per Concern, import.meta.client Guard, No Module Top-Level Storage, SSR Storage Guards Standard, Try Catch Storage Reads (+1 more)
-
-### Community 31 - "Quiz Session UI"
-Cohesion: 0.17
-Nodes (3): allAnswered, score, scorePercentage
-
-### Community 32 - "Standards Discovery"
-Cohesion: 0.06
-Nodes (29): Ask Why Then Draft Loop, Discover Standards, Example: Full Loop for One Standard, Focus Area Selection, Important Guidelines, Output Location, Process, Standards Output Location (+21 more)
-
-### Community 33 - "Reading Text Card"
-Cohesion: 0.05
-Nodes (41): exercisesUi, all, cancel, challenging, clear, clearFilters, clearParts, deleteWritingConfirm (+33 more)
-
-### Community 34 - "AI Writing Endpoints"
-Cohesion: 0.13
-Nodes (14): AiReviewCriteria, AiReviewCriteriaA2, AiReviewCriteriaC1, AiReviewCriteriaItem, AiReviewDataA2, AiReviewDataC1, AiReviewExampleItem, ContentPointsCovered (+6 more)
-
-### Community 35 - "UI Card Standards"
-Cohesion: 0.02
-Nodes (85): vocab, A, b, c, d, e, f, h (+77 more)
-
-### Community 36 - "Theme Composable"
-Cohesion: 0.29
-Nodes (4): AVAILABLE_THEMES, DARK_THEMES, LIGHT_THEMES, Theme
-
-### Community 37 - "Question Card UI"
-Cohesion: 0.22
-Nodes (12): analyzeGermanText(), analyzeStructure(), analyzeVocabulary(), calculateCompletenessScore(), countWords(), createWritingFeedback(), generateSuggestions(), splitIntoSentences() (+4 more)
-
-### Community 38 - "Hydration Guards"
-Cohesion: 0.21
-Nodes (12): isA2Review(), isC1Review(), currentTopic, formatWordCount(), getA2ResultPoints(), getA2Sprache(), getC1Kohaerenz(), getC1TeilPoints() (+4 more)
-
-### Community 39 - "Design Handoff"
-Cohesion: 0.50
-Nodes (4): Claude Design Handoff Bundle, Pixel Perfect Recreation, Primary Redesign File, Exam.one Redesign Prototype
-
-### Community 50 - "Settings Store"
-Cohesion: 0.15
-Nodes (13): RecentActivityItem, SkillStat, ExamModule, ExamPart, goetheA2Structure, goetheA2TotalMinutes, goetheA2TotalPoints, Component (+5 more)
-
-### Community 53 - "Root Vue App"
-Cohesion: 0.11
-Nodes (24): applyAudioSettings(), attachAudio(), canPlay, currentSec, detachAudio(), effectiveDurationSec, effectiveSpeed, effectiveVolume (+16 more)
-
-### Community 60 - "Nuxt Config"
+### Community 17 - "Listening Audio Player"
 Cohesion: 0.10
-Nodes (14): ApiError, ApiResponse, AppConfig, ExamDifficulty, HealthController, HealthModule, RequestIdInterceptor, LlmCompletionRequest (+6 more)
+Nodes (25): applyAudioSettings(), attachAudio(), canPlay, currentSec, detachAudio(), effectiveDurationSec, effectiveSpeed, effectiveVolume (+17 more)
 
-### Community 66 - "Quiz Route"
-Cohesion: 0.18
-Nodes (10): contentSizeClass, { getTexts }, isSaved, isSpeaking, quizId, route, router, selectedWord (+2 more)
+### Community 18 - "Generation i18n EN"
+Cohesion: 0.07
+Nodes (27): generation, a2PartsHint, aiLabel, dismiss, failed, generateExercises, generateReadingDescription, generateReadingTitle (+19 more)
 
-### Community 68 - "Reading Modal"
-Cohesion: 0.25
-Nodes (6): exerciseId, { getExerciseById }, isClient, route, router, subtitle
+### Community 19 - "Writing Review i18n EN"
+Cohesion: 0.07
+Nodes (27): coherence, comment, contentPoints, correction, criteria, criterion, error, examples (+19 more)
 
-### Community 69 - "Checking Page"
+### Community 20 - "Generation i18n DE"
+Cohesion: 0.07
+Nodes (27): generation, a2PartsHint, aiLabel, dismiss, failed, generateExercises, generateReadingDescription, generateReadingTitle (+19 more)
+
+### Community 21 - "Writing Review i18n DE"
+Cohesion: 0.07
+Nodes (27): coherence, comment, contentPoints, correction, criteria, criterion, error, examples (+19 more)
+
+### Community 22 - "Kokoro Model Config"
 Cohesion: 0.07
 Nodes (26): dim_in, dropout, hidden_dim, istftnet, gen_istft_hop_size, gen_istft_n_fft, resblock_dilation_sizes, resblock_kernel_sizes (+18 more)
 
-### Community 75 - "Writing Review UI"
-Cohesion: 0.50
-Nodes (4): Badge Class Fallback, i18n Label Keys, Shared Label Maps Standard, utils/labels.ts
-
-### Community 76 - "Community 76"
-Cohesion: 0.67
-Nodes (4): ClientOnly Pattern, Hydration-Sensitive Client Reads, isClient Ref Pattern, SSR Hydration Guard Standard
-
-### Community 77 - "Community 77"
-Cohesion: 0.16
-Nodes (17): generateSpeakingA2Teil1(), generateSpeakingA2Teil2(), speakingA2Parts(), GenerateSpeakingResponse, SpeakingPromptPart, isInitialized, topics, useSpeakingExercises() (+9 more)
-
-### Community 78 - "Community 78"
-Cohesion: 0.16
-Nodes (19): extractTextsFromResponse(), generateForPrompt(), GenerateReadingRequestBody, isAnswerIndex(), isDifficulty(), isGeneratedReadingExercise(), isGeneratedReadingQuestion(), isReadingA2Part() (+11 more)
-
-### Community 79 - "Community 79"
-Cohesion: 0.30
-Nodes (13): hasCommonReviewShape(), isCriteriaItem(), isExampleArray(), isRecord(), isStringArray(), isValidA2Review(), isValidC1Review(), isValidReviewRequest() (+5 more)
-
-### Community 80 - "Community 80"
-Cohesion: 0.20
-Nodes (10): mission.md, Process, roadmap.md, Step 1: Check for Existing Product Docs, Step 2: Gather Product Vision (for mission.md), Step 3: Gather Roadmap (for roadmap.md), Step 4: Establish Tech Stack (for tech-stack.md), Step 5: Generate Files (+2 more)
-
-### Community 81 - "Community 81"
-Cohesion: 0.44
-Nodes (8): dataA2ReadingExamples, generateReadingA2Teil1(), generateReadingA2Teil2(), generateReadingA2Teil3(), generateReadingA2Teil4(), readingA2Parts(), readingOutputPrelude(), ReadingA2Part
-
-### Community 82 - "Community 82"
-Cohesion: 0.33
-Nodes (7): exam.one, Nuxt 3 MVP, Offline-First Core Flows, Optional AI Enhancement, AI Enhancement Layer, Offline-First Core Standard, Static seed data
-
-### Community 83 - "Community 83"
-Cohesion: 0.09
-Nodes (21): General Scoring, Goethe-Zertifikat A2 Exam Reference, Implementation Rules, Listening: Hoeren, Part 1: Interview Or Introduction, Part 1: Newspaper Article, Part 1: Short Announcements, Part 1: Short Message Or SMS (+13 more)
-
-### Community 84 - "Community 84"
-Cohesion: 0.20
-Nodes (9): Important Guidelines, Mission Document, Plan Product, Product Documentation, Tech Stack Document, Tips, Current Frontend Stack, Current State And Persistence (+1 more)
-
-### Community 85 - "Community 85"
-Cohesion: 0.18
-Nodes (10): ExerciseStatus, getScoreTextClass(), getScoreTier(), getSkillLabel(), getTypeLabel(), SKILL_IDS, SkillMeta, SKILLS (+2 more)
-
-### Community 86 - "Community 86"
-Cohesion: 0.26
-Nodes (9): extractArrayFromResponse(), generateForPart(), GenerateSpeakingRequestBody, isFourCards(), isRecord(), nonEmptyString(), normaliseTopic(), callLlm() (+1 more)
-
-### Community 87 - "Community 87"
-Cohesion: 0.17
-Nodes (11): 🙏 Acknowledgments, 🧪 Available Commands, 📧 Contact, Current status (Phase 1), 📚 Documentation, Exam.one 🎓, 🐳 Fully Containerized Stack, 📝 License (+3 more)
-
-### Community 88 - "Community 88"
-Cohesion: 0.29
-Nodes (10): isRecord(), isValidModelAnswerRequest(), ModelAnswerRequestBody, ModelAnswerResponse, normalizeModelAnswer(), parseModelAnswerCandidate(), stringArray(), tryExtractJsonObject() (+2 more)
-
-### Community 89 - "Community 89"
-Cohesion: 0.33
-Nodes (7): useListeningExercises(), isInitialized, texts, useReadingTexts(), useSkillStats(), useWritingTopics(), useSettingsStore
-
-### Community 90 - "Community 90"
-Cohesion: 0.22
-Nodes (5): dataC1ReadingExamples, generateReadingC1(), GenerateReadingResponse, ReadingGenerationOptions, ReadingExercise
-
-### Community 91 - "Community 91"
-Cohesion: 0.32
-Nodes (5): dataA2Part1Topics, dataA2Part2Topics, generateTopicsA2Part1(), generateTopicsA2Part2(), WritingGenerationOptions
-
-### Community 92 - "Community 92"
-Cohesion: 0.29
-Nodes (5): useModelAnswer(), errorMessage, highlights, isLoading, keyPhrases
-
-### Community 93 - "Community 93"
-Cohesion: 0.33
-Nodes (6): Core Framework, Development Tools, Internationalization, State Management, 🛠️ Tech Stack, UI & Styling
-
-### Community 94 - "Community 94"
-Cohesion: 0.33
-Nodes (6): Development, Installation, Optional: Enable AI Features, Prerequisites, Production Build, 🚀 Quick Start
-
-### Community 96 - "Community 96"
-Cohesion: 0.40
-Nodes (5): Code Style, Component Guidelines, 🤝 Contributing, Git Workflow, Testing (Coming in Stage 18)
-
-### Community 97 - "Community 97"
-Cohesion: 0.67
-Nodes (3): Current Focus, Next Steps (In Priority Order), 🎯 Roadmap
-
-### Community 98 - "Community 98"
-Cohesion: 0.67
-Nodes (3): 🎨 Design Philosophy, Technical Principles, User Experience Principles
-
-### Community 99 - "Community 99"
-Cohesion: 0.67
-Nodes (3): Later phases, Phase 1 — Frontend MVP (current), 📊 Project Status
-
-### Community 119 - "Community 119"
-Cohesion: 0.07
-Nodes (27): generation, a2PartsHint, aiLabel, dismiss, failed, generateExercises, generateReadingDescription, generateReadingTitle (+19 more)
-
-### Community 136 - "Community 136"
-Cohesion: 0.24
-Nodes (15): extractArrayFromResponse(), generateForPart(), GenerateListeningRequestBody, hasFiveItems(), isIndexInRange(), isRecord(), isStringArrayOfLength(), isTeil1Item() (+7 more)
-
-### Community 140 - "Community 140"
-Cohesion: 0.19
-Nodes (12): getLlmConfig(), LlmConfig, LlmConnectionResult, LlmMessage, LlmOptions, LlmProvider, LlmReasoningEffort, LlmRuntimeConfig (+4 more)
-
-### Community 170 - "Community 170"
-Cohesion: 0.07
-Nodes (27): generation, a2PartsHint, aiLabel, dismiss, failed, generateExercises, generateReadingDescription, generateReadingTitle (+19 more)
-
-### Community 173 - "Community 173"
-Cohesion: 0.17
-Nodes (10): Agent Priorities, AI Integration Rules, Before Finishing A Change, Current focus, Data And Persistence Rules, Package Manager And Commands, Project Summary, Stack (+2 more)
-
-### Community 175 - "Community 175"
+### Community 23 - "Base TypeScript Config"
 Cohesion: 0.07
 Nodes (26): compilerOptions, composite, declaration, declarationMap, esModuleInterop, exactOptionalPropertyTypes, forceConsistentCasingInFileNames, isolatedModules (+18 more)
 
-### Community 187 - "Community 187"
-Cohesion: 0.12
-Nodes (16): examFormatUi, examTime, goal, intro, level, min, minTotal, modulesCount (+8 more)
+### Community 24 - "Scalo Design System"
+Cohesion: 0.10
+Nodes (19): Scalo × daisyUI Design System, Semantic Color Tokens Only, Scalo Settings UI Patterns, Design Handoff Bundle, Pixel-Perfect Prototype Recreation, Dashboard(), Exam Readiness Hero, Weak Spots Detection (+11 more)
 
-### Community 188 - "Community 188"
+### Community 25 - "Frontend App Shell"
 Cohesion: 0.12
-Nodes (16): examFormatUi, examTime, goal, intro, level, min, minTotal, modulesCount (+8 more)
+Nodes (25): Frontend ESLint Config, Nuxt i18n Configuration, No-Prefix Locale Strategy, Frontend Package Dependencies, Default App Shell Layout, Translated Page Meta Shell, Listening Session Page, Listening Index Legacy Redirect (+17 more)
 
-### Community 203 - "Community 203"
+### Community 26 - "Home Page i18n EN"
+Cohesion: 0.08
+Nodes (24): description, title, items, title, authentic, feedback, progress, title (+16 more)
+
+### Community 27 - "Home Page i18n DE"
+Cohesion: 0.08
+Nodes (24): description, title, items, title, authentic, feedback, progress, title (+16 more)
+
+### Community 28 - "Writing Exercise Tips"
+Cohesion: 0.10
+Nodes (16): getWritingTips(), writingTipsA2Teil1, writingTipsA2Teil2, writingTipsC1Teil1, writingTipsC1Teil2, currentDraft, isSubmitted, props (+8 more)
+
+### Community 29 - "Listening TTS Pipeline"
+Cohesion: 0.15
+Nodes (17): Compose service: kokoro-voices, fallbackVoiceFor(), AiResponse, GenerateListeningAudioBody, AiResponse, getTtsConcurrency(), mapPool(), checkTtsHealth() (+9 more)
+
+### Community 30 - "Design Auth Screens"
+Cohesion: 0.11
+Nodes (11): Scalo Auth UI Patterns, AuthDone(), AuthLogin(), AuthRegister(), AuthReset(), AuthRoot(), AuthSent(), AuthShell() (+3 more)
+
+### Community 31 - "Writing Topic Generators"
+Cohesion: 0.12
+Nodes (18): dataA2Part1Topics, dataA2Part2Topics, generateTopicsA2Part1(), generateTopicsA2Part2(), dataC1Part1Topics, dataC1Part2Topics, generateTopicsC1Part1(), blankContent() (+10 more)
+
+### Community 32 - "Listening Audio Availability"
+Cohesion: 0.17
+Nodes (19): ListeningGenerationOptions, ListeningA2Exercise, ListeningExerciseAudioMap, buildGeneratedListeningAudioMap(), buildSeedListeningAudioMap(), collectListeningAudioSegments(), collectListeningAudioSrcs(), generatedItemListeningAudioPath() (+11 more)
+
+### Community 33 - "Database Package Tooling"
 Cohesion: 0.09
 Nodes (21): devDependencies, eslint, @eslint/js, prisma, tsx, typescript, typescript-eslint, exports (+13 more)
 
-### Community 205 - "Community 205"
-Cohesion: 0.14
-Nodes (12): AI Integration, Architecture Overview, Commands, Components, Data lifecycle (seed + merge), Design Reference, Key directories, localStorage keys (+4 more)
+### Community 34 - "Reading Exercise Types"
+Cohesion: 0.11
+Nodes (18): GeneratedReadingQuestion, ReadingExerciseA2Teil1, ReadingExerciseA2Teil2, ReadingExerciseA2Teil3, ReadingExerciseA2Teil4, ReadingExerciseBase, ReadingFiveQuestions, ReadingMatchingAnswerIndex (+10 more)
 
-### Community 240 - "Community 240"
-Cohesion: 0.14
-Nodes (14): shell, accountSubscription, comingSoon, examTarget, examTargetMeta, filtersExercises, freePlan, myProgress (+6 more)
+### Community 35 - "Speaking Recorder UI"
+Cohesion: 0.10
+Nodes (22): Browser MediaRecorder capture, SpeakingRecorder, SpeakingRecorder.start, SpeakingReviewDetails, onRecorded, Optional STT with manual transcript fallback, reviewAndSave, SpeakingSession (+14 more)
 
-### Community 243 - "Community 243"
-Cohesion: 0.22
-Nodes (12): buildGeneratedListeningAudioMap(), buildSeedListeningAudioMap(), collectListeningAudioSegments(), collectListeningAudioSrcs(), generatedItemListeningAudioPath(), generatedSharedListeningAudioPath(), itemListeningAudioPath(), LISTENING_AUDIO_EXT (+4 more)
+### Community 36 - "Writing A2 Review Prompts"
+Cohesion: 0.16
+Nodes (18): Writing E-zero rule, reviewPromptA2Teil1(), reviewPromptA2Teil2(), ReviewResponse, reviewPromptC1Teil1(), reviewPromptC1Teil2(), exam-one:writing:reviews storage, getRecord() (+10 more)
 
-### Community 258 - "Community 258"
-Cohesion: 0.14
-Nodes (14): shell, accountSubscription, comingSoon, examTarget, examTargetMeta, filtersExercises, freePlan, myProgress (+6 more)
+### Community 37 - "Listening Generation API"
+Cohesion: 0.19
+Nodes (18): extractArrayFromResponse(), generateForPart(), GenerateListeningRequestBody, GenerateListeningResponse, hasFiveItems(), isIndexInRange(), isRecord(), isStringArrayOfLength() (+10 more)
 
-### Community 262 - "Community 262"
-Cohesion: 0.14
-Nodes (13): Auto-Suggest Mode (no arguments), Context Scenario Detection, Explicit Mode, Explicit Mode (with arguments), Inject Standards, Integration, Related Skills Surface, Step 1: Detect Scenario (+5 more)
-
-### Community 282 - "Community 282"
+### Community 38 - "Nitro LLM API Routes"
 Cohesion: 0.18
-Nodes (11): pageMeta, accountSubtitle, accountTitle, dashboardSubtitle, dashboardTitle, examFormatSubtitle, examFormatTitle, exercisesSubtitle (+3 more)
+Nodes (21): POST /api/generate-listening, POST /api/generate-model-answer, POST /api/generate-reading, POST /api/generate-speaking, POST /api/generate-topics, LLM JSON Fence And Bracket Parse Pattern, POST /api/review-mock-exam, POST /api/review (+13 more)
 
-### Community 283 - "Community 283"
-Cohesion: 0.18
-Nodes (11): pageMeta, accountSubtitle, accountTitle, dashboardSubtitle, dashboardTitle, examFormatSubtitle, examFormatTitle, exercisesSubtitle (+3 more)
+### Community 39 - "Parakeet STT Service"
+Cohesion: 0.17
+Nodes (14): array, FastAPI, File, Form, JSONResponse, convert_to_wav(), create_transcription(), FFmpeg 16 kHz mono PCM normalization (+6 more)
 
-### Community 288 - "Community 288"
-Cohesion: 0.13
-Nodes (15): exerciseType, advertisement, announcement, article, dialog, email, instructions, interview (+7 more)
+### Community 40 - "Reading Quiz Session"
+Cohesion: 0.11
+Nodes (12): optionClass, ReviewQuestionList, QuestionCard, selectAnswer(), allAnswered, Reading quiz examMode, finishQuiz(), QuizSession (+4 more)
 
-### Community 289 - "Community 289"
-Cohesion: 0.13
-Nodes (15): exerciseType, advertisement, announcement, article, dialog, email, instructions, interview (+7 more)
+### Community 41 - "Model Answer Generators"
+Cohesion: 0.16
+Nodes (14): generateModelAnswerSpeakingA2Teil1(), generateModelAnswerA2Part1(), generateModelAnswerA2Part2(), generateModelAnswerC1Part1(), generateModelAnswerC1Part2(), GenerationStatus, getRecord(), isRecord() (+6 more)
 
-### Community 312 - "Community 312"
-Cohesion: 0.14
-Nodes (9): displayCategories, displayTestingPart, isClient, isPending, isReady, { isReviewInProgress, reviewVersion, hasReview }, progress, string (+1 more)
+### Community 42 - "Reading Generation API"
+Cohesion: 0.17
+Nodes (18): extractTextsFromResponse(), generateForPrompt(), GenerateReadingRequestBody, isAnswerIndex(), isDifficulty(), isGeneratedReadingExercise(), isGeneratedReadingQuestion(), isReadingA2Part() (+10 more)
 
-### Community 336 - "Community 336"
-Cohesion: 0.20
-Nodes (9): AI, Backend, Database, Deployment & Infra, Frontend, Listening audio (Phase 1 — iteration 1 complete), Speaking (Phase 1 — next), Tech Stack (+1 more)
+### Community 43 - "STT Transcribe API"
+Cohesion: 0.19
+Nodes (16): AiResponse, TranscriptionData, AiResponse, checkSttHealth(), getSttConfig(), Local Parakeet STT, OpenAI Whisper STT, readEnv() (+8 more)
 
-### Community 340 - "Community 340"
-Cohesion: 0.40
-Nodes (5): Standards Index, Auto-Suggest Mode, Server Standards, Standards Index, Styling Standards
-
-### Community 341 - "Community 341"
-Cohesion: 0.31
-Nodes (7): GenerationState, filterJobsByParts(), parseSkillPartKeys(), PartGenerationJob, PartGenerationState, PartJobStatus, Difficulty
-
-### Community 349 - "Community 349"
-Cohesion: 0.22
-Nodes (9): AI Response Envelope, Codebase Shape, Components, Composables, Global, pnpm Commands, Required Standards, Server (+1 more)
-
-### Community 367 - "Community 367"
-Cohesion: 0.05
-Nodes (36): devDependencies, jiti, prettier, typescript, engines, node, pnpm, name (+28 more)
-
-### Community 371 - "Community 371"
-Cohesion: 0.20
-Nodes (10): Process, Scenario: Conversation, Scenario: Creating a Skill, Scenario: Shaping/Planning, Step 1: Detect Context Scenario, Step 2: Read the Index (Auto-Suggest Mode), Step 3: Analyze Work Context, Step 4: Match and Suggest (+2 more)
-
-### Community 372 - "Community 372"
-Cohesion: 0.20
-Nodes (10): Process, Step 1: Clarify What We're Building, Step 2: Gather Visuals, Step 3: Identify Reference Implementations, Step 4: Check Product Context, Step 5: Surface Relevant Standards, Step 6: Generate Spec Folder Name, Step 7: Structure the Plan (+2 more)
-
-### Community 386 - "Community 386"
-Cohesion: 0.20
-Nodes (10): settings, availableSoon, cancel, examLevel, examLevelDescription, interfaceLanguage, save, targetLanguage (+2 more)
-
-### Community 387 - "Community 387"
-Cohesion: 0.20
-Nodes (10): settings, availableSoon, cancel, examLevel, examLevelDescription, interfaceLanguage, save, targetLanguage (+2 more)
-
-### Community 395 - "Community 395"
-Cohesion: 0.20
-Nodes (9): skill, listening, reading, speaking, writing, status, inprogress, mastered (+1 more)
-
-### Community 396 - "Community 396"
-Cohesion: 0.20
-Nodes (9): skill, listening, reading, speaking, writing, status, inprogress, mastered (+1 more)
-
-### Community 397 - "Community 397"
-Cohesion: 0.28
-Nodes (5): Plan, plans, AccountProfile, defaults, PlanId
-
-### Community 430 - "Community 430"
-Cohesion: 0.07
-Nodes (29): 1.1 Goethe A2 core skills, 1.2 Mock exam mode, 1.3 Goethe C1 writing (partial), 1.4 Demo prompt templates + BYOK AI, 1.5 Polish / ship gate, 2.1 Backend foundation, 2.2 Auth and account UI, 2.3 Persistence cutover (+21 more)
-
-### Community 449 - "Community 449"
-Cohesion: 0.29
-Nodes (6): Composable Naming & Return Shape, Exposing state, Naming, Return types, Rules, Shape
-
-### Community 457 - "Community 457"
-Cohesion: 0.15
-Nodes (13): nav, account, dashboard, examFormat, exercises, home, listening, mockExams (+5 more)
-
-### Community 458 - "Community 458"
-Cohesion: 0.15
-Nodes (13): nav, account, dashboard, examFormat, exercises, home, listening, mockExams (+5 more)
-
-### Community 485 - "Community 485"
-Cohesion: 0.33
-Nodes (5): Read pattern, Related patterns, Rules, SSR Storage Guards in Composables, Write pattern
-
-### Community 496 - "Community 496"
+### Community 44 - "Backend Tooling Config"
 Cohesion: 0.11
 Nodes (19): devDependencies, eslint, @eslint/js, globals, jest, @jest/globals, @nestjs/cli, @nestjs/schematics (+11 more)
 
-### Community 505 - "Community 505"
-Cohesion: 0.15
-Nodes (10): GenerateListeningResponse, AudioOverrides, exercises, isInitialized, ListeningGenerationOptions, ListeningA2Exercise, ListeningExerciseAudioMap, defaultListeningTopics (+2 more)
+### Community 45 - "Resumable AI Generation"
+Cohesion: 0.26
+Nodes (14): Resumable Per-Part AI Generation Pattern, useListeningGeneration(), Resumable Mock Exam Generation Pipeline, useMockExamGeneration(), useReadingGeneration(), useSpeakingGeneration(), GenerationState, useWritingGeneration() (+6 more)
 
-### Community 508 - "Community 508"
-Cohesion: 0.40
-Nodes (4): i18n keys, Layout, Shared Label & Badge Maps, Usage in components
+### Community 46 - "Writing Review Details"
+Cohesion: 0.14
+Nodes (16): isA2Review(), isC1Review(), contentPointsLabel, formattedWordCount, isA2, registerLabel, currentTopic, formatWordCount() (+8 more)
 
-### Community 513 - "Community 513"
-Cohesion: 0.40
-Nodes (4): About the design files, Bundle contents, CODING AGENTS: READ THIS FIRST, What you should do — IMPORTANT
+### Community 47 - "Shared Library Boundaries"
+Cohesion: 0.13
+Nodes (14): @exam-one/database, PostgreSQL persistence, Prisma ORM boundary, @exam-one/exam-content, @exam-one/nestjs-libraries, Root db:* Prisma scripts, exam-one monorepo root, pnpm workspace packages (+6 more)
 
-### Community 514 - "Community 514"
-Cohesion: 0.25
-Nodes (4): instruction, mockRubric, mockTranscript, usefulPhrases
-
-### Community 518 - "Community 518"
-Cohesion: 0.40
-Nodes (4): Problem, Product Mission, Solution, Target Users
-
-### Community 536 - "Community 536"
-Cohesion: 0.50
-Nodes (3): Prefer: `<ClientOnly>` for whole subtrees, SSR Hydration Guard, When you need a real SSR fallback value: `isClient` ref
-
-### Community 542 - "Community 542"
-Cohesion: 0.50
-Nodes (3): Legacy, localStorage Keys, Rules
-
-### Community 543 - "Community 543"
+### Community 48 - "Backend TSConfig"
 Cohesion: 0.12
 Nodes (16): compilerOptions, baseUrl, emitDecoratorMetadata, experimentalDecorators, module, moduleResolution, outDir, paths (+8 more)
 
-### Community 569 - "Community 569"
-Cohesion: 0.50
-Nodes (3): daisyUI Setup, Entry file, Nuxt config
+### Community 49 - "Product Roadmap Standards"
+Cohesion: 0.16
+Nodes (17): ~/ Import Alias Rule, Core Practice Exam Framework, C1 Writing Seed Prompt Modules, Goethe C1 Writing, Phase 1 Frontend MVP Complete, Product Context Index, Bring-Your-Own-Key AI, exam.one (+9 more)
 
-### Community 595 - "Community 595"
-Cohesion: 0.33
-Nodes (5): Agent Guidance, Core Product, Current focus (Phase 1), Exam References, Product Context Index
+### Community 50 - "Local Persistence Catalog"
+Cohesion: 0.21
+Nodes (15): Defaults Union Stored Non-Defaults Catalog Pattern, Listening Audio Overrides Persistence, useListeningExercises(), Cross-Skill Local Progress Hub, useProgress(), useReadingTexts(), Offline Skill Readiness Model, useSkillStats() (+7 more)
 
-### Community 598 - "Community 598"
+### Community 51 - "Dialogue Voice Mapping"
+Cohesion: 0.16
+Nodes (16): ALL_VOICE_POOL, DialogueTurn, DialogueVoiceId, FEMALE_NAMES, FEMALE_ROLES, FEMALE_VOICE_POOL, inferSpeakerGender(), MALE_NAMES (+8 more)
+
+### Community 52 - "Exam Format i18n EN"
+Cohesion: 0.12
+Nodes (17): examFormatUi, comingLater, examTime, goal, intro, level, min, minTotal (+9 more)
+
+### Community 53 - "Exam Format i18n DE"
+Cohesion: 0.12
+Nodes (17): examFormatUi, comingLater, examTime, goal, intro, level, min, minTotal (+9 more)
+
+### Community 54 - "Mock Exam Set Page"
+Cohesion: 0.14
+Nodes (4): canOpenModuleReview(), isAiReviewInProgress(), openModuleReview(), resultModuleCardClass()
+
+### Community 55 - "NestJS Backend Bootstrap"
+Cohesion: 0.21
+Nodes (9): exam-one-backend Package, AppConfig, BACKEND_PORT Default 3001, RequestIdInterceptor, AppModule, configureApp(), Swagger API Docs at /api/docs, BACKEND_PORT default 3001 (+1 more)
+
+### Community 56 - "Listening Exercises Store"
+Cohesion: 0.12
+Nodes (9): AudioOverrides, exercises, isInitialized, exerciseId, { getExerciseById }, isClient, route, router (+1 more)
+
+### Community 57 - "Exam Structure Stats"
+Cohesion: 0.18
+Nodes (11): MockGenerationModule, RecentActivityItem, SkillStat, ExamModule, ExamPart, getAvailableExamParts(), goetheA2Structure, goetheA2TotalMinutes (+3 more)
+
+### Community 58 - "Mock Exam Sets Catalog"
+Cohesion: 0.21
+Nodes (11): createGoetheA2MockExamSet(), goetheA2MockExamSet1, MockExamExerciseDefinition, MockExamModuleDefinition, MockExamSet, mockExamSets, defaultReadingTopics, mockExamReadingTopics (+3 more)
+
+### Community 59 - "Reading Texts Store"
+Cohesion: 0.12
+Nodes (14): isInitialized, texts, allDefaultListeningTopics, allDefaultReadingTopics, contentSizeClass, { getTexts }, isSaved, isSpeaking (+6 more)
+
+### Community 60 - "Contracts Package Tooling"
 Cohesion: 0.12
 Nodes (15): devDependencies, eslint, @eslint/js, typescript, typescript-eslint, exports, name, private (+7 more)
 
-### Community 601 - "Community 601"
+### Community 61 - "Exam Content Tooling"
 Cohesion: 0.12
 Nodes (15): devDependencies, eslint, @eslint/js, typescript, typescript-eslint, exports, name, private (+7 more)
 
-### Community 603 - "Community 603"
+### Community 62 - "Listening Exercise Types"
+Cohesion: 0.16
+Nodes (15): ListeningDifficulty, ListeningExerciseA2Teil1, ListeningExerciseA2Teil2, ListeningExerciseA2Teil3, ListeningExerciseA2Teil4, ListeningExerciseBase, ListeningFiveItems, ListeningItemA2Teil1 (+7 more)
+
+### Community 63 - "Quiz i18n EN"
+Cohesion: 0.12
+Nodes (16): quiz, backToPractice, correct, finish, incorrect, next, of, previous (+8 more)
+
+### Community 64 - "Quiz i18n DE"
+Cohesion: 0.12
+Nodes (16): quiz, backToPractice, correct, finish, incorrect, next, of, previous (+8 more)
+
+### Community 65 - "NestJS Libraries Tooling"
 Cohesion: 0.12
 Nodes (15): devDependencies, eslint, @eslint/js, typescript, typescript-eslint, exports, name, private (+7 more)
 
-### Community 604 - "Community 604"
-Cohesion: 0.12
-Nodes (9): AppCtx, EXAM_STRUCTURE, EXERCISES, LEVELS, MOCK_EXAMS, PART_COUNT, PLANS, SKILLS (+1 more)
+### Community 66 - "SSR Storage Standards"
+Cohesion: 0.18
+Nodes (15): SSR Hydration Guard ClientOnly, exam-one: localStorage Key Prefix, Seed Plus Merge On Load, PostgreSQL Named Docker Volume, import.meta.client Storage Guards, Phase 2 Self-Host Persistence Cutover, NestJS Backend API, Phase 2 Docker Compose Full Stack (+7 more)
 
-### Community 619 - "Community 619"
-Cohesion: 0.06
-Nodes (51): ALL_VOICE_POOL, dialogueAudioPlanKey(), DialogueTurn, DialogueVoiceId, fallbackVoiceFor(), FEMALE_NAMES, FEMALE_ROLES, FEMALE_VOICE_POOL (+43 more)
+### Community 67 - "Mock Exam State"
+Cohesion: 0.18
+Nodes (13): Optional Mock Exam AI Overview Lifecycle, blankModule(), createBlankMockExamState(), MockExamState, MockExerciseResult, MockGradingStatus, MockModuleState, MockOverviewState (+5 more)
 
-### Community 621 - "Community 621"
+### Community 68 - "Exercise Types i18n EN"
+Cohesion: 0.13
+Nodes (15): exerciseType, advertisement, announcement, article, dialog, email, instructions, interview (+7 more)
+
+### Community 69 - "Speaking Gen i18n EN"
+Cohesion: 0.13
+Nodes (15): canGenerate, closing, generateButton, generating, greeting, keyFeatures, keyPhrases, mainPoints (+7 more)
+
+### Community 70 - "Exercise Types i18n DE"
+Cohesion: 0.13
+Nodes (15): exerciseType, advertisement, announcement, article, dialog, email, instructions, interview (+7 more)
+
+### Community 71 - "Speaking Gen i18n DE"
+Cohesion: 0.13
+Nodes (15): canGenerate, closing, generateButton, generating, greeting, keyFeatures, keyPhrases, mainPoints (+7 more)
+
+### Community 72 - "Score Label Helpers"
+Cohesion: 0.17
+Nodes (12): ExerciseStatus, getScoreTextClass(), getScoreTier(), getSkillLabel(), getSkillMeta(), getTypeLabel(), SKILL_IDS, SkillMeta (+4 more)
+
+### Community 73 - "German Text Analysis"
+Cohesion: 0.24
+Nodes (13): WritingGenerationOptions, analyzeGermanText(), analyzeStructure(), analyzeVocabulary(), calculateCompletenessScore(), countWords(), createWritingFeedback(), generateSuggestions() (+5 more)
+
+### Community 74 - "Frontend Strict TSConfig"
 Cohesion: 0.14
 Nodes (13): compilerOptions, exactOptionalPropertyTypes, noImplicitAny, noImplicitOverride, noImplicitReturns, noPropertyAccessFromIndexSignature, noUncheckedIndexedAccess, noUnusedLocals (+5 more)
 
-### Community 622 - "Community 622"
-Cohesion: 0.15
-Nodes (12): Audio Sample, Changelog, German Text Normalization, Kokoro ONNX German Martin, License And Credits, Process-Isolated Parallel Workers, Quick Start, Relationship To Upstream Projects (+4 more)
+### Community 75 - "LLM Health Adapter"
+Cohesion: 0.18
+Nodes (11): LlmHealthData, llm-healthcheck Nitro Plugin, LlmConnectionResult, LlmMessage, LlmOptions, LlmProvider, LlmReasoningEffort, LlmRuntimeConfig (+3 more)
 
-### Community 624 - "Community 624"
-Cohesion: 0.17
-Nodes (12): dependencies, class-transformer, class-validator, @exam-one/contracts, @nestjs/common, @nestjs/config, @nestjs/core, @nestjs/platform-express (+4 more)
+### Community 76 - "Shell i18n EN"
+Cohesion: 0.14
+Nodes (14): shell, accountSubscription, comingSoon, examTarget, examTargetMeta, filtersExercises, freePlan, myProgress (+6 more)
 
-### Community 625 - "Community 625"
-Cohesion: 0.17
-Nodes (12): scripts, build, dev, lint, lint:fix, start, start:debug, start:prod (+4 more)
+### Community 77 - "Writing i18n EN"
+Cohesion: 0.14
+Nodes (14): writing, aiReview, checking, checkReview, noReviewAvailable, noSubmission, originalTask, repeatExercise (+6 more)
 
-### Community 626 - "Community 626"
+### Community 78 - "Shell i18n DE"
+Cohesion: 0.14
+Nodes (14): shell, accountSubscription, comingSoon, examTarget, examTargetMeta, filtersExercises, freePlan, myProgress (+6 more)
+
+### Community 79 - "Writing i18n DE"
+Cohesion: 0.14
+Nodes (14): writing, aiReview, checking, checkReview, noReviewAvailable, noSubmission, originalTask, repeatExercise (+6 more)
+
+### Community 80 - "Writing 80"
+Cohesion: 0.14
+Nodes (9): displayCategories, displayTestingPart, isClient, isPending, isReady, { isReviewInProgress, reviewVersion, hasReview }, progress, string (+1 more)
+
+### Community 81 - "Reading 81"
+Cohesion: 0.26
+Nodes (11): dataA2ReadingExamples, generateReadingA2Teil1(), generateReadingA2Teil2(), generateReadingA2Teil3(), generateReadingA2Teil4(), readingA2Parts(), readingOutputPrelude(), Per-Teil A2 prompt parts helpers (+3 more)
+
+### Community 82 - "Listening 82"
 Cohesion: 0.21
+Nodes (12): dialogueAudioPlanKey(), audioRoot, collectSegments(), __dirname, fileExists(), formatDuration(), frontendRoot, hashTranscript() (+4 more)
+
+### Community 83 - "Mock Exam 83"
+Cohesion: 0.15
+Nodes (13): nav, account, dashboard, examFormat, exercises, home, listening, mockExams (+5 more)
+
+### Community 84 - "Mock Exam 84"
+Cohesion: 0.15
+Nodes (13): nav, account, dashboard, examFormat, exercises, home, listening, mockExams (+5 more)
+
+### Community 85 - "Design Prototype 85"
+Cohesion: 0.17
+Nodes (7): AuthAside(), EXERCISES, LEVELS, PART_COUNT, SkillBadge(), SKILLS, TYPE_OPTIONS
+
+### Community 86 - "Design Prototype 86"
+Cohesion: 0.23
 Nodes (11): PartInfoCard(), buildGenJobs(), pmtDefaultText(), pmtFmtDate(), pmtLoadStore(), pmtSeedStore(), PROMPT_KINDS, PROMPT_MATRIX (+3 more)
 
-### Community 628 - "Community 628"
-Cohesion: 0.22
-Nodes (9): jest, collectCoverageFrom, coverageDirectory, moduleFileExtensions, rootDir, testEnvironment, testRegex, transform (+1 more)
-
-### Community 629 - "Community 629"
-Cohesion: 0.22
-Nodes (8): compilerOptions, emitDeclarationOnly, outDir, rootDir, tsBuildInfoFile, exclude, extends, include
-
-### Community 630 - "Community 630"
-Cohesion: 0.22
-Nodes (8): compilerOptions, emitDeclarationOnly, outDir, rootDir, tsBuildInfoFile, exclude, extends, include
-
-### Community 631 - "Community 631"
-Cohesion: 0.22
-Nodes (8): compilerOptions, emitDeclarationOnly, outDir, rootDir, tsBuildInfoFile, exclude, extends, include
-
-### Community 634 - "Community 634"
-Cohesion: 0.25
-Nodes (7): compilerOptions, emitDeclarationOnly, outDir, rootDir, exclude, extends, include
-
-### Community 635 - "Community 635"
-Cohesion: 0.25
-Nodes (7): Core Practice & Exam Framework, Exam references, Phase 1 (current) — offline-capable frontend, Phase 2 onward — local self-hosted stack, Phase boundaries, Rules, Seed + merge on load (Phase 1)
-
-### Community 637 - "Community 637"
-Cohesion: 0.29
-Nodes (6): hostedFeatures, selfHostedFeatures, skills, stats, steps, whoCards
-
-### Community 638 - "Community 638"
-Cohesion: 0.38
-Nodes (4): GenQueue, GenQueueTray(), GenTopBar(), useGenQueue()
-
-### Community 639 - "Community 639"
-Cohesion: 0.25
-Nodes (6): EX_COMPONENT, MockExam(), PART_DEFS, PartView(), ResultView(), TOTAL_EX
-
-### Community 640 - "Community 640"
-Cohesion: 0.29
-Nodes (6): moduleFileExtensions, rootDir, testEnvironment, testRegex, transform, ^.+\\.(t|j)s$
-
-### Community 641 - "Community 641"
-Cohesion: 0.33
-Nodes (5): collection, compilerOptions, deleteOutDir, $schema, sourceRoot
-
-### Community 642 - "Community 642"
-Cohesion: 0.33
-Nodes (5): compilerOptions, types, exclude, extends, include
-
-### Community 643 - "Community 643"
-Cohesion: 0.33
-Nodes (5): Local-first, not cloud-required, Named Docker volume, Related, Self-Host Persistence (Phase 2+), Stack contract
-
-### Community 645 - "Community 645"
-Cohesion: 0.33
-Nodes (5): Build, Compose Example, Scope, What It Changes, wyoming_openai_german_separator
-
-### Community 646 - "Community 646"
-Cohesion: 0.40
-Nodes (4): name, private, type, version
-
-### Community 647 - "Community 647"
-Cohesion: 0.40
-Nodes (4): German Exam Reference — Goethe C1 (Phase 1 scope), Implementation pointers, Persistence and AI, Phase 1 scope
-
-### Community 658 - "Community 658"
-Cohesion: 0.50
-Nodes (3): In-app Generate audio, Listening audio generation (four-voice PyTorch Kokoro), Seed audio (maintainer)
-
-### Community 691 - "Community 691"
-Cohesion: 0.38
-Nodes (9): dataA2ListeningExamples, generateListeningA2Teil1(), generateListeningA2Teil2(), generateListeningA2Teil3(), generateListeningA2Teil4(), listeningA2Parts(), listeningOutputPrelude(), ListeningPromptPart (+1 more)
-
-### Community 696 - "Community 696"
-Cohesion: 0.13
-Nodes (27): ndarray, Path, Request, Tensor, chunk_phonemes(), generate_speech(), init_phonemizer(), load_kmodel() (+19 more)
-
-### Community 697 - "Community 697"
+### Community 87 - "Frontend 87"
 Cohesion: 0.23
 Nodes (8): GenerateTopicsRequestBody, GenerateTopicsResponse, isRecord(), isValidGenerateTopicsRequest(), normalizeGeneratedTopic(), stringArray(), generateTopicId(), generateUUID()
 
+### Community 88 - "Frontend 88"
+Cohesion: 0.36
+Nodes (11): hasCommonReviewShape(), isCriteriaItem(), isExampleArray(), isRecord(), isStringArray(), isValidA2Review(), isValidC1Review(), isValidReviewRequest() (+3 more)
+
+### Community 89 - "Backend 89"
+Cohesion: 0.17
+Nodes (12): dependencies, class-transformer, class-validator, @exam-one/contracts, @nestjs/common, @nestjs/config, @nestjs/core, @nestjs/platform-express (+4 more)
+
+### Community 90 - "Backend 90"
+Cohesion: 0.17
+Nodes (12): scripts, build, dev, lint, lint:fix, start, start:debug, start:prod (+4 more)
+
+### Community 91 - "Frontend 91"
+Cohesion: 0.24
+Nodes (8): Plan, plans, Presentation-only subscription plans, AccountProfile, defaults, Local-First Account Profile, PlanId, useAccountProfile()
+
+### Community 92 - "Frontend 92"
+Cohesion: 0.29
+Nodes (10): isRecord(), isValidModelAnswerRequest(), ModelAnswerRequestBody, ModelAnswerResponse, normalizeModelAnswer(), parseModelAnswerCandidate(), stringArray(), tryExtractJsonObject() (+2 more)
+
+### Community 93 - "Listening 93"
+Cohesion: 0.25
+Nodes (11): German TTS abbreviation expansions, German TTS numbered unit expansions, German separator-dot placeholder patterns, Root tts:*/stt:*/stack:* scripts, Bundled A2 listening seed audio pipeline, Unified Compose speech stack, Kokoro TTS service, Parakeet STT service (+3 more)
+
+### Community 94 - "Mock Exam 94"
+Cohesion: 0.20
+Nodes (11): AudioPlayer, Exam replay cap maxPlays, Simulated audio fallback timer, generateAudioForExercise, Interaction lock until audio ready, ListeningSession, normalize listening exercise model, MockGenerationPipeline (+3 more)
+
+### Community 95 - "Frontend 95"
+Cohesion: 0.18
+Nodes (11): pageMeta, accountSubtitle, accountTitle, dashboardSubtitle, dashboardTitle, examFormatSubtitle, examFormatTitle, exercisesSubtitle (+3 more)
+
+### Community 96 - "Frontend 96"
+Cohesion: 0.18
+Nodes (11): pageMeta, accountSubtitle, accountTitle, dashboardSubtitle, dashboardTitle, examFormatSubtitle, examFormatTitle, exercisesSubtitle (+3 more)
+
+### Community 97 - "Users/Eugene 97"
+Cohesion: 0.20
+Nodes (10): Auto-Suggest Mode, Context Scenario Detection, Explicit Mode, Inject Standards Command, Related Skills Surface, Plan Mode Prerequisite, Save Spec Documentation Task, Shape Spec Command (+2 more)
+
+### Community 98 - "Writing 98"
+Cohesion: 0.20
+Nodes (7): useModelAnswer(), useWritingMode(), WritingMode, errorMessage, highlights, isLoading, keyPhrases
+
+### Community 99 - "Frontend 99"
+Cohesion: 0.20
+Nodes (7): usePageMeta(), AVAILABLE_THEMES, DARK_THEMES, data-theme Theme Source of Truth, LIGHT_THEMES, Theme, useTheme()
+
+### Community 100 - "Package Manifest 100"
+Cohesion: 0.27
+Nodes (7): @exam-one/contracts Package, ExamDifficulty, LlmCompletionRequest, LlmCompletionResponse, LlmMessage, LlmProvider, Contracts Barrel Export
+
+### Community 101 - "Listening 101"
+Cohesion: 0.20
+Nodes (9): skill, listening, reading, speaking, writing, status, inprogress, mastered (+1 more)
+
+### Community 102 - "Frontend 102"
+Cohesion: 0.20
+Nodes (10): settings, availableSoon, cancel, examLevel, examLevelDescription, interfaceLanguage, save, targetLanguage (+2 more)
+
+### Community 103 - "Listening 103"
+Cohesion: 0.20
+Nodes (9): skill, listening, reading, speaking, writing, status, inprogress, mastered (+1 more)
+
+### Community 104 - "Frontend 104"
+Cohesion: 0.20
+Nodes (10): settings, availableSoon, cancel, examLevel, examLevelDescription, interfaceLanguage, save, targetLanguage (+2 more)
+
+### Community 105 - "Design Prototype 105"
+Cohesion: 0.24
+Nodes (5): SetSave(), SETTINGS_NAV, SettingsConnected(), SettingsData(), useFlash()
+
+### Community 106 - "Users/Eugene 106"
+Cohesion: 0.20
+Nodes (10): assets/styles/main.css, composables/useTheme.ts, daisyUI v5, Nuxt Config CSS Pipeline, Single Styling Toolchain, Tailwind CSS v4, app.vue Theme Setup, daisyUI Semantic Tokens (+2 more)
+
+### Community 107 - "Frontend 107"
+Cohesion: 0.38
+Nodes (9): assertCompatible(), concatWavWithPauses(), findChunk(), parseWavFormat(), readUInt16LE(), readUInt32LE(), silencePcm(), WavFormat (+1 more)
+
+### Community 108 - "Listening 108"
+Cohesion: 0.44
+Nodes (8): dataA2ListeningExamples, Listening discriminated union by testingPart, generateListeningA2Teil1(), generateListeningA2Teil2(), generateListeningA2Teil3(), generateListeningA2Teil4(), listeningA2Parts(), listeningOutputPrelude()
+
+### Community 109 - "Reading 109"
+Cohesion: 0.22
+Nodes (5): dataC1ReadingExamples, generateReadingC1(), GenerateReadingResponse, ReadingGenerationOptions, ReadingExercise
+
+### Community 110 - "Health Checks 110"
+Cohesion: 0.36
+Nodes (4): ApiError, ApiResponse, HealthController, HealthModule
+
+### Community 111 - "Mock Exam 111"
+Cohesion: 0.39
+Nodes (7): isOverview(), parseOverview(), ReviewMockExamBody, buildMockExamOverviewPrompt(), MockExamOverview, MockExamOverviewInput, MockExamOverviewItem
+
+### Community 112 - "Backend 112"
+Cohesion: 0.22
+Nodes (9): jest, collectCoverageFrom, coverageDirectory, moduleFileExtensions, rootDir, testEnvironment, testRegex, transform (+1 more)
+
+### Community 113 - "Frontend 113"
+Cohesion: 0.33
+Nodes (9): AppSidebar, Exam level A2/C1 selector, Practice-by-skill counts, AppTopbar, Interface locale switcher, Language settings modal, Navbar, Nuxt app.vue root shell (+1 more)
+
+### Community 114 - "TypeScript Config 114"
+Cohesion: 0.22
+Nodes (8): compilerOptions, emitDeclarationOnly, outDir, rootDir, tsBuildInfoFile, exclude, extends, include
+
+### Community 115 - "TypeScript Config 115"
+Cohesion: 0.22
+Nodes (8): compilerOptions, emitDeclarationOnly, outDir, rootDir, tsBuildInfoFile, exclude, extends, include
+
+### Community 116 - "TypeScript Config 116"
+Cohesion: 0.22
+Nodes (8): compilerOptions, emitDeclarationOnly, outDir, rootDir, tsBuildInfoFile, exclude, extends, include
+
+### Community 117 - "Design Prototype 117"
+Cohesion: 0.31
+Nodes (6): GenerateExercisesModal(), AI Generation Progress Feedback, GenQueue, GenQueueTray(), GenTopBar(), useGenQueue()
+
+### Community 118 - "Frontend 118"
+Cohesion: 0.22
+Nodes (6): bestScore, displayTopics, isClient, progress, scorePercentage, textCompleted
+
+### Community 119 - "Users/Eugene 119"
+Cohesion: 0.25
+Nodes (8): Ask Why Then Draft Loop, Discover Standards Command, Focus Area Selection, Standards Output Location, Tribal Knowledge Extraction, Index Standards Command, Root Reserved Keyword, Standards Index
+
+### Community 120 - "Users/Eugene 120"
+Cohesion: 0.25
+Nodes (8): Composable Promotion, Named Class Helpers, State Class Helpers Standard, Composable Naming And Shape Standard, Feature-Scoped Composables, Readonly Singleton State, State Methods Return Shape, use Prefix
+
+### Community 121 - "Listening 121"
+Cohesion: 0.25
+Nodes (6): useListeningAudioAvailability(), useListeningExclusivePlayback(), LLM and TTS Preflight Gate, TtsHealthEnvelope, TtsHealthStatus, useTtsHealth()
+
+### Community 122 - "TypeScript Config 122"
+Cohesion: 0.25
+Nodes (7): compilerOptions, emitDeclarationOnly, outDir, rootDir, exclude, extends, include
+
+### Community 123 - "Listening 123"
+Cohesion: 0.43
+Nodes (7): AI Endpoint {data, error} Envelope, GET /api/llm/health, GET /api/stt/health, POST /api/tts/delete-listening-audio, POST /api/tts/generate-listening-audio, GET /api/tts/health, Listening TTS Audio Pipeline
+
+### Community 124 - "Health Checks 124"
+Cohesion: 0.29
+Nodes (7): Spec tsconfig with Jest types, HealthController.check, Health ApiResponse envelope, HealthController unit returns ok, /api/v1/health readiness URL, GET /api/v1/health e2e, Jest e2e config
+
+### Community 125 - "Speaking 125"
+Cohesion: 0.29
+Nodes (7): speakingReview, criteria, improvements, noImprovements, noStrengths, strengths, totalPoints
+
+### Community 126 - "Speaking 126"
+Cohesion: 0.29
+Nodes (7): speakingReview, criteria, improvements, noImprovements, noStrengths, strengths, totalPoints
+
+### Community 127 - "Backend 127"
+Cohesion: 0.29
+Nodes (6): moduleFileExtensions, rootDir, testEnvironment, testRegex, transform, ^.+\\.(t|j)s$
+
+### Community 128 - "Backend 128"
+Cohesion: 0.33
+Nodes (5): collection, compilerOptions, deleteOutDir, $schema, sourceRoot
+
+### Community 129 - "TypeScript Config 129"
+Cohesion: 0.33
+Nodes (5): compilerOptions, types, exclude, extends, include
+
+### Community 130 - "Speaking 130"
+Cohesion: 0.47
+Nodes (5): isFourStrings(), isInitialized, isRecord(), normaliseStoredTopic(), topics
+
+### Community 131 - "Mock Exam 131"
+Cohesion: 0.33
+Nodes (5): actionLabel, confirmDelete(), formattedDate, statusClass, T
+
+### Community 132 - "Mock Exam 132"
+Cohesion: 0.33
+Nodes (4): EX_COMPONENT, PART_DEFS, PartView(), TOTAL_EX
+
+### Community 133 - "Users/Eugene 133"
+Cohesion: 0.40
+Nodes (5): Mission Document, Plan Product Command, Product Documentation, Roadmap Document, Tech Stack Document
+
+### Community 134 - "Package Manifest 134"
+Cohesion: 0.40
+Nodes (4): name, private, type, version
+
+### Community 136 - "Users/Eugene 136"
+Cohesion: 0.40
+Nodes (5): Card Layout Standard, Colored Header Convention, DaisyUI Card Structure, Stretch And Scroll Rules, @nuxt/icon heroicons Standard
+
+### Community 137 - "STT 137"
+Cohesion: 0.40
+Nodes (3): SttHealthData, SttHealthResponse, TranscriptionResponse
+
+### Community 138 - "Listening 138"
+Cohesion: 0.40
+Nodes (5): Compose service: backend, Compose service: frontend, generated_listening_audio volume, Compose service: parakeet, Compose service: postgres
+
+### Community 139 - "Frontend 139"
+Cohesion: 0.40
+Nodes (5): StructureStat, GenerateExercisesModal, One exercise per exam part, Goethe A2 part popover, PartChip
+
+### Community 140 - "Frontend 140"
+Cohesion: 0.40
+Nodes (5): pipelineStatus, done, failed, queued, running
+
+### Community 141 - "Frontend 141"
+Cohesion: 0.40
+Nodes (5): tips, allRequirements, appropriateWordCount, clearStructure, politeLanguage
+
+### Community 142 - "Frontend 142"
+Cohesion: 0.40
+Nodes (5): pipelineStatus, done, failed, queued, running
+
+### Community 143 - "Frontend 143"
+Cohesion: 0.40
+Nodes (5): tips, allRequirements, appropriateWordCount, clearStructure, politeLanguage
+
+### Community 144 - "Writing 144"
+Cohesion: 0.40
+Nodes (5): TimerChip, Timer urgent at ≤120s, InstructionsCard, TaskDescriptionCard, Writing modes quick/challenge/model-help
+
+### Community 145 - "STT 145"
+Cohesion: 0.60
+Nodes (3): copy_without_duplication_when_possible(), model_is_valid(), download-models.sh script
+
+### Community 146 - "STT 146"
+Cohesion: 0.40
+Nodes (5): Hugging Face cache model reuse, Local Parakeet speech-to-text, OpenAI-compatible STT endpoint, parakeet-tdt-0.6b-v3 Q8 GGUF, transcribe.cpp runtime
+
+### Community 147 - "Locale Strings 147"
+Cohesion: 0.50
+Nodes (4): Badge Class Fallback, i18n Label Keys, Shared Label Maps Standard, utils/labels.ts
+
+### Community 148 - "Design Prototype 148"
+Cohesion: 0.50
+Nodes (3): App(), Design client-side route switch, root
+
+### Community 149 - "Agents.Md 149"
+Cohesion: 0.50
+Nodes (4): AI Endpoint {data, error} Envelope, Bring-Your-Own-Key AI, Nuxt 3 Frontend, useTheme Theme Source
+
+### Community 151 - "TypeScript Config 151"
+Cohesion: 0.50
+Nodes (3): extends, files, references
+
+### Community 154 - "Frontend 154"
+Cohesion: 0.67
+Nodes (3): audio, content, jobKind
+
+### Community 155 - "Frontend 155"
+Cohesion: 0.67
+Nodes (3): audio, content, jobKind
+
+### Community 156 - "Reading 156"
+Cohesion: 0.67
+Nodes (3): ReadingGeneratorCard, Resumable part generation jobs, TopicGeneratorCard
+
 ## Ambiguous Edges - Review These
-- `✍️ Writing Practice` → `Schreiben Hilfen PDF`  [AMBIGUOUS]
-  Schreiben_Hilfen.pdf · relation: conceptually_related_to
+- `usePageMeta()` → `useTheme()`  [AMBIGUOUS]
+  apps/frontend/composables/usePageMeta.ts · relation: conceptually_related_to
+- `ReadingA2Exercise` → `ReviewQuestion`  [AMBIGUOUS]
+  apps/frontend/utils/mockExam/review.ts · relation: conceptually_related_to
+- `StructureStat` → `Goethe A2 part popover`  [AMBIGUOUS]
+  apps/frontend/components/examFormat/StructureStat.vue · relation: conceptually_related_to
+- `Reading Listing Page` → `Unified Exercises Hub Routing`  [AMBIGUOUS]
+  apps/frontend/pages/reading/index.vue · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **1468 isolated node(s):** `allow`, `husky.sh script`, `$schema`, `collection`, `sourceRoot` (+1463 more)
+- **1590 isolated node(s):** `allow`, `husky.sh script`, `$schema`, `collection`, `sourceRoot` (+1585 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **39 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **What is the exact relationship between `✍️ Writing Practice` and `Schreiben Hilfen PDF`?**
+- **What is the exact relationship between `usePageMeta()` and `useTheme()`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `exercisesUi` connect `Reading Text Card` to `Community 396`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `dashboard` connect `English Locale Copy` to `Community 396`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `generation` connect `Community 170` to `Community 396`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **What connects `allow`, `husky.sh script`, `$schema` to the rest of the system?**
-  _1493 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `AI Reading Generation` be split into smaller, more focused modules?**
-  _Cohesion score 0.13450292397660818 - nodes in this community are weakly interconnected._
-- **Should `German Locale Copy` be split into smaller, more focused modules?**
-  _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
+- **What is the exact relationship between `ReadingA2Exercise` and `ReviewQuestion`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `StructureStat` and `Goethe A2 part popover`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `Reading Listing Page` and `Unified Exercises Hub Routing`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **Why does `main()` connect `Listening 82` to `Listening TTS Pipeline`, `Listening 93`, `Shared Library Boundaries`?**
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
+- **Why does `Parakeet STT service` connect `Listening 93` to `STT 146`?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **Why does `Local Parakeet speech-to-text` connect `STT 146` to `Listening 93`?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
