@@ -279,11 +279,6 @@
     "ast_hash": "1eef919a7aa1c760aa9aa46d4c6fe46d",
     "semantic_hash": ""
   },
-  "exam-one-design/project/Exam-one-MVP.html": {
-    "mtime": 1783170802.6667209,
-    "ast_hash": "072a4c4476ba3139e4dd5bcd27da049d",
-    "semantic_hash": ""
-  },
   ".claude/settings.local.json": {
     "mtime": 1782409606.4666576,
     "ast_hash": "d70c20f59a451d53cf5dd79006f74e32",
@@ -414,61 +409,6 @@
     "ast_hash": "e5b55355c52f1ef467f00b841eba3aac",
     "semantic_hash": ""
   },
-  "apps/frontend/components/landing/LandingFooter.vue": {
-    "mtime": 1783241041.8269935,
-    "ast_hash": "56a9b19b88bd3c5a45fd938710047786",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingGhStars.vue": {
-    "mtime": 1783240763.2627466,
-    "ast_hash": "7ed724ae20cfabefcdc558804242c8fd",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingIcon.vue": {
-    "mtime": 1783241073.71263,
-    "ast_hash": "5465174658e9731580c02d93f4621a48",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingMockExamStrip.vue": {
-    "mtime": 1783240763.2631931,
-    "ast_hash": "612bf7b0944b52ffce53801dab2ef90c",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingReadinessPanel.vue": {
-    "mtime": 1783240763.2634985,
-    "ast_hash": "7ed0a87dcc893211213554fe65bcbc82",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingRingProg.vue": {
-    "mtime": 1783240763.2637527,
-    "ast_hash": "b9f396952ae73b7103202ead2c46f9a2",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingSpark.vue": {
-    "mtime": 1783240763.2639835,
-    "ast_hash": "be3c089868421796967b8c17d966a802",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingSpeakingMock.vue": {
-    "mtime": 1783240763.2642148,
-    "ast_hash": "684fb3602908b757bab4c6b2b046f3ba",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingTerminalMock.vue": {
-    "mtime": 1783240763.264418,
-    "ast_hash": "013bfb2c1163172d5b403cd43bd4f130",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingWordmark.vue": {
-    "mtime": 1783240763.26463,
-    "ast_hash": "a0fcfad634079499ad3c27c8d63f261b",
-    "semantic_hash": ""
-  },
-  "apps/frontend/components/landing/LandingWritingFeedback.vue": {
-    "mtime": 1783240763.2649124,
-    "ast_hash": "f6cb68c70855d921e8a62a42013fd8ce",
-    "semantic_hash": ""
-  },
   "apps/frontend/components/listening/AudioPlayer.vue": {
     "mtime": 1784901175.961713,
     "ast_hash": "731d8deb94bf7783018a24ee26f77304",
@@ -572,11 +512,6 @@
   "apps/frontend/composables/useAccountProfile.ts": {
     "mtime": 1782316435.9312658,
     "ast_hash": "19cc1d2914429d2fd2321ee475f24941",
-    "semantic_hash": ""
-  },
-  "apps/frontend/composables/useLandingReveal.ts": {
-    "mtime": 1783240763.265149,
-    "ast_hash": "a83a9bb66ef53651c97d44fae6ea0656",
     "semantic_hash": ""
   },
   "apps/frontend/composables/useListeningExercises.ts": {
@@ -769,11 +704,6 @@
     "ast_hash": "d074a8c59f6799e479d565bac9df05ec",
     "semantic_hash": ""
   },
-  "apps/frontend/layouts/landing.vue": {
-    "mtime": 1783240763.265817,
-    "ast_hash": "5244e6e58028e91a445e43ff56e561c6",
-    "semantic_hash": ""
-  },
   "apps/frontend/nuxt.config.ts": {
     "mtime": 1784901175.976386,
     "ast_hash": "2a2eea34400823c6991a8928def3770b",
@@ -807,16 +737,6 @@
   "apps/frontend/pages/index.vue": {
     "mtime": 1763919766.4082959,
     "ast_hash": "0e5c5c8c958318495b34629435d638e3",
-    "semantic_hash": ""
-  },
-  "apps/frontend/pages/landings/1.vue": {
-    "mtime": 1783240763.2668126,
-    "ast_hash": "aaf88c2bc9b700be83fc978a412c3b18",
-    "semantic_hash": ""
-  },
-  "apps/frontend/pages/landings/2.vue": {
-    "mtime": 1783240763.2672071,
-    "ast_hash": "d2c866d9b1329bce20d3d0a3c1e37568",
     "semantic_hash": ""
   },
   "apps/frontend/pages/listening/[exerciseId].vue": {
@@ -994,26 +914,6 @@
     "ast_hash": "26eee9bffe1bad7533c58395cd50eba9",
     "semantic_hash": ""
   },
-  "exam-one-design/project/landings/landing-a.jsx": {
-    "mtime": 1783172159.4947045,
-    "ast_hash": "8f0248b3e775c690a3444ef62701e143",
-    "semantic_hash": ""
-  },
-  "exam-one-design/project/landings/landing-b.jsx": {
-    "mtime": 1783172159.4975412,
-    "ast_hash": "6adda2048841b25daf19394a794b79d9",
-    "semantic_hash": ""
-  },
-  "exam-one-design/project/landings/landings-app.jsx": {
-    "mtime": 1783172393.7860324,
-    "ast_hash": "a2815ab5091c3b0eac34f738dc52ccdd",
-    "semantic_hash": ""
-  },
-  "exam-one-design/project/landings/landings-shared.jsx": {
-    "mtime": 1783172159.5092494,
-    "ast_hash": "c1609d4a3d03d9a751c53b3348d24541",
-    "semantic_hash": ""
-  },
   "exam-one-design/project/prompt-settings.jsx": {
     "mtime": 1783170797.3243778,
     "ast_hash": "3983c7dbced2403b1e325c1d0903b75b",
@@ -1174,24 +1074,9 @@
     "ast_hash": "243b03ecba82dde9612cd5163145a86d",
     "semantic_hash": ""
   },
-  "compose.dev.yaml": {
-    "mtime": 1783935106.1303263,
-    "ast_hash": "c3b0f4659d815caac609d3bb148ee321",
-    "semantic_hash": ""
-  },
-  "compose.tts.yaml": {
-    "mtime": 1784901175.9877388,
-    "ast_hash": "86601d98deb6eb2aace51e520644acf9",
-    "semantic_hash": ""
-  },
   "compose.yaml": {
     "mtime": 1783936918.785042,
     "ast_hash": "8d463c65642f69e0851a424a28464697",
-    "semantic_hash": ""
-  },
-  "exam-one-design/project/landings/Landings.html": {
-    "mtime": 1783172363.4385028,
-    "ast_hash": "24b94a8831c4d06795dfc378c6230e07",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
@@ -1343,5 +1228,1350 @@
     "mtime": 1784835985.7192335,
     "ast_hash": "3d5541c086389fe2ad3c3fad0229b833",
     "semantic_hash": ""
+  },
+  "/Users/eugene/Documents/projects/exam-one/.claude/settings.local.json": {
+    "mtime": 1782409606.4666576,
+    "ast_hash": "d70c20f59a451d53cf5dd79006f74e32",
+    "semantic_hash": "d70c20f59a451d53cf5dd79006f74e32"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/applypatch-msg": {
+    "mtime": 1783240968.3909037,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/commit-msg": {
+    "mtime": 1783240968.3906355,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/h": {
+    "mtime": 1783240968.3900604,
+    "ast_hash": "15239a01c5554e56ff745570fb583a91",
+    "semantic_hash": "15239a01c5554e56ff745570fb583a91"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/husky.sh": {
+    "mtime": 1783240968.3919673,
+    "ast_hash": "13871d2ab13e8423790ecb2c01c78c18",
+    "semantic_hash": "13871d2ab13e8423790ecb2c01c78c18"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/post-applypatch": {
+    "mtime": 1783240968.3911552,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/post-checkout": {
+    "mtime": 1783240968.3915029,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/post-commit": {
+    "mtime": 1783240968.3908064,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/post-merge": {
+    "mtime": 1783240968.3915765,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/post-rewrite": {
+    "mtime": 1783240968.391414,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/pre-applypatch": {
+    "mtime": 1783240968.3909948,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/pre-auto-gc": {
+    "mtime": 1783240968.391839,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/pre-commit": {
+    "mtime": 1783240968.390242,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/pre-merge-commit": {
+    "mtime": 1783240968.390457,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/pre-push": {
+    "mtime": 1783240968.3916545,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/pre-rebase": {
+    "mtime": 1783240968.3913226,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.husky/_/prepare-commit-msg": {
+    "mtime": 1783240968.3905501,
+    "ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+    "semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/eslint.config.mjs": {
+    "mtime": 1783844503.5864828,
+    "ast_hash": "e51f0807fe07203603aef861afe410c3",
+    "semantic_hash": "e51f0807fe07203603aef861afe410c3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/nest-cli.json": {
+    "mtime": 1783792360.0123575,
+    "ast_hash": "b6c9c4b64b7092bea720263a47b574cf",
+    "semantic_hash": "b6c9c4b64b7092bea720263a47b574cf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/package.json": {
+    "mtime": 1783844588.3831995,
+    "ast_hash": "ff30c0171c1d84396a1a0f7b4e9c0f8e",
+    "semantic_hash": "ff30c0171c1d84396a1a0f7b4e9c0f8e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/app.module.ts": {
+    "mtime": 1783792368.2988844,
+    "ast_hash": "89f39c1f991f64c69f3e652b641718e7",
+    "semantic_hash": "89f39c1f991f64c69f3e652b641718e7"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/bootstrap.ts": {
+    "mtime": 1783844338.008263,
+    "ast_hash": "336df2ec1644693740ec0ee9ae97aca2",
+    "semantic_hash": "336df2ec1644693740ec0ee9ae97aca2"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/common/interceptors/request-id.interceptor.ts": {
+    "mtime": 1783792375.5363183,
+    "ast_hash": "f1da710831fdda8d961912ef2583a711",
+    "semantic_hash": "f1da710831fdda8d961912ef2583a711"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/config/app.config.ts": {
+    "mtime": 1783937136.0872235,
+    "ast_hash": "e44f7d763ed62ac5d5cb0549a834955b",
+    "semantic_hash": "e44f7d763ed62ac5d5cb0549a834955b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/health/health.controller.spec.ts": {
+    "mtime": 1783793255.8434443,
+    "ast_hash": "cc5a4cabd92a24a70d35c81184e2a08d",
+    "semantic_hash": "cc5a4cabd92a24a70d35c81184e2a08d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/health/health.controller.ts": {
+    "mtime": 1783792516.7314072,
+    "ast_hash": "5ea65cf23d1b6117de087030aef88251",
+    "semantic_hash": "5ea65cf23d1b6117de087030aef88251"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/health/health.module.ts": {
+    "mtime": 1783792371.3129833,
+    "ast_hash": "881a2f7ac6b242ab772e1c64b674c990",
+    "semantic_hash": "881a2f7ac6b242ab772e1c64b674c990"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/src/main.ts": {
+    "mtime": 1784901175.9613981,
+    "ast_hash": "4df54fcc7fcf52c44591a4a2f9572d37",
+    "semantic_hash": "4df54fcc7fcf52c44591a4a2f9572d37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/test/app.e2e-spec.ts": {
+    "mtime": 1783844571.087242,
+    "ast_hash": "31316a5c01bc7959a8b2b8f0378e035a",
+    "semantic_hash": "31316a5c01bc7959a8b2b8f0378e035a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/test/jest-e2e.json": {
+    "mtime": 1783793212.0300658,
+    "ast_hash": "3f8da5bbd9262aa5a02c6364fd15fec0",
+    "semantic_hash": "3f8da5bbd9262aa5a02c6364fd15fec0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/tsconfig.build.json": {
+    "mtime": 1783792358.6982684,
+    "ast_hash": "d1b33bf8f01ce7402372cc7cd7144bfa",
+    "semantic_hash": "d1b33bf8f01ce7402372cc7cd7144bfa"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/tsconfig.json": {
+    "mtime": 1783844316.2834582,
+    "ast_hash": "a9ee13dd87750908585bd0a17b3bc44d",
+    "semantic_hash": "a9ee13dd87750908585bd0a17b3bc44d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/backend/tsconfig.spec.json": {
+    "mtime": 1783793199.8318172,
+    "ast_hash": "0f6e46701aea3b8a5462d615c250fcaf",
+    "semantic_hash": "0f6e46701aea3b8a5462d615c250fcaf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/app.vue": {
+    "mtime": 1763919766.3957887,
+    "ast_hash": "fe6b1f1b2d26d439ac9f4044aed75338",
+    "semantic_hash": "fe6b1f1b2d26d439ac9f4044aed75338"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/AppSidebar.vue": {
+    "mtime": 1786538293.5341969,
+    "ast_hash": "a1568b328fe3022963e4b39134964832",
+    "semantic_hash": "a1568b328fe3022963e4b39134964832"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/AppTopbar.vue": {
+    "mtime": 1782326154.1897042,
+    "ast_hash": "e88fe6090ebd9a3812f5589e198526fc",
+    "semantic_hash": "e88fe6090ebd9a3812f5589e198526fc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/Navbar.vue": {
+    "mtime": 1783241088.6944823,
+    "ast_hash": "623303ae857682c2be0878976ff3e0e0",
+    "semantic_hash": "623303ae857682c2be0878976ff3e0e0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/TextReader.vue": {
+    "mtime": 1781192064.2592802,
+    "ast_hash": "a72006722c79695d2ef995b78ab10717",
+    "semantic_hash": "a72006722c79695d2ef995b78ab10717"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/examFormat/StructureStat.vue": {
+    "mtime": 1782316421.5834405,
+    "ast_hash": "61029c4c69b4457956a82d5d4fb265cf",
+    "semantic_hash": "61029c4c69b4457956a82d5d4fb265cf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/exercises/GenerateExercisesModal.vue": {
+    "mtime": 1786290485.6850078,
+    "ast_hash": "64b165b1ee2bd5652c9de93b8c47dc9a",
+    "semantic_hash": "64b165b1ee2bd5652c9de93b8c47dc9a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/exercises/PartChip.vue": {
+    "mtime": 1786290485.6852303,
+    "ast_hash": "4466de302de7adab0fe53830a6b5521f",
+    "semantic_hash": "4466de302de7adab0fe53830a6b5521f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/listening/AudioPlayer.vue": {
+    "mtime": 1786538285.6417255,
+    "ast_hash": "bbb7b28b1d0e1519c2fb3407a0124194",
+    "semantic_hash": "bbb7b28b1d0e1519c2fb3407a0124194"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/listening/ListeningSession.vue": {
+    "mtime": 1786538285.6421394,
+    "ast_hash": "16d5d42a6a7787f48e44164fae9e829f",
+    "semantic_hash": "16d5d42a6a7787f48e44164fae9e829f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/mockExam/MockExamSetCard.vue": {
+    "mtime": 1786548072.038048,
+    "ast_hash": "37d0e1bca53ea49dbbf35da7983a1965",
+    "semantic_hash": "37d0e1bca53ea49dbbf35da7983a1965"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/mockExam/MockGenerationPipeline.vue": {
+    "mtime": 1786547784.64436,
+    "ast_hash": "fec44de16a58a5edaa375400998f633a",
+    "semantic_hash": "fec44de16a58a5edaa375400998f633a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/mockExam/MockGenerationPreflightModal.vue": {
+    "mtime": 1786543434.916174,
+    "ast_hash": "db220bd2528c8db9bd1bf600c46d46e3",
+    "semantic_hash": "db220bd2528c8db9bd1bf600c46d46e3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/mockExam/ReviewQuestionList.vue": {
+    "mtime": 1786542297.4587123,
+    "ast_hash": "1b9d3f447633d24e7647708b9b1c4fec",
+    "semantic_hash": "1b9d3f447633d24e7647708b9b1c4fec"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/mockExam/TimerChip.vue": {
+    "mtime": 1786538285.6425612,
+    "ast_hash": "7db455ab07f5eee4ad8774b71c03d9c4",
+    "semantic_hash": "7db455ab07f5eee4ad8774b71c03d9c4"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/reading/QuestionCard.vue": {
+    "mtime": 1786538285.6437032,
+    "ast_hash": "12dfe8e733826a67f7939038fab952f1",
+    "semantic_hash": "12dfe8e733826a67f7939038fab952f1"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/reading/QuizSession.vue": {
+    "mtime": 1786538285.6446664,
+    "ast_hash": "940a012dc053893d2abee5a52c66b816",
+    "semantic_hash": "940a012dc053893d2abee5a52c66b816"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/reading/ReadingGeneratorCard.vue": {
+    "mtime": 1783171734.70652,
+    "ast_hash": "d6921c1d3eeb1afa0593dde1ea4b8925",
+    "semantic_hash": "d6921c1d3eeb1afa0593dde1ea4b8925"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/reading/ReadingModal.vue": {
+    "mtime": 1782240450.2033293,
+    "ast_hash": "f9910e692f2044ecc72a589ffc46e5ab",
+    "semantic_hash": "f9910e692f2044ecc72a589ffc46e5ab"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/reading/TextCard.vue": {
+    "mtime": 1782240415.1753325,
+    "ast_hash": "47624673100b1409be4a97a2a4f58e80",
+    "semantic_hash": "47624673100b1409be4a97a2a4f58e80"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/speaking/SpeakingRecorder.vue": {
+    "mtime": 1786290975.5748048,
+    "ast_hash": "31ec8ab43295740b6dbc8f74e14da934",
+    "semantic_hash": "31ec8ab43295740b6dbc8f74e14da934"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/speaking/SpeakingReviewDetails.vue": {
+    "mtime": 1786544630.6286497,
+    "ast_hash": "1ec0fe25da4546b061d01a0fc8182b2f",
+    "semantic_hash": "1ec0fe25da4546b061d01a0fc8182b2f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/speaking/SpeakingSession.vue": {
+    "mtime": 1786544630.6132457,
+    "ast_hash": "5447be850c9f61ba7f492ed32bf8d51f",
+    "semantic_hash": "5447be850c9f61ba7f492ed32bf8d51f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/ui/Tooltip.vue": {
+    "mtime": 1763919766.3988924,
+    "ast_hash": "71780935f888c6ca51478d1849335295",
+    "semantic_hash": "71780935f888c6ca51478d1849335295"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/InstructionsCard.vue": {
+    "mtime": 1782307090.9075737,
+    "ast_hash": "b589d186791873476d1b105db91c5405",
+    "semantic_hash": "b589d186791873476d1b105db91c5405"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/ModelAnswerCard.vue": {
+    "mtime": 1782307613.7108696,
+    "ast_hash": "4c9dc78118d91bbd6f37cf4412265ee6",
+    "semantic_hash": "4c9dc78118d91bbd6f37cf4412265ee6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/TaskDescriptionCard.vue": {
+    "mtime": 1782307091.2505443,
+    "ast_hash": "15b773af26483857de92f244a56acf37",
+    "semantic_hash": "15b773af26483857de92f244a56acf37"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/TextEditorCard.vue": {
+    "mtime": 1786538285.646158,
+    "ast_hash": "b955bda64ddd96b3af4aa13f27a4d37d",
+    "semantic_hash": "b955bda64ddd96b3af4aa13f27a4d37d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/TopicGeneratorCard.vue": {
+    "mtime": 1782306938.7060938,
+    "ast_hash": "99b3f59c5a011b2a5940ff236a5d05c8",
+    "semantic_hash": "99b3f59c5a011b2a5940ff236a5d05c8"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/WritingFeedback.vue": {
+    "mtime": 1782306906.1066108,
+    "ast_hash": "4bc9a29905369aa9895b5b1406892d35",
+    "semantic_hash": "4bc9a29905369aa9895b5b1406892d35"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/WritingReview.vue": {
+    "mtime": 1786544630.4854043,
+    "ast_hash": "a36e683f54a3a17fbb61741537bcbea8",
+    "semantic_hash": "a36e683f54a3a17fbb61741537bcbea8"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/WritingReviewDetails.vue": {
+    "mtime": 1786544630.5412834,
+    "ast_hash": "ea8158a85570fa4fc1479a7843c4f383",
+    "semantic_hash": "ea8158a85570fa4fc1479a7843c4f383"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/WritingReviewModal.vue": {
+    "mtime": 1783180931.8176281,
+    "ast_hash": "0a46403dbaa072fdf2c6ff36d322584a",
+    "semantic_hash": "0a46403dbaa072fdf2c6ff36d322584a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/WritingSession.vue": {
+    "mtime": 1786538285.6466331,
+    "ast_hash": "6ad5adca3e96824733c318e5fffc4155",
+    "semantic_hash": "6ad5adca3e96824733c318e5fffc4155"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/components/writing/WritingTopicCard.vue": {
+    "mtime": 1782307932.704209,
+    "ast_hash": "4ccaf0d76fe9182b9a937825a59ef0c4",
+    "semantic_hash": "4ccaf0d76fe9182b9a937825a59ef0c4"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useAccountProfile.ts": {
+    "mtime": 1782316435.9312658,
+    "ast_hash": "19cc1d2914429d2fd2321ee475f24941",
+    "semantic_hash": "19cc1d2914429d2fd2321ee475f24941"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useListeningAudioAvailability.ts": {
+    "mtime": 1784901175.9696333,
+    "ast_hash": "f02b7c0e25f5f33244521525a4b2790c",
+    "semantic_hash": "f02b7c0e25f5f33244521525a4b2790c"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useListeningExclusivePlayback.ts": {
+    "mtime": 1784901175.9697719,
+    "ast_hash": "f59668d0ff42b1174f48be031317627a",
+    "semantic_hash": "f59668d0ff42b1174f48be031317627a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useListeningExercises.ts": {
+    "mtime": 1786538285.6471486,
+    "ast_hash": "8bde6cf910a401d07913ee706ac76778",
+    "semantic_hash": "8bde6cf910a401d07913ee706ac76778"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useListeningGeneration.ts": {
+    "mtime": 1783164507.7569969,
+    "ast_hash": "724a73440452da19a27c99887a7fcee7",
+    "semantic_hash": "724a73440452da19a27c99887a7fcee7"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useMockExam.ts": {
+    "mtime": 1786544630.6705358,
+    "ast_hash": "4ec4744e0981dffb74209c91f947e7f0",
+    "semantic_hash": "4ec4744e0981dffb74209c91f947e7f0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useMockExamGeneration.ts": {
+    "mtime": 1786542554.612846,
+    "ast_hash": "bbc7802aa73a5fe7dba7dd4c3d982544",
+    "semantic_hash": "bbc7802aa73a5fe7dba7dd4c3d982544"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useMockExamSets.ts": {
+    "mtime": 1786541766.562903,
+    "ast_hash": "e3693af7c8d9ed71f049c8b5eacce78f",
+    "semantic_hash": "e3693af7c8d9ed71f049c8b5eacce78f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useModelAnswer.ts": {
+    "mtime": 1782407151.9756644,
+    "ast_hash": "1c4d3029e8360ae19e5e4a190bd3d91e",
+    "semantic_hash": "1c4d3029e8360ae19e5e4a190bd3d91e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/usePageMeta.ts": {
+    "mtime": 1776797685.6990528,
+    "ast_hash": "86412944b6490bae03062d51696a581c",
+    "semantic_hash": "86412944b6490bae03062d51696a581c"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useProgress.ts": {
+    "mtime": 1786290485.686323,
+    "ast_hash": "dd718c0ff28751f181127b09a973167d",
+    "semantic_hash": "dd718c0ff28751f181127b09a973167d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useReadingGeneration.ts": {
+    "mtime": 1783164504.70853,
+    "ast_hash": "964a35a4c6e3b244e688838b1a99bab6",
+    "semantic_hash": "964a35a4c6e3b244e688838b1a99bab6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useReadingTexts.ts": {
+    "mtime": 1786538285.647805,
+    "ast_hash": "6303c298353761d5da25ff2765d50055",
+    "semantic_hash": "6303c298353761d5da25ff2765d50055"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useSkillStats.ts": {
+    "mtime": 1781451222.1390316,
+    "ast_hash": "2efa589598e11a012ffe9b77488755b1",
+    "semantic_hash": "2efa589598e11a012ffe9b77488755b1"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useSpeakingExercises.ts": {
+    "mtime": 1786538285.6480236,
+    "ast_hash": "85e45ce10cc3bc5dcdd09aec6fd6bead",
+    "semantic_hash": "85e45ce10cc3bc5dcdd09aec6fd6bead"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useSpeakingGeneration.ts": {
+    "mtime": 1783164511.572488,
+    "ast_hash": "c0d2412036a390b4ce1dd374894325b4",
+    "semantic_hash": "c0d2412036a390b4ce1dd374894325b4"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useSpeakingReview.ts": {
+    "mtime": 1786290485.686728,
+    "ast_hash": "498b63603f512bc1a242ee752446df57",
+    "semantic_hash": "498b63603f512bc1a242ee752446df57"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useSpeechTranscription.ts": {
+    "mtime": 1786290485.6868641,
+    "ast_hash": "b2fa1cd634e268757085fc1c4c8a1b7f",
+    "semantic_hash": "b2fa1cd634e268757085fc1c4c8a1b7f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useTheme.ts": {
+    "mtime": 1786538293.5346737,
+    "ast_hash": "39b32649a30850862537a4ee93ba91c0",
+    "semantic_hash": "39b32649a30850862537a4ee93ba91c0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useTtsHealth.ts": {
+    "mtime": 1786290485.6870759,
+    "ast_hash": "63aea98a3b0b52476ad772d08b8edcdc",
+    "semantic_hash": "63aea98a3b0b52476ad772d08b8edcdc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useWritingGeneration.ts": {
+    "mtime": 1783240763.2656295,
+    "ast_hash": "978a7825860066a66ecdb96492423495",
+    "semantic_hash": "978a7825860066a66ecdb96492423495"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useWritingMode.ts": {
+    "mtime": 1763919766.4030573,
+    "ast_hash": "49e2d64afb439e593ed747211e777b67",
+    "semantic_hash": "49e2d64afb439e593ed747211e777b67"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useWritingReview.ts": {
+    "mtime": 1783180931.8181994,
+    "ast_hash": "6c309826d86ca6f4b0d4b09d4e9e531f",
+    "semantic_hash": "6c309826d86ca6f4b0d4b09d4e9e531f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/composables/useWritingTopics.ts": {
+    "mtime": 1786538285.6483626,
+    "ast_hash": "c28b6f1c3b4eba25c282a896870759ed",
+    "semantic_hash": "c28b6f1c3b4eba25c282a896870759ed"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/account/plans.ts": {
+    "mtime": 1781451847.330782,
+    "ast_hash": "3292bf8d791fff1cf436679682932a77",
+    "semantic_hash": "3292bf8d791fff1cf436679682932a77"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/examStructure/goetheA2.ts": {
+    "mtime": 1786290485.6873453,
+    "ast_hash": "8f09b49208b6ba54507fbacc01f5b16d",
+    "semantic_hash": "8f09b49208b6ba54507fbacc01f5b16d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/listening/a2/exerciseGeneratorListeningA2.ts": {
+    "mtime": 1784901175.9711041,
+    "ast_hash": "fd1b9b7c3c590ef4662ad9ba0f3d167d",
+    "semantic_hash": "fd1b9b7c3c590ef4662ad9ba0f3d167d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/listening/exerciseListening.ts": {
+    "mtime": 1786538285.6489809,
+    "ast_hash": "2c8bd2acec601f2da65b79f7caa9d4cf",
+    "semantic_hash": "2c8bd2acec601f2da65b79f7caa9d4cf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/mockExam/goetheA2.ts": {
+    "mtime": 1786542395.3557255,
+    "ast_hash": "8f2d0accab88bf145ef50613d882205a",
+    "semantic_hash": "8f2d0accab88bf145ef50613d882205a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/mockExam/reviewMockExamA2.ts": {
+    "mtime": 1786542092.243425,
+    "ast_hash": "1241916ecee033c3954f0f52c0d5870d",
+    "semantic_hash": "1241916ecee033c3954f0f52c0d5870d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/reading/a2/exerciseGeneratorReadingA2.ts": {
+    "mtime": 1781192013.3567777,
+    "ast_hash": "fa1e2bea014a235e3fe66f2fdf0a1e9d",
+    "semantic_hash": "fa1e2bea014a235e3fe66f2fdf0a1e9d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/reading/a2/exerciseGeneratorReadingC1.ts": {
+    "mtime": 1781192043.776846,
+    "ast_hash": "3a10ded7772d5d71ffe8d924770282cf",
+    "semantic_hash": "3a10ded7772d5d71ffe8d924770282cf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/reading/exerciseReading.ts": {
+    "mtime": 1786538285.649702,
+    "ast_hash": "284a33de5be2c55fa6240ea192bf6770",
+    "semantic_hash": "284a33de5be2c55fa6240ea192bf6770"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/speaking/a2/answerGeneratorSpeakingA2.ts": {
+    "mtime": 1786290485.6876328,
+    "ast_hash": "37bb7835932253a2c2f0ed62c16e41b5",
+    "semantic_hash": "37bb7835932253a2c2f0ed62c16e41b5"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/speaking/a2/exerciseGeneratorSpeakingA2.ts": {
+    "mtime": 1786290485.6880593,
+    "ast_hash": "74e42ffc654b56f24b4849360a569b4a",
+    "semantic_hash": "74e42ffc654b56f24b4849360a569b4a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/speaking/a2/reviewSpeakingA2.ts": {
+    "mtime": 1786290485.6882908,
+    "ast_hash": "671ed690a204ca3b70e5d35928bb224d",
+    "semantic_hash": "671ed690a204ca3b70e5d35928bb224d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/speaking/exerciseSpeaking.ts": {
+    "mtime": 1786538285.6499221,
+    "ast_hash": "e5a7b1a43ec460191894ce1855207b61",
+    "semantic_hash": "e5a7b1a43ec460191894ce1855207b61"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/a2/answerGeneratorWritingA2.ts": {
+    "mtime": 1782407083.192442,
+    "ast_hash": "64b24231e631b931dd6b12dcccc28b7f",
+    "semantic_hash": "64b24231e631b931dd6b12dcccc28b7f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/a2/exerciseGeneratorWritingA2.ts": {
+    "mtime": 1763919766.4054177,
+    "ast_hash": "8707747afc6ef5a319234efe5f77c2c7",
+    "semantic_hash": "8707747afc6ef5a319234efe5f77c2c7"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/a2/reviewWritingA2.ts": {
+    "mtime": 1781189733.9950325,
+    "ast_hash": "e287089d7962422579291a2eb2b3259e",
+    "semantic_hash": "e287089d7962422579291a2eb2b3259e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/c1/answerGeneratorWritingC1.ts": {
+    "mtime": 1782407087.478117,
+    "ast_hash": "d07edb5a56237a66c3574d457fc234ff",
+    "semantic_hash": "d07edb5a56237a66c3574d457fc234ff"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/c1/exerciseGeneratorWritingC1.ts": {
+    "mtime": 1763919766.4056163,
+    "ast_hash": "500978ef3b92653f929588014febccdc",
+    "semantic_hash": "500978ef3b92653f929588014febccdc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/c1/reviewTextWritingC1.ts": {
+    "mtime": 1781189734.0854132,
+    "ast_hash": "2b21d27ab732e67297c6a968d7270ac3",
+    "semantic_hash": "2b21d27ab732e67297c6a968d7270ac3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/exerciseTips.ts": {
+    "mtime": 1781442727.4572947,
+    "ast_hash": "6bfe1fb71a35529514bdb2acec36b672",
+    "semantic_hash": "6bfe1fb71a35529514bdb2acec36b672"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/data/writing/exerciseWriting.ts": {
+    "mtime": 1786538285.6501539,
+    "ast_hash": "bc57c58f88bd413465027026d5e4238d",
+    "semantic_hash": "bc57c58f88bd413465027026d5e4238d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/eslint.config.js": {
+    "mtime": 1750449363.5099633,
+    "ast_hash": "847dbe723747bcd113bc3ca0328aec93",
+    "semantic_hash": "847dbe723747bcd113bc3ca0328aec93"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/i18n/locales/de.json": {
+    "mtime": 1786548083.1381195,
+    "ast_hash": "c9178e64eff6cd7100debdfc0406a82e",
+    "semantic_hash": "c9178e64eff6cd7100debdfc0406a82e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/i18n/locales/en.json": {
+    "mtime": 1786548081.7977643,
+    "ast_hash": "f0606238997bdf965c81420dae208ccc",
+    "semantic_hash": "f0606238997bdf965c81420dae208ccc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/layouts/default.vue": {
+    "mtime": 1782321998.8002179,
+    "ast_hash": "d074a8c59f6799e479d565bac9df05ec",
+    "semantic_hash": "d074a8c59f6799e479d565bac9df05ec"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/nuxt.config.ts": {
+    "mtime": 1786538293.5348806,
+    "ast_hash": "2feb5a2cedad486e733902fa6a5528ad",
+    "semantic_hash": "2feb5a2cedad486e733902fa6a5528ad"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/package.json": {
+    "mtime": 1784901175.9765546,
+    "ast_hash": "cdb76e9f6059a877b9289c8ea54b1663",
+    "semantic_hash": "cdb76e9f6059a877b9289c8ea54b1663"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/account.vue": {
+    "mtime": 1782322029.663157,
+    "ast_hash": "cbb45760d60eeab4018085bf63f8154f",
+    "semantic_hash": "cbb45760d60eeab4018085bf63f8154f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/dashboard.vue": {
+    "mtime": 1783172284.4457586,
+    "ast_hash": "418a31a89e4e3574be2070c3e4c0fd11",
+    "semantic_hash": "418a31a89e4e3574be2070c3e4c0fd11"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/exam-format.vue": {
+    "mtime": 1786290485.6896994,
+    "ast_hash": "2af33531cc663d24b041559ed1ea465f",
+    "semantic_hash": "2af33531cc663d24b041559ed1ea465f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/exercises.vue": {
+    "mtime": 1786290485.6899285,
+    "ast_hash": "abdc36c5513a9c63d8e030f2259cde4c",
+    "semantic_hash": "abdc36c5513a9c63d8e030f2259cde4c"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/index.vue": {
+    "mtime": 1786538293.5350623,
+    "ast_hash": "2dcbb161fe674aef080c6d04ebbef94d",
+    "semantic_hash": "2dcbb161fe674aef080c6d04ebbef94d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/listening/[exerciseId].vue": {
+    "mtime": 1784901175.9767473,
+    "ast_hash": "20601698e221383770c993b8b8317940",
+    "semantic_hash": "20601698e221383770c993b8b8317940"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/listening/index.vue": {
+    "mtime": 1781451444.37606,
+    "ast_hash": "25197f8b577857641aee5bc14f2cf2e9",
+    "semantic_hash": "25197f8b577857641aee5bc14f2cf2e9"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/mock-exam/[setId].vue": {
+    "mtime": 1786546065.4386644,
+    "ast_hash": "c7a8f7580a4aef666d0f163fae883813",
+    "semantic_hash": "c7a8f7580a4aef666d0f163fae883813"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/mock-exam/index.vue": {
+    "mtime": 1786543435.1492722,
+    "ast_hash": "f8c9d4c4708d915c6bd1b2c559c02633",
+    "semantic_hash": "f8c9d4c4708d915c6bd1b2c559c02633"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/mock-exam/review/[setId]/[skill].vue": {
+    "mtime": 1786545966.7139132,
+    "ast_hash": "6e36522f32619254b6f55976bf314de3",
+    "semantic_hash": "6e36522f32619254b6f55976bf314de3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/progress.vue": {
+    "mtime": 1782322024.736119,
+    "ast_hash": "35c67fd404ca675c5e4dcc10d5904c8a",
+    "semantic_hash": "35c67fd404ca675c5e4dcc10d5904c8a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/reading/[quizId].vue": {
+    "mtime": 1782243021.5465627,
+    "ast_hash": "c72f9e2c519c3781361dc250413d46ac",
+    "semantic_hash": "c72f9e2c519c3781361dc250413d46ac"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/reading/index.vue": {
+    "mtime": 1783172095.017612,
+    "ast_hash": "21cab9a490fa4d98c8d5002916ced550",
+    "semantic_hash": "21cab9a490fa4d98c8d5002916ced550"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/speaking/[topicId].vue": {
+    "mtime": 1781451547.6418414,
+    "ast_hash": "9257011e414a883833403e09b72c5bcf",
+    "semantic_hash": "9257011e414a883833403e09b72c5bcf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/speaking/index.vue": {
+    "mtime": 1781451538.6126187,
+    "ast_hash": "4697a2217c8e7e412cadedd9cdf32384",
+    "semantic_hash": "4697a2217c8e7e412cadedd9cdf32384"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/tooltip-demo.vue": {
+    "mtime": 1763919766.4093478,
+    "ast_hash": "ffb11b4323d74b315deb234d1bf389cf",
+    "semantic_hash": "ffb11b4323d74b315deb234d1bf389cf"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/writing/[topicId]/checking.vue": {
+    "mtime": 1782307717.914237,
+    "ast_hash": "fb25da074292df6216bfce864f3f8a17",
+    "semantic_hash": "fb25da074292df6216bfce864f3f8a17"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/writing/[topicId]/exam.vue": {
+    "mtime": 1783180931.818395,
+    "ast_hash": "a9bc1a6e219e955654a7df1d2596a754",
+    "semantic_hash": "a9bc1a6e219e955654a7df1d2596a754"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/pages/writing/index.vue": {
+    "mtime": 1782307581.3592527,
+    "ast_hash": "56224d06803179513448bbf7c0a10b8b",
+    "semantic_hash": "56224d06803179513448bbf7c0a10b8b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/generate-listening.post.ts": {
+    "mtime": 1783164098.2870405,
+    "ast_hash": "db2f25f61970f8da7ecbc2e8b1f1c621",
+    "semantic_hash": "db2f25f61970f8da7ecbc2e8b1f1c621"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/generate-model-answer.post.ts": {
+    "mtime": 1783001380.5961602,
+    "ast_hash": "8c4bff15e982763157eb4ef532168efb",
+    "semantic_hash": "8c4bff15e982763157eb4ef532168efb"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/generate-reading.post.ts": {
+    "mtime": 1783164086.833479,
+    "ast_hash": "3301ef45c2866378a6930d8ec400d7fb",
+    "semantic_hash": "3301ef45c2866378a6930d8ec400d7fb"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/generate-speaking.post.ts": {
+    "mtime": 1786290485.6905012,
+    "ast_hash": "7e04c9007bf9a0745b9230459a13d3d6",
+    "semantic_hash": "7e04c9007bf9a0745b9230459a13d3d6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/generate-topics.post.ts": {
+    "mtime": 1783001358.287742,
+    "ast_hash": "e9e2f12bc539b7ca158a5c63a423ac66",
+    "semantic_hash": "e9e2f12bc539b7ca158a5c63a423ac66"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/llm/health.get.ts": {
+    "mtime": 1786541766.6607919,
+    "ast_hash": "2b3c01dd258fcb5663c3818dda98f38e",
+    "semantic_hash": "2b3c01dd258fcb5663c3818dda98f38e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/review-mock-exam.post.ts": {
+    "mtime": 1786542092.3065345,
+    "ast_hash": "9ea315fdddfc5a2251e5a16409197c8f",
+    "semantic_hash": "9ea315fdddfc5a2251e5a16409197c8f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/review-speaking.post.ts": {
+    "mtime": 1786290485.6909146,
+    "ast_hash": "5d7712997113e6ac026fe72781efd333",
+    "semantic_hash": "5d7712997113e6ac026fe72781efd333"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/review.post.ts": {
+    "mtime": 1783001405.3589287,
+    "ast_hash": "5454559d0c2d9591fa5fe4762cf1b136",
+    "semantic_hash": "5454559d0c2d9591fa5fe4762cf1b136"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/stt/health.get.ts": {
+    "mtime": 1786290485.6911876,
+    "ast_hash": "501e5150c211658de9e55d8b6f7d6658",
+    "semantic_hash": "501e5150c211658de9e55d8b6f7d6658"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/transcribe.post.ts": {
+    "mtime": 1786290485.6913095,
+    "ast_hash": "aabf737d6ddc9f74470e5784d2abea70",
+    "semantic_hash": "aabf737d6ddc9f74470e5784d2abea70"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/tts/delete-listening-audio.post.ts": {
+    "mtime": 1786541766.7191749,
+    "ast_hash": "6c5d880afccbd7e589f6c95c16fbd37f",
+    "semantic_hash": "6c5d880afccbd7e589f6c95c16fbd37f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/tts/generate-listening-audio.post.ts": {
+    "mtime": 1784901175.9769578,
+    "ast_hash": "928529be3b4a481e28755083d3351ed3",
+    "semantic_hash": "928529be3b4a481e28755083d3351ed3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/api/tts/health.get.ts": {
+    "mtime": 1784901175.977075,
+    "ast_hash": "8482d4a3b169981cc748a5a71fd0df43",
+    "semantic_hash": "8482d4a3b169981cc748a5a71fd0df43"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/plugins/llm-healthcheck.ts": {
+    "mtime": 1784901175.9772341,
+    "ast_hash": "128925099ea7a0ab51d2c026aa158bdc",
+    "semantic_hash": "128925099ea7a0ab51d2c026aa158bdc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/routes/.well-known/appspecific/com.chrome.devtools.json.ts": {
+    "mtime": 1783172622.9130266,
+    "ast_hash": "535b7c6a0294da3e53cd0e49e1c0e5fb",
+    "semantic_hash": "535b7c6a0294da3e53cd0e49e1c0e5fb"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/tsconfig.json": {
+    "mtime": 1749010431.0,
+    "ast_hash": "32a978380246c0479e2c9fb9dd0cf7ab",
+    "semantic_hash": "32a978380246c0479e2c9fb9dd0cf7ab"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/utils/llm.ts": {
+    "mtime": 1784901175.9774332,
+    "ast_hash": "3e4daba8d3bc6a940f5b92c966efbcd9",
+    "semantic_hash": "3e4daba8d3bc6a940f5b92c966efbcd9"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/utils/stt/sttAdapter.ts": {
+    "mtime": 1786290485.6915913,
+    "ast_hash": "5c08003a3c2a94f1fd1cec2e2df320c0",
+    "semantic_hash": "5c08003a3c2a94f1fd1cec2e2df320c0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/utils/tts/concatWav.ts": {
+    "mtime": 1784901175.9776602,
+    "ast_hash": "af5cd239c9629b6da8ae8ec4f4042b49",
+    "semantic_hash": "af5cd239c9629b6da8ae8ec4f4042b49"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/utils/tts/mapPool.ts": {
+    "mtime": 1784901175.977785,
+    "ast_hash": "bfd50f1961c7f05a2d1e50b3601ebe42",
+    "semantic_hash": "bfd50f1961c7f05a2d1e50b3601ebe42"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/server/utils/tts/ttsAdapter.ts": {
+    "mtime": 1784901175.9779544,
+    "ast_hash": "70ef97c8ddbe02d5409f7b23f865f0e5",
+    "semantic_hash": "70ef97c8ddbe02d5409f7b23f865f0e5"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/stores/settings.ts": {
+    "mtime": 1760694728.1950932,
+    "ast_hash": "77e9677a92646682c2d3bf908bb1f686",
+    "semantic_hash": "77e9677a92646682c2d3bf908bb1f686"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/tsconfig.json": {
+    "mtime": 1750444511.8632615,
+    "ast_hash": "78b275c9f44ccd81e635837645a4ad4a",
+    "semantic_hash": "78b275c9f44ccd81e635837645a4ad4a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/exercises/listening.ts": {
+    "mtime": 1786538285.6543195,
+    "ast_hash": "ede2c87280754cd8945ba9c8af762430",
+    "semantic_hash": "ede2c87280754cd8945ba9c8af762430"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/exercises/reading.ts": {
+    "mtime": 1786538285.6545334,
+    "ast_hash": "4409e21d95db7c2cde6b52a990e488b8",
+    "semantic_hash": "4409e21d95db7c2cde6b52a990e488b8"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/exercises/speaking.ts": {
+    "mtime": 1786544681.0511668,
+    "ast_hash": "56fbd45837f73ccb4f322fbec75c26f1",
+    "semantic_hash": "56fbd45837f73ccb4f322fbec75c26f1"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/exercises/writing.ts": {
+    "mtime": 1781189763.7939115,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/generation/partJobs.ts": {
+    "mtime": 1783163946.3283257,
+    "ast_hash": "cd985a85a4c26c87eab799bd29079bcb",
+    "semantic_hash": "cd985a85a4c26c87eab799bd29079bcb"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/labels.ts": {
+    "mtime": 1781451087.0319803,
+    "ast_hash": "78e6c978bec57fa1dccd6bfdfdba4cd9",
+    "semantic_hash": "78e6c978bec57fa1dccd6bfdfdba4cd9"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/listening/audioUrls.ts": {
+    "mtime": 1784901175.9870594,
+    "ast_hash": "6d67613febedaba50ef26c20d52c6c43",
+    "semantic_hash": "6d67613febedaba50ef26c20d52c6c43"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/listening/dialogueTranscript.ts": {
+    "mtime": 1784901175.9874797,
+    "ast_hash": "5b416d425a7e7b6bb3e0341c7a67472d",
+    "semantic_hash": "5b416d425a7e7b6bb3e0341c7a67472d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/mockExam/review.ts": {
+    "mtime": 1786542297.3945992,
+    "ast_hash": "00c09928e8a246ef9aaa8cd52158f8af",
+    "semantic_hash": "00c09928e8a246ef9aaa8cd52158f8af"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/textAnalysis.ts": {
+    "mtime": 1781189734.1277916,
+    "ast_hash": "99b6363c4d8936b2aae2f3a08896ceb3",
+    "semantic_hash": "99b6363c4d8936b2aae2f3a08896ceb3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/types.ts": {
+    "mtime": 1786544685.460936,
+    "ast_hash": "1765957a1c09fc71bb707c8a9bbb5096",
+    "semantic_hash": "1765957a1c09fc71bb707c8a9bbb5096"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/utils/uuid.ts": {
+    "mtime": 1782410635.9338903,
+    "ast_hash": "3555539702cdc378bed0aa3209704d59",
+    "semantic_hash": "3555539702cdc378bed0aa3209704d59"
+  },
+  "/Users/eugene/Documents/projects/exam-one/eslint.config.js": {
+    "mtime": 1783792260.3607237,
+    "ast_hash": "29d69d012cc8fe3f23f56f93a0bcfc9f",
+    "semantic_hash": "29d69d012cc8fe3f23f56f93a0bcfc9f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/app.jsx": {
+    "mtime": 1786292386.4848216,
+    "ast_hash": "6dec6b33ece3cc020b0770d67a4df100",
+    "semantic_hash": "6dec6b33ece3cc020b0770d67a4df100"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/auth.jsx": {
+    "mtime": 1786292386.485262,
+    "ast_hash": "2f59aaaff0bf28ab473b192b491e060f",
+    "semantic_hash": "2f59aaaff0bf28ab473b192b491e060f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/dashboard.jsx": {
+    "mtime": 1786289837.0,
+    "ast_hash": "112dcca19da2e5ddda3009ce1da5b2eb",
+    "semantic_hash": "112dcca19da2e5ddda3009ce1da5b2eb"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/exam-structure.jsx": {
+    "mtime": 1786289837.0,
+    "ast_hash": "7462bdd9674989d6cd6aae32ed4aa8b4",
+    "semantic_hash": "7462bdd9674989d6cd6aae32ed4aa8b4"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/exercise-interior.jsx": {
+    "mtime": 1786292386.4863899,
+    "ast_hash": "bf7f5e2c7fbb203be5615e83bf88f9a8",
+    "semantic_hash": "bf7f5e2c7fbb203be5615e83bf88f9a8"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/exercises.jsx": {
+    "mtime": 1786289837.0,
+    "ast_hash": "eb5c4ad9cfcdb27c69ed0d3495107c8b",
+    "semantic_hash": "eb5c4ad9cfcdb27c69ed0d3495107c8b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/gen-queue.jsx": {
+    "mtime": 1786289837.0,
+    "ast_hash": "26eee9bffe1bad7533c58395cd50eba9",
+    "semantic_hash": "26eee9bffe1bad7533c58395cd50eba9"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/mock-exam.jsx": {
+    "mtime": 1786289837.0,
+    "ast_hash": "6f58c560be02073a3bece847bc8f1fe4",
+    "semantic_hash": "6f58c560be02073a3bece847bc8f1fe4"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/prompt-settings.jsx": {
+    "mtime": 1786289837.0,
+    "ast_hash": "3983c7dbced2403b1e325c1d0903b75b",
+    "semantic_hash": "3983c7dbced2403b1e325c1d0903b75b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/settings-prefs.jsx": {
+    "mtime": 1786292386.4867167,
+    "ast_hash": "5c869be57c94c349a87a9279dd7e2171",
+    "semantic_hash": "5c869be57c94c349a87a9279dd7e2171"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/settings.jsx": {
+    "mtime": 1786292386.4869769,
+    "ast_hash": "65e725383e9e23e81e8e0bb2fc0ad908",
+    "semantic_hash": "65e725383e9e23e81e8e0bb2fc0ad908"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/shared.jsx": {
+    "mtime": 1786292386.4873183,
+    "ast_hash": "3c35bd5488c2ad1f7403707b4912bc13",
+    "semantic_hash": "3c35bd5488c2ad1f7403707b4912bc13"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/shell.jsx": {
+    "mtime": 1786292386.487934,
+    "ast_hash": "2cabe86ea48b7617e63bd0fc92eaeb27",
+    "semantic_hash": "2cabe86ea48b7617e63bd0fc92eaeb27"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/eslint.config.mjs": {
+    "mtime": 1783792453.4461644,
+    "ast_hash": "92dd0bb166875eee27e6b17e60688fc0",
+    "semantic_hash": "92dd0bb166875eee27e6b17e60688fc0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/package.json": {
+    "mtime": 1783844441.8805673,
+    "ast_hash": "7b77026ff5198746f5680cba8ff16978",
+    "semantic_hash": "7b77026ff5198746f5680cba8ff16978"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/src/api/response.ts": {
+    "mtime": 1783792424.4780118,
+    "ast_hash": "623ce6da87d2eddb8a3e9016df27feb9",
+    "semantic_hash": "623ce6da87d2eddb8a3e9016df27feb9"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/src/exam/difficulty.ts": {
+    "mtime": 1783792424.6133392,
+    "ast_hash": "73fb951f2e6da05b3e89084e258f4c6e",
+    "semantic_hash": "73fb951f2e6da05b3e89084e258f4c6e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/src/index.ts": {
+    "mtime": 1783792442.1110747,
+    "ast_hash": "334d11f0d79bc7f91d5d0b57bae26912",
+    "semantic_hash": "334d11f0d79bc7f91d5d0b57bae26912"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/src/llm/types.ts": {
+    "mtime": 1783792426.8934708,
+    "ast_hash": "34aef8e7779a45857533a8ba69aa57d6",
+    "semantic_hash": "34aef8e7779a45857533a8ba69aa57d6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/contracts/tsconfig.json": {
+    "mtime": 1783792421.527109,
+    "ast_hash": "0a17b1a12d07e2476f6c8c952b31b9d7",
+    "semantic_hash": "0a17b1a12d07e2476f6c8c952b31b9d7"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/database/eslint.config.mjs": {
+    "mtime": 1783844539.329133,
+    "ast_hash": "30811d9bb99cb8ddfcce481695d2258b",
+    "semantic_hash": "30811d9bb99cb8ddfcce481695d2258b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/database/package.json": {
+    "mtime": 1783935106.3245687,
+    "ast_hash": "28b1a9779259ae70e25a81ff40295dbe",
+    "semantic_hash": "28b1a9779259ae70e25a81ff40295dbe"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/database/prisma/seed.ts": {
+    "mtime": 1783844727.5290225,
+    "ast_hash": "ba0ad866402a779972bb2855822ad874",
+    "semantic_hash": "ba0ad866402a779972bb2855822ad874"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/database/src/index.ts": {
+    "mtime": 1783844539.371683,
+    "ast_hash": "eeab90a1d89fc0b030b40fd231ad3838",
+    "semantic_hash": "eeab90a1d89fc0b030b40fd231ad3838"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/database/tsconfig.json": {
+    "mtime": 1783844539.32919,
+    "ast_hash": "21bb2b01761a5d0355954049b0399476",
+    "semantic_hash": "21bb2b01761a5d0355954049b0399476"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/exam-content/eslint.config.mjs": {
+    "mtime": 1783844539.352826,
+    "ast_hash": "30811d9bb99cb8ddfcce481695d2258b",
+    "semantic_hash": "30811d9bb99cb8ddfcce481695d2258b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/exam-content/package.json": {
+    "mtime": 1783844539.3291633,
+    "ast_hash": "39366bd1a175805d095d1c367245ee3e",
+    "semantic_hash": "39366bd1a175805d095d1c367245ee3e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/exam-content/src/index.ts": {
+    "mtime": 1783844539.3716905,
+    "ast_hash": "7a2ea4027ac6818bca90b587c4a08425",
+    "semantic_hash": "7a2ea4027ac6818bca90b587c4a08425"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/exam-content/tsconfig.json": {
+    "mtime": 1783844539.3292964,
+    "ast_hash": "21bb2b01761a5d0355954049b0399476",
+    "semantic_hash": "21bb2b01761a5d0355954049b0399476"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/nestjs-libraries/eslint.config.mjs": {
+    "mtime": 1783844539.3627472,
+    "ast_hash": "30811d9bb99cb8ddfcce481695d2258b",
+    "semantic_hash": "30811d9bb99cb8ddfcce481695d2258b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/nestjs-libraries/package.json": {
+    "mtime": 1783844539.3579667,
+    "ast_hash": "fbd1fb353b447aa509b92c24e0ecba30",
+    "semantic_hash": "fbd1fb353b447aa509b92c24e0ecba30"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/nestjs-libraries/src/index.ts": {
+    "mtime": 1783844539.6136363,
+    "ast_hash": "0e4e964138ae65ca7d2a9bd9bde521ac",
+    "semantic_hash": "0e4e964138ae65ca7d2a9bd9bde521ac"
+  },
+  "/Users/eugene/Documents/projects/exam-one/libraries/nestjs-libraries/tsconfig.json": {
+    "mtime": 1783844539.3579571,
+    "ast_hash": "21bb2b01761a5d0355954049b0399476",
+    "semantic_hash": "21bb2b01761a5d0355954049b0399476"
+  },
+  "/Users/eugene/Documents/projects/exam-one/package.json": {
+    "mtime": 1786290485.694909,
+    "ast_hash": "1551a3a9f5a9305a729107e5c9afbc79",
+    "semantic_hash": "1551a3a9f5a9305a729107e5c9afbc79"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/generate-listening-audio.mjs": {
+    "mtime": 1784901176.634935,
+    "ast_hash": "806985c220d7dbcb62ff3db1932f962a",
+    "semantic_hash": "806985c220d7dbcb62ff3db1932f962a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/stt/parakeet/download-models.sh": {
+    "mtime": 1786290485.6955748,
+    "ast_hash": "3e5a632a0e9d04b63f5c5e264cf46cb3",
+    "semantic_hash": "3e5a632a0e9d04b63f5c5e264cf46cb3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/stt/parakeet/main.py": {
+    "mtime": 1786290485.6957452,
+    "ast_hash": "bfd1ad853b726d983b474d4370f0bd0d",
+    "semantic_hash": "bfd1ad853b726d983b474d4370f0bd0d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/german_text_rules.py": {
+    "mtime": 1784313330.04021,
+    "ast_hash": "e9ed7a2ea2bda487bf86a77b1150f12d",
+    "semantic_hash": "e9ed7a2ea2bda487bf86a77b1150f12d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/onnx-docker/main.py": {
+    "mtime": 1784313330.040564,
+    "ast_hash": "12c3ae05d09a96a8d1da706953466e67",
+    "semantic_hash": "12c3ae05d09a96a8d1da706953466e67"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/onnx-docker/tts_normalizer.py": {
+    "mtime": 1784313330.0407033,
+    "ast_hash": "0ebb0f690c1e69d0452a3947699038fe",
+    "semantic_hash": "0ebb0f690c1e69d0452a3947699038fe"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/scripts/download-model-files.sh": {
+    "mtime": 1784313330.0408466,
+    "ast_hash": "94c5b550d91997b689f879f6040de70c",
+    "semantic_hash": "94c5b550d91997b689f879f6040de70c"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/wyoming_openai_german_separator/apply_german_separator_patch.py": {
+    "mtime": 1784313330.0411801,
+    "ast_hash": "849d097a6934ac04c15ff3032b4517a3",
+    "semantic_hash": "849d097a6934ac04c15ff3032b4517a3"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/setup-kokoro.sh": {
+    "mtime": 1784901176.6359668,
+    "ast_hash": "2ee7aa2c4afce4c983de80a878556633",
+    "semantic_hash": "2ee7aa2c4afce4c983de80a878556633"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/victoria/download-models.sh": {
+    "mtime": 1784901176.636294,
+    "ast_hash": "3975dda8715df011b4b8666dcacacc46",
+    "semantic_hash": "3975dda8715df011b4b8666dcacacc46"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/victoria/main.py": {
+    "mtime": 1784901176.6367717,
+    "ast_hash": "0c8540ffed9cf23389e53af1d7a747f5",
+    "semantic_hash": "0c8540ffed9cf23389e53af1d7a747f5"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/victoria/models/config.json": {
+    "mtime": 1784835985.7192335,
+    "ast_hash": "3d5541c086389fe2ad3c3fad0229b833",
+    "semantic_hash": "3d5541c086389fe2ad3c3fad0229b833"
+  },
+  "/Users/eugene/Documents/projects/exam-one/tsconfig.base.json": {
+    "mtime": 1783792257.9018385,
+    "ast_hash": "73f3dbf1de931e0c961d899f7c1c3c12",
+    "semantic_hash": "73f3dbf1de931e0c961d899f7c1c3c12"
+  },
+  "/Users/eugene/Documents/projects/exam-one/tsconfig.json": {
+    "mtime": 1783844441.924736,
+    "ast_hash": "c52e9810450bbf9ad2555f223e52cd16",
+    "semantic_hash": "c52e9810450bbf9ad2555f223e52cd16"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.claude/commands/agent-os/discover-standards.md": {
+    "mtime": 1776613189.5316446,
+    "ast_hash": "362f1af1ed5d1765be4c7043c1df8e88",
+    "semantic_hash": "362f1af1ed5d1765be4c7043c1df8e88"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.claude/commands/agent-os/index-standards.md": {
+    "mtime": 1776613189.5338027,
+    "ast_hash": "de3ca14cb82af8c482906d0eeb6ee6ac",
+    "semantic_hash": "de3ca14cb82af8c482906d0eeb6ee6ac"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.claude/commands/agent-os/inject-standards.md": {
+    "mtime": 1776613189.5361078,
+    "ast_hash": "a7c90555f3a230d3e7f2615015a07847",
+    "semantic_hash": "a7c90555f3a230d3e7f2615015a07847"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.claude/commands/agent-os/plan-product.md": {
+    "mtime": 1776613189.5384376,
+    "ast_hash": "18860f8292e90429479fdc51e4b32745",
+    "semantic_hash": "18860f8292e90429479fdc51e4b32745"
+  },
+  "/Users/eugene/Documents/projects/exam-one/.claude/commands/agent-os/shape-spec.md": {
+    "mtime": 1776613189.5407114,
+    "ast_hash": "3f87693fe4199998bec5278da4afc266",
+    "semantic_hash": "3f87693fe4199998bec5278da4afc266"
+  },
+  "/Users/eugene/Documents/projects/exam-one/AGENTS.md": {
+    "mtime": 1786548919.9703627,
+    "ast_hash": "5f345d2c0737fa7b9ef577a7b84d140b",
+    "semantic_hash": "5f345d2c0737fa7b9ef577a7b84d140b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/CLAUDE.md": {
+    "mtime": 1786548934.14391,
+    "ast_hash": "6fbf28a423aa42a4039d4e38b0b324a0",
+    "semantic_hash": "6fbf28a423aa42a4039d4e38b0b324a0"
+  },
+  "/Users/eugene/Documents/projects/exam-one/README.md": {
+    "mtime": 1786548545.3945482,
+    "ast_hash": "114ef02ef6d843c1ae6c99b810bbb2e2",
+    "semantic_hash": "114ef02ef6d843c1ae6c99b810bbb2e2"
+  },
+  "/Users/eugene/Documents/projects/exam-one/README_COMMANDS.md": {
+    "mtime": 1781120527.8880625,
+    "ast_hash": "c40fd1b3d13554768c7b23a07b6654d1",
+    "semantic_hash": "c40fd1b3d13554768c7b23a07b6654d1"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/product/german-exam-A2.md": {
+    "mtime": 1786548654.4804223,
+    "ast_hash": "39a51d5ca77652ada36d576dae389c6a",
+    "semantic_hash": "39a51d5ca77652ada36d576dae389c6a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/product/german-exam-C1.md": {
+    "mtime": 1786548654.5517375,
+    "ast_hash": "ea393a6c0e135d92b15ad0012352dbe9",
+    "semantic_hash": "ea393a6c0e135d92b15ad0012352dbe9"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/product/index.md": {
+    "mtime": 1786548607.5400922,
+    "ast_hash": "1e2261c4c1f6c6cb7130916f7458dce6",
+    "semantic_hash": "1e2261c4c1f6c6cb7130916f7458dce6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/product/mission.md": {
+    "mtime": 1786548607.607149,
+    "ast_hash": "3f7c84fcceaf944a4cc830e95d2abf58",
+    "semantic_hash": "3f7c84fcceaf944a4cc830e95d2abf58"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/product/roadmap.md": {
+    "mtime": 1786548682.1795914,
+    "ast_hash": "be451a44473eb5b4f5a34865f2e271e6",
+    "semantic_hash": "be451a44473eb5b4f5a34865f2e271e6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/product/tech-stack.md": {
+    "mtime": 1786548629.4121125,
+    "ast_hash": "5b21eb8eab528968b33edd166f6961d6",
+    "semantic_hash": "5b21eb8eab528968b33edd166f6961d6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/components/card-layout.md": {
+    "mtime": 1776613990.0330956,
+    "ast_hash": "e1784aa2ed1e04f452a9622bc8aacf46",
+    "semantic_hash": "e1784aa2ed1e04f452a9622bc8aacf46"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/components/icons.md": {
+    "mtime": 1784228619.2260747,
+    "ast_hash": "812865f64f3bdba8366ec171beca2b24",
+    "semantic_hash": "812865f64f3bdba8366ec171beca2b24"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/components/import-aliases.md": {
+    "mtime": 1781445414.9561088,
+    "ast_hash": "5581ce5cfb30280eee0619460ce094cb",
+    "semantic_hash": "5581ce5cfb30280eee0619460ce094cb"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/components/shared-label-maps.md": {
+    "mtime": 1776618143.7990978,
+    "ast_hash": "fd668e9d2ca5660c4358ba52590d248f",
+    "semantic_hash": "fd668e9d2ca5660c4358ba52590d248f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/components/ssr-hydration-guard.md": {
+    "mtime": 1784228618.1462212,
+    "ast_hash": "a957b1b86418aa9a65231ea6ab840fcc",
+    "semantic_hash": "a957b1b86418aa9a65231ea6ab840fcc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/components/state-class-helpers.md": {
+    "mtime": 1776617991.556649,
+    "ast_hash": "f6c9877de55819bca37b9a47eab24f03",
+    "semantic_hash": "f6c9877de55819bca37b9a47eab24f03"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/composables/naming-and-shape.md": {
+    "mtime": 1776796356.0334725,
+    "ast_hash": "7f5ec13c93fbc8a1105d05b905f22504",
+    "semantic_hash": "7f5ec13c93fbc8a1105d05b905f22504"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/global/localstorage-keys.md": {
+    "mtime": 1784228615.9853716,
+    "ast_hash": "18591c482ba0b3b06e51980c7ba08103",
+    "semantic_hash": "18591c482ba0b3b06e51980c7ba08103"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/global/offline-first-core.md": {
+    "mtime": 1786538285.636706,
+    "ast_hash": "1b65ca460bef5aa8cee9f9224e97bea6",
+    "semantic_hash": "1b65ca460bef5aa8cee9f9224e97bea6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/global/self-host-persistence.md": {
+    "mtime": 1784228614.6807058,
+    "ast_hash": "fe68620a602695287e782a494dee9592",
+    "semantic_hash": "fe68620a602695287e782a494dee9592"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/global/ssr-storage-guards.md": {
+    "mtime": 1784228617.2718341,
+    "ast_hash": "de6618762058e7d2befd45555ca3506a",
+    "semantic_hash": "de6618762058e7d2befd45555ca3506a"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/index.yml": {
+    "mtime": 1784228629.3338258,
+    "ast_hash": "67a3b5f2bc4cd669b7a4fe412172bdb4",
+    "semantic_hash": "67a3b5f2bc4cd669b7a4fe412172bdb4"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/server/ai-response-envelope.md": {
+    "mtime": 1784228629.1468673,
+    "ast_hash": "4ce534ad309844d47924319f459eb4a6",
+    "semantic_hash": "4ce534ad309844d47924319f459eb4a6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/styling/daisyui-setup.md": {
+    "mtime": 1776618666.8018184,
+    "ast_hash": "dbf8c66151d6f380aa925cf9187d9152",
+    "semantic_hash": "dbf8c66151d6f380aa925cf9187d9152"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/styling/theme-catalog.md": {
+    "mtime": 1784228624.2350674,
+    "ast_hash": "91b578c8a3d8b5535efc85ed6d42ece6",
+    "semantic_hash": "91b578c8a3d8b5535efc85ed6d42ece6"
+  },
+  "/Users/eugene/Documents/projects/exam-one/agent-os/standards/styling/theming-mechanism.md": {
+    "mtime": 1776618728.1716895,
+    "ast_hash": "ff8e1ca10f27f3cd3446980a562ca832",
+    "semantic_hash": "ff8e1ca10f27f3cd3446980a562ca832"
+  },
+  "/Users/eugene/Documents/projects/exam-one/apps/frontend/public/robots.txt": {
+    "mtime": 1749010431.0,
+    "ast_hash": "243b03ecba82dde9612cd5163145a86d",
+    "semantic_hash": "243b03ecba82dde9612cd5163145a86d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/compose.yaml": {
+    "mtime": 1786538293.5352938,
+    "ast_hash": "14391eaadf3c81d9e8bf9de4f01a1d8b",
+    "semantic_hash": "14391eaadf3c81d9e8bf9de4f01a1d8b"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/README.md": {
+    "mtime": 1786292386.4816506,
+    "ast_hash": "8b371bd1437ca065c190fbebce6b6e17",
+    "semantic_hash": "8b371bd1437ca065c190fbebce6b6e17"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/design-system/Scalo Design System.html": {
+    "mtime": 1786292386.4820943,
+    "ast_hash": "69f6021581e9d60b5c519da5bca4fb9e",
+    "semantic_hash": "69f6021581e9d60b5c519da5bca4fb9e"
+  },
+  "/Users/eugene/Documents/projects/exam-one/exam-one-design/project/Project_MVP.html": {
+    "mtime": 1786292386.484543,
+    "ast_hash": "47181a514ad75775308dd0e4644c1435",
+    "semantic_hash": "47181a514ad75775308dd0e4644c1435"
+  },
+  "/Users/eugene/Documents/projects/exam-one/pnpm-workspace.yaml": {
+    "mtime": 1783792254.9537184,
+    "ast_hash": "8d3cac9e86e34c2cbe8036b554e68b24",
+    "semantic_hash": "8d3cac9e86e34c2cbe8036b554e68b24"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/README.md": {
+    "mtime": 1786290485.695053,
+    "ast_hash": "c554b2d28b31c414e9cdf6b363b5939d",
+    "semantic_hash": "c554b2d28b31c414e9cdf6b363b5939d"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/stt/README.md": {
+    "mtime": 1786290485.695278,
+    "ast_hash": "e7fb477dec21d940b93e21de3d8c0a98",
+    "semantic_hash": "e7fb477dec21d940b93e21de3d8c0a98"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/stt/parakeet/requirements.txt": {
+    "mtime": 1786290485.6958404,
+    "ast_hash": "38ed6414e371f306aad6e818d0e15d5f",
+    "semantic_hash": "38ed6414e371f306aad6e818d0e15d5f"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/README.md": {
+    "mtime": 1786290485.6960154,
+    "ast_hash": "f7c4d63fcd0695b1cd6a1804e3787d83",
+    "semantic_hash": "f7c4d63fcd0695b1cd6a1804e3787d83"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/README.md": {
+    "mtime": 1784313330.0400233,
+    "ast_hash": "8ac4cfd0c4d6d796cd7734f6774c50b1",
+    "semantic_hash": "8ac4cfd0c4d6d796cd7734f6774c50b1"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/docker-compose.yml": {
+    "mtime": 1784313330.0401208,
+    "ast_hash": "3a078e59828520fd308ac6e57d104413",
+    "semantic_hash": "3a078e59828520fd308ac6e57d104413"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/onnx-docker/README.md": {
+    "mtime": 1784313330.0403967,
+    "ast_hash": "60ba3b61123c06ba5010a4d810ff77f1",
+    "semantic_hash": "60ba3b61123c06ba5010a4d810ff77f1"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/kokoro-german/wyoming_openai_german_separator/README.md": {
+    "mtime": 1784313330.0410435,
+    "ast_hash": "f2330949284fe76f74e5bf6b7de589bc",
+    "semantic_hash": "f2330949284fe76f74e5bf6b7de589bc"
+  },
+  "/Users/eugene/Documents/projects/exam-one/scripts/tts/victoria/requirements.txt": {
+    "mtime": 1784901176.6372874,
+    "ast_hash": "f9edc22dd4f9a277d2fce7039fb7458b",
+    "semantic_hash": "f9edc22dd4f9a277d2fce7039fb7458b"
   }
 }
