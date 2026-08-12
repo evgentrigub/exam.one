@@ -13,6 +13,7 @@ services:
     environment:
       NITRO_HOST: 0.0.0.0
       NITRO_PORT: 3000
+      NUXT_PUBLIC_FRONTEND_LANDING_URL: '${FRONTEND_LANDING_URL:-http://localhost:3001}'
       NUXT_LLM_PROVIDER: '${LLM_PROVIDER:-openrouter}'
       NUXT_LLM_OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
       NUXT_LLM_OPENROUTER_API_KEY: '${OPENROUTER_API_KEY:-}'
