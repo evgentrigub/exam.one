@@ -35,6 +35,7 @@ What are we building? Please describe the feature or change.
 ```
 
 Based on their response, ask 1-2 clarifying questions if the scope is unclear. Examples:
+
 - "Is this a new feature or a change to existing functionality?"
 - "What's the expected outcome when this is done?"
 - "Are there any constraints or requirements I should know about?"
@@ -110,11 +111,13 @@ Read the confirmed standards files to include their content in the plan context.
 ### Step 6: Generate Spec Folder Name
 
 Create a folder name using this format:
+
 ```
 YYYY-MM-DD-HHMM-{feature-slug}/
 ```
 
 Where:
+
 - Date/time is current timestamp
 - Feature slug is derived from the feature description (lowercase, hyphens, max 40 chars)
 
@@ -159,6 +162,7 @@ Does this plan structure look right? I'll fill in the implementation tasks next.
 ### Step 8: Complete the Plan
 
 After Task 1 is confirmed, continue building out the remaining implementation tasks based on:
+
 - The feature scope from Step 1
 - Patterns from reference implementations (Step 3)
 - Constraints from standards (Step 5)

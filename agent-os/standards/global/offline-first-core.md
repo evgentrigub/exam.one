@@ -69,9 +69,9 @@ Composables that own list data follow this lifecycle while localStorage is the p
 3. When writing to localStorage, **only persist non-default items** (user-generated / AI-generated)
 
 ```ts
-const defaultIds = new Set(defaultReadingTopics.map((t) => t.id))
+const defaultIds = new Set(defaultReadingTopics.map(t => t.id))
 const stored = JSON.parse(localStorage.getItem(KEY) ?? '[]') as ReadingExercise[]
-const extras = stored.filter((t) => !defaultIds.has(t.id))
+const extras = stored.filter(t => !defaultIds.has(t.id))
 texts.value = [...defaultReadingTopics, ...extras]
 ```
 

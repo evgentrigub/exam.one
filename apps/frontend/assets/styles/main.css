@@ -1,25 +1,35 @@
 /* Tailwind CSS v4 with daisyUI v5 */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Include multiple daisyUI themes */
 @plugin "daisyui" {
   themes: light, cupcake;
 }
 
-html, body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+html,
+body {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   line-height: 1.6;
 }
 
 /* ─── Typography ─── */
 .font-display {
   font-family: 'Fraunces', serif;
-  font-feature-settings: "ss01","ss02";
+  font-feature-settings: 'ss01', 'ss02';
   letter-spacing: -0.02em;
 }
 
 /* ─── App shell ─── */
-.app-shell { height: 100vh; overflow: hidden; }
+.app-shell {
+  height: 100vh;
+  overflow: hidden;
+}
 
 /* ─── Soft ring shadow ─── */
 .ring-soft {
@@ -27,7 +37,11 @@ html, body {
 }
 
 /* ─── Card hover ─── */
-.card-hov { transition: transform 180ms cubic-bezier(0,0,0.2,1), box-shadow 180ms; }
+.card-hov {
+  transition:
+    transform 180ms cubic-bezier(0, 0, 0.2, 1),
+    box-shadow 180ms;
+}
 .card-hov:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 24px -12px color-mix(in oklab, var(--color-base-content) 25%, transparent);
@@ -35,13 +49,18 @@ html, body {
 
 /* ─── Background patterns ─── */
 .dot-pattern {
-  background-image: radial-gradient(color-mix(in oklab, var(--color-base-content) 12%, transparent) 1px, transparent 1px);
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--color-base-content) 12%, transparent) 1px,
+    transparent 1px
+  );
   background-size: 14px 14px;
 }
 .stripe-bg {
-  background-image: repeating-linear-gradient(135deg,
+  background-image: repeating-linear-gradient(
+    135deg,
     color-mix(in oklab, var(--color-primary) 8%, transparent) 0 10px,
-    transparent 10px 20px);
+    transparent 10px 20px
+  );
 }
 
 /* ─── Navigation ─── */
@@ -51,15 +70,31 @@ html, body {
 }
 
 /* ─── Skill colors ─── */
-.text-reading   { color: var(--color-primary); }
-.text-writing   { color: var(--color-success); }
-.text-listening { color: var(--color-info); }
-.text-speaking  { color: var(--color-warning); }
+.text-reading {
+  color: var(--color-primary);
+}
+.text-writing {
+  color: var(--color-success);
+}
+.text-listening {
+  color: var(--color-info);
+}
+.text-speaking {
+  color: var(--color-warning);
+}
 
-.bg-reading-soft   { background: color-mix(in oklab, var(--color-primary) 12%, transparent); }
-.bg-writing-soft   { background: color-mix(in oklab, var(--color-success) 14%, transparent); }
-.bg-listening-soft { background: color-mix(in oklab, var(--color-info) 14%, transparent); }
-.bg-speaking-soft  { background: color-mix(in oklab, var(--color-warning) 18%, transparent); }
+.bg-reading-soft {
+  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+}
+.bg-writing-soft {
+  background: color-mix(in oklab, var(--color-success) 14%, transparent);
+}
+.bg-listening-soft {
+  background: color-mix(in oklab, var(--color-info) 14%, transparent);
+}
+.bg-speaking-soft {
+  background: color-mix(in oklab, var(--color-warning) 18%, transparent);
+}
 
 /* ─── Level pip ─── */
 .level-pip {
@@ -72,8 +107,18 @@ html, body {
 }
 
 /* ─── Spark chart ─── */
-.spark { display: flex; align-items: flex-end; gap: 2px; height: 28px; }
-.spark > span { width: 4px; background: currentColor; border-radius: 2px; opacity: .85; }
+.spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 28px;
+}
+.spark > span {
+  width: 4px;
+  background: currentColor;
+  border-radius: 2px;
+  opacity: 0.85;
+}
 
 /* ─── Ring progress ─── */
 .ring-prog {
@@ -82,12 +127,15 @@ html, body {
   width: 64px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: conic-gradient(var(--c) calc(var(--p)*1%), color-mix(in oklab, var(--color-base-content) 10%, transparent) 0);
+  background: conic-gradient(
+    var(--c) calc(var(--p) * 1%),
+    color-mix(in oklab, var(--color-base-content) 10%, transparent) 0
+  );
   display: grid;
   place-items: center;
 }
 .ring-prog::after {
-  content: "";
+  content: '';
   grid-area: 1/1;
   place-self: center;
   width: 76%;
@@ -95,74 +143,187 @@ html, body {
   background: var(--color-base-100);
   border-radius: 50%;
 }
-.ring-prog > span { grid-area: 1/1; z-index: 1; font-weight: 600; font-size: .8rem; }
+.ring-prog > span {
+  grid-area: 1/1;
+  z-index: 1;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
 
 /* ─── Wave animation ─── */
-.wave-bar { background: currentColor; border-radius: 2px; display: inline-block; width: 3px; }
-@keyframes pulsebar { 0%,100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
-.wave-live .wave-bar { animation: pulsebar 1s ease-in-out infinite; transform-origin: center; }
-.wave-live .wave-bar:nth-child(2) { animation-delay: .1s; }
-.wave-live .wave-bar:nth-child(3) { animation-delay: .2s; }
-.wave-live .wave-bar:nth-child(4) { animation-delay: .15s; }
-.wave-live .wave-bar:nth-child(5) { animation-delay: .05s; }
+.wave-bar {
+  background: currentColor;
+  border-radius: 2px;
+  display: inline-block;
+  width: 3px;
+}
+@keyframes pulsebar {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.wave-live .wave-bar {
+  animation: pulsebar 1s ease-in-out infinite;
+  transform-origin: center;
+}
+.wave-live .wave-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.wave-live .wave-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.wave-live .wave-bar:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.wave-live .wave-bar:nth-child(5) {
+  animation-delay: 0.05s;
+}
 
 /* ─── Skeleton loader ─── */
 .skel {
-  background: linear-gradient(90deg,
+  background: linear-gradient(
+    90deg,
     color-mix(in oklab, var(--color-base-content) 6%, transparent),
     color-mix(in oklab, var(--color-base-content) 12%, transparent),
-    color-mix(in oklab, var(--color-base-content) 6%, transparent));
+    color-mix(in oklab, var(--color-base-content) 6%, transparent)
+  );
   background-size: 200% 100%;
   animation: skel 1.2s linear infinite;
   border-radius: 6px;
 }
-@keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes skel {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
 
 /* ─── Tab underline ─── */
-.tab-underline { position: relative; }
-.tab-underline[aria-selected="true"]::after {
-  content: "";
+.tab-underline {
+  position: relative;
+}
+.tab-underline[aria-selected='true']::after {
+  content: '';
   position: absolute;
-  left: 12px; right: 12px; bottom: -1px;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
   height: 2px;
   background: var(--color-primary);
   border-radius: 2px;
 }
 
 /* ─── KBD shadow ─── */
-.kbd-shadow { box-shadow: 0 2px 0 color-mix(in oklab, var(--color-base-content) 20%, transparent); }
+.kbd-shadow {
+  box-shadow: 0 2px 0 color-mix(in oklab, var(--color-base-content) 20%, transparent);
+}
 
 /* ─── Exam skill chip transition ─── */
-.exam-skill-chip { transition: all 180ms cubic-bezier(0,0,0.2,1); }
-.skill-active { background: var(--color-primary); color: var(--color-primary-content); border-color: var(--color-primary); }
+.exam-skill-chip {
+  transition: all 180ms cubic-bezier(0, 0, 0.2, 1);
+}
+.skill-active {
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  border-color: var(--color-primary);
+}
 
 /* ─── Module chips (Exercises filter) — solid color when active ─── */
-.module-chip { transition: all 180ms cubic-bezier(0,0,0.2,1); }
-.module-chip-reading.is-active   { background: var(--color-primary); color: var(--color-primary-content); border-color: var(--color-primary); }
-.module-chip-writing.is-active   { background: var(--color-success); color: var(--color-success-content); border-color: var(--color-success); }
-.module-chip-listening.is-active { background: var(--color-info);    color: var(--color-info-content);    border-color: var(--color-info); }
-.module-chip-speaking.is-active  { background: var(--color-warning); color: var(--color-warning-content); border-color: var(--color-warning); }
+.module-chip {
+  transition: all 180ms cubic-bezier(0, 0, 0.2, 1);
+}
+.module-chip-reading.is-active {
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  border-color: var(--color-primary);
+}
+.module-chip-writing.is-active {
+  background: var(--color-success);
+  color: var(--color-success-content);
+  border-color: var(--color-success);
+}
+.module-chip-listening.is-active {
+  background: var(--color-info);
+  color: var(--color-info-content);
+  border-color: var(--color-info);
+}
+.module-chip-speaking.is-active {
+  background: var(--color-warning);
+  color: var(--color-warning-content);
+  border-color: var(--color-warning);
+}
 
 /* ─── Part chips (Exercises + Exam format) — tinted background when active ─── */
-.part-chip { transition: all 180ms cubic-bezier(0,0,0.2,1); }
-.part-chip-reading.is-active   { background: color-mix(in oklab, var(--color-primary) 15%, transparent); border-color: var(--color-primary); color: var(--color-primary); }
-.part-chip-writing.is-active   { background: color-mix(in oklab, var(--color-success) 15%, transparent); border-color: var(--color-success); color: var(--color-success); }
-.part-chip-listening.is-active { background: color-mix(in oklab, var(--color-info) 15%, transparent);    border-color: var(--color-info);    color: var(--color-info); }
-.part-chip-speaking.is-active  { background: color-mix(in oklab, var(--color-warning) 15%, transparent); border-color: var(--color-warning); color: var(--color-warning); }
+.part-chip {
+  transition: all 180ms cubic-bezier(0, 0, 0.2, 1);
+}
+.part-chip-reading.is-active {
+  background: color-mix(in oklab, var(--color-primary) 15%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.part-chip-writing.is-active {
+  background: color-mix(in oklab, var(--color-success) 15%, transparent);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+.part-chip-listening.is-active {
+  background: color-mix(in oklab, var(--color-info) 15%, transparent);
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+.part-chip-speaking.is-active {
+  background: color-mix(in oklab, var(--color-warning) 15%, transparent);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
 
 /* ─── Skill color dots ─── */
-.dot-reading   { background: var(--color-primary); }
-.dot-writing   { background: var(--color-success); }
-.dot-listening { background: var(--color-info); }
-.dot-speaking  { background: var(--color-warning); }
+.dot-reading {
+  background: var(--color-primary);
+}
+.dot-writing {
+  background: var(--color-success);
+}
+.dot-listening {
+  background: var(--color-info);
+}
+.dot-speaking {
+  background: var(--color-warning);
+}
 
 /* ─── Skill tinted soft backgrounds (10–12%) for icons/headers ─── */
-.bg-reading-tint   { background: color-mix(in oklab, var(--color-primary) 10%, transparent); }
-.bg-writing-tint   { background: color-mix(in oklab, var(--color-success) 10%, transparent); }
-.bg-listening-tint { background: color-mix(in oklab, var(--color-info) 10%, transparent); }
-.bg-speaking-tint  { background: color-mix(in oklab, var(--color-warning) 10%, transparent); }
+.bg-reading-tint {
+  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+}
+.bg-writing-tint {
+  background: color-mix(in oklab, var(--color-success) 10%, transparent);
+}
+.bg-listening-tint {
+  background: color-mix(in oklab, var(--color-info) 10%, transparent);
+}
+.bg-speaking-tint {
+  background: color-mix(in oklab, var(--color-warning) 10%, transparent);
+}
 
-@keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
 
 /* ─── Selection color ─── */
-::selection { background: color-mix(in oklab, var(--color-primary) 30%, transparent); }
+::selection {
+  background: color-mix(in oklab, var(--color-primary) 30%, transparent);
+}

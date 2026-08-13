@@ -119,10 +119,16 @@ export function getMockExamSet(id: string): MockExamSet | undefined {
 
 export function createGoetheA2MockExamSet(
   setNumber: number,
-  content: MockExamContent,
+  content: MockExamContent
 ): MockExamSet {
   const setId = `goethe-a2-set-${setNumber}`
-  const definition = (skill: SkillId, minutes: number, maxRawPoints: number, maxFinalPoints: number, multiplier: number) => ({
+  const definition = (
+    skill: SkillId,
+    minutes: number,
+    maxRawPoints: number,
+    maxFinalPoints: number,
+    multiplier: number
+  ) => ({
     skill,
     minutes,
     maxRawPoints,
@@ -131,13 +137,15 @@ export function createGoetheA2MockExamSet(
     ...(skill === 'speaking' ? { provisional: true } : {}),
     exercises: content[skill].map(exercise => ({
       id: exercise.id ?? '',
-      title: skill === 'speaking'
-        ? `Sprechen · Teil ${exercise.testingPart}`
-        : ('title' in exercise ? exercise.title : `${skill} · Teil ${exercise.testingPart}`),
+      title:
+        skill === 'speaking'
+          ? `Sprechen · Teil ${exercise.testingPart}`
+          : 'title' in exercise
+            ? exercise.title
+            : `${skill} · Teil ${exercise.testingPart}`,
       part: exercise.testingPart ?? 1,
-      maxRawPoints: skill === 'speaking'
-        ? (exercise.testingPart === 1 ? 4 : 8)
-        : skill === 'writing' ? 10 : 5,
+      maxRawPoints:
+        skill === 'speaking' ? (exercise.testingPart === 1 ? 4 : 8) : skill === 'writing' ? 10 : 5,
     })),
   })
 

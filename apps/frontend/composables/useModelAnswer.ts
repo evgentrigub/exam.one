@@ -1,14 +1,20 @@
 /**
  * useModelAnswer composable
  * Manages generation and storage of AI model answers for writing topics.
- * 
+ *
  * Storage: localStorage under key `exam-one:writing:model-answers`
  */
 
 import type { WritingExercise, ModelAnswer } from '~/utils/types'
 import { ref } from 'vue'
-import { generateModelAnswerC1Part1, generateModelAnswerC1Part2 } from '~/data/writing/c1/answerGeneratorWritingC1'
-import { generateModelAnswerA2Part1, generateModelAnswerA2Part2 } from '~/data/writing/a2/answerGeneratorWritingA2'
+import {
+  generateModelAnswerC1Part1,
+  generateModelAnswerC1Part2,
+} from '~/data/writing/c1/answerGeneratorWritingC1'
+import {
+  generateModelAnswerA2Part1,
+  generateModelAnswerA2Part2,
+} from '~/data/writing/a2/answerGeneratorWritingA2'
 import { generateUUID } from '~/utils/uuid'
 
 type GenerationStatus = 'idle' | 'pending' | 'ready' | 'error'
@@ -37,7 +43,9 @@ function stringArray(value: unknown): string[] | undefined {
   return Array.isArray(value) && value.every(item => typeof item === 'string') ? value : undefined
 }
 
-function normalizeModelAnswerData(value: unknown): Pick<ModelAnswer, 'content' | 'wordCount' | 'highlights'> | null {
+function normalizeModelAnswerData(
+  value: unknown
+): Pick<ModelAnswer, 'content' | 'wordCount' | 'highlights'> | null {
   if (!isRecord(value) || typeof value['content'] !== 'string') return null
   const wordCount = Number(value['wordCount'])
   if (!Number.isFinite(wordCount) || wordCount < 0) return null
@@ -47,8 +55,10 @@ function normalizeModelAnswerData(value: unknown): Pick<ModelAnswer, 'content' |
   const mainPoints = stringArray(highlights['mainPoints'])
   const keyPhrases = stringArray(highlights['keyPhrases'])
 
-  if (typeof highlights['greeting'] === 'string') normalizedHighlights.greeting = highlights['greeting']
-  if (typeof highlights['closing'] === 'string') normalizedHighlights.closing = highlights['closing']
+  if (typeof highlights['greeting'] === 'string')
+    normalizedHighlights.greeting = highlights['greeting']
+  if (typeof highlights['closing'] === 'string')
+    normalizedHighlights.closing = highlights['closing']
   if (mainPoints) normalizedHighlights.mainPoints = mainPoints
   if (keyPhrases) normalizedHighlights.keyPhrases = keyPhrases
 
@@ -62,7 +72,8 @@ function normalizeModelAnswerData(value: unknown): Pick<ModelAnswer, 'content' |
 function readAllModelAnswers(): Record<string, ModelAnswerRecord> {
   if (!import.meta.client) return {}
   try {
-    const raw = localStorage.getItem(MODEL_ANSWER_KEY) || localStorage.getItem(MODEL_ANSWER_LEGACY_KEY)
+    const raw =
+      localStorage.getItem(MODEL_ANSWER_KEY) || localStorage.getItem(MODEL_ANSWER_LEGACY_KEY)
     return raw ? (JSON.parse(raw) as Record<string, ModelAnswerRecord>) : {}
   } catch {
     return {}
@@ -143,7 +154,7 @@ export function useModelAnswer() {
    */
   async function generateModelAnswer(topic: WritingExercise): Promise<void> {
     const prompt = getGenerationPrompt(topic)
-    
+
     saveRecord({
       topicId: topic.id,
       status: 'pending',
@@ -155,14 +166,14 @@ export function useModelAnswer() {
       // Cast through unknown to bypass Nuxt's complex route type inference
       const response = (await $fetch('/api/generate-model-answer', {
         method: 'POST',
-        body: { topic, prompt }
-      }) as unknown) as { text?: string; data?: unknown; error?: string | null }
-      
+        body: { topic, prompt },
+      })) as unknown as { text?: string; data?: unknown; error?: string | null }
+
       const current = getRecord(topic.id)
       if (current) {
         if (response.error) throw new Error(response.error)
         let parsedData = normalizeModelAnswerData(response.data)
-        
+
         if (!parsedData && response.text) {
           try {
             parsedData = normalizeModelAnswerData(JSON.parse(response.text) as unknown)
@@ -170,7 +181,7 @@ export function useModelAnswer() {
             parsedData = null
           }
         }
-        
+
         if (parsedData) {
           // Generate UUID for the model answer
           const modelAnswer: ModelAnswer = {
@@ -180,32 +191,32 @@ export function useModelAnswer() {
             wordCount: parsedData.wordCount,
             ...(parsedData.highlights && { highlights: parsedData.highlights }),
           }
-          
+
           const update: ModelAnswerRecord = {
             ...current,
             status: 'ready',
             completedAt: new Date().toISOString(),
             modelAnswer,
           }
-          
+
           saveRecord(update)
         } else {
-          saveRecord({ 
-            ...current, 
-            status: 'error', 
-            completedAt: new Date().toISOString(), 
-            error: 'Failed to parse model answer from response' 
+          saveRecord({
+            ...current,
+            status: 'error',
+            completedAt: new Date().toISOString(),
+            error: 'Failed to parse model answer from response',
           })
         }
       }
     } catch (error) {
       const current = getRecord(topic.id)
       if (current) {
-        saveRecord({ 
-          ...current, 
-          status: 'error', 
-          completedAt: new Date().toISOString(), 
-          error: error instanceof Error ? error.message : 'Model answer generation is unavailable.' 
+        saveRecord({
+          ...current,
+          status: 'error',
+          completedAt: new Date().toISOString(),
+          error: error instanceof Error ? error.message : 'Model answer generation is unavailable.',
         })
       }
     }
@@ -223,4 +234,3 @@ export function useModelAnswer() {
     clearModelAnswer,
   }
 }
-

@@ -11,9 +11,9 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: PrismaService,
-          useValue: { user: { count: jest.fn().mockResolvedValue(0) } }
-        }
-      ]
+          useValue: { user: { count: jest.fn().mockResolvedValue(0) } },
+        },
+      ],
     }).compile()
 
     service = module.get<UsersService>(UsersService)

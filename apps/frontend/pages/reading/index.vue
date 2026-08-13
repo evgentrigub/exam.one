@@ -3,9 +3,7 @@
     <div class="container mx-auto px-4 py-8">
       <!-- Header -->
       <header class="mb-8">
-        <h1 class="text-3xl font-bold text-base-content mb-2">
-          📚 {{ $t('practice.title') }}
-        </h1>
+        <h1 class="text-3xl font-bold text-base-content mb-2">📚 {{ $t('practice.title') }}</h1>
         <p class="text-base-content/70">
           {{ $t('practice.subtitle') }}
         </p>
@@ -13,7 +11,6 @@
 
       <!-- Practice Content -->
       <div v-if="!selectedText" class="max-w-6xl mx-auto">
-
         <!-- Enhanced Filter and Sort Bar -->
         <div class="mb-6 bg-base-100 rounded-lg shadow-sm p-4">
           <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
@@ -21,11 +18,10 @@
             <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <!-- Text Type Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-base-content">{{ $t('practice.type') }}:</label>
-                <select 
-                  v-model="selectedTypeFilter"
-                  class="select select-bordered select-sm"
+                <label class="text-sm font-medium text-base-content"
+                  >{{ $t('practice.type') }}:</label
                 >
+                <select v-model="selectedTypeFilter" class="select select-bordered select-sm">
                   <option value="all">{{ $t('practice.allTypes') }}</option>
                   <option value="email">{{ $t('exerciseType.email') }}</option>
                   <option value="notice">{{ $t('exerciseType.notice') }}</option>
@@ -34,29 +30,27 @@
                   <option value="instructions">{{ $t('exerciseType.instructions') }}</option>
                 </select>
               </div>
-              
+
               <!-- Completion Status Filter -->
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-base-content">{{ $t('practice.status') }}:</label>
-                <select 
-                  v-model="selectedStatusFilter"
-                  class="select select-bordered select-sm"
+                <label class="text-sm font-medium text-base-content"
+                  >{{ $t('practice.status') }}:</label
                 >
+                <select v-model="selectedStatusFilter" class="select select-bordered select-sm">
                   <option value="all">{{ $t('practice.allTopics') }}</option>
                   <option value="completed">{{ $t('practice.completed') }}</option>
                   <option value="incomplete">{{ $t('practice.notCompleted') }}</option>
                 </select>
               </div>
             </div>
-            
+
             <!-- Sort Options -->
             <div class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-base-content w-25">{{ $t('practice.sortBy') }}:</label>
-                <select 
-                  v-model="selectedSort"
-                  class="select select-bordered select-sm"
+                <label class="text-sm font-medium text-base-content w-25"
+                  >{{ $t('practice.sortBy') }}:</label
                 >
+                <select v-model="selectedSort" class="select select-bordered select-sm">
                   <option value="title">{{ $t('practice.titleSort') }}</option>
                   <option value="type">{{ $t('practice.type') }}</option>
                   <option value="difficulty">{{ $t('practice.difficulty') }}</option>
@@ -65,44 +59,57 @@
                   <option value="wordCount">{{ $t('practice.wordCount') }}</option>
                 </select>
               </div>
-              
+
               <!-- Sort Direction -->
               <button
                 class="btn btn-square btn-sm"
-                :title="sortDirection === 'asc' ? $t('practice.sortAscending') : $t('practice.sortDescending')"
+                :title="
+                  sortDirection === 'asc'
+                    ? $t('practice.sortAscending')
+                    : $t('practice.sortDescending')
+                "
                 @click="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
               >
-                <svg 
+                <svg
                   class="w-4 h-4 transition-transform"
                   :class="{ 'rotate-180': sortDirection === 'desc' }"
-                  fill="none" 
-                  stroke="currentColor" 
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 11l5-5m0 0l5 5m-5-5v12"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <!-- Results Count -->
             <div class="text-sm text-base-content/70 whitespace-nowrap">
-              {{ filteredAndSortedTexts.length === 1 ? $t('practice.textFound', { count: filteredAndSortedTexts.length }) : $t('practice.textsFound', { count: filteredAndSortedTexts.length }) }}
+              {{
+                filteredAndSortedTexts.length === 1
+                  ? $t('practice.textFound', { count: filteredAndSortedTexts.length })
+                  : $t('practice.textsFound', { count: filteredAndSortedTexts.length })
+              }}
             </div>
           </div>
         </div>
 
         <!-- Text Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-          <TextCard 
+          <TextCard
             v-for="text in filteredAndSortedTexts"
             :key="text.id"
             :text="text"
             @start-reading="openReader"
             @delete-text="handleDeleteText"
           />
-          
+
           <!-- Reading Generator Card -->
-          <ReadingGeneratorCard 
+          <ReadingGeneratorCard
             :is-generating="isGenerating"
             :generating-difficulty="generatingDifficulty"
             :generation-error="generationError"
@@ -118,9 +125,21 @@
 
         <!-- Enhanced Empty State -->
         <div v-if="filteredAndSortedTexts.length === 0" class="text-center py-12">
-          <div class="w-20 h-20 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          <div
+            class="w-20 h-20 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <svg
+              class="w-10 h-10 text-base-content/40"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </div>
           <h3 class="text-lg font-medium text-base-content mb-2">
@@ -129,12 +148,14 @@
           <p class="text-base-content/70 max-w-md mx-auto mb-4">
             {{ $t('practice.noTextsMatch') }}
           </p>
-          <button
-            class="btn btn-primary gap-2"
-            @click="resetFilters"
-          >
+          <button class="btn btn-primary gap-2" @click="resetFilters">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
             </svg>
             {{ $t('practice.resetFilters') }}
           </button>
@@ -167,9 +188,7 @@ import type { ReadingExercise } from '~/utils/exercises/reading'
 // Page metadata
 useHead({
   title: 'Reading Practice - Exam.one',
-  meta: [
-    { name: 'description', content: 'Practice reading with authentic exam-style texts' }
-  ]
+  meta: [{ name: 'description', content: 'Practice reading with authentic exam-style texts' }],
 })
 
 // i18n
@@ -182,8 +201,8 @@ const { getSession, isTextCompleted, getBestScore } = useProgress()
 const { getTexts, addTexts, deleteText } = useReadingTexts()
 
 // Reading generation management
-const { 
-  isGenerating, 
+const {
+  isGenerating,
   generatingDifficulty,
   generationError,
   generationJobs,
@@ -191,7 +210,7 @@ const {
   generateReading,
   resumeGeneration,
   retryGeneration,
-  dismissError
+  dismissError,
 } = useReadingGeneration()
 
 // Global settings (exam level)
@@ -225,28 +244,28 @@ const filteredTexts = computed(() => {
   // Filter by current exam level
   const difficulty = examLevel.value
   texts = texts.filter(text => text.difficulty === difficulty)
-  
+
   // Filter by text type
   if (selectedTypeFilter.value !== 'all') {
     texts = texts.filter(text => text.textType === selectedTypeFilter.value)
   }
-  
+
   // Filter by completion status
   if (selectedStatusFilter.value === 'completed') {
     texts = texts.filter(text => isTextCompleted(text.id))
   } else if (selectedStatusFilter.value === 'incomplete') {
     texts = texts.filter(text => !isTextCompleted(text.id))
   }
-  
+
   return texts
 })
 
 const filteredAndSortedTexts = computed(() => {
   const sortedTexts = [...filteredTexts.value]
-  
+
   sortedTexts.sort((a, b) => {
     let comparison = 0
-    
+
     if (selectedSort.value === 'title') {
       comparison = a.title.localeCompare(b.title)
     } else if (selectedSort.value === 'type') {
@@ -256,13 +275,13 @@ const filteredAndSortedTexts = computed(() => {
     } else if (selectedSort.value === 'completion') {
       const aCompleted = isTextCompleted(a.id)
       const bCompleted = isTextCompleted(b.id)
-      comparison = aCompleted === bCompleted ? 0 : (aCompleted ? -1 : 1)
+      comparison = aCompleted === bCompleted ? 0 : aCompleted ? -1 : 1
     } else if (selectedSort.value === 'score') {
       comparison = getBestScore(b.id) - getBestScore(a.id) // Higher scores first
     } else if (selectedSort.value === 'wordCount') {
       comparison = a.wordCount - b.wordCount
     }
-    
+
     return sortDirection.value === 'desc' ? -comparison : comparison
   })
 
@@ -301,10 +320,12 @@ async function handleGenerate() {
   try {
     console.log(`🤖 Generating ${examLevel.value} reading exercises...`)
     const newTexts = await generateReading(examLevel.value, {
-      onPartComplete: (items) => addTexts(items)
+      onPartComplete: items => addTexts(items),
     })
 
-    console.log(`✅ Successfully generated ${newTexts.length} new reading exercises for ${examLevel.value}`)
+    console.log(
+      `✅ Successfully generated ${newTexts.length} new reading exercises for ${examLevel.value}`
+    )
   } catch (error: unknown) {
     console.error('Failed to generate reading exercises:', error)
     alert(error instanceof Error ? error.message : t('generation.readingErrorFallback'))
@@ -314,7 +335,7 @@ async function handleGenerate() {
 // Retry generation handler
 async function handleRetry() {
   try {
-    const newTexts = await retryGeneration((items) => addTexts(items))
+    const newTexts = await retryGeneration(items => addTexts(items))
     console.log(`✅ Successfully generated ${newTexts.length} new reading exercises on retry`)
   } catch (error: unknown) {
     console.error('Failed to retry generation:', error)
@@ -344,9 +365,7 @@ function handleDeleteText(textId: string) {
   const text = getTexts().find(t => t.id === textId)
   if (!text) return
 
-  const confirmed = confirm(
-    t('practice.deleteConfirm', { title: text.title })
-  )
+  const confirmed = confirm(t('practice.deleteConfirm', { title: text.title }))
 
   if (confirmed) {
     const success = deleteText(textId)

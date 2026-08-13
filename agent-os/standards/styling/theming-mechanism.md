@@ -22,6 +22,7 @@ setTheme('dark')
 ```
 
 Rules:
+
 - Switch themes **only** via `useTheme().setTheme(...)` — never manipulate `data-theme` directly
 - Never conditionally apply classes like `:class="{ dark: isDark }"` or toggle theme-specific utility classes
 - Don't hand-write CSS variables for theming — daisyUI owns the token layer

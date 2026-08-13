@@ -13,7 +13,7 @@ Anyone preparing for a language certification exam, including:
 - Native speakers earning a certificate in a foreign language
 - People relocating to a new country who need an exam result for official documents
 
-The goal is a **generic, reusable framework** that, with light customization, can be adapted to prepare for *any* language certification exam at *any* difficulty level (any CEFR band or provider format) — not locked to a single language, level, or exam board.
+The goal is a **generic, reusable framework** that, with light customization, can be adapted to prepare for _any_ language certification exam at _any_ difficulty level (any CEFR band or provider format) — not locked to a single language, level, or exam board.
 
 ## Solution
 

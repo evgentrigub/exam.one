@@ -24,15 +24,16 @@ Use when the same element must render on the server with a safe default and "upg
 ```vue
 <script setup lang="ts">
 const isClient = ref(false)
-onMounted(() => { isClient.value = true })
+onMounted(() => {
+  isClient.value = true
+})
 
-const textCompleted = computed(() =>
-  isClient.value ? isTextCompleted(props.text.id) : false
-)
+const textCompleted = computed(() => (isClient.value ? isTextCompleted(props.text.id) : false))
 </script>
 ```
 
 Rules:
+
 - Never read `localStorage`, persisted Pinia state, or `window` directly at `setup()` top level
 - Composables that touch persisted state must return SSR-safe defaults when called during SSR
 - Do not sprinkle `if (process.client)` inside templates — use `<ClientOnly>` or the `isClient` computed pattern

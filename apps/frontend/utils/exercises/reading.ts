@@ -37,7 +37,7 @@ export interface ReadingPromptPart<TPart extends ReadingA2Part = ReadingA2Part> 
 export interface ReadingQuestionBase<
   TType extends ReadingQuestionType = ReadingQuestionType,
   TOptions extends string[] = string[],
-  TAnswer extends number = number
+  TAnswer extends number = number,
 > {
   id: string
   textId: string
@@ -50,8 +50,10 @@ export interface ReadingQuestionBase<
 
 export type ReadingQuestion = ReadingQuestionBase
 
-export type GeneratedReadingQuestion<TQuestion extends ReadingQuestion = ReadingQuestion> =
-  Omit<TQuestion, 'id' | 'textId' | 'correctAnswer'> &
+export type GeneratedReadingQuestion<TQuestion extends ReadingQuestion = ReadingQuestion> = Omit<
+  TQuestion,
+  'id' | 'textId' | 'correctAnswer'
+> &
   Partial<Pick<TQuestion, 'id' | 'textId'>> & {
     correctAnswer: TQuestion['correctAnswer'] | string
   }
@@ -59,7 +61,7 @@ export type GeneratedReadingQuestion<TQuestion extends ReadingQuestion = Reading
 export interface ReadingExerciseBase<
   TDifficulty extends Difficulty = Difficulty,
   TTextType extends ReadingTextType = ReadingTextType,
-  TQuestion extends ReadingQuestion = ReadingQuestion
+  TQuestion extends ReadingQuestion = ReadingQuestion,
 > {
   id: string
   title: string
@@ -79,7 +81,7 @@ export interface ReadingExerciseBase<
 export type ReadingExercise = ReadingExerciseBase
 
 export type GeneratedReadingExercise<
-  TQuestion extends GeneratedReadingQuestion = GeneratedReadingQuestion
+  TQuestion extends GeneratedReadingQuestion = GeneratedReadingQuestion,
 > = Omit<ReadingExercise, 'id' | 'createdAt' | 'questions'> & {
   id?: string
   createdAt?: string

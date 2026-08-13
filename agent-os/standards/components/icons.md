@@ -8,6 +8,7 @@ Use `@nuxt/icon` (Iconify) as the icon library. Pick from the `heroicons` set to
 ```
 
 **Sizes (contextual):**
+
 - `w-4 h-4` — inline with text, badges, small buttons
 - `w-5 h-5` — card headers, section icons
 - `w-6 h-6` — alerts, modal headers, primary actions

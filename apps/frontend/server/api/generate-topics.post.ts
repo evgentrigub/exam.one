@@ -67,18 +67,26 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isValidGenerateTopicsRequest(value: unknown): value is GenerateTopicsRequestBody {
-  return isRecord(value)
-    && typeof value['prompt'] === 'string'
-    && value['prompt'].trim().length > 0
-    && (value['part'] === 1 || value['part'] === 2)
-    && (value['difficulty'] === undefined || value['difficulty'] === 'A2' || value['difficulty'] === 'C1')
+  return (
+    isRecord(value) &&
+    typeof value['prompt'] === 'string' &&
+    value['prompt'].trim().length > 0 &&
+    (value['part'] === 1 || value['part'] === 2) &&
+    (value['difficulty'] === undefined ||
+      value['difficulty'] === 'A2' ||
+      value['difficulty'] === 'C1')
+  )
 }
 
 function stringArray(value: unknown): string[] | null {
   return Array.isArray(value) && value.every(item => typeof item === 'string') ? value : null
 }
 
-function normalizeGeneratedTopic(value: unknown, part: 1 | 2, difficulty: Difficulty): Omit<WritingExercise, 'id' | 'createdAt'> | null {
+function normalizeGeneratedTopic(
+  value: unknown,
+  part: 1 | 2,
+  difficulty: Difficulty
+): Omit<WritingExercise, 'id' | 'createdAt'> | null {
   if (!isRecord(value)) return null
   const wordCount = value['wordCount']
   const category = stringArray(value['category'])
@@ -86,13 +94,13 @@ function normalizeGeneratedTopic(value: unknown, part: 1 | 2, difficulty: Diffic
 
   if (!isRecord(wordCount) || !category || !requirements) return null
   if (
-    typeof value['title'] !== 'string'
-    || typeof value['topicType'] !== 'string'
-    || typeof value['estimatedTime'] !== 'number'
-    || typeof value['description'] !== 'string'
-    || typeof value['task'] !== 'string'
-    || typeof wordCount['min'] !== 'number'
-    || typeof wordCount['max'] !== 'number'
+    typeof value['title'] !== 'string' ||
+    typeof value['topicType'] !== 'string' ||
+    typeof value['estimatedTime'] !== 'number' ||
+    typeof value['description'] !== 'string' ||
+    typeof value['task'] !== 'string' ||
+    typeof wordCount['min'] !== 'number' ||
+    typeof wordCount['max'] !== 'number'
   ) {
     return null
   }
@@ -127,7 +135,8 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
     return {
       topics: [],
       data: null,
-      error: 'AI topic generation is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
+      error:
+        'AI topic generation is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
@@ -137,12 +146,13 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
       [
         {
           role: 'system',
-          content: 'You are an expert Goethe-Institut exam creator. Generate writing topics according to the specifications provided. Return ONLY valid JSON array of WritingTopic objects, no additional text.'
+          content:
+            'You are an expert Goethe-Institut exam creator. Generate writing topics according to the specifications provided. Return ONLY valid JSON array of WritingTopic objects, no additional text.',
         },
         {
           role: 'user',
-          content: body.prompt
-        }
+          content: body.prompt,
+        },
       ],
       { temperature: 0.8, maxTokens: 2500 }
     )
@@ -151,7 +161,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
       return {
         topics: [],
         data: null,
-        error: 'No response from AI.'
+        error: 'No response from AI.',
       }
     }
 
@@ -162,14 +172,15 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
       return {
         topics: [],
         data: null,
-        error: 'Failed to parse topics from AI response. Please try again.'
+        error: 'Failed to parse topics from AI response. Please try again.',
       }
     }
 
     // Replace AI-generated IDs with unique UUIDs to prevent collisions
     const difficulty = body.difficulty || 'A2'
     // Only A2 and C1 are currently supported for generation
-    const supportedDifficulty: 'A2' | 'C1' = (difficulty === 'A2' || difficulty === 'C1') ? difficulty : 'A2'
+    const supportedDifficulty: 'A2' | 'C1' =
+      difficulty === 'A2' || difficulty === 'C1' ? difficulty : 'A2'
     const normalizedTopics = topics
       .map(topic => normalizeGeneratedTopic(topic, body.part, supportedDifficulty))
       .filter((topic): topic is Omit<WritingExercise, 'id' | 'createdAt'> => topic !== null)
@@ -178,26 +189,28 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateTopics
       return {
         topics: [],
         data: null,
-        error: 'Generated topics did not match the expected writing exercise shape. Please try again.'
+        error:
+          'Generated topics did not match the expected writing exercise shape. Please try again.',
       }
     }
 
     const topicsWithUniqueIds = normalizedTopics.map(topic => ({
       ...topic,
       id: generateTopicId(body.part, supportedDifficulty),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     }))
 
-    console.log(`✅ Generated ${topicsWithUniqueIds.length} topics for ${body.difficulty || 'C1'} Teil ${body.part} with unique IDs`)
+    console.log(
+      `✅ Generated ${topicsWithUniqueIds.length} topics for ${body.difficulty || 'C1'} Teil ${body.part} with unique IDs`
+    )
 
     return { topics: topicsWithUniqueIds, data: { topics: topicsWithUniqueIds }, error: null }
-
   } catch (error: unknown) {
     console.error('Error generating topics:', error)
     return {
       topics: [],
       data: null,
-      error: 'AI topic generation failed. Please check your API key and try again.'
+      error: 'AI topic generation failed. Please check your API key and try again.',
     }
   }
 })

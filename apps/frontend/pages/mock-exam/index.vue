@@ -1,7 +1,9 @@
 <template>
   <div class="mx-auto max-w-[1180px] space-y-6 px-4 py-8 sm:px-6">
     <div>
-      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+      <div
+        class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary"
+      >
         <FileCheck2 :size="16" />
         {{ $t('mockExam.fullSimulation') }}
       </div>
@@ -18,9 +20,17 @@
             <div class="grid h-12 w-12 place-items-center rounded-full bg-primary/10 text-primary">
               <Sparkles :size="24" />
             </div>
-            <h2 class="font-display text-xl font-bold">{{ $t('mockExam.generateSetNumber', { number: nextSetNumber }) }}</h2>
-            <p class="max-w-sm text-sm text-base-content/60">{{ $t('mockExam.generateSetDescription') }}</p>
-            <button class="btn btn-primary btn-sm mt-2" :disabled="isGenerating" @click="preflightOpen = true">
+            <h2 class="font-display text-xl font-bold">
+              {{ $t('mockExam.generateSetNumber', { number: nextSetNumber }) }}
+            </h2>
+            <p class="max-w-sm text-sm text-base-content/60">
+              {{ $t('mockExam.generateSetDescription') }}
+            </p>
+            <button
+              class="btn btn-primary btn-sm mt-2"
+              :disabled="isGenerating"
+              @click="preflightOpen = true"
+            >
               <Plus :size="16" />
               {{ $t('mockExam.generateMockSet') }}
             </button>

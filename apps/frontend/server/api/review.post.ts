@@ -19,19 +19,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isValidReviewRequest(value: unknown): value is ReviewRequestBody {
-  return isRecord(value)
-    && isRecord(value['topic'])
-    && typeof value['userContent'] === 'string'
-    && value['userContent'].trim().length > 0
-    && typeof value['prompt'] === 'string'
-    && value['prompt'].trim().length > 0
+  return (
+    isRecord(value) &&
+    isRecord(value['topic']) &&
+    typeof value['userContent'] === 'string' &&
+    value['userContent'].trim().length > 0 &&
+    typeof value['prompt'] === 'string' &&
+    value['prompt'].trim().length > 0
+  )
 }
 
 function isCriteriaItem(value: unknown): boolean {
-  return isRecord(value)
-    && typeof value['grade'] === 'string'
-    && typeof value['points'] === 'number'
-    && typeof value['comment'] === 'string'
+  return (
+    isRecord(value) &&
+    typeof value['grade'] === 'string' &&
+    typeof value['points'] === 'number' &&
+    typeof value['comment'] === 'string'
+  )
 }
 
 function isStringArray(value: unknown): boolean {
@@ -39,21 +43,27 @@ function isStringArray(value: unknown): boolean {
 }
 
 function isExampleArray(value: unknown): boolean {
-  return Array.isArray(value) && value.every(item => (
-    isRecord(item)
-    && typeof item['error'] === 'string'
-    && typeof item['correction'] === 'string'
-    && typeof item['rule'] === 'string'
-  ))
+  return (
+    Array.isArray(value) &&
+    value.every(
+      item =>
+        isRecord(item) &&
+        typeof item['error'] === 'string' &&
+        typeof item['correction'] === 'string' &&
+        typeof item['rule'] === 'string'
+    )
+  )
 }
 
 function hasCommonReviewShape(value: Record<string, unknown>): boolean {
-  return typeof value['teil'] === 'number'
-    && typeof value['word_count'] === 'number'
-    && typeof value['teil_rule_applied'] === 'string'
-    && isStringArray(value['priority_fixes'])
-    && isExampleArray(value['examples'])
-    && typeof value['report'] === 'string'
+  return (
+    typeof value['teil'] === 'number' &&
+    typeof value['word_count'] === 'number' &&
+    typeof value['teil_rule_applied'] === 'string' &&
+    isStringArray(value['priority_fixes']) &&
+    isExampleArray(value['examples']) &&
+    typeof value['report'] === 'string'
+  )
 }
 
 function isValidA2Review(value: unknown): value is AiReviewData {
@@ -63,35 +73,39 @@ function isValidA2Review(value: unknown): value is AiReviewData {
   const registerCheck = value['register_check']
   const contentPoints = value['content_points_covered']
 
-  return isRecord(criteria)
-    && isCriteriaItem(criteria['aufgabenerfuellung'])
-    && isCriteriaItem(criteria['sprache'])
-    && typeof value['teil_points_mess'] === 'number'
-    && typeof value['teil_points_result'] === 'number'
-    && isRecord(requiredWordCount)
-    && typeof requiredWordCount['min'] === 'number'
-    && typeof requiredWordCount['max'] === 'number'
-    && isRecord(registerCheck)
-    && typeof registerCheck['expected'] === 'string'
-    && typeof registerCheck['detected'] === 'string'
-    && typeof registerCheck['ok'] === 'boolean'
-    && isRecord(contentPoints)
-    && typeof contentPoints['required'] === 'number'
-    && typeof contentPoints['covered'] === 'number'
+  return (
+    isRecord(criteria) &&
+    isCriteriaItem(criteria['aufgabenerfuellung']) &&
+    isCriteriaItem(criteria['sprache']) &&
+    typeof value['teil_points_mess'] === 'number' &&
+    typeof value['teil_points_result'] === 'number' &&
+    isRecord(requiredWordCount) &&
+    typeof requiredWordCount['min'] === 'number' &&
+    typeof requiredWordCount['max'] === 'number' &&
+    isRecord(registerCheck) &&
+    typeof registerCheck['expected'] === 'string' &&
+    typeof registerCheck['detected'] === 'string' &&
+    typeof registerCheck['ok'] === 'boolean' &&
+    isRecord(contentPoints) &&
+    typeof contentPoints['required'] === 'number' &&
+    typeof contentPoints['covered'] === 'number'
+  )
 }
 
 function isValidC1Review(value: unknown): value is AiReviewData {
   if (!isRecord(value) || !hasCommonReviewShape(value)) return false
   const criteria = value['criteria']
 
-  return isRecord(criteria)
-    && isCriteriaItem(criteria['aufgabenerfuellung'])
-    && isCriteriaItem(criteria['kohaerenz'])
-    && isCriteriaItem(criteria['wortschatz'])
-    && isCriteriaItem(criteria['strukturen'])
-    && typeof value['required_word_count'] === 'number'
-    && typeof value['teil_points'] === 'number'
-    && typeof value['passed_module'] === 'boolean'
+  return (
+    isRecord(criteria) &&
+    isCriteriaItem(criteria['aufgabenerfuellung']) &&
+    isCriteriaItem(criteria['kohaerenz']) &&
+    isCriteriaItem(criteria['wortschatz']) &&
+    isCriteriaItem(criteria['strukturen']) &&
+    typeof value['required_word_count'] === 'number' &&
+    typeof value['teil_points'] === 'number' &&
+    typeof value['passed_module'] === 'boolean'
+  )
 }
 
 function parseReviewCandidate(candidate: string): AiReviewData | null {
@@ -142,7 +156,8 @@ export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse
     return {
       text: '',
       data: null,
-      error: 'AI review is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
+      error:
+        'AI review is unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
@@ -150,9 +165,10 @@ export default defineEventHandler(async (event: H3Event): Promise<ReviewResponse
     const rawText = await callLlm(llmConfig, [
       {
         role: 'system',
-        content: 'You are an expert Goethe-Institut examiner. Review writing submissions according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'
+        content:
+          'You are an expert Goethe-Institut examiner. Review writing submissions according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.',
       },
-      { role: 'user', content: body.prompt }
+      { role: 'user', content: body.prompt },
     ])
     const data = tryExtractJsonObject(rawText)
     return { text: rawText, data, error: data ? null : 'Failed to parse review from AI response.' }

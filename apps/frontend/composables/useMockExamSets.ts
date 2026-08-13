@@ -27,7 +27,7 @@ export const useMockExamSets = () => {
     if (isInitialized.value || import.meta.server) return
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      generatedSets.value = raw ? JSON.parse(raw) as MockExamSet[] : []
+      generatedSets.value = raw ? (JSON.parse(raw) as MockExamSet[]) : []
     } catch (error) {
       console.warn(`[${STORAGE_KEY}] read failed`, error)
       generatedSets.value = []
@@ -35,8 +35,7 @@ export const useMockExamSets = () => {
     isInitialized.value = true
   }
 
-  const getSet = (id: string): MockExamSet | undefined =>
-    sets.value.find(set => set.id === id)
+  const getSet = (id: string): MockExamSet | undefined => sets.value.find(set => set.id === id)
 
   const addSet = (set: MockExamSet): void => {
     generatedSets.value = [

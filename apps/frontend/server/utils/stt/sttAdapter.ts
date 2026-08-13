@@ -46,8 +46,7 @@ export function getSttConfig(runtimeConfig: SttRuntimeConfig): SttConfig {
   }
 
   const provider: SttProvider = providerValue
-  const configuredLocalModel =
-    runtimeConfig.sttModel || readEnv('STT_MODEL') || DEFAULT_LOCAL_MODEL
+  const configuredLocalModel = runtimeConfig.sttModel || readEnv('STT_MODEL') || DEFAULT_LOCAL_MODEL
   return {
     provider,
     baseUrl: (

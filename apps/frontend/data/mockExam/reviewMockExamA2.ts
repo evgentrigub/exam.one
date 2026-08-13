@@ -32,7 +32,7 @@ export interface MockExamOverviewInput {
 
 export function buildMockExamOverviewPrompt(
   locale: 'en' | 'de',
-  result: MockExamOverviewInput,
+  result: MockExamOverviewInput
 ): string {
   const language = locale === 'de' ? 'German' : 'English'
   return `Review this Goethe A2 mock-exam result and give a concise learner overview in ${language}.

@@ -4,7 +4,9 @@
       <!-- Profile -->
       <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-6">
         <div class="flex items-center gap-4 flex-wrap">
-          <div class="w-16 h-16 rounded-full bg-primary/10 grid place-items-center text-primary font-display text-xl font-bold">
+          <div
+            class="w-16 h-16 rounded-full bg-primary/10 grid place-items-center text-primary font-display text-xl font-bold"
+          >
             {{ initials }}
           </div>
           <div class="flex-1 min-w-0">
@@ -23,15 +25,27 @@
         <form v-if="editing" class="mt-5 grid sm:grid-cols-2 gap-4" @submit.prevent="saveProfile">
           <label class="block">
             <span class="text-xs font-semibold text-base-content/60">Name</span>
-            <input v-model="form.name" type="text" class="input input-bordered input-sm w-full mt-1" >
+            <input
+              v-model="form.name"
+              type="text"
+              class="input input-bordered input-sm w-full mt-1"
+            />
           </label>
           <label class="block">
             <span class="text-xs font-semibold text-base-content/60">Email</span>
-            <input v-model="form.email" type="email" class="input input-bordered input-sm w-full mt-1" >
+            <input
+              v-model="form.email"
+              type="email"
+              class="input input-bordered input-sm w-full mt-1"
+            />
           </label>
           <label class="block">
             <span class="text-xs font-semibold text-base-content/60">Exam date</span>
-            <input v-model="form.examTargetDate" type="date" class="input input-bordered input-sm w-full mt-1" >
+            <input
+              v-model="form.examTargetDate"
+              type="date"
+              class="input input-bordered input-sm w-full mt-1"
+            />
           </label>
           <label class="block">
             <span class="text-xs font-semibold text-base-content/60">Interface language</span>
@@ -41,15 +55,23 @@
             </select>
           </label>
           <div class="sm:col-span-2 flex justify-end gap-2">
-            <button type="button" class="btn btn-ghost btn-sm" @click="editing = false">Cancel</button>
+            <button type="button" class="btn btn-ghost btn-sm" @click="editing = false">
+              Cancel
+            </button>
             <button type="submit" class="btn btn-primary btn-sm">Save profile</button>
           </div>
         </form>
 
         <!-- Stat tiles -->
         <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div v-for="tile in statTiles" :key="tile.label" class="p-3 rounded-box bg-base-200/60 border border-base-300/70">
-            <div class="text-[10px] uppercase tracking-wider text-base-content/50">{{ tile.label }}</div>
+          <div
+            v-for="tile in statTiles"
+            :key="tile.label"
+            class="p-3 rounded-box bg-base-200/60 border border-base-300/70"
+          >
+            <div class="text-[10px] uppercase tracking-wider text-base-content/50">
+              {{ tile.label }}
+            </div>
             <div class="font-semibold text-sm mt-0.5">{{ tile.value }}</div>
           </div>
         </div>
@@ -68,13 +90,17 @@
             v-for="p in plans"
             :key="p.id"
             class="bg-base-100 border ring-soft rounded-box p-6 flex flex-col"
-            :class="p.id === profile.plan ? 'border-primary ring-1 ring-primary/30' : 'border-base-300'"
+            :class="
+              p.id === profile.plan ? 'border-primary ring-1 ring-primary/30' : 'border-base-300'
+            "
           >
             <div class="flex items-start justify-between">
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-display text-xl font-bold">{{ p.name }}</h4>
-                  <span v-if="p.id === profile.plan" class="badge badge-primary badge-sm">Active</span>
+                  <span v-if="p.id === profile.plan" class="badge badge-primary badge-sm"
+                    >Active</span
+                  >
                 </div>
                 <p class="text-sm text-base-content/60 mt-0.5">{{ p.blurb }}</p>
               </div>
@@ -85,25 +111,38 @@
             </div>
             <ul class="mt-4 space-y-2 flex-1">
               <li v-for="f in p.features" :key="f" class="flex items-start gap-2 text-sm">
-                <Check :size="14" class="mt-0.5 shrink-0" :class="p.id === 'pro' ? 'text-primary' : 'text-success'" />
+                <Check
+                  :size="14"
+                  class="mt-0.5 shrink-0"
+                  :class="p.id === 'pro' ? 'text-primary' : 'text-success'"
+                />
                 <span class="text-base-content/80">{{ f }}</span>
               </li>
             </ul>
             <button
               class="btn btn-sm mt-5 w-full gap-1.5"
-              :class="p.id === profile.plan ? 'btn-disabled' : p.id === 'pro' ? 'btn-primary' : 'btn-outline'"
+              :class="
+                p.id === profile.plan
+                  ? 'btn-disabled'
+                  : p.id === 'pro'
+                    ? 'btn-primary'
+                    : 'btn-outline'
+              "
               :disabled="p.id === profile.plan"
               @click="setPlan(p.id)"
             >
               <template v-if="p.id === profile.plan"><Check :size="13" /> Current plan</template>
-              <template v-else-if="p.id === 'pro'"><ArrowUpCircle :size="13" /> Upgrade to Pro</template>
+              <template v-else-if="p.id === 'pro'"
+                ><ArrowUpCircle :size="13" /> Upgrade to Pro</template
+              >
               <template v-else><ArrowDownCircle :size="13" /> Switch to Free</template>
             </button>
           </div>
         </div>
         <p class="mt-3 text-xs text-base-content/50 flex items-center gap-1.5">
           <Info :size="12" />
-          Demo only — switching plans changes the badge but not the available features in this build.
+          Demo only — switching plans changes the badge but not the available features in this
+          build.
         </p>
       </div>
 
@@ -129,7 +168,15 @@
 </template>
 
 <script setup lang="ts">
-import { Pencil, Check, Info, Receipt, CreditCard, ArrowUpCircle, ArrowDownCircle } from 'lucide-vue-next'
+import {
+  Pencil,
+  Check,
+  Info,
+  Receipt,
+  CreditCard,
+  ArrowUpCircle,
+  ArrowDownCircle,
+} from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
 import { useAccountProfile, type PlanId } from '~/composables/useAccountProfile'
@@ -151,7 +198,7 @@ const form = reactive({
   locale: locale.value as 'en' | 'de',
 })
 
-watch(editing, (open) => {
+watch(editing, open => {
   if (open) {
     form.name = profile.value.name
     form.email = profile.value.email
@@ -172,8 +219,16 @@ const statTiles = computed(() => [
 const invoices = computed(() => {
   const isPro = profile.value.plan === 'pro'
   return [
-    { date: '12 Apr 2026', desc: isPro ? 'Pro · monthly' : 'Free plan', amount: isPro ? '€9.90' : '€0.00' },
-    { date: '12 Mar 2026', desc: isPro ? 'Pro · monthly' : 'Free plan', amount: isPro ? '€9.90' : '€0.00' },
+    {
+      date: '12 Apr 2026',
+      desc: isPro ? 'Pro · monthly' : 'Free plan',
+      amount: isPro ? '€9.90' : '€0.00',
+    },
+    {
+      date: '12 Mar 2026',
+      desc: isPro ? 'Pro · monthly' : 'Free plan',
+      amount: isPro ? '€9.90' : '€0.00',
+    },
   ]
 })
 

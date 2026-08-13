@@ -10,17 +10,11 @@
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <button
-          class="btn btn-primary btn-sm gap-1.5"
-          @click="$emit('retry')"
-        >
+        <button class="btn btn-primary btn-sm gap-1.5" @click="$emit('retry')">
           <RotateCcw :size="13" />
           {{ $t('generation.retry') }}
         </button>
-        <button
-          class="btn btn-ghost btn-sm"
-          @click="$emit('dismiss')"
-        >
+        <button class="btn btn-ghost btn-sm" @click="$emit('dismiss')">
           {{ $t('generation.dismiss') }}
         </button>
       </div>
@@ -31,7 +25,9 @@
       <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
         <span class="loading loading-spinner loading-lg text-primary shrink-0" />
         <div>
-          <h3 class="font-display text-xl font-bold text-base-content">{{ $t('generation.readingTitle') }}</h3>
+          <h3 class="font-display text-xl font-bold text-base-content">
+            {{ $t('generation.readingTitle') }}
+          </h3>
           <p class="text-sm text-base-content/70 mt-1">
             {{ $t('generation.readingDescription', { level: generatingDifficulty }) }}
           </p>
@@ -44,7 +40,9 @@
           :key="job.part"
           class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
         >
-          <span class="text-sm font-medium text-base-content">{{ $t('exercisesUi.part') }} {{ job.part }}</span>
+          <span class="text-sm font-medium text-base-content"
+            >{{ $t('exercisesUi.part') }} {{ job.part }}</span
+          >
           <span
             class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
             :class="statusClass(job.status)"
@@ -62,12 +60,18 @@
     <!-- Resume State -->
     <div v-else-if="canResumeGeneration" class="p-5 sm:p-6">
       <div class="flex items-start gap-3 mb-4">
-        <div class="w-12 h-12 rounded-box bg-reading-soft text-reading grid place-items-center shrink-0">
+        <div
+          class="w-12 h-12 rounded-box bg-reading-soft text-reading grid place-items-center shrink-0"
+        >
           <BookOpen :size="22" />
         </div>
         <div>
-          <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">{{ $t('generation.aiLabel') }}</div>
-          <h3 class="font-display text-xl font-bold text-base-content mt-1">{{ $t('generation.resumeTitle') }}</h3>
+          <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">
+            {{ $t('generation.aiLabel') }}
+          </div>
+          <h3 class="font-display text-xl font-bold text-base-content mt-1">
+            {{ $t('generation.resumeTitle') }}
+          </h3>
           <p class="text-sm text-base-content/70 mt-1">
             {{ $t('generation.resumeDescription', { count: remainingJobsCount }) }}
           </p>
@@ -80,7 +84,9 @@
           :key="job.part"
           class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
         >
-          <span class="text-sm font-medium text-base-content">{{ $t('exercisesUi.part') }} {{ job.part }}</span>
+          <span class="text-sm font-medium text-base-content"
+            >{{ $t('exercisesUi.part') }} {{ job.part }}</span
+          >
           <span
             class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
             :class="statusClass(job.status)"
@@ -91,17 +97,11 @@
       </div>
 
       <div class="flex gap-2 flex-wrap">
-        <button
-          class="btn btn-primary btn-sm gap-1.5"
-          @click="$emit('resume')"
-        >
+        <button class="btn btn-primary btn-sm gap-1.5" @click="$emit('resume')">
           <Play :size="13" />
           {{ $t('generation.resume') }}
         </button>
-        <button
-          class="btn btn-ghost btn-sm"
-          @click="$emit('dismiss')"
-        >
+        <button class="btn btn-ghost btn-sm" @click="$emit('dismiss')">
           {{ $t('generation.dismiss') }}
         </button>
       </div>
@@ -109,27 +109,32 @@
 
     <!-- Default State: Generator Button -->
     <div v-else class="p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center gap-5">
-      <div class="w-12 h-12 rounded-box bg-reading-soft text-reading grid place-items-center shrink-0">
+      <div
+        class="w-12 h-12 rounded-box bg-reading-soft text-reading grid place-items-center shrink-0"
+      >
         <BookOpen :size="22" />
       </div>
 
       <div class="flex-1 min-w-0">
-        <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">{{ $t('generation.aiLabel') }}</div>
-        <h3 class="font-display text-xl font-bold text-base-content mt-1">{{ $t('generation.generateReadingTitle') }}</h3>
+        <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">
+          {{ $t('generation.aiLabel') }}
+        </div>
+        <h3 class="font-display text-xl font-bold text-base-content mt-1">
+          {{ $t('generation.generateReadingTitle') }}
+        </h3>
         <p class="text-sm text-base-content/70 mt-1">
           {{ $t('generation.generateReadingDescription', { level: currentDifficulty }) }}
         </p>
         <p class="text-xs text-base-content/50 mt-2">
-          {{ currentDifficulty === 'A2'
-            ? $t('generation.a2PartsHint', { part: $t('exercisesUi.part') })
-            : $t('generation.otherPartsHint') }}
+          {{
+            currentDifficulty === 'A2'
+              ? $t('generation.a2PartsHint', { part: $t('exercisesUi.part') })
+              : $t('generation.otherPartsHint')
+          }}
         </p>
       </div>
 
-      <button
-        class="btn btn-primary btn-sm gap-1.5 shrink-0"
-        @click="$emit('generate')"
-      >
+      <button class="btn btn-primary btn-sm gap-1.5 shrink-0" @click="$emit('generate')">
         <Plus :size="14" />
         {{ $t('generation.generateExercises') }}
       </button>
@@ -153,8 +158,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const remainingJobsCount = computed(() =>
-  (props.generationJobs ?? []).filter(job => job.status === 'queued' || job.status === 'failed').length
+const remainingJobsCount = computed(
+  () =>
+    (props.generationJobs ?? []).filter(job => job.status === 'queued' || job.status === 'failed')
+      .length
 )
 
 function statusKey(status: PartGenerationJob['status']) {
@@ -162,7 +169,7 @@ function statusKey(status: PartGenerationJob['status']) {
     queued: 'generation.statusQueued',
     running: 'generation.statusRunning',
     done: 'generation.statusDone',
-    failed: 'generation.statusFailed'
+    failed: 'generation.statusFailed',
   }
   return keys[status]
 }
@@ -172,7 +179,7 @@ function statusClass(status: PartGenerationJob['status']) {
     queued: 'bg-base-300 text-base-content/70',
     running: 'bg-primary text-primary-content',
     done: 'bg-success text-success-content',
-    failed: 'bg-error text-error-content'
+    failed: 'bg-error text-error-content',
   }
   return classes[status]
 }

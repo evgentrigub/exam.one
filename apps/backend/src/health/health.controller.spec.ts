@@ -11,7 +11,7 @@ describe('HealthController', () => {
     readiness = jest.fn()
     const module: TestingModule = await Test.createTestingModule({
       controllers: [HealthController],
-      providers: [{ provide: HealthService, useValue: { readiness } }]
+      providers: [{ provide: HealthService, useValue: { readiness } }],
     }).compile()
 
     controller = module.get<HealthController>(HealthController)
@@ -21,14 +21,14 @@ describe('HealthController', () => {
     expect(controller.check()).toEqual({
       data: {
         status: 'ok',
-        service: 'exam.one-backend'
-      }
+        service: 'exam.one-backend',
+      },
     })
   })
 
   it('delegates readiness to the health service', async () => {
     const expected: HealthReadyResponse = {
-      data: { status: 'ok', checks: { database: 'up' } }
+      data: { status: 'ok', checks: { database: 'up' } },
     }
     readiness.mockResolvedValue(expected)
 

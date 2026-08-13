@@ -66989,11 +66989,7 @@
     {
       "id": "hyper_compose_speech_services",
       "label": "Compose stack speech services",
-      "nodes": [
-        "root_agents_compose_stack",
-        "root_agents_kokoro_tts",
-        "root_agents_parakeet_stt"
-      ],
+      "nodes": ["root_agents_compose_stack", "root_agents_kokoro_tts", "root_agents_parakeet_stt"],
       "relation": "shares_data_with",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -67002,11 +66998,7 @@
     {
       "id": "hyper_phase2_persistence_stack",
       "label": "Phase 2 persistence cutover stack",
-      "nodes": [
-        "root_agents_phase2",
-        "root_agents_nestjs_backend",
-        "root_agents_prisma_database"
-      ],
+      "nodes": ["root_agents_phase2", "root_agents_nestjs_backend", "root_agents_prisma_database"],
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,

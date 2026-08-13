@@ -1,5 +1,5 @@
 export const generateModelAnswerC1Part1 = (topicTask: string, topicId: string) => {
-    return `
+  return `
         Ты — опытный составитель экзаменов Goethe-Institut (уровень C1), работаешь строго по модульному формату 2024. 
         Ранее ты сгенерировал следюущее задание: ${topicTask}
         ТВОЯ ЗАДАЧА: Сгенерируй пример идеального ответа на задание выше.
@@ -30,7 +30,7 @@ export const generateModelAnswerC1Part1 = (topicTask: string, topicId: string) =
 }
 
 export const generateModelAnswerC1Part2 = (topicTask: string, topicId: string) => {
-    return `
+  return `
         Ты — опытный составитель экзаменов Goethe-Institut (уровень C1), работаешь строго по модульному формату 2024. 
         Ранее ты сгенерировал следюущее задание: ${topicTask}
         ТВОЯ ЗАДАЧА: Сгенерируй пример идеального ответа на задание выше.

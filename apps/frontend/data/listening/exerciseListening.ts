@@ -30,7 +30,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Sonnig', 'Bewölkt', 'Regnerisch'],
         correctAnswer: 1,
         explanation:
-          'Die Sonne scheint nur am Vormittag, der Regen kommt erst am Abend. Am Nachmittag ziehen dunkle Wolken auf, also ist es bewölkt.'
+          'Die Sonne scheint nur am Vormittag, der Regen kommt erst am Abend. Am Nachmittag ziehen dunkle Wolken auf, also ist es bewölkt.',
       },
       {
         id: 'listening-a2-teil1-001-i2',
@@ -41,7 +41,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Die Linie fünf', 'Die Linie acht', 'Der Ring'],
         correctAnswer: 1,
         explanation:
-          'Die Linie fünf fährt normal, der Ring ist die Umleitung für Autos. Nur die Linie acht fällt den ganzen Tag aus.'
+          'Die Linie fünf fährt normal, der Ring ist die Umleitung für Autos. Nur die Linie acht fällt den ganzen Tag aus.',
       },
       {
         id: 'listening-a2-teil1-001-i3',
@@ -52,7 +52,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Der Zug nach München', 'Der Zug nach Hamburg', 'Der Zug nach Köln'],
         correctAnswer: 2,
         explanation:
-          'Der Zug nach München hat nur Verspätung, der Zug nach Hamburg fährt von einem anderen Gleis. Nur der Zug nach Köln fällt aus.'
+          'Der Zug nach München hat nur Verspätung, der Zug nach Hamburg fährt von einem anderen Gleis. Nur der Zug nach Köln fällt aus.',
       },
       {
         id: 'listening-a2-teil1-001-i4',
@@ -60,10 +60,14 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         transcript:
           'Sehr geehrte Fluggäste des Fluges nach Wien. Das Boarding beginnt jetzt am Ausgang B zwölf. Bitte halten Sie Ihre Bordkarte und Ihren Reisepass bereit. Passagiere mit kleinen Kindern dürfen zuerst einsteigen. Der Flug nach Rom verspätet sich leider um eine Stunde. Wir danken für Ihre Geduld.',
         question: 'Wer darf zuerst in das Flugzeug einsteigen?',
-        options: ['Passagiere nach Rom', 'Passagiere mit kleinen Kindern', 'Passagiere mit einem Reisepass'],
+        options: [
+          'Passagiere nach Rom',
+          'Passagiere mit kleinen Kindern',
+          'Passagiere mit einem Reisepass',
+        ],
         correctAnswer: 1,
         explanation:
-          'Der Flug nach Rom hat Verspätung, einen Reisepass brauchen alle. Zuerst einsteigen dürfen aber nur Passagiere mit kleinen Kindern.'
+          'Der Flug nach Rom hat Verspätung, einen Reisepass brauchen alle. Zuerst einsteigen dürfen aber nur Passagiere mit kleinen Kindern.',
       },
       {
         id: 'listening-a2-teil1-001-i5',
@@ -74,9 +78,9 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Bis acht Uhr', 'Bis zwölf Uhr', 'Bis sechzehn Uhr'],
         correctAnswer: 1,
         explanation:
-          'Um acht Uhr öffnet die Praxis, bis sechzehn Uhr ist sie von Montag bis Donnerstag offen. Am Freitag ist sie nur bis zwölf Uhr geöffnet.'
-      }
-    ]
+          'Um acht Uhr öffnet die Praxis, bis sechzehn Uhr ist sie von Montag bis Donnerstag offen. Am Freitag ist sie nur bis zwölf Uhr geöffnet.',
+      },
+    ],
   },
 
   {
@@ -88,39 +92,54 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
     context: 'Wie kommen die Personen heute zur Arbeit?',
     transcript:
       'Mann: Sag mal, wie kommt ihr eigentlich morgens alle ins Büro? Frau: Na ja, das ist ganz unterschiedlich. Anna wohnt ja gleich um die Ecke, die kommt einfach zu Fuß. Das dauert nur zehn Minuten. Mann: Ach so. Und Bernd? Der wohnt doch außerhalb der Stadt, oder? Frau: Genau. Bernd ist früher immer mit dem Auto gefahren, aber das wurde ihm zu teuer. Jetzt nimmt er jeden Morgen den Zug. Mann: Wirklich? Praktisch. Und Clara? Frau: Clara hat sich letztes Jahr ein tolles Fahrrad gekauft. Bei gutem Wetter fährt sie immer damit. Aber wenn es regnet, steigt sie in den Bus. Und heute regnet es ja stark. Mann: Stimmt, dann kommt Clara heute bestimmt mit dem Bus. Und David, fährt der immer noch Motorrad? Frau: Nein, das Motorrad hat er schon verkauft. Er fährt jetzt mit der U-Bahn, das geht viel schneller. Mann: Und du, Eva, wie kommst du? Frau: Ich nehme normalerweise die Straßenbahn. Aber mein Auto ist gerade in der Werkstatt, äh, nein, die Straßenbahn meine ich nicht. Heute hat mich ein Taxi gebracht. Mann: Oh je, das ist aber teuer! Frau: Ja, aber wirklich nur für heute.',
-    options: ['das Auto', 'der Bus', 'das Fahrrad', 'zu Fuß', 'die U-Bahn', 'der Zug', 'das Motorrad', 'das Taxi', 'die Straßenbahn'],
+    options: [
+      'das Auto',
+      'der Bus',
+      'das Fahrrad',
+      'zu Fuß',
+      'die U-Bahn',
+      'der Zug',
+      'das Motorrad',
+      'das Taxi',
+      'die Straßenbahn',
+    ],
     questions: [
       {
         id: 'listening-a2-teil2-001-q1',
         person: 'Anna',
         correctAnswer: 3,
-        explanation: 'Anna wohnt gleich um die Ecke und kommt deshalb zu Fuß; der Weg dauert nur zehn Minuten.'
+        explanation:
+          'Anna wohnt gleich um die Ecke und kommt deshalb zu Fuß; der Weg dauert nur zehn Minuten.',
       },
       {
         id: 'listening-a2-teil2-001-q2',
         person: 'Bernd',
         correctAnswer: 5,
-        explanation: 'Bernd ist früher mit dem Auto gefahren, aber das war zu teuer. Jetzt nimmt er jeden Morgen den Zug.'
+        explanation:
+          'Bernd ist früher mit dem Auto gefahren, aber das war zu teuer. Jetzt nimmt er jeden Morgen den Zug.',
       },
       {
         id: 'listening-a2-teil2-001-q3',
         person: 'Clara',
         correctAnswer: 1,
-        explanation: 'Clara fährt nur bei gutem Wetter mit dem Fahrrad. Weil es heute stark regnet, kommt sie mit dem Bus.'
+        explanation:
+          'Clara fährt nur bei gutem Wetter mit dem Fahrrad. Weil es heute stark regnet, kommt sie mit dem Bus.',
       },
       {
         id: 'listening-a2-teil2-001-q4',
         person: 'David',
         correctAnswer: 4,
-        explanation: 'David hat sein Motorrad schon verkauft und fährt jetzt mit der U-Bahn, weil das schneller ist.'
+        explanation:
+          'David hat sein Motorrad schon verkauft und fährt jetzt mit der U-Bahn, weil das schneller ist.',
       },
       {
         id: 'listening-a2-teil2-001-q5',
         person: 'Eva',
         correctAnswer: 7,
-        explanation: 'Eva nimmt normalerweise die Straßenbahn, aber ihr Auto ist in der Werkstatt. Heute hat sie ein Taxi gebracht.'
-      }
-    ]
+        explanation:
+          'Eva nimmt normalerweise die Straßenbahn, aber ihr Auto ist in der Werkstatt. Heute hat sie ein Taxi gebracht.',
+      },
+    ],
   },
 
   {
@@ -138,7 +157,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Einen Mantel', 'Einen Pullover', 'Eine Jacke'],
         correctAnswer: 2,
         explanation:
-          'Der Mantel ist der Frau zu dick und zu warm, einen Pullover hat sie schon genug. Sie nimmt am Ende die blaue Jacke.'
+          'Der Mantel ist der Frau zu dick und zu warm, einen Pullover hat sie schon genug. Sie nimmt am Ende die blaue Jacke.',
       },
       {
         id: 'listening-a2-teil3-001-i2',
@@ -148,7 +167,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Pizza', 'Fisch', 'Pommes'],
         correctAnswer: 1,
         explanation:
-          'Pizza gibt es heute nicht mehr, Pommes will der Mann ausdrücklich nicht. Er bestellt den Fisch mit Salat.'
+          'Pizza gibt es heute nicht mehr, Pommes will der Mann ausdrücklich nicht. Er bestellt den Fisch mit Salat.',
       },
       {
         id: 'listening-a2-teil3-001-i3',
@@ -158,7 +177,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Das Handy', 'Der Laptop', 'Der Drucker'],
         correctAnswer: 1,
         explanation:
-          'Das Handy funktioniert und der Drucker macht keine Probleme. Nur der Laptop geht nicht mehr an und muss repariert werden.'
+          'Das Handy funktioniert und der Drucker macht keine Probleme. Nur der Laptop geht nicht mehr an und muss repariert werden.',
       },
       {
         id: 'listening-a2-teil3-001-i4',
@@ -168,7 +187,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Den Actionfilm', 'Die Komödie', 'Den Krimi'],
         correctAnswer: 2,
         explanation:
-          'Die Frau mag keine Actionfilme, und die Komödie hat sie schon gestern gesehen. Sie einigen sich auf den neuen Krimi.'
+          'Die Frau mag keine Actionfilme, und die Komödie hat sie schon gestern gesehen. Sie einigen sich auf den neuen Krimi.',
       },
       {
         id: 'listening-a2-teil3-001-i5',
@@ -178,9 +197,9 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         options: ['Mit dem Auto', 'Mit dem Bus', 'Zu Fuß'],
         correctAnswer: 2,
         explanation:
-          'Das Auto lehnt die Frau ab, und der Bus fährt um diese Zeit nicht mehr. Bei schönem Wetter geht sie zu Fuß.'
-      }
-    ]
+          'Das Auto lehnt die Frau ab, und der Bus fährt um diese Zeit nicht mehr. Bei schönem Wetter geht sie zu Fuß.',
+      },
+    ],
   },
 
   {
@@ -196,11 +215,12 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
     questions: [
       {
         id: 'listening-a2-teil4-001-q1',
-        statement: 'Wer gesund bleiben will, muss laut Frau Müller jeden Tag ins Fitnessstudio gehen.',
+        statement:
+          'Wer gesund bleiben will, muss laut Frau Müller jeden Tag ins Fitnessstudio gehen.',
         correctAnswer: false,
         explanation:
           'Frau Müller sagt, dieser Glaube stimme nicht. Schon dreißig Minuten Spazierengehen pro Tag seien genug.',
-        type: 'true_false'
+        type: 'true_false',
       },
       {
         id: 'listening-a2-teil4-001-q2',
@@ -208,7 +228,7 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         correctAnswer: true,
         explanation:
           "Das ist eine Umschreibung ihrer Aussage: 'Schon dreißig Minuten Spazierengehen pro Tag sind völlig genug.'",
-        type: 'true_false'
+        type: 'true_false',
       },
       {
         id: 'listening-a2-teil4-001-q3',
@@ -216,14 +236,15 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         correctAnswer: false,
         explanation:
           "Das Gegenteil ist gemeint: Frau Müller sagt 'Leider nein' und betont, dass sich viele viel zu wenig bewegen.",
-        type: 'true_false'
+        type: 'true_false',
       },
       {
         id: 'listening-a2-teil4-001-q4',
         statement: 'Für mehr Bewegung braucht man keine teure Ausrüstung.',
         correctAnswer: true,
-        explanation: 'Frau Müller erklärt, Laufen und Spazierengehen kosteten nichts und man brauche keine teure Ausrüstung.',
-        type: 'true_false'
+        explanation:
+          'Frau Müller erklärt, Laufen und Spazierengehen kosteten nichts und man brauche keine teure Ausrüstung.',
+        type: 'true_false',
       },
       {
         id: 'listening-a2-teil4-001-q5',
@@ -231,17 +252,17 @@ const listeningSeedsWithoutAudio: ListeningA2Exercise[] = [
         correctAnswer: false,
         explanation:
           'Das ist das Gegenteil ihrer Aussage. Sie sagt, gerade ältere Menschen sollten aktiv bleiben; es sei nie zu spät anzufangen.',
-        type: 'true_false'
-      }
-    ]
-  }
+        type: 'true_false',
+      },
+    ],
+  },
 ]
 
 export const defaultListeningTopics: ListeningA2Exercise[] = listeningSeedsWithoutAudio.map(
-  (exercise) => {
+  exercise => {
     const audio = buildSeedListeningAudioMap(exercise)
     return audio ? { ...exercise, audio } : exercise
-  },
+  }
 )
 
 /**
@@ -255,7 +276,7 @@ export const mockExamListeningTopics: ListeningA2Exercise[] = defaultListeningTo
     id: `mock-a2-set1-listening-teil${exercise.testingPart}`,
     title: `Modellprüfung Set 1 · ${exercise.title}`,
     examOnly: true,
-  }),
+  })
 )
 
 export const allDefaultListeningTopics: ListeningA2Exercise[] = [

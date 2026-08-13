@@ -3,6 +3,6 @@ import { SettingsService } from './settings.service'
 
 @Module({
   providers: [SettingsService],
-  exports: [SettingsService]
+  exports: [SettingsService],
 })
 export class SettingsModule {}

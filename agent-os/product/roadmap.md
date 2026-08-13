@@ -23,12 +23,12 @@ The German / Goethe A2 product is complete and tested across Reading, Writing, L
 
 ### Skill status (Goethe A2)
 
-| Skill | Status | Notes |
-| --- | --- | --- |
-| Reading | **Complete and tested** | Seed content, practice, scoring, explanations, progress, and optional AI generation |
-| Writing | **Complete and tested** | Seed content, drafts, optional AI grading, persisted detailed reviews, and generation |
-| Listening | **Complete and tested** | Four exam parts, automatic scoring, stable WAVs, replay rules, and optional Docker TTS |
-| Speaking | **Complete and tested** | Recording, local/cloud STT or manual transcripts, optional AI grading, persisted reviews, and local attempts |
+| Skill     | Status                  | Notes                                                                                                                 |
+| --------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Reading   | **Complete and tested** | Seed content, practice, scoring, explanations, progress, and optional AI generation                                   |
+| Writing   | **Complete and tested** | Seed content, drafts, optional AI grading, persisted detailed reviews, and generation                                 |
+| Listening | **Complete and tested** | Four exam parts, automatic scoring, stable WAVs, replay rules, and optional Docker TTS                                |
+| Speaking  | **Complete and tested** | Recording, local/cloud STT or manual transcripts, optional AI grading, persisted reviews, and local attempts          |
 | Mock exam | **Complete and tested** | Offline Set 1, generated local sets, resumable pipeline, automatic grading, module reviews, and aggregate AI overview |
 
 ### Substages

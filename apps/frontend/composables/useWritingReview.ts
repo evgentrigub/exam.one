@@ -37,7 +37,8 @@ const reviewVersion = ref(0)
 function readAllReviews(): Record<string, WritingReviewRecord> {
   if (!import.meta.client) return {}
   try {
-    const raw = localStorage.getItem(WRITING_REVIEW_KEY) || localStorage.getItem(WRITING_REVIEW_LEGACY_KEY)
+    const raw =
+      localStorage.getItem(WRITING_REVIEW_KEY) || localStorage.getItem(WRITING_REVIEW_LEGACY_KEY)
     return raw ? (JSON.parse(raw) as Record<string, WritingReviewRecord>) : {}
   } catch {
     return {}
@@ -111,7 +112,7 @@ export function useWritingReview() {
         return reviewPromptC1Teil2(topic, userContent)
       }
     }
-}
+  }
 
   /**
    * Request a review for the given topic and user submission content.
@@ -134,11 +135,16 @@ export function useWritingReview() {
       // Cast through unknown to bypass Nuxt's complex route type inference
       const response = (await $fetch('/api/review', {
         method: 'POST',
-        body: { topic, userContent, prompt }
-      }) as unknown) as { text?: string; data?: AiReviewData | null; error?: string | null }
+        body: { topic, userContent, prompt },
+      })) as unknown as { text?: string; data?: AiReviewData | null; error?: string | null }
       const current = getRecord(topic.id)
       if (current) {
-        if (current.requestedAt !== requestedAt || current.content !== userContent || current.prompt !== prompt) return
+        if (
+          current.requestedAt !== requestedAt ||
+          current.content !== userContent ||
+          current.prompt !== prompt
+        )
+          return
         if (response.error) throw new Error(response.error)
         const update: WritingReviewRecord = {
           ...current,
@@ -150,12 +156,16 @@ export function useWritingReview() {
           update.responseData = response.data
         }
         saveRecord(update)
-
       }
     } catch (error) {
       const current = getRecord(topic.id)
       if (current) {
-        if (current.requestedAt !== requestedAt || current.content !== userContent || current.prompt !== prompt) return
+        if (
+          current.requestedAt !== requestedAt ||
+          current.content !== userContent ||
+          current.prompt !== prompt
+        )
+          return
         saveRecord({
           ...current,
           status: 'error',
@@ -179,5 +189,3 @@ export function useWritingReview() {
     clearReview,
   }
 }
-
-

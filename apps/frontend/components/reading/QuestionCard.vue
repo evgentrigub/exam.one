@@ -3,7 +3,9 @@
     <!-- Question header -->
     <div class="flex items-baseline gap-2">
       <span class="font-mono text-sm font-semibold text-primary">{{ questionNumber }}.</span>
-      <div class="text-[15px] font-semibold leading-snug text-base-content">{{ question.question }}</div>
+      <div class="text-[15px] font-semibold leading-snug text-base-content">
+        {{ question.question }}
+      </div>
     </div>
 
     <!-- 2×2 option grid -->
@@ -22,7 +24,12 @@
           :class="getLetterPillClass(i)"
         >
           <Check v-if="submitted && showFeedback && i === question.correctAnswer" :size="10" />
-          <X v-else-if="submitted && showFeedback && selectedAnswer === i && i !== question.correctAnswer" :size="10" />
+          <X
+            v-else-if="
+              submitted && showFeedback && selectedAnswer === i && i !== question.correctAnswer
+            "
+            :size="10"
+          />
           <span v-else class="opacity-70">{{ String.fromCharCode(65 + i) }}</span>
         </span>
         <span class="text-sm flex-1 leading-snug">{{ option }}</span>
@@ -32,9 +39,15 @@
     <!-- Inline feedback -->
     <div v-if="submitted && showFeedback" class="mt-3 text-xs flex items-start gap-1.5">
       <span :class="isCorrect ? 'text-success' : 'text-error'">
-        {{ isCorrect ? 'Correct!' : `Correct answer: ${String.fromCharCode(65 + question.correctAnswer)}` }}
+        {{
+          isCorrect
+            ? 'Correct!'
+            : `Correct answer: ${String.fromCharCode(65 + question.correctAnswer)}`
+        }}
       </span>
-      <span v-if="question.explanation" class="text-base-content/50">{{ question.explanation }}</span>
+      <span v-if="question.explanation" class="text-base-content/50">{{
+        question.explanation
+      }}</span>
     </div>
   </div>
 </template>
@@ -68,7 +81,12 @@ function getOptionClass(index: number) {
   if (props.submitted && props.showFeedback && index === props.question.correctAnswer) {
     return 'border-success bg-success/5'
   }
-  if (props.submitted && props.showFeedback && props.selectedAnswer === index && index !== props.question.correctAnswer) {
+  if (
+    props.submitted &&
+    props.showFeedback &&
+    props.selectedAnswer === index &&
+    index !== props.question.correctAnswer
+  ) {
     return 'border-error bg-error/5'
   }
   if (props.selectedAnswer === index) {
@@ -78,8 +96,15 @@ function getOptionClass(index: number) {
 }
 
 function getLetterPillClass(index: number) {
-  if (props.submitted && props.showFeedback && index === props.question.correctAnswer) return 'border-success bg-success text-success-content'
-  if (props.submitted && props.showFeedback && props.selectedAnswer === index && index !== props.question.correctAnswer) return 'border-error bg-error text-error-content'
+  if (props.submitted && props.showFeedback && index === props.question.correctAnswer)
+    return 'border-success bg-success text-success-content'
+  if (
+    props.submitted &&
+    props.showFeedback &&
+    props.selectedAnswer === index &&
+    index !== props.question.correctAnswer
+  )
+    return 'border-error bg-error text-error-content'
   if (props.selectedAnswer === index) return 'border-primary bg-primary text-primary-content'
   return 'border-base-300 bg-base-100'
 }

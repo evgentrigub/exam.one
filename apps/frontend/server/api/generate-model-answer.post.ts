@@ -18,10 +18,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isValidModelAnswerRequest(value: unknown): value is ModelAnswerRequestBody {
-  return isRecord(value)
-    && isRecord(value['topic'])
-    && typeof value['prompt'] === 'string'
-    && value['prompt'].trim().length > 0
+  return (
+    isRecord(value) &&
+    isRecord(value['topic']) &&
+    typeof value['prompt'] === 'string' &&
+    value['prompt'].trim().length > 0
+  )
 }
 
 function stringArray(value: unknown): string[] | undefined {
@@ -38,8 +40,10 @@ function normalizeModelAnswer(value: unknown): Partial<ModelAnswer> | null {
   const mainPoints = stringArray(highlights['mainPoints'])
   const keyPhrases = stringArray(highlights['keyPhrases'])
 
-  if (typeof highlights['greeting'] === 'string') normalizedHighlights.greeting = highlights['greeting']
-  if (typeof highlights['closing'] === 'string') normalizedHighlights.closing = highlights['closing']
+  if (typeof highlights['greeting'] === 'string')
+    normalizedHighlights.greeting = highlights['greeting']
+  if (typeof highlights['closing'] === 'string')
+    normalizedHighlights.closing = highlights['closing']
   if (mainPoints) normalizedHighlights.mainPoints = mainPoints
   if (keyPhrases) normalizedHighlights.keyPhrases = keyPhrases
 
@@ -97,7 +101,8 @@ export default defineEventHandler(async (event: H3Event): Promise<ModelAnswerRes
     return {
       text: '',
       data: null,
-      error: 'AI model answers are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
+      error:
+        'AI model answers are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
@@ -105,12 +110,17 @@ export default defineEventHandler(async (event: H3Event): Promise<ModelAnswerRes
     const rawText = await callLlm(llmConfig, [
       {
         role: 'system',
-        content: 'You are an expert Goethe-Institut exam creator. Generate model answers according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.'
+        content:
+          'You are an expert Goethe-Institut exam creator. Generate model answers according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.',
       },
-      { role: 'user', content: body.prompt }
+      { role: 'user', content: body.prompt },
     ])
     const data = tryExtractJsonObject(rawText)
-    return { text: rawText, data, error: data ? null : 'Failed to parse model answer from AI response.' }
+    return {
+      text: rawText,
+      data,
+      error: data ? null : 'Failed to parse model answer from AI response.',
+    }
   } catch (error) {
     console.error('Error generating model answer:', error)
     return {

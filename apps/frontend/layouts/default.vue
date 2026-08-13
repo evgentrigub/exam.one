@@ -17,6 +17,6 @@ const pageSubtitle = useState<string>('pageSubtitle', () => '')
 
 const translatedTitle = computed(() => (te(pageTitle.value) ? t(pageTitle.value) : pageTitle.value))
 const translatedSubtitle = computed(() =>
-  pageSubtitle.value && te(pageSubtitle.value) ? t(pageSubtitle.value) : pageSubtitle.value,
+  pageSubtitle.value && te(pageSubtitle.value) ? t(pageSubtitle.value) : pageSubtitle.value
 )
 </script>

@@ -15,7 +15,7 @@ import { DraftsModule } from './drafts/drafts.module'
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig],
-      envFilePath: ['../../.env', '.env']
+      envFilePath: ['../../.env', '.env'],
     }),
     PrismaModule,
     HealthModule,
@@ -24,7 +24,7 @@ import { DraftsModule } from './drafts/drafts.module'
     ExercisesModule,
     AttemptsModule,
     ResultsModule,
-    DraftsModule
-  ]
+    DraftsModule,
+  ],
 })
 export class AppModule {}

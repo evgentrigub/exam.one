@@ -43,6 +43,6 @@ function goBack() {
   router.push('/exercises?skill=speaking')
 }
 
-useHead({ title: computed(() => topic.value ? `${topic.value.theme} – Speaking` : 'Speaking') })
+useHead({ title: computed(() => (topic.value ? `${topic.value.theme} – Speaking` : 'Speaking')) })
 definePageMeta({ preload: false })
 </script>

@@ -9,7 +9,7 @@ import type {
   ListeningItemA2Teil1,
   ListeningItemA2Teil3,
   ListeningQuestionA2Teil2,
-  ListeningQuestionA2Teil4
+  ListeningQuestionA2Teil4,
 } from '~/utils/exercises/listening'
 import type { Difficulty } from '~/utils/types'
 import { generateListeningId } from '~/utils/uuid'
@@ -43,7 +43,9 @@ function isListeningA2Part(value: unknown): value is ListeningA2Part {
 }
 
 function isStringArrayOfLength(value: unknown, length: number): value is string[] {
-  return Array.isArray(value) && value.length === length && value.every(item => typeof item === 'string')
+  return (
+    Array.isArray(value) && value.length === length && value.every(item => typeof item === 'string')
+  )
 }
 
 function isIndexInRange(value: unknown, max: number): value is number {
@@ -182,7 +184,10 @@ function normaliseExercise(
       ...ex,
       ...base,
       testingPart: 1,
-      items: ex.items.map((item, i) => ({ ...item, id: `${id}-i${i + 1}` })) as ListeningExerciseA2Teil1['items']
+      items: ex.items.map((item, i) => ({
+        ...item,
+        id: `${id}-i${i + 1}`,
+      })) as ListeningExerciseA2Teil1['items'],
     }
   }
 
@@ -192,7 +197,10 @@ function normaliseExercise(
       ...ex,
       ...base,
       testingPart: 3,
-      items: ex.items.map((item, i) => ({ ...item, id: `${id}-i${i + 1}` })) as ListeningExerciseA2Teil3['items']
+      items: ex.items.map((item, i) => ({
+        ...item,
+        id: `${id}-i${i + 1}`,
+      })) as ListeningExerciseA2Teil3['items'],
     }
   }
 
@@ -202,7 +210,10 @@ function normaliseExercise(
       ...ex,
       ...base,
       testingPart: 2,
-      questions: ex.questions.map((q, i) => ({ ...q, id: `${id}-q${i + 1}` })) as ListeningExerciseA2Teil2['questions']
+      questions: ex.questions.map((q, i) => ({
+        ...q,
+        id: `${id}-q${i + 1}`,
+      })) as ListeningExerciseA2Teil2['questions'],
     }
   }
 
@@ -211,7 +222,10 @@ function normaliseExercise(
     ...ex,
     ...base,
     testingPart: 4,
-    questions: ex.questions.map((q, i) => ({ ...q, id: `${id}-q${i + 1}` })) as ListeningExerciseA2Teil4['questions']
+    questions: ex.questions.map((q, i) => ({
+      ...q,
+      id: `${id}-q${i + 1}`,
+    })) as ListeningExerciseA2Teil4['questions'],
   }
 }
 
@@ -226,9 +240,9 @@ async function generateForPart(
       {
         role: 'system',
         content:
-          'You are an expert Goethe-Institut exam creator. Generate listening comprehension exercises according to the specifications provided. Return ONLY a valid JSON array of exercise objects, no additional text.'
+          'You are an expert Goethe-Institut exam creator. Generate listening comprehension exercises according to the specifications provided. Return ONLY a valid JSON array of exercise objects, no additional text.',
       },
-      { role: 'user', content: job.prompt }
+      { role: 'user', content: job.prompt },
     ],
     { temperature: 0.8, maxTokens: 4000 }
   )
@@ -249,12 +263,14 @@ async function generateForPart(
 export default defineEventHandler(async (event: H3Event): Promise<GenerateListeningResponse> => {
   const config = useRuntimeConfig()
   const llmConfig = getLlmConfig(config)
-  const body = (await readBody<GenerateListeningRequestBody>(event)) || ({} as GenerateListeningRequestBody)
+  const body =
+    (await readBody<GenerateListeningRequestBody>(event)) || ({} as GenerateListeningRequestBody)
 
   if (!llmConfig) {
     return {
       exercises: [],
-      error: 'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
+      error:
+        'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
@@ -263,7 +279,8 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateListen
   }
 
   const jobs = (Array.isArray(body.prompts) ? body.prompts : []).filter(
-    (job): job is ListeningPromptPart => isRecord(job) && isListeningA2Part(job.part) && nonEmptyString(job.prompt)
+    (job): job is ListeningPromptPart =>
+      isRecord(job) && isListeningA2Part(job.part) && nonEmptyString(job.prompt)
   )
 
   if (jobs.length === 0) {
@@ -291,10 +308,15 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateListen
     }
 
     if (exercises.length === 0) {
-      return { exercises: [], error: 'Failed to parse listening exercises from AI response. Please try again.' }
+      return {
+        exercises: [],
+        error: 'Failed to parse listening exercises from AI response. Please try again.',
+      }
     }
 
-    console.log(`[exam.one][listening] complete exercises=${exercises.length} difficulty=${body.difficulty} parts=${jobs.length}`)
+    console.log(
+      `[exam.one][listening] complete exercises=${exercises.length} difficulty=${body.difficulty} parts=${jobs.length}`
+    )
     return { exercises }
   } catch (error: unknown) {
     if (error instanceof Error) {

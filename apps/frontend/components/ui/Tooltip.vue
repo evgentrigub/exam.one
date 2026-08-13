@@ -29,7 +29,7 @@
             left: tooltipPosition.left + 'px',
             top: tooltipPosition.top + 'px',
             zIndex: 9999,
-            transform: getTransform()
+            transform: getTransform(),
           }"
           class="pointer-events-none"
           role="tooltip"
@@ -41,10 +41,7 @@
             {{ text }}
           </div>
           <!-- Arrow -->
-          <div
-            :class="arrowClasses"
-            class="absolute"
-          >
+          <div :class="arrowClasses" class="absolute">
             <div class="w-2 h-2 bg-neutral transform rotate-45" />
           </div>
         </div>
@@ -163,4 +160,3 @@ onUnmounted(() => {
   window.removeEventListener('resize', updatePosition)
 })
 </script>
-

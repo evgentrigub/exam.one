@@ -2,7 +2,10 @@ import { listeningA2Parts } from '~/data/listening/a2/exerciseGeneratorListening
 import { createGoetheA2MockExamSet, type MockExamContent } from '~/data/mockExam/goetheA2'
 import { readingA2Parts } from '~/data/reading/a2/exerciseGeneratorReadingA2'
 import { speakingA2Parts } from '~/data/speaking/a2/exerciseGeneratorSpeakingA2'
-import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
+import {
+  generateTopicsA2Part1,
+  generateTopicsA2Part2,
+} from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
@@ -72,12 +75,19 @@ function blankContent(): MockExamContent {
 }
 
 function createJobs(skill: SkillId, parts: number[]): MockGenerationJob[] {
-  return parts.flatMap(part => skill === 'listening'
-    ? [
-        { id: `${skill}-${part}-content`, part, kind: 'content' as const, status: 'queued' as const },
-        { id: `${skill}-${part}-audio`, part, kind: 'audio' as const, status: 'queued' as const },
-      ]
-    : [{ id: `${skill}-${part}-content`, part, kind: 'content', status: 'queued' }])
+  return parts.flatMap(part =>
+    skill === 'listening'
+      ? [
+          {
+            id: `${skill}-${part}-content`,
+            part,
+            kind: 'content' as const,
+            status: 'queued' as const,
+          },
+          { id: `${skill}-${part}-audio`, part, kind: 'audio' as const, status: 'queued' as const },
+        ]
+      : [{ id: `${skill}-${part}-content`, part, kind: 'content', status: 'queued' }]
+  )
 }
 
 function createDraft(setNumber: number): MockGenerationDraft {
@@ -101,7 +111,7 @@ function createDraft(setNumber: number): MockGenerationDraft {
 export const useMockExamGeneration = () => {
   const fetchApi = $fetch as unknown as (
     url: string,
-    options?: { method?: string; body?: unknown },
+    options?: { method?: string; body?: unknown }
   ) => Promise<unknown>
   const draft = useState<MockGenerationDraft | null>('mock-exam-generation-draft', () => null)
   const isInitialized = useState<boolean>('mock-exam-generation-initialized', () => false)
@@ -120,10 +130,9 @@ export const useMockExamGeneration = () => {
 
   const isGenerating = computed(() => draft.value?.status === 'running')
   const canRetry = computed(() => draft.value?.status === 'failed')
-  const preflightReady = computed(() =>
-    preflight.value.llmConfigured
-    && preflight.value.llmConnected
-    && preflight.value.ttsAvailable,
+  const preflightReady = computed(
+    () =>
+      preflight.value.llmConfigured && preflight.value.llmConnected && preflight.value.ttsAvailable
   )
 
   const persist = (): void => {
@@ -182,7 +191,10 @@ export const useMockExamGeneration = () => {
       ttsAvailable: Boolean(tts?.data?.ok),
       provider: llm?.data.provider ?? null,
       model: llm?.data.model ?? null,
-      llmMessage: llm?.data.message ?? llm?.error ?? (llmResult.status === 'rejected' ? String(llmResult.reason) : null),
+      llmMessage:
+        llm?.data.message ??
+        llm?.error ??
+        (llmResult.status === 'rejected' ? String(llmResult.reason) : null),
       ttsMessage: tts?.error ?? (ttsResult.status === 'rejected' ? String(ttsResult.reason) : null),
     }
     return preflightReady.value
@@ -192,7 +204,7 @@ export const useMockExamGeneration = () => {
     skill: SkillId,
     jobId: string,
     status: MockGenerationStatus,
-    error?: string,
+    error?: string
   ): void => {
     const module = draft.value?.modules.find(candidate => candidate.skill === skill)
     const job = module?.jobs.find(candidate => candidate.id === jobId)
@@ -205,68 +217,90 @@ export const useMockExamGeneration = () => {
     persist()
   }
 
-  const replacePart = <T extends { testingPart?: number }>(items: T[], next: T): T[] => [
-    ...items.filter(item => item.testingPart !== next.testingPart),
-    next,
-  ].sort((left, right) => (left.testingPart ?? 0) - (right.testingPart ?? 0))
+  const replacePart = <T extends { testingPart?: number }>(items: T[], next: T): T[] =>
+    [...items.filter(item => item.testingPart !== next.testingPart), next].sort(
+      (left, right) => (left.testingPart ?? 0) - (right.testingPart ?? 0)
+    )
 
   const generateContentJob = async (skill: SkillId, part: number): Promise<void> => {
     if (!draft.value) return
 
     if (skill === 'reading') {
       const prompt = readingA2Parts(1).find(candidate => candidate.part === part)
-      const response = await fetchApi('/api/generate-reading', {
-        method: 'POST', body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
-      }) as unknown as { texts: ReadingExercise[]; error?: string }
-      if (response.error || !response.texts[0]) throw new Error(response.error || `No reading exercise generated for Teil ${part}.`)
-      draft.value.content.reading = replacePart(draft.value.content.reading, { ...response.texts[0], examOnly: true })
+      const response = (await fetchApi('/api/generate-reading', {
+        method: 'POST',
+        body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
+      })) as unknown as { texts: ReadingExercise[]; error?: string }
+      if (response.error || !response.texts[0])
+        throw new Error(response.error || `No reading exercise generated for Teil ${part}.`)
+      draft.value.content.reading = replacePart(draft.value.content.reading, {
+        ...response.texts[0],
+        examOnly: true,
+      })
       return
     }
 
     if (skill === 'listening') {
       const prompt = listeningA2Parts(1).find(candidate => candidate.part === part)
-      const response = await fetchApi('/api/generate-listening', {
-        method: 'POST', body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
-      }) as unknown as { exercises: ListeningA2Exercise[]; error?: string }
-      if (response.error || !response.exercises[0]) throw new Error(response.error || `No listening exercise generated for Teil ${part}.`)
-      draft.value.content.listening = replacePart(draft.value.content.listening, { ...response.exercises[0], examOnly: true })
+      const response = (await fetchApi('/api/generate-listening', {
+        method: 'POST',
+        body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
+      })) as unknown as { exercises: ListeningA2Exercise[]; error?: string }
+      if (response.error || !response.exercises[0])
+        throw new Error(response.error || `No listening exercise generated for Teil ${part}.`)
+      draft.value.content.listening = replacePart(draft.value.content.listening, {
+        ...response.exercises[0],
+        examOnly: true,
+      })
       return
     }
 
     if (skill === 'writing') {
       const prompt = part === 1 ? generateTopicsA2Part1(1) : generateTopicsA2Part2(1)
-      const response = await fetchApi('/api/generate-topics', {
-        method: 'POST', body: { prompt, part, difficulty: 'A2' },
-      }) as unknown as {
+      const response = (await fetchApi('/api/generate-topics', {
+        method: 'POST',
+        body: { prompt, part, difficulty: 'A2' },
+      })) as unknown as {
         topics?: WritingExercise[]
         data?: { topics: WritingExercise[] } | null
         error?: string | null
       }
       const topic = response.data?.topics[0] ?? response.topics?.[0]
-      if (response.error || !topic) throw new Error(response.error || `No writing exercise generated for Teil ${part}.`)
-      draft.value.content.writing = replacePart(draft.value.content.writing, { ...topic, examOnly: true })
+      if (response.error || !topic)
+        throw new Error(response.error || `No writing exercise generated for Teil ${part}.`)
+      draft.value.content.writing = replacePart(draft.value.content.writing, {
+        ...topic,
+        examOnly: true,
+      })
       return
     }
 
     const prompt = speakingA2Parts(1).find(candidate => candidate.part === part)
-    const response = await fetchApi('/api/generate-speaking', {
-      method: 'POST', body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
-    }) as unknown as { topics: SpeakingA2Topic[]; error?: string }
-    if (response.error || !response.topics[0]) throw new Error(response.error || `No speaking exercise generated for Teil ${part}.`)
-    draft.value.content.speaking = replacePart(draft.value.content.speaking, { ...response.topics[0], examOnly: true })
+    const response = (await fetchApi('/api/generate-speaking', {
+      method: 'POST',
+      body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
+    })) as unknown as { topics: SpeakingA2Topic[]; error?: string }
+    if (response.error || !response.topics[0])
+      throw new Error(response.error || `No speaking exercise generated for Teil ${part}.`)
+    draft.value.content.speaking = replacePart(draft.value.content.speaking, {
+      ...response.topics[0],
+      examOnly: true,
+    })
   }
 
   const generateAudioJob = async (part: number): Promise<void> => {
     if (!draft.value) return
     const exercise = draft.value.content.listening.find(candidate => candidate.testingPart === part)
     if (!exercise) throw new Error(`Listening content for Teil ${part} is missing.`)
-    const response = await fetchApi('/api/tts/generate-listening-audio', {
-      method: 'POST', body: { exercise },
-    }) as unknown as {
+    const response = (await fetchApi('/api/tts/generate-listening-audio', {
+      method: 'POST',
+      body: { exercise },
+    })) as unknown as {
       data: { audio: ListeningExerciseAudioMap; written: number } | null
       error: string | null
     }
-    if (response.error || !response.data) throw new Error(response.error || `Audio generation failed for Teil ${part}.`)
+    if (response.error || !response.data)
+      throw new Error(response.error || `Audio generation failed for Teil ${part}.`)
     draft.value.content.listening = replacePart(draft.value.content.listening, {
       ...exercise,
       audio: response.data.audio,
@@ -295,7 +329,8 @@ export const useMockExamGeneration = () => {
           else await generateContentJob(module.skill, job.part)
           updateJob(module.skill, job.id, 'done')
         } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : `Generation failed for Teil ${job.part}.`
+          const message =
+            error instanceof Error ? error.message : `Generation failed for Teil ${job.part}.`
           updateJob(module.skill, job.id, 'failed', message)
           draft.value.status = 'failed'
           draft.value.error = message
@@ -327,7 +362,7 @@ export const useMockExamGeneration = () => {
 
   const retryGeneration = async (): Promise<boolean> => {
     if (!draft.value || isGenerating.value) return false
-    if (!await checkPreflight()) return false
+    if (!(await checkPreflight())) return false
     for (const module of draft.value.modules) {
       if (module.status === 'failed') module.status = 'queued'
       for (const job of module.jobs) {

@@ -1,5 +1,7 @@
 <template>
-  <aside class="w-60 shrink-0 h-full flex flex-col bg-base-100 border-r border-base-300 overflow-y-auto">
+  <aside
+    class="w-60 shrink-0 h-full flex flex-col bg-base-100 border-r border-base-300 overflow-y-auto"
+  >
     <!-- Logo -->
     <a
       :href="landingUrl"
@@ -60,7 +62,9 @@
 
     <!-- Practice by skill -->
     <div class="px-4 mt-4">
-      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-1.5">{{ $t('shell.practiceBySkill') }}</p>
+      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-1.5">
+        {{ $t('shell.practiceBySkill') }}
+      </p>
       <div class="flex flex-col gap-0.5">
         <NuxtLink
           to="/exercises?skill=reading"
@@ -125,12 +129,16 @@
           to="/exercises"
           class="w-full flex items-center gap-2 rounded-field p-1 -m-1 hover:bg-base-300/60 transition-colors text-left"
         >
-          <div class="w-9 h-9 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0">
+          <div
+            class="w-9 h-9 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0"
+          >
             <Flag :size="16" />
           </div>
           <div class="min-w-0">
             <div class="text-sm font-semibold leading-tight">Goethe {{ examLevel }}</div>
-            <div class="text-[11px] text-base-content/60">{{ $t('shell.examTargetMeta', { days: 42 }) }}</div>
+            <div class="text-[11px] text-base-content/60">
+              {{ $t('shell.examTargetMeta', { days: 42 }) }}
+            </div>
           </div>
         </NuxtLink>
         <div class="mt-3 flex gap-1.5">
@@ -139,14 +147,20 @@
             :key="level"
             type="button"
             class="flex-1 h-8 rounded-selector text-xs font-semibold transition-colors"
-            :class="examLevel === level ? 'bg-primary text-primary-content' : 'bg-base-100 text-base-content/70 hover:bg-base-300'"
+            :class="
+              examLevel === level
+                ? 'bg-primary text-primary-content'
+                : 'bg-base-100 text-base-content/70 hover:bg-base-300'
+            "
             :aria-pressed="examLevel === level"
             @click="selectLevel(level)"
           >
             {{ level }}
           </button>
         </div>
-        <div class="mt-2 text-[10px] text-base-content/50 text-center">{{ $t('shell.tapLevel') }}</div>
+        <div class="mt-2 text-[10px] text-base-content/50 text-center">
+          {{ $t('shell.tapLevel') }}
+        </div>
       </div>
     </div>
   </aside>
@@ -155,8 +169,15 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import {
-  LayoutDashboard, BookOpen, FileText, TrendingUp, ListTree,
-  PenLine, Headphones, Mic, Flag
+  LayoutDashboard,
+  BookOpen,
+  FileText,
+  TrendingUp,
+  ListTree,
+  PenLine,
+  Headphones,
+  Mic,
+  Flag,
 } from 'lucide-vue-next'
 import { useSettingsStore } from '~/stores/settings'
 import { useReadingTexts } from '~/composables/useReadingTexts'
@@ -194,10 +215,16 @@ onMounted(() => {
   isClient.value = true
 })
 
-const readingCount = computed(() => isClient.value ? getTexts().filter(text => text.difficulty === examLevel.value).length : 0)
-const writingCount = computed(() => isClient.value ? getTopics().filter(topic => topic.difficulty === examLevel.value).length : 0)
-const listeningCount = computed(() => isClient.value ? getListening().length : 0)
-const speakingCount = computed(() => isClient.value ? getSpeaking().filter(t => t.difficulty === examLevel.value).length : 0)
+const readingCount = computed(() =>
+  isClient.value ? getTexts().filter(text => text.difficulty === examLevel.value).length : 0
+)
+const writingCount = computed(() =>
+  isClient.value ? getTopics().filter(topic => topic.difficulty === examLevel.value).length : 0
+)
+const listeningCount = computed(() => (isClient.value ? getListening().length : 0))
+const speakingCount = computed(() =>
+  isClient.value ? getSpeaking().filter(t => t.difficulty === examLevel.value).length : 0
+)
 
 function isActive(path: string) {
   return route.path === path || route.path.startsWith(`${path}/`)

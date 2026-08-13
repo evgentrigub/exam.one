@@ -5,7 +5,9 @@ export default defineNitroPlugin(async () => {
   const llmConfig = getLlmConfig(runtimeConfig)
 
   if (!llmConfig) {
-    const providerRaw = String(runtimeConfig.llmProvider || process.env['LLM_PROVIDER'] || 'openrouter').trim()
+    const providerRaw = String(
+      runtimeConfig.llmProvider || process.env['LLM_PROVIDER'] || 'openrouter'
+    ).trim()
     const provider = providerRaw === 'openai' ? 'openai' : 'openrouter'
     const apiKeyEnvVar = provider === 'openai' ? 'OPENAI_API_KEY' : 'OPENROUTER_API_KEY'
     console.info(
@@ -14,7 +16,9 @@ export default defineNitroPlugin(async () => {
     return
   }
 
-  console.info(`[exam.one] Verifying LLM connection (${llmConfig.provider}, model: ${llmConfig.model})...`)
+  console.info(
+    `[exam.one] Verifying LLM connection (${llmConfig.provider}, model: ${llmConfig.model})...`
+  )
   const result = await verifyLlmConnection(llmConfig)
 
   if (result.status === 'ok') {
