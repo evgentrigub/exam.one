@@ -11,7 +11,12 @@ COPY libraries/nestjs-libraries/package.json libraries/nestjs-libraries/package.
 RUN pnpm install --frozen-lockfile
 COPY apps/backend apps/backend
 COPY libraries/contracts libraries/contracts
-RUN pnpm --filter @exam-one/contracts build && pnpm --filter ./apps/backend build
+COPY libraries/database libraries/database
+COPY libraries/nestjs-libraries libraries/nestjs-libraries
+RUN pnpm --filter @exam-one/database build \
+  && pnpm --filter @exam-one/contracts build \
+  && pnpm --filter @exam-one/nestjs-libraries build \
+  && pnpm --filter ./apps/backend build
 RUN pnpm deploy --filter ./apps/backend --prod --legacy /production
 
 FROM node:22-alpine AS runtime
