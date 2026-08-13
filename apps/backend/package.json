@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch",
+    "dev": "pnpm --filter @exam-one/database build && pnpm --filter @exam-one/nestjs-libraries build && nest start --watch",
     "start": "node dist/main",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

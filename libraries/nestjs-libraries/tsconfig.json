@@ -8,7 +8,6 @@
     "types": ["node"],
     "outDir": "./dist",
     "rootDir": "./src",
-    "emitDeclarationOnly": true,
     "tsBuildInfoFile": "./dist/tsconfig.build.tsbuildinfo"
   },
   "include": ["src/**/*"],
