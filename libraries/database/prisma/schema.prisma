@@ -6,3 +6,96 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Skill {
+  READING
+  WRITING
+  LISTENING
+  SPEAKING
+  MOCK
+}
+
+enum PlanId {
+  FREE
+  PRO
+}
+
+enum ExamLevel {
+  A2
+  C1
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String
+  examTargetDate DateTime?
+  plan           PlanId    @default(FREE)
+  // reserved for 2.2 auth (nullable now)
+  passwordHash   String?
+  emailVerified  Boolean   @default(false)
+  settings       Setting?
+  attempts       Attempt[]
+  drafts         Draft[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Setting {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examLevel      ExamLevel @default(A2)
+  targetLanguage String    @default("de")
+  updatedAt      DateTime  @updatedAt
+}
+
+model Exercise {
+  id         String    @id @default(cuid())
+  skill      Skill
+  level      ExamLevel @default(A2)
+  source     String    @default("seed") // seed | generated
+  externalId String? // maps to Phase 1 seed ids
+  payload    Json
+  attempts   Attempt[]
+  createdAt  DateTime  @default(now())
+
+  @@index([skill, level])
+}
+
+model Attempt {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId  String?
+  exercise    Exercise? @relation(fields: [exerciseId], references: [id])
+  skill       Skill
+  answers     Json
+  result      Result?
+  submittedAt DateTime  @default(now())
+
+  @@index([userId, skill])
+}
+
+model Result {
+  id         String   @id @default(cuid())
+  attemptId  String   @unique
+  attempt    Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  score      Int?
+  maxScore   Int?
+  percentage Int?
+  review     Json? // AI/module review payloads
+  createdAt  DateTime @default(now())
+}
+
+model Draft {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill     Skill    @default(WRITING)
+  topicId   String
+  payload   Json // content, wordCount, timestamps
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, skill, topicId])
+}
