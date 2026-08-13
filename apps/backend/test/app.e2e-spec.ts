@@ -25,6 +25,13 @@ describe('AppController (e2e)', () => {
       .expect({ data: { status: 'ok', service: 'exam.one-backend' } })
   })
 
+  it('/api/v1/health/ready (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/api/v1/health/ready')
+      .expect(200)
+      .expect({ data: { status: 'ok', checks: { database: 'up' } } })
+  })
+
   afterEach(async () => {
     await app.close()
   })

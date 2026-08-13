@@ -23,6 +23,12 @@ importers:
       '@exam-one/contracts':
         specifier: workspace:*
         version: link:../../libraries/contracts
+      '@exam-one/database':
+        specifier: workspace:*
+        version: link:../../libraries/database
+      '@exam-one/nestjs-libraries':
+        specifier: workspace:*
+        version: link:../../libraries/nestjs-libraries
       '@nestjs/common':
         specifier: ^11.0.0
         version: 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -216,6 +222,10 @@ importers:
         version: 8.63.0(eslint@9.29.0(jiti@2.6.1))(typescript@5.8.3)
 
   libraries/database:
+    dependencies:
+      '@prisma/client':
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.9.3))(typescript@5.9.3)
     devDependencies:
       '@eslint/js':
         specifier: ^9.29.0
@@ -252,13 +262,41 @@ importers:
         version: 8.63.0(eslint@9.29.0(jiti@2.6.1))(typescript@5.9.3)
 
   libraries/nestjs-libraries:
+    dependencies:
+      '@exam-one/database':
+        specifier: workspace:*
+        version: link:../database
+      '@nestjs/common':
+        specifier: ^11.0.0
+        version: 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@prisma/client':
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.9.3))(typescript@5.9.3)
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
     devDependencies:
       '@eslint/js':
         specifier: ^9.29.0
         version: 9.29.0
+      '@nestjs/testing':
+        specifier: ^11.0.0
+        version: 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28)(@nestjs/platform-express@11.1.28)
+      '@types/jest':
+        specifier: ^29.5.14
+        version: 29.5.14
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.1
       eslint:
         specifier: ^9.29.0
         version: 9.29.0(jiti@2.6.1)
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.8.3))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.4.11(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@22.20.1))(typescript@5.9.3)
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
@@ -1829,6 +1867,18 @@ packages:
   '@poppinss/exception@1.2.1':
     resolution: {integrity: sha512-aQypoot0HPSJa6gDPEPTntc1GT6QINrSbgRlRhadGW2WaYqUK3tK4Bw9SBMZXhmxd3GeAlZjVcODHgiu+THY7A==}
     engines: {node: '>=18'}
+
+  '@prisma/client@6.5.0':
+    resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
+    engines: {node: '>=18.18'}
+    peerDependencies:
+      prisma: '*'
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+      typescript:
+        optional: true
 
   '@prisma/config@6.5.0':
     resolution: {integrity: sha512-sOH/2Go9Zer67DNFLZk6pYOHj+rumSb0VILgltkoxOjYnlLqUpHPAN826vnx8HigqnOCxj9LRhT6U7uLiIIWgw==}
@@ -9002,6 +9052,11 @@ snapshots:
 
   '@poppinss/exception@1.2.1': {}
 
+  '@prisma/client@6.5.0(prisma@6.5.0(typescript@5.9.3))(typescript@5.9.3)':
+    optionalDependencies:
+      prisma: 6.5.0(typescript@5.9.3)
+      typescript: 5.9.3
+
   '@prisma/config@6.5.0':
     dependencies:
       esbuild: 0.25.5
@@ -14378,6 +14433,26 @@ snapshots:
       semver: 7.8.5
       type-fest: 4.41.0
       typescript: 5.8.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.27.4
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.27.4)
+      jest-util: 29.7.0
+
+  ts-jest@29.4.11(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@22.20.1))(typescript@5.9.3):
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      handlebars: 4.7.9
+      jest: 29.7.0(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.8.3))
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.8.5
+      type-fest: 4.41.0
+      typescript: 5.9.3
       yargs-parser: 21.1.1
     optionalDependencies:
       '@babel/core': 7.27.4
