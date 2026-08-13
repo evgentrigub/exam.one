@@ -1,11 +1,11 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "types": ["node"],
     "outDir": "./dist",
-    "rootDir": "./src",
     "emitDeclarationOnly": true,
     "tsBuildInfoFile": "./dist/tsconfig.build.tsbuildinfo"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "prisma/**/*"],
   "exclude": ["node_modules", "dist"]
 }
