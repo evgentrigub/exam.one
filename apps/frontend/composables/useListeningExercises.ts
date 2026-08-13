@@ -5,10 +5,7 @@
  */
 
 import { allDefaultListeningTopics } from '~/data/listening/exerciseListening'
-import type {
-  ListeningA2Exercise,
-  ListeningExerciseAudioMap,
-} from '~/utils/exercises/listening'
+import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 
 const STORAGE_KEY = 'exam-one:listening:exercises'
 const AUDIO_OVERRIDES_KEY = 'exam-one:listening:audio-overrides'
@@ -40,9 +37,9 @@ function writeAudioOverrides(overrides: AudioOverrides): void {
 
 function applyAudioOverrides(
   list: ListeningA2Exercise[],
-  overrides: AudioOverrides,
+  overrides: AudioOverrides
 ): ListeningA2Exercise[] {
-  return list.map((exercise) => {
+  return list.map(exercise => {
     const id = exercise.id
     if (!id || !overrides[id]) return exercise
     return { ...exercise, audio: overrides[id] }
@@ -62,7 +59,7 @@ export const useListeningExercises = () => {
         const uniqueStored = parsed.filter(e => !defaultIds.has(e.id))
         exercises.value = applyAudioOverrides(
           [...allDefaultListeningTopics, ...uniqueStored],
-          overrides,
+          overrides
         )
       } else {
         exercises.value = applyAudioOverrides([...allDefaultListeningTopics], overrides)
@@ -107,7 +104,7 @@ export const useListeningExercises = () => {
 
   const updateExerciseAudio = (
     id: string,
-    audio: ListeningExerciseAudioMap,
+    audio: ListeningExerciseAudioMap
   ): ListeningA2Exercise | undefined => {
     const index = exercises.value.findIndex(e => e.id === id)
     if (index < 0) return undefined

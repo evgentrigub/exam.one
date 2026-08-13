@@ -24,9 +24,11 @@ interface GenerateListeningAudioBody {
 function isListeningExercise(value: unknown): value is ListeningA2Exercise {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
-  return typeof record['title'] === 'string'
-    && typeof record['testingPart'] === 'number'
-    && typeof record['difficulty'] === 'string'
+  return (
+    typeof record['title'] === 'string' &&
+    typeof record['testingPart'] === 'number' &&
+    typeof record['difficulty'] === 'string'
+  )
 }
 
 function publicRoot(): string {
@@ -67,7 +69,7 @@ export default defineEventHandler(
     const root = publicRoot()
 
     try {
-      await mapPool(segments, config.concurrency, async (segment) => {
+      await mapPool(segments, config.concurrency, async segment => {
         const bytes = await synthesizeListeningTranscript(segment.transcript, config)
         const absolute = path.join(root, segment.relativePath)
         await mkdir(path.dirname(absolute), { recursive: true })
@@ -83,5 +85,5 @@ export default defineEventHandler(
       const message = error instanceof Error ? error.message : 'Audio generation failed.'
       return { data: null, error: message }
     }
-  },
+  }
 )

@@ -3,6 +3,6 @@ import { ResultsService } from './results.service'
 
 @Module({
   providers: [ResultsService],
-  exports: [ResultsService]
+  exports: [ResultsService],
 })
 export class ResultsModule {}

@@ -31,10 +31,14 @@ const defaults: AccountProfile = {
 }
 
 export const useAccountProfile = () => {
-  const profile = useLocalStorage<AccountProfile>(STORAGE_KEY, { ...defaults }, {
-    initOnMounted: true,
-    mergeDefaults: true,
-  })
+  const profile = useLocalStorage<AccountProfile>(
+    STORAGE_KEY,
+    { ...defaults },
+    {
+      initOnMounted: true,
+      mergeDefaults: true,
+    }
+  )
 
   const daysUntilExam = computed<number>(() => {
     if (!profile.value.examTargetDate) return 0

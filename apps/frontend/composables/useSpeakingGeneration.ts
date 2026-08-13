@@ -7,7 +7,7 @@ import { speakingA2Parts } from '~/data/speaking/a2/exerciseGeneratorSpeakingA2'
 import {
   filterJobsByParts,
   type PartGenerationJob,
-  type PartGenerationState
+  type PartGenerationState,
 } from '~/utils/generation/partJobs'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { Difficulty } from '~/utils/types'
@@ -26,16 +26,17 @@ export const useSpeakingGeneration = () => {
     difficulty: null,
     startedAt: null,
     error: null,
-    jobs: []
+    jobs: [],
   })
 
   const isGenerating = computed(() => state.value.isGenerating)
   const generatingDifficulty = computed(() => state.value.difficulty)
   const generationError = computed(() => state.value.error)
   const generationJobs = computed<PartGenerationJob[]>(() => state.value.jobs)
-  const canResumeGeneration = computed(() =>
-    !state.value.isGenerating &&
-    state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
+  const canResumeGeneration = computed(
+    () =>
+      !state.value.isGenerating &&
+      state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
   )
 
   const loadState = () => {
@@ -62,7 +63,7 @@ export const useSpeakingGeneration = () => {
       state.value = {
         ...parsed,
         isGenerating: false,
-        jobs: restoredJobs
+        jobs: restoredJobs,
       }
     } catch (error) {
       console.error('Failed to load speaking generation state:', error)
@@ -86,7 +87,7 @@ export const useSpeakingGeneration = () => {
       difficulty: null,
       startedAt: null,
       error: null,
-      jobs: []
+      jobs: [],
     }
 
     if (import.meta.client) {
@@ -100,7 +101,7 @@ export const useSpeakingGeneration = () => {
       jobs: state.value.jobs.map(job => {
         if (job.part !== part) return job
         return error === undefined ? { ...job, status } : { ...job, status, error }
-      })
+      }),
     }
     saveState()
   }
@@ -130,8 +131,8 @@ export const useSpeakingGeneration = () => {
       try {
         const response = (await $fetch('/api/generate-speaking', {
           method: 'POST',
-          body: { difficulty, prompts: [partPrompt] }
-        }) as unknown) as { topics: SpeakingA2Topic[]; error?: string }
+          body: { difficulty, prompts: [partPrompt] },
+        })) as unknown as { topics: SpeakingA2Topic[]; error?: string }
 
         if (response.error || !response.topics || response.topics.length === 0) {
           throw new Error(response.error || `No speaking topic generated for part ${part}`)
@@ -148,7 +149,8 @@ export const useSpeakingGeneration = () => {
           }
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : `Failed to generate part ${part}`
+        const errorMessage =
+          error instanceof Error ? error.message : `Failed to generate part ${part}`
         console.error(`Speaking generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -163,7 +165,7 @@ export const useSpeakingGeneration = () => {
       state.value = {
         ...state.value,
         isGenerating: false,
-        error: loopError
+        error: loopError,
       }
       saveState()
     }
@@ -188,7 +190,7 @@ export const useSpeakingGeneration = () => {
       difficulty,
       startedAt: new Date().toISOString(),
       error: null,
-      jobs: partsToGenerate.map(part => ({ part: part.part, status: 'queued' }))
+      jobs: partsToGenerate.map(part => ({ part: part.part, status: 'queued' })),
     }
     saveState()
 
@@ -206,7 +208,7 @@ export const useSpeakingGeneration = () => {
     state.value = {
       ...state.value,
       isGenerating: true,
-      error: null
+      error: null,
     }
     saveState()
 
@@ -227,7 +229,7 @@ export const useSpeakingGeneration = () => {
       error: null,
       jobs: state.value.jobs.map(job =>
         job.status === 'failed' ? { ...job, status: 'queued' } : job
-      )
+      ),
     }
     saveState()
 
@@ -253,6 +255,6 @@ export const useSpeakingGeneration = () => {
     resumeGeneration,
     retryGeneration,
     dismissError,
-    clearState
+    clearState,
   }
 }

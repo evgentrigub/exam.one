@@ -21,7 +21,7 @@ export type ListeningNineOptions = [
   string,
   string,
   string,
-  string
+  string,
 ]
 
 /** Public URL paths for pre-generated listening audio (stable across replays). */

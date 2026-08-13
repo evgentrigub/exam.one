@@ -7,12 +7,15 @@ Inject relevant standards into the current context, formatted appropriately for 
 This command supports two modes:
 
 ### Auto-Suggest Mode (no arguments)
+
 ```
 /inject-standards
 ```
+
 Analyzes context and suggests relevant standards.
 
 ### Explicit Mode (with arguments)
+
 ```
 /inject-standards api                           # All standards in api/
 /inject-standards api/response-format           # Single file
@@ -20,6 +23,7 @@ Analyzes context and suggests relevant standards.
 /inject-standards root                          # All standards in the root folder
 /inject-standards root/naming                   # Single file from root folder
 ```
+
 Directly injects specified standards without suggestions.
 
 **Note:** `root` is a reserved keyword — it refers to `.md` files directly in `agent-os/standards/` (not in a subfolder).
@@ -61,6 +65,7 @@ Always ask when uncertain — don't assume conversation by default.
 Read `agent-os/standards/index.yml` to get the list of available standards and their descriptions.
 
 If index.yml doesn't exist or is empty:
+
 ```
 No standards index found. Run /discover-standards first to create standards,
 or /index-standards if you have standards files without an index.
@@ -69,6 +74,7 @@ or /index-standards if you have standards files without an index.
 ### Step 3: Analyze Work Context
 
 Look at the current conversation to understand what the user is working on:
+
 - What type of work? (API, database, UI, etc.)
 - What technologies mentioned?
 - What's the goal?
@@ -251,6 +257,7 @@ Same as auto-suggest mode.
 ### Step 2: Parse Arguments
 
 Arguments can be:
+
 - **Folder name** — `api` → inject all `.md` files in `agent-os/standards/api/`
 - **Folder/file** — `api/response-format` → inject `agent-os/standards/api/response-format.md`
 - **Root folder** — `root` → inject all `.md` files directly in `agent-os/standards/` (not in subfolders)

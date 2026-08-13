@@ -11,8 +11,8 @@ async function seed(): Promise<void> {
     create: {
       email: DEFAULT_OPERATOR_EMAIL,
       name: 'Default Operator',
-      plan: 'FREE'
-    }
+      plan: 'FREE',
+    },
   })
 
   await prisma.setting.upsert({
@@ -21,8 +21,8 @@ async function seed(): Promise<void> {
     create: {
       userId: operator.id,
       examLevel: 'A2',
-      targetLanguage: 'de'
-    }
+      targetLanguage: 'de',
+    },
   })
 }
 

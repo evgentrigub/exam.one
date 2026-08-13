@@ -29,7 +29,10 @@ export default defineEventHandler(async (event): Promise<AiResponse<ReadingExerc
   const { llmOpenaiApiKey, llmOpenrouterApiKey, llmProvider } = useRuntimeConfig()
   const apiKey = llmProvider === 'openai' ? llmOpenaiApiKey : llmOpenrouterApiKey
   if (!apiKey) {
-    return { data: null, error: 'AI features are disabled. Add your provider API key to enable them.' }
+    return {
+      data: null,
+      error: 'AI features are disabled. Add your provider API key to enable them.',
+    }
   }
 
   const body = await readBody<GenerateReadingBody>(event)
@@ -55,7 +58,10 @@ export default defineEventHandler(async (event): Promise<AiResponse<ReadingExerc
 ## Client side
 
 ```ts
-const res = await $fetch<AiResponse<ReadingExercise[]>>('/api/generate-reading', { method: 'POST', body })
+const res = await $fetch<AiResponse<ReadingExercise[]>>('/api/generate-reading', {
+  method: 'POST',
+  body,
+})
 if (res.error || !res.data) {
   showError(res.error ?? 'Unknown error')
   return

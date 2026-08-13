@@ -9,12 +9,8 @@ export type Theme = 'light' | 'dark' /* | 'bumblebee' | ... */
 
 type ThemeEntry = { value: Theme; label: string; icon: string }
 
-export const LIGHT_THEMES: ThemeEntry[] = [
-  { value: 'light', label: 'Light', icon: '☀️' },
-]
-export const DARK_THEMES: ThemeEntry[] = [
-  { value: 'dark', label: 'Dark', icon: '🌙' },
-]
+export const LIGHT_THEMES: ThemeEntry[] = [{ value: 'light', label: 'Light', icon: '☀️' }]
+export const DARK_THEMES: ThemeEntry[] = [{ value: 'dark', label: 'Dark', icon: '🌙' }]
 export const AVAILABLE_THEMES = [...LIGHT_THEMES, ...DARK_THEMES]
 ```
 

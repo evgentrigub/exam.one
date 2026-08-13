@@ -5,7 +5,9 @@
       <div class="text-sm font-semibold text-base-content/70">Your Answer</div>
       <span class="ml-auto text-xs text-base-content/60">
         <span class="font-mono font-semibold" :class="wordCountColor">{{ wordCount }}</span>
-        <span class="text-base-content/50"> / {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words</span>
+        <span class="text-base-content/50">
+          / {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words</span
+        >
       </span>
     </div>
 
@@ -24,13 +26,27 @@
         <span>Word count progress</span>
         <span class="font-mono">{{ wordCountPercentage }}%</span>
       </div>
-      <progress class="progress w-full h-1.5" :class="progressBarColor" :value="wordCountPercentage" max="100" />
+      <progress
+        class="progress w-full h-1.5"
+        :class="progressBarColor"
+        :value="wordCountPercentage"
+        max="100"
+      />
     </div>
 
-    <div v-if="content.trim().length > 20 && !props.submitted && !props.examMode" class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3">
+    <div
+      v-if="content.trim().length > 20 && !props.submitted && !props.examMode"
+      class="mt-4 rounded-box border border-base-300/70 bg-base-200/40 p-3"
+    >
       <div class="flex items-center justify-between gap-3 mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider text-base-content/50">Writing quality</span>
-        <button class="btn btn-ghost btn-xs" type="button" @click="showQualityDetails = !showQualityDetails">
+        <span class="text-xs font-semibold uppercase tracking-wider text-base-content/50"
+          >Writing quality</span
+        >
+        <button
+          class="btn btn-ghost btn-xs"
+          type="button"
+          @click="showQualityDetails = !showQualityDetails"
+        >
           {{ showQualityDetails ? 'Hide details' : 'Details' }}
         </button>
       </div>
@@ -48,9 +64,18 @@
           <span>Length</span>
         </div>
       </div>
-      <div v-if="showQualityDetails && realtimeAnalysis" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
-        <div v-for="item in analysisStats" :key="item.label" class="rounded-box bg-base-100 border border-base-300/70 p-2">
-          <div class="text-[10px] uppercase tracking-wider text-base-content/50">{{ item.label }}</div>
+      <div
+        v-if="showQualityDetails && realtimeAnalysis"
+        class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3"
+      >
+        <div
+          v-for="item in analysisStats"
+          :key="item.label"
+          class="rounded-box bg-base-100 border border-base-300/70 p-2"
+        >
+          <div class="text-[10px] uppercase tracking-wider text-base-content/50">
+            {{ item.label }}
+          </div>
           <div class="font-mono font-bold text-sm">{{ item.value }}</div>
         </div>
       </div>
@@ -61,7 +86,12 @@
         <FileText :size="13" aria-hidden="true" />
         <span>{{ wordCountStatus }}</span>
       </div>
-      <button v-if="content.trim() && !props.submitted" type="button" class="btn btn-error btn-ghost btn-xs" @click="clearContent">
+      <button
+        v-if="content.trim() && !props.submitted"
+        type="button"
+        class="btn btn-error btn-ghost btn-xs"
+        @click="clearContent"
+      >
         Clear text
       </button>
     </div>
@@ -101,7 +131,11 @@
       </div>
     </div>
 
-    <div v-if="autoSaved" class="text-[11px] text-success mt-2 flex items-center gap-1" aria-live="polite">
+    <div
+      v-if="autoSaved"
+      class="text-[11px] text-success mt-2 flex items-center gap-1"
+      aria-live="polite"
+    >
       <CheckCircle2 :size="11" aria-hidden="true" />
       Draft auto-saved just now
     </div>
@@ -140,12 +174,15 @@ let saveTimer: ReturnType<typeof setTimeout> | null = null
 let autoSavedTimer: ReturnType<typeof setTimeout> | null = null
 let interval: number | null = null
 
-watch(() => props.initialContent, (next) => {
-  if (next !== undefined && next !== content.value) {
-    content.value = next
-    updateWordCount()
+watch(
+  () => props.initialContent,
+  next => {
+    if (next !== undefined && next !== content.value) {
+      content.value = next
+      updateWordCount()
+    }
   }
-})
+)
 
 watch(content, () => {
   if (props.submitted) return
@@ -170,9 +207,11 @@ const wordCountPercentage = computed(() => {
 
 const isSubmittable = computed(() => {
   if (props.examMode) return content.value.trim().length > 0
-  return wordCount.value >= props.topic.wordCount.min
-    && wordCount.value <= props.topic.wordCount.max
-    && content.value.trim().length > 0
+  return (
+    wordCount.value >= props.topic.wordCount.min &&
+    wordCount.value <= props.topic.wordCount.max &&
+    content.value.trim().length > 0
+  )
 })
 
 const wordCountColor = computed(() => {
@@ -190,8 +229,10 @@ const progressBarColor = computed(() => {
 
 const wordCountStatus = computed(() => {
   if (wordCount.value === 0) return 'Start writing...'
-  if (wordCount.value < props.topic.wordCount.min) return `${props.topic.wordCount.min - wordCount.value} more words needed`
-  if (wordCount.value > props.topic.wordCount.max) return `${wordCount.value - props.topic.wordCount.max} words over limit`
+  if (wordCount.value < props.topic.wordCount.min)
+    return `${props.topic.wordCount.min - wordCount.value} more words needed`
+  if (wordCount.value > props.topic.wordCount.max)
+    return `${wordCount.value - props.topic.wordCount.max} words over limit`
   return 'Good length for this task'
 })
 
@@ -218,7 +259,8 @@ const vocabularyIndicatorColor = computed(() => {
 })
 
 const lengthIndicatorColor = computed(() => {
-  if (wordCount.value >= props.topic.wordCount.min && wordCount.value <= props.topic.wordCount.max) return 'badge-success'
+  if (wordCount.value >= props.topic.wordCount.min && wordCount.value <= props.topic.wordCount.max)
+    return 'badge-success'
   if (wordCount.value >= props.topic.wordCount.min * 0.8) return 'badge-warning'
   return 'badge-error'
 })
@@ -228,8 +270,14 @@ const analysisStats = computed(() => {
   return [
     { label: 'Sentences', value: realtimeAnalysis.value.sentenceCount },
     { label: 'Paragraphs', value: realtimeAnalysis.value.structureElements.paragraphCount },
-    { label: 'Variety', value: `${Math.round(realtimeAnalysis.value.vocabularyMetrics.vocabularyDiversity * 100)}%` },
-    { label: 'Connectors', value: realtimeAnalysis.value.vocabularyMetrics.commonConnectors.length },
+    {
+      label: 'Variety',
+      value: `${Math.round(realtimeAnalysis.value.vocabularyMetrics.vocabularyDiversity * 100)}%`,
+    },
+    {
+      label: 'Connectors',
+      value: realtimeAnalysis.value.vocabularyMetrics.commonConnectors.length,
+    },
   ]
 })
 
@@ -250,7 +298,10 @@ onUnmounted(() => {
 })
 
 function updateWordCount() {
-  const words = content.value.trim().split(/\s+/).filter(word => word.length > 0)
+  const words = content.value
+    .trim()
+    .split(/\s+/)
+    .filter(word => word.length > 0)
   wordCount.value = content.value.trim() === '' ? 0 : words.length
   if (content.value.trim().length > 20) {
     try {

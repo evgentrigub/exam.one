@@ -25,12 +25,7 @@ const SPEAKER_LABEL_RE =
 
 export const MALE_VOICE_POOL: readonly DialogueVoiceId[] = ['martin', 'bernd']
 export const FEMALE_VOICE_POOL: readonly DialogueVoiceId[] = ['victoria', 'eva']
-export const ALL_VOICE_POOL: readonly DialogueVoiceId[] = [
-  'martin',
-  'victoria',
-  'bernd',
-  'eva',
-]
+export const ALL_VOICE_POOL: readonly DialogueVoiceId[] = ['martin', 'victoria', 'bernd', 'eva']
 
 const FEMALE_ROLES = new Set([
   'frau',
@@ -111,7 +106,8 @@ export function parseDialogueTurns(transcript: string): DialogueTurn[] | null {
     if (!speaker) continue
 
     const textStart = match.index + match[0].length
-    const textEnd = i + 1 < matches.length ? matches[i + 1]?.index ?? source.length : source.length
+    const textEnd =
+      i + 1 < matches.length ? (matches[i + 1]?.index ?? source.length) : source.length
     const text = source.slice(textStart, textEnd).trim()
     if (!text) continue
 
@@ -148,10 +144,7 @@ export function inferSpeakerGender(speaker: string): SpeakerGender {
   return 'unknown'
 }
 
-function pickFromPool(
-  pool: readonly DialogueVoiceId[],
-  index: number,
-): DialogueVoiceId {
+function pickFromPool(pool: readonly DialogueVoiceId[], index: number): DialogueVoiceId {
   const voice = pool[index % pool.length]
   return voice ?? pool[0] ?? 'martin'
 }
@@ -160,10 +153,7 @@ function pickFromPool(
  * Map a speaker to a voice using per-gender pools (order of first appearance).
  * Unknown genders rotate through the full 4-voice roster.
  */
-export function resolveDialogueVoice(
-  speaker: string,
-  genderIndex: number,
-): DialogueVoiceId {
+export function resolveDialogueVoice(speaker: string, genderIndex: number): DialogueVoiceId {
   const gender = inferSpeakerGender(speaker)
   if (gender === 'female') return pickFromPool(FEMALE_VOICE_POOL, genderIndex)
   if (gender === 'male') return pickFromPool(MALE_VOICE_POOL, genderIndex)
@@ -176,7 +166,7 @@ export function resolveDialogueVoice(
  */
 export function fallbackVoiceFor(
   preferred: DialogueVoiceId,
-  available: ReadonlySet<string>,
+  available: ReadonlySet<string>
 ): DialogueVoiceId {
   if (available.has(preferred)) return preferred
 
@@ -235,5 +225,5 @@ export function planDialogueVoices(transcript: string): VoicedDialogueTurn[] | n
 export function dialogueAudioPlanKey(transcript: string): string {
   const plan = planDialogueVoices(transcript)
   if (!plan) return `mono:${transcript.trim()}`
-  return plan.map((turn) => `${turn.voice}|${turn.speaker}|${turn.text}`).join('\n')
+  return plan.map(turn => `${turn.voice}|${turn.speaker}|${turn.text}`).join('\n')
 }

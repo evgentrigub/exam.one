@@ -57,7 +57,11 @@ export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnect
     const response = await Promise.race([
       callLlm(config, [{ role: 'user', content: 'Reply with OK.' }], { maxTokens: 16 }),
       new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error(`LLM health check timed out after ${LLM_HEALTH_CHECK_TIMEOUT_MS}ms`)), LLM_HEALTH_CHECK_TIMEOUT_MS)
+        setTimeout(
+          () =>
+            reject(new Error(`LLM health check timed out after ${LLM_HEALTH_CHECK_TIMEOUT_MS}ms`)),
+          LLM_HEALTH_CHECK_TIMEOUT_MS
+        )
       }),
     ])
 
@@ -102,8 +106,8 @@ export function getLlmConfig(runtimeConfig: LlmRuntimeConfig): LlmConfig | null 
 
   const model =
     provider === 'openai'
-      ? (runtimeConfig.llmOpenaiModel || readEnv('OPENAI_MODEL') || DEFAULT_OPENAI_MODEL)
-      : (runtimeConfig.llmOpenrouterModel || readEnv('OPENROUTER_MODEL') || DEFAULT_OPENROUTER_MODEL)
+      ? runtimeConfig.llmOpenaiModel || readEnv('OPENAI_MODEL') || DEFAULT_OPENAI_MODEL
+      : runtimeConfig.llmOpenrouterModel || readEnv('OPENROUTER_MODEL') || DEFAULT_OPENROUTER_MODEL
 
   const configuredEffort =
     runtimeConfig.llmReasoningEffort || readEnv('LLM_REASONING_EFFORT') || DEFAULT_REASONING_EFFORT
@@ -153,15 +157,14 @@ export async function callLlm(
       messages,
       ...(usesOpenAiReasoning && { reasoning_effort: config.reasoningEffort }),
       // Reasoning models reject temperature; only pass it for OpenRouter and non-reasoning OpenAI calls.
-      ...(!usesOpenAiReasoning && opts?.temperature !== undefined && { temperature: opts.temperature }),
+      ...(!usesOpenAiReasoning &&
+        opts?.temperature !== undefined && { temperature: opts.temperature }),
       ...maxTokensOption,
     })
 
     const content = completion.choices?.[0]?.message?.content ?? ''
     const duration = Date.now() - startedAt
-    console.log(
-      `[exam.one][llm] done ms=${duration} chars=${content.length}`
-    )
+    console.log(`[exam.one][llm] done ms=${duration} chars=${content.length}`)
     return content
   } catch (error: unknown) {
     const duration = Date.now() - startedAt

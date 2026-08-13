@@ -1,6 +1,5 @@
 <template>
   <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6">
-
     <!-- Page header -->
     <div v-if="text" class="flex items-start justify-between gap-4">
       <div class="flex items-start gap-3 min-w-0">
@@ -12,11 +11,15 @@
           <ArrowLeft :size="14" />
         </button>
         <div class="min-w-0">
-          <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50 flex-wrap">
+          <div
+            class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50 flex-wrap"
+          >
             <BookOpen :size="11" />
             Reading practice · {{ textTypeLabel }}
           </div>
-          <h1 class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content">{{ text.title }}</h1>
+          <h1 class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content">
+            {{ text.title }}
+          </h1>
           <div class="text-sm text-base-content/60 mt-1">
             {{ subtitle }}
           </div>
@@ -30,9 +33,10 @@
 
     <!-- 2-col layout -->
     <div v-if="text" class="grid grid-cols-12 gap-6 items-start">
-
       <!-- Left: text card (sticky) -->
-      <section class="col-span-12 lg:col-span-6 bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 sm:p-7 lg:sticky lg:top-4">
+      <section
+        class="col-span-12 lg:col-span-6 bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 sm:p-7 lg:sticky lg:top-4"
+      >
         <div class="flex items-center gap-2 text-base-content/70">
           <component :is="textTypeIcon" :size="14" />
           <div class="text-sm font-semibold">Text</div>
@@ -65,24 +69,30 @@
         </div>
         <h2 class="font-display text-xl font-bold mt-3 text-base-content">{{ text.title }}</h2>
         <div class="flex flex-wrap gap-2 mt-3">
-          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+          >
             <Clock :size="11" />
             {{ text.estimatedReadingTime }} min read
           </span>
-          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+          >
             <AlignLeft :size="11" />
             {{ text.wordCount }} words
           </span>
-          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+          >
             <Sparkles :size="11" />
             {{ text.questions?.length || 0 }} questions
           </span>
         </div>
-        <article class="mt-5 space-y-3 leading-[1.75] text-base-content/85 overflow-y-auto max-h-[calc(100vh-300px)] pr-1" :class="contentSizeClass">
-          <p
-            v-for="(paragraph, paragraphIndex) in tokenizedContent"
-            :key="paragraphIndex"
-          >
+        <article
+          class="mt-5 space-y-3 leading-[1.75] text-base-content/85 overflow-y-auto max-h-[calc(100vh-300px)] pr-1"
+          :class="contentSizeClass"
+        >
+          <p v-for="(paragraph, paragraphIndex) in tokenizedContent" :key="paragraphIndex">
             <template
               v-for="(token, tokenIndex) in paragraph"
               :key="`${paragraphIndex}-${tokenIndex}`"
@@ -92,18 +102,29 @@
                 v-else
                 type="button"
                 class="rounded px-0.5 hover:bg-primary/15 focus:bg-primary/15 focus:outline-none focus:ring-1 focus:ring-primary"
-                :class="selectedWord === normalizeWord(token.value) ? 'bg-primary/15 text-base-content' : ''"
+                :class="
+                  selectedWord === normalizeWord(token.value)
+                    ? 'bg-primary/15 text-base-content'
+                    : ''
+                "
                 :aria-label="`Show helper for ${token.value}`"
                 @click="selectWord(token.value)"
-              >{{ token.value }}</button>
+              >
+                {{ token.value }}
+              </button>
             </template>
           </p>
         </article>
-        <div v-if="selectedWord" class="mt-4 rounded-box border border-primary/20 bg-primary/10 p-3 text-sm">
+        <div
+          v-if="selectedWord"
+          class="mt-4 rounded-box border border-primary/20 bg-primary/10 p-3 text-sm"
+        >
           <div class="font-semibold text-base-content">{{ selectedWord }}</div>
           <div class="text-base-content/70 mt-1">{{ selectedWordHelper }}</div>
         </div>
-        <div class="mt-6 pt-4 border-t border-base-300/70 text-xs text-base-content/50 flex items-center justify-between gap-3 flex-wrap">
+        <div
+          class="mt-6 pt-4 border-t border-base-300/70 text-xs text-base-content/50 flex items-center justify-between gap-3 flex-wrap"
+        >
           <span>Tap a word to see its offline helper</span>
           <button
             type="button"
@@ -125,10 +146,11 @@
     <div v-else class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center">
       <BookOpen :size="32" class="mx-auto text-base-content/20 mb-3" />
       <h1 class="font-display text-2xl font-bold">Reading exercise not found</h1>
-      <p class="text-sm text-base-content/60 mt-2">Go back to the exercise list and choose another text.</p>
+      <p class="text-sm text-base-content/60 mt-2">
+        Go back to the exercise list and choose another text.
+      </p>
       <button class="btn btn-primary btn-sm mt-5" @click="goBack">Back to exercises</button>
     </div>
-
   </div>
 </template>
 
@@ -148,7 +170,7 @@ import {
   Newspaper,
   Sparkles,
   Type,
-  Volume2
+  Volume2,
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import type { ReadingExercise } from '~/utils/exercises/reading'
@@ -172,8 +194,12 @@ const isSpeaking = ref(false)
 const isSaved = ref(false)
 
 const quizId = computed(() => String(route.params['quizId'] || ''))
-const text = computed<ReadingExercise | null>(() => getTexts().find(t => t.id === quizId.value) || null)
-const contentSizeClass = computed(() => (fontSize.value === 'lg' ? 'text-base sm:text-lg' : 'text-[15px]'))
+const text = computed<ReadingExercise | null>(
+  () => getTexts().find(t => t.id === quizId.value) || null
+)
+const contentSizeClass = computed(() =>
+  fontSize.value === 'lg' ? 'text-base sm:text-lg' : 'text-[15px]'
+)
 const textTypeLabel = computed(() => getTextTypeLabel(text.value?.textType || 'text'))
 const subtitle = computed(() => {
   if (!text.value) return ''
@@ -185,10 +211,15 @@ const tokenizedContent = computed<TextToken[][]>(() => {
   return text.value.content
     .split(/\n+/)
     .filter(paragraph => paragraph.trim().length > 0)
-    .map(paragraph => paragraph.split(/(\s+)/).filter(Boolean).map(token => ({
-      value: token,
-      isSpace: /^\s+$/.test(token)
-    })))
+    .map(paragraph =>
+      paragraph
+        .split(/(\s+)/)
+        .filter(Boolean)
+        .map(token => ({
+          value: token,
+          isSpace: /^\s+$/.test(token),
+        }))
+    )
 })
 const selectedWordHelper = computed(() => {
   const word = selectedWord.value.toLowerCase()
@@ -210,9 +241,12 @@ const selectedWordHelper = computed(() => {
     essen: 'food / to eat',
     getränke: 'drinks',
     viele: 'many',
-    grüße: 'greetings'
+    grüße: 'greetings',
   }
-  return dictionary[word] || 'No bundled translation yet. Mark it and check it in your own vocabulary list.'
+  return (
+    dictionary[word] ||
+    'No bundled translation yet. Mark it and check it in your own vocabulary list.'
+  )
 })
 
 function toggleFontSize() {
@@ -255,7 +289,7 @@ function getSavedTextIds() {
   if (!import.meta.client) return [] as string[]
   try {
     const raw = localStorage.getItem(SAVED_TEXTS_KEY)
-    return raw ? JSON.parse(raw) as string[] : []
+    return raw ? (JSON.parse(raw) as string[]) : []
   } catch {
     return []
   }
@@ -281,7 +315,7 @@ function getTextTypeLabel(type: string) {
     article: 'Article',
     advertisement: 'Advertisement',
     instructions: 'Instructions',
-    announcement: 'Announcement'
+    announcement: 'Announcement',
   }
   return labels[type] || type
 }
@@ -293,7 +327,7 @@ function getTextTypeIcon(type: string): Component {
     article: Newspaper,
     advertisement: Megaphone,
     instructions: FileText,
-    announcement: Bell
+    announcement: Bell,
   }
   return icons[type] || BookOpen
 }
@@ -326,7 +360,7 @@ function goBack() {
   router.push('/exercises?skill=reading')
 }
 
-useHead({ title: computed(() => text.value ? `${text.value.title} – Quiz` : 'Reading Quiz') })
+useHead({ title: computed(() => (text.value ? `${text.value.title} – Quiz` : 'Reading Quiz')) })
 
 definePageMeta({ preload: false })
 </script>

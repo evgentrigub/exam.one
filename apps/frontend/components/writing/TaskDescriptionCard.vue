@@ -9,7 +9,9 @@
           </div>
           <div>
             <h2 class="card-title text-lg">Description</h2>
-            <p class="text-sm text-info">{{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}</p>
+            <p class="text-sm text-info">
+              {{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}
+            </p>
           </div>
         </div>
 
@@ -55,22 +57,27 @@
 
       <!-- Description -->
       <div class="mb-4">
-        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-2 uppercase tracking-wide">What you should write</h4>
+        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-2 uppercase tracking-wide">
+          What you should write
+        </h4>
         <p class="text-base-content leading-relaxed text-sm">{{ topic.description }}</p>
       </div>
 
       <!-- Writing Tips (if available) -->
-      <div v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')" class="alert alert-warning shadow-sm items-start">
-          <Lightbulb :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
-          <div class="w-full">
-            <h4 class="text-sm font-semibold mb-2">Writing Tips</h4>
-            <ul class="space-y-2">
-              <li v-for="tip in writingTips" :key="tip" class="flex items-start text-sm">
-                <span class="mr-2">•</span>
-                <span>{{ tip }}</span>
-              </li>
-            </ul>
-          </div>
+      <div
+        v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')"
+        class="alert alert-warning shadow-sm items-start"
+      >
+        <Lightbulb :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <div class="w-full">
+          <h4 class="text-sm font-semibold mb-2">Writing Tips</h4>
+          <ul class="space-y-2">
+            <li v-for="tip in writingTips" :key="tip" class="flex items-start text-sm">
+              <span class="mr-2">•</span>
+              <span>{{ tip }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -97,16 +104,16 @@ defineEmits<{
 const writingModes = [
   {
     id: 'quick',
-    label: 'Quick'
+    label: 'Quick',
   },
   {
     id: 'challenge',
-    label: 'Challenge'
+    label: 'Challenge',
   },
   {
     id: 'model-help',
-    label: 'Model Help'
-  }
+    label: 'Model Help',
+  },
 ]
 
 // Topic type labels in German
@@ -116,7 +123,7 @@ const topicTypeLabels = {
   essay: 'Aufsatz',
   form: 'Formular',
   postcard: 'Postkarte',
-  note: 'Notiz'
+  note: 'Notiz',
 }
 
 const writingTips = computed(() => {

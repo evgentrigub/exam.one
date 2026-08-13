@@ -63,9 +63,11 @@ export const useSkillStats = () => {
   const readingStat = (): SkillStat => {
     const items = getTexts().filter(t => t.difficulty === examLevel.value)
     const progress = getProgressData()
-    const percentages = items.map(t => progress[t.id]?.bestScore != null
-      ? Math.round(((progress[t.id]!.bestScore as number) / progress[t.id]!.totalQuestions) * 100)
-      : (progress[t.id]?.percentage ?? 0))
+    const percentages = items.map(t =>
+      progress[t.id]?.bestScore != null
+        ? Math.round(((progress[t.id]!.bestScore as number) / progress[t.id]!.totalQuestions) * 100)
+        : (progress[t.id]?.percentage ?? 0)
+    )
     const completed = items.filter(t => progress[t.id]?.completed).length
     const sessions = items.reduce((sum, t) => sum + (progress[t.id]?.attemptCount ?? 0), 0)
     return {
@@ -134,19 +136,15 @@ export const useSkillStats = () => {
   const getStat = (skill: SkillId): SkillStat =>
     skillStats.value.find(s => s.id === skill) ?? readingStat()
 
-  const overallReadiness = computed<number>(() =>
-    average(skillStats.value.map(s => s.readiness)),
-  )
+  const overallReadiness = computed<number>(() => average(skillStats.value.map(s => s.readiness)))
 
   const totalCompleted = computed<number>(() =>
-    skillStats.value.reduce((sum, s) => sum + s.completed, 0),
+    skillStats.value.reduce((sum, s) => sum + s.completed, 0)
   )
 
   /** Skills ordered weakest-first (only those with exercises available). */
   const weakestSkills = computed<SkillStat[]>(() =>
-    [...skillStats.value]
-      .filter(s => s.total > 0)
-      .sort((a, b) => a.readiness - b.readiness),
+    [...skillStats.value].filter(s => s.total > 0).sort((a, b) => a.readiness - b.readiness)
   )
 
   /** Recent completions across reading + listening (the scored skills). */

@@ -9,10 +9,7 @@ describe('HealthService', () => {
   beforeEach(async () => {
     queryRaw = jest.fn()
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        HealthService,
-        { provide: PrismaService, useValue: { $queryRaw: queryRaw } }
-      ]
+      providers: [HealthService, { provide: PrismaService, useValue: { $queryRaw: queryRaw } }],
     }).compile()
 
     service = module.get<HealthService>(HealthService)
@@ -22,7 +19,7 @@ describe('HealthService', () => {
     queryRaw.mockResolvedValue([{ '?column?': 1 }])
 
     await expect(service.readiness()).resolves.toEqual({
-      data: { status: 'ok', checks: { database: 'up' } }
+      data: { status: 'ok', checks: { database: 'up' } },
     })
   })
 

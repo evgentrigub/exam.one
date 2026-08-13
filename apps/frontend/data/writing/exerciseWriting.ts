@@ -14,7 +14,7 @@ export const defaultWritingTopics: WritingExercise[] = [
     estimatedTime: 15,
     wordCount: {
       min: 20,
-      max: 30
+      max: 30,
     },
     category: ['Freizeit', 'Verabredung'],
     createdAt: '2026-06-14',
@@ -28,8 +28,8 @@ Schreiben Sie 20–30 Wörter. Schreiben Sie zu allen drei Punkten.`,
       'Du-Form (informell)',
       '3 Inhaltspunkte (alle bearbeiten)',
       '20–30 Wörter',
-      'ohne Vorlagen/Beispiele'
-    ]
+      'ohne Vorlagen/Beispiele',
+    ],
   },
 
   {
@@ -41,7 +41,7 @@ Schreiben Sie 20–30 Wörter. Schreiben Sie zu allen drei Punkten.`,
     estimatedTime: 15,
     wordCount: {
       min: 30,
-      max: 40
+      max: 40,
     },
     category: ['Alltag', 'Nachbarschaft'],
     createdAt: '2026-06-14',
@@ -56,9 +56,9 @@ Verwenden Sie eine passende Anrede und Grußformel. Schreiben Sie 30–40 Wörte
       'Anrede und Grußformel erforderlich',
       '3 Inhaltspunkte (alle bearbeiten)',
       '30–40 Wörter',
-      'ohne Vorlagen/Beispiele'
-    ]
-  }
+      'ohne Vorlagen/Beispiele',
+    ],
+  },
 ]
 
 export const mockExamWritingTopics: WritingExercise[] = [

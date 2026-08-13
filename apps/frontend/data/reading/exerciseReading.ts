@@ -31,7 +31,7 @@ Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer 
         correctAnswer: 0,
         explanation:
           'Im Text steht: „Seit dem ersten März gibt es in Freiburg ein neues Angebot." Der Sommer wird nur für spätere Pläne genannt.',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil1-001-q2',
@@ -41,7 +41,7 @@ Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer 
         correctAnswer: 1,
         explanation:
           'Der Text sagt: „Die erste halbe Stunde kostet nichts." Einen Euro zahlt man erst danach pro Stunde, 50 Cent zahlen nur Studenten und Kinder.',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil1-001-q3',
@@ -51,17 +51,21 @@ Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer 
         correctAnswer: 2,
         explanation:
           'Im Text steht: „Studenten und Kinder unter 14 Jahren ... bezahlen nur 50 Cent pro Stunde." Einen Euro zahlen die anderen Personen.',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil1-001-q4',
         textId: 'reading-a2-teil1-001',
         question: 'Was möchte die Stadt erreichen?',
-        options: ['Dass mehr Touristen kommen.', 'Dass weniger Autos fahren.', 'Dass mehr Büros öffnen.'],
+        options: [
+          'Dass mehr Touristen kommen.',
+          'Dass weniger Autos fahren.',
+          'Dass mehr Büros öffnen.',
+        ],
         correctAnswer: 1,
         explanation:
           'Der Text sagt klar: „Die Stadt möchte, dass weniger Autos fahren." Touristen und das Büro werden zwar genannt, sind aber nicht das Ziel.',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil1-001-q5',
@@ -71,9 +75,9 @@ Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer 
         correctAnswer: 0,
         explanation:
           'Im Text steht: „Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet."',
-        type: 'comprehension'
-      }
-    ]
+        type: 'comprehension',
+      },
+    ],
   },
 
   {
@@ -105,7 +109,7 @@ Der Aufzug befindet sich neben dem Eingang.`,
         options: ['In den 3. Stock.', 'In den 1. Stock.', 'In einen anderen Stock.'],
         correctAnswer: 0,
         explanation: 'Bücher gibt es im 3. Stock. Im 1. Stock sind nur Damenmode und Schuhe.',
-        type: 'selective'
+        type: 'selective',
       },
       {
         id: 'reading-a2-teil2-001-q2',
@@ -113,8 +117,9 @@ Der Aufzug befindet sich neben dem Eingang.`,
         question: 'Sie möchten einen Kaffee trinken. Wohin gehen Sie?',
         options: ['In den 4. Stock.', 'In den 5. Stock.', 'In einen anderen Stock.'],
         correctAnswer: 1,
-        explanation: 'Das Café ist im 5. Stock. Im 4. Stock gibt es nur Möbel, Küchengeräte und Lampen.',
-        type: 'selective'
+        explanation:
+          'Das Café ist im 5. Stock. Im 4. Stock gibt es nur Möbel, Küchengeräte und Lampen.',
+        type: 'selective',
       },
       {
         id: 'reading-a2-teil2-001-q3',
@@ -123,17 +128,21 @@ Der Aufzug befindet sich neben dem Eingang.`,
         options: ['In den 2. Stock.', 'In den 1. Stock.', 'In einen anderen Stock.'],
         correctAnswer: 0,
         explanation: 'Sportkleidung gibt es im 2. Stock. Im 1. Stock sind Damenmode und Schuhe.',
-        type: 'selective'
+        type: 'selective',
       },
       {
         id: 'reading-a2-teil2-001-q4',
         textId: 'reading-a2-teil2-001',
         question: 'Sie möchten am Sonntag einkaufen. Was tun Sie?',
-        options: ['Sie kommen von 9 bis 20 Uhr.', 'Sie kommen erst um 12 Uhr.', 'Sie kommen an einem anderen Tag.'],
+        options: [
+          'Sie kommen von 9 bis 20 Uhr.',
+          'Sie kommen erst um 12 Uhr.',
+          'Sie kommen an einem anderen Tag.',
+        ],
         correctAnswer: 2,
         explanation:
           'Am Sonntag ist das Kaufhaus geschlossen. Die Öffnungszeiten 9–20 Uhr gelten nur von Montag bis Samstag.',
-        type: 'selective'
+        type: 'selective',
       },
       {
         id: 'reading-a2-teil2-001-q5',
@@ -142,9 +151,9 @@ Der Aufzug befindet sich neben dem Eingang.`,
         options: ['Ins Untergeschoss.', 'In den 5. Stock.', 'An einen anderen Ort.'],
         correctAnswer: 0,
         explanation: 'Das Parkhaus ist im Untergeschoss, und die erste Stunde ist frei.',
-        type: 'selective'
-      }
-    ]
+        type: 'selective',
+      },
+    ],
   },
 
   {
@@ -184,7 +193,7 @@ Lena`,
         correctAnswer: 0,
         explanation:
           'Lena schreibt: „Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer."',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil3-001-q2',
@@ -193,7 +202,7 @@ Lena`,
         options: ['Mit dem Flugzeug.', 'Mit dem Auto.', 'Mit dem Zug.'],
         correctAnswer: 1,
         explanation: 'Im Text steht: „Die Reise war lang, weil wir mit dem Auto gefahren sind."',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil3-001-q3',
@@ -203,17 +212,21 @@ Lena`,
         correctAnswer: 0,
         explanation:
           'Lena schreibt: „Mein Bruder hat die ganze Zeit geschlafen." Gebadet wurde erst im Urlaub, krank wurde später die Mutter.',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil3-001-q4',
         textId: 'reading-a2-teil3-001',
         question: 'Was ist beim Bootsausflug passiert?',
-        options: ['Das Boot hatte einen Unfall.', 'Lenas Mutter wurde krank.', 'Lena hat ein Eis gegessen.'],
+        options: [
+          'Das Boot hatte einen Unfall.',
+          'Lenas Mutter wurde krank.',
+          'Lena hat ein Eis gegessen.',
+        ],
         correctAnswer: 1,
         explanation:
           'Im Text steht: „Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren."',
-        type: 'comprehension'
+        type: 'comprehension',
       },
       {
         id: 'reading-a2-teil3-001-q5',
@@ -221,10 +234,11 @@ Lena`,
         question: 'Was möchte Lena im nächsten Jahr machen?',
         options: ['Ein Geschenk kaufen.', 'Zu Hause bleiben.', 'Wieder dorthin fahren.'],
         correctAnswer: 2,
-        explanation: 'Am Ende schreibt Lena: „Aber im nächsten Jahr möchte ich gern wieder dorthin fahren."',
-        type: 'comprehension'
-      }
-    ]
+        explanation:
+          'Am Ende schreibt Lena: „Aber im nächsten Jahr möchte ich gern wieder dorthin fahren."',
+        type: 'comprehension',
+      },
+    ],
   },
 
   {
@@ -252,7 +266,7 @@ f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Par
         correctAnswer: 4,
         explanation:
           'Anzeige e bietet einen Computerkurs für ältere Menschen, in dem man E-Mails schreiben und im Internet surfen lernt.',
-        type: 'matching'
+        type: 'matching',
       },
       {
         id: 'reading-a2-teil4-001-q2',
@@ -262,7 +276,7 @@ f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Par
         correctAnswer: 1,
         explanation:
           'Anzeige b bietet einen Gitarrenkurs für Anfänger am Samstag und Sonntag, also genau am Wochenende.',
-        type: 'matching'
+        type: 'matching',
       },
       {
         id: 'reading-a2-teil4-001-q3',
@@ -270,8 +284,9 @@ f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Par
         question: 'Frau Sommer möchte ihre kleine Tochter zum Schwimmen anmelden.',
         options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
         correctAnswer: 2,
-        explanation: 'Anzeige c bietet einen Schwimmkurs für Kinder von 4 bis 7 Jahren am Mittwochnachmittag.',
-        type: 'matching'
+        explanation:
+          'Anzeige c bietet einen Schwimmkurs für Kinder von 4 bis 7 Jahren am Mittwochnachmittag.',
+        type: 'matching',
       },
       {
         id: 'reading-a2-teil4-001-q4',
@@ -279,8 +294,9 @@ f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Par
         question: 'Tom sucht einen Tanzkurs für Salsa.',
         options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
         correctAnswer: 6,
-        explanation: 'Es gibt keine Anzeige für einen Tanzkurs. Deshalb passt hier keine Anzeige, die Antwort ist x.',
-        type: 'matching'
+        explanation:
+          'Es gibt keine Anzeige für einen Tanzkurs. Deshalb passt hier keine Anzeige, die Antwort ist x.',
+        type: 'matching',
       },
       {
         id: 'reading-a2-teil4-001-q5',
@@ -288,11 +304,12 @@ f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Par
         question: 'Sabine möchte abends lernen, italienisch zu kochen.',
         options: ['a', 'b', 'c', 'd', 'e', 'f', 'x'],
         correctAnswer: 0,
-        explanation: 'Anzeige a bietet einen Kochkurs für italienische Küche jeden Dienstagabend um 19 Uhr.',
-        type: 'matching'
-      }
-    ]
-  }
+        explanation:
+          'Anzeige a bietet einen Kochkurs für italienische Küche jeden Dienstagabend um 19 Uhr.',
+        type: 'matching',
+      },
+    ],
+  },
 ]
 
 /** Dedicated Set 1 content. Kept out of practice lists via `examOnly`. */
@@ -310,7 +327,7 @@ export const mockExamReadingTopics: ReadingA2Exercise[] = defaultReadingTopics.m
         textId: id,
       })),
     } as ReadingA2Exercise
-  },
+  }
 )
 
 export const allDefaultReadingTopics: ReadingA2Exercise[] = [

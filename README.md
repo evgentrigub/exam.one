@@ -10,21 +10,22 @@ Design preview: `npx --yes serve exam-one-design/project -l 5174`
 
 Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
 
-| Area | Status |
-|------|--------|
-| Phase 1 frontend MVP | **Complete and tested** |
-| Reading (Lesen) | Complete — practice, scoring, explanations, progress, and optional generation |
-| Writing (Schreiben) | Complete — drafts, submissions, optional AI grading, and detailed review |
-| Listening (Hoeren) | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS |
-| Speaking (Sprechen) | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review |
-| Mock exam | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
-| Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
+| Area                      | Status                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| Phase 1 frontend MVP      | **Complete and tested**                                                                            |
+| Reading (Lesen)           | Complete — practice, scoring, explanations, progress, and optional generation                      |
+| Writing (Schreiben)       | Complete — drafts, submissions, optional AI grading, and detailed review                           |
+| Listening (Hoeren)        | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS                    |
+| Speaking (Sprechen)       | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review             |
+| Mock exam                 | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
+| Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started                                                      |
 
 **Current implementation focus:** Phase 2 persistence and self-hosting work. See the roadmap for the NestJS/PostgreSQL cutover plan.
 
 ## ✨ Features
 
 ### 📚 Reading Practice
+
 - **Different Text Topics**: Email, notice, article, advertisement, and instructions
 - **Comprehension Questions**: 4 per text with detailed German explanations
 - **Instant Feedback**: Green checkmarks for correct answers, red X's with explanations
@@ -35,6 +36,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **Deep-Linkable**: Share or bookmark specific quiz sessions
 
 ### ✍️ Writing Practice
+
 - **Writing Topics**: informal emails and formal correspondence
 - **Three-Card Interface**: Description, instructions, and editor clearly separated
 - **Real-Time Validation**: Word count with color-coded feedback (red: under/over, green: perfect)
@@ -48,24 +50,28 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **Progress Tracking**: Track submissions, completion rates, and improvement
 
 ### 🎧 Listening Practice
+
 - **Goethe A2 Teile 1–4**: MCQ sessions with shared or per-item audio players
 - **Stable WAV playback**: Pre-generated Kokoro German voices (identical on every replay)
 - **On-demand TTS**: Generate missing audio when Kokoro is up (`pnpm tts:up` + Generate audio)
 - **Optional AI**: Transcript generation separate from audio generation
 
 ### 🎤 Speaking Practice
+
 - **Exam-oriented speaking sessions**: Structured interview/question and monologue recording with editable transcripts
 - **Optional STT**: Local Parakeet (`pnpm stt:up`) or OpenAI Whisper, with manual-text fallback
 - **Optional AI review**: Direct-point criteria, explanations, strengths, improvements, and local attempt persistence
 - **Mock exam integration**: Automatic grading and persisted detailed review on completed attempts
 
 ### 📊 Progress Dashboard
+
 - **Comprehensive Statistics**: Completion rates, average scores, best scores
 - **Recent Activity**: Time-based formatting (Today, Yesterday, X days ago)
 - **Per-skill analytics**: Reading, writing, listening, and speaking progress foundations
 - **Visual Indicators**: Completion badges, progress bars, trend displays
 
 ### 🤖 Optional AI Enhancement
+
 - **Bring-your-own-key**: OpenAI / OpenRouter via thin Nuxt server routes
 - **Generate & review**: Exercises and feedback when keys are configured
 - **Graceful degrade**: Core practice works without AI
@@ -73,7 +79,9 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 ## 🏗️ Architecture
 
 ### Offline-First Core ✅
+
 The completed Phase 1 core flows work without internet (localStorage):
+
 - Reading, writing, listening, and speaking practice
 - Goethe A2 mock exam Set 1
 - Progress tracking and statistics
@@ -81,7 +89,9 @@ The completed Phase 1 core flows work without internet (localStorage):
 - Full navigation and UI
 
 ### Optional Online Enhancement 🌐
+
 When LLM API keys are configured (optional):
+
 - Advanced AI-powered review and generation
 - Model answers / enhanced feedback
 
@@ -90,6 +100,7 @@ When LLM API keys are configured (optional):
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Node.js**: v20.x or higher (LTS recommended)
 - **pnpm**: v10.12.1+ (recommended) or npm/yarn
 
@@ -146,23 +157,28 @@ pnpm generate
 ## 🛠️ Tech Stack
 
 ### Core Framework
+
 - **Nuxt 3** (v3.17.5) - Meta-framework with auto-imports and file-based routing
 - **Vue 3** (v3.5.16) - Composition API with `<script setup>`
 - **TypeScript** (v5.8.3) - Strict mode for type safety
 
 ### UI & Styling
+
 - **Tailwind CSS** (v4.1.10) - Utility-first CSS framework
 - **VueUse** (v13.4.0) - Composition API utilities
 
 ### State Management
+
 - **Pinia** (v3.0.3) - Vue store with localStorage persistence
 - **Composables** - Feature-specific reactive state management
 
 ### Internationalization
+
 - **@nuxtjs/i18n** (v9.5.5) - English UI, German content
 - Locales: `en` (default), `de`
 
 ### Development Tools
+
 - **ESLint** - Code linting with Vue and TypeScript rules
 - **Prettier** - Code formatting (2-space, single quotes)
 - **Husky** - Git hooks for pre-commit linting
@@ -313,12 +329,14 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 ## 🎨 Design Philosophy
 
 ### User Experience Principles
+
 - **Delightful**: Smooth animations, encouraging feedback, celebration of progress
 - **Clear**: Intuitive navigation, obvious next actions, no jargon
 - **Fast**: < 2s load time, 60fps interactions, instant feedback
 - **Accessible**: WCAG 2.2 AA compliance, keyboard navigation, screen reader support
 
 ### Technical Principles
+
 - **Offline-First**: Core features work without internet
 - **Type-Safe**: TypeScript strict mode throughout
 - **Component-Based**: Atomic design with clear boundaries
@@ -329,23 +347,27 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 Contributions are welcome! Please follow these guidelines:
 
 ### Code Style
+
 - **TypeScript** for all new code
 - **Composition API** with `<script setup>` for Vue components
 - **Tailwind utilities** for styling (avoid custom CSS)
 - **2-space indentation**, single quotes, trailing commas (enforced by Prettier)
 
 ### Component Guidelines
+
 - Keep components under 300 lines (split if larger)
 - Extract reusable logic into composables
 - Use TypeScript interfaces from `utils/types.ts`
 - Follow atomic design: atoms → molecules → organisms
 
 ### Git Workflow
+
 - **Branch naming**: `feature/<description>`, `fix/<description>`, `chore/<description>`
 - **Commit format**: Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`)
 - **Pre-commit hooks**: Automatic linting and formatting via Husky
 
 ### Quality Checks
+
 - Repository-wide lint and strict TypeScript checks
 - Production builds for all workspace applications and libraries
 - Manual end-to-end checks of the completed German / Goethe A2 practice and mock-exam flows
@@ -365,9 +387,11 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 ## 🎯 Roadmap
 
 ### Current Focus
+
 Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack cutover** while preserving the finished German / Goethe A2 product behavior.
 
 ### Next Steps (In Priority Order)
+
 1. **Persistence Cutover** - Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
 2. **Account Flows** - Connect authentication, profile, and settings to the backend
 3. **AI API Migration** - Move provider adapters from temporary Nuxt routes to NestJS
@@ -391,4 +415,4 @@ Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack
 
 **Built with ❤️ for German language learners**
 
-*Practice makes perfect—üben macht den Meister!*
+_Practice makes perfect—üben macht den Meister!_

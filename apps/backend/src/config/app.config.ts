@@ -19,6 +19,6 @@ export const appConfig = registerAs(
   (): AppConfig => ({
     NODE_ENV: process.env['NODE_ENV'] ?? 'development',
     BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
-    DATABASE_URL: requireDatabaseUrl()
+    DATABASE_URL: requireDatabaseUrl(),
   })
 )

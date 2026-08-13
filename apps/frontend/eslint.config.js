@@ -5,14 +5,8 @@ export default createConfigForNuxt({
     typescript: true,
   },
   dirs: {
-    src: [
-      './components',
-      './composables', 
-      './pages',
-      './utils',
-      './data'
-    ]
-  }
+    src: ['./components', './composables', './pages', './utils', './data'],
+  },
 }).append({
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -20,5 +14,5 @@ export default createConfigForNuxt({
     'prefer-const': 'error',
     'no-var': 'error',
     'vue/multi-word-component-names': 'off', // Disable for Nuxt pages
-  }
-}) 
+  },
+})

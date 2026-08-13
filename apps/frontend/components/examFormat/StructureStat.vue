@@ -1,6 +1,8 @@
 <template>
   <div class="flex items-center gap-2.5">
-    <span class="w-8 h-8 rounded-field bg-base-200 grid place-items-center text-base-content/60 shrink-0">
+    <span
+      class="w-8 h-8 rounded-field bg-base-200 grid place-items-center text-base-content/60 shrink-0"
+    >
       <component :is="icon" :size="15" />
     </span>
     <div class="leading-tight">

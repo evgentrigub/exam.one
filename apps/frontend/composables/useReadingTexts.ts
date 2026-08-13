@@ -24,7 +24,7 @@ export const useReadingTexts = () => {
 
     try {
       const stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY)
-      
+
       if (stored) {
         const storedTexts = JSON.parse(stored)
         // Merge stored texts with defaults, avoiding duplicates
@@ -36,7 +36,7 @@ export const useReadingTexts = () => {
         texts.value = [...allDefaultReadingTopics]
         saveToStorage()
       }
-      
+
       isInitialized.value = true
     } catch (error) {
       console.error('Failed to load reading texts from localStorage:', error)
@@ -88,7 +88,7 @@ export const useReadingTexts = () => {
     }
 
     const index = texts.value.findIndex(text => text.id === id)
-    
+
     if (index === -1) {
       console.warn(`Text with id ${id} not found`)
       return false
@@ -105,7 +105,7 @@ export const useReadingTexts = () => {
   const addText = (text: ReadingExercise): void => {
     // Check for duplicate ID
     const exists = texts.value.some(t => t.id === text.id)
-    
+
     if (exists) {
       console.warn(`Text with id ${text.id} already exists`)
       return
@@ -119,11 +119,12 @@ export const useReadingTexts = () => {
    * Add multiple texts at once
    */
   const addTexts = (newTexts: ReadingExercise[]): void => {
-    console.log(`📥 Attempting to add ${newTexts.length} reading texts:`, newTexts.map(t => ({ id: t.id, title: t.title, difficulty: t.difficulty })))
-    
-    const uniqueTexts = newTexts.filter(
-      newText => !texts.value.some(t => t.id === newText.id)
+    console.log(
+      `📥 Attempting to add ${newTexts.length} reading texts:`,
+      newTexts.map(t => ({ id: t.id, title: t.title, difficulty: t.difficulty }))
     )
+
+    const uniqueTexts = newTexts.filter(newText => !texts.value.some(t => t.id === newText.id))
 
     if (uniqueTexts.length < newTexts.length) {
       console.warn(`⚠️ Skipped ${newTexts.length - uniqueTexts.length} duplicate text(s)`)
@@ -131,8 +132,10 @@ export const useReadingTexts = () => {
 
     texts.value.push(...uniqueTexts)
     saveToStorage()
-    
-    console.log(`✅ Successfully saved ${uniqueTexts.length} new reading text(s). Total texts: ${texts.value.length}`)
+
+    console.log(
+      `✅ Successfully saved ${uniqueTexts.length} new reading text(s). Total texts: ${texts.value.length}`
+    )
   }
 
   /**
@@ -169,6 +172,6 @@ export const useReadingTexts = () => {
     addText,
     addTexts,
     resetToDefaults,
-    getTextsCount
+    getTextsCount,
   }
 }

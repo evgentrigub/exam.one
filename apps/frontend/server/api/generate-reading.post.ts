@@ -6,7 +6,7 @@ import type {
   ReadingExercise,
   ReadingPromptPart,
   ReadingQuestionType,
-  ReadingTextType
+  ReadingTextType,
 } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
 import { generateReadingId } from '~/utils/uuid'
@@ -19,7 +19,7 @@ const readingTextTypes = [
   'advertisement',
   'instructions',
   'announcement',
-  'list'
+  'list',
 ] satisfies ReadingTextType[]
 
 const readingQuestionTypes = [
@@ -28,7 +28,7 @@ const readingQuestionTypes = [
   'grammar',
   'inference',
   'selective',
-  'matching'
+  'matching',
 ] satisfies ReadingQuestionType[]
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -80,7 +80,7 @@ function isGeneratedReadingQuestion(value: unknown): value is GeneratedReadingQu
     (textId === undefined || typeof textId === 'string') &&
     typeof question === 'string' &&
     Array.isArray(options) &&
-    options.every((option) => typeof option === 'string') &&
+    options.every(option => typeof option === 'string') &&
     isAnswerIndex(correctAnswer) &&
     typeof explanation === 'string' &&
     isReadingQuestionType(type)
@@ -112,7 +112,7 @@ function isGeneratedReadingExercise(value: unknown): value is GeneratedReadingEx
     typeof estimatedReadingTime === 'number' &&
     typeof wordCount === 'number' &&
     Array.isArray(topics) &&
-    topics.every((topic) => typeof topic === 'string') &&
+    topics.every(topic => typeof topic === 'string') &&
     (createdAt === undefined || typeof createdAt === 'string') &&
     (questions === undefined ||
       (Array.isArray(questions) && questions.every(isGeneratedReadingQuestion)))
@@ -185,16 +185,17 @@ function normaliseText(
 ): ReadingExercise {
   const textId = generateReadingId(difficulty)
 
-  const questions = text.questions?.map((question, questionIndex) => {
-    const answerIndex = Number(question.correctAnswer)
+  const questions =
+    text.questions?.map((question, questionIndex) => {
+      const answerIndex = Number(question.correctAnswer)
 
-    return {
-      ...question,
-      id: `${textId}-q${questionIndex + 1}`,
-      textId,
-      correctAnswer: Number.isInteger(answerIndex) && answerIndex >= 0 ? answerIndex : 0
-    }
-  }) ?? []
+      return {
+        ...question,
+        id: `${textId}-q${questionIndex + 1}`,
+        textId,
+        correctAnswer: Number.isInteger(answerIndex) && answerIndex >= 0 ? answerIndex : 0,
+      }
+    }) ?? []
 
   const wordCount =
     typeof text.wordCount === 'number' && text.wordCount > 0
@@ -208,7 +209,7 @@ function normaliseText(
     ...(part ? { testingPart: part } : {}),
     wordCount,
     createdAt: new Date().toISOString(),
-    questions
+    questions,
   }
 }
 
@@ -226,12 +227,12 @@ async function generateForPrompt(
       {
         role: 'system',
         content:
-          'You are an expert Goethe-Institut exam creator. Generate reading comprehension exercises according to the specifications provided. Return ONLY a valid JSON array of GermanText objects with questions, no additional text.'
+          'You are an expert Goethe-Institut exam creator. Generate reading comprehension exercises according to the specifications provided. Return ONLY a valid JSON array of GermanText objects with questions, no additional text.',
       },
       {
         role: 'user',
-        content: prompt
-      }
+        content: prompt,
+      },
     ],
     { temperature: 0.8, maxTokens: 4000 }
   )
@@ -244,28 +245,31 @@ async function generateForPrompt(
 export default defineEventHandler(async (event: H3Event): Promise<GenerateReadingResponse> => {
   const config = useRuntimeConfig()
   const llmConfig = getLlmConfig(config)
-  const body = (await readBody<GenerateReadingRequestBody>(event)) || ({} as GenerateReadingRequestBody)
+  const body =
+    (await readBody<GenerateReadingRequestBody>(event)) || ({} as GenerateReadingRequestBody)
 
   if (!llmConfig) {
     return {
       texts: [],
-      error: 'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
+      error:
+        'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.',
     }
   }
 
   if (!isDifficulty(body.difficulty)) {
     return {
       texts: [],
-      error: 'Unsupported reading difficulty. Expected A2 or C1.'
+      error: 'Unsupported reading difficulty. Expected A2 or C1.',
     }
   }
 
   // Normalise the request into a uniform list of { part, prompt } jobs.
-  const jobs: ReadingPromptPart[] = Array.isArray(body.prompts) && body.prompts.length > 0
-    ? body.prompts
-    : body.prompt
-      ? [{ part: 1, prompt: body.prompt }]
-      : []
+  const jobs: ReadingPromptPart[] =
+    Array.isArray(body.prompts) && body.prompts.length > 0
+      ? body.prompts
+      : body.prompt
+        ? [{ part: 1, prompt: body.prompt }]
+        : []
 
   // Single-prompt (C1) requests have no meaningful part metadata to attach.
   const isMultiPart = Array.isArray(body.prompts) && body.prompts.length > 0
@@ -292,7 +296,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
         continue
       }
       texts.push(
-        ...parsed.map((text) =>
+        ...parsed.map(text =>
           normaliseText(text, body.difficulty, isMultiPart ? job.part : undefined)
         )
       )
@@ -302,7 +306,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
     if (texts.length === 0) {
       return {
         texts: [],
-        error: 'Failed to parse reading exercises from AI response. Please try again.'
+        error: 'Failed to parse reading exercises from AI response. Please try again.',
       }
     }
 
@@ -319,7 +323,7 @@ export default defineEventHandler(async (event: H3Event): Promise<GenerateReadin
     console.error('Error generating reading exercises:', error)
     return {
       texts: [],
-      error: 'Failed to generate reading exercises. Please try again.'
+      error: 'Failed to generate reading exercises. Please try again.',
     }
   }
 })

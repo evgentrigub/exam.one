@@ -259,7 +259,7 @@ export const readingA2Parts = (topicsPerPart = 1): ReadingPromptPart<ReadingA2Pa
   { part: 1, prompt: generateReadingA2Teil1(topicsPerPart) },
   { part: 2, prompt: generateReadingA2Teil2(topicsPerPart) },
   { part: 3, prompt: generateReadingA2Teil3(topicsPerPart) },
-  { part: 4, prompt: generateReadingA2Teil4(topicsPerPart) }
+  { part: 4, prompt: generateReadingA2Teil4(topicsPerPart) },
 ]
 
 /**

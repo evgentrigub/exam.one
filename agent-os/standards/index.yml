@@ -20,17 +20,17 @@ composables:
 
 global:
   localstorage-keys:
-    description: "Phase 1 exam/user data keys prefixed exam-one:; Phase 2+ authoritative data moves to Postgres; theme may stay client-side; no secrets; const at top of owning files"
+    description: 'Phase 1 exam/user data keys prefixed exam-one:; Phase 2+ authoritative data moves to Postgres; theme may stay client-side; no secrets; const at top of owning files'
   offline-first-core:
-    description: "Core practice / exam framework: Phase 1 offline-capable localStorage; Phase 2+ NestJS+Postgres local stack; Goethe A2 + C1 Writing focus; BYOK AI (OpenAI/OpenRouter); typed seed data with defaults ∪ stored merge"
+    description: 'Core practice / exam framework: Phase 1 offline-capable localStorage; Phase 2+ NestJS+Postgres local stack; Goethe A2 + C1 Writing focus; BYOK AI (OpenAI/OpenRouter); typed seed data with defaults ∪ stored merge'
   self-host-persistence:
-    description: "Phase 2+ Docker Compose localhost stack; PostgreSQL named volume so data survives container recreation; exam/user data via NestJS API; no required cloud"
+    description: 'Phase 2+ Docker Compose localhost stack; PostgreSQL named volume so data survives container recreation; exam/user data via NestJS API; no required cloud'
   ssr-storage-guards:
-    description: "Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level; applies wherever browser storage remains"
+    description: 'Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level; applies wherever browser storage remains'
 
 server:
   ai-response-envelope:
-    description: "BYOK AI endpoints (OpenAI/OpenRouter) return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; Phase 1 Nitro → Phase 2 NestJS; throw for infra"
+    description: 'BYOK AI endpoints (OpenAI/OpenRouter) return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; Phase 1 Nitro → Phase 2 NestJS; throw for infra'
 
 styling:
   daisyui-setup:

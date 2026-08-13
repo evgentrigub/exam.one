@@ -98,12 +98,12 @@
             :size="14"
             class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"
           />
-        <input
-          v-model="search"
-          type="text"
-          :placeholder="$t('exercisesUi.search')"
-          class="input input-sm input-bordered w-full pl-8 text-sm"
-        >
+          <input
+            v-model="search"
+            type="text"
+            :placeholder="$t('exercisesUi.search')"
+            class="input input-sm input-bordered w-full pl-8 text-sm"
+          />
         </div>
         <select v-model="sortBy" class="select select-sm select-bordered text-sm">
           <option value="default">{{ $t('exercisesUi.sortDefault') }}</option>

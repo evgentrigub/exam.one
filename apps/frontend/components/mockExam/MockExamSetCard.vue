@@ -23,9 +23,15 @@
       </div>
 
       <div class="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-        <div v-for="module in set.modules" :key="module.skill" class="rounded-field bg-base-200 p-2.5">
+        <div
+          v-for="module in set.modules"
+          :key="module.skill"
+          class="rounded-field bg-base-200 p-2.5"
+        >
           <div class="font-semibold">{{ $t(`skill.${module.skill}`) }}</div>
-          <div class="mt-0.5 text-base-content/50">{{ module.minutes }} {{ $t('mockExam.minutes') }}</div>
+          <div class="mt-0.5 text-base-content/50">
+            {{ module.minutes }} {{ $t('mockExam.minutes') }}
+          </div>
         </div>
       </div>
 
@@ -34,7 +40,11 @@
           <span>{{ $t('mockExam.progress') }}</span>
           <span class="font-mono">{{ doneExerciseCount }}/{{ totalExerciseCount }}</span>
         </div>
-        <progress class="progress progress-primary h-2 w-full" :value="doneExerciseCount" :max="totalExerciseCount" />
+        <progress
+          class="progress progress-primary h-2 w-full"
+          :value="doneExerciseCount"
+          :max="totalExerciseCount"
+        />
       </div>
 
       <div class="card-actions mt-auto justify-end">
@@ -56,10 +66,13 @@ const emit = defineEmits<{ delete: [id: string] }>()
 const { t, locale } = useI18n()
 const { state, doneExerciseCount, totalExerciseCount } = useMockExam(props.set)
 
-const lockedCount = computed(() => props.set.modules.filter(module => state.value.modules[module.skill].locked).length)
+const lockedCount = computed(
+  () => props.set.modules.filter(module => state.value.modules[module.skill].locked).length
+)
 const statusLabel = computed(() => {
   if (state.value.finished) return t('mockExam.completed')
-  if (state.value.startedAt || lockedCount.value > 0 || doneExerciseCount.value > 0) return t('mockExam.inProgress')
+  if (state.value.startedAt || lockedCount.value > 0 || doneExerciseCount.value > 0)
+    return t('mockExam.inProgress')
   return t('mockExam.new')
 })
 const statusClass = computed(() => {
@@ -72,7 +85,11 @@ const actionLabel = computed(() => {
   if (state.value.startedAt || doneExerciseCount.value > 0) return t('mockExam.resumeExam')
   return t('mockExam.startExam')
 })
-const formattedDate = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(new Date(props.set.createdAt)))
+const formattedDate = computed(() =>
+  new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(
+    new Date(props.set.createdAt)
+  )
+)
 
 function confirmDelete(): void {
   if (import.meta.client && confirm(t('mockExam.deleteSetConfirm', { title: props.set.title }))) {

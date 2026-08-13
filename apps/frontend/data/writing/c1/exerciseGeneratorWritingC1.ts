@@ -47,7 +47,7 @@ export const generateTopicsC1Part1 = () => {
 }
 
 export const generateTopicsC1Part2 = () => {
-    return `
+  return `
       Ты — опытный составитель экзаменов Goethe-Institut (уровень C1), работаешь строго по модульному формату 2024. 
       Задача: Сгенерируй 3 самостоятельных задания для части Schreiben C1: Teil 2 (E-Mail). 
       ВСЕ инструкции к заданиям выдай на НЕМЕЦКОМ. Никаких ответов-образцов — только условия задач. 
@@ -92,7 +92,7 @@ export const generateTopicsC1Part2 = () => {
       Ниже ты видишь примеры заданий Teil 2 из книги по подготовке экзамену Goethe C1. Используй их для лучшего понимания контекста.
       Примеры заданий Teil 2: ${dataC1Part2Topics.join('\n')}
       `
-  }
+}
 
 export const dataC1Part1Topics = [
   `

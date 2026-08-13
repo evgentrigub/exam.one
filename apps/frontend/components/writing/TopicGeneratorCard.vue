@@ -10,7 +10,9 @@
       </div>
       <div class="flex gap-2">
         <button class="btn btn-primary btn-sm" type="button" @click="$emit('retry')">Retry</button>
-        <button class="btn btn-ghost btn-sm" type="button" @click="$emit('dismiss')">Dismiss</button>
+        <button class="btn btn-ghost btn-sm" type="button" @click="$emit('dismiss')">
+          Dismiss
+        </button>
       </div>
     </div>
 
@@ -18,24 +20,38 @@
       <span class="loading loading-spinner loading-md text-primary mb-4" />
       <h3 class="text-lg font-bold text-base-content mb-2">Generating topics...</h3>
       <p class="text-sm text-base-content/70">
-        Creating {{ generatingPart === 1 ? 'Teil 1' : 'Teil 2' }} {{ currentDifficulty }} writing exercises.
+        Creating {{ generatingPart === 1 ? 'Teil 1' : 'Teil 2' }} {{ currentDifficulty }} writing
+        exercises.
       </p>
     </div>
 
     <div v-else class="flex flex-col lg:flex-row lg:items-center gap-5">
-      <div class="w-12 h-12 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0">
+      <div
+        class="w-12 h-12 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0"
+      >
         <Sparkles :size="22" aria-hidden="true" />
       </div>
       <div class="flex-1 min-w-0">
         <h3 class="font-display text-lg font-bold">Generate new writing topics</h3>
-        <p class="text-sm text-base-content/60 mt-1">AI can create fresh {{ currentDifficulty }} prompts. Core writing practice still works offline.</p>
+        <p class="text-sm text-base-content/60 mt-1">
+          AI can create fresh {{ currentDifficulty }} prompts. Core writing practice still works
+          offline.
+        </p>
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
-        <button class="btn btn-primary btn-sm rounded-full gap-2" type="button" @click="$emit('generate', 1)">
+        <button
+          class="btn btn-primary btn-sm rounded-full gap-2"
+          type="button"
+          @click="$emit('generate', 1)"
+        >
           <Plus :size="14" aria-hidden="true" />
           Teil 1
         </button>
-        <button class="btn btn-outline btn-sm rounded-full gap-2" type="button" @click="$emit('generate', 2)">
+        <button
+          class="btn btn-outline btn-sm rounded-full gap-2"
+          type="button"
+          @click="$emit('generate', 2)"
+        >
           <Plus :size="14" aria-hidden="true" />
           Teil 2
         </button>

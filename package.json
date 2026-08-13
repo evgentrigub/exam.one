@@ -17,7 +17,7 @@
     "build:backend": "pnpm --filter ./apps/backend build",
     "lint": "pnpm --recursive lint",
     "lint:fix": "pnpm --recursive lint:fix",
-    "format": "prettier --write .",
+    "format": "prettier --write . \"!graphify-out/**\" \"!scripts/**\"",
     "type-check": "pnpm --recursive type-check",
     "test": "pnpm --recursive test",
     "test:e2e": "pnpm --filter ./apps/backend test:e2e",

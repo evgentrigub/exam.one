@@ -32,9 +32,7 @@ export interface TtsConfig {
   concurrency: number
 }
 
-export function getTtsConfigFromEnv(
-  env: NodeJS.ProcessEnv = process.env,
-): TtsConfig {
+export function getTtsConfigFromEnv(env: NodeJS.ProcessEnv = process.env): TtsConfig {
   const baseUrl = (env['TTS_BASE_URL'] ?? 'http://127.0.0.1:8881').replace(/\/$/, '')
 
   return {
@@ -52,7 +50,7 @@ export function getTtsConfigFromEnv(
  */
 export async function synthesizeSpeech(
   options: TtsSynthesizeOptions,
-  config: TtsConfig = getTtsConfigFromEnv(),
+  config: TtsConfig = getTtsConfigFromEnv()
 ): Promise<Buffer> {
   const text = options.text.trim()
   if (!text) {
@@ -77,7 +75,7 @@ export async function synthesizeSpeech(
   if (!response.ok) {
     const detail = await response.text().catch(() => '')
     throw new Error(
-      `TTS request failed (${response.status} ${response.statusText})${detail ? `: ${detail}` : ''}`,
+      `TTS request failed (${response.status} ${response.statusText})${detail ? `: ${detail}` : ''}`
     )
   }
 
@@ -92,7 +90,7 @@ export async function synthesizeSpeech(
  */
 export async function synthesizeListeningTranscript(
   transcript: string,
-  config: TtsConfig = getTtsConfigFromEnv(),
+  config: TtsConfig = getTtsConfigFromEnv()
 ): Promise<Buffer> {
   const plan = planDialogueVoices(transcript)
   if (!plan) {
@@ -100,7 +98,7 @@ export async function synthesizeListeningTranscript(
   }
 
   const available = await listAvailableVoices(config)
-  const wavParts = await mapPool(plan, config.concurrency, async (turn) => {
+  const wavParts = await mapPool(plan, config.concurrency, async turn => {
     const voice = fallbackVoiceFor(turn.voice, available)
     return synthesizeSpeech({ text: turn.text, voice }, config)
   })
@@ -129,9 +127,9 @@ async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
       voicesCache.set(baseUrl, { checkedAt: Date.now(), voices: empty })
       return empty
     }
-    const body = await response.json().catch(() => null) as { voices?: string[] } | null
+    const body = (await response.json().catch(() => null)) as { voices?: string[] } | null
     const voices = new Set(
-      Array.isArray(body?.voices) ? body.voices.map((v) => String(v).toLowerCase()) : [],
+      Array.isArray(body?.voices) ? body.voices.map(v => String(v).toLowerCase()) : []
     )
     voicesCache.set(baseUrl, { checkedAt: Date.now(), voices })
     return voices
@@ -146,9 +144,7 @@ async function listAvailableVoices(config: TtsConfig): Promise<Set<string>> {
   return fetchVoicesFrom(config.baseUrl)
 }
 
-export async function checkTtsHealth(
-  config: TtsConfig = getTtsConfigFromEnv(),
-): Promise<boolean> {
+export async function checkTtsHealth(config: TtsConfig = getTtsConfigFromEnv()): Promise<boolean> {
   try {
     const response = await fetch(`${config.baseUrl}/v1/audio/voices`, {
       method: 'GET',

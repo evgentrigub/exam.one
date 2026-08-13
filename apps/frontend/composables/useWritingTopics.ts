@@ -33,7 +33,7 @@ export const useWritingTopics = () => {
       const defaultIds = new Set(allDefaultWritingTopics.map(topic => topic.id))
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(topics.value.filter(topic => !defaultIds.has(topic.id))),
+        JSON.stringify(topics.value.filter(topic => !defaultIds.has(topic.id)))
       )
     } catch (error) {
       console.error('Failed to save writing topics to localStorage:', error)

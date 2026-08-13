@@ -14,8 +14,8 @@ const { theme, initTheme } = useTheme()
 // Apply theme to HTML element
 useHead({
   htmlAttrs: {
-    'data-theme': theme
-  }
+    'data-theme': theme,
+  },
 })
 
 // Initialize theme from localStorage on mount

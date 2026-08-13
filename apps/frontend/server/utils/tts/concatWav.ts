@@ -64,14 +64,14 @@ export function parseWavFormat(buffer: Buffer): WavFormat {
 
 function assertCompatible(base: WavFormat, next: WavFormat, index: number): void {
   if (
-    base.channels !== next.channels
-    || base.sampleRate !== next.sampleRate
-    || base.bitsPerSample !== next.bitsPerSample
+    base.channels !== next.channels ||
+    base.sampleRate !== next.sampleRate ||
+    base.bitsPerSample !== next.bitsPerSample
   ) {
     throw new Error(
-      `WAV format mismatch at segment ${index}: `
-      + `expected ${base.channels}ch/${base.sampleRate}Hz/${base.bitsPerSample}-bit, `
-      + `got ${next.channels}ch/${next.sampleRate}Hz/${next.bitsPerSample}-bit`,
+      `WAV format mismatch at segment ${index}: ` +
+        `expected ${base.channels}ch/${base.sampleRate}Hz/${base.bitsPerSample}-bit, ` +
+        `got ${next.channels}ch/${next.sampleRate}Hz/${next.bitsPerSample}-bit`
     )
   }
 }
@@ -108,7 +108,7 @@ function writeWav(pcm: Buffer, format: WavFormat): Buffer {
  */
 export function concatWavWithPauses(
   wavBuffers: Buffer[],
-  pauseMs: number = DEFAULT_PAUSE_MS,
+  pauseMs: number = DEFAULT_PAUSE_MS
 ): Buffer {
   if (wavBuffers.length === 0) {
     throw new Error('concatWavWithPauses requires at least one WAV buffer')

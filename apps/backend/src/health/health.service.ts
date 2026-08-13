@@ -18,8 +18,8 @@ export class HealthService {
         data: { status: 'degraded', checks: { database: 'down' } },
         error: {
           code: 'DATABASE_UNAVAILABLE',
-          message: 'Database is not reachable'
-        }
+          message: 'Database is not reachable',
+        },
       }
     }
   }

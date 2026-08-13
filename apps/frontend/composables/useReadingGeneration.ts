@@ -8,7 +8,7 @@ import {
   filterJobsByParts,
   parseSkillPartKeys,
   type PartGenerationJob,
-  type PartGenerationState
+  type PartGenerationState,
 } from '~/utils/generation/partJobs'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
@@ -27,16 +27,17 @@ export const useReadingGeneration = () => {
     difficulty: null,
     startedAt: null,
     error: null,
-    jobs: []
+    jobs: [],
   })
 
   const isGenerating = computed(() => state.value.isGenerating)
   const generatingDifficulty = computed(() => state.value.difficulty)
   const generationError = computed(() => state.value.error)
   const generationJobs = computed<PartGenerationJob[]>(() => state.value.jobs)
-  const canResumeGeneration = computed(() =>
-    !state.value.isGenerating &&
-    state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
+  const canResumeGeneration = computed(
+    () =>
+      !state.value.isGenerating &&
+      state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
   )
 
   const loadState = () => {
@@ -65,7 +66,7 @@ export const useReadingGeneration = () => {
       state.value = {
         ...parsed,
         isGenerating: false,
-        jobs: restoredJobs
+        jobs: restoredJobs,
       }
     } catch (error) {
       console.error('Failed to load reading generation state:', error)
@@ -89,7 +90,7 @@ export const useReadingGeneration = () => {
       difficulty: null,
       startedAt: null,
       error: null,
-      jobs: []
+      jobs: [],
     }
 
     if (import.meta.client) {
@@ -103,7 +104,7 @@ export const useReadingGeneration = () => {
       jobs: state.value.jobs.map(job => {
         if (job.part !== part) return job
         return error === undefined ? { ...job, status } : { ...job, status, error }
-      })
+      }),
     }
     saveState()
   }
@@ -133,8 +134,8 @@ export const useReadingGeneration = () => {
       try {
         const response = (await $fetch('/api/generate-reading', {
           method: 'POST',
-          body: { difficulty, prompts: [partPrompt] }
-        }) as unknown) as { texts: ReadingExercise[]; error?: string }
+          body: { difficulty, prompts: [partPrompt] },
+        })) as unknown as { texts: ReadingExercise[]; error?: string }
 
         if (response.error || !response.texts || response.texts.length === 0) {
           throw new Error(response.error || `No reading exercise generated for part ${part}`)
@@ -151,7 +152,8 @@ export const useReadingGeneration = () => {
           }
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : `Failed to generate part ${part}`
+        const errorMessage =
+          error instanceof Error ? error.message : `Failed to generate part ${part}`
         console.error(`Reading generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -166,7 +168,7 @@ export const useReadingGeneration = () => {
       state.value = {
         ...state.value,
         isGenerating: false,
-        error: loopError
+        error: loopError,
       }
       saveState()
     }
@@ -191,7 +193,7 @@ export const useReadingGeneration = () => {
       difficulty,
       startedAt: new Date().toISOString(),
       error: null,
-      jobs: partsToGenerate.map(part => ({ part: part.part, status: 'queued' }))
+      jobs: partsToGenerate.map(part => ({ part: part.part, status: 'queued' })),
     }
     saveState()
 
@@ -209,7 +211,7 @@ export const useReadingGeneration = () => {
     state.value = {
       ...state.value,
       isGenerating: true,
-      error: null
+      error: null,
     }
     saveState()
 
@@ -230,7 +232,7 @@ export const useReadingGeneration = () => {
       error: null,
       jobs: state.value.jobs.map(job =>
         job.status === 'failed' ? { ...job, status: 'queued' } : job
-      )
+      ),
     }
     saveState()
 
@@ -256,7 +258,7 @@ export const useReadingGeneration = () => {
     resumeGeneration,
     retryGeneration,
     dismissError,
-    clearState
+    clearState,
   }
 }
 
