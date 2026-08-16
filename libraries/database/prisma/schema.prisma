@@ -25,20 +25,40 @@ enum ExamLevel {
   C1
 }
 
+enum AuthTokenType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+  REFRESH
+}
+
 model User {
-  id             String    @id @default(cuid())
-  email          String    @unique
+  id             String      @id @default(cuid())
+  email          String      @unique
   name           String
   examTargetDate DateTime?
-  plan           PlanId    @default(FREE)
-  // reserved for 2.2 auth (nullable now)
+  plan           PlanId      @default(FREE)
   passwordHash   String?
-  emailVerified  Boolean   @default(false)
+  emailVerified  Boolean     @default(false)
   settings       Setting?
   attempts       Attempt[]
   drafts         Draft[]
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  authTokens     AuthToken[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model AuthToken {
+  id         String        @id @default(cuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       AuthTokenType
+  tokenHash  String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime      @default(now())
+
+  @@index([userId, type])
+  @@index([tokenHash])
 }
 
 model Setting {
