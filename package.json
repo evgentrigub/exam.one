@@ -25,6 +25,7 @@
     "db:migrate": "pnpm --filter @exam-one/database db:migrate",
     "db:migrate:deploy": "pnpm --filter @exam-one/database db:migrate:deploy",
     "db:seed": "pnpm --filter @exam-one/database db:seed",
+    "auth:set-password": "pnpm --filter @exam-one/database auth:set-password",
     "generate:listening-audio": "node scripts/generate-listening-audio.mjs",
     "stack:setup": "pnpm tts:setup && pnpm stt:setup",
     "stack:models": "pnpm stack:setup",
