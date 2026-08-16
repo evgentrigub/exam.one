@@ -30,6 +30,7 @@ services:
       TTS_SPEED: '${TTS_SPEED:-1.0}'
       TTS_LANG: '${TTS_LANG:-de}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
+      NUXT_PUBLIC_API_URL: 'http://localhost:${BACKEND_PORT:-3001}'
     ports:
       - '${FRONTEND_PORT:-3000}:3000'
     volumes:
@@ -52,6 +53,14 @@ services:
       NODE_ENV: production
       FRONTEND_URL: 'http://localhost:${FRONTEND_PORT:-3000}'
       DATABASE_URL: 'postgresql://${POSTGRES_USER:-exam_one}:${POSTGRES_PASSWORD:-exam_one}@postgres:5432/${POSTGRES_DB:-exam_one}?schema=public'
+      JWT_SECRET: '${JWT_SECRET:-change-me-in-production}'
+      AUTH_COOKIE_SECURE: '${AUTH_COOKIE_SECURE:-false}'
+      EMAIL_PROVIDER: '${EMAIL_PROVIDER:-none}'
+      SMTP_HOST: '${SMTP_HOST:-}'
+      SMTP_PORT: '${SMTP_PORT:-587}'
+      SMTP_USER: '${SMTP_USER:-}'
+      SMTP_PASS: '${SMTP_PASS:-}'
+      SMTP_FROM: '${SMTP_FROM:-exam.one <noreply@localhost>}'
     ports:
       - '${BACKEND_PORT:-3001}:3001'
     depends_on:
