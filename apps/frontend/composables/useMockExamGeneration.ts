@@ -11,8 +11,9 @@ import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 import type { WritingExercise } from '~/utils/types'
-
-const STORAGE_KEY = 'exam-one:mock-exam:generation-state'
+import type { GenerationJobDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
+import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 export type MockGenerationStatus = 'queued' | 'running' | 'done' | 'failed'
 export type MockGenerationJobKind = 'content' | 'audio'
@@ -137,20 +138,24 @@ export const useMockExamGeneration = () => {
 
   const persist = (): void => {
     if (import.meta.server) return
-    try {
-      if (draft.value) localStorage.setItem(STORAGE_KEY, JSON.stringify(draft.value))
-      else localStorage.removeItem(STORAGE_KEY)
-    } catch (error) {
-      console.error(`[${STORAGE_KEY}] write failed`, error)
+    if (draft.value) {
+      void apiFetch('/mock-exam/generation', {
+        method: 'PUT',
+        body: { payload: draft.value },
+      }).catch(error => console.error('[mock-exam-generation] persist failed', error))
+    } else {
+      void apiFetch('/mock-exam/generation', { method: 'DELETE' }).catch(() => undefined)
     }
   }
 
-  const initialize = (): void => {
+  const initialize = async (): Promise<void> => {
     if (isInitialized.value || import.meta.server) return
+    await whenPracticeReady()
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const stored = JSON.parse(raw) as MockGenerationDraft
+      const saved = await apiFetch<GenerationJobDto | null>('/mock-exam/generation')
+      const raw = saved?.payload
+      if (raw && typeof raw === 'object') {
+        const stored = raw as MockGenerationDraft
         if (stored.status === 'running') {
           stored.status = 'failed'
           stored.error = 'Generation was interrupted. Check the services and resume the pipeline.'
@@ -167,7 +172,7 @@ export const useMockExamGeneration = () => {
         draft.value = stored
       }
     } catch (error) {
-      console.warn(`[${STORAGE_KEY}] read failed`, error)
+      console.warn('[mock-exam-generation] read failed', error)
       draft.value = null
     }
     isInitialized.value = true
@@ -344,7 +349,7 @@ export const useMockExamGeneration = () => {
     }
 
     const completedSet = createGoetheA2MockExamSet(draft.value.setNumber, draft.value.content)
-    addSet(completedSet)
+    await addSet(completedSet)
     draft.value.status = 'done'
     draft.value.completedAt = new Date().toISOString()
     draft.value.error = null
@@ -378,7 +383,9 @@ export const useMockExamGeneration = () => {
     persist()
   }
 
-  onMounted(initialize)
+  onMounted(() => {
+    void initialize()
+  })
 
   return {
     // State

@@ -1,6 +1,6 @@
 /**
  * Writing Generation Composable
- * Manages per-part AI writing generation with localStorage persistence
+ * Manages per-part AI writing generation with API persistence
  */
 
 // C1 is disabled in this build; re-enable with the level toggle later.
@@ -11,9 +11,8 @@ import {
 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { PartGenerationJob } from '~/utils/generation/partJobs'
 import type { WritingExercise, Difficulty } from '~/utils/types'
-
-const STORAGE_KEY = 'exam-one:writing:topic-generation-state'
-const LEGACY_STORAGE_KEY = 'exame-one-topic-generation-state'
+import { whenPracticeReady } from '~/composables/usePracticeImport'
+import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
 
 interface GenerationState {
   isGenerating: boolean
@@ -52,16 +51,17 @@ export const useWritingGeneration = () => {
   )
 
   /**
-   * Load generation state from localStorage
+   * Load generation state from the API
    */
-  const loadState = () => {
+  const loadState = async () => {
     if (import.meta.server) return
+    await whenPracticeReady()
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY)
-      if (!stored) return
-
-      const parsed = JSON.parse(stored)
+      const parsed = (await loadGenerationJob('WRITING')) as
+        | (GenerationState & { part?: 1 | 2 })
+        | null
+      if (!parsed) return
 
       // Check if generation was interrupted (older than 5 minutes)
       if (parsed.isGenerating && parsed.startedAt) {
@@ -104,16 +104,13 @@ export const useWritingGeneration = () => {
   }
 
   /**
-   * Save state to localStorage
+   * Save state to the API
    */
   const saveState = () => {
     if (import.meta.server) return
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.value))
-    } catch (error) {
+    void saveGenerationJob('WRITING', state.value).catch(error =>
       console.error('Failed to save writing generation state:', error)
-    }
+    )
   }
 
   /**
@@ -129,8 +126,7 @@ export const useWritingGeneration = () => {
     }
 
     if (import.meta.client) {
-      localStorage.removeItem(STORAGE_KEY)
-      localStorage.removeItem(LEGACY_STORAGE_KEY)
+      void clearGenerationJob('WRITING').catch(() => undefined)
     }
   }
 
@@ -323,7 +319,7 @@ export const useWritingGeneration = () => {
 
   // Load state on mount
   onMounted(() => {
-    loadState()
+    void loadState()
   })
 
   return {

@@ -1,6 +1,6 @@
 /**
  * Listening Generation Composable
- * Manages per-part AI listening exercise generation with localStorage persistence.
+ * Manages per-part AI listening exercise generation with API persistence.
  */
 
 import { listeningA2Parts } from '~/data/listening/a2/exerciseGeneratorListeningA2'
@@ -11,8 +11,9 @@ import {
 } from '~/utils/generation/partJobs'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { Difficulty } from '~/utils/types'
+import { whenPracticeReady } from '~/composables/usePracticeImport'
+import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
 
-const STORAGE_KEY = 'exam-one:listening:generation-state'
 const STALE_THRESHOLD_MS = 5 * 60 * 1000
 
 export interface ListeningGenerationOptions {
@@ -39,14 +40,13 @@ export const useListeningGeneration = () => {
       state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
   )
 
-  const loadState = () => {
+  const loadState = async () => {
     if (import.meta.server) return
+    await whenPracticeReady()
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (!stored) return
-
-      const parsed = JSON.parse(stored) as PartGenerationState
+      const parsed = (await loadGenerationJob('LISTENING')) as PartGenerationState | null
+      if (!parsed) return
 
       if (parsed.isGenerating && parsed.startedAt) {
         const startTime = new Date(parsed.startedAt).getTime()
@@ -73,12 +73,9 @@ export const useListeningGeneration = () => {
 
   const saveState = () => {
     if (import.meta.server) return
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.value))
-    } catch (error) {
+    void saveGenerationJob('LISTENING', state.value).catch(error =>
       console.error('Failed to save listening generation state:', error)
-    }
+    )
   }
 
   const clearState = () => {
@@ -91,7 +88,7 @@ export const useListeningGeneration = () => {
     }
 
     if (import.meta.client) {
-      localStorage.removeItem(STORAGE_KEY)
+      void clearGenerationJob('LISTENING').catch(() => undefined)
     }
   }
 
@@ -241,7 +238,7 @@ export const useListeningGeneration = () => {
   }
 
   onMounted(() => {
-    loadState()
+    void loadState()
   })
 
   return {

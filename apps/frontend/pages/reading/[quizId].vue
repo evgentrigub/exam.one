@@ -340,8 +340,8 @@ watchEffect(() => {
   }
 })
 
-// Resolve from localStorage-backed store on the client; redirect only when the
-// id is genuinely missing (server has no localStorage, so defer to the client).
+// Resolve from the API-backed store on the client; redirect only when the
+// id is genuinely missing (catalogs hydrate after login, so defer to the client).
 if (import.meta.client && !text.value) {
   navigateTo('/exercises?skill=reading', { replace: true })
 }

@@ -545,7 +545,7 @@ async function generateAudioForExercise() {
 
     const id = currentExercise.value.id
     if (id) {
-      const updated = updateExerciseAudio(id, res.data.audio)
+      const updated = await updateExerciseAudio(id, res.data.audio)
       currentExercise.value = updated ?? { ...currentExercise.value, audio: res.data.audio }
       const fromStore = getExerciseById(id)
       if (fromStore) currentExercise.value = { ...fromStore }
