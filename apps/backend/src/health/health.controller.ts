@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse as ApiResponseDoc } from '@nestjs/swagger'
 import type { ApiResponse, HealthReadyResponse } from '@exam-one/contracts'
+import { Public } from '../common/decorators/public.decorator'
 import { HealthService } from './health.service'
 
 @ApiTags('health')
@@ -8,6 +9,7 @@ import { HealthService } from './health.service'
 export class HealthController {
   constructor(private readonly health: HealthService) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Liveness check' })
   @ApiResponseDoc({ status: 200, description: 'Service is healthy' })
@@ -15,6 +17,7 @@ export class HealthController {
     return { data: { status: 'ok', service: 'exam.one-backend' } }
   }
 
+  @Public()
   @Get('ready')
   @ApiOperation({ summary: 'Readiness check (verifies database connectivity)' })
   @ApiResponseDoc({ status: 200, description: 'Readiness result' })
