@@ -8,3 +8,7 @@ export interface DraftDto {
   payload: unknown
   updatedAt: string
 }
+
+export interface UpsertDraftRequest {
+  payload: unknown
+}
