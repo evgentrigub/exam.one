@@ -87,9 +87,7 @@ async function submit() {
     await navigateTo('/dashboard')
   } catch (error) {
     formError.value =
-      error instanceof ApiClientError
-        ? error.message
-        : 'That email and password don’t match.'
+      error instanceof ApiClientError ? error.message : 'That email and password don’t match.'
   } finally {
     loading.value = false
   }

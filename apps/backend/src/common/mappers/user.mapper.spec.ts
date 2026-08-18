@@ -3,9 +3,7 @@ import { makeSetting, makeUser } from '../../testing/fixtures'
 
 describe('toUserDto', () => {
   it('slices examTargetDate to YYYY-MM-DD', () => {
-    const dto = toUserDto(
-      makeUser({ examTargetDate: new Date('2026-06-15T12:34:56.000Z') })
-    )
+    const dto = toUserDto(makeUser({ examTargetDate: new Date('2026-06-15T12:34:56.000Z') }))
 
     expect(dto.examTargetDate).toBe('2026-06-15')
     expect(dto.createdAt).toBe('2026-01-01T00:00:00.000Z')

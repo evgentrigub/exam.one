@@ -20,7 +20,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Mock exam                 | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
 | Phase 2.1 backend         | **Complete** — NestJS, Prisma, health, Compose/Postgres                                            |
 | Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
-| Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                  |
+| Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                 |
 
 **Current implementation focus:** Phase 2.4 AI move to NestJS. See the roadmap.
 

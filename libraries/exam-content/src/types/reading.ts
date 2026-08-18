@@ -3,21 +3,10 @@ import type { Difficulty } from './common'
 export type ReadingA2Part = 1 | 2 | 3 | 4
 
 export type ReadingTextType =
-  | 'email'
-  | 'notice'
-  | 'article'
-  | 'advertisement'
-  | 'instructions'
-  | 'announcement'
-  | 'list'
+  'email' | 'notice' | 'article' | 'advertisement' | 'instructions' | 'announcement' | 'list'
 
 export type ReadingQuestionType =
-  | 'comprehension'
-  | 'vocabulary'
-  | 'grammar'
-  | 'inference'
-  | 'selective'
-  | 'matching'
+  'comprehension' | 'vocabulary' | 'grammar' | 'inference' | 'selective' | 'matching'
 
 export type ReadingMcqAnswerIndex = 0 | 1 | 2
 
@@ -94,8 +83,11 @@ export type ReadingQuestionA2Teil1 = ReadingQuestionBase<
   ReadingMcqAnswerIndex
 >
 
-export interface ReadingExerciseA2Teil1
-  extends ReadingExerciseBase<'A2', 'article', ReadingQuestionA2Teil1> {
+export interface ReadingExerciseA2Teil1 extends ReadingExerciseBase<
+  'A2',
+  'article',
+  ReadingQuestionA2Teil1
+> {
   testingPart: 1
   questions: ReadingFiveQuestions<ReadingQuestionA2Teil1>
 }
@@ -106,8 +98,11 @@ export type ReadingQuestionA2Teil2 = ReadingQuestionBase<
   ReadingMcqAnswerIndex
 >
 
-export interface ReadingExerciseA2Teil2
-  extends ReadingExerciseBase<'A2', 'list', ReadingQuestionA2Teil2> {
+export interface ReadingExerciseA2Teil2 extends ReadingExerciseBase<
+  'A2',
+  'list',
+  ReadingQuestionA2Teil2
+> {
   testingPart: 2
   questions: ReadingFiveQuestions<ReadingQuestionA2Teil2>
 }
@@ -118,8 +113,11 @@ export type ReadingQuestionA2Teil3 = ReadingQuestionBase<
   ReadingMcqAnswerIndex
 >
 
-export interface ReadingExerciseA2Teil3
-  extends ReadingExerciseBase<'A2', 'email', ReadingQuestionA2Teil3> {
+export interface ReadingExerciseA2Teil3 extends ReadingExerciseBase<
+  'A2',
+  'email',
+  ReadingQuestionA2Teil3
+> {
   testingPart: 3
   questions: ReadingFiveQuestions<ReadingQuestionA2Teil3>
 }
@@ -130,14 +128,14 @@ export type ReadingQuestionA2Teil4 = ReadingQuestionBase<
   ReadingMatchingAnswerIndex
 >
 
-export interface ReadingExerciseA2Teil4
-  extends ReadingExerciseBase<'A2', 'advertisement', ReadingQuestionA2Teil4> {
+export interface ReadingExerciseA2Teil4 extends ReadingExerciseBase<
+  'A2',
+  'advertisement',
+  ReadingQuestionA2Teil4
+> {
   testingPart: 4
   questions: ReadingFiveQuestions<ReadingQuestionA2Teil4>
 }
 
 export type ReadingA2Exercise =
-  | ReadingExerciseA2Teil1
-  | ReadingExerciseA2Teil2
-  | ReadingExerciseA2Teil3
-  | ReadingExerciseA2Teil4
+  ReadingExerciseA2Teil1 | ReadingExerciseA2Teil2 | ReadingExerciseA2Teil3 | ReadingExerciseA2Teil4

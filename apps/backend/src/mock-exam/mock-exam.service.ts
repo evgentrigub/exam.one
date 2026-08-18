@@ -1,9 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
-import type {
-  MockExamAttemptDto,
-  MockExamSetDto,
-  MockExamSetSummaryDto,
-} from '@exam-one/contracts'
+import type { MockExamAttemptDto, MockExamSetDto, MockExamSetSummaryDto } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { asJson } from '../common/json'
@@ -93,11 +89,7 @@ export class MockExamService {
     return row ? toMockExamAttemptDto(row) : null
   }
 
-  async upsertAttempt(
-    user: User,
-    externalId: string,
-    state: unknown
-  ): Promise<MockExamAttemptDto> {
+  async upsertAttempt(user: User, externalId: string, state: unknown): Promise<MockExamAttemptDto> {
     const set = await this.findSet(user, externalId)
     if (!set) {
       throw new NotFoundException({ code: 'SET_NOT_FOUND', message: 'Mock exam set not found' })

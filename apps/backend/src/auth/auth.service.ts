@@ -10,11 +10,7 @@ import { JwtService } from '@nestjs/jwt'
 import { createHash, randomBytes, randomInt } from 'node:crypto'
 import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
-import type {
-  AuthConfigDto,
-  AuthSessionData,
-  MessageResponse,
-} from '@exam-one/contracts'
+import type { AuthConfigDto, AuthSessionData, MessageResponse } from '@exam-one/contracts'
 import { AuthTokenType, type User } from '@exam-one/database'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { toUserDto } from '../common/mappers/user.mapper'
@@ -119,10 +115,7 @@ export class AuthService {
     }
   }
 
-  async logoutByRefresh(
-    refreshToken: string | undefined,
-    res: Response
-  ): Promise<MessageResponse> {
+  async logoutByRefresh(refreshToken: string | undefined, res: Response): Promise<MessageResponse> {
     if (refreshToken) {
       const tokenHash = this.hashToken(refreshToken)
       await this.prisma.authToken.deleteMany({

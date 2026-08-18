@@ -88,7 +88,10 @@
           <div v-if="passwordError" class="md:col-span-2 alert alert-error text-sm">
             {{ passwordError }}
           </div>
-          <div v-if="passwordSaved" class="md:col-span-2 text-sm text-success flex items-center gap-1.5">
+          <div
+            v-if="passwordSaved"
+            class="md:col-span-2 text-sm text-success flex items-center gap-1.5"
+          >
             <Check :size="15" /> {{ $t('auth.passwordUpdated') }}
           </div>
           <div class="md:col-span-2">
@@ -138,9 +141,7 @@
             v-for="p in plans"
             :key="p.id"
             class="bg-base-100 border ring-soft rounded-box p-6 flex flex-col"
-            :class="
-              p.id === demoPlan ? 'border-primary ring-1 ring-primary/30' : 'border-base-300'
-            "
+            :class="p.id === demoPlan ? 'border-primary ring-1 ring-primary/30' : 'border-base-300'"
           >
             <div class="flex items-start justify-between">
               <div>
@@ -168,11 +169,7 @@
             <button
               class="btn btn-sm mt-5 w-full gap-1.5"
               :class="
-                p.id === demoPlan
-                  ? 'btn-disabled'
-                  : p.id === 'pro'
-                    ? 'btn-primary'
-                    : 'btn-outline'
+                p.id === demoPlan ? 'btn-disabled' : p.id === 'pro' ? 'btn-primary' : 'btn-outline'
               "
               :disabled="p.id === demoPlan"
               @click="demoPlan = p.id"
@@ -311,8 +308,7 @@ async function onSaveProfile() {
     if (form.locale !== locale.value) setLocale(form.locale)
     editing.value = false
   } catch (error) {
-    profileError.value =
-      error instanceof ApiClientError ? error.message : 'Could not save profile'
+    profileError.value = error instanceof ApiClientError ? error.message : 'Could not save profile'
   } finally {
     savingProfile.value = false
   }

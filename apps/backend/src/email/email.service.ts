@@ -17,7 +17,12 @@ export class EmailService {
     return host.length > 0
   }
 
-  async sendMail(options: { to: string; subject: string; text: string; html?: string }): Promise<void> {
+  async sendMail(options: {
+    to: string
+    subject: string
+    text: string
+    html?: string
+  }): Promise<void> {
     if (!this.isConfigured()) {
       this.logger.warn(`Email skipped (SMTP not configured): ${options.subject} → ${options.to}`)
       return

@@ -484,9 +484,7 @@ export const useProgress = () => {
     const totalTime = completedTopics.reduce((sum, item) => sum + (item.timeSpent || 0), 0)
     const recentActivity = completedTopics
       .filter(item => item.completedAt)
-      .sort(
-        (a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime()
-      )
+      .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())
       .slice(0, 5)
     return {
       totalTopicsCompleted: completedTopics.length,

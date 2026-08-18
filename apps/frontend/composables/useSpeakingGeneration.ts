@@ -11,7 +11,11 @@ import {
 } from '~/utils/generation/partJobs'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { Difficulty } from '~/utils/types'
-import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
+import {
+  clearGenerationJob,
+  loadGenerationJob,
+  saveGenerationJob,
+} from '~/composables/useGenerationJobs'
 
 const STALE_THRESHOLD_MS = 5 * 60 * 1000
 

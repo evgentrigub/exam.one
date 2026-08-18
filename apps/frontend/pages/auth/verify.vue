@@ -139,8 +139,7 @@ async function submit() {
     await verifyEmail({ email: email.value, code: code.value })
     await navigateTo('/dashboard')
   } catch (err) {
-    error.value =
-      err instanceof ApiClientError ? err.message : t('auth.invalidCode')
+    error.value = err instanceof ApiClientError ? err.message : t('auth.invalidCode')
   } finally {
     loading.value = false
   }

@@ -1,9 +1,4 @@
-import type {
-  AuthConfigDto,
-  AuthSessionData,
-  SettingDto,
-  UserDto,
-} from '@exam-one/contracts'
+import type { AuthConfigDto, AuthSessionData, SettingDto, UserDto } from '@exam-one/contracts'
 import { ApiClientError, apiFetch } from '~/composables/useApi'
 
 const sessionUser = ref<UserDto | null>(null)

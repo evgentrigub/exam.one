@@ -102,11 +102,7 @@ export class ExercisesService {
     return created
   }
 
-  async updateAudio(
-    user: User,
-    externalId: string,
-    audio: unknown
-  ): Promise<ExerciseDto> {
+  async updateAudio(user: User, externalId: string, audio: unknown): Promise<ExerciseDto> {
     const row = await this.findForUser(user, 'LISTENING', externalId)
     if (!row) {
       throw new NotFoundException({ code: 'EXERCISE_NOT_FOUND', message: 'Exercise not found' })

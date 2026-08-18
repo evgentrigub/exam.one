@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="relative hidden lg:flex flex-col justify-between p-10 bg-base-200 overflow-hidden"
-  >
+  <div class="relative hidden lg:flex flex-col justify-between p-10 bg-base-200 overflow-hidden">
     <div
       class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none"
     />
