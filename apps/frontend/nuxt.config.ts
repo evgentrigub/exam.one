@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
 
+const CONTENT_SECURITY_POLICY =
+  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' http://localhost:3001 http://127.0.0.1:3001;"
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
@@ -109,15 +112,16 @@ export default defineNuxtConfig({
     },
   },
 
-  // Security headers
-  nitro: {
-    routeRules: {
-      '/**': {
-        headers: {
-          'Content-Security-Policy':
-            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:;",
-        },
-      },
+  // Hybrid rendering: auth screens are SSR'd; the login-gated app is client-only.
+  // Session cookies live on the API host, so Nuxt cannot know the user during SSR.
+  routeRules: {
+    '/auth/**': {
+      ssr: true,
+      headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY },
+    },
+    '/**': {
+      ssr: false,
+      headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY },
     },
   },
 
@@ -139,6 +143,7 @@ export default defineNuxtConfig({
     // Public (exposed to client).
     public: {
       frontendLandingUrl: process.env['FRONTEND_LANDING_URL'] || 'http://localhost:3001',
+      apiUrl: process.env['NUXT_PUBLIC_API_URL'] || 'http://localhost:3001',
     },
   },
 })

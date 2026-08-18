@@ -21,8 +21,10 @@
           </button>
         </div>
 
-        <!-- Edit form -->
-        <form v-if="editing" class="mt-5 grid sm:grid-cols-2 gap-4" @submit.prevent="saveProfile">
+        <form v-if="editing" class="mt-5 grid sm:grid-cols-2 gap-4" @submit.prevent="onSaveProfile">
+          <div v-if="profileError" class="sm:col-span-2 alert alert-error text-sm">
+            {{ profileError }}
+          </div>
           <label class="block">
             <span class="text-xs font-semibold text-base-content/60">Name</span>
             <input
@@ -58,11 +60,12 @@
             <button type="button" class="btn btn-ghost btn-sm" @click="editing = false">
               Cancel
             </button>
-            <button type="submit" class="btn btn-primary btn-sm">Save profile</button>
+            <button type="submit" class="btn btn-primary btn-sm" :disabled="savingProfile">
+              Save profile
+            </button>
           </div>
         </form>
 
-        <!-- Stat tiles -->
         <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
           <div
             v-for="tile in statTiles"
@@ -77,11 +80,56 @@
         </div>
       </div>
 
-      <!-- Subscription -->
+      <!-- Password -->
+      <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-6">
+        <h3 class="font-display text-lg font-bold">{{ $t('auth.changePasswordTitle') }}</h3>
+        <p class="text-sm text-base-content/60 mt-1">{{ $t('auth.changePasswordDesc') }}</p>
+        <form class="mt-5 grid md:grid-cols-2 gap-4" @submit.prevent="onChangePassword">
+          <div v-if="passwordError" class="md:col-span-2 alert alert-error text-sm">
+            {{ passwordError }}
+          </div>
+          <div v-if="passwordSaved" class="md:col-span-2 text-sm text-success flex items-center gap-1.5">
+            <Check :size="15" /> {{ $t('auth.passwordUpdated') }}
+          </div>
+          <div class="md:col-span-2">
+            <AuthPasswordField
+              id="acct_cur"
+              v-model="pw.current"
+              :label="$t('auth.currentPassword')"
+              autocomplete="current-password"
+              :placeholder="$t('auth.passwordPlaceholder')"
+            />
+          </div>
+          <div>
+            <AuthPasswordField
+              id="acct_new"
+              v-model="pw.next"
+              :label="$t('auth.newPassword')"
+              autocomplete="new-password"
+              :placeholder="$t('auth.passwordMin')"
+            />
+            <AuthStrength v-if="pw.next" :score="pwStrength" />
+          </div>
+          <AuthPasswordField
+            id="acct_conf"
+            v-model="pw.confirm"
+            :label="$t('auth.confirmPassword')"
+            autocomplete="new-password"
+            :placeholder="$t('auth.confirmPasswordPlaceholder')"
+          />
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="btn btn-sm btn-primary" :disabled="savingPassword">
+              {{ $t('auth.updatePassword') }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Subscription (demo) -->
       <div>
         <div class="flex items-center justify-between mb-3">
           <h3 class="font-display text-lg font-bold">Subscription</h3>
-          <span class="badge" :class="profile.plan === 'pro' ? 'badge-primary' : 'badge-ghost'">
+          <span class="badge" :class="demoPlan === 'pro' ? 'badge-primary' : 'badge-ghost'">
             Current: {{ currentPlan.name }}
           </span>
         </div>
@@ -91,16 +139,14 @@
             :key="p.id"
             class="bg-base-100 border ring-soft rounded-box p-6 flex flex-col"
             :class="
-              p.id === profile.plan ? 'border-primary ring-1 ring-primary/30' : 'border-base-300'
+              p.id === demoPlan ? 'border-primary ring-1 ring-primary/30' : 'border-base-300'
             "
           >
             <div class="flex items-start justify-between">
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-display text-xl font-bold">{{ p.name }}</h4>
-                  <span v-if="p.id === profile.plan" class="badge badge-primary badge-sm"
-                    >Active</span
-                  >
+                  <span v-if="p.id === demoPlan" class="badge badge-primary badge-sm">Active</span>
                 </div>
                 <p class="text-sm text-base-content/60 mt-0.5">{{ p.blurb }}</p>
               </div>
@@ -122,16 +168,16 @@
             <button
               class="btn btn-sm mt-5 w-full gap-1.5"
               :class="
-                p.id === profile.plan
+                p.id === demoPlan
                   ? 'btn-disabled'
                   : p.id === 'pro'
                     ? 'btn-primary'
                     : 'btn-outline'
               "
-              :disabled="p.id === profile.plan"
-              @click="setPlan(p.id)"
+              :disabled="p.id === demoPlan"
+              @click="demoPlan = p.id"
             >
-              <template v-if="p.id === profile.plan"><Check :size="13" /> Current plan</template>
+              <template v-if="p.id === demoPlan"><Check :size="13" /> Current plan</template>
               <template v-else-if="p.id === 'pro'"
                 ><ArrowUpCircle :size="13" /> Upgrade to Pro</template
               >
@@ -181,22 +227,36 @@ import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
 import { useAccountProfile, type PlanId } from '~/composables/useAccountProfile'
 import { plans } from '~/data/account/plans'
+import { ApiClientError } from '~/composables/useApi'
+import { passwordStrength, validatePassword } from '~/utils/authValidation'
 
 usePageMeta('pageMeta.accountTitle', 'pageMeta.accountSubtitle')
 useHead({ title: 'Account — Exam.one' })
 
+const { t } = useI18n()
 const { locale, setLocale } = useI18n()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
-const { profile, initials } = useAccountProfile()
+const { profile, initials, saveProfile } = useAccountProfile()
+const { changePassword } = useAuth()
 
 const editing = ref(false)
+const savingProfile = ref(false)
+const profileError = ref('')
 const form = reactive({
-  name: profile.value.name,
-  email: profile.value.email,
-  examTargetDate: profile.value.examTargetDate,
+  name: '',
+  email: '',
+  examTargetDate: '',
   locale: locale.value as 'en' | 'de',
 })
+
+const demoPlan = ref<PlanId>(profile.value.plan)
+watch(
+  () => profile.value.plan,
+  plan => {
+    demoPlan.value = plan
+  }
+)
 
 watch(editing, open => {
   if (open) {
@@ -204,20 +264,21 @@ watch(editing, open => {
     form.email = profile.value.email
     form.examTargetDate = profile.value.examTargetDate
     form.locale = locale.value as 'en' | 'de'
+    profileError.value = ''
   }
 })
 
-const currentPlan = computed(() => plans.find(p => p.id === profile.value.plan) ?? plans[0]!)
+const currentPlan = computed(() => plans.find(p => p.id === demoPlan.value) ?? plans[0]!)
 
 const statTiles = computed(() => [
-  { label: 'Member since', value: 'Jan 2026' },
+  { label: 'Member since', value: '—' },
   { label: 'Current plan', value: currentPlan.value.name },
   { label: 'Exam target', value: `Goethe ${examLevel.value}` },
   { label: 'Exam date', value: formatDate(profile.value.examTargetDate) },
 ])
 
 const invoices = computed(() => {
-  const isPro = profile.value.plan === 'pro'
+  const isPro = demoPlan.value === 'pro'
   return [
     {
       date: '12 Apr 2026',
@@ -232,19 +293,60 @@ const invoices = computed(() => {
   ]
 })
 
-function setPlan(id: PlanId) {
-  profile.value = { ...profile.value, plan: id }
+const pw = reactive({ current: '', next: '', confirm: '' })
+const savingPassword = ref(false)
+const passwordError = ref('')
+const passwordSaved = ref(false)
+const pwStrength = computed(() => passwordStrength(pw.next))
+
+async function onSaveProfile() {
+  savingProfile.value = true
+  profileError.value = ''
+  try {
+    await saveProfile({
+      name: form.name.trim() || profile.value.name,
+      email: form.email.trim() || profile.value.email,
+      examTargetDate: form.examTargetDate,
+    })
+    if (form.locale !== locale.value) setLocale(form.locale)
+    editing.value = false
+  } catch (error) {
+    profileError.value =
+      error instanceof ApiClientError ? error.message : 'Could not save profile'
+  } finally {
+    savingProfile.value = false
+  }
 }
 
-function saveProfile() {
-  profile.value = {
-    ...profile.value,
-    name: form.name.trim() || profile.value.name,
-    email: form.email.trim() || profile.value.email,
-    examTargetDate: form.examTargetDate || profile.value.examTargetDate,
+async function onChangePassword() {
+  passwordError.value = ''
+  passwordSaved.value = false
+  const pe = validatePassword(pw.next)
+  if (!pw.current) {
+    passwordError.value = t('auth.currentPassword')
+    return
   }
-  if (form.locale !== locale.value) setLocale(form.locale)
-  editing.value = false
+  if (pe) {
+    passwordError.value = pe
+    return
+  }
+  if (pw.confirm !== pw.next) {
+    passwordError.value = t('auth.passwordMismatch')
+    return
+  }
+  savingPassword.value = true
+  try {
+    await changePassword({ currentPassword: pw.current, newPassword: pw.next })
+    pw.current = ''
+    pw.next = ''
+    pw.confirm = ''
+    passwordSaved.value = true
+  } catch (error) {
+    passwordError.value =
+      error instanceof ApiClientError ? error.message : 'Could not update password'
+  } finally {
+    savingPassword.value = false
+  }
 }
 
 function formatDate(iso: string): string {
