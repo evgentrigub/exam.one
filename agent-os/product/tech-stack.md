@@ -4,7 +4,7 @@
 
 ## Frontend
 
-- **Nuxt 3** — SSR/SSG framework (Vue 3)
+- **Nuxt 4** — SSR/SSG framework (Vue 3)
 - **Vue 3** — component model with Composition API
 - **TypeScript** — strict typing throughout
 - **Tailwind CSS 4** — utility-first styling (via `@tailwindcss/vite`)

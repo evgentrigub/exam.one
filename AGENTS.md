@@ -6,7 +6,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 3 frontend, NestJS auth/accounts and practice persistence on PostgreSQL (2.2–2.3), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
+- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts and practice persistence on PostgreSQL (2.2–2.3), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
 
@@ -21,7 +21,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 ## Stack
 
-- Nuxt 3
+- Nuxt 4
 - Vue 3 with Composition API and `<script setup>`
 - TypeScript
 - Pinia with persisted state
