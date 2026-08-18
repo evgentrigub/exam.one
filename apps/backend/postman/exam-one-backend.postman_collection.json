@@ -1,0 +1,340 @@
+{
+  "info": {
+    "_postman_id": "exam-one-backend-api-v1",
+    "name": "exam.one Backend API",
+    "description": "NestJS API for exam.one (Phase 2.2).\n\n**Base URL:** `{{baseUrl}}` → default `http://localhost:3001`\n**Prefix:** `/api/v1`\n\n**Auth:** httpOnly cookies `exam_one_access` and `exam_one_refresh`.\nIn Postman: turn on **Settings → General → Automatically follow redirects**, and for cookie endpoints enable **Send cookies** / use the Cookie jar. After Register or Login, Postman should store Set-Cookie headers; subsequent Authed requests will send them.\n\n**Suggested flow:** Health → Auth Config → Register → Auth Me → Users Me → Settings Me → Change Password → Logout.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "0.0.1"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "you@example.com",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "password12",
+      "type": "string"
+    },
+    {
+      "key": "name",
+      "value": "Ada Lovelace",
+      "type": "string"
+    },
+    {
+      "key": "verifyCode",
+      "value": "123456",
+      "type": "string"
+    },
+    {
+      "key": "resetToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Liveness",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/health",
+            "description": "Public. Process is up. Does not check the database."
+          },
+          "response": []
+        },
+        {
+          "name": "Readiness",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/health/ready",
+            "description": "Public. Runs `SELECT 1` against Postgres. Returns `ok` or `degraded`."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Get config",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/config",
+            "description": "Public. `{ emailConfigured, registrationOpen }` — drives verify / forgot-password UI."
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Register returned data', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.have.property('user');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/register",
+            "description": "Public. Creates user + default settings. Sets access/refresh cookies.\nWith `EMAIL_PROVIDER=none`, `emailVerified` is true immediately.\nPassword min length: 8."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "description": "Public. Sets access/refresh cookies on success."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": "{{baseUrl}}/api/v1/auth/logout",
+            "description": "Public (soft). Clears cookies and revokes refresh token if present."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": "{{baseUrl}}/api/v1/auth/refresh",
+            "description": "Public. Uses `exam_one_refresh` cookie; rotates session cookies."
+          },
+          "response": []
+        },
+        {
+          "name": "Me (session)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/me",
+            "description": "Authed (cookie). Current session + `requiresEmailVerification`."
+          },
+          "response": []
+        },
+        {
+          "name": "Verify email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"code\": \"{{verifyCode}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/verify-email",
+            "description": "Public. 6-digit code from email when SMTP is configured."
+          },
+          "response": []
+        },
+        {
+          "name": "Resend verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/resend-verification",
+            "description": "Public. No-op message if SMTP is off or account already verified."
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/forgot-password",
+            "description": "Public. Always same HTTP 200 message (no email enumeration).\nWith SMTP: emails reset link.\nWithout SMTP in development: reset URL printed to Nest stdout.\nProduction without SMTP: use `pnpm auth:set-password`."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/reset-password",
+            "description": "Public. Token from reset email / link query `?token=`. Sets new password and session cookies."
+          },
+          "response": []
+        },
+        {
+          "name": "Change password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{password}}\",\n  \"newPassword\": \"password34\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/change-password",
+            "description": "Authed (cookie). Requires current password. New password min length: 8. Revokes refresh tokens."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/users/me",
+            "description": "Authed (cookie). Profile DTO (no passwordHash)."
+          },
+          "response": []
+        },
+        {
+          "name": "Update me",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"examTargetDate\": \"2026-12-01\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/me",
+            "description": "Authed (cookie). All fields optional. `examTargetDate` is `yyyy-mm-dd` or `null`. Changing email sets `emailVerified` to false."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "item": [
+        {
+          "name": "Get me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/settings/me",
+            "description": "Authed (cookie). Learning settings; upserts defaults if missing."
+          },
+          "response": []
+        },
+        {
+          "name": "Update me",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"examLevel\": \"A2\",\n  \"targetLanguage\": \"de\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/settings/me",
+            "description": "Authed (cookie). `examLevel`: `A2` | `C1`. `targetLanguage`: string (e.g. `de`)."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

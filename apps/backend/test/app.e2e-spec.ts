@@ -1,14 +1,24 @@
-import { afterEach, beforeEach, describe, it } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
 import type { INestApplication } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import request from 'supertest'
+import { PrismaClient } from '@exam-one/database'
 import { AppModule } from '../src/app.module'
 import { configureApp } from '../src/bootstrap'
 
-describe('AppController (e2e)', () => {
+describe('Auth + health (e2e)', () => {
   let app: INestApplication
+  const prisma = new PrismaClient()
+  const email = `e2e-${Date.now()}@exam.one`
 
   beforeEach(async () => {
+    process.env['JWT_SECRET'] ??= 'e2e-test-secret'
+    process.env['DATABASE_URL'] ??=
+      'postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public'
+    process.env['FRONTEND_URL'] ??= 'http://localhost:3000'
+    process.env['EMAIL_PROVIDER'] ??= 'none'
+    process.env['AUTH_COOKIE_SECURE'] ??= 'false'
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
@@ -16,6 +26,15 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication()
     configureApp(app)
     await app.init()
+  })
+
+  afterEach(async () => {
+    await prisma.user.deleteMany({ where: { email } }).catch(() => undefined)
+    if (app) await app.close()
+  })
+
+  afterAll(async () => {
+    await prisma.$disconnect()
   })
 
   it('/api/v1/health (GET)', () => {
@@ -32,7 +51,23 @@ describe('AppController (e2e)', () => {
       .expect({ data: { status: 'ok', checks: { database: 'up' } } })
   })
 
-  afterEach(async () => {
-    await app.close()
+  it('register → me → logout; unauthenticated /users/me is 401', async () => {
+    const agent = request.agent(app.getHttpServer())
+
+    const register = await agent
+      .post('/api/v1/auth/register')
+      .send({ name: 'E2E User', email, password: 'password12' })
+      .expect(201)
+
+    // Nest may return 200 or 201 depending on default — accept either via status check
+    expect(register.body.data.user.email).toBe(email)
+    expect(register.body.data.requiresEmailVerification).toBe(false)
+
+    const me = await agent.get('/api/v1/auth/me').expect(200)
+    expect(me.body.data.user.email).toBe(email)
+
+    await agent.post('/api/v1/auth/logout').expect(201)
+
+    await request(app.getHttpServer()).get('/api/v1/users/me').expect(401)
   })
 })
