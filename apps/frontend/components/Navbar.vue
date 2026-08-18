@@ -292,7 +292,7 @@ const closeLanguageModal = () => {
 /**
  * Saves language settings and closes the modal
  */
-const saveLanguageSettings = () => {
+const saveLanguageSettings = async () => {
   // Update interface language
   if (tempInterfaceLanguage.value !== locale.value) {
     setLocale(tempInterfaceLanguage.value)
@@ -304,6 +304,7 @@ const saveLanguageSettings = () => {
   // Update exam level
   examLevel.value = tempExamLevel.value
 
+  await settingsStore.persist()
   closeLanguageModal()
 }
 

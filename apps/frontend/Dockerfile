@@ -9,7 +9,9 @@ COPY libraries/database/package.json libraries/database/package.json
 COPY libraries/exam-content/package.json libraries/exam-content/package.json
 COPY libraries/nestjs-libraries/package.json libraries/nestjs-libraries/package.json
 RUN pnpm install --frozen-lockfile
+COPY libraries/contracts libraries/contracts
 COPY apps/frontend apps/frontend
+RUN pnpm --filter @exam-one/contracts build || true
 RUN pnpm --filter ./apps/frontend build
 
 FROM node:22-alpine AS runtime

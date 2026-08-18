@@ -14,6 +14,11 @@
 const { t, te } = useI18n()
 const pageTitle = useState<string>('pageTitle', () => 'Exam.one')
 const pageSubtitle = useState<string>('pageSubtitle', () => '')
+const settingsStore = useSettingsStore()
+
+onMounted(() => {
+  void settingsStore.hydrateFromApi()
+})
 
 const translatedTitle = computed(() => (te(pageTitle.value) ? t(pageTitle.value) : pageTitle.value))
 const translatedSubtitle = computed(() =>

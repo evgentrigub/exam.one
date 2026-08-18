@@ -1,44 +1,44 @@
 /**
  * useAccountProfile
- * Local-first user profile (name, exam target, plan). Persisted under the
- * standard exam-one: key. No backend in Phase 1.
+ * Profile from NestJS session (Phase 2.2+).
  */
 
-import { useLocalStorage } from '@vueuse/core'
+import type { PlanId as ContractPlanId, UserDto } from '@exam-one/contracts'
 
 export type PlanId = 'free' | 'pro'
 
 export interface AccountProfile {
   name: string
   email: string
-  examTargetDate: string // ISO date (yyyy-mm-dd)
+  examTargetDate: string
   plan: PlanId
 }
 
-const STORAGE_KEY = 'exam-one:account:profile'
-
-function defaultTargetDate(): string {
-  const d = new Date()
-  d.setDate(d.getDate() + 56)
-  return d.toISOString().slice(0, 10)
+function toLocalPlan(plan: ContractPlanId | string): PlanId {
+  return plan === 'PRO' || plan === 'pro' ? 'pro' : 'free'
 }
 
-const defaults: AccountProfile = {
-  name: 'Lena Bauer',
-  email: 'lena.bauer@email.de',
-  examTargetDate: defaultTargetDate(),
-  plan: 'free',
+function fromUser(user: UserDto | null): AccountProfile {
+  if (!user) {
+    return {
+      name: '',
+      email: '',
+      examTargetDate: '',
+      plan: 'free',
+    }
+  }
+  return {
+    name: user.name,
+    email: user.email,
+    examTargetDate: user.examTargetDate ?? '',
+    plan: toLocalPlan(user.plan),
+  }
 }
 
 export const useAccountProfile = () => {
-  const profile = useLocalStorage<AccountProfile>(
-    STORAGE_KEY,
-    { ...defaults },
-    {
-      initOnMounted: true,
-      mergeDefaults: true,
-    }
-  )
+  const { user, updateProfile } = useAuth()
+
+  const profile = computed(() => fromUser(user.value))
 
   const daysUntilExam = computed<number>(() => {
     if (!profile.value.examTargetDate) return 0
@@ -54,10 +54,24 @@ export const useAccountProfile = () => {
     return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
   })
 
+  async function saveProfile(input: {
+    name: string
+    email: string
+    examTargetDate: string
+  }): Promise<void> {
+    await updateProfile({
+      name: input.name,
+      email: input.email,
+      examTargetDate: input.examTargetDate || null,
+    })
+  }
+
   return {
     // State
     profile,
     daysUntilExam,
     initials,
+    // Methods
+    saveProfile,
   }
 }
