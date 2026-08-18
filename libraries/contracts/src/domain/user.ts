@@ -7,7 +7,6 @@ export interface UserDto {
   examTargetDate: string | null
   plan: PlanId
   emailVerified: boolean
-  migratedDomains: readonly string[]
   createdAt: string
   updatedAt: string
 }

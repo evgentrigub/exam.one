@@ -18,7 +18,6 @@ import {
 import { generateUUID } from '~/utils/uuid'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 type GenerationStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -59,8 +58,6 @@ function writeAllModelAnswers(map: Record<string, ModelAnswerRecord>): void {
 
 async function hydrateModelAnswers(): Promise<void> {
   if (!import.meta.client || hydrated) return
-  await whenPracticeReady()
-  if (hydrated) return
   hydrated = true
   try {
     const rows = await apiFetch<AttemptDto[]>('/attempts?skill=WRITING')

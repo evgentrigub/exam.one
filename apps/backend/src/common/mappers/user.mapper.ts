@@ -9,7 +9,6 @@ export function toUserDto(user: User): UserDto {
     examTargetDate: user.examTargetDate ? user.examTargetDate.toISOString().slice(0, 10) : null,
     plan: user.plan,
     emailVerified: user.emailVerified,
-    migratedDomains: user.migratedDomains ?? [],
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   }

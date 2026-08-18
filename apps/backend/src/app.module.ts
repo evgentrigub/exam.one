@@ -16,7 +16,6 @@ import { ResultsModule } from './results/results.module'
 import { DraftsModule } from './drafts/drafts.module'
 import { GenerationJobsModule } from './generation-jobs/generation-jobs.module'
 import { MockExamModule } from './mock-exam/mock-exam.module'
-import { ImportModule } from './import/import.module'
 
 @Module({
   imports: [
@@ -43,7 +42,6 @@ import { ImportModule } from './import/import.module'
     DraftsModule,
     GenerationJobsModule,
     MockExamModule,
-    ImportModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

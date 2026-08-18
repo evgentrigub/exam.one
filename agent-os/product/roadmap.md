@@ -92,7 +92,7 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 
 #### 2.3 Persistence cutover
 
-**Complete:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Shared Goethe A2 seeds (and bundled mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. Leftover browser practice keys import once per user per domain (`POST /api/v1/me/import/:domain`); only imported keys are removed. Theme, locale, listening playback, and reading bookmarks stay client-side. Prompt templates and LLM keys stay out of this slice. Nitro AI remains until 2.4.
+**Complete:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Shared Goethe A2 seeds (and bundled mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. Theme, locale, listening playback, and reading bookmarks stay client-side. Prompt templates and LLM keys stay out of this slice. Nitro AI remains until 2.4.
 
 #### 2.4 AI move to NestJS
 

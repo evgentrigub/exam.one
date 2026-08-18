@@ -14,9 +14,9 @@ Related client prefs that are not localStorage keys:
 - Listening playback volume/speed (session UI prefs)
 - Reading “saved texts” bookmarks (non-authoritative)
 
-## Historical practice keys (import only)
+## Historical practice keys (retired)
 
-These were authoritative until 2.3. `usePracticeImport()` may still **read** them once after login and `POST` them to Nest, then **delete only those imported keys**. Do not write them again.
+These were authoritative until 2.3. Do not read or write them. The one-time import helper has been removed.
 
 ```
 exam-one:reading:texts
@@ -57,7 +57,7 @@ model-answers
 - Structure: `exam-one:<feature>:<what>` (e.g., `exam-one:theme`)
 - Define the key as a `const KEY = 'exam-one:...'` at the top of the owning composable / store; never inline string literals in multiple places
 - **Secrets stay out of localStorage**. A bring-your-own-key API key should come from runtime/env config
-- **Never call `localStorage.clear()`** after import — only remove imported practice keys
+- **Never call `localStorage.clear()`** — it would wipe theme and other UI prefs
 
 ```ts
 const STORAGE_KEY = 'exam-one:theme'

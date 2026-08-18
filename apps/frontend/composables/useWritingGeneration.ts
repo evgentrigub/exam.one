@@ -11,7 +11,6 @@ import {
 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { PartGenerationJob } from '~/utils/generation/partJobs'
 import type { WritingExercise, Difficulty } from '~/utils/types'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
 
 interface GenerationState {
@@ -55,7 +54,6 @@ export const useWritingGeneration = () => {
    */
   const loadState = async () => {
     if (import.meta.server) return
-    await whenPracticeReady()
 
     try {
       const parsed = (await loadGenerationJob('WRITING')) as

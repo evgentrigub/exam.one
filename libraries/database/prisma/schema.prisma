@@ -51,7 +51,6 @@ model User {
   plan             PlanId            @default(FREE)
   passwordHash     String?
   emailVerified    Boolean           @default(false)
-  migratedDomains  String[]          @default([])
   settings         Setting?
   exercises        Exercise[]
   attempts         Attempt[]

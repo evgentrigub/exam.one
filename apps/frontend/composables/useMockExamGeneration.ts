@@ -13,7 +13,6 @@ import type { SkillId } from '~/utils/labels'
 import type { WritingExercise } from '~/utils/types'
 import type { GenerationJobDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 export type MockGenerationStatus = 'queued' | 'running' | 'done' | 'failed'
 export type MockGenerationJobKind = 'content' | 'audio'
@@ -150,7 +149,6 @@ export const useMockExamGeneration = () => {
 
   const initialize = async (): Promise<void> => {
     if (isInitialized.value || import.meta.server) return
-    await whenPracticeReady()
     try {
       const saved = await apiFetch<GenerationJobDto | null>('/mock-exam/generation')
       const raw = saved?.payload

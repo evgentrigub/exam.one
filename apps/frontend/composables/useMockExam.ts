@@ -5,7 +5,6 @@ import type { SkillId } from '~/utils/labels'
 import type { AiReviewDataA2 } from '~/utils/types'
 import type { MockExamAttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 export type MockGradingStatus = 'auto' | 'pending' | 'done' | 'unavailable'
 
@@ -144,7 +143,6 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
       import.meta.server
     )
       return
-    await whenPracticeReady()
     try {
       const saved = await apiFetch<MockExamAttemptDto | null>(
         `/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`
