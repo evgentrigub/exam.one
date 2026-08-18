@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /workspace
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tsconfig.json ./
@@ -19,7 +19,7 @@ RUN pnpm --filter @exam-one/database build \
   && pnpm --filter ./apps/backend build
 RUN pnpm deploy --filter ./apps/backend --prod --legacy /production
 
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /production ./

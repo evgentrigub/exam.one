@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /workspace
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
@@ -14,7 +14,7 @@ COPY apps/frontend apps/frontend
 RUN pnpm --filter @exam-one/contracts build || true
 RUN pnpm --filter ./apps/frontend build
 
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /workspace/apps/frontend/.output ./

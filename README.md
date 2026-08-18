@@ -109,7 +109,7 @@ When LLM API keys are configured (optional):
 
 ### Prerequisites
 
-- **Node.js**: v20.x or higher (LTS recommended)
+- **Node.js**: v24.x or higher (LTS recommended)
 - **pnpm**: v10.12.1+ (recommended) or npm/yarn
 
 ### Installation
@@ -170,7 +170,7 @@ pnpm generate
 
 - **Nuxt 4** (v4.5.2) - Meta-framework with auto-imports and file-based routing
 - **Vue 3** (v3.5.41) - Composition API with `<script setup>`
-- **TypeScript** (v5.8.3) - Strict mode for type safety
+- **TypeScript** (v6.0.3) - Strict mode for type safety
 
 ### UI & Styling
 
