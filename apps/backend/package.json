@@ -19,6 +19,7 @@
   "dependencies": {
     "@exam-one/contracts": "workspace:*",
     "@exam-one/database": "workspace:*",
+    "@exam-one/exam-content": "workspace:*",
     "@exam-one/nestjs-libraries": "workspace:*",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",
