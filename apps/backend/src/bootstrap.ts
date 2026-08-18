@@ -1,11 +1,14 @@
 import { ValidationPipe, VersioningType, type INestApplication } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
+import { json, urlencoded } from 'express'
 import { RequestIdInterceptor } from './common/interceptors/request-id.interceptor'
 
 export function configureApp(app: INestApplication): void {
   app.enableShutdownHooks()
   app.use(cookieParser())
+  app.use(json({ limit: '5mb' }))
+  app.use(urlencoded({ extended: true, limit: '5mb' }))
   app.setGlobalPrefix('api')
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' })
   app.useGlobalPipes(
