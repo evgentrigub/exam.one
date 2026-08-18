@@ -19,17 +19,18 @@ pnpm stack:up     # prepare speech models and start the complete Docker Compose 
 pnpm stack:down   # stop the complete stack without deleting named volumes
 pnpm tts:up       # prepare and start only Kokoro TTS
 pnpm stt:up       # prepare and start only Parakeet STT
+pnpm auth:set-password --email you@example.com  # recover a local account password
 ```
 
 Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The completed offline-first Nuxt 3 frontend remains usable without the standalone NestJS backend. The backend, shared libraries, Prisma boundary, and Docker Compose infrastructure establish the current Phase 2 architecture while AI requests still use temporary Nuxt server routes.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.2 the app is **login-gated**: Nuxt talks to NestJS for accounts, session, profile, and settings. Skill practice, mock exams, progress, and drafts still use localStorage until 2.3. AI requests still use temporary Nuxt server routes.
 
 **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with local-first persistence and optional AI enhancements. The mock exam includes offline Set 1, locally generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
-**Phase 2 is current:** preserve the completed product behavior while moving accounts, persistence, generated content, and AI proxy ownership to NestJS/PostgreSQL and the self-hosted Docker Compose stack. Existing frontend domains remain on localStorage until they are deliberately migrated. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+**Phase 2 is current:** 2.1 (backend foundation) and 2.2 (auth/accounts) are done. Next is 2.3 persistence cutover. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
 
 ### Key directories
 
@@ -44,7 +45,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/`                   | Product context and canonical implementation standards                                                       |
 
-### Frontend data lifecycle (until Phase 2 migration)
+### Frontend data lifecycle (until 2.3 migration)
 
 1. On first client load, if localStorage is empty, seed from `apps/frontend/data/{skill}/` defaults and persist
 2. On subsequent loads, merge: `items = defaults ∪ stored.filter(x => !isDefault(x.id))`

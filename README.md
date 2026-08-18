@@ -2,7 +2,7 @@
 
 > Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode.
 
-Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking.
+Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
 Design preview: `npx --yes serve exam-one-design/project -l 5174`
 
@@ -18,9 +18,11 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Listening (Hoeren)        | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS                    |
 | Speaking (Sprechen)       | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review             |
 | Mock exam                 | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
-| Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started                                                      |
+| Phase 2.1 backend         | **Complete** — NestJS, Prisma, health, Compose/Postgres                                            |
+| Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
+| Phase 2.3 practice data   | Next — skill / mock / progress / drafts still localStorage                                         |
 
-**Current implementation focus:** Phase 2 persistence and self-hosting work. See the roadmap for the NestJS/PostgreSQL cutover plan.
+**Current implementation focus:** Phase 2.3 persistence cutover. See the roadmap.
 
 ## ✨ Features
 
@@ -63,6 +65,12 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **Optional AI review**: Direct-point criteria, explanations, strengths, improvements, and local attempt persistence
 - **Mock exam integration**: Automatic grading and persisted detailed review on completed attempts
 
+### Accounts (Phase 2.2)
+
+- Register / sign in on this instance (email + password). No default operator account.
+- Profile and exam settings (level, target language) persist in PostgreSQL.
+- SMTP is optional (`EMAIL_PROVIDER=none` by default). Recover a password with `pnpm auth:set-password --email you@example.com`.
+
 ### 📊 Progress Dashboard
 
 - **Comprehensive Statistics**: Completion rates, average scores, best scores
@@ -80,7 +88,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 
 ### Offline-First Core ✅
 
-The completed Phase 1 core flows work without internet (localStorage):
+The completed Phase 1 core flows work without internet **after you are signed in** (localStorage):
 
 - Reading, writing, listening, and speaking practice
 - Goethe A2 mock exam Set 1
@@ -121,10 +129,12 @@ npm install
 ### Development
 
 ```bash
-# Start development server at http://localhost:3000
+# Start PostgreSQL, then Nuxt :3000 and NestJS :3001
+pnpm dev:infra
 pnpm dev
 
-# The app will hot-reload as you make changes
+# First visit: register at http://localhost:3000/auth/register
+# Requires JWT_SECRET in the root `.env` (see `.env.example`)
 ```
 
 ### Optional: Enable AI Features
@@ -215,10 +225,16 @@ pnpm dev
 
 This starts:
 
-- Nuxt with hot reload at `http://localhost:3000`
+- Nuxt with hot reload at `http://localhost:3000` (login-gated; register on first use)
 - NestJS with watch mode at `http://localhost:3001`
 - API documentation at `http://localhost:3001/api/docs`
 - PostgreSQL in Docker at `localhost:5432`
+
+Copy `.env.example` to `.env` and set `JWT_SECRET`. SMTP is off by default. To reset a local password:
+
+```bash
+pnpm auth:set-password --email you@example.com
+```
 
 The root `compose.yaml` is the repository's only Compose file. `pnpm dev:infra`
 selects just its `postgres` service for local hot-reload development. PostgreSQL
@@ -304,7 +320,8 @@ pnpm stt:up             # Start only local Parakeet STT from compose.yaml
 pnpm db:validate        # Validate the shared Prisma schema
 pnpm db:migrate         # Create and apply a development migration
 pnpm db:migrate:deploy  # Apply committed migrations
-pnpm db:seed            # Seed the development database
+pnpm db:seed            # No-op seed (register the first user in the app)
+pnpm auth:set-password  # Recover a local account password (`--email`)
 ```
 
 ## 📊 Project Status
@@ -322,7 +339,7 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 
 ### Later phases
 
-- **Current — Phase 2:** NestJS + PostgreSQL persistence cutover + Docker Compose self-host
+- **Current — Phase 2:** 2.1–2.2 done (backend + auth). Next is 2.3 practice-data cutover, then AI-to-Nest (2.4) and Compose runbook (2.5–2.6)
 - Phase 3: Public open-source release + docs site
 - Phase 4: Hosted cloud product
 
@@ -371,7 +388,7 @@ Contributions are welcome! Please follow these guidelines:
 - Repository-wide lint and strict TypeScript checks
 - Production builds for all workspace applications and libraries
 - Manual end-to-end checks of the completed German / Goethe A2 practice and mock-exam flows
-- Backend health endpoint E2E coverage for the Phase 2 scaffold
+- Backend health and auth unit/e2e coverage for the Phase 2 API
 
 ## 📚 Documentation
 
@@ -388,14 +405,13 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 
 ### Current Focus
 
-Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack cutover** while preserving the finished German / Goethe A2 product behavior.
+Phase 1 is complete. **2.1–2.2 are complete** (NestJS foundation + login-gated accounts). The current focus is **2.3 persistence cutover** while preserving German / Goethe A2 practice behavior.
 
 ### Next Steps (In Priority Order)
 
-1. **Persistence Cutover** - Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
-2. **Account Flows** - Connect authentication, profile, and settings to the backend
-3. **AI API Migration** - Move provider adapters from temporary Nuxt routes to NestJS
-4. **Self-Host Runbook** - Complete single-command Docker Compose setup and backup/restore documentation
+1. **Persistence Cutover (2.3)** — Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
+2. **AI API Migration (2.4)** — Move provider adapters from temporary Nuxt routes to NestJS
+3. **Self-Host Runbook (2.5–2.6)** — Finish single-command Docker Compose setup and backup/restore documentation
 
 ## 📝 License
 

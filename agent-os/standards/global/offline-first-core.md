@@ -8,15 +8,15 @@ AI is an enhancement layer (exercise generation, review, grading), never a hard 
 
 ## Phase boundaries
 
-### Phase 1 (current) — offline-capable frontend
+### Phase 1 (complete) — offline-capable frontend
 
-Every core practice flow must work with **zero network**: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. User/exam data lives in localStorage. Do not introduce a required backend or database for core flows in Phase 1.
+Every core practice flow works with **zero network** once the user is in the app: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. Until 2.3, user/exam practice data lives in localStorage.
 
-**Goethe A2 skill progress:** Reading / Writing / Listening are practice-ready. Speaking Teil 1–2 is practice-ready with offline manual transcripts and optional STT/AI; **Teil 3 joint planning is the next implementation focus** (see `agent-os/product/roadmap.md`). Mock-exam Set 1 is shipped with provisional Teil 1–2 Speaking scoring; pronunciation and full Speaking scoring follow.
+**Goethe A2 skill progress:** Reading, Writing, Listening, Speaking, and mock exam mode are complete and tested (see `agent-os/product/roadmap.md`).
 
-### Phase 2 onward — local self-hosted stack
+### Phase 2 (current) — local self-hosted stack
 
-Core user and exam data (attempts, results, drafts, progress, settings that are not pure UI prefs) live in **PostgreSQL** behind the **NestJS** API. Network access to the **local Docker Compose stack** is expected. See `self-host-persistence.md`. AI remains optional and bring-your-own-key.
+**2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack. **Until 2.3:** skill practice, mock exams, progress, and drafts still use localStorage after login. After 2.3, those domains move to PostgreSQL behind the NestJS API. See `self-host-persistence.md`. AI remains optional and bring-your-own-key.
 
 Theme and similar non-authoritative UI preferences may still use client storage (see `theme-catalog.md`).
 
