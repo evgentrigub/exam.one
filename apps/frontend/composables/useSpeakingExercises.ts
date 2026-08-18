@@ -1,6 +1,5 @@
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import { createSkillExercise, fetchSkillExercises } from '~/composables/usePracticeCatalog'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 const topics = ref<SpeakingA2Topic[]>([])
 const isInitialized = ref(false)
@@ -12,7 +11,6 @@ export const useSpeakingExercises = () => {
     if (isInitialized.value) return
     if (hydratePromise) return hydratePromise
     hydratePromise = (async () => {
-      await whenPracticeReady()
       try {
         topics.value = await fetchSkillExercises<SpeakingA2Topic>('SPEAKING')
         isInitialized.value = true

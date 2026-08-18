@@ -12,7 +12,6 @@ import {
 } from '~/utils/generation/partJobs'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
 const STALE_THRESHOLD_MS = 5 * 60 * 1000
 
@@ -42,7 +41,6 @@ export const useReadingGeneration = () => {
 
   const loadState = async () => {
     if (import.meta.server) return
-    await whenPracticeReady()
 
     try {
       const parsed = (await loadGenerationJob('READING')) as PartGenerationState | null

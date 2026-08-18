@@ -18,7 +18,7 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 **2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
 
-**2.3 done:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Leftover browser practice keys import once per user per domain (`POST /api/v1/me/import/:domain`). Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
+**2.3 done:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
 
 AI remains optional and bring-your-own-key. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
@@ -56,12 +56,11 @@ apps/frontend/data/
 
 ## Seed + API hydrate (after 2.3)
 
-Composables that own list data hydrate from NestJS after login (and after the one-time localStorage import, if any):
+Composables that own list data hydrate from NestJS after login:
 
-1. `usePracticeImport().runOnceAfterLogin()` posts leftover practice keys or skips empty domains
-2. Catalogs call `GET /api/v1/exercises?skill=...` (no client merge with bundled arrays)
-3. Progress, drafts, generation jobs, and mock sets use the matching `/api/v1` endpoints
-4. Writes go to the API only — do not keep a second localStorage source of truth
+1. Catalogs call `GET /api/v1/exercises?skill=...` (no client merge with bundled arrays)
+2. Progress, drafts, generation jobs, and mock sets use the matching `/api/v1` endpoints
+3. Writes go to the API only — do not keep a second localStorage source of truth
 
 Why: app updates can ship new seed content via `db:seed` without wiping user-generated rows, and two accounts on one browser no longer share practice data.
 

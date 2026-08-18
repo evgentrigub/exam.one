@@ -4,7 +4,6 @@ import {
   deleteSkillExercise,
   fetchSkillExercises,
 } from '~/composables/usePracticeCatalog'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 const topics = ref<WritingExercise[]>([])
 const isInitialized = ref(false)
@@ -16,7 +15,6 @@ export const useWritingTopics = () => {
     if (isInitialized.value) return
     if (hydratePromise) return hydratePromise
     hydratePromise = (async () => {
-      await whenPracticeReady()
       try {
         topics.value = await fetchSkillExercises<WritingExercise>('WRITING')
         isInitialized.value = true

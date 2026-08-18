@@ -1,7 +1,6 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
 import type { MockExamSetDto, MockExamSetSummaryDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 const generatedSets = useState<MockExamSet[]>('mock-exam-generated-sets', () => [])
 const seedSet = useState<MockExamSet | null>('mock-exam-seed-set', () => null)
@@ -37,7 +36,6 @@ export const useMockExamSets = () => {
     if (import.meta.server || isInitialized.value) return
     if (hydratePromise) return hydratePromise
     hydratePromise = (async () => {
-      await whenPracticeReady()
       try {
         const summaries = await apiFetch<MockExamSetSummaryDto[]>('/mock-exam/sets')
         const full = await Promise.all(

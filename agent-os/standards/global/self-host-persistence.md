@@ -15,8 +15,6 @@ Exam and user data that have been cut over live in PostgreSQL and are accessed o
 
 Shared Goethe A2 seeds (and mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. User-generated exercises overlay seeds by `externalId` and are scoped by `userId`.
 
-Leftover Phase 1 / 2.2 browser practice data is imported once per user per domain (`POST /api/v1/me/import/:domain`). The first logged-in account on a browser claims that blob. Retry/skip lives on the account page.
-
 ## Named Docker volume
 
 PostgreSQL data must use a **named Docker volume** (for example `postgres_data` in production compose, `exam-one-postgres-dev-data` in dev compose).

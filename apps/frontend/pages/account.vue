@@ -80,28 +80,6 @@
         </div>
       </div>
 
-      <!-- Practice import -->
-      <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-6">
-        <h3 class="font-display text-lg font-bold">Browser practice data</h3>
-        <p class="text-sm text-base-content/60 mt-1">
-          Leftover local practice data is imported once after login. Theme and playback prefs stay
-          in the browser. Retry if an import failed; skip if you want a clean catalog.
-        </p>
-        <div v-if="importError" class="alert alert-error text-sm mt-4">{{ importError }}</div>
-        <div v-if="importResult" class="text-sm text-success mt-4">
-          Last import: {{ importResult.domain }}
-          {{ importResult.skipped ? 'skipped' : 'saved' }}.
-        </div>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button class="btn btn-sm btn-primary" :disabled="importing" @click="retryImport">
-            {{ importing ? 'Importing…' : 'Import browser practice data' }}
-          </button>
-          <button class="btn btn-sm btn-ghost" :disabled="importing" @click="skipRemaining">
-            Skip remaining
-          </button>
-        </div>
-      </div>
-
       <!-- Password -->
       <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-6">
         <h3 class="font-display text-lg font-bold">{{ $t('auth.changePasswordTitle') }}</h3>
@@ -261,15 +239,6 @@ const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
 const { profile, initials, saveProfile } = useAccountProfile()
 const { changePassword } = useAuth()
-const {
-  importing,
-  lastError: importError,
-  lastResult: importResult,
-  runPendingImports,
-  skipDomain,
-  domains,
-  migratedDomains,
-} = usePracticeImport()
 
 const editing = ref(false)
 const savingProfile = ref(false)
@@ -377,18 +346,6 @@ async function onChangePassword() {
       error instanceof ApiClientError ? error.message : 'Could not update password'
   } finally {
     savingPassword.value = false
-  }
-}
-
-async function retryImport() {
-  await runPendingImports()
-}
-
-async function skipRemaining() {
-  for (const domain of domains) {
-    if (!migratedDomains.value.includes(domain)) {
-      await skipDomain(domain)
-    }
   }
 }
 

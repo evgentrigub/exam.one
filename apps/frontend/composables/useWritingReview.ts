@@ -15,7 +15,6 @@ import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/revi
 import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -58,8 +57,6 @@ function writeAllReviews(map: Record<string, WritingReviewRecord>): void {
 
 async function hydrateReviews(): Promise<void> {
   if (!import.meta.client || hydrated) return
-  await whenPracticeReady()
-  if (hydrated) return
   hydrated = true
   try {
     const rows = await apiFetch<AttemptDto[]>('/attempts?skill=WRITING')

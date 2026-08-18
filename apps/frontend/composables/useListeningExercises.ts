@@ -2,7 +2,6 @@ import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exe
 import type { ExerciseDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
 import { createSkillExercise, fetchSkillExercises } from '~/composables/usePracticeCatalog'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 const exercises = ref<ListeningA2Exercise[]>([])
 const isInitialized = ref(false)
@@ -14,7 +13,6 @@ export const useListeningExercises = () => {
     if (isInitialized.value) return
     if (hydratePromise) return hydratePromise
     hydratePromise = (async () => {
-      await whenPracticeReady()
       try {
         exercises.value = await fetchSkillExercises<ListeningA2Exercise>('LISTENING')
         isInitialized.value = true

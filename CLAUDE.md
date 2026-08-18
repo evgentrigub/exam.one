@@ -47,9 +47,8 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ### Frontend data lifecycle (after 2.3)
 
-1. After login, leftover practice keys in localStorage are posted once to `POST /api/v1/me/import/:domain` (or skipped if empty)
-2. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
-3. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null). User-generated rows overlay seeds by `externalId`
+1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
+2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null). User-generated rows overlay seeds by `externalId`
 
 Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
 

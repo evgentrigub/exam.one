@@ -17,11 +17,7 @@ const pageSubtitle = useState<string>('pageSubtitle', () => '')
 const settingsStore = useSettingsStore()
 
 onMounted(() => {
-  const { runOnceAfterLogin } = usePracticeImport()
-  void (async () => {
-    await runOnceAfterLogin()
-    await settingsStore.hydrateFromApi()
-  })()
+  void settingsStore.hydrateFromApi()
 })
 
 const translatedTitle = computed(() => (te(pageTitle.value) ? t(pageTitle.value) : pageTitle.value))

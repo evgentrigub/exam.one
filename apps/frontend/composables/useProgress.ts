@@ -2,7 +2,6 @@ import type { AttemptDto, DraftDto, Skill } from '@exam-one/contracts'
 import type { WritingSubmission, WritingFeedbackModel } from '~/utils/types'
 import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
 import { apiFetch } from '~/composables/useApi'
-import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 interface QuizProgress {
   textId: string
@@ -224,7 +223,6 @@ async function hydrate(): Promise<void> {
   if (!import.meta.client || hydrated.value) return
   if (hydratePromise) return hydratePromise
   hydratePromise = (async () => {
-    await whenPracticeReady()
     try {
       const [reading, writing, listening, speaking, readingDrafts, writingDraftRows] =
         await Promise.all([
