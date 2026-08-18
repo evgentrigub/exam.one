@@ -1,4 +1,13 @@
-import { IsIn, IsObject, IsOptional, IsInt, Min, Max, ValidateNested, IsString } from 'class-validator'
+import {
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+  ValidateNested,
+  IsString,
+} from 'class-validator'
 import { Type } from 'class-transformer'
 import type { Skill } from '@exam-one/contracts'
 

@@ -134,10 +134,7 @@ describe('AuthService', () => {
   it('rejects duplicate registration', async () => {
     prisma.user.findUnique.mockResolvedValue({ id: 'u1' })
     await expect(
-      service.register(
-        { name: 'Ada', email: 'a@b.com', password: 'password1' },
-        res as Response
-      )
+      service.register({ name: 'Ada', email: 'a@b.com', password: 'password1' }, res as Response)
     ).rejects.toBeInstanceOf(ConflictException)
   })
 
@@ -186,10 +183,7 @@ describe('AuthService', () => {
     const user = makeUser({ email: 'a@b.com' })
     prisma.user.findUnique.mockResolvedValue(user)
 
-    const result = await service.login(
-      { email: 'A@B.com', password: 'password1' },
-      res as Response
-    )
+    const result = await service.login({ email: 'A@B.com', password: 'password1' }, res as Response)
 
     expect(mockedBcrypt.compare).toHaveBeenCalledWith('password1', user.passwordHash)
     expect(result.user.email).toBe('a@b.com')
@@ -302,10 +296,7 @@ describe('AuthService', () => {
     const user = makeUser({ emailVerified: true })
     prisma.user.findUnique.mockResolvedValue(user)
 
-    const result = await service.verifyEmail(
-      { email: user.email, code: '123456' },
-      res as Response
-    )
+    const result = await service.verifyEmail({ email: user.email, code: '123456' }, res as Response)
 
     expect(result.requiresEmailVerification).toBe(false)
     expect(prisma.$transaction).not.toHaveBeenCalled()
@@ -331,10 +322,7 @@ describe('AuthService', () => {
     prisma.authToken.findFirst.mockResolvedValue({ id: 'verify-1' })
     prisma.user.findUniqueOrThrow.mockResolvedValue(verified)
 
-    const result = await service.verifyEmail(
-      { email: user.email, code: '123456' },
-      res as Response
-    )
+    const result = await service.verifyEmail({ email: user.email, code: '123456' }, res as Response)
 
     expect(prisma.$transaction).toHaveBeenCalled()
     expect(result.user.emailVerified).toBe(true)

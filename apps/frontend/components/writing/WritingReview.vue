@@ -72,8 +72,7 @@
         <pre
           v-else-if="selectedView === 'review'"
           class="whitespace-pre-wrap text-sm text-base-content"
-          >{{ reviewText }}</pre
-        >
+          >{{ reviewText }}</pre>
 
         <!-- Submitted Answer View -->
         <div v-else-if="selectedView === 'answer'">

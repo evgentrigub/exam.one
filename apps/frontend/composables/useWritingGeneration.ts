@@ -11,7 +11,11 @@ import {
 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { PartGenerationJob } from '~/utils/generation/partJobs'
 import type { WritingExercise, Difficulty } from '~/utils/types'
-import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
+import {
+  clearGenerationJob,
+  loadGenerationJob,
+  saveGenerationJob,
+} from '~/composables/useGenerationJobs'
 
 interface GenerationState {
   isGenerating: boolean
@@ -57,8 +61,7 @@ export const useWritingGeneration = () => {
 
     try {
       const parsed = (await loadGenerationJob('WRITING')) as
-        | (GenerationState & { part?: 1 | 2 })
-        | null
+        (GenerationState & { part?: 1 | 2 }) | null
       if (!parsed) return
 
       // Check if generation was interrupted (older than 5 minutes)

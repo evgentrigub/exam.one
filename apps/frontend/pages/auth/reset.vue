@@ -79,8 +79,7 @@ async function submit() {
     await resetPassword({ token: token.value, password: password.value })
     await navigateTo('/dashboard')
   } catch (error) {
-    formError.value =
-      error instanceof ApiClientError ? error.message : t('auth.invalidResetLink')
+    formError.value = error instanceof ApiClientError ? error.message : t('auth.invalidResetLink')
   } finally {
     loading.value = false
   }

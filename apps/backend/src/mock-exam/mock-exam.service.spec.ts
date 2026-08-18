@@ -2,11 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ForbiddenException, HttpException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { MockExamService } from './mock-exam.service'
-import {
-  makeMockExamAttempt,
-  makeMockExamSet,
-  makeUser,
-} from '../testing/fixtures'
+import { makeMockExamAttempt, makeMockExamSet, makeUser } from '../testing/fixtures'
 
 function expectCode(error: unknown, type: typeof HttpException, code: string) {
   expect(error).toBeInstanceOf(type)

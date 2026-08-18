@@ -6,7 +6,11 @@ function safeAppPath(value: unknown): string {
   return value
 }
 
-async function applyAuthGate(to: { path: string; fullPath: string; query: { [key: string]: unknown } }) {
+async function applyAuthGate(to: {
+  path: string
+  fullPath: string
+  query: { [key: string]: unknown }
+}) {
   const isAuthRoute = to.path.startsWith('/auth')
   const { ensureSession, user } = useAuth()
 

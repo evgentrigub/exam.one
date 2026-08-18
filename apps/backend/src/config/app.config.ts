@@ -28,20 +28,17 @@ function emailProvider(): 'none' | 'smtp' {
   return raw === 'smtp' ? 'smtp' : 'none'
 }
 
-export const appConfig = registerAs(
-  'app',
-  (): AppConfig => ({
-    NODE_ENV: process.env['NODE_ENV'] ?? 'development',
-    BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
-    DATABASE_URL: requireEnv('DATABASE_URL'),
-    FRONTEND_URL: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
-    JWT_SECRET: requireEnv('JWT_SECRET'),
-    AUTH_COOKIE_SECURE: process.env['AUTH_COOKIE_SECURE'] === 'true',
-    EMAIL_PROVIDER: emailProvider(),
-    SMTP_HOST: process.env['SMTP_HOST'] ?? '',
-    SMTP_PORT: Number(process.env['SMTP_PORT'] ?? 587),
-    SMTP_USER: process.env['SMTP_USER'] ?? '',
-    SMTP_PASS: process.env['SMTP_PASS'] ?? '',
-    SMTP_FROM: process.env['SMTP_FROM'] ?? 'exam.one <noreply@localhost>',
-  })
-)
+export const appConfig = registerAs('app', (): AppConfig => ({
+  NODE_ENV: process.env['NODE_ENV'] ?? 'development',
+  BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
+  DATABASE_URL: requireEnv('DATABASE_URL'),
+  FRONTEND_URL: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
+  JWT_SECRET: requireEnv('JWT_SECRET'),
+  AUTH_COOKIE_SECURE: process.env['AUTH_COOKIE_SECURE'] === 'true',
+  EMAIL_PROVIDER: emailProvider(),
+  SMTP_HOST: process.env['SMTP_HOST'] ?? '',
+  SMTP_PORT: Number(process.env['SMTP_PORT'] ?? 587),
+  SMTP_USER: process.env['SMTP_USER'] ?? '',
+  SMTP_PASS: process.env['SMTP_PASS'] ?? '',
+  SMTP_FROM: process.env['SMTP_FROM'] ?? 'exam.one <noreply@localhost>',
+}))

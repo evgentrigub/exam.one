@@ -112,7 +112,9 @@ describe('EmailService', () => {
 
     await service.sendMail({ to: 'ada@example.com', subject: 'Hi', text: 'Hello' })
 
-    expect(createTransport).toHaveBeenCalledWith(expect.objectContaining({ port: 465, secure: true }))
+    expect(createTransport).toHaveBeenCalledWith(
+      expect.objectContaining({ port: 465, secure: true })
+    )
     expect(sendMail).toHaveBeenCalledWith(expect.objectContaining({ html: 'Hello' }))
   })
 })
