@@ -1,3 +1,7 @@
+import type { Difficulty, WritingExercise, WritingTopicTypes } from '@exam-one/exam-content'
+
+export type { Difficulty, WritingExercise, WritingTopicTypes }
+
 /**
  * Exam.one - Type Definitions
  * Shared data structures for exercises, reviews, and user progress
@@ -22,43 +26,6 @@ export interface Session {
   score?: number
   timeSpent?: number
 }
-
-export type Difficulty = 'A2' | 'C1'
-
-// Writing Topic Types
-export interface WritingExercise {
-  id: string
-  title: string
-  topicType: WritingTopicTypes
-  difficulty: Difficulty
-  testingPart?: 1 | 2
-  estimatedTime: number // in minutes
-  wordCount: {
-    min: number
-    max: number
-  }
-  category: string[]
-  createdAt: string
-  description: string // What type of text they should write
-  task: string // The actual writing prompt/task
-  requirements: string[] // Specific requirements (format, length, etc.)
-  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
-  examOnly?: boolean
-}
-
-export type WritingTopicTypes =
-  | 'report'
-  | 'review'
-  | 'proposal'
-  | 'article'
-  | 'note'
-  | 'form'
-  | 'email'
-  | 'letter'
-  | 'essay'
-  | 'postcard'
-  | 'post'
-  | string // Allow any string to ensure all generated topics are saved
 
 export interface WritingProgress {
   topicId: string

@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-[1180px] mx-auto px-8 py-8">
-    <!-- Header: gate on isClient so SSR/hydration match (exercises hydrate from localStorage) -->
+    <!-- Header: gate on isClient so SSR/hydration match (exercises hydrate from the API) -->
     <div v-if="isClient && exercise" class="flex items-start justify-between gap-4 mb-6">
       <div class="flex items-start gap-3">
         <NuxtLink

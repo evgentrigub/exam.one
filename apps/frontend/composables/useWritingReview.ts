@@ -6,13 +6,16 @@
  * OpenAI request is mocked. We still shape the payload as if calling OpenAI
  * and keep a placeholder variable with the composed input.
  *
- * Storage: localStorage under key `exam-one:writing:reviews`
+ * Storage: NestJS attempts (`Result.review.writingReview`)
  */
 
 import type { WritingExercise, AiReviewData } from '~/utils/types'
 import { ref } from 'vue'
 import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/reviewTextWritingC1'
 import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
+import type { AttemptDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
+import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -28,30 +31,49 @@ interface WritingReviewRecord {
   error?: string
 }
 
-const WRITING_REVIEW_KEY = 'exam-one:writing:reviews'
-const WRITING_REVIEW_LEGACY_KEY = 'writing-reviews'
-
-// Global reactive tick to notify UI of updates to localStorage-backed reviews
+const reviews = ref<Record<string, WritingReviewRecord>>({})
 const reviewVersion = ref(0)
+let hydrated = false
+
+function persistReview(record: WritingReviewRecord): void {
+  void apiFetch('/attempts', {
+    method: 'POST',
+    body: {
+      skill: 'WRITING',
+      exerciseExternalId: record.topicId,
+      answers: { kind: 'writing-review', content: record.content },
+      result: { review: { writingReview: record } },
+    },
+  }).catch(error => console.warn('Failed to persist writing review', error))
+}
 
 function readAllReviews(): Record<string, WritingReviewRecord> {
-  if (!import.meta.client) return {}
-  try {
-    const raw =
-      localStorage.getItem(WRITING_REVIEW_KEY) || localStorage.getItem(WRITING_REVIEW_LEGACY_KEY)
-    return raw ? (JSON.parse(raw) as Record<string, WritingReviewRecord>) : {}
-  } catch {
-    return {}
-  }
+  return reviews.value
 }
 
 function writeAllReviews(map: Record<string, WritingReviewRecord>): void {
-  if (!import.meta.client) return
+  reviews.value = map
+  reviewVersion.value++
+}
+
+async function hydrateReviews(): Promise<void> {
+  if (!import.meta.client || hydrated) return
+  await whenPracticeReady()
+  if (hydrated) return
+  hydrated = true
   try {
-    localStorage.setItem(WRITING_REVIEW_KEY, JSON.stringify(map))
-    reviewVersion.value++
+    const rows = await apiFetch<AttemptDto[]>('/attempts?skill=WRITING')
+    const map: Record<string, WritingReviewRecord> = {}
+    for (const row of rows) {
+      const review = row.result?.review
+      if (!review || typeof review !== 'object' || Array.isArray(review)) continue
+      const nested = (review as { writingReview?: WritingReviewRecord }).writingReview
+      const topicId = nested?.topicId ?? row.exerciseExternalId
+      if (nested && topicId) map[topicId] = nested
+    }
+    reviews.value = map
   } catch (error) {
-    console.warn('Failed to save writing reviews:', error)
+    console.warn('Failed to load writing reviews', error)
   }
 }
 
@@ -59,6 +81,7 @@ function saveRecord(record: WritingReviewRecord): void {
   const all = readAllReviews()
   all[record.topicId] = record
   writeAllReviews(all)
+  persistReview(record)
 }
 
 function getRecord(topicId: string): WritingReviewRecord | null {
@@ -67,6 +90,7 @@ function getRecord(topicId: string): WritingReviewRecord | null {
 }
 
 export function useWritingReview() {
+  if (import.meta.client) void hydrateReviews()
   function getReview(topicId: string): WritingReviewRecord | null {
     return getRecord(topicId)
   }

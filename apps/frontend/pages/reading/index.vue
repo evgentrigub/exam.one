@@ -197,7 +197,7 @@ const { t } = useI18n()
 // Progress composable
 const { getSession, isTextCompleted, getBestScore } = useProgress()
 
-// Reading texts management (localStorage-based)
+// Reading texts management (API-backed)
 const { getTexts, addTexts, deleteText } = useReadingTexts()
 
 // Reading generation management
@@ -320,7 +320,7 @@ async function handleGenerate() {
   try {
     console.log(`🤖 Generating ${examLevel.value} reading exercises...`)
     const newTexts = await generateReading(examLevel.value, {
-      onPartComplete: items => addTexts(items),
+      onPartComplete: items => void addTexts(items),
     })
 
     console.log(
@@ -335,7 +335,7 @@ async function handleGenerate() {
 // Retry generation handler
 async function handleRetry() {
   try {
-    const newTexts = await retryGeneration(items => addTexts(items))
+    const newTexts = await retryGeneration(items => void addTexts(items))
     console.log(`✅ Successfully generated ${newTexts.length} new reading exercises on retry`)
   } catch (error: unknown) {
     console.error('Failed to retry generation:', error)
@@ -347,7 +347,7 @@ async function handleRetry() {
 async function handleResume() {
   try {
     const newTexts = await resumeGeneration()
-    addTexts(newTexts)
+    await addTexts(newTexts)
     console.log(`✅ Successfully resumed and generated ${newTexts.length} new reading exercises`)
   } catch (error: unknown) {
     console.error('Failed to resume generation:', error)
@@ -361,14 +361,14 @@ function handleDismissError() {
 }
 
 // Delete text handler with confirmation
-function handleDeleteText(textId: string) {
+async function handleDeleteText(textId: string) {
   const text = getTexts().find(t => t.id === textId)
   if (!text) return
 
   const confirmed = confirm(t('practice.deleteConfirm', { title: text.title }))
 
   if (confirmed) {
-    const success = deleteText(textId)
+    const success = await deleteText(textId)
     if (success) {
       console.log(`✅ Text "${text.title}" deleted successfully`)
     }

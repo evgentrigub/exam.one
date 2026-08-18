@@ -1,6 +1,6 @@
 /**
  * Reading Generation Composable
- * Manages per-part AI reading exercise generation with localStorage persistence.
+ * Manages per-part AI reading exercise generation with API persistence.
  */
 
 import { readingA2Parts } from '~/data/reading/a2/exerciseGeneratorReadingA2'
@@ -12,8 +12,8 @@ import {
 } from '~/utils/generation/partJobs'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { Difficulty } from '~/utils/types'
-
-const STORAGE_KEY = 'exam-one:reading:generation-state'
+import { whenPracticeReady } from '~/composables/usePracticeImport'
+import { clearGenerationJob, loadGenerationJob, saveGenerationJob } from '~/composables/useGenerationJobs'
 const STALE_THRESHOLD_MS = 5 * 60 * 1000
 
 export interface ReadingGenerationOptions {
@@ -40,14 +40,13 @@ export const useReadingGeneration = () => {
       state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
   )
 
-  const loadState = () => {
+  const loadState = async () => {
     if (import.meta.server) return
+    await whenPracticeReady()
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (!stored) return
-
-      const parsed = JSON.parse(stored) as PartGenerationState
+      const parsed = (await loadGenerationJob('READING')) as PartGenerationState | null
+      if (!parsed) return
 
       // Treat stale in-progress states as abandoned and clear them.
       if (parsed.isGenerating && parsed.startedAt) {
@@ -76,12 +75,9 @@ export const useReadingGeneration = () => {
 
   const saveState = () => {
     if (import.meta.server) return
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.value))
-    } catch (error) {
+    void saveGenerationJob('READING', state.value).catch(error =>
       console.error('Failed to save reading generation state:', error)
-    }
+    )
   }
 
   const clearState = () => {
@@ -94,7 +90,7 @@ export const useReadingGeneration = () => {
     }
 
     if (import.meta.client) {
-      localStorage.removeItem(STORAGE_KEY)
+      void clearGenerationJob('READING').catch(() => undefined)
     }
   }
 
@@ -244,7 +240,7 @@ export const useReadingGeneration = () => {
   }
 
   onMounted(() => {
-    loadState()
+    void loadState()
   })
 
   return {

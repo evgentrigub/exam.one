@@ -477,7 +477,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         const parts = parseSkillPartKeys('reading', payload.parts)
         await generateReading(examLevel.value, {
           parts: parts.length ? parts : undefined,
-          onPartComplete: items => addTexts(items),
+          onPartComplete: items => void addTexts(items),
         })
         if (readingGenerationError.value) {
           alert(readingGenerationError.value)
@@ -490,13 +490,13 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         const partsToGenerate: (1 | 2)[] = selectedParts.length ? selectedParts : [1, 2]
         await generateWriting(examLevel.value, {
           parts: partsToGenerate,
-          onPartComplete: items => addTopics(items),
+          onPartComplete: items => void addTopics(items),
         })
       } else if (skill === 'listening' && examLevel.value === 'A2') {
         const parts = parseSkillPartKeys('listening', payload.parts)
         await generateListening(examLevel.value, {
           parts: parts.length ? parts : undefined,
-          onPartComplete: items => addListening(items),
+          onPartComplete: items => void addListening(items),
         })
         if (listeningGenerationError.value) {
           alert(listeningGenerationError.value)
@@ -505,7 +505,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         const parts = parseSkillPartKeys('speaking', payload.parts)
         await generateSpeaking(examLevel.value, {
           parts: parts.length ? parts : undefined,
-          onPartComplete: items => addSpeaking(items),
+          onPartComplete: items => void addSpeaking(items),
         })
         if (speakingGenerationError.value) {
           alert(speakingGenerationError.value)
@@ -605,7 +605,7 @@ function applyQuery() {
   }
 }
 
-// Guard client-only counts (derived from localStorage) to avoid hydration mismatch
+// Guard client-only counts (derived from API-backed catalogs) to avoid hydration mismatch
 const isMounted = ref(false)
 onMounted(() => {
   isMounted.value = true
@@ -817,7 +817,7 @@ function deleteWritingTopic(ex: UnifiedExercise) {
   if (ex.skill !== 'writing') return
   const confirmed = confirm(t('exercisesUi.deleteWritingConfirm', { title: ex.title }))
   if (confirmed) {
-    deleteTopic(ex.id)
+    void deleteTopic(ex.id)
   }
 }
 

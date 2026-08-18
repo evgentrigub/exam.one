@@ -162,7 +162,7 @@ const progress = computed(() => (isClient.value ? getTopicProgress(props.topic.i
 // Review state
 const { isReviewInProgress, reviewVersion, hasReview } = useWritingReview()
 const isPending = computed(() => {
-  // depend on version to refresh when localStorage-backed status changes
+  // depend on version to refresh when API-backed status changes
   void reviewVersion.value
   return isClient.value ? isReviewInProgress(props.topic.id) : false
 })

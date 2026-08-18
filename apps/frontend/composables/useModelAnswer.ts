@@ -2,7 +2,7 @@
  * useModelAnswer composable
  * Manages generation and storage of AI model answers for writing topics.
  *
- * Storage: localStorage under key `exam-one:writing:model-answers`
+ * Storage: NestJS attempts (`Result.review.modelAnswer`)
  */
 
 import type { WritingExercise, ModelAnswer } from '~/utils/types'
@@ -16,6 +16,9 @@ import {
   generateModelAnswerA2Part2,
 } from '~/data/writing/a2/answerGeneratorWritingA2'
 import { generateUUID } from '~/utils/uuid'
+import type { AttemptDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
+import { whenPracticeReady } from '~/composables/usePracticeImport'
 
 type GenerationStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -29,11 +32,51 @@ interface ModelAnswerRecord {
   error?: string
 }
 
-const MODEL_ANSWER_KEY = 'exam-one:writing:model-answers'
-const MODEL_ANSWER_LEGACY_KEY = 'model-answers'
-
-// Global reactive tick to notify UI of updates
+const answers = ref<Record<string, ModelAnswerRecord>>({})
 const modelAnswerVersion = ref(0)
+let hydrated = false
+
+function persistModelAnswer(record: ModelAnswerRecord): void {
+  void apiFetch('/attempts', {
+    method: 'POST',
+    body: {
+      skill: 'WRITING',
+      exerciseExternalId: record.topicId,
+      answers: { kind: 'model-answer' },
+      result: { review: { modelAnswer: record } },
+    },
+  }).catch(error => console.warn('Failed to persist model answer', error))
+}
+
+function readAllModelAnswers(): Record<string, ModelAnswerRecord> {
+  return answers.value
+}
+
+function writeAllModelAnswers(map: Record<string, ModelAnswerRecord>): void {
+  answers.value = map
+  modelAnswerVersion.value++
+}
+
+async function hydrateModelAnswers(): Promise<void> {
+  if (!import.meta.client || hydrated) return
+  await whenPracticeReady()
+  if (hydrated) return
+  hydrated = true
+  try {
+    const rows = await apiFetch<AttemptDto[]>('/attempts?skill=WRITING')
+    const map: Record<string, ModelAnswerRecord> = {}
+    for (const row of rows) {
+      const review = row.result?.review
+      if (!review || typeof review !== 'object' || Array.isArray(review)) continue
+      const nested = (review as { modelAnswer?: ModelAnswerRecord }).modelAnswer
+      const topicId = nested?.topicId ?? row.exerciseExternalId
+      if (nested && topicId) map[topicId] = nested
+    }
+    answers.value = map
+  } catch (error) {
+    console.warn('Failed to load model answers', error)
+  }
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -69,39 +112,18 @@ function normalizeModelAnswerData(
   }
 }
 
-function readAllModelAnswers(): Record<string, ModelAnswerRecord> {
-  if (!import.meta.client) return {}
-  try {
-    const raw =
-      localStorage.getItem(MODEL_ANSWER_KEY) || localStorage.getItem(MODEL_ANSWER_LEGACY_KEY)
-    return raw ? (JSON.parse(raw) as Record<string, ModelAnswerRecord>) : {}
-  } catch {
-    return {}
-  }
-}
-
-function writeAllModelAnswers(map: Record<string, ModelAnswerRecord>): void {
-  if (!import.meta.client) return
-  try {
-    localStorage.setItem(MODEL_ANSWER_KEY, JSON.stringify(map))
-    modelAnswerVersion.value++
-  } catch (error) {
-    console.warn('Failed to save model answers:', error)
-  }
-}
-
 function saveRecord(record: ModelAnswerRecord): void {
-  const all = readAllModelAnswers()
-  all[record.topicId] = record
+  const all = { ...answers.value, [record.topicId]: record }
   writeAllModelAnswers(all)
+  persistModelAnswer(record)
 }
 
 function getRecord(topicId: string): ModelAnswerRecord | null {
-  const all = readAllModelAnswers()
-  return all[topicId] || null
+  return answers.value[topicId] || null
 }
 
 export function useModelAnswer() {
+  if (import.meta.client) void hydrateModelAnswers()
   function getModelAnswer(topicId: string): ModelAnswer | null {
     const record = getRecord(topicId)
     return record?.modelAnswer || null
