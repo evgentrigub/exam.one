@@ -24,10 +24,11 @@
     "db:validate": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate",
     "db:migrate": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate dev",
     "db:migrate:deploy": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate deploy",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} tsx prisma/seed.ts",
     "auth:set-password": "tsx scripts/set-password.ts"
   },
   "dependencies": {
+    "@exam-one/exam-content": "workspace:*",
     "@prisma/client": "6.5.0",
     "bcrypt": "^6.0.0"
   },
@@ -41,5 +42,9 @@
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.1"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "tsx prisma/seed.ts"
   }
 }
