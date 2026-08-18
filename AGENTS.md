@@ -6,7 +6,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 3 frontend, NestJS auth/accounts on PostgreSQL (2.2), and Compose foundations. Practice data is still localStorage until 2.3.
+- Current app shape: pnpm monorepo with a completed Nuxt 3 frontend, NestJS auth/accounts and practice persistence on PostgreSQL (2.2–2.3), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
 
@@ -15,7 +15,8 @@ This file is the working guide for coding agents in this repository. It should b
 - **Done:** German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
 - **Done:** Mock exam offline Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
 - **Done:** Auth and account UI (2.2) — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
-- **Current:** Phase 2.3 persistence cutover — move skill, mock exam, progress, and draft data to NestJS/PostgreSQL while preserving completed practice behavior
+- **Done:** Persistence cutover (2.3) — skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login; leftover browser data imports once per domain
+- **Current:** Phase 2.4 — move the temporary Nitro AI proxy to NestJS while preserving optional BYOK behavior
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
@@ -63,11 +64,11 @@ Use `pnpm`.
 
 ## Agent Priorities
 
-1. Preserve completed product behavior. Unmigrated practice domains remain localStorage after login; accounts require the local API/PostgreSQL stack and must not require cloud infrastructure.
+1. Preserve completed product behavior. Practice domains are API-backed after login; leftover localStorage is imported once per user per domain. Accounts require the local API/PostgreSQL stack and must not require cloud infrastructure.
 2. Treat AI as optional and provider-agnostic (bring-your-own-key). If no API key is configured or an AI request fails, the app should degrade gracefully.
 3. Keep changes aligned with existing Nuxt, Vue, and DaisyUI patterns instead of introducing a parallel architecture.
 4. Prefer small, local changes over broad refactors unless the task explicitly requires structural work.
-5. During Phase 2, preserve compatibility with completed local-first flows and migrate persistence one domain at a time without maintaining two authoritative sources.
+5. Do not reintroduce localStorage as an authoritative source for skill, mock exam, progress, or draft data. UI prefs (theme, locale, playback) may stay client-side.
 
 ## Required Standards
 
@@ -75,7 +76,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Global
 
-- Phase-aware core: the shell is login-gated (2.2). Practice domains stay localStorage until 2.3; migrated domains may use the local self-hosted API/database
+- Phase-aware core: the shell is login-gated (2.2). Practice data is NestJS/PostgreSQL (2.3); leftover browser keys import once. Theme and playback prefs stay client-side
 - SSR storage guards: guard `localStorage`, `window`, and `document` access with `import.meta.client` and `try/catch`
 - Local storage keys: prefix with `exam-one:`
 
@@ -106,10 +107,10 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ## Data And Persistence Rules
 
-- Frontend-owned seed content currently belongs in typed modules under `apps/frontend/data/`; move it to `libraries/exam-content/` only when both applications need it
+- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates can stay under `apps/frontend/data/` until they are persisted
 - Exam-specific implementation details belong in `agent-os/product/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
-- Existing user progress, drafts, attempts, generated sets, and reviews remain local-first until their Phase 2 domain is explicitly migrated
-- Phase 2 persistence work should move an entire domain behind shared contracts and NestJS/PostgreSQL ownership, with a deliberate compatibility or migration path
+- Skill catalogs, attempts, drafts, reviews, generation jobs, and mock exams are owned by NestJS/PostgreSQL after login. Do not add new authoritative practice keys to localStorage
+- Leftover Phase 1 / 2.2 browser practice data is imported once per user per domain via `POST /api/v1/me/import/:domain`; only imported keys are removed
 - Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
 
 ## AI Integration Rules

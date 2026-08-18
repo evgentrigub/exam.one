@@ -20,11 +20,11 @@ composables:
 
 global:
   localstorage-keys:
-    description: 'Practice data keys prefixed exam-one: until 2.3; accounts already on Postgres; theme may stay client-side; no secrets; const at top of owning files'
+    description: 'Practice data is API-backed after 2.3; remaining client keys are theme/locale/playback/bookmarks; import may read historical exam-one: keys once; no secrets; const at top of owning files'
   offline-first-core:
-    description: 'Core practice: Phase 1 complete (localStorage); Phase 2.2 login-gated Nest accounts; 2.3 moves practice data to Postgres; Goethe A2 + C1 Writing; BYOK AI; typed seed merge'
+    description: 'Core practice: Phase 1 complete; Phase 2.2 login-gated Nest accounts; 2.3 practice data on Postgres; Goethe A2 + C1 Writing; BYOK AI; exam-content seed + API hydrate'
   self-host-persistence:
-    description: 'Phase 2 Docker Compose localhost stack; 2.2 accounts on Postgres; 2.3 exam data cutover; named volume; no required cloud'
+    description: 'Phase 2 Docker Compose localhost stack; 2.2–2.3 accounts and practice data on Postgres; named volume; no required cloud'
   ssr-storage-guards:
     description: 'Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level; applies wherever browser storage remains'
 
