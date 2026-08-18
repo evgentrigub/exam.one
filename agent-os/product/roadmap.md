@@ -17,7 +17,7 @@ flowchart LR
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** The monorepo already contains NestJS / Prisma / Compose scaffolding from early Phase 2 groundwork. The completed Phase 1 flows remain on localStorage until each domain is deliberately moved during the Phase 2 persistence cutover.
+> **Note:** NestJS / Prisma / Compose are in the repo. **2.1–2.2 are complete** (API + login-gated accounts). Skill practice, mock exams, progress, and drafts remain on localStorage until 2.3.
 
 The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. The architecture remains exam-agnostic so later phases can add other levels, languages, and providers without changing the completed Phase 1 definition.
 
@@ -63,25 +63,30 @@ i18n, settings, and progress UX solid enough that Phase 2 can freeze the product
 
 ## Phase 2: Self-Hostable Full-Stack App (current)
 
-Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). Like Postiz / n8n, a self-hosted instance supports signing up a single operator who then uses the app. AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
+Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). A self-hosted instance supports **multi-user registration** (email + password; no seeded operator). AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
 
 **Stack:**
 
 - **Frontend** — Vue.js (Nuxt)
 - **Backend** — NestJS API replacing the thin Nuxt AI proxy for long-term ownership
 - **Database** — PostgreSQL for users, exercises, attempts, results, drafts, and settings
-- **Persistence** — localStorage for exam/user data fully replaced by API-backed state
+- **Persistence (target)** — localStorage for exam/user data fully replaced by API-backed state. **Today:** accounts, session, profile, and exam settings are API-backed (2.2); skill practice, mock exams, progress, and drafts remain localStorage until 2.3.
 - **Packaging** — single-command Docker Compose self-hosting with a **named Postgres volume** so data survives container removal/recreation
 
 ### Substages
 
 #### 2.1 Backend foundation
 
-NestJS API modules, shared contracts, Prisma schema for users / exercises / attempts / results / drafts / settings, and health checks.
+**Complete:** NestJS API modules, shared `@exam-one/contracts`, Prisma schema for users / auth tokens / exercises / attempts / results / drafts / settings, health checks, and Compose/Postgres wiring.
 
 #### 2.2 Auth and account UI
 
-Wire Scalo-derived auth, profile, and settings pages (login, register, forgot/reset password, verify account, 2FA as applicable, profile/account settings) to NestJS auth. Vue/Nuxt is retained partly to reuse this UI library.
+**Complete and tested:** Scalo-derived login, register, forgot/reset password, verify, profile, and settings screens are wired to NestJS. The app shell is login-gated; skill practice remains localStorage until 2.3.
+
+- JWT httpOnly cookies (`exam_one_access` / `exam_one_refresh`), bcrypt passwords, and global JWT guard with public auth/health routes.
+- Multi-user registration with no seeded operator account. Email is the login identifier; SMTP is off by default (`EMAIL_PROVIDER=none`) and optional for verify/reset mail.
+- Local lockout recovery via `pnpm auth:set-password`. 2FA and Google OAuth were skipped. Billing stays demo.
+- Nuxt auth layout/pages, global middleware, and account/settings API hydration. Gated app routes are client-only (`ssr: false`); `/auth/**` remains SSR'd.
 
 #### 2.3 Persistence cutover
 

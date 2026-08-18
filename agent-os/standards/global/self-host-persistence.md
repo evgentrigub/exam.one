@@ -1,6 +1,8 @@
 # Self-Host Persistence (Phase 2+)
 
-Rules for durable local data when exam.one runs as a Docker Compose full stack on the user's machine. Phase 1 still uses localStorage for exam/user data (see `offline-first-core.md` and `localstorage-keys.md`).
+Rules for durable local data when exam.one runs as a Docker Compose full stack on the user's machine.
+
+**Cutover status:** accounts, session, profile, and exam settings are NestJS/PostgreSQL (roadmap 2.2). Skill practice, mock exams, progress, and drafts still use localStorage until 2.3 (see `offline-first-core.md` and `localstorage-keys.md`).
 
 ## Stack contract
 
@@ -9,7 +11,7 @@ Rules for durable local data when exam.one runs as a Docker Compose full stack o
 - **Database** — PostgreSQL
 - **Orchestration** — Docker Compose (localhost first; cloud hosting is a later phase)
 
-Exam and user data (users, exercises, attempts, results, drafts, authoritative settings) live in PostgreSQL and are accessed only through the NestJS API. localStorage must not remain the source of truth for those domains after Phase 2 cutover.
+Exam and user data that have been cut over (users, auth tokens, settings) live in PostgreSQL and are accessed only through the NestJS API. After 2.3, exercises, attempts, results, and drafts follow the same rule. localStorage must not remain the source of truth for those domains after their cutover.
 
 ## Named Docker volume
 
@@ -21,7 +23,7 @@ PostgreSQL data must use a **named Docker volume** (for example `postgres_data` 
 
 ## Local-first, not cloud-required
 
-Phase 2 core practice must work entirely on the user's laptop:
+Phase 2 core practice after login must work entirely on the user's laptop:
 
 - No required cloud account or hosted backend
 - AI remains bring-your-own-key (OpenAI / OpenRouter) and optional

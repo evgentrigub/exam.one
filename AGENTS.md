@@ -6,7 +6,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 3 offline-first frontend, plus NestJS / Prisma / Compose foundations for the active Phase 2 persistence cutover
+- Current app shape: pnpm monorepo with a completed Nuxt 3 frontend, NestJS auth/accounts on PostgreSQL (2.2), and Compose foundations. Practice data is still localStorage until 2.3.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
 
@@ -14,7 +14,8 @@ This file is the working guide for coding agents in this repository. It should b
 
 - **Done:** German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
 - **Done:** Mock exam offline Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
-- **Current:** Phase 2 NestJS/PostgreSQL persistence and self-hosting cutover; preserve the finished frontend behavior while migrating domains deliberately
+- **Done:** Auth and account UI (2.2) — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
+- **Current:** Phase 2.3 persistence cutover — move skill, mock exam, progress, and draft data to NestJS/PostgreSQL while preserving completed practice behavior
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
@@ -46,6 +47,7 @@ Use `pnpm`.
 - `pnpm stack:down` - stop the complete stack without deleting named volumes
 - `pnpm tts:up` - prepare and start only Kokoro TTS
 - `pnpm stt:up` - prepare and start only Parakeet STT
+- `pnpm auth:set-password` - set or recover a local account password (`--email you@example.com`)
 
 ## Codebase Shape
 
@@ -61,7 +63,7 @@ Use `pnpm`.
 
 ## Agent Priorities
 
-1. Preserve completed product behavior. Unmigrated Phase 1 domains remain offline-capable; explicitly migrated Phase 2 domains may require the local Compose API/PostgreSQL stack but must not require cloud infrastructure.
+1. Preserve completed product behavior. Unmigrated practice domains remain localStorage after login; accounts require the local API/PostgreSQL stack and must not require cloud infrastructure.
 2. Treat AI as optional and provider-agnostic (bring-your-own-key). If no API key is configured or an AI request fails, the app should degrade gracefully.
 3. Keep changes aligned with existing Nuxt, Vue, and DaisyUI patterns instead of introducing a parallel architecture.
 4. Prefer small, local changes over broad refactors unless the task explicitly requires structural work.
@@ -73,7 +75,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Global
 
-- Phase-aware core: unmigrated frontend domains work with zero network; migrated Phase 2 domains may use the local self-hosted API/database
+- Phase-aware core: the shell is login-gated (2.2). Practice domains stay localStorage until 2.3; migrated domains may use the local self-hosted API/database
 - SSR storage guards: guard `localStorage`, `window`, and `document` access with `import.meta.client` and `try/catch`
 - Local storage keys: prefix with `exam-one:`
 
@@ -108,7 +110,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 - Exam-specific implementation details belong in `agent-os/product/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
 - Existing user progress, drafts, attempts, generated sets, and reviews remain local-first until their Phase 2 domain is explicitly migrated
 - Phase 2 persistence work should move an entire domain behind shared contracts and NestJS/PostgreSQL ownership, with a deliberate compatibility or migration path
-- Bundled mock-exam Set 1 must remain usable without an LLM key, network connection, or speech service
+- Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
 
 ## AI Integration Rules
 

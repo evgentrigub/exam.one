@@ -9,8 +9,8 @@ interface AiResponse<T> {
 }
 ```
 
-- **Phase 1 (current):** Nuxt server routes under `server/api/*.post.ts`
-- **Phase 2 onward:** NestJS owns the long-term AI proxy; keep the same envelope so the frontend composables stay stable
+- **Phase 1 / until 2.4:** Nuxt server routes under `server/api/*.post.ts`
+- **Phase 2.4 onward:** NestJS owns the long-term AI proxy; keep the same envelope so the frontend composables stay stable
 
 AI is **bring-your-own-key** with a provider-agnostic contract — the key, provider, model, and (optional) base URL come from runtime/env config supplied by the self-hoster. **Supported providers today: OpenAI and OpenRouter.** Never hard-code a single provider into the endpoint contract; isolate provider specifics behind a helper.
 

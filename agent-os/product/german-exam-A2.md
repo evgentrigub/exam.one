@@ -140,4 +140,4 @@ Time limit: 15 minutes. The module has three interactive parts. The app may use 
 - Keep bundled Set 1 available without AI. Additional mock sets may be generated locally only after LLM and TTS readiness checks; store each completed set as an immutable content snapshot so result reviews remain stable.
 - Completed attempts may request a concise provider-agnostic aggregate AI overview. This review is optional and must not block access to scores or per-module exercise details.
 - **Completed Phase 1:** core practice is offline-capable without AI (localStorage). AI-generated variants are optional enhancements and must degrade gracefully when AI is unavailable.
-- **Phase 2 onward:** core attempts, drafts, and results live in PostgreSQL via the NestJS API on the local Docker Compose stack; AI remains optional.
+- **Phase 2 (until 2.3):** accounts require the local NestJS/PostgreSQL stack; attempts, drafts, and results still live in localStorage. After 2.3 they move to PostgreSQL via the NestJS API. AI remains optional.
