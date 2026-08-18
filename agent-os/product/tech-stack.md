@@ -1,6 +1,6 @@
 # Tech Stack
 
-> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers and localStorage for practice data. **Phase 2 is current:** accounts are NestJS/PostgreSQL-backed (2.2); practice persistence cutover is 2.3. Cloud hosting remains Phase 4.
+> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2 is current:** accounts and practice data are NestJS/PostgreSQL-backed (2.2–2.3). Cloud hosting remains Phase 4.
 
 ## Frontend
 
@@ -23,8 +23,8 @@ Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, pa
 
 ## Database
 
-- **Completed Phase 1 / until 2.3:** skill practice, mock exams, progress, and drafts stay in localStorage
-- **Current Phase 2 (2.2):** **PostgreSQL** stores users, auth tokens, and settings. Remaining exam domains move in 2.3. Postgres runs in Docker Compose with a **named volume** so data survives container recreation.
+- **Completed Phase 1:** skill practice, mock exams, progress, and drafts used localStorage
+- **Current Phase 2 (2.2–2.3):** **PostgreSQL** stores users, auth tokens, settings, exercises, attempts, results, drafts, generation jobs, and mock exams. Theme, locale, and playback prefs stay client-side. Postgres runs in Docker Compose with a **named volume** so data survives container recreation.
 
 ## AI
 

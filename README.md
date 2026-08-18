@@ -20,9 +20,9 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Mock exam                 | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
 | Phase 2.1 backend         | **Complete** — NestJS, Prisma, health, Compose/Postgres                                            |
 | Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
-| Phase 2.3 practice data   | Next — skill / mock / progress / drafts still localStorage                                         |
+| Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                  |
 
-**Current implementation focus:** Phase 2.3 persistence cutover. See the roadmap.
+**Current implementation focus:** Phase 2.4 AI move to NestJS. See the roadmap.
 
 ## ✨ Features
 
@@ -88,7 +88,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 
 ### Offline-First Core ✅
 
-The completed Phase 1 core flows work without internet **after you are signed in** (localStorage):
+The completed Phase 1 core flows work without a cloud AI provider **after you are signed in** (local API/PostgreSQL):
 
 - Reading, writing, listening, and speaking practice
 - Goethe A2 mock exam Set 1
@@ -339,7 +339,7 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 
 ### Later phases
 
-- **Current — Phase 2:** 2.1–2.2 done (backend + auth). Next is 2.3 practice-data cutover, then AI-to-Nest (2.4) and Compose runbook (2.5–2.6)
+- **Current — Phase 2:** 2.1–2.3 done (backend, auth, practice persistence). Next is AI-to-Nest (2.4) and Compose runbook (2.5–2.6)
 - Phase 3: Public open-source release + docs site
 - Phase 4: Hosted cloud product
 
@@ -405,13 +405,12 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 
 ### Current Focus
 
-Phase 1 is complete. **2.1–2.2 are complete** (NestJS foundation + login-gated accounts). The current focus is **2.3 persistence cutover** while preserving German / Goethe A2 practice behavior.
+Phase 1 is complete. **2.1–2.3 are complete** (NestJS foundation, login-gated accounts, and practice persistence). The current focus is **2.4 AI-to-Nest** while preserving German / Goethe A2 practice behavior.
 
 ### Next Steps (In Priority Order)
 
-1. **Persistence Cutover (2.3)** — Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
-2. **AI API Migration (2.4)** — Move provider adapters from temporary Nuxt routes to NestJS
-3. **Self-Host Runbook (2.5–2.6)** — Finish single-command Docker Compose setup and backup/restore documentation
+1. **AI API Migration (2.4)** — Move provider adapters from temporary Nuxt routes to NestJS
+2. **Self-Host Runbook (2.5–2.6)** — Finish single-command Docker Compose setup and backup/restore documentation
 
 ## 📝 License
 

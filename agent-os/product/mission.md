@@ -17,7 +17,7 @@ The goal is a **generic, reusable framework** that, with light customization, ca
 
 ## Solution
 
-exam.one is an open-source, self-hostable platform for practicing all parts of a language exam — Reading, Writing, Listening, and Speaking — with optional AI-powered instant feedback. Phase 1 practice is complete; Phase 2 has login-gated NestJS accounts on PostgreSQL while skill data is still local-first. The remaining cutover moves practice persistence and the AI proxy onto the local Docker Compose stack. Learners configure how exercises are generated and reviewed and plug in their own LLM API keys so they can generate as many realistic attempts as they want at their own cost.
+exam.one is an open-source, self-hostable platform for practicing all parts of a language exam — Reading, Writing, Listening, and Speaking — with optional AI-powered instant feedback. Phase 1 practice is complete; Phase 2 has login-gated NestJS accounts and practice persistence on PostgreSQL. The remaining cutover moves the AI proxy onto the local Docker Compose stack. Learners configure how exercises are generated and reviewed and plug in their own LLM API keys so they can generate as many realistic attempts as they want at their own cost.
 
 German / Goethe A2 is the first complete and tested exam product. It is a starting point for content and validation, not a product ceiling — the architecture stays exam-agnostic so additional languages, levels, and providers can be added through seed data, metadata, and prompt templates.
 

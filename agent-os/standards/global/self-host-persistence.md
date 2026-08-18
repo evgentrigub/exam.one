@@ -2,7 +2,7 @@
 
 Rules for durable local data when exam.one runs as a Docker Compose full stack on the user's machine.
 
-**Cutover status:** accounts, session, profile, and exam settings are NestJS/PostgreSQL (roadmap 2.2). Skill practice, mock exams, progress, and drafts still use localStorage until 2.3 (see `offline-first-core.md` and `localstorage-keys.md`).
+**Cutover status:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL (roadmap 2.2–2.3). Theme, locale, listening playback, and reading bookmarks may stay client-side (see `offline-first-core.md` and `localstorage-keys.md`).
 
 ## Stack contract
 
@@ -11,7 +11,11 @@ Rules for durable local data when exam.one runs as a Docker Compose full stack o
 - **Database** — PostgreSQL
 - **Orchestration** — Docker Compose (localhost first; cloud hosting is a later phase)
 
-Exam and user data that have been cut over (users, auth tokens, settings) live in PostgreSQL and are accessed only through the NestJS API. After 2.3, exercises, attempts, results, and drafts follow the same rule. localStorage must not remain the source of truth for those domains after their cutover.
+Exam and user data that have been cut over live in PostgreSQL and are accessed only through the NestJS API. localStorage must not remain the source of truth for those domains.
+
+Shared Goethe A2 seeds (and mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. User-generated exercises overlay seeds by `externalId` and are scoped by `userId`.
+
+Leftover Phase 1 / 2.2 browser practice data is imported once per user per domain (`POST /api/v1/me/import/:domain`). The first logged-in account on a browser claims that blob. Retry/skip lives on the account page.
 
 ## Named Docker volume
 
@@ -20,6 +24,8 @@ PostgreSQL data must use a **named Docker volume** (for example `postgres_data` 
 - Removing or recreating containers must **not** wipe user data
 - Document backup/restore of the named volume in the self-host runbook
 - Do not bind-mount ephemeral paths that disappear with the project directory unless explicitly documented as disposable
+
+Listening WAV bytes stay on the filesystem (`apps/frontend/public/audio/` or a named volume in Compose). Postgres stores **paths** only. Speaking recordings stay in-memory blobs; persist transcripts and reviews, not audio.
 
 ## Local-first, not cloud-required
 

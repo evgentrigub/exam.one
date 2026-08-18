@@ -26,11 +26,11 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.2 the app is **login-gated**: Nuxt talks to NestJS for accounts, session, profile, and settings. Skill practice, mock exams, progress, and drafts still use localStorage until 2.3. AI requests still use temporary Nuxt server routes.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.3 the app is **login-gated** and practice data is API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, and mock exams. Theme, locale, and playback prefs stay in the browser. AI requests still use temporary Nuxt server routes until 2.4.
 
-**Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with local-first persistence and optional AI enhancements. The mock exam includes offline Set 1, locally generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
+**Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
-**Phase 2 is current:** 2.1 (backend foundation) and 2.2 (auth/accounts) are done. Next is 2.3 persistence cutover. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+**Phase 2 is current:** 2.1–2.3 are done (backend, auth, practice persistence). Next is 2.4 AI-to-Nest. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
 
 ### Key directories
 
@@ -45,13 +45,15 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/`                   | Product context and canonical implementation standards                                                       |
 
-### Frontend data lifecycle (until 2.3 migration)
+### Frontend data lifecycle (after 2.3)
 
-1. On first client load, if localStorage is empty, seed from `apps/frontend/data/{skill}/` defaults and persist
-2. On subsequent loads, merge: `items = defaults ∪ stored.filter(x => !isDefault(x.id))`
-3. Only non-default (user/AI-generated) items are persisted to localStorage
+1. After login, leftover practice keys in localStorage are posted once to `POST /api/v1/me/import/:domain` (or skipped if empty)
+2. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
+3. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null). User-generated rows overlay seeds by `externalId`
 
-This ensures app updates can ship new seed content without wiping user data. During Phase 2, migrate one domain at a time to API/PostgreSQL ownership rather than creating a second competing source of truth.
+Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
+
+Prompt templates remain typed modules under `apps/frontend/data/{skill}/` until a later phase.
 
 ## Standards (read `agent-os/standards/` before editing)
 
@@ -70,7 +72,7 @@ try {
 
 ### localStorage keys
 
-Prefix all keys with `exam-one:` in kebab-case. Define as a `const KEY = 'exam-one:...'` at the top of the owning file.
+Prefix remaining client keys with `exam-one:` in kebab-case. Practice catalogs, progress, drafts, and mock exams are API-backed. Allowed client keys: `exam-one:theme`, locale cookie `exam-one:locale`, listening playback volume/speed, reading saved-text bookmarks. Define as a `const KEY = 'exam-one:...'` at the top of the owning file.
 
 ### Styling
 
