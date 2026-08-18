@@ -119,9 +119,11 @@ export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): 
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown connection error'
     if (config.provider === 'local') {
-      throw new Error(`Local STT is offline. Run pnpm stt:up and try again. (${message})`)
+      throw new Error(`Local STT is offline. Run pnpm stt:up and try again. (${message})`, {
+        cause: error,
+      })
     }
-    throw new Error(`Could not reach OpenAI STT. ${message}`)
+    throw new Error(`Could not reach OpenAI STT. ${message}`, { cause: error })
   }
 
   const payload = (await response.json().catch(() => null)) as unknown

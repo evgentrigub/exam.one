@@ -5,7 +5,7 @@ const CONTENT_SECURITY_POLICY =
   "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' http://localhost:3001 http://127.0.0.1:3001;"
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-05-15',
+  compatibilityDate: '2026-08-18',
   devtools: { enabled: true },
 
   // Explicit so startup logs and docs can point at a stable URL
@@ -34,8 +34,8 @@ export default defineNuxtConfig({
   // i18n configuration
   i18n: {
     locales: [
-      { code: 'de', iso: 'de-DE', name: 'Deutsch', file: 'de.json' },
-      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'de', language: 'de-DE', name: 'Deutsch', file: 'de.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
@@ -72,19 +72,9 @@ export default defineNuxtConfig({
     transpile: [],
   },
 
-  // Vite configuration for bundle optimization
+  // Vite configuration
   vite: {
     plugins: [tailwindcss()],
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['vue', 'vue-router'],
-            pinia: ['pinia'],
-          },
-        },
-      },
-    },
   },
 
   // App configuration

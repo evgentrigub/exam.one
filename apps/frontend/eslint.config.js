@@ -14,5 +14,6 @@ export default createConfigForNuxt({
     'prefer-const': 'error',
     'no-var': 'error',
     'vue/multi-word-component-names': 'off', // Disable for Nuxt pages
+    'vue/html-self-closing': 'off',
   },
 })

@@ -168,18 +168,18 @@ pnpm generate
 
 ### Core Framework
 
-- **Nuxt 3** (v3.17.5) - Meta-framework with auto-imports and file-based routing
-- **Vue 3** (v3.5.16) - Composition API with `<script setup>`
+- **Nuxt 4** (v4.5.2) - Meta-framework with auto-imports and file-based routing
+- **Vue 3** (v3.5.41) - Composition API with `<script setup>`
 - **TypeScript** (v5.8.3) - Strict mode for type safety
 
 ### UI & Styling
 
-- **Tailwind CSS** (v4.1.10) - Utility-first CSS framework
-- **VueUse** (v13.4.0) - Composition API utilities
+- **Tailwind CSS** (v4.3.3) - Utility-first CSS framework
+- **VueUse** (v14.4.0) - Composition API utilities
 
 ### State Management
 
-- **Pinia** (v3.0.3) - Vue store with localStorage persistence
+- **Pinia** (v4.0.3) - Vue store with localStorage persistence
 - **Composables** - Feature-specific reactive state management
 
 ### Internationalization
@@ -199,7 +199,7 @@ pnpm generate
 ```text
 exam-one/
 ├── apps/
-│   ├── frontend/          # Nuxt 3 application and temporary Nitro AI endpoints
+│   ├── frontend/          # Nuxt 4 application and temporary Nitro AI endpoints
 │   └── backend/           # Standalone NestJS API
 ├── libraries/
 │   ├── contracts/         # Framework-neutral shared API contracts
