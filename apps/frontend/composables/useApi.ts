@@ -19,15 +19,55 @@ function apiBaseUrl(): string {
   return String(config.public.apiUrl || 'http://localhost:3001').replace(/\/$/, '')
 }
 
-export async function apiFetch<T>(
-  path: string,
-  options: {
-    method?: string
-    body?: unknown
-    query?: Record<string, string>
-  } = {}
-): Promise<T> {
-  const url = `${apiBaseUrl()}/api/v1${path.startsWith('/') ? path : `/${path}`}`
+const SKIP_REFRESH_PATHS = new Set([
+  '/auth/login',
+  '/auth/register',
+  '/auth/refresh',
+  '/auth/logout',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  '/auth/verify-email',
+  '/auth/resend-verification',
+])
+
+function normalizeApiPath(path: string): string {
+  return path.startsWith('/') ? path : `/${path}`
+}
+
+function shouldAttemptRefresh(path: string): boolean {
+  return !SKIP_REFRESH_PATHS.has(normalizeApiPath(path))
+}
+
+let refreshInFlight: Promise<boolean> | null = null
+
+/** Rotate the access cookie once; concurrent 401s share the same refresh. */
+export async function refreshAccessCookie(): Promise<boolean> {
+  if (!refreshInFlight) {
+    refreshInFlight = (async () => {
+      try {
+        await $fetch(`${apiBaseUrl()}/api/v1/auth/refresh`, {
+          method: 'POST',
+          credentials: 'include',
+        })
+        return true
+      } catch {
+        return false
+      } finally {
+        refreshInFlight = null
+      }
+    })()
+  }
+  return refreshInFlight
+}
+
+type ApiFetchOptions = {
+  method?: string
+  body?: unknown
+  query?: Record<string, string>
+}
+
+async function requestOnce<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+  const url = `${apiBaseUrl()}/api/v1${normalizeApiPath(path)}`
 
   try {
     const fetchOptions: {
@@ -102,5 +142,22 @@ export async function apiFetch<T>(
       code: status === 401 ? 'UNAUTHORIZED' : 'REQUEST_FAILED',
       message,
     })
+  }
+}
+
+export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+  try {
+    return await requestOnce<T>(path, options)
+  } catch (error: unknown) {
+    if (
+      import.meta.client &&
+      error instanceof ApiClientError &&
+      error.status === 401 &&
+      shouldAttemptRefresh(path) &&
+      (await refreshAccessCookie())
+    ) {
+      return requestOnce<T>(path, options)
+    }
+    throw error
   }
 }
