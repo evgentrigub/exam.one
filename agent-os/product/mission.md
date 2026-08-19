@@ -13,11 +13,11 @@ Anyone preparing for a language certification exam, including:
 - Native speakers earning a certificate in a foreign language
 - People relocating to a new country who need an exam result for official documents
 
-The goal is a **generic, reusable framework** that, with light customization, can be adapted to prepare for *any* language certification exam at *any* difficulty level (any CEFR band or provider format) — not locked to a single language, level, or exam board.
+The goal is a **generic, reusable framework** that, with light customization, can be adapted to prepare for _any_ language certification exam at _any_ difficulty level (any CEFR band or provider format) — not locked to a single language, level, or exam board.
 
 ## Solution
 
-exam.one is an open-source, self-hostable platform for practicing all parts of a language exam — Reading, Writing, Listening, and Speaking — with optional AI-powered instant feedback. The completed frontend MVP runs locally today; the current product stage is moving that finished experience to a durable full-stack Docker Compose setup. Learners configure how exercises are generated and reviewed and plug in their own LLM API keys so they can generate as many realistic attempts as they want at their own cost.
+exam.one is an open-source, self-hostable platform for practicing all parts of a language exam — Reading, Writing, Listening, and Speaking — with optional AI-powered instant feedback. Phase 1 practice is complete; Phase 2 has login-gated NestJS accounts, practice persistence on PostgreSQL, and a NestJS AI/TTS/STT proxy. Learners configure how exercises are generated and reviewed and plug in their own LLM API keys so they can generate as many realistic attempts as they want at their own cost.
 
 German / Goethe A2 is the first complete and tested exam product. It is a starting point for content and validation, not a product ceiling — the architecture stays exam-agnostic so additional languages, levels, and providers can be added through seed data, metadata, and prompt templates.
 

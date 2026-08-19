@@ -55,4 +55,3 @@ export const generateReadingC1 = () => {
 export const dataC1ReadingExamples: ReadingExercise[] = [
   // User can add reference examples here
 ]
-

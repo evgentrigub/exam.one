@@ -1,7 +1,4 @@
-import type {
-  ListeningA2Exercise,
-  ListeningExerciseAudioMap,
-} from '~/utils/exercises/listening'
+import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 
 export const LISTENING_AUDIO_EXT = 'wav' as const
 
@@ -42,7 +39,7 @@ export function resolveSharedListeningAudioSrc(exercise: ListeningA2Exercise): s
  */
 export function resolveItemListeningAudioSrc(
   exercise: ListeningA2Exercise,
-  itemId: string,
+  itemId: string
 ): string | undefined {
   if (exercise.testingPart !== 1 && exercise.testingPart !== 3) return undefined
   const exerciseId = exercise.id
@@ -54,7 +51,7 @@ export function resolveItemListeningAudioSrc(
 export function collectListeningAudioSrcs(exercise: ListeningA2Exercise): string[] {
   if (exercise.testingPart === 1 || exercise.testingPart === 3) {
     return exercise.items
-      .map((item) => {
+      .map(item => {
         const itemId = item.id
         if (!itemId) return undefined
         return resolveItemListeningAudioSrc(exercise, itemId)
@@ -68,7 +65,7 @@ export function collectListeningAudioSrcs(exercise: ListeningA2Exercise): string
 
 /** Build the full audio map for a seed exercise using derived public paths. */
 export function buildSeedListeningAudioMap(
-  exercise: ListeningA2Exercise,
+  exercise: ListeningA2Exercise
 ): ListeningExerciseAudioMap | undefined {
   const id = exercise.id
   if (!id) return undefined
@@ -88,7 +85,7 @@ export function buildSeedListeningAudioMap(
 
 /** Build audio map pointing at on-demand generated/ paths. */
 export function buildGeneratedListeningAudioMap(
-  exercise: ListeningA2Exercise,
+  exercise: ListeningA2Exercise
 ): ListeningExerciseAudioMap | undefined {
   const id = exercise.id
   if (!id) return undefined
@@ -114,29 +111,33 @@ export interface ListeningAudioSegment {
 
 /** Segments to synthesize for an exercise (relative to public/). */
 export function collectListeningAudioSegments(
-  exercise: ListeningA2Exercise,
+  exercise: ListeningA2Exercise
 ): ListeningAudioSegment[] {
   const id = exercise.id
   if (!id) return []
 
   if (exercise.testingPart === 1 || exercise.testingPart === 3) {
-    return exercise.items.flatMap((item) => {
+    return exercise.items.flatMap(item => {
       const itemId = item.id
       if (!itemId || !item.transcript.trim()) return []
       const publicUrl = generatedItemListeningAudioPath(id, itemId)
-      return [{
-        relativePath: `audio/listening/generated/${id}/${itemId}.${LISTENING_AUDIO_EXT}`,
-        publicUrl,
-        transcript: item.transcript,
-      }]
+      return [
+        {
+          relativePath: `audio/listening/generated/${id}/${itemId}.${LISTENING_AUDIO_EXT}`,
+          publicUrl,
+          transcript: item.transcript,
+        },
+      ]
     })
   }
 
   if (!exercise.transcript?.trim()) return []
   const publicUrl = generatedSharedListeningAudioPath(id)
-  return [{
-    relativePath: `audio/listening/generated/${id}/shared.${LISTENING_AUDIO_EXT}`,
-    publicUrl,
-    transcript: exercise.transcript,
-  }]
+  return [
+    {
+      relativePath: `audio/listening/generated/${id}/shared.${LISTENING_AUDIO_EXT}`,
+      publicUrl,
+      transcript: exercise.transcript,
+    },
+  ]
 }

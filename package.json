@@ -17,7 +17,7 @@
     "build:backend": "pnpm --filter ./apps/backend build",
     "lint": "pnpm --recursive lint",
     "lint:fix": "pnpm --recursive lint:fix",
-    "format": "prettier --write .",
+    "format": "prettier --write . \"!graphify-out/**\" \"!scripts/**\"",
     "type-check": "pnpm --recursive type-check",
     "test": "pnpm --recursive test",
     "test:e2e": "pnpm --filter ./apps/backend test:e2e",
@@ -25,6 +25,7 @@
     "db:migrate": "pnpm --filter @exam-one/database db:migrate",
     "db:migrate:deploy": "pnpm --filter @exam-one/database db:migrate:deploy",
     "db:seed": "pnpm --filter @exam-one/database db:seed",
+    "auth:set-password": "pnpm --filter @exam-one/database auth:set-password",
     "generate:listening-audio": "node scripts/generate-listening-audio.mjs",
     "stack:setup": "pnpm tts:setup && pnpm stt:setup",
     "stack:models": "pnpm stack:setup",
@@ -40,12 +41,12 @@
     "stt:down": "docker compose stop parakeet"
   },
   "devDependencies": {
-    "jiti": "^2.6.1",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3"
+    "jiti": "^2.7.0",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3"
   },
   "engines": {
-    "node": ">=20",
+    "node": ">=24",
     "pnpm": ">=10"
   }
 }

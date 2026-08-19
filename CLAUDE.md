@@ -19,23 +19,24 @@ pnpm stack:up     # prepare speech models and start the complete Docker Compose 
 pnpm stack:down   # stop the complete stack without deleting named volumes
 pnpm tts:up       # prepare and start only Kokoro TTS
 pnpm stt:up       # prepare and start only Parakeet STT
+pnpm auth:set-password --email you@example.com  # recover a local account password
 ```
 
 Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The completed offline-first Nuxt 3 frontend remains usable without the standalone NestJS backend. The backend, shared libraries, Prisma boundary, and Docker Compose infrastructure establish the current Phase 2 architecture while AI requests still use temporary Nuxt server routes.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.4 the app is **login-gated** and practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
 
-**Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with local-first persistence and optional AI enhancements. The mock exam includes offline Set 1, locally generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
+**Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
-**Phase 2 is current:** preserve the completed product behavior while moving accounts, persistence, generated content, and AI proxy ownership to NestJS/PostgreSQL and the self-hosted Docker Compose stack. Existing frontend domains remain on localStorage until they are deliberately migrated. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+**Phase 2 is current:** 2.1–2.4 are done (backend, auth, practice persistence, NestJS AI/TTS/STT). Next is 2.5–2.6 Compose packaging and the self-host runbook. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
 
 ### Key directories
 
 | Path                          | Purpose                                                                                                      |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, utilities, and temporary Nitro AI endpoints  |
+| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, and utilities                                |
 | `apps/backend/`               | Standalone NestJS API; local default port is 3001                                                            |
 | `libraries/contracts/`        | Framework-neutral shared API contracts                                                                       |
 | `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
@@ -44,13 +45,14 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/`                   | Product context and canonical implementation standards                                                       |
 
-### Frontend data lifecycle (until Phase 2 migration)
+### Frontend data lifecycle (after 2.3)
 
-1. On first client load, if localStorage is empty, seed from `apps/frontend/data/{skill}/` defaults and persist
-2. On subsequent loads, merge: `items = defaults ∪ stored.filter(x => !isDefault(x.id))`
-3. Only non-default (user/AI-generated) items are persisted to localStorage
+1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
+2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null). User-generated rows overlay seeds by `externalId`
 
-This ensures app updates can ship new seed content without wiping user data. During Phase 2, migrate one domain at a time to API/PostgreSQL ownership rather than creating a second competing source of truth.
+Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
+
+Prompt templates remain typed modules under `apps/frontend/data/{skill}/` until a later phase.
 
 ## Standards (read `agent-os/standards/` before editing)
 
@@ -69,7 +71,7 @@ try {
 
 ### localStorage keys
 
-Prefix all keys with `exam-one:` in kebab-case. Define as a `const KEY = 'exam-one:...'` at the top of the owning file.
+Prefix remaining client keys with `exam-one:` in kebab-case. Practice catalogs, progress, drafts, and mock exams are API-backed. Allowed client keys: `exam-one:theme`, locale cookie `exam-one:locale`, listening playback volume/speed, reading saved-text bookmarks. Define as a `const KEY = 'exam-one:...'` at the top of the owning file.
 
 ### Styling
 
@@ -86,12 +88,12 @@ Prefix all keys with `exam-one:` in kebab-case. Define as a `const KEY = 'exam-o
 
 ### Server / AI endpoints
 
-Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures. Use `throw createError(...)` only for infrastructure failures.
+Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures. Invalid body is HTTP 400; missing session is HTTP 401.
 
 ## AI Integration
 
 - AI is **optional and provider-agnostic** (bring-your-own-key). Set `LLM_PROVIDER=openai` with `OPENAI_API_KEY`, or `LLM_PROVIDER=openrouter` with `OPENROUTER_API_KEY`; missing keys and upstream failures must degrade gracefully.
-- Keep provider SDK/configuration logic behind server adapters. Frontend AI requests use the thin `/api/*` endpoints and feature-scoped orchestration, preferably through composables when the behavior is shared.
+- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/llm`, `tts`, `stt`). Frontend AI requests use `aiFetch` to `/api/v1/ai|llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
 - Prompt templates currently live as typed seed data under `apps/frontend/data/{skill}/a2/` and are user-editable.
 - Generated mock sets require successful LLM configuration/connection and Docker TTS preflight checks; bundled Set 1 must remain available without them.
 - Writing and Speaking mock grading starts automatically. Persist full successful reviews with scores, and do not block completed results when optional aggregate AI review fails.

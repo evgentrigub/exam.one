@@ -6,3 +6,181 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Skill {
+  READING
+  WRITING
+  LISTENING
+  SPEAKING
+  MOCK
+}
+
+enum PlanId {
+  FREE
+  PRO
+}
+
+enum ExamLevel {
+  A2
+  C1
+}
+
+enum AuthTokenType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+  REFRESH
+}
+
+enum ExerciseVisibility {
+  PRACTICE
+  EXAM_ONLY
+}
+
+enum GenerationJobStatus {
+  IDLE
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id               String            @id @default(cuid())
+  email            String            @unique
+  name             String
+  examTargetDate   DateTime?
+  plan             PlanId            @default(FREE)
+  passwordHash     String?
+  emailVerified    Boolean           @default(false)
+  settings         Setting?
+  exercises        Exercise[]
+  attempts         Attempt[]
+  drafts           Draft[]
+  authTokens       AuthToken[]
+  mockExamSets     MockExamSet[]
+  mockExamAttempts MockExamAttempt[]
+  generationJobs   GenerationJob[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model AuthToken {
+  id         String        @id @default(cuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       AuthTokenType
+  tokenHash  String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime      @default(now())
+
+  @@index([userId, type])
+  @@index([tokenHash])
+}
+
+model Setting {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examLevel      ExamLevel @default(A2)
+  targetLanguage String    @default("de")
+  updatedAt      DateTime  @updatedAt
+}
+
+model Exercise {
+  id          String              @id @default(cuid())
+  userId      String?
+  user        User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill
+  level       ExamLevel           @default(A2)
+  source      String              @default("seed") // seed | generated
+  visibility  ExerciseVisibility  @default(PRACTICE)
+  externalId  String
+  payload     Json
+  attempts    Attempt[]
+  createdAt   DateTime            @default(now())
+
+  @@unique([userId, skill, externalId])
+  @@index([skill, level, visibility])
+  @@index([userId, skill])
+  @@index([source, externalId])
+}
+
+model Attempt {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String?
+  exercise   Exercise? @relation(fields: [exerciseId], references: [id])
+  skill      Skill
+  answers    Json
+  result     Result?
+  submittedAt DateTime @default(now())
+
+  @@index([userId, skill])
+  @@index([exerciseId])
+}
+
+model Result {
+  id         String   @id @default(cuid())
+  attemptId  String   @unique
+  attempt    Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  score      Int?
+  maxScore   Int?
+  percentage Int?
+  review     Json?
+  createdAt  DateTime @default(now())
+}
+
+model Draft {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill     Skill    @default(WRITING)
+  topicId   String
+  payload   Json
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, skill, topicId])
+}
+
+model MockExamSet {
+  id         String            @id @default(cuid())
+  userId     String?
+  user       User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  externalId String
+  examId     String
+  level      String
+  title      String
+  generated  Boolean           @default(false)
+  content    Json
+  modules    Json
+  createdAt  DateTime          @default(now())
+  attempts   MockExamAttempt[]
+
+  @@unique([userId, externalId])
+  @@index([userId])
+}
+
+model MockExamAttempt {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  setId     String
+  set       MockExamSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+  state     Json
+  updatedAt DateTime    @updatedAt
+
+  @@unique([userId, setId])
+}
+
+model GenerationJob {
+  id        String              @id @default(cuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      Skill
+  status    GenerationJobStatus @default(IDLE)
+  payload   Json
+  updatedAt DateTime            @updatedAt
+
+  @@unique([userId, kind])
+}

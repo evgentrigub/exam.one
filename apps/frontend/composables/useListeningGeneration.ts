@@ -1,18 +1,22 @@
 /**
  * Listening Generation Composable
- * Manages per-part AI listening exercise generation with localStorage persistence.
+ * Manages per-part AI listening exercise generation with API persistence.
  */
 
 import { listeningA2Parts } from '~/data/listening/a2/exerciseGeneratorListeningA2'
 import {
   filterJobsByParts,
   type PartGenerationJob,
-  type PartGenerationState
+  type PartGenerationState,
 } from '~/utils/generation/partJobs'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { Difficulty } from '~/utils/types'
+import {
+  clearGenerationJob,
+  loadGenerationJob,
+  saveGenerationJob,
+} from '~/composables/useGenerationJobs'
 
-const STORAGE_KEY = 'exam-one:listening:generation-state'
 const STALE_THRESHOLD_MS = 5 * 60 * 1000
 
 export interface ListeningGenerationOptions {
@@ -26,26 +30,25 @@ export const useListeningGeneration = () => {
     difficulty: null,
     startedAt: null,
     error: null,
-    jobs: []
+    jobs: [],
   })
 
   const isGenerating = computed(() => state.value.isGenerating)
   const generatingDifficulty = computed(() => state.value.difficulty)
   const generationError = computed(() => state.value.error)
   const generationJobs = computed<PartGenerationJob[]>(() => state.value.jobs)
-  const canResumeGeneration = computed(() =>
-    !state.value.isGenerating &&
-    state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
+  const canResumeGeneration = computed(
+    () =>
+      !state.value.isGenerating &&
+      state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
   )
 
-  const loadState = () => {
+  const loadState = async () => {
     if (import.meta.server) return
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (!stored) return
-
-      const parsed = JSON.parse(stored) as PartGenerationState
+      const parsed = (await loadGenerationJob('LISTENING')) as PartGenerationState | null
+      if (!parsed) return
 
       if (parsed.isGenerating && parsed.startedAt) {
         const startTime = new Date(parsed.startedAt).getTime()
@@ -62,7 +65,7 @@ export const useListeningGeneration = () => {
       state.value = {
         ...parsed,
         isGenerating: false,
-        jobs: restoredJobs
+        jobs: restoredJobs,
       }
     } catch (error) {
       console.error('Failed to load listening generation state:', error)
@@ -72,12 +75,9 @@ export const useListeningGeneration = () => {
 
   const saveState = () => {
     if (import.meta.server) return
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.value))
-    } catch (error) {
+    void saveGenerationJob('LISTENING', state.value).catch(error =>
       console.error('Failed to save listening generation state:', error)
-    }
+    )
   }
 
   const clearState = () => {
@@ -86,11 +86,11 @@ export const useListeningGeneration = () => {
       difficulty: null,
       startedAt: null,
       error: null,
-      jobs: []
+      jobs: [],
     }
 
     if (import.meta.client) {
-      localStorage.removeItem(STORAGE_KEY)
+      void clearGenerationJob('LISTENING').catch(() => undefined)
     }
   }
 
@@ -100,7 +100,7 @@ export const useListeningGeneration = () => {
       jobs: state.value.jobs.map(job => {
         if (job.part !== part) return job
         return error === undefined ? { ...job, status } : { ...job, status, error }
-      })
+      }),
     }
     saveState()
   }
@@ -128,27 +128,28 @@ export const useListeningGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = (await $fetch('/api/generate-listening', {
+        const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
           method: 'POST',
-          body: { difficulty, prompts: [partPrompt] }
-        }) as unknown) as { exercises: ListeningA2Exercise[]; error?: string }
+          body: { difficulty, prompts: [partPrompt] },
+        })
 
-        if (response.error || !response.exercises || response.exercises.length === 0) {
+        if (response.error || !response.data || response.data.length === 0) {
           throw new Error(response.error || `No listening exercise generated for part ${part}`)
         }
 
-        generatedExercises.push(...response.exercises)
+        generatedExercises.push(...response.data)
         updateJobStatus(part, 'done')
 
         if (onPartComplete) {
           try {
-            onPartComplete(response.exercises)
+            onPartComplete(response.data)
           } catch (callbackError) {
             console.error('onPartComplete callback failed for listening part', part, callbackError)
           }
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : `Failed to generate part ${part}`
+        const errorMessage =
+          error instanceof Error ? error.message : `Failed to generate part ${part}`
         console.error(`Listening generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -163,7 +164,7 @@ export const useListeningGeneration = () => {
       state.value = {
         ...state.value,
         isGenerating: false,
-        error: loopError
+        error: loopError,
       }
       saveState()
     }
@@ -188,7 +189,7 @@ export const useListeningGeneration = () => {
       difficulty,
       startedAt: new Date().toISOString(),
       error: null,
-      jobs: partsToGenerate.map(part => ({ part: part.part, status: 'queued' }))
+      jobs: partsToGenerate.map(part => ({ part: part.part, status: 'queued' })),
     }
     saveState()
 
@@ -206,7 +207,7 @@ export const useListeningGeneration = () => {
     state.value = {
       ...state.value,
       isGenerating: true,
-      error: null
+      error: null,
     }
     saveState()
 
@@ -227,7 +228,7 @@ export const useListeningGeneration = () => {
       error: null,
       jobs: state.value.jobs.map(job =>
         job.status === 'failed' ? { ...job, status: 'queued' } : job
-      )
+      ),
     }
     saveState()
 
@@ -239,7 +240,7 @@ export const useListeningGeneration = () => {
   }
 
   onMounted(() => {
-    loadState()
+    void loadState()
   })
 
   return {
@@ -253,6 +254,6 @@ export const useListeningGeneration = () => {
     resumeGeneration,
     retryGeneration,
     dismissError,
-    clearState
+    clearState,
   }
 }

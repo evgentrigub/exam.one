@@ -26,6 +26,6 @@ apps/frontend/data/writing/c1/
 
 ## Persistence and AI
 
-- Existing frontend drafts and results may live in localStorage; core writing practice must work without AI.
-- During the Phase 2 cutover, user attempts, drafts, and results move to PostgreSQL via the NestJS API on the local Docker Compose stack.
+- Existing frontend drafts and results still live in localStorage until roadmap 2.3; core writing practice must work without AI.
+- Accounts are already NestJS/PostgreSQL-backed (2.2). Attempts, drafts, and results move to PostgreSQL in the 2.3 persistence cutover.
 - AI remains an optional enhancement in all phases.

@@ -1,7 +1,13 @@
 <template>
   <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-    <div v-if="!isInitialized" class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center">
-      <span class="loading loading-spinner loading-md text-primary" aria-label="Loading writing review" />
+    <div
+      v-if="!isInitialized"
+      class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center"
+    >
+      <span
+        class="loading loading-spinner loading-md text-primary"
+        aria-label="Loading writing review"
+      />
       <p class="text-sm text-base-content/60 mt-3">Loading writing review...</p>
     </div>
 
@@ -17,12 +23,18 @@
             <ArrowLeft :size="14" aria-hidden="true" />
           </button>
           <div class="min-w-0">
-            <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50">
+            <div
+              class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50"
+            >
               <PenLine :size="11" aria-hidden="true" />
               Writing review · {{ topic?.topicType || 'Topic' }}
             </div>
-            <h1 class="font-display text-[28px] font-bold leading-tight mt-1 truncate">{{ topic?.title || 'Writing Review' }}</h1>
-            <div class="text-sm text-base-content/60 mt-1">Review, submitted answer, and task reference</div>
+            <h1 class="font-display text-[28px] font-bold leading-tight mt-1 truncate">
+              {{ topic?.title || 'Writing Review' }}
+            </h1>
+            <div class="text-sm text-base-content/60 mt-1">
+              Review, submitted answer, and task reference
+            </div>
           </div>
         </div>
         <div class="badge badge-success shrink-0">Review</div>

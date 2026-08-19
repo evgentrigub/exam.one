@@ -1,5 +1,7 @@
 <template>
-  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[380px] group">
+  <div
+    class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[380px] group"
+  >
     <div class="card-body p-4 flex flex-col relative">
       <!-- Delete button - top right corner -->
       <button
@@ -17,9 +19,9 @@
           <Clock :size="12" class="mr-1" aria-hidden="true" />
           {{ topic.estimatedTime }} Min
         </div>
-        
+
         <!-- Completion or topic type badge always on right -->
-        <span 
+        <span
           class="badge gap-1"
           :class="topicCompleted ? 'badge-success' : getTopicBadgeClass(topic.topicType)"
         >
@@ -50,8 +52,8 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-1 mb-4">
-        <span 
-          v-for="categoryObj in displayCategories" 
+        <span
+          v-for="categoryObj in displayCategories"
           :key="categoryObj.full"
           :title="categoryObj.full"
           class="badge badge-ghost badge-sm"
@@ -68,13 +70,16 @@
             <span class="text-sm font-medium">Completed</span>
           </div>
           <div class="text-right">
-            <div class="text-sm font-bold text-success">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
+            <div class="text-sm font-bold text-success">
+              {{ progress?.attemptCount || 1 }}
+              {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Spacer to push button to bottom -->
-      <div class="flex-1"/>
+      <div class="flex-1" />
 
       <!-- Action Buttons -->
       <div class="card-actions">
@@ -93,11 +98,7 @@
         >
           {{ $t('writing.checkReview') }}
         </NuxtLink>
-        <button
-          v-else-if="topicCompleted && isPending"
-          class="btn btn-disabled flex-[4]"
-          disabled
-        >
+        <button v-else-if="topicCompleted && isPending" class="btn btn-disabled flex-[4]" disabled>
           {{ $t('writing.checking') }}
         </button>
 
@@ -155,13 +156,13 @@ const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
 const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Computed properties for progress display
-const topicCompleted = computed(() => isClient.value ? isTopicCompleted(props.topic.id) : false)
-const progress = computed(() => isClient.value ? getTopicProgress(props.topic.id) : null)
+const topicCompleted = computed(() => (isClient.value ? isTopicCompleted(props.topic.id) : false))
+const progress = computed(() => (isClient.value ? getTopicProgress(props.topic.id) : null))
 
 // Review state
 const { isReviewInProgress, reviewVersion, hasReview } = useWritingReview()
 const isPending = computed(() => {
-  // depend on version to refresh when localStorage-backed status changes
+  // depend on version to refresh when API-backed status changes
   void reviewVersion.value
   return isClient.value ? isReviewInProgress(props.topic.id) : false
 })
@@ -177,7 +178,7 @@ const displayCategories = computed(() => {
     .slice(0, 2) // Show max 2 categories
     .map(category => ({
       display: category.length > 15 ? category.substring(0, 15) + '...' : category,
-      full: category
+      full: category,
     }))
 })
 

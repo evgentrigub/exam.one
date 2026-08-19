@@ -48,6 +48,7 @@ const { t } = useI18n()
 ```
 
 Rules:
+
 - One map per taxonomy, exported from `utils/labels.ts`
 - Class maps stay in TS (not i18n); translated labels go through `t()`
 - Fallback to `'badge-ghost'` for class maps and the raw type string for labels when the key is unknown

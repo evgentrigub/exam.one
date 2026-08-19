@@ -242,7 +242,7 @@ export const listeningA2Parts = (
   { part: 1, prompt: generateListeningA2Teil1(topicsPerPart) },
   { part: 2, prompt: generateListeningA2Teil2(topicsPerPart) },
   { part: 3, prompt: generateListeningA2Teil3(topicsPerPart) },
-  { part: 4, prompt: generateListeningA2Teil4(topicsPerPart) }
+  { part: 4, prompt: generateListeningA2Teil4(topicsPerPart) },
 ]
 
 /**

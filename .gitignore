@@ -5,6 +5,7 @@
 **/.nitro
 **/.cache
 **/dist
+*.tsbuildinfo
 apps/frontend/e2e
 # Listening WAVs (seed + on-demand generated); regenerate via scripts/tts/README.md
 apps/frontend/public/audio
@@ -30,7 +31,4 @@ logs
 !.env.example
 
 # Graphify local state
-graphify-out/cost.json
-graphify-out/cache
-graphify-out/.graphify_python
-graphify-out/.graphify_root
+graphify-out

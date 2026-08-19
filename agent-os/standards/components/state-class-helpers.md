@@ -25,6 +25,7 @@ function getOptionClass(index: number) {
 ```
 
 Rules:
+
 - Keep the helper in `<script setup>`; return a string of daisyUI utilities (see `theme-tokens.md`)
 - `computed` for stateless derivations; plain `function` when it takes arguments (index, id, …)
 - Don't inline more than one ternary in a `:class` binding — promote to a helper

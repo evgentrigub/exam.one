@@ -31,6 +31,7 @@ import { createJiti } from 'jiti'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const frontendRoot = path.join(repoRoot, 'apps/frontend')
+const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/tts')
 const audioRoot = path.join(frontendRoot, 'public/audio/listening/a2')
 
 const jiti = createJiti(import.meta.url, {
@@ -42,13 +43,11 @@ const jiti = createJiti(import.meta.url, {
 })
 
 const listeningModule = await jiti.import(
-  path.join(frontendRoot, 'data/listening/exerciseListening.ts'),
+  path.join(frontendRoot, 'data/listening/exerciseListening.ts')
 )
 const { defaultListeningTopics } = listeningModule
 
-const ttsModule = await jiti.import(
-  path.join(frontendRoot, 'server/utils/tts/ttsAdapter.ts'),
-)
+const ttsModule = await jiti.import(path.join(backendTtsRoot, 'tts.adapter.ts'))
 const {
   synthesizeListeningTranscript,
   checkTtsHealth,
@@ -56,9 +55,7 @@ const {
   listeningTranscriptHashKey,
 } = ttsModule
 
-const mapPoolModule = await jiti.import(
-  path.join(frontendRoot, 'server/utils/tts/mapPool.ts'),
-)
+const mapPoolModule = await jiti.import(path.join(backendTtsRoot, 'mapPool.ts'))
 const { mapPool, getTtsConcurrency } = mapPoolModule
 
 function hashTranscript(text) {
@@ -127,7 +124,7 @@ async function main() {
       '[generate-listening-audio] Kokoro TTS is not reachable.\n' +
         '  1. Run: bash scripts/tts/victoria/download-models.sh\n' +
         '  2. Run: pnpm tts:up\n' +
-        '  3. Re-run: pnpm generate:listening-audio',
+        '  3. Re-run: pnpm generate:listening-audio'
     )
     process.exit(1)
   }
@@ -160,13 +157,13 @@ async function main() {
   console.log(`[generate-listening-audio] ${work.length} segment(s) to synthesize`)
   const synthStartedAt = Date.now()
   console.log(
-    `[generate-listening-audio] synthesis started at ${new Date(synthStartedAt).toISOString()}`,
+    `[generate-listening-audio] synthesis started at ${new Date(synthStartedAt).toISOString()}`
   )
 
   const errors = []
   let written = 0
 
-  await mapPool(work, concurrency, async (job) => {
+  await mapPool(work, concurrency, async job => {
     const { segment, outPath, hashPath, nextHash } = job
     const fileStartedAt = Date.now()
     console.log(`  start ${segment.relativePath}`)
@@ -188,12 +185,12 @@ async function main() {
   const synthElapsed = Date.now() - synthStartedAt
   const totalElapsed = Date.now() - runStartedAt
   console.log(
-    `[generate-listening-audio] synthesis finished at ${new Date().toISOString()} `
-    + `(${formatDuration(synthElapsed)})`,
+    `[generate-listening-audio] synthesis finished at ${new Date().toISOString()} ` +
+      `(${formatDuration(synthElapsed)})`
   )
   console.log(
-    `[generate-listening-audio] done — wrote ${written}, skipped ${skipped}, failed ${errors.length} `
-    + `(total ${formatDuration(totalElapsed)})`,
+    `[generate-listening-audio] done — wrote ${written}, skipped ${skipped}, failed ${errors.length} ` +
+      `(total ${formatDuration(totalElapsed)})`
   )
 
   if (errors.length > 0) {
@@ -201,7 +198,7 @@ async function main() {
   }
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error('[generate-listening-audio] failed', error)
   process.exit(1)
 })

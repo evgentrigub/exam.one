@@ -4,77 +4,321 @@
    Load AFTER components.css. */
 
 /* ---------- Checkbox ---------- */
-.checkbox{appearance:none;-webkit-appearance:none;flex:none;width:1.25rem;height:1.25rem;border-radius:.3rem;border:1px solid color-mix(in oklab,var(--color-base-content) 25%,transparent);background-color:var(--color-base-100);background-repeat:no-repeat;background-position:center;background-size:72%;cursor:pointer;box-shadow:none!important;transition:background-color .15s,border-color .15s}
-.checkbox::after,.checkbox::before{display:none!important}
-.checkbox:checked{background-color:var(--color-base-content);border-color:var(--color-base-content);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
-.checkbox-primary:checked{background-color:var(--color-primary);border-color:var(--color-primary)}
-.checkbox-sm{width:1.1rem;height:1.1rem}
-.checkbox:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.3rem;
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 25%, transparent);
+  background-color: var(--color-base-100);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 72%;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.checkbox::after,
+.checkbox::before {
+  display: none !important;
+}
+.checkbox:checked {
+  background-color: var(--color-base-content);
+  border-color: var(--color-base-content);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+.checkbox-primary:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.checkbox-sm {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.checkbox:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
 
 /* ---------- Toggle ----------
    The knob is painted as a background radial-gradient, NOT a ::after pseudo-element:
    <input> is a replaced element, so pseudo-elements on it are unreliable. daisyUI 5's
    own knob (a large inset box-shadow) is forced off so the two don't stack into a ring. */
-.toggle{appearance:none;-webkit-appearance:none;flex:none;width:3rem;height:1.6rem;border-radius:9999px;border:1px solid color-mix(in oklab,var(--color-base-content) 18%,transparent);background-color:color-mix(in oklab,var(--color-base-content) 14%,transparent);background-image:radial-gradient(circle closest-side,var(--color-base-100) 97%,transparent 100%);background-size:1.15rem 1.15rem;background-position:.175rem center;background-repeat:no-repeat;cursor:pointer;box-shadow:none!important;transition:background-color .18s,border-color .18s,background-position .18s}
-.toggle:checked,.toggle:focus,.toggle:active{box-shadow:none!important}
-.toggle::after,.toggle::before{display:none!important}
-.toggle:checked{background-color:var(--color-primary);border-color:var(--color-primary);background-position:calc(100% - .175rem) center}
-.toggle-sm{width:2.5rem;height:1.35rem;background-size:.95rem .95rem;background-position:.15rem center}
-.toggle-sm:checked{background-position:calc(100% - .15rem) center}
-.toggle:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
+.toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 3rem;
+  height: 1.6rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 18%, transparent);
+  background-color: color-mix(in oklab, var(--color-base-content) 14%, transparent);
+  background-image: radial-gradient(
+    circle closest-side,
+    var(--color-base-100) 97%,
+    transparent 100%
+  );
+  background-size: 1.15rem 1.15rem;
+  background-position: 0.175rem center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition:
+    background-color 0.18s,
+    border-color 0.18s,
+    background-position 0.18s;
+}
+.toggle:checked,
+.toggle:focus,
+.toggle:active {
+  box-shadow: none !important;
+}
+.toggle::after,
+.toggle::before {
+  display: none !important;
+}
+.toggle:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-position: calc(100% - 0.175rem) center;
+}
+.toggle-sm {
+  width: 2.5rem;
+  height: 1.35rem;
+  background-size: 0.95rem 0.95rem;
+  background-position: 0.15rem center;
+}
+.toggle-sm:checked {
+  background-position: calc(100% - 0.15rem) center;
+}
+.toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
 
 /* ---------- Collapse (FAQ accordion) ----------
    NAME COLLISION: Tailwind ships a `collapse` UTILITY (visibility:collapse) that
    shares this class name with daisyUI's collapse COMPONENT. The Play CDN injects
    it at runtime, later and at equal specificity, so it hides the whole subtree.
    Force visibility back. Real Tailwind 4 + daisyUI 5 builds don't have this clash. */
-.collapse{position:relative;display:block!important;visibility:visible!important;overflow:hidden;border-radius:var(--radius-box,.75rem)}
-.collapse>*{visibility:visible!important}
-.collapse>input[type="radio"],.collapse>input[type="checkbox"]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1;appearance:none}
-.collapse-title{position:relative;padding:1rem 3rem 1rem 1rem}
-.collapse-content{max-height:0;overflow:hidden;padding:0 1rem;transition:max-height .2s ease,padding .2s ease}
-.collapse>input:checked~.collapse-content{max-height:40rem;padding-bottom:1.15rem}
-.collapse-plus>.collapse-title::after{content:"";position:absolute;right:1.15rem;top:1.35rem;width:1rem;height:1rem;background:currentColor;opacity:.6;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center/contain no-repeat;transition:transform .2s}
-.collapse-plus>input:checked~.collapse-title::after{transform:rotate(45deg)}
+.collapse {
+  position: relative;
+  display: block !important;
+  visibility: visible !important;
+  overflow: hidden;
+  border-radius: var(--radius-box, 0.75rem);
+}
+.collapse > * {
+  visibility: visible !important;
+}
+.collapse > input[type='radio'],
+.collapse > input[type='checkbox'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+  appearance: none;
+}
+.collapse-title {
+  position: relative;
+  padding: 1rem 3rem 1rem 1rem;
+}
+.collapse-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 1rem;
+  transition:
+    max-height 0.2s ease,
+    padding 0.2s ease;
+}
+.collapse > input:checked ~ .collapse-content {
+  max-height: 40rem;
+  padding-bottom: 1.15rem;
+}
+.collapse-plus > .collapse-title::after {
+  content: '';
+  position: absolute;
+  right: 1.15rem;
+  top: 1.35rem;
+  width: 1rem;
+  height: 1rem;
+  background: currentColor;
+  opacity: 0.6;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  transition: transform 0.2s;
+}
+.collapse-plus > input:checked ~ .collapse-title::after {
+  transform: rotate(45deg);
+}
 
 /* ---------- Breadcrumbs ---------- */
-.breadcrumbs>ul{display:flex;align-items:center;flex-wrap:wrap;list-style:none;margin:0;padding:0}
-.breadcrumbs>ul>li{display:flex;align-items:center}
-.breadcrumbs>ul>li+li::before{content:"";width:.4rem;height:.4rem;margin:0 .6rem;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(45deg);opacity:.4}
-.breadcrumbs a{color:inherit;text-decoration:none}
-.breadcrumbs a:hover{text-decoration:underline}
+.breadcrumbs > ul {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.breadcrumbs > ul > li {
+  display: flex;
+  align-items: center;
+}
+.breadcrumbs > ul > li + li::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  margin: 0 0.6rem;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.4;
+}
+.breadcrumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
 
 /* ---------- Link ---------- */
-.link{text-decoration:underline;cursor:pointer;color:inherit}
-.link-hover{text-decoration:none}
-.link-hover:hover{text-decoration:underline}
-.link-primary{color:var(--color-primary)}
-a.hover\:link-primary:hover{color:var(--color-primary)}
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+  color: inherit;
+}
+.link-hover {
+  text-decoration: none;
+}
+.link-hover:hover {
+  text-decoration: underline;
+}
+.link-primary {
+  color: var(--color-primary);
+}
+a.hover\:link-primary:hover {
+  color: var(--color-primary);
+}
 
 /* ---------- Labels ---------- */
-.label{display:flex;align-items:center;gap:.35rem}
-.label-text{font-size:.875rem;color:var(--color-base-content)}
-.label-text-alt{font-size:.75rem}
-.fieldset-label{display:block;font-size:.875rem;color:var(--color-base-content)}
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.label-text {
+  font-size: 0.875rem;
+  color: var(--color-base-content);
+}
+.label-text-alt {
+  font-size: 0.75rem;
+}
+.fieldset-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--color-base-content);
+}
 
 /* ---------- Avatar masks ---------- */
-.mask{display:block}
-.mask-squircle{border-radius:30%}
-.mask-circle{border-radius:9999px}
-.avatar>div>img{width:100%;height:100%;object-fit:cover;display:block}
+.mask {
+  display: block;
+}
+.mask-squircle {
+  border-radius: 30%;
+}
+.mask-circle {
+  border-radius: 9999px;
+}
+.avatar > div > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 /* ---------- Tooltip ---------- */
-.tooltip{position:relative;display:inline-flex}
-.tooltip::before{content:attr(data-tip);position:absolute;bottom:calc(100% + .35rem);left:50%;transform:translateX(-50%);padding:.3rem .5rem;border-radius:.35rem;background:var(--color-base-content);color:var(--color-base-100);font-size:.7rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
-.tooltip:hover::before{opacity:1}
-.tooltip-warning::before{background:var(--color-warning);color:var(--color-warning-content)}
+.tooltip {
+  position: relative;
+  display: inline-flex;
+}
+.tooltip::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 0.35rem);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.35rem;
+  background: var(--color-base-content);
+  color: var(--color-base-100);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.tooltip:hover::before {
+  opacity: 1;
+}
+.tooltip-warning::before {
+  background: var(--color-warning);
+  color: var(--color-warning-content);
+}
 
 /* ---------- Timeline (simplified vertical rail) ---------- */
-.ds-timeline{position:relative;list-style:none;margin:0;padding:0 0 0 3.25rem}
-.ds-timeline::before{content:"";position:absolute;left:1.25rem;top:.5rem;bottom:.5rem;width:2px;background:color-mix(in oklab,var(--color-base-content) 14%,transparent)}
-.ds-timeline>li{position:relative;padding-bottom:1.75rem}
-.ds-timeline>li>.ds-dot{position:absolute;left:-3.25rem;top:0;display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:9999px;background:var(--color-primary);color:var(--color-primary-content);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.ds-timeline {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 3.25rem;
+}
+.ds-timeline::before {
+  content: '';
+  position: absolute;
+  left: 1.25rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: color-mix(in oklab, var(--color-base-content) 14%, transparent);
+}
+.ds-timeline > li {
+  position: relative;
+  padding-bottom: 1.75rem;
+}
+.ds-timeline > li > .ds-dot {
+  position: absolute;
+  left: -3.25rem;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
 
 /* ---------- Divider ---------- */
-.ds-rule{display:flex;align-items:center;gap:1rem}
-.ds-rule hr{flex:1;border:0;border-top:1px solid var(--color-base-300)}
+.ds-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.ds-rule hr {
+  flex: 1;
+  border: 0;
+  border-top: 1px solid var(--color-base-300);
+}

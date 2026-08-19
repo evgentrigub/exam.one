@@ -8,17 +8,19 @@ AI is an enhancement layer (exercise generation, review, grading), never a hard 
 
 ## Phase boundaries
 
-### Phase 1 (current) — offline-capable frontend
+### Phase 1 (complete) — frontend product
 
-Every core practice flow must work with **zero network**: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. User/exam data lives in localStorage. Do not introduce a required backend or database for core flows in Phase 1.
+Every core practice flow works without a cloud AI provider once the user is in the app: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. Phase 1 stored practice data in localStorage.
 
-**Goethe A2 skill progress:** Reading / Writing / Listening are practice-ready. Speaking Teil 1–2 is practice-ready with offline manual transcripts and optional STT/AI; **Teil 3 joint planning is the next implementation focus** (see `agent-os/product/roadmap.md`). Mock-exam Set 1 is shipped with provisional Teil 1–2 Speaking scoring; pronunciation and full Speaking scoring follow.
+**Goethe A2 skill progress:** Reading, Writing, Listening, Speaking, and mock exam mode are complete and tested (see `agent-os/product/roadmap.md`).
 
-### Phase 2 onward — local self-hosted stack
+### Phase 2 (current) — local self-hosted stack
 
-Core user and exam data (attempts, results, drafts, progress, settings that are not pure UI prefs) live in **PostgreSQL** behind the **NestJS** API. Network access to the **local Docker Compose stack** is expected. See `self-host-persistence.md`. AI remains optional and bring-your-own-key.
+**2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
 
-Theme and similar non-authoritative UI preferences may still use client storage (see `theme-catalog.md`).
+**2.3 done:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
+
+**2.4 done:** optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
 ## Exam references
 
@@ -31,53 +33,36 @@ Keep the shared data model and UI flow exam-agnostic, then express exam-specific
 
 ## Static seed data
 
-All built-in content lives as typed TS modules under `data/{skill}/`, where `skill` is one of `reading`, `writing`, `listening`, `speaking`:
+Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/` until they are persisted.
 
 ```
-data/
-  reading/
-    exerciseReading.ts                  # default seed exercises
-    a2/exerciseGeneratorReadingA2.ts    # editable demo prompt template
-  writing/
-    exerciseWriting.ts
-    exerciseTips.ts
-    a2/exerciseGeneratorWritingA2.ts
-    a2/reviewWritingA2.ts
-    a2/answerGeneratorWritingA2.ts
-    c1/exerciseGeneratorWritingC1.ts    # Goethe C1 Writing (Phase 1 partial)
-    c1/answerGeneratorWritingC1.ts
-    c1/reviewTextWritingC1.ts
-  listening/
-    exerciseListening.ts
-    a2/exerciseGeneratorListeningA2.ts
-  speaking/
-    exerciseSpeaking.ts
-    a2/reviewSpeakingA2.ts
+libraries/exam-content/src/
+  seeds/reading.ts
+  seeds/writing.ts
+  seeds/listening.ts
+  seeds/speaking.ts
+  seeds/mock-exam.ts
+apps/frontend/data/
+  reading/a2/exerciseGeneratorReadingA2.ts    # editable demo prompt template
+  writing/a2/exerciseGeneratorWritingA2.ts
+  writing/a2/reviewWritingA2.ts
+  ...
 ```
 
-- Each file exports typed arrays / functions (never untyped JSON)
-- Imported directly; Vite bundles at build time — no runtime fetch of remote exam content for defaults
-- Defaults are an **immutable seed**. Never mutate the default array at runtime.
-- The bundled prompt templates that generate / review / grade exercises are **editable demo templates** — ship them as seed data the user can override, the same way exercises are seeded.
+- Seed modules export typed arrays / functions (never untyped JSON)
+- Defaults are an **immutable seed**. Never mutate the default array at runtime
+- Practice lists overlay user-generated rows on seeds by `externalId` and hide `examOnly` / `EXAM_ONLY` items
+- The bundled prompt templates that generate / review / grade exercises are **editable demo templates**
 
-## Seed + merge on load (Phase 1)
+## Seed + API hydrate (after 2.3)
 
-Composables that own list data follow this lifecycle while localStorage is the persistence layer:
+Composables that own list data hydrate from NestJS after login:
 
-1. On first client load, if localStorage is empty, seed from the static defaults and persist
-2. On subsequent loads, **merge**: `items = defaults ∪ stored.filter(x => !isDefault(x.id))`
-3. When writing to localStorage, **only persist non-default items** (user-generated / AI-generated)
+1. Catalogs call `GET /api/v1/exercises?skill=...` (no client merge with bundled arrays)
+2. Progress, drafts, generation jobs, and mock sets use the matching `/api/v1` endpoints
+3. Writes go to the API only — do not keep a second localStorage source of truth
 
-```ts
-const defaultIds = new Set(defaultReadingTopics.map((t) => t.id))
-const stored = JSON.parse(localStorage.getItem(KEY) ?? '[]') as ReadingExercise[]
-const extras = stored.filter((t) => !defaultIds.has(t.id))
-texts.value = [...defaultReadingTopics, ...extras]
-```
-
-Why: defaults can ship new items via updates without bloating each user's localStorage, and user deletions can't wipe the seed.
-
-Phase 2 replaces this with a server-owned seed + API merge strategy; do not invent a second parallel localStorage source of truth for exam data after cutover.
+Why: app updates can ship new seed content via `db:seed` without wiping user-generated rows, and two accounts on one browser no longer share practice data.
 
 ## Rules
 
@@ -85,4 +70,4 @@ Phase 2 replaces this with a server-owned seed + API merge strategy; do not inve
 - **Phase 2+:** core flows may require the local API/DB; they must not require a cloud SaaS or external AI provider
 - Do not import a provider SDK (e.g. `openai`) or call AI endpoints from core flows directly — route through a composable that degrades gracefully (see `server/ai-response-envelope.md`)
 - AI is **bring-your-own-key**; supported providers today are **OpenAI** and **OpenRouter**. Core UI must render fine when every AI endpoint returns `{ data: null, error: ... }`
-- New feature areas / exam skills add a `data/{skill}/` module with typed exports; do not ship unseeded empty states
+- New exam skills add typed seed modules in `@exam-one/exam-content` and a `db:seed` upsert; do not ship unseeded empty states

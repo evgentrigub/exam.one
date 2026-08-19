@@ -1,121 +1,276 @@
 <!doctype html>
 <html lang="en" data-theme="light">
-<head>
+  <head>
+    <template id="__bundler_thumbnail">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+        <rect width="200" height="200" fill="#4338ca" />
+        <g fill="#fff" font-family="serif" font-weight="700">
+          <text x="100" y="118" text-anchor="middle" font-size="72">E</text>
+        </g>
+      </svg>
+    </template>
 
-<template id="__bundler_thumbnail">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <rect width="200" height="200" fill="#4338ca"/>
-  <g fill="#fff" font-family="serif" font-weight="700">
-    <text x="100" y="118" text-anchor="middle" font-size="72">E</text>
-  </g>
-</svg>
-</template>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam.one — Prototype</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" />
+    <link rel="stylesheet" href="components.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
 
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Exam.one — Prototype</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5"/>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"/>
-<link rel="stylesheet" href="components.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+    <style>
+      html,
+      body {
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      }
+      .font-display {
+        font-family: 'Fraunces', serif;
+        font-feature-settings: 'ss01', 'ss02';
+        letter-spacing: -0.02em;
+      }
+      .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
 
-<style>
-  html, body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-  .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01","ss02"; letter-spacing: -0.02em; }
-  .font-mono { font-family: 'JetBrains Mono', monospace; }
+      /* --- subtle custom touches, consistent with daisyUI --- */
+      .ring-soft {
+        box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-base-content) 8%, transparent);
+      }
+      .grid-pattern {
+        background-image:
+          linear-gradient(
+            color-mix(in oklab, var(--color-base-content) 5%, transparent) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--color-base-content) 5%, transparent) 1px,
+            transparent 1px
+          );
+        background-size: 24px 24px;
+      }
+      .dot-pattern {
+        background-image: radial-gradient(
+          color-mix(in oklab, var(--color-base-content) 12%, transparent) 1px,
+          transparent 1px
+        );
+        background-size: 14px 14px;
+      }
+      .kbd-shadow {
+        box-shadow: 0 2px 0 color-mix(in oklab, var(--color-base-content) 20%, transparent);
+      }
+      .exam-skill-chip {
+        transition: all 180ms cubic-bezier(0, 0, 0.2, 1);
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -4px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .wave-bar {
+        background: currentColor;
+        border-radius: 2px;
+        display: inline-block;
+        width: 3px;
+      }
+      @keyframes pulsebar {
+        0%,
+        100% {
+          transform: scaleY(0.3);
+        }
+        50% {
+          transform: scaleY(1);
+        }
+      }
+      .wave-live .wave-bar {
+        animation: pulsebar 1s ease-in-out infinite;
+        transform-origin: center;
+      }
+      .wave-live .wave-bar:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .wave-live .wave-bar:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .wave-live .wave-bar:nth-child(4) {
+        animation-delay: 0.15s;
+      }
+      .wave-live .wave-bar:nth-child(5) {
+        animation-delay: 0.05s;
+      }
 
-  /* --- subtle custom touches, consistent with daisyUI --- */
-  .ring-soft { box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-base-content) 8%, transparent); }
-  .grid-pattern {
-    background-image:
-      linear-gradient(color-mix(in oklab, var(--color-base-content) 5%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in oklab, var(--color-base-content) 5%, transparent) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-  .dot-pattern {
-    background-image: radial-gradient(color-mix(in oklab, var(--color-base-content) 12%, transparent) 1px, transparent 1px);
-    background-size: 14px 14px;
-  }
-  .kbd-shadow { box-shadow: 0 2px 0 color-mix(in oklab, var(--color-base-content) 20%, transparent); }
-  .exam-skill-chip { transition: all 180ms cubic-bezier(0,0,0.2,1); }
-  @keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-  .wave-bar { background: currentColor; border-radius: 2px; display:inline-block; width: 3px; }
-  @keyframes pulsebar { 0%,100%{ transform: scaleY(0.3);} 50%{ transform: scaleY(1);} }
-  .wave-live .wave-bar { animation: pulsebar 1s ease-in-out infinite; transform-origin: center; }
-  .wave-live .wave-bar:nth-child(2) { animation-delay: .1s }
-  .wave-live .wave-bar:nth-child(3) { animation-delay: .2s }
-  .wave-live .wave-bar:nth-child(4) { animation-delay: .15s }
-  .wave-live .wave-bar:nth-child(5) { animation-delay: .05s }
+      /* spark bars */
+      .spark {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 28px;
+      }
+      .spark > span {
+        width: 4px;
+        background: currentColor;
+        border-radius: 2px;
+        opacity: 0.85;
+      }
 
-  /* spark bars */
-  .spark { display: flex; align-items: flex-end; gap: 2px; height: 28px; }
-  .spark > span { width: 4px; background: currentColor; border-radius: 2px; opacity: .85; }
+      /* ring progress — donut with centered label */
+      .ring-prog {
+        position: relative;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        --p: 0;
+        --c: var(--color-primary);
+        background: conic-gradient(
+          var(--c) calc(var(--p) * 1%),
+          color-mix(in oklab, var(--color-base-content) 12%, transparent) 0
+        );
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+      .ring-prog::before {
+        content: '';
+        position: absolute;
+        inset: 7px;
+        border-radius: 50%;
+        background: var(--color-base-100);
+      }
+      .ring-prog > span {
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
+        font-size: 0.78rem;
+        font-family: 'JetBrains Mono', monospace;
+      }
 
-  /* ring progress — donut with centered label */
-  .ring-prog {
-    position: relative; width: 64px; height: 64px; border-radius: 50%;
-    --p: 0; --c: var(--color-primary);
-    background: conic-gradient(var(--c) calc(var(--p)*1%), color-mix(in oklab, var(--color-base-content) 12%, transparent) 0);
-    display: grid; place-items: center; flex: none;
-  }
-  .ring-prog::before {
-    content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--color-base-100);
-  }
-  .ring-prog > span { position: relative; z-index: 1; font-weight: 700; font-size: .78rem; font-family: 'JetBrains Mono', monospace; }
+      /* soft highlight for active sidebar */
+      .nav-item-active {
+        background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+        color: var(--color-primary);
+      }
 
-  /* soft highlight for active sidebar */
-  .nav-item-active { background: color-mix(in oklab, var(--color-primary) 10%, transparent); color: var(--color-primary); }
+      /* annotation pill for audit mode */
+      .audit-pill {
+        position: absolute;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: var(--color-warning);
+        color: var(--color-warning-content);
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+        z-index: 30;
+      }
 
-  /* annotation pill for audit mode */
-  .audit-pill { position: absolute; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
-    background: var(--color-warning); color: var(--color-warning-content); box-shadow: 0 2px 0 rgba(0,0,0,.1); z-index: 30; }
+      /* full-height shell */
+      .app-shell {
+        height: 100vh;
+      }
 
-  /* full-height shell */
-  .app-shell { height: 100vh; }
+      /* subtle card hover */
+      .card-hov {
+        transition:
+          transform 180ms cubic-bezier(0, 0, 0.2, 1),
+          box-shadow 180ms;
+      }
+      .card-hov:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px -12px color-mix(in oklab, var(--color-base-content) 25%, transparent);
+      }
 
-  /* subtle card hover */
-  .card-hov { transition: transform 180ms cubic-bezier(0,0,0.2,1), box-shadow 180ms; }
-  .card-hov:hover { transform: translateY(-1px); box-shadow: 0 8px 24px -12px color-mix(in oklab, var(--color-base-content) 25%, transparent); }
+      /* mini spark colors inherit */
+      .text-reading {
+        color: var(--color-primary);
+      }
+      .text-writing {
+        color: var(--color-success);
+      }
+      .text-listening {
+        color: var(--color-info);
+      }
+      .text-speaking {
+        color: var(--color-warning);
+      }
+      .bg-reading-soft {
+        background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+      }
+      .bg-writing-soft {
+        background: color-mix(in oklab, var(--color-success) 14%, transparent);
+      }
+      .bg-listening-soft {
+        background: color-mix(in oklab, var(--color-info) 14%, transparent);
+      }
+      .bg-speaking-soft {
+        background: color-mix(in oklab, var(--color-warning) 18%, transparent);
+      }
 
-  /* mini spark colors inherit */
-  .text-reading { color: var(--color-primary); }
-  .text-writing { color: var(--color-success); }
-  .text-listening { color: var(--color-info); }
-  .text-speaking { color: var(--color-warning); }
-  .bg-reading-soft  { background: color-mix(in oklab, var(--color-primary) 12%, transparent); }
-  .bg-writing-soft  { background: color-mix(in oklab, var(--color-success) 14%, transparent); }
-  .bg-listening-soft{ background: color-mix(in oklab, var(--color-info) 14%, transparent); }
-  .bg-speaking-soft { background: color-mix(in oklab, var(--color-warning) 18%, transparent); }
+      /* exam level pip */
+      .level-pip {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: color-mix(in oklab, var(--color-base-content) 8%, transparent);
+      }
 
-  /* exam level pip */
-  .level-pip { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 10px; padding: 2px 6px; border-radius: 4px;
-    background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+      /* ::selection */
+      ::selection {
+        background: color-mix(in oklab, var(--color-primary) 30%, transparent);
+      }
+    </style>
+  </head>
+  <body class="bg-base-200 min-h-screen">
+    <div id="root"></div>
 
-  /* ::selection */
-  ::selection { background: color-mix(in oklab, var(--color-primary) 30%, transparent); }
-</style>
-</head>
-<body class="bg-base-200 min-h-screen">
-  <div id="root"></div>
-
-  <script type="text/babel" data-presets="env,react" src="shared.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="shell.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="dashboard.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="exam-structure.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="exercises.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="gen-queue.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="prompt-settings.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="exercise-interior.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="mock-exam.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="auth.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="settings.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="settings-prefs.jsx"></script>
-  <script type="text/babel" data-presets="env,react" src="app.jsx"></script>
-</body>
+    <script type="text/babel" data-presets="env,react" src="shared.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="shell.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="dashboard.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="exam-structure.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="exercises.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="gen-queue.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="prompt-settings.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="exercise-interior.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="mock-exam.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="auth.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="settings.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="settings-prefs.jsx"></script>
+    <script type="text/babel" data-presets="env,react" src="app.jsx"></script>
+  </body>
 </html>

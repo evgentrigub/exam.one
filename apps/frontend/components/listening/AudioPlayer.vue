@@ -29,7 +29,7 @@
           class="w-full accent-info disabled:opacity-40"
           :disabled="!!disabled || !!disableSeeking"
           @input="seekTo(Number(($event.target as HTMLInputElement).value))"
-        >
+        />
         <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
           <span>{{ fmt(currentSec) }}</span>
           <span>{{ fmt(effectiveDurationSec) }}</span>
@@ -54,7 +54,7 @@
           class="flex-1 accent-info min-w-0 disabled:opacity-40"
           :disabled="!!disabled"
           @input="onVolumeInput(Number(($event.target as HTMLInputElement).value))"
-        >
+        />
 
         <div class="join">
           <button
@@ -73,8 +73,13 @@
     </div>
 
     <!-- Transcript (revealed after submit) -->
-    <div v-if="revealTranscript" class="mt-4 p-3 rounded-field bg-base-200/60 border border-base-300/70">
-      <p class="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1">Transcript</p>
+    <div
+      v-if="revealTranscript"
+      class="mt-4 p-3 rounded-field bg-base-200/60 border border-base-300/70"
+    >
+      <p class="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1">
+        Transcript
+      </p>
       <p class="text-sm leading-relaxed whitespace-pre-line">{{ transcript }}</p>
     </div>
   </div>
@@ -85,42 +90,45 @@ import { Play, Pause, Volume2 } from 'lucide-vue-next'
 
 const speeds = [0.75, 1, 1.25] as const
 
-const props = withDefaults(defineProps<{
-  transcript: string
-  label?: string
-  /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
-  src?: string
-  durationSec?: number
-  revealTranscript?: boolean
-  /** When true, only play + scrubber are shown (volume/speed live in the sidebar). */
-  hideVolumeSpeed?: boolean
-  /** Controlled volume from parent (0–1). */
-  volume?: number
-  /** Controlled playback rate from parent. */
-  speed?: number
-  /** Stable id for exclusive playback coordination. */
-  playerId?: string
-  /** Currently active player id from the session (exclusive play). */
-  activePlayerId?: string | null
-  /** Disable play/scrub/controls (e.g. when audio files are missing). */
-  disabled?: boolean
-  /** Optional exam replay cap. Pausing and resuming the same play does not consume another play. */
-  maxPlays?: number | null
-  disableSeeking?: boolean
-}>(), {
-  label: 'Audio',
-  src: '',
-  durationSec: 0,
-  revealTranscript: false,
-  hideVolumeSpeed: false,
-  volume: 0.6,
-  speed: 1,
-  playerId: '',
-  activePlayerId: null,
-  disabled: false,
-  maxPlays: null,
-  disableSeeking: false,
-})
+const props = withDefaults(
+  defineProps<{
+    transcript: string
+    label?: string
+    /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
+    src?: string
+    durationSec?: number
+    revealTranscript?: boolean
+    /** When true, only play + scrubber are shown (volume/speed live in the sidebar). */
+    hideVolumeSpeed?: boolean
+    /** Controlled volume from parent (0–1). */
+    volume?: number
+    /** Controlled playback rate from parent. */
+    speed?: number
+    /** Stable id for exclusive playback coordination. */
+    playerId?: string
+    /** Currently active player id from the session (exclusive play). */
+    activePlayerId?: string | null
+    /** Disable play/scrub/controls (e.g. when audio files are missing). */
+    disabled?: boolean
+    /** Optional exam replay cap. Pausing and resuming the same play does not consume another play. */
+    maxPlays?: number | null
+    disableSeeking?: boolean
+  }>(),
+  {
+    label: 'Audio',
+    src: '',
+    durationSec: 0,
+    revealTranscript: false,
+    hideVolumeSpeed: false,
+    volume: 0.6,
+    speed: 1,
+    playerId: '',
+    activePlayerId: null,
+    disabled: false,
+    maxPlays: null,
+    disableSeeking: false,
+  }
+)
 
 const emit = defineEmits<{
   'update:volume': [value: number]
@@ -148,13 +156,13 @@ const useRealAudio = computed(() => Boolean(props.src) && !mediaFailed.value && 
 const simulatedDurationSec = computed(() =>
   props.durationSec > 0
     ? props.durationSec
-    : Math.min(180, Math.max(30, Math.round(props.transcript.length / 13))),
+    : Math.min(180, Math.max(30, Math.round(props.transcript.length / 13)))
 )
 
 const effectiveDurationSec = computed(() =>
   useRealAudio.value && mediaDurationSec.value > 0
     ? mediaDurationSec.value
-    : simulatedDurationSec.value,
+    : simulatedDurationSec.value
 )
 
 const canPlay = computed(() => {
@@ -298,14 +306,17 @@ function toggle() {
       currentSec.value = 0
     }
     applyAudioSettings()
-    void audioEl.play().then(() => {
-      playing.value = true
-    }).catch(() => {
-      mediaFailed.value = true
-      playing.value = true
-      startSimulatedTimer()
-      emit('audio-unavailable')
-    })
+    void audioEl
+      .play()
+      .then(() => {
+        playing.value = true
+      })
+      .catch(() => {
+        mediaFailed.value = true
+        playing.value = true
+        startSimulatedTimer()
+        emit('audio-unavailable')
+      })
     return
   }
 
@@ -337,7 +348,7 @@ function onSpeedInput(value: number) {
 
 watch(
   () => props.src,
-  (src) => {
+  src => {
     stopTimer()
     playing.value = false
     currentSec.value = 0
@@ -351,33 +362,33 @@ watch(
       emit('audio-unavailable')
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 watch(
   () => [effectiveVolume.value, effectiveSpeed.value] as const,
   () => {
     applyAudioSettings()
-  },
+  }
 )
 
 watch(
   () => props.activePlayerId,
-  (activeId) => {
+  activeId => {
     if (!props.playerId || !playing.value) return
     if (activeId !== null && activeId !== props.playerId) {
       pausePlayback()
     }
-  },
+  }
 )
 
 watch(
   () => props.disabled,
-  (locked) => {
+  locked => {
     if (locked && playing.value) {
       pausePlayback()
     }
-  },
+  }
 )
 
 onUnmounted(() => {

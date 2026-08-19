@@ -23,10 +23,38 @@ export interface SkillMeta {
 }
 
 export const SKILLS: SkillMeta[] = [
-  { id: 'reading', color: 'primary', icon: 'BookOpen', textClass: 'text-reading', softBgClass: 'bg-reading-soft', progressClass: 'progress-primary' },
-  { id: 'writing', color: 'success', icon: 'PenLine', textClass: 'text-writing', softBgClass: 'bg-writing-soft', progressClass: 'progress-success' },
-  { id: 'listening', color: 'info', icon: 'Headphones', textClass: 'text-listening', softBgClass: 'bg-listening-soft', progressClass: 'progress-info' },
-  { id: 'speaking', color: 'warning', icon: 'Mic', textClass: 'text-speaking', softBgClass: 'bg-speaking-soft', progressClass: 'progress-warning' },
+  {
+    id: 'reading',
+    color: 'primary',
+    icon: 'BookOpen',
+    textClass: 'text-reading',
+    softBgClass: 'bg-reading-soft',
+    progressClass: 'progress-primary',
+  },
+  {
+    id: 'writing',
+    color: 'success',
+    icon: 'PenLine',
+    textClass: 'text-writing',
+    softBgClass: 'bg-writing-soft',
+    progressClass: 'progress-success',
+  },
+  {
+    id: 'listening',
+    color: 'info',
+    icon: 'Headphones',
+    textClass: 'text-listening',
+    softBgClass: 'bg-listening-soft',
+    progressClass: 'progress-info',
+  },
+  {
+    id: 'speaking',
+    color: 'warning',
+    icon: 'Mic',
+    textClass: 'text-speaking',
+    softBgClass: 'bg-speaking-soft',
+    progressClass: 'progress-warning',
+  },
 ]
 
 export const SKILL_IDS: SkillId[] = SKILLS.map(s => s.id)

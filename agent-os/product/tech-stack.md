@@ -1,10 +1,10 @@
 # Tech Stack
 
-> **Phase 1 is complete** as a frontend-only Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers and localStorage for user data. **Phase 2 is current:** the Backend, Database, and Deployment sections describe the full-stack Docker Compose persistence cutover. Cloud hosting remains Phase 4.
+> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2 is current:** accounts, practice data, and the AI/TTS/STT proxy are NestJS-backed (2.2–2.4). Cloud hosting remains Phase 4.
 
 ## Frontend
 
-- **Nuxt 3** — SSR/SSG framework (Vue 3)
+- **Nuxt 4** — SSR/SSG framework (Vue 3)
 - **Vue 3** — component model with Composition API
 - **TypeScript** — strict typing throughout
 - **Tailwind CSS 4** — utility-first styling (via `@tailwindcss/vite`)
@@ -14,17 +14,17 @@
 - **Pinia** (+ `pinia-plugin-persistedstate`) — state management
 - **VueUse** — composable utilities
 
-Vue/Nuxt is retained in part so Phase 2 can reuse existing auth, profile, and account UI patterns (login, register, password reset, verify, profile/settings) from the project's Scalo-derived Vue component library.
+Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, password reset, verify, profile/settings). Those screens are wired to NestJS (roadmap 2.2). `/auth/**` is SSR'd; the login-gated app is client-only (`ssr: false`) because session cookies live on the API host.
 
 ## Backend
 
 - **Completed Phase 1:** thin **Nuxt server routes** (`server/api/`) proxy requests to the configured LLM provider
-- **Current Phase 2:** **NestJS** — Node.js backend framework (REST and/or GraphQL), single-operator signup model for self-hosted instances (similar to n8n / Postiz)
+- **Current Phase 2:** **NestJS** REST API (`/api/v1`). Auth is JWT httpOnly cookies, bcrypt passwords, optional SMTP (`EMAIL_PROVIDER=none|smtp`). Multi-user registration; no default operator account. Recover a local password with `pnpm auth:set-password`. LLM, Kokoro TTS, and Parakeet/Whisper STT proxies live on NestJS (2.4).
 
 ## Database
 
-- **Completed Phase 1:** all user data is stored client-side in localStorage for offline-capable core practice
-- **Current Phase 2:** **PostgreSQL** — primary relational database (users, exercises, attempts, results, drafts, settings). API-backed data replaces localStorage for those domains. Postgres runs in Docker Compose with a **named volume** so data survives container recreation.
+- **Completed Phase 1:** skill practice, mock exams, progress, and drafts used localStorage
+- **Current Phase 2 (2.2–2.3):** **PostgreSQL** stores users, auth tokens, settings, exercises, attempts, results, drafts, generation jobs, and mock exams. Theme, locale, and playback prefs stay client-side. Postgres runs in Docker Compose with a **named volume** so data survives container recreation.
 
 ## AI
 

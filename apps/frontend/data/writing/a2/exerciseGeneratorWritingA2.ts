@@ -146,11 +146,11 @@ Beschreiben Sie die Schuhe und nennen Sie den Preis.
 Nennen Sie einen Treffpunkt und eine Uhrzeit.
 Schreiben Sie 20–30 Wörter.
 Schreiben Sie zu allen drei Punkten.
-  `
+  `,
 ]
 
 export const dataA2Part2Topics = [
-`
+  `
 Teil 2
 Herr Krüger, der Leiter von Ihrem Sportverein, möchte ein kostenloses Kennenlern-Wochenende für Jugendliche organisieren und bittet Sie um Hilfe.
 Schreiben Sie Herrn Krüger eine E-Mail:
@@ -160,7 +160,7 @@ Schlagen Sie etwas vor, wie Sie helfen können.
 Schreiben Sie 30–40 Wörter.
 Schreiben Sie zu allen drei Punkten.
 `,
-`
+  `
 Teil 2
 Ihre Nachbarin, Frau Brandt, macht ein Gartenfest und hat Sie eingeladen.
 Schreiben Sie Frau Brandt eine E-Mail:
@@ -170,7 +170,7 @@ Fragen Sie nach dem Weg.
 Schreiben Sie 30–40 Wörter.
 Schreiben Sie zu allen drei Punkten.
 `,
-`Teil 2
+  `Teil 2
 Ihre Chefin, Frau Hantke, hat Sie zu einer Karnevalsfeier in der Firma eingeladen.
 Schreiben Sie Frau Hantke eine E-Mail:
 Bedanken Sie sich und sagen Sie, dass Sie kommen.
@@ -178,6 +178,5 @@ Fragen Sie, was Sie mitbringen sollen.
 Machen Sie Vorschläge für das Musikprogramm.
 Schreiben Sie 30–40 Wörter.
 Schreiben Sie zu allen drei Punkten.
-`
+`,
 ]
-

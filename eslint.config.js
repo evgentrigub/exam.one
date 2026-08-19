@@ -10,6 +10,6 @@ export default defineConfig(
     '**/.claude/**',
     '**/.idea/**',
     'pnpm-lock.yaml',
-    'graphify-out/**'
+    'graphify-out/**',
   ])
 )

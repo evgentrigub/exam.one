@@ -6,20 +6,23 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 3 offline-first frontend, plus NestJS / Prisma / Compose foundations for the active Phase 2 persistence cutover
+- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, and AI/TTS/STT proxy on PostgreSQL (2.2–2.4), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
-- AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
+- AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through NestJS; degrades gracefully when unavailable
 
 ## Current Focus
 
 - **Done:** German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
 - **Done:** Mock exam offline Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
-- **Current:** Phase 2 NestJS/PostgreSQL persistence and self-hosting cutover; preserve the finished frontend behavior while migrating domains deliberately
+- **Done:** Auth and account UI (2.2) — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
+- **Done:** Persistence cutover (2.3) — skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
+- **Done:** AI, TTS, and STT proxy (2.4) — OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
+- **Current:** Phase 2.5–2.6 — Docker Compose packaging and self-host runbook
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
 
-- Nuxt 3
+- Nuxt 4
 - Vue 3 with Composition API and `<script setup>`
 - TypeScript
 - Pinia with persisted state
@@ -46,10 +49,11 @@ Use `pnpm`.
 - `pnpm stack:down` - stop the complete stack without deleting named volumes
 - `pnpm tts:up` - prepare and start only Kokoro TTS
 - `pnpm stt:up` - prepare and start only Parakeet STT
+- `pnpm auth:set-password` - set or recover a local account password (`--email you@example.com`)
 
 ## Codebase Shape
 
-- `apps/frontend/` contains the Nuxt application, including pages, components, composables, stores, data, frontend utilities, and temporary Nitro AI endpoints
+- `apps/frontend/` contains the Nuxt application, including pages, components, composables, stores, data, and frontend utilities
 - `apps/backend/` contains the standalone NestJS API
 - `libraries/contracts/` contains framework-neutral shared API types
 - `libraries/database/` owns the Prisma schema, migrations, and seeds
@@ -61,11 +65,11 @@ Use `pnpm`.
 
 ## Agent Priorities
 
-1. Preserve completed product behavior. Unmigrated Phase 1 domains remain offline-capable; explicitly migrated Phase 2 domains may require the local Compose API/PostgreSQL stack but must not require cloud infrastructure.
+1. Preserve completed product behavior. Practice domains are API-backed after login. Accounts require the local API/PostgreSQL stack and must not require cloud infrastructure.
 2. Treat AI as optional and provider-agnostic (bring-your-own-key). If no API key is configured or an AI request fails, the app should degrade gracefully.
 3. Keep changes aligned with existing Nuxt, Vue, and DaisyUI patterns instead of introducing a parallel architecture.
 4. Prefer small, local changes over broad refactors unless the task explicitly requires structural work.
-5. During Phase 2, preserve compatibility with completed local-first flows and migrate persistence one domain at a time without maintaining two authoritative sources.
+5. Do not reintroduce localStorage as an authoritative source for skill, mock exam, progress, or draft data. UI prefs (theme, locale, playback) may stay client-side.
 
 ## Required Standards
 
@@ -73,7 +77,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Global
 
-- Phase-aware core: unmigrated frontend domains work with zero network; migrated Phase 2 domains may use the local self-hosted API/database
+- Phase-aware core: the shell is login-gated (2.2). Practice data is NestJS/PostgreSQL (2.3). AI/TTS/STT is NestJS (2.4). Theme and playback prefs stay client-side
 - SSR storage guards: guard `localStorage`, `window`, and `document` access with `import.meta.client` and `try/catch`
 - Local storage keys: prefix with `exam-one:`
 
@@ -92,7 +96,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Server
 
-- AI endpoints should return `{ data, error }` envelopes for business-level failures
+- AI endpoints should return `{ data, error }` envelopes for business-level failures via NestJS `/api/v1`
 - Reserve thrown errors for infrastructure/runtime failures
 
 ## UI And Styling Rules
@@ -104,11 +108,10 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ## Data And Persistence Rules
 
-- Frontend-owned seed content currently belongs in typed modules under `apps/frontend/data/`; move it to `libraries/exam-content/` only when both applications need it
+- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates can stay under `apps/frontend/data/` until they are persisted
 - Exam-specific implementation details belong in `agent-os/product/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
-- Existing user progress, drafts, attempts, generated sets, and reviews remain local-first until their Phase 2 domain is explicitly migrated
-- Phase 2 persistence work should move an entire domain behind shared contracts and NestJS/PostgreSQL ownership, with a deliberate compatibility or migration path
-- Bundled mock-exam Set 1 must remain usable without an LLM key, network connection, or speech service
+- Skill catalogs, attempts, drafts, reviews, generation jobs, and mock exams are owned by NestJS/PostgreSQL after login. Do not add new authoritative practice keys to localStorage
+- Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
 
 ## AI Integration Rules
 

@@ -1,11 +1,18 @@
 <template>
   <Teleport to="body">
-    <div class="modal modal-open" role="dialog" aria-modal="true" aria-labelledby="writing-review-title">
+    <div
+      class="modal modal-open"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="writing-review-title"
+    >
       <div class="modal-box max-w-4xl w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto">
         <!-- Header -->
         <div class="flex items-start justify-between gap-4 mb-4">
           <div>
-            <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50">
+            <div
+              class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50"
+            >
               <Sparkles :size="11" aria-hidden="true" />
               {{ $t('writing.aiReview') || 'AI Review' }}
             </div>
@@ -23,7 +30,12 @@
               <RefreshCw :size="14" :class="{ 'animate-spin': isPending }" aria-hidden="true" />
               {{ isPending ? 'Regenerating…' : 'Regenerate AI review' }}
             </button>
-            <button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close" @click="emit('close')">
+            <button
+              type="button"
+              class="btn btn-sm btn-circle btn-ghost"
+              aria-label="Close"
+              @click="emit('close')"
+            >
               <X :size="16" aria-hidden="true" />
             </button>
           </div>
@@ -56,12 +68,22 @@
               <div class="text-base-content/60 text-[11px] uppercase tracking-wider">Words</div>
               <div class="font-medium">{{ formatWordCount(reviewData) }}</div>
             </div>
-            <div v-if="isA2ReviewData(reviewData)" class="rounded-box bg-base-200/60 border border-base-300/70 p-3">
-              <div class="text-base-content/60 text-[11px] uppercase tracking-wider">Result points</div>
+            <div
+              v-if="isA2ReviewData(reviewData)"
+              class="rounded-box bg-base-200/60 border border-base-300/70 p-3"
+            >
+              <div class="text-base-content/60 text-[11px] uppercase tracking-wider">
+                Result points
+              </div>
               <div class="font-medium">{{ getA2ResultPoints(reviewData) }}</div>
             </div>
-            <div v-if="isC1ReviewData(reviewData)" class="rounded-box bg-base-200/60 border border-base-300/70 p-3">
-              <div class="text-base-content/60 text-[11px] uppercase tracking-wider">Teil points</div>
+            <div
+              v-if="isC1ReviewData(reviewData)"
+              class="rounded-box bg-base-200/60 border border-base-300/70 p-3"
+            >
+              <div class="text-base-content/60 text-[11px] uppercase tracking-wider">
+                Teil points
+              </div>
               <div class="font-medium">{{ getC1TeilPoints(reviewData) }}</div>
             </div>
             <div class="rounded-box bg-base-200/60 border border-base-300/70 p-3">
@@ -214,11 +236,15 @@ function handleRegenerate() {
   emit('regenerate')
 }
 
-const isA2ReviewData = (data: AiReviewData | null): data is import('~/utils/types').AiReviewDataA2 => {
+const isA2ReviewData = (
+  data: AiReviewData | null
+): data is import('~/utils/types').AiReviewDataA2 => {
   return data ? isA2Review(data) : false
 }
 
-const isC1ReviewData = (data: AiReviewData | null): data is import('~/utils/types').AiReviewDataC1 => {
+const isC1ReviewData = (
+  data: AiReviewData | null
+): data is import('~/utils/types').AiReviewDataC1 => {
   return data ? isC1Review(data) : false
 }
 

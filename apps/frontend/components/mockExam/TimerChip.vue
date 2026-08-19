@@ -1,5 +1,8 @@
 <template>
-  <div class="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-sm font-semibold tabular-nums" :class="chipClass">
+  <div
+    class="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-sm font-semibold tabular-nums"
+    :class="chipClass"
+  >
     <Clock :size="14" aria-hidden="true" />
     <span>{{ formatted }}</span>
   </div>
@@ -18,6 +21,6 @@ const formatted = computed(() => {
 const chipClass = computed(() =>
   props.seconds <= 120
     ? 'border-error/40 bg-error/10 text-error'
-    : 'border-base-300 bg-base-100 text-base-content',
+    : 'border-base-300 bg-base-100 text-base-content'
 )
 </script>
