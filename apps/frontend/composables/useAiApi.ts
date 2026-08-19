@@ -1,4 +1,5 @@
 import type { AiResponse } from '@exam-one/contracts'
+import { refreshAccessCookie } from '~/composables/useApi'
 
 function apiBaseUrl(): string {
   const config = useRuntimeConfig()
@@ -34,37 +35,57 @@ function envelopeFromUnknown(value: unknown, fallback: string): AiResponse<never
   return { data: null, error: fallback }
 }
 
+type AiFetchOptions = {
+  method?: 'GET' | 'POST'
+  body?: unknown
+}
+
+function isUnauthorized(error: unknown): boolean {
+  const fetchError = error as { statusCode?: number; status?: number }
+  return (fetchError.statusCode ?? fetchError.status) === 401
+}
+
+async function requestAiOnce<T>(path: string, options: AiFetchOptions = {}): Promise<AiResponse<T>> {
+  const fetchOptions: {
+    method: 'GET' | 'POST'
+    credentials: 'include'
+    body?: BodyInit | Record<string, unknown> | null
+  } = {
+    method: options.method ?? 'GET',
+    credentials: 'include',
+  }
+  if (options.body !== undefined) {
+    fetchOptions.body = options.body as BodyInit | Record<string, unknown> | null
+  }
+  return await $fetch<AiResponse<T>>(aiUrl(path), fetchOptions)
+}
+
+function envelopeFromCatch(error: unknown): AiResponse<never> {
+  const fetchError = error as {
+    statusCode?: number
+    status?: number
+    data?: unknown
+    message?: string
+  }
+  const status = fetchError.statusCode ?? fetchError.status ?? 500
+  const fallback = status === 401 ? 'Please sign in again.' : fetchError.message || 'Request failed'
+  return envelopeFromUnknown(fetchError.data, fallback)
+}
+
 export async function aiFetch<T>(
   path: string,
-  options: {
-    method?: 'GET' | 'POST'
-    body?: unknown
-  } = {}
+  options: AiFetchOptions = {}
 ): Promise<AiResponse<T>> {
   try {
-    const fetchOptions: {
-      method: 'GET' | 'POST'
-      credentials: 'include'
-      body?: BodyInit | Record<string, unknown> | null
-    } = {
-      method: options.method ?? 'GET',
-      credentials: 'include',
-    }
-    if (options.body !== undefined) {
-      fetchOptions.body = options.body as BodyInit | Record<string, unknown> | null
-    }
-
-    return await $fetch<AiResponse<T>>(aiUrl(path), fetchOptions)
+    return await requestAiOnce<T>(path, options)
   } catch (error: unknown) {
-    const fetchError = error as {
-      statusCode?: number
-      status?: number
-      data?: unknown
-      message?: string
+    if (import.meta.client && isUnauthorized(error) && (await refreshAccessCookie())) {
+      try {
+        return await requestAiOnce<T>(path, options)
+      } catch (retryError: unknown) {
+        return envelopeFromCatch(retryError)
+      }
     }
-    const status = fetchError.statusCode ?? fetchError.status ?? 500
-    const fallback =
-      status === 401 ? 'Please sign in again.' : fetchError.message || 'Request failed'
-    return envelopeFromUnknown(fetchError.data, fallback)
+    return envelopeFromCatch(error)
   }
 }
