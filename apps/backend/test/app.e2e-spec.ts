@@ -5,6 +5,7 @@ import request from 'supertest'
 import { PrismaClient } from '@exam-one/database'
 import { AppModule } from '../src/app.module'
 import { configureApp } from '../src/bootstrap'
+import { LlmService } from '../src/llm/llm.service'
 
 describe('Auth + health (e2e)', () => {
   let app: INestApplication
@@ -21,7 +22,22 @@ describe('Auth + health (e2e)', () => {
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile()
+    })
+      .overrideProvider(LlmService)
+      .useValue({
+        health: async () => ({
+          data: {
+            configured: false,
+            connected: false,
+            provider: null,
+            model: null,
+            message: 'No LLM API key is configured.',
+          },
+          error: null,
+        }),
+        onModuleInit: async () => undefined,
+      })
+      .compile()
 
     app = moduleFixture.createNestApplication()
     configureApp(app)
@@ -69,5 +85,27 @@ describe('Auth + health (e2e)', () => {
     await agent.post('/api/v1/auth/logout').expect(201)
 
     await request(app.getHttpServer()).get('/api/v1/users/me').expect(401)
+  })
+
+  it('unauthenticated /llm/health is 401; authed health returns the AI envelope', async () => {
+    await request(app.getHttpServer()).get('/api/v1/llm/health').expect(401)
+
+    const agent = request.agent(app.getHttpServer())
+    await agent
+      .post('/api/v1/auth/register')
+      .send({ name: 'E2E User', email, password: 'password12' })
+      .expect(201)
+
+    const health = await agent.get('/api/v1/llm/health').expect(200)
+    expect(health.body).toEqual({
+      data: {
+        configured: false,
+        connected: false,
+        provider: null,
+        model: null,
+        message: 'No LLM API key is configured.',
+      },
+      error: null,
+    })
   })
 })
