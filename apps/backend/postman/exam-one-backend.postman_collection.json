@@ -2,9 +2,9 @@
   "info": {
     "_postman_id": "exam-one-backend-api-v1",
     "name": "exam.one Backend API",
-    "description": "NestJS API for exam.one (Phase 2.2).\n\n**Base URL:** `{{baseUrl}}` → default `http://localhost:3001`\n**Prefix:** `/api/v1`\n\n**Auth:** httpOnly cookies `exam_one_access` and `exam_one_refresh`.\nIn Postman: turn on **Settings → General → Automatically follow redirects**, and for cookie endpoints enable **Send cookies** / use the Cookie jar. After Register or Login, Postman should store Set-Cookie headers; subsequent Authed requests will send them.\n\n**Suggested flow:** Health → Auth Config → Register → Auth Me → Users Me → Settings Me → Change Password → Logout.",
+    "description": "NestJS API for exam.one (accounts, practice persistence, and AI/TTS/STT proxy).\n\n**Base URL:** `{{baseUrl}}` → default `http://localhost:3001`\n**Prefix:** `/api/v1`\n\n**Auth:** httpOnly cookies `exam_one_access` and `exam_one_refresh`.\nIn Postman: turn on **Settings → General → Automatically follow redirects**, and for cookie endpoints enable **Send cookies** / use the Cookie jar. After Register or Login, Postman should store Set-Cookie headers; subsequent Authed requests will send them.\n\n**AI / speech:** `/api/v1/ai`, `/llm`, `/tts`, and `/stt` are cookie-authed and return `{ data, error }` with HTTP 200 for missing keys and upstream failures. Invalid bodies are HTTP 400; missing session is HTTP 401. LLM, Kokoro, and Parakeet/Whisper are optional — health checks report availability without failing the collection.\n\n**Suggested flow:** Health → Auth Config → Register (or Login) → Auth Me → Users Me → Settings Me → LLM / TTS / STT health → Generate reading → Change Password → Logout.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "0.0.1"
+    "version": "0.5.0"
   },
   "variable": [
     {
@@ -331,6 +331,55 @@
             },
             "url": "{{baseUrl}}/api/v1/settings/me",
             "description": "Authed (cookie). `examLevel`: `A2` | `C1`. `targetLanguage`: string (e.g. `de`)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI / Speech",
+      "item": [
+        {
+          "name": "LLM health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/llm/health",
+            "description": "Authed (cookie). `{ data, error }` envelope. Missing keys are HTTP 200 with configured=false."
+          },
+          "response": []
+        },
+        {
+          "name": "TTS health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/tts/health",
+            "description": "Authed (cookie). Kokoro availability."
+          },
+          "response": []
+        },
+        {
+          "name": "STT health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/stt/health",
+            "description": "Authed (cookie). Local Parakeet or OpenAI Whisper readiness."
+          },
+          "response": []
+        },
+        {
+          "name": "Generate reading",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"difficulty\": \"A2\",\n  \"prompts\": [{ \"part\": 1, \"prompt\": \"Generate one Goethe A2 Lesen Teil 1 exercise as JSON.\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/ai/generate-reading",
+            "description": "Authed (cookie). HTTP 200 `{ data, error }` even when the LLM key is missing."
           },
           "response": []
         }

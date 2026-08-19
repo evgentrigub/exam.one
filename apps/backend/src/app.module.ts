@@ -6,6 +6,10 @@ import { PrismaModule } from '@exam-one/nestjs-libraries'
 import { appConfig } from './config/app.config'
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard'
 import { EmailModule } from './email/email.module'
+import { LlmModule } from './llm/llm.module'
+import { AiModule } from './ai/ai.module'
+import { TtsModule } from './tts/tts.module'
+import { SttModule } from './stt/stt.module'
 import { AuthModule } from './auth/auth.module'
 import { HealthModule } from './health/health.module'
 import { UsersModule } from './users/users.module'
@@ -32,6 +36,10 @@ import { MockExamModule } from './mock-exam/mock-exam.module'
     ]),
     PrismaModule,
     EmailModule,
+    LlmModule,
+    AiModule,
+    TtsModule,
+    SttModule,
     AuthModule,
     HealthModule,
     UsersModule,
