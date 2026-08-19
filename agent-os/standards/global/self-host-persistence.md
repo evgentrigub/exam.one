@@ -2,7 +2,7 @@
 
 Rules for durable local data when exam.one runs as a Docker Compose full stack on the user's machine.
 
-**Cutover status:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL (roadmap 2.2–2.3). Theme, locale, listening playback, and reading bookmarks may stay client-side (see `offline-first-core.md` and `localstorage-keys.md`).
+**Cutover status:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, mock exams, and the LLM/TTS/STT proxy are NestJS (roadmap 2.2–2.4). Theme, locale, listening playback, and reading bookmarks may stay client-side (see `offline-first-core.md` and `localstorage-keys.md`).
 
 ## Stack contract
 
@@ -23,7 +23,7 @@ PostgreSQL data must use a **named Docker volume** (for example `postgres_data` 
 - Document backup/restore of the named volume in the self-host runbook
 - Do not bind-mount ephemeral paths that disappear with the project directory unless explicitly documented as disposable
 
-Listening WAV bytes stay on the filesystem (`apps/frontend/public/audio/` or a named volume in Compose). Postgres stores **paths** only. Speaking recordings stay in-memory blobs; persist transcripts and reviews, not audio.
+Listening WAV bytes stay on the filesystem (`apps/frontend/public/audio/` or the Compose named volume `generated_listening_audio`). NestJS writes on-demand generated WAVs; Nuxt serves them at `/audio/listening/generated/`. Postgres stores **paths** only. Speaking recordings stay in-memory blobs; persist transcripts and reviews, not audio.
 
 ## Local-first, not cloud-required
 

@@ -17,7 +17,7 @@ flowchart LR
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** NestJS / Prisma / Compose are in the repo. **2.1–2.3 are complete** (API + login-gated accounts + practice persistence). AI still uses temporary Nuxt routes until 2.4.
+> **Note:** NestJS / Prisma / Compose are in the repo. **2.1–2.4 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy). Next is Compose packaging (2.5) and the self-host runbook (2.6).
 
 The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. The architecture remains exam-agnostic so later phases can add other levels, languages, and providers without changing the completed Phase 1 definition.
 
@@ -68,7 +68,7 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 **Stack:**
 
 - **Frontend** — Vue.js (Nuxt)
-- **Backend** — NestJS API replacing the thin Nuxt AI proxy for long-term ownership
+- **Backend** — NestJS API owning auth, practice persistence, and the LLM/TTS/STT proxy
 - **Database** — PostgreSQL for users, exercises, attempts, results, drafts, and settings
 - **Persistence (target)** — localStorage for exam/user data fully replaced by API-backed state. **Today:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, and mock exams are API-backed (2.2–2.3). Theme, locale, and playback prefs remain client-side.
 - **Packaging** — single-command Docker Compose self-hosting with a **named Postgres volume** so data survives container removal/recreation
@@ -92,11 +92,11 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 
 #### 2.3 Persistence cutover
 
-**Complete:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Shared Goethe A2 seeds (and bundled mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. Theme, locale, listening playback, and reading bookmarks stay client-side. Prompt templates and LLM keys stay out of this slice. Nitro AI remains until 2.4.
+**Complete:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Shared Goethe A2 seeds (and bundled mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. Theme, locale, listening playback, and reading bookmarks stay client-side. Prompt templates stay out of this slice. Nitro AI remains until 2.4.
 
 #### 2.4 AI move to NestJS
 
-Retire Nitro as the long-term AI proxy. OpenAI and OpenRouter adapters behind the same `{ data, error }` envelope; graceful degrade unchanged.
+**Complete:** Nitro is no longer the AI/TTS/STT proxy. NestJS owns OpenAI and OpenRouter adapters plus Kokoro TTS and Parakeet/Whisper STT behind `{ data, error }` envelopes. Instance-level BYOK keys stay in env. Generated listening WAVs are written by Nest onto the shared `generated_listening_audio` volume and still served from the Nuxt origin. Graceful degrade is unchanged.
 
 #### 2.5 Docker Compose packaging
 

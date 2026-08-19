@@ -20,7 +20,7 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 **2.3 done:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
 
-AI remains optional and bring-your-own-key. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
+**2.4 done:** optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
 ## Exam references
 

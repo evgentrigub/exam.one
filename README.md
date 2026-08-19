@@ -21,8 +21,9 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Phase 2.1 backend         | **Complete** — NestJS, Prisma, health, Compose/Postgres                                            |
 | Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
 | Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                 |
+| Phase 2.4 AI / speech     | **Complete** — LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                           |
 
-**Current implementation focus:** Phase 2.4 AI move to NestJS. See the roadmap.
+**Current implementation focus:** Phase 2.5 Docker Compose packaging and 2.6 self-host runbook. See the roadmap.
 
 ## ✨ Features
 
@@ -199,7 +200,7 @@ pnpm generate
 ```text
 exam-one/
 ├── apps/
-│   ├── frontend/          # Nuxt 4 application and temporary Nitro AI endpoints
+│   ├── frontend/          # Nuxt 4 application
 │   └── backend/           # Standalone NestJS API
 ├── libraries/
 │   ├── contracts/         # Framework-neutral shared API contracts
@@ -339,7 +340,7 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 
 ### Later phases
 
-- **Current — Phase 2:** 2.1–2.3 done (backend, auth, practice persistence). Next is AI-to-Nest (2.4) and Compose runbook (2.5–2.6)
+- **Current — Phase 2:** 2.1–2.4 done (backend, auth, practice persistence, NestJS AI/TTS/STT). Next is Compose runbook (2.5–2.6)
 - Phase 3: Public open-source release + docs site
 - Phase 4: Hosted cloud product
 
@@ -405,12 +406,12 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 
 ### Current Focus
 
-Phase 1 is complete. **2.1–2.3 are complete** (NestJS foundation, login-gated accounts, and practice persistence). The current focus is **2.4 AI-to-Nest** while preserving German / Goethe A2 practice behavior.
+Phase 1 is complete. **2.1–2.4 are complete** (NestJS foundation, login-gated accounts, practice persistence, and the NestJS AI/TTS/STT proxy). The current focus is **2.5–2.6 Compose packaging and the self-host runbook** while preserving German / Goethe A2 practice behavior.
 
 ### Next Steps (In Priority Order)
 
-1. **AI API Migration (2.4)** — Move provider adapters from temporary Nuxt routes to NestJS
-2. **Self-Host Runbook (2.5–2.6)** — Finish single-command Docker Compose setup and backup/restore documentation
+1. **Docker Compose packaging (2.5)** — One root `compose.yaml` runbook polish for frontend, backend, Postgres, Kokoro, and Parakeet
+2. **Self-host runbook (2.6)** — First user, API keys, backup/restore of named volumes
 
 ## 📝 License
 

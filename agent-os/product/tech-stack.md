@@ -1,6 +1,6 @@
 # Tech Stack
 
-> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2 is current:** accounts and practice data are NestJS/PostgreSQL-backed (2.2–2.3). Cloud hosting remains Phase 4.
+> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2 is current:** accounts, practice data, and the AI/TTS/STT proxy are NestJS-backed (2.2–2.4). Cloud hosting remains Phase 4.
 
 ## Frontend
 
@@ -19,7 +19,7 @@ Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, pa
 ## Backend
 
 - **Completed Phase 1:** thin **Nuxt server routes** (`server/api/`) proxy requests to the configured LLM provider
-- **Current Phase 2:** **NestJS** REST API (`/api/v1`). Auth is JWT httpOnly cookies, bcrypt passwords, optional SMTP (`EMAIL_PROVIDER=none|smtp`). Multi-user registration; no default operator account. Recover a local password with `pnpm auth:set-password`. AI proxy still lives on Nitro until 2.4.
+- **Current Phase 2:** **NestJS** REST API (`/api/v1`). Auth is JWT httpOnly cookies, bcrypt passwords, optional SMTP (`EMAIL_PROVIDER=none|smtp`). Multi-user registration; no default operator account. Recover a local password with `pnpm auth:set-password`. LLM, Kokoro TTS, and Parakeet/Whisper STT proxies live on NestJS (2.4).
 
 ## Database
 
