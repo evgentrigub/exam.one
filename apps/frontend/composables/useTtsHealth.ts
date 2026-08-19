@@ -1,13 +1,8 @@
 /**
- * Poll Nitro /api/tts/health while a listening session is mounted.
+ * Poll NestJS /api/v1/tts/health while a listening session is mounted.
  */
 
 export type TtsHealthStatus = 'checking' | 'ready' | 'offline'
-
-interface TtsHealthEnvelope {
-  data: { ok: boolean } | null
-  error: string | null
-}
 
 const POLL_MS = 12_000
 
@@ -22,7 +17,7 @@ export function useTtsHealth() {
     if (!import.meta.client || inFlight) return
     inFlight = true
     try {
-      const res = (await $fetch('/api/tts/health')) as unknown as TtsHealthEnvelope
+      const res = await aiFetch<{ ok: boolean }>('/tts/health')
       status.value = res.data?.ok ? 'ready' : 'offline'
       lastCheckedAt.value = new Date().toISOString()
     } catch {

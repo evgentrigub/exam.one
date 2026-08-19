@@ -109,10 +109,6 @@ function createDraft(setNumber: number): MockGenerationDraft {
 }
 
 export const useMockExamGeneration = () => {
-  const fetchApi = $fetch as unknown as (
-    url: string,
-    options?: { method?: string; body?: unknown }
-  ) => Promise<unknown>
   const draft = useState<MockGenerationDraft | null>('mock-exam-generation-draft', () => null)
   const isInitialized = useState<boolean>('mock-exam-generation-initialized', () => false)
   const preflight = useState<MockExamPreflight>('mock-exam-generation-preflight', () => ({
@@ -180,8 +176,8 @@ export const useMockExamGeneration = () => {
   const checkPreflight = async (): Promise<boolean> => {
     preflight.value = { ...preflight.value, checking: true, llmMessage: null, ttsMessage: null }
     const [llmResult, ttsResult] = await Promise.allSettled([
-      fetchApi('/api/llm/health') as Promise<LlmHealthResponse>,
-      fetchApi('/api/tts/health') as Promise<TtsHealthResponse>,
+      aiFetch<LlmHealthResponse['data']>('/llm/health'),
+      aiFetch<TtsHealthResponse['data']>('/tts/health'),
     ])
 
     const llm = llmResult.status === 'fulfilled' ? llmResult.value : null
@@ -189,13 +185,13 @@ export const useMockExamGeneration = () => {
     preflight.value = {
       checking: false,
       checkedAt: new Date().toISOString(),
-      llmConfigured: Boolean(llm?.data.configured),
-      llmConnected: Boolean(llm?.data.connected),
+      llmConfigured: Boolean(llm?.data?.configured),
+      llmConnected: Boolean(llm?.data?.connected),
       ttsAvailable: Boolean(tts?.data?.ok),
-      provider: llm?.data.provider ?? null,
-      model: llm?.data.model ?? null,
+      provider: llm?.data?.provider ?? null,
+      model: llm?.data?.model ?? null,
       llmMessage:
-        llm?.data.message ??
+        llm?.data?.message ??
         llm?.error ??
         (llmResult.status === 'rejected' ? String(llmResult.reason) : null),
       ttsMessage: tts?.error ?? (ttsResult.status === 'rejected' ? String(ttsResult.reason) : null),
@@ -230,14 +226,14 @@ export const useMockExamGeneration = () => {
 
     if (skill === 'reading') {
       const prompt = readingA2Parts(1).find(candidate => candidate.part === part)
-      const response = (await fetchApi('/api/generate-reading', {
+      const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
         method: 'POST',
         body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
-      })) as unknown as { texts: ReadingExercise[]; error?: string }
-      if (response.error || !response.texts[0])
+      })
+      if (response.error || !response.data?.[0])
         throw new Error(response.error || `No reading exercise generated for Teil ${part}.`)
       draft.value.content.reading = replacePart(draft.value.content.reading, {
-        ...response.texts[0],
+        ...response.data[0],
         examOnly: true,
       })
       return
@@ -245,14 +241,14 @@ export const useMockExamGeneration = () => {
 
     if (skill === 'listening') {
       const prompt = listeningA2Parts(1).find(candidate => candidate.part === part)
-      const response = (await fetchApi('/api/generate-listening', {
+      const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
         method: 'POST',
         body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
-      })) as unknown as { exercises: ListeningA2Exercise[]; error?: string }
-      if (response.error || !response.exercises[0])
+      })
+      if (response.error || !response.data?.[0])
         throw new Error(response.error || `No listening exercise generated for Teil ${part}.`)
       draft.value.content.listening = replacePart(draft.value.content.listening, {
-        ...response.exercises[0],
+        ...response.data[0],
         examOnly: true,
       })
       return
@@ -260,15 +256,11 @@ export const useMockExamGeneration = () => {
 
     if (skill === 'writing') {
       const prompt = part === 1 ? generateTopicsA2Part1(1) : generateTopicsA2Part2(1)
-      const response = (await fetchApi('/api/generate-topics', {
+      const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
         method: 'POST',
         body: { prompt, part, difficulty: 'A2' },
-      })) as unknown as {
-        topics?: WritingExercise[]
-        data?: { topics: WritingExercise[] } | null
-        error?: string | null
-      }
-      const topic = response.data?.topics[0] ?? response.topics?.[0]
+      })
+      const topic = response.data?.[0]
       if (response.error || !topic)
         throw new Error(response.error || `No writing exercise generated for Teil ${part}.`)
       draft.value.content.writing = replacePart(draft.value.content.writing, {
@@ -279,14 +271,14 @@ export const useMockExamGeneration = () => {
     }
 
     const prompt = speakingA2Parts(1).find(candidate => candidate.part === part)
-    const response = (await fetchApi('/api/generate-speaking', {
+    const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
       method: 'POST',
       body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
-    })) as unknown as { topics: SpeakingA2Topic[]; error?: string }
-    if (response.error || !response.topics[0])
+    })
+    if (response.error || !response.data?.[0])
       throw new Error(response.error || `No speaking exercise generated for Teil ${part}.`)
     draft.value.content.speaking = replacePart(draft.value.content.speaking, {
-      ...response.topics[0],
+      ...response.data[0],
       examOnly: true,
     })
   }
@@ -295,13 +287,13 @@ export const useMockExamGeneration = () => {
     if (!draft.value) return
     const exercise = draft.value.content.listening.find(candidate => candidate.testingPart === part)
     if (!exercise) throw new Error(`Listening content for Teil ${part} is missing.`)
-    const response = (await fetchApi('/api/tts/generate-listening-audio', {
-      method: 'POST',
-      body: { exercise },
-    })) as unknown as {
-      data: { audio: ListeningExerciseAudioMap; written: number } | null
-      error: string | null
-    }
+    const response = await aiFetch<{ audio: ListeningExerciseAudioMap; written: number }>(
+      '/tts/generate-listening-audio',
+      {
+        method: 'POST',
+        body: { exercise },
+      }
+    )
     if (response.error || !response.data)
       throw new Error(response.error || `Audio generation failed for Teil ${part}.`)
     draft.value.content.listening = replacePart(draft.value.content.listening, {

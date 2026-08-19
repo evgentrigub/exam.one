@@ -86,7 +86,7 @@ export const useMockExamSets = () => {
     }
     if (data.listeningExerciseIds.length > 0) {
       try {
-        await $fetch('/api/tts/delete-listening-audio', {
+        await aiFetch('/tts/delete-listening-audio', {
           method: 'POST',
           body: { exerciseIds: data.listeningExerciseIds },
         })

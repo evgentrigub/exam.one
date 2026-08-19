@@ -177,20 +177,16 @@ export const useWritingGeneration = () => {
       try {
         const prompt = getPromptForPart(part, difficulty)
 
-        const response = (await $fetch('/api/generate-topics', {
+        const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
           method: 'POST',
           body: {
             prompt,
             part,
             difficulty,
           },
-        })) as unknown as {
-          topics?: WritingExercise[]
-          data?: { topics: WritingExercise[] } | null
-          error?: string | null
-        }
+        })
 
-        const topics = response.data?.topics || response.topics || []
+        const topics = response.data ?? []
 
         if (response.error || topics.length === 0) {
           throw new Error(response.error || `No exercises generated for part ${part}`)

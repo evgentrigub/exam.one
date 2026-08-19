@@ -328,11 +328,6 @@ interface NormalizedModel {
   questions: NormalizedQuestion[]
 }
 
-interface GenerateAudioResponse {
-  data: { audio: ListeningExerciseAudioMap; written: number } | null
-  error: string | null
-}
-
 const props = withDefaults(
   defineProps<{
     exercise: ListeningA2Exercise
@@ -528,10 +523,13 @@ async function generateAudioForExercise() {
   generateProgress.value = { done: 0, total: Math.max(1, expectedCount.value) }
 
   try {
-    const res = (await $fetch('/api/tts/generate-listening-audio', {
-      method: 'POST',
-      body: { exercise: currentExercise.value },
-    })) as unknown as GenerateAudioResponse
+    const res = await aiFetch<{ audio: ListeningExerciseAudioMap; written: number }>(
+      '/tts/generate-listening-audio',
+      {
+        method: 'POST',
+        body: { exercise: currentExercise.value },
+      }
+    )
 
     if (res.error || !res.data?.audio) {
       generateError.value = res.error ?? 'Audio generation failed.'

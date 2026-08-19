@@ -21,7 +21,6 @@
     "@vueuse/core": "^14.4.0",
     "lucide-vue-next": "^1.0.0",
     "nuxt": "^4.5.2",
-    "openai": "^5.12.2",
     "pinia": "^4.0.3",
     "pinia-plugin-persistedstate": "^4.7.1",
     "vue": "^3.5.41",

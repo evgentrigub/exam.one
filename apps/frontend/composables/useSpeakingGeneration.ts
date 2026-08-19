@@ -128,21 +128,21 @@ export const useSpeakingGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = (await $fetch('/api/generate-speaking', {
+        const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
           method: 'POST',
           body: { difficulty, prompts: [partPrompt] },
-        })) as unknown as { topics: SpeakingA2Topic[]; error?: string }
+        })
 
-        if (response.error || !response.topics || response.topics.length === 0) {
+        if (response.error || !response.data || response.data.length === 0) {
           throw new Error(response.error || `No speaking topic generated for part ${part}`)
         }
 
-        generatedTopics.push(...response.topics)
+        generatedTopics.push(...response.data)
         updateJobStatus(part, 'done')
 
         if (onPartComplete) {
           try {
-            onPartComplete(response.topics)
+            onPartComplete(response.data)
           } catch (callbackError) {
             console.error('onPartComplete callback failed for speaking part', part, callbackError)
           }

@@ -4,19 +4,6 @@ interface SttHealthData {
   detail: string
 }
 
-interface SttHealthResponse {
-  data: SttHealthData | null
-  error: string | null
-}
-
-interface TranscriptionResponse {
-  data: {
-    transcript: string
-    provider: 'local' | 'openai'
-  } | null
-  error: string | null
-}
-
 function audioFileName(blob: Blob): string {
   if (blob.type.includes('ogg')) return 'speaking.ogg'
   if (blob.type.includes('mp4')) return 'speaking.m4a'
@@ -33,7 +20,7 @@ export function useSpeechTranscription() {
   async function refreshHealth(): Promise<void> {
     checkingHealth.value = true
     try {
-      const response = (await $fetch('/api/stt/health')) as unknown as SttHealthResponse
+      const response = await aiFetch<SttHealthData>('/stt/health')
       health.value = response.data
       error.value = response.error
     } catch (requestError: unknown) {
@@ -51,10 +38,13 @@ export function useSpeechTranscription() {
     try {
       const form = new FormData()
       form.append('file', blob, audioFileName(blob))
-      const response = (await $fetch('/api/transcribe', {
-        method: 'POST',
-        body: form,
-      })) as unknown as TranscriptionResponse
+      const response = await aiFetch<{ transcript: string; provider: 'local' | 'openai' }>(
+        '/stt/transcribe',
+        {
+          method: 'POST',
+          body: form,
+        }
+      )
       if (response.error || !response.data) {
         throw new Error(response.error || 'Transcription failed.')
       }
