@@ -22,15 +22,15 @@ global:
   localstorage-keys:
     description: 'Practice data is API-backed after 2.3; remaining client keys are theme/locale/playback/bookmarks; no secrets; const at top of owning files'
   offline-first-core:
-    description: 'Core practice: Phase 1 complete; Phase 2.2 login-gated Nest accounts; 2.3 practice data on Postgres; Goethe A2 + C1 Writing; BYOK AI; exam-content seed + API hydrate'
+    description: 'Core practice: Phase 1 complete; Phase 2.2 login-gated Nest accounts; 2.3 practice data on Postgres; 2.4 Nest AI/TTS/STT; Goethe A2 + C1 Writing; BYOK AI; exam-content seed + API hydrate'
   self-host-persistence:
-    description: 'Phase 2 Docker Compose localhost stack; 2.2–2.3 accounts and practice data on Postgres; named volume; no required cloud'
+    description: 'Phase 2 Docker Compose localhost stack; 2.2–2.4 accounts, practice data, and AI/TTS/STT on Nest; named volume; no required cloud'
   ssr-storage-guards:
     description: 'Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level; applies wherever browser storage remains'
 
 server:
   ai-response-envelope:
-    description: 'BYOK AI endpoints (OpenAI/OpenRouter) return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; Phase 1 Nitro → Phase 2 NestJS; throw for infra'
+    description: 'BYOK AI endpoints (OpenAI/OpenRouter) return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; NestJS `/api/v1` owns the proxy'
 
 styling:
   daisyui-setup:
