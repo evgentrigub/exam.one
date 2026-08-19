@@ -1,1 +1,2 @@
-export type NestjsLibraryIdentifier = string
+export * from './prisma/prisma.service'
+export * from './prisma/prisma.module'

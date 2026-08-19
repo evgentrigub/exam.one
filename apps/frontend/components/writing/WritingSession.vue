@@ -8,15 +8,21 @@
         </div>
         <h2 class="font-display text-xl font-bold mt-3">{{ topic.title }}</h2>
         <div class="flex flex-wrap gap-2 mt-3">
-          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+          >
             <Clock :size="11" aria-hidden="true" />
             {{ topic.estimatedTime }} minutes
           </span>
-          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+          >
             <Type :size="11" aria-hidden="true" />
             {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words
           </span>
-          <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70 capitalize">
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70 capitalize"
+          >
             Teil {{ topic.testingPart || 2 }} · {{ topic.topicType }}
           </span>
         </div>
@@ -24,33 +30,55 @@
       </section>
 
       <section class="bg-base-100 rounded-box border border-base-300/70 overflow-hidden">
-        <div v-if="!examMode" class="flex border-b border-base-300/70 px-3 overflow-x-auto" role="tablist" aria-label="Writing support tabs">
+        <div
+          v-if="!examMode"
+          class="flex border-b border-base-300/70 px-3 overflow-x-auto"
+          role="tablist"
+          aria-label="Writing support tabs"
+        >
           <button
             v-for="tab in tabs"
             :key="tab.key"
             type="button"
             role="tab"
             class="relative flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap"
-            :class="activeTab === tab.key ? 'text-primary' : 'text-base-content/60 hover:text-base-content'"
+            :class="
+              activeTab === tab.key
+                ? 'text-primary'
+                : 'text-base-content/60 hover:text-base-content'
+            "
             :aria-selected="activeTab === tab.key"
             @click="activeTab = tab.key"
           >
             <component :is="tab.icon" :size="12" aria-hidden="true" />
             {{ tab.label }}
-            <span v-if="activeTab === tab.key" class="absolute left-3 right-3 -bottom-px h-0.5 bg-primary rounded-full" />
+            <span
+              v-if="activeTab === tab.key"
+              class="absolute left-3 right-3 -bottom-px h-0.5 bg-primary rounded-full"
+            />
           </button>
         </div>
 
         <div class="p-5 sm:p-6">
           <div v-if="activeTab === 'prompt'" class="space-y-5">
-            <div class="p-4 rounded-box bg-success/10 text-[14px] leading-relaxed text-base-content/85">
+            <div
+              class="p-4 rounded-box bg-success/10 text-[14px] leading-relaxed text-base-content/85"
+            >
               {{ topic.task }}
             </div>
             <div>
               <div class="text-sm font-semibold mb-2">Requirements</div>
               <ul class="space-y-1.5 text-[14px] text-base-content/80">
-                <li v-for="requirement in topic.requirements" :key="requirement" class="flex items-start gap-2">
-                  <CheckCircle2 :size="13" class="text-success mt-0.5 shrink-0" aria-hidden="true" />
+                <li
+                  v-for="requirement in topic.requirements"
+                  :key="requirement"
+                  class="flex items-start gap-2"
+                >
+                  <CheckCircle2
+                    :size="13"
+                    class="text-success mt-0.5 shrink-0"
+                    aria-hidden="true"
+                  />
                   <span>{{ requirement }}</span>
                 </li>
               </ul>
@@ -74,7 +102,10 @@
               Submit your answer to see AI review here.
             </div>
 
-            <div v-else-if="reviewPending" class="flex items-center gap-3 py-2 text-sm text-base-content/70">
+            <div
+              v-else-if="reviewPending"
+              class="flex items-center gap-3 py-2 text-sm text-base-content/70"
+            >
               <span class="loading loading-spinner loading-sm text-primary" aria-hidden="true" />
               <span>AI review in progress…</span>
             </div>
@@ -99,7 +130,9 @@
             </div>
 
             <div v-else-if="reviewReady" class="space-y-3">
-              <div class="flex items-center gap-2 p-3 rounded-box bg-success/10 border border-success/20">
+              <div
+                class="flex items-center gap-2 p-3 rounded-box bg-success/10 border border-success/20"
+              >
                 <CheckCircle2 :size="14" class="text-success shrink-0" aria-hidden="true" />
                 <p class="text-sm font-medium text-success">AI review ready</p>
               </div>
@@ -126,7 +159,6 @@
               </button>
             </div>
           </div>
-
         </div>
       </section>
     </div>
@@ -147,7 +179,16 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { AlertTriangle, CheckCircle2, Clock, FileText, Lightbulb, MessageSquare, Sparkles, Type } from 'lucide-vue-next'
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Lightbulb,
+  MessageSquare,
+  Sparkles,
+  Type,
+} from 'lucide-vue-next'
 import type { WritingExercise } from '~/utils/types'
 import { useProgress } from '~/composables/useProgress'
 import { useWritingReview } from '~/composables/useWritingReview'
@@ -173,8 +214,16 @@ const emit = defineEmits<{
   finish: []
 }>()
 
-const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission } = useProgress()
-const { requestReview, regenerateReview, isReviewInProgress, hasReview, getReviewError, reviewVersion } = useWritingReview()
+const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission } =
+  useProgress()
+const {
+  requestReview,
+  regenerateReview,
+  isReviewInProgress,
+  hasReview,
+  getReviewError,
+  reviewVersion,
+} = useWritingReview()
 
 type TabKey = 'prompt' | 'answer' | 'ai-review'
 

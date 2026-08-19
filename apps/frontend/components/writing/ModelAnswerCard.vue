@@ -14,13 +14,21 @@
         </span>
       </div>
 
-      <div class="rounded-box bg-base-200/60 border border-base-300/70 p-4 whitespace-pre-line leading-relaxed text-base-content/85">
+      <div
+        class="rounded-box bg-base-200/60 border border-base-300/70 p-4 whitespace-pre-line leading-relaxed text-base-content/85"
+      >
         {{ modelAnswer.content }}
       </div>
 
       <div v-if="highlights.length" class="space-y-2">
-        <div class="text-xs font-semibold uppercase tracking-wider text-base-content/50">What works well</div>
-        <div v-for="highlight in highlights" :key="highlight.label" class="rounded-box border border-base-300/70 p-3">
+        <div class="text-xs font-semibold uppercase tracking-wider text-base-content/50">
+          What works well
+        </div>
+        <div
+          v-for="highlight in highlights"
+          :key="highlight.label"
+          class="rounded-box border border-base-300/70 p-3"
+        >
           <div class="flex items-center gap-2 text-xs font-semibold text-base-content/70">
             <CheckCircle2 :size="13" class="text-success" aria-hidden="true" />
             {{ highlight.label }}
@@ -30,7 +38,11 @@
       </div>
 
       <div v-if="keyPhrases.length" class="flex flex-wrap gap-2">
-        <span v-for="phrase in keyPhrases" :key="phrase" class="badge badge-outline font-mono text-[11px]">
+        <span
+          v-for="phrase in keyPhrases"
+          :key="phrase"
+          class="badge badge-outline font-mono text-[11px]"
+        >
           {{ phrase }}
         </span>
       </div>
@@ -40,21 +52,35 @@
       <Lightbulb :size="24" class="mx-auto text-base-content/30 mb-3" aria-hidden="true" />
       <p class="text-sm font-semibold text-base-content/75">Ideal answer unavailable</p>
       <p class="text-sm text-base-content/60 mt-1">{{ errorMessage }}</p>
-      <button type="button" class="btn btn-outline btn-sm rounded-full gap-2 mt-4" @click="handleGenerateModelAnswer">
+      <button
+        type="button"
+        class="btn btn-outline btn-sm rounded-full gap-2 mt-4"
+        @click="handleGenerateModelAnswer"
+      >
         <Sparkles :size="14" aria-hidden="true" />
         Try again
       </button>
-      <p class="text-[11px] text-base-content/50 mt-3">You can continue writing and submit without an AI example.</p>
+      <p class="text-[11px] text-base-content/50 mt-3">
+        You can continue writing and submit without an AI example.
+      </p>
     </div>
 
     <div v-else class="text-center py-8">
       <Lightbulb :size="24" class="mx-auto text-base-content/30 mb-3" aria-hidden="true" />
-      <p class="text-sm text-base-content/60 mb-4">Generate an optional model answer for this task.</p>
-      <button type="button" class="btn btn-primary btn-sm rounded-full gap-2" @click="handleGenerateModelAnswer">
+      <p class="text-sm text-base-content/60 mb-4">
+        Generate an optional model answer for this task.
+      </p>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm rounded-full gap-2"
+        @click="handleGenerateModelAnswer"
+      >
         <Sparkles :size="14" aria-hidden="true" />
         Generate ideal answer
       </button>
-      <p class="text-[11px] text-base-content/50 mt-3">AI is optional. You can continue writing without this example.</p>
+      <p class="text-[11px] text-base-content/50 mt-3">
+        AI is optional. You can continue writing without this example.
+      </p>
     </div>
   </div>
 </template>
@@ -70,7 +96,13 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { getModelAnswer, isGenerating, getModelAnswerError, generateModelAnswer, modelAnswerVersion } = useModelAnswer()
+const {
+  getModelAnswer,
+  isGenerating,
+  getModelAnswerError,
+  generateModelAnswer,
+  modelAnswerVersion,
+} = useModelAnswer()
 
 const modelAnswer = computed<ModelAnswer | null>(() => {
   void modelAnswerVersion.value
@@ -93,7 +125,10 @@ const highlights = computed(() => {
   return [
     data.greeting ? { label: 'Greeting', value: data.greeting } : null,
     data.closing ? { label: 'Closing', value: data.closing } : null,
-    ...(data.mainPoints || []).map((point, index) => ({ label: `Point ${index + 1}`, value: point })),
+    ...(data.mainPoints || []).map((point, index) => ({
+      label: `Point ${index + 1}`,
+      value: point,
+    })),
   ].filter((item): item is { label: string; value: string } => item !== null)
 })
 

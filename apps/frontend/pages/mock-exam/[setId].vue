@@ -500,15 +500,21 @@ import TimerChip from '~/components/mockExam/TimerChip.vue'
 import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
 import type { MockExamExerciseDefinition, MockExamModuleDefinition } from '~/data/mockExam/goetheA2'
 import type { MockExamOverview, MockExamOverviewInput } from '~/data/mockExam/reviewMockExamA2'
+import { buildMockExamOverviewPrompt } from '~/data/mockExam/reviewMockExamA2'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
+import {
+  reviewPromptSpeakingA2Teil1,
+  reviewPromptSpeakingA2Teil2,
+} from '~/data/speaking/a2/reviewSpeakingA2'
 import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type {
   SpeakingA2Topic,
   SpeakingReviewData,
-  SpeakingTranscripts,
+  SpeakingTopicA2Teil1,
+  SpeakingTopicA2Teil2,
 } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 
@@ -737,17 +743,12 @@ async function generateOverview(): Promise<void> {
   if (state.value.aiOverview.status === 'loading' || hasPendingAiGrading.value) return
   startOverview()
   try {
-    const fetchApi = $fetch as unknown as (
-      url: string,
-      options?: { method?: string; body?: unknown }
-    ) => Promise<unknown>
-    const response = (await fetchApi('/api/review-mock-exam', {
+    const response = await aiFetch<MockExamOverview>('/ai/review-mock-exam', {
       method: 'POST',
       body: {
-        locale: locale.value === 'de' ? 'de' : 'en',
-        result: overviewInput(),
+        prompt: buildMockExamOverviewPrompt(locale.value === 'de' ? 'de' : 'en', overviewInput()),
       },
-    })) as unknown as { data: MockExamOverview | null; error: string | null }
+    })
     if (response.error || !response.data)
       throw new Error(response.error || 'AI overview is unavailable.')
     completeOverview(response.data)
@@ -888,10 +889,10 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         topic.testingPart === 1
           ? reviewPromptA2Teil1(topic, response.content)
           : reviewPromptA2Teil2(topic, response.content)
-      const review = (await $fetch('/api/review', {
+      const review = await aiFetch<AiReviewData>('/ai/review', {
         method: 'POST',
         body: { topic, userContent: response.content, prompt },
-      })) as unknown as { data: AiReviewData | null; error: string | null }
+      })
       if (review.error || !review.data || !isA2Review(review.data))
         throw new Error(review.error || 'Writing grade unavailable.')
       updateExerciseGrade('writing', exerciseId, review.data.teil_points_mess, null, review.data)
@@ -900,10 +901,21 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
 
     const topic = set.value.content.speaking.find(item => item.id === exerciseId)
     if (!topic || !response.transcripts) return
-    const review = (await $fetch('/api/review-speaking', {
+    const speakingPrompt =
+      topic.testingPart === 1
+        ? reviewPromptSpeakingA2Teil1(
+            topic as SpeakingTopicA2Teil1,
+            response.transcripts.answers?.trim() ?? '',
+            response.transcripts.questions?.trim() ?? ''
+          )
+        : reviewPromptSpeakingA2Teil2(
+            topic as SpeakingTopicA2Teil2,
+            response.transcripts.monologue?.trim() ?? ''
+          )
+    const review = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
       method: 'POST',
-      body: { topic, transcripts: response.transcripts as SpeakingTranscripts },
-    })) as unknown as { data: SpeakingReviewData | null; error: string | null }
+      body: { prompt: speakingPrompt },
+    })
     if (review.error || !review.data) throw new Error(review.error || 'Speaking grade unavailable.')
     updateExerciseGrade('speaking', exerciseId, review.data.totalPoints, null, review.data)
   } catch (error: unknown) {

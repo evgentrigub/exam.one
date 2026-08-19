@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /workspace
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
@@ -9,10 +9,15 @@ COPY libraries/database/package.json libraries/database/package.json
 COPY libraries/exam-content/package.json libraries/exam-content/package.json
 COPY libraries/nestjs-libraries/package.json libraries/nestjs-libraries/package.json
 RUN pnpm install --frozen-lockfile
+COPY libraries/contracts libraries/contracts
+COPY libraries/exam-content libraries/exam-content
 COPY apps/frontend apps/frontend
-RUN pnpm --filter ./apps/frontend build
+RUN pnpm --filter @exam-one/contracts build \
+  && pnpm --filter @exam-one/exam-content build \
+  && pnpm --filter ./apps/frontend exec nuxt prepare \
+  && pnpm --filter ./apps/frontend build
 
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /workspace/apps/frontend/.output ./

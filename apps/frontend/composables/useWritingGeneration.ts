@@ -1,16 +1,21 @@
 /**
  * Writing Generation Composable
- * Manages per-part AI writing generation with localStorage persistence
+ * Manages per-part AI writing generation with API persistence
  */
 
 // C1 is disabled in this build; re-enable with the level toggle later.
 // import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/exerciseGeneratorWritingC1'
-import { generateTopicsA2Part1, generateTopicsA2Part2 } from '~/data/writing/a2/exerciseGeneratorWritingA2'
+import {
+  generateTopicsA2Part1,
+  generateTopicsA2Part2,
+} from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { PartGenerationJob } from '~/utils/generation/partJobs'
 import type { WritingExercise, Difficulty } from '~/utils/types'
-
-const STORAGE_KEY = 'exam-one:writing:topic-generation-state'
-const LEGACY_STORAGE_KEY = 'exame-one-topic-generation-state'
+import {
+  clearGenerationJob,
+  loadGenerationJob,
+  saveGenerationJob,
+} from '~/composables/useGenerationJobs'
 
 interface GenerationState {
   isGenerating: boolean
@@ -31,7 +36,7 @@ export const useWritingGeneration = () => {
     difficulty: null,
     startedAt: null,
     error: null,
-    jobs: []
+    jobs: [],
   })
 
   const isGenerating = computed(() => state.value.isGenerating)
@@ -42,22 +47,22 @@ export const useWritingGeneration = () => {
     const runningJob = state.value.jobs.find(job => job.status === 'running')
     return runningJob ? (runningJob.part as 1 | 2) : null
   })
-  const canResumeGeneration = computed(() =>
-    !state.value.isGenerating &&
-    state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
+  const canResumeGeneration = computed(
+    () =>
+      !state.value.isGenerating &&
+      state.value.jobs.some(job => job.status === 'queued' || job.status === 'failed')
   )
 
   /**
-   * Load generation state from localStorage
+   * Load generation state from the API
    */
-  const loadState = () => {
+  const loadState = async () => {
     if (import.meta.server) return
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY)
-      if (!stored) return
-
-      const parsed = JSON.parse(stored)
+      const parsed = (await loadGenerationJob('WRITING')) as
+        (GenerationState & { part?: 1 | 2 }) | null
+      if (!parsed) return
 
       // Check if generation was interrupted (older than 5 minutes)
       if (parsed.isGenerating && parsed.startedAt) {
@@ -78,7 +83,7 @@ export const useWritingGeneration = () => {
           difficulty: parsed.difficulty,
           startedAt: parsed.startedAt,
           error: parsed.error,
-          jobs: [{ part: parsed.part, status: parsed.error ? 'failed' : 'queued' }]
+          jobs: [{ part: parsed.part, status: parsed.error ? 'failed' : 'queued' }],
         }
         return
       }
@@ -91,7 +96,7 @@ export const useWritingGeneration = () => {
       state.value = {
         ...parsed,
         isGenerating: false,
-        jobs: restoredJobs
+        jobs: restoredJobs,
       }
     } catch (error) {
       console.error('Failed to load writing generation state:', error)
@@ -100,16 +105,13 @@ export const useWritingGeneration = () => {
   }
 
   /**
-   * Save state to localStorage
+   * Save state to the API
    */
   const saveState = () => {
     if (import.meta.server) return
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.value))
-    } catch (error) {
+    void saveGenerationJob('WRITING', state.value).catch(error =>
       console.error('Failed to save writing generation state:', error)
-    }
+    )
   }
 
   /**
@@ -121,12 +123,11 @@ export const useWritingGeneration = () => {
       difficulty: null,
       startedAt: null,
       error: null,
-      jobs: []
+      jobs: [],
     }
 
     if (import.meta.client) {
-      localStorage.removeItem(STORAGE_KEY)
-      localStorage.removeItem(LEGACY_STORAGE_KEY)
+      void clearGenerationJob('WRITING').catch(() => undefined)
     }
   }
 
@@ -136,14 +137,16 @@ export const useWritingGeneration = () => {
       jobs: state.value.jobs.map(job => {
         if (job.part !== part) return job
         return error === undefined ? { ...job, status } : { ...job, status, error }
-      })
+      }),
     }
     saveState()
   }
 
   const getPromptForPart = (part: 1 | 2, difficulty: Difficulty, numberOfTopics = 3): string => {
     if (difficulty === 'A2') {
-      return part === 1 ? generateTopicsA2Part1(numberOfTopics) : generateTopicsA2Part2(numberOfTopics)
+      return part === 1
+        ? generateTopicsA2Part1(numberOfTopics)
+        : generateTopicsA2Part2(numberOfTopics)
     }
     // C1 disabled in this build — kept for later:
     // if (difficulty === 'C1') {
@@ -174,20 +177,16 @@ export const useWritingGeneration = () => {
       try {
         const prompt = getPromptForPart(part, difficulty)
 
-        const response = (await $fetch('/api/generate-topics', {
+        const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
           method: 'POST',
           body: {
             prompt,
             part,
-            difficulty
-          }
-        }) as unknown) as {
-          topics?: WritingExercise[]
-          data?: { topics: WritingExercise[] } | null
-          error?: string | null
-        }
+            difficulty,
+          },
+        })
 
-        const topics = response.data?.topics || response.topics || []
+        const topics = response.data ?? []
 
         if (response.error || topics.length === 0) {
           throw new Error(response.error || `No exercises generated for part ${part}`)
@@ -204,7 +203,8 @@ export const useWritingGeneration = () => {
           }
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : `Failed to generate part ${part}`
+        const errorMessage =
+          error instanceof Error ? error.message : `Failed to generate part ${part}`
         console.error(`Writing generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -219,7 +219,7 @@ export const useWritingGeneration = () => {
       state.value = {
         ...state.value,
         isGenerating: false,
-        error: loopError
+        error: loopError,
       }
       saveState()
     }
@@ -238,11 +238,12 @@ export const useWritingGeneration = () => {
       throw new Error(`Unsupported difficulty level: ${difficulty}`)
     }
 
-    const requestedParts = options.parts === undefined
-      ? [1, 2]
-      : Array.isArray(options.parts)
-        ? options.parts
-        : [options.parts]
+    const requestedParts =
+      options.parts === undefined
+        ? [1, 2]
+        : Array.isArray(options.parts)
+          ? options.parts
+          : [options.parts]
     const partsToGenerate = requestedParts.filter((p): p is 1 | 2 => p === 1 || p === 2)
 
     if (partsToGenerate.length === 0) {
@@ -254,7 +255,7 @@ export const useWritingGeneration = () => {
       difficulty,
       startedAt: new Date().toISOString(),
       error: null,
-      jobs: partsToGenerate.map(part => ({ part, status: 'queued' }))
+      jobs: partsToGenerate.map(part => ({ part, status: 'queued' })),
     }
     saveState()
 
@@ -275,7 +276,7 @@ export const useWritingGeneration = () => {
     state.value = {
       ...state.value,
       isGenerating: true,
-      error: null
+      error: null,
     }
     saveState()
 
@@ -299,7 +300,7 @@ export const useWritingGeneration = () => {
       error: null,
       jobs: state.value.jobs.map(job =>
         job.status === 'failed' ? { ...job, status: 'queued' } : job
-      )
+      ),
     }
     saveState()
 
@@ -315,7 +316,7 @@ export const useWritingGeneration = () => {
 
   // Load state on mount
   onMounted(() => {
-    loadState()
+    void loadState()
   })
 
   return {
@@ -330,6 +331,6 @@ export const useWritingGeneration = () => {
     resumeGeneration,
     retryGeneration,
     dismissError,
-    clearState
+    clearState,
   }
 }

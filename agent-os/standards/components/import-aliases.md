@@ -15,6 +15,7 @@ import QuestionCard from './QuestionCard.vue'
 ```
 
 Rules:
+
 - Project code: use `~/` (Nuxt resolves to the project root)
 - Third-party packages: bare specifier (`pinia`, `vue`, `@vueuse/core`)
 - Relative `./` is reserved for co-located pairs only (`Component.vue` + `Component.test.ts`) — not in use today

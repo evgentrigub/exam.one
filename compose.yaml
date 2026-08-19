@@ -14,32 +14,13 @@ services:
       NITRO_HOST: 0.0.0.0
       NITRO_PORT: 3000
       NUXT_PUBLIC_FRONTEND_LANDING_URL: '${FRONTEND_LANDING_URL:-http://localhost:3001}'
-      NUXT_LLM_PROVIDER: '${LLM_PROVIDER:-openrouter}'
-      NUXT_LLM_OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
-      NUXT_LLM_OPENROUTER_API_KEY: '${OPENROUTER_API_KEY:-}'
-      NUXT_LLM_OPENAI_MODEL: '${OPENAI_MODEL:-gpt-5.5}'
-      NUXT_LLM_OPENROUTER_MODEL: '${OPENROUTER_MODEL:-google/gemma-4-26b-a4b-it:free}'
-      NUXT_LLM_REASONING_EFFORT: '${LLM_REASONING_EFFORT:-medium}'
-      NUXT_STT_PROVIDER: '${STT_PROVIDER:-local}'
-      NUXT_STT_BASE_URL: 'http://parakeet:8882'
-      NUXT_STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
-      NUXT_STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
-      NUXT_STT_OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
-      TTS_BASE_URL: 'http://kokoro-voices:8881'
-      TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
-      TTS_SPEED: '${TTS_SPEED:-1.0}'
-      TTS_LANG: '${TTS_LANG:-de}'
-      TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
+      NUXT_PUBLIC_API_URL: 'http://localhost:${BACKEND_PORT:-3001}'
     ports:
       - '${FRONTEND_PORT:-3000}:3000'
     volumes:
       - generated_listening_audio:/app/public/audio/listening/generated
     depends_on:
       backend:
-        condition: service_healthy
-      kokoro-voices:
-        condition: service_healthy
-      parakeet:
         condition: service_healthy
     restart: unless-stopped
 
@@ -52,8 +33,34 @@ services:
       NODE_ENV: production
       FRONTEND_URL: 'http://localhost:${FRONTEND_PORT:-3000}'
       DATABASE_URL: 'postgresql://${POSTGRES_USER:-exam_one}:${POSTGRES_PASSWORD:-exam_one}@postgres:5432/${POSTGRES_DB:-exam_one}?schema=public'
+      JWT_SECRET: '${JWT_SECRET:-change-me-in-production}'
+      AUTH_COOKIE_SECURE: '${AUTH_COOKIE_SECURE:-false}'
+      EMAIL_PROVIDER: '${EMAIL_PROVIDER:-none}'
+      SMTP_HOST: '${SMTP_HOST:-}'
+      SMTP_PORT: '${SMTP_PORT:-587}'
+      SMTP_USER: '${SMTP_USER:-}'
+      SMTP_PASS: '${SMTP_PASS:-}'
+      SMTP_FROM: '${SMTP_FROM:-exam.one <noreply@localhost>}'
+      LLM_PROVIDER: '${LLM_PROVIDER:-openrouter}'
+      OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
+      OPENAI_MODEL: '${OPENAI_MODEL:-gpt-5.5}'
+      OPENROUTER_API_KEY: '${OPENROUTER_API_KEY:-}'
+      OPENROUTER_MODEL: '${OPENROUTER_MODEL:-google/gemma-4-26b-a4b-it:free}'
+      LLM_REASONING_EFFORT: '${LLM_REASONING_EFFORT:-medium}'
+      TTS_BASE_URL: 'http://kokoro-voices:8881'
+      TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
+      TTS_SPEED: '${TTS_SPEED:-1.0}'
+      TTS_LANG: '${TTS_LANG:-de}'
+      TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
+      STT_PROVIDER: '${STT_PROVIDER:-local}'
+      STT_BASE_URL: 'http://parakeet:8882'
+      STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
+      STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
+      GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
     ports:
       - '${BACKEND_PORT:-3001}:3001'
+    volumes:
+      - generated_listening_audio:/app/data/listening/generated
     depends_on:
       postgres:
         condition: service_healthy

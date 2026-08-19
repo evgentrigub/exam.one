@@ -8,7 +8,9 @@
           {{ answeredCount }} of {{ questions.length }} answered
         </span>
       </div>
-      <p class="text-sm text-base-content/60 mt-1">Read the text and choose the best answer for each question.</p>
+      <p class="text-sm text-base-content/60 mt-1">
+        Read the text and choose the best answer for each question.
+      </p>
 
       <div class="mt-5 space-y-6">
         <QuestionCard
@@ -24,8 +26,12 @@
       </div>
 
       <!-- Submit row -->
-      <div class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap">
-        <button class="btn btn-ghost btn-sm" @click="saveAndExit">{{ examMode ? 'Back to module' : 'Save & Exit' }}</button>
+      <div
+        class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap"
+      >
+        <button class="btn btn-ghost btn-sm" @click="saveAndExit">
+          {{ examMode ? 'Back to module' : 'Save & Exit' }}
+        </button>
         <button
           v-if="!isFinished"
           class="btn btn-primary btn-sm flex-1 gap-1"
@@ -37,7 +43,11 @@
         </button>
         <div v-else-if="!examMode" class="flex-1 flex items-center gap-3 flex-wrap">
           <div class="text-sm">
-            Score: <b class="font-mono" :class="getScoreTextColor()">{{ score }} / {{ questions.length }}</b> · {{ scorePercentage }}%
+            Score:
+            <b class="font-mono" :class="getScoreTextColor()"
+              >{{ score }} / {{ questions.length }}</b
+            >
+            · {{ scorePercentage }}%
           </div>
           <button class="btn btn-outline btn-sm gap-1 sm:ml-auto" @click="restartQuiz">
             <RotateCcw :size="12" />
@@ -52,7 +62,10 @@
     </div>
 
     <!-- Results screen -->
-    <div v-if="isFinished && !examMode" class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden">
+    <div
+      v-if="isFinished && !examMode"
+      class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden"
+    >
       <!-- Score header -->
       <div class="p-6 text-center border-b border-base-300">
         <div
@@ -66,7 +79,9 @@
         <div class="text-3xl font-bold font-mono mb-1" :class="getScoreTextColor()">
           {{ score }}/{{ questions.length }}
         </div>
-        <div class="text-sm text-base-content/60">{{ scorePercentage }}% correct · {{ getScoreMessage() }}</div>
+        <div class="text-sm text-base-content/60">
+          {{ scorePercentage }}% correct · {{ getScoreMessage() }}
+        </div>
       </div>
 
       <!-- Result rows -->
@@ -88,7 +103,8 @@
             <p class="text-sm">{{ questions[index]?.question }}</p>
             <p v-if="!result.isCorrect" class="text-xs text-base-content/50 mt-1">
               Your answer: <strong>{{ formatAnswerLabel(result.selectedAnswer) }}</strong> ·
-              Correct: <strong>{{ formatAnswerLabel(questions[index]?.correctAnswer ?? 0) }}</strong>
+              Correct:
+              <strong>{{ formatAnswerLabel(questions[index]?.correctAnswer ?? 0) }}</strong>
             </p>
           </div>
         </div>
@@ -129,7 +145,9 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   finish: []
   progress: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
-  examComplete: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
+  examComplete: [
+    payload: { answers: Record<string, number | undefined>; score: number; total: number },
+  ]
 }>()
 
 const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
@@ -140,23 +158,29 @@ const answeredQuestions = ref<Record<string, number>>({})
 const questions = computed(() => props.text.questions || [])
 const answeredCount = computed(() => Object.keys(answeredQuestions.value).length)
 const allAnswered = computed(() => questions.value.every(q => q.id in answeredQuestions.value))
-const results = computed<QuizResult[]>(() => questions.value.reduce<QuizResult[]>((acc, question) => {
-  const selectedAnswer = answeredQuestions.value[question.id]
-  if (typeof selectedAnswer !== 'number') return acc
-  acc.push({
-    questionId: question.id,
-    selectedAnswer,
-    isCorrect: selectedAnswer === question.correctAnswer
-  })
-  return acc
-}, []))
+const results = computed<QuizResult[]>(() =>
+  questions.value.reduce<QuizResult[]>((acc, question) => {
+    const selectedAnswer = answeredQuestions.value[question.id]
+    if (typeof selectedAnswer !== 'number') return acc
+    acc.push({
+      questionId: question.id,
+      selectedAnswer,
+      isCorrect: selectedAnswer === question.correctAnswer,
+    })
+    return acc
+  }, [])
+)
 const score = computed(() => results.value.filter(result => result.isCorrect).length)
-const scorePercentage = computed(() => questions.value.length ? Math.round((score.value / questions.value.length) * 100) : 0)
+const scorePercentage = computed(() =>
+  questions.value.length ? Math.round((score.value / questions.value.length) * 100) : 0
+)
 
 onMounted(() => {
   if (props.examMode) {
     answeredQuestions.value = Object.fromEntries(
-      Object.entries(props.initialAnswers).filter((entry): entry is [string, number] => typeof entry[1] === 'number'),
+      Object.entries(props.initialAnswers).filter(
+        (entry): entry is [string, number] => typeof entry[1] === 'number'
+      )
     )
     return
   }
@@ -169,7 +193,7 @@ onMounted(() => {
 function handleAnswerSelected(questionId: string, selectedAnswer: number) {
   answeredQuestions.value = {
     ...answeredQuestions.value,
-    [questionId]: selectedAnswer
+    [questionId]: selectedAnswer,
   }
   if (props.examMode) {
     emit('progress', {

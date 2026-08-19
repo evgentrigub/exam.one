@@ -13,6 +13,7 @@ Establish foundational product documentation through an interactive conversation
 ### Step 1: Check for Existing Product Docs
 
 Check if `agent-os/product/` exists and contains any of these files:
+
 - `mission.md`
 - `roadmap.md`
 - `tech-stack.md`

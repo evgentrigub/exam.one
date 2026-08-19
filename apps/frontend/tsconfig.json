@@ -12,12 +12,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": [
-    "**/*",
-    ".nuxt/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["**/*", ".nuxt/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

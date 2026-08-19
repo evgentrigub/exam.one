@@ -1,143 +1,78 @@
-/**
- * Listening Exercises Composable
- * Offline-first: bundled seed exercises merged with any user/AI-generated ones
- * stored in localStorage. Mirrors useReadingTexts (defaults ∪ stored non-defaults).
- */
-
-import { allDefaultListeningTopics } from '~/data/listening/exerciseListening'
-import type {
-  ListeningA2Exercise,
-  ListeningExerciseAudioMap,
-} from '~/utils/exercises/listening'
-
-const STORAGE_KEY = 'exam-one:listening:exercises'
-const AUDIO_OVERRIDES_KEY = 'exam-one:listening:audio-overrides'
+import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
+import type { ExerciseDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
+import { createSkillExercise, fetchSkillExercises } from '~/composables/usePracticeCatalog'
 
 const exercises = ref<ListeningA2Exercise[]>([])
 const isInitialized = ref(false)
-
-type AudioOverrides = Record<string, ListeningExerciseAudioMap>
-
-function readAudioOverrides(): AudioOverrides {
-  if (!import.meta.client) return {}
-  try {
-    const raw = localStorage.getItem(AUDIO_OVERRIDES_KEY)
-    if (!raw) return {}
-    return JSON.parse(raw) as AudioOverrides
-  } catch {
-    return {}
-  }
-}
-
-function writeAudioOverrides(overrides: AudioOverrides): void {
-  if (!import.meta.client) return
-  try {
-    localStorage.setItem(AUDIO_OVERRIDES_KEY, JSON.stringify(overrides))
-  } catch (error) {
-    console.error('Failed to save listening audio overrides:', error)
-  }
-}
-
-function applyAudioOverrides(
-  list: ListeningA2Exercise[],
-  overrides: AudioOverrides,
-): ListeningA2Exercise[] {
-  return list.map((exercise) => {
-    const id = exercise.id
-    if (!id || !overrides[id]) return exercise
-    return { ...exercise, audio: overrides[id] }
-  })
-}
+let hydratePromise: Promise<void> | null = null
 
 export const useListeningExercises = () => {
-  const initialize = () => {
-    if (isInitialized.value || import.meta.server) return
-
-    try {
-      const overrides = readAudioOverrides()
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored) as ListeningA2Exercise[]
-        const defaultIds = new Set(allDefaultListeningTopics.map(e => e.id))
-        const uniqueStored = parsed.filter(e => !defaultIds.has(e.id))
-        exercises.value = applyAudioOverrides(
-          [...allDefaultListeningTopics, ...uniqueStored],
-          overrides,
-        )
-      } else {
-        exercises.value = applyAudioOverrides([...allDefaultListeningTopics], overrides)
-      }
-      isInitialized.value = true
-    } catch (error) {
-      console.error('Failed to load listening exercises from localStorage:', error)
-      exercises.value = [...allDefaultListeningTopics]
-      isInitialized.value = true
-    }
-  }
-
-  const saveToStorage = () => {
+  const hydrate = async (): Promise<void> => {
     if (import.meta.server) return
-    try {
-      const defaultIds = new Set(allDefaultListeningTopics.map(e => e.id))
-      const toSave = exercises.value.filter(e => e.id && !defaultIds.has(e.id))
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
-
-      const overrides: AudioOverrides = {}
-      for (const exercise of exercises.value) {
-        const id = exercise.id
-        if (!id || !defaultIds.has(id) || !exercise.audio) continue
-        overrides[id] = exercise.audio
+    if (isInitialized.value) return
+    if (hydratePromise) return hydratePromise
+    hydratePromise = (async () => {
+      try {
+        exercises.value = await fetchSkillExercises<ListeningA2Exercise>('LISTENING')
+        isInitialized.value = true
+      } catch (error) {
+        console.error('Failed to load listening exercises from API:', error)
+        exercises.value = []
+        isInitialized.value = true
+      } finally {
+        hydratePromise = null
       }
-      writeAudioOverrides(overrides)
-    } catch (error) {
-      console.error('Failed to save listening exercises to localStorage:', error)
-    }
+    })()
+    return hydratePromise
   }
 
-  const getExercises = (): ListeningA2Exercise[] => exercises.value.filter(e => !e.examOnly)
+  const getExercises = (): ListeningA2Exercise[] => exercises.value.filter(item => !item.examOnly)
 
   const getExerciseById = (id: string): ListeningA2Exercise | undefined =>
-    exercises.value.find(e => e.id === id)
+    exercises.value.find(item => item.id === id)
 
-  const addExercises = (items: ListeningA2Exercise[]): void => {
-    const unique = items.filter(item => !exercises.value.some(e => e.id === item.id))
-    exercises.value = [...exercises.value, ...unique]
-    saveToStorage()
+  const addExercises = async (items: ListeningA2Exercise[]): Promise<void> => {
+    const unique = items.filter(item => !exercises.value.some(existing => existing.id === item.id))
+    for (const item of unique) {
+      if (!item.id) continue
+      const saved = await createSkillExercise('LISTENING', { ...item, id: item.id })
+      exercises.value = [...exercises.value, saved]
+    }
   }
 
-  const updateExerciseAudio = (
+  const updateExerciseAudio = async (
     id: string,
-    audio: ListeningExerciseAudioMap,
-  ): ListeningA2Exercise | undefined => {
-    const index = exercises.value.findIndex(e => e.id === id)
-    if (index < 0) return undefined
-
-    const current = exercises.value[index]
+    audio: ListeningExerciseAudioMap
+  ): Promise<ListeningA2Exercise | undefined> => {
+    const current = exercises.value.find(item => item.id === id)
     if (!current) return undefined
-
-    const updated: ListeningA2Exercise = { ...current, audio }
-    exercises.value = [
-      ...exercises.value.slice(0, index),
-      updated,
-      ...exercises.value.slice(index + 1),
-    ]
-    saveToStorage()
-    return updated
+    try {
+      const row = await apiFetch<ExerciseDto>(`/exercises/${encodeURIComponent(id)}/audio`, {
+        method: 'PUT',
+        body: { audio },
+      })
+      const payload = (row.payload ?? { ...current, audio }) as ListeningA2Exercise
+      const updated = { ...payload, id: payload.id ?? id, audio }
+      exercises.value = exercises.value.map(item => (item.id === id ? updated : item))
+      return updated
+    } catch (error) {
+      console.error('Failed to update listening audio:', error)
+      return undefined
+    }
   }
 
   if (import.meta.client && !isInitialized.value) {
-    initialize()
+    void hydrate()
   }
 
   return {
-    // State
-    exercises: computed(() => exercises.value.filter(e => !e.examOnly)),
+    exercises: computed(() => exercises.value.filter(item => !item.examOnly)),
     isInitialized: readonly(isInitialized),
-
-    // Methods
     getExercises,
     getExerciseById,
     addExercises,
     updateExerciseAudio,
+    hydrate,
   }
 }

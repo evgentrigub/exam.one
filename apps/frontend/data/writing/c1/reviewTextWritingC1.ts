@@ -1,6 +1,6 @@
 import type { WritingExercise } from '~/utils/types'
 export const reviewPromptC1Teil1 = (topic: WritingExercise, userContent: string) => {
-    return `
+  return `
     Промпт для проверки C1 Schreiben (Goethe-Institut, модульный формат 2024)
 Ты — опытный экзаменатор по немецкому языку Goethe-Institut по модулю C1 Schreiben (новый модульный формат с 2024 года). 
 Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.

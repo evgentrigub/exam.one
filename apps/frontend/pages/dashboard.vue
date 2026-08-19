@@ -1,16 +1,26 @@
 <template>
   <div class="max-w-[1240px] mx-auto p-6 space-y-6">
-
     <!-- Hero -->
     <div class="grid lg:grid-cols-2 gap-5">
       <!-- Countdown -->
       <div class="bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden">
-        <div class="h-1.5 w-full" style="background: linear-gradient(90deg, var(--color-primary), var(--color-accent, var(--color-secondary)));" />
+        <div
+          class="h-1.5 w-full"
+          style="
+            background: linear-gradient(
+              90deg,
+              var(--color-primary),
+              var(--color-accent, var(--color-secondary))
+            );
+          "
+        />
         <div class="dot-pattern p-5">
           <div class="flex items-start justify-between">
             <div>
               <div class="font-mono text-5xl font-bold leading-none">{{ daysLeft }}</div>
-              <div class="text-sm text-base-content/50 mt-1">{{ $t('dashboard.daysUntilExam') }}</div>
+              <div class="text-sm text-base-content/50 mt-1">
+                {{ $t('dashboard.daysUntilExam') }}
+              </div>
             </div>
             <span class="level-pip text-primary">{{ examLevel }}</span>
           </div>
@@ -22,9 +32,15 @@
       </div>
 
       <!-- Overall readiness ring -->
-      <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5 flex items-center gap-6">
+      <div
+        class="bg-base-100 border border-base-300 ring-soft rounded-box p-5 flex items-center gap-6"
+      >
         <ClientOnly>
-          <div class="ring-prog shrink-0" style="width: 96px" :style="{ '--p': overallReadiness, '--c': 'var(--color-primary)' }">
+          <div
+            class="ring-prog shrink-0"
+            style="width: 96px"
+            :style="{ '--p': overallReadiness, '--c': 'var(--color-primary)' }"
+          >
             <span class="font-mono text-base">{{ overallReadiness }}%</span>
           </div>
           <template #fallback>
@@ -33,7 +49,9 @@
         </ClientOnly>
         <div class="min-w-0">
           <p class="text-sm font-semibold mb-1">{{ $t('dashboard.overallReadiness') }}</p>
-          <p class="text-xs text-base-content/50 mb-3">{{ $t('dashboard.overallReadinessDescription') }}</p>
+          <p class="text-xs text-base-content/50 mb-3">
+            {{ $t('dashboard.overallReadinessDescription') }}
+          </p>
           <NuxtLink to="/progress" class="btn btn-sm btn-outline gap-1.5">
             <component :is="iconTrendingUp" :size="14" />
             {{ $t('dashboard.viewProgress') }}
@@ -56,12 +74,23 @@
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <component :is="icon(stat.id)" :size="15" :class="meta(stat.id).textClass" />
-                <span class="text-xs font-semibold" :class="meta(stat.id).textClass">{{ label(stat.id) }}</span>
+                <span class="text-xs font-semibold" :class="meta(stat.id).textClass">{{
+                  label(stat.id)
+                }}</span>
               </div>
-              <span class="font-mono text-xs font-semibold text-base-content/50">{{ stat.readiness }}%</span>
+              <span class="font-mono text-xs font-semibold text-base-content/50"
+                >{{ stat.readiness }}%</span
+              >
             </div>
-            <progress class="progress h-1.5 w-full" :class="meta(stat.id).progressClass" :value="stat.readiness" max="100" />
-            <p class="text-[11px] text-base-content/50 mt-2">{{ stat.completed }}/{{ stat.total }} {{ $t('dashboard.done') }}</p>
+            <progress
+              class="progress h-1.5 w-full"
+              :class="meta(stat.id).progressClass"
+              :value="stat.readiness"
+              max="100"
+            />
+            <p class="text-[11px] text-base-content/50 mt-2">
+              {{ stat.completed }}/{{ stat.total }} {{ $t('dashboard.done') }}
+            </p>
           </NuxtLink>
         </div>
       </section>
@@ -74,11 +103,18 @@
         <section class="lg:col-span-2">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-sm font-semibold">{{ $t('dashboard.continuePracticing') }}</h2>
-            <NuxtLink to="/exercises" class="text-xs text-primary hover:underline">{{ $t('dashboard.allExercises') }}</NuxtLink>
+            <NuxtLink to="/exercises" class="text-xs text-primary hover:underline">{{
+              $t('dashboard.allExercises')
+            }}</NuxtLink>
           </div>
 
-          <div v-if="continueExercises.length === 0" class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center">
-            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+          <div
+            v-if="continueExercises.length === 0"
+            class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3"
+            >
               <component :is="iconBookOpen" :size="20" class="text-primary" />
             </div>
             <p class="text-sm font-medium">{{ $t('dashboard.nothingInProgress') }}</p>
@@ -96,15 +132,25 @@
               @click="navigateToExercise(ex)"
             >
               <div class="flex items-start justify-between mb-3">
-                <div class="w-9 h-9 rounded-selector flex items-center justify-center" :class="meta(ex.skill).softBgClass">
+                <div
+                  class="w-9 h-9 rounded-selector flex items-center justify-center"
+                  :class="meta(ex.skill).softBgClass"
+                >
                   <component :is="icon(ex.skill)" :size="16" :class="meta(ex.skill).textClass" />
                 </div>
                 <span class="level-pip">{{ ex.difficulty }}</span>
               </div>
               <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
-              <p class="text-xs text-base-content/50">{{ label(ex.skill) }} · {{ ex.minutes }} {{ $t('exercisesUi.min') }}</p>
+              <p class="text-xs text-base-content/50">
+                {{ label(ex.skill) }} · {{ ex.minutes }} {{ $t('exercisesUi.min') }}
+              </p>
               <div class="mt-3 flex items-center gap-2">
-                <progress class="progress flex-1 h-1.5" :class="meta(ex.skill).progressClass" :value="ex.pct" max="100" />
+                <progress
+                  class="progress flex-1 h-1.5"
+                  :class="meta(ex.skill).progressClass"
+                  :value="ex.pct"
+                  max="100"
+                />
                 <span class="text-xs font-mono text-base-content/50">{{ ex.pct }}%</span>
               </div>
             </div>
@@ -116,31 +162,61 @@
           <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
             <h2 class="text-sm font-semibold mb-3">{{ $t('dashboard.focusNext') }}</h2>
             <div class="space-y-3">
-              <div v-for="stat in weakestSkills.slice(0, 3)" :key="stat.id" class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-selector flex items-center justify-center shrink-0" :class="meta(stat.id).softBgClass">
+              <div
+                v-for="stat in weakestSkills.slice(0, 3)"
+                :key="stat.id"
+                class="flex items-center gap-3"
+              >
+                <div
+                  class="w-8 h-8 rounded-selector flex items-center justify-center shrink-0"
+                  :class="meta(stat.id).softBgClass"
+                >
                   <component :is="icon(stat.id)" :size="14" :class="meta(stat.id).textClass" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between">
                     <span class="text-sm font-medium">{{ label(stat.id) }}</span>
-                    <span class="text-xs font-mono text-base-content/50">{{ stat.readiness }}%</span>
+                    <span class="text-xs font-mono text-base-content/50"
+                      >{{ stat.readiness }}%</span
+                    >
                   </div>
-                  <progress class="progress h-1 w-full mt-1" :class="meta(stat.id).progressClass" :value="stat.readiness" max="100" />
+                  <progress
+                    class="progress h-1 w-full mt-1"
+                    :class="meta(stat.id).progressClass"
+                    :value="stat.readiness"
+                    max="100"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Recommended -->
-          <div v-if="recommended" class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
+          <div
+            v-if="recommended"
+            class="bg-base-100 border border-base-300 ring-soft rounded-box p-5"
+          >
             <h2 class="text-sm font-semibold mb-3">{{ $t('dashboard.recommended') }}</h2>
-            <div class="flex items-start gap-3 cursor-pointer" @click="navigateToExercise(recommended)">
-              <div class="w-9 h-9 rounded-selector flex items-center justify-center shrink-0" :class="meta(recommended.skill).softBgClass">
-                <component :is="icon(recommended.skill)" :size="16" :class="meta(recommended.skill).textClass" />
+            <div
+              class="flex items-start gap-3 cursor-pointer"
+              @click="navigateToExercise(recommended)"
+            >
+              <div
+                class="w-9 h-9 rounded-selector flex items-center justify-center shrink-0"
+                :class="meta(recommended.skill).softBgClass"
+              >
+                <component
+                  :is="icon(recommended.skill)"
+                  :size="16"
+                  :class="meta(recommended.skill).textClass"
+                />
               </div>
               <div class="min-w-0">
                 <p class="text-sm font-semibold line-clamp-2">{{ recommended.title }}</p>
-                <p class="text-xs text-base-content/50 mt-0.5">{{ label(recommended.skill) }} · {{ recommended.minutes }} {{ $t('exercisesUi.min') }}</p>
+                <p class="text-xs text-base-content/50 mt-0.5">
+                  {{ label(recommended.skill) }} · {{ recommended.minutes }}
+                  {{ $t('exercisesUi.min') }}
+                </p>
               </div>
             </div>
           </div>
@@ -151,12 +227,13 @@
               <h2 class="text-sm font-semibold">{{ $t('dashboard.mockExam') }}</h2>
               <span class="badge badge-ghost badge-sm">{{ $t('dashboard.soon') }}</span>
             </div>
-            <p class="text-xs text-base-content/50 mt-1">{{ $t('dashboard.mockExamComingSoon') }}</p>
+            <p class="text-xs text-base-content/50 mt-1">
+              {{ $t('dashboard.mockExamComingSoon') }}
+            </p>
           </div>
         </section>
       </div>
     </ClientOnly>
-
   </div>
 </template>
 
@@ -199,13 +276,24 @@ const {
   isSpeakingCompleted,
 } = useProgress()
 
-const ICONS: Record<SkillId, Component> = { reading: BookOpen, writing: PenLine, listening: Headphones, speaking: Mic }
+const ICONS: Record<SkillId, Component> = {
+  reading: BookOpen,
+  writing: PenLine,
+  listening: Headphones,
+  speaking: Mic,
+}
 const iconBookOpen = BookOpen
 const iconPlus = Plus
 const iconTrendingUp = TrendingUp
-function icon(skill: SkillId): Component { return ICONS[skill] }
-function meta(skill: SkillId) { return getSkillMeta(skill) }
-function label(skill: SkillId) { return getSkillLabel(skill, t) }
+function icon(skill: SkillId): Component {
+  return ICONS[skill]
+}
+function meta(skill: SkillId) {
+  return getSkillMeta(skill)
+}
+function label(skill: SkillId) {
+  return getSkillLabel(skill, t)
+}
 
 const readinessStatement = computed(() => {
   const r = overallReadiness.value
@@ -224,28 +312,53 @@ interface DashExercise {
 }
 
 const allExercises = computed<DashExercise[]>(() => {
-  const reading = getTexts().filter(t => t.difficulty === examLevel.value).map(t => ({
-    id: t.id, skill: 'reading' as const, title: t.title, difficulty: t.difficulty,
-    minutes: t.estimatedReadingTime,
-    pct: getTextProgress(t.id)?.percentage ?? (isTextCompleted(t.id) ? 100 : 0),
-  }))
-  const writing = getTopics().filter(t => t.difficulty === examLevel.value).map(t => ({
-    id: t.id, skill: 'writing' as const, title: t.title, difficulty: t.difficulty,
-    minutes: t.estimatedTime, pct: isWritingTopicCompleted(t.id) ? 100 : 0,
-  }))
-  const listening = getListening().filter(e => e.difficulty === examLevel.value).map(e => ({
-    id: e.id ?? '', skill: 'listening' as const, title: e.title, difficulty: e.difficulty,
-    minutes: 6, pct: getListeningProgress(e.id ?? '')?.percentage ?? (isListeningCompleted(e.id ?? '') ? 100 : 0),
-  }))
-  const speaking = getSpeaking().filter(t => t.difficulty === examLevel.value).map(t => ({
-    id: t.id, skill: 'speaking' as const, title: t.theme, difficulty: t.difficulty,
-    minutes: 7, pct: isSpeakingCompleted(t.id) ? 100 : 0,
-  }))
+  const reading = getTexts()
+    .filter(t => t.difficulty === examLevel.value)
+    .map(t => ({
+      id: t.id,
+      skill: 'reading' as const,
+      title: t.title,
+      difficulty: t.difficulty,
+      minutes: t.estimatedReadingTime,
+      pct: getTextProgress(t.id)?.percentage ?? (isTextCompleted(t.id) ? 100 : 0),
+    }))
+  const writing = getTopics()
+    .filter(t => t.difficulty === examLevel.value)
+    .map(t => ({
+      id: t.id,
+      skill: 'writing' as const,
+      title: t.title,
+      difficulty: t.difficulty,
+      minutes: t.estimatedTime,
+      pct: isWritingTopicCompleted(t.id) ? 100 : 0,
+    }))
+  const listening = getListening()
+    .filter(e => e.difficulty === examLevel.value)
+    .map(e => ({
+      id: e.id ?? '',
+      skill: 'listening' as const,
+      title: e.title,
+      difficulty: e.difficulty,
+      minutes: 6,
+      pct:
+        getListeningProgress(e.id ?? '')?.percentage ??
+        (isListeningCompleted(e.id ?? '') ? 100 : 0),
+    }))
+  const speaking = getSpeaking()
+    .filter(t => t.difficulty === examLevel.value)
+    .map(t => ({
+      id: t.id,
+      skill: 'speaking' as const,
+      title: t.theme,
+      difficulty: t.difficulty,
+      minutes: 7,
+      pct: isSpeakingCompleted(t.id) ? 100 : 0,
+    }))
   return [...reading, ...writing, ...listening, ...speaking]
 })
 
 const continueExercises = computed(() =>
-  allExercises.value.filter(ex => ex.pct > 0 && ex.pct < 100).slice(0, 4),
+  allExercises.value.filter(ex => ex.pct > 0 && ex.pct < 100).slice(0, 4)
 )
 
 // First not-started exercise from the weakest skill that has exercises.

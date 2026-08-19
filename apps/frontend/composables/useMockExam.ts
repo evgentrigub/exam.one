@@ -3,6 +3,8 @@ import type { MockExamOverview } from '~/data/mockExam/reviewMockExamA2'
 import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 import type { AiReviewDataA2 } from '~/utils/types'
+import type { MockExamAttemptDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
 
 export type MockGradingStatus = 'auto' | 'pending' | 'done' | 'unavailable'
 
@@ -89,18 +91,16 @@ function clamp(value: number, min: number, max: number): number {
 
 export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   const currentSet = computed(() => toValue(setSource))
-  const storageKey = computed(() => `exam-one:mock-exam:${currentSet.value.id}`)
   const state = ref<MockExamState>(createBlankMockExamState(currentSet.value))
   const isInitialized = ref(false)
   const initializedSetId = ref<string | null>(null)
 
   const persist = (): void => {
     if (import.meta.server) return
-    try {
-      localStorage.setItem(storageKey.value, JSON.stringify(state.value))
-    } catch (error) {
-      console.error(`[${storageKey.value}] write failed`, error)
-    }
+    void apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+      method: 'PUT',
+      body: { state: state.value },
+    }).catch(error => console.error('[mock-exam] persist failed', error))
   }
 
   const calculateModuleScore = (skill: SkillId): void => {
@@ -137,16 +137,19 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     persist()
   }
 
-  const initialize = (force = false): void => {
+  const initialize = async (force = false): Promise<void> => {
     if (
       (!force && isInitialized.value && initializedSetId.value === currentSet.value.id) ||
       import.meta.server
     )
       return
     try {
-      const raw = localStorage.getItem(storageKey.value)
-      if (raw) {
-        const stored = JSON.parse(raw) as MockExamState
+      const saved = await apiFetch<MockExamAttemptDto | null>(
+        `/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`
+      )
+      const raw = saved?.state
+      if (raw && typeof raw === 'object') {
+        const stored = raw as MockExamState
         const blank = createBlankMockExamState(currentSet.value)
         state.value = {
           ...blank,
@@ -177,7 +180,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
         }
       }
     } catch (error) {
-      console.warn(`[${storageKey.value}] read failed`, error)
+      console.warn('[mock-exam] read failed', error)
       state.value = createBlankMockExamState(currentSet.value)
     }
     isInitialized.value = true
@@ -281,11 +284,9 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   const resetExam = (): void => {
     state.value = createBlankMockExamState(currentSet.value)
     if (import.meta.client) {
-      try {
-        localStorage.removeItem(storageKey.value)
-      } catch {
-        // The in-memory reset still succeeds when browser storage is unavailable.
-      }
+      void apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+        method: 'DELETE',
+      }).catch(() => undefined)
     }
   }
 
@@ -351,12 +352,14 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   )
 
   if (import.meta.client && !isInitialized.value) {
-    onMounted(() => initialize())
+    onMounted(() => {
+      void initialize()
+    })
     watch(
       () => currentSet.value.id,
       () => {
         state.value = createBlankMockExamState(currentSet.value)
-        initialize(true)
+        void initialize(true)
       }
     )
   }

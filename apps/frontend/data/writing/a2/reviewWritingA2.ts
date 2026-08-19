@@ -1,6 +1,6 @@
 import type { WritingExercise } from '~/utils/types'
 
-export const reviewPromptA2Teil1 = (topic: WritingExercise, userContent: string) => { 
+export const reviewPromptA2Teil1 = (topic: WritingExercise, userContent: string) => {
   return ` Промпт для проверки A2 Schreiben (Goethe-Institut, модульный формат 2024) 
 Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben. Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.
 
@@ -52,10 +52,10 @@ export const reviewPromptA2Teil1 = (topic: WritingExercise, userContent: string)
 
 Правила проверки 
 Используй только текст задания и ответ ученика из входа. Будь строгим к регистру. Если ученик смешал форматы, фиксируй это в Aufgabenerfüllung. 
-` 
+`
 }
 
-export const reviewPromptA2Teil2 = (topic: WritingExercise, userContent: string) => { 
+export const reviewPromptA2Teil2 = (topic: WritingExercise, userContent: string) => {
   return ` Промпт для проверки A2 Schreiben (Goethe-Institut, модульный формат 2024) 
 Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben. Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.
 
@@ -103,5 +103,5 @@ export const reviewPromptA2Teil2 = (topic: WritingExercise, userContent: string)
   "report": "<короткий итоговый отчёт на русском: сильные стороны, провалы по критериям, что тренировать дальше>" 
 } 
 \`\`\`
-` 
+`
 }

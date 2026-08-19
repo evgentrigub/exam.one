@@ -2,7 +2,7 @@
 
 > Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode.
 
-Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking.
+Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
 Design preview: `npx --yes serve exam-one-design/project -l 5174`
 
@@ -10,21 +10,25 @@ Design preview: `npx --yes serve exam-one-design/project -l 5174`
 
 Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
 
-| Area | Status |
-|------|--------|
-| Phase 1 frontend MVP | **Complete and tested** |
-| Reading (Lesen) | Complete — practice, scoring, explanations, progress, and optional generation |
-| Writing (Schreiben) | Complete — drafts, submissions, optional AI grading, and detailed review |
-| Listening (Hoeren) | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS |
-| Speaking (Sprechen) | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review |
-| Mock exam | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
-| Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
+| Area                      | Status                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| Phase 1 frontend MVP      | **Complete and tested**                                                                            |
+| Reading (Lesen)           | Complete — practice, scoring, explanations, progress, and optional generation                      |
+| Writing (Schreiben)       | Complete — drafts, submissions, optional AI grading, and detailed review                           |
+| Listening (Hoeren)        | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS                    |
+| Speaking (Sprechen)       | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review             |
+| Mock exam                 | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
+| Phase 2.1 backend         | **Complete** — NestJS, Prisma, health, Compose/Postgres                                            |
+| Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
+| Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                 |
+| Phase 2.4 AI / speech     | **Complete** — LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                           |
 
-**Current implementation focus:** Phase 2 persistence and self-hosting work. See the roadmap for the NestJS/PostgreSQL cutover plan.
+**Current implementation focus:** Phase 2.5 Docker Compose packaging and 2.6 self-host runbook. See the roadmap.
 
 ## ✨ Features
 
 ### 📚 Reading Practice
+
 - **Different Text Topics**: Email, notice, article, advertisement, and instructions
 - **Comprehension Questions**: 4 per text with detailed German explanations
 - **Instant Feedback**: Green checkmarks for correct answers, red X's with explanations
@@ -35,6 +39,7 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **Deep-Linkable**: Share or bookmark specific quiz sessions
 
 ### ✍️ Writing Practice
+
 - **Writing Topics**: informal emails and formal correspondence
 - **Three-Card Interface**: Description, instructions, and editor clearly separated
 - **Real-Time Validation**: Word count with color-coded feedback (red: under/over, green: perfect)
@@ -48,24 +53,34 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 - **Progress Tracking**: Track submissions, completion rates, and improvement
 
 ### 🎧 Listening Practice
+
 - **Goethe A2 Teile 1–4**: MCQ sessions with shared or per-item audio players
 - **Stable WAV playback**: Pre-generated Kokoro German voices (identical on every replay)
 - **On-demand TTS**: Generate missing audio when Kokoro is up (`pnpm tts:up` + Generate audio)
 - **Optional AI**: Transcript generation separate from audio generation
 
 ### 🎤 Speaking Practice
+
 - **Exam-oriented speaking sessions**: Structured interview/question and monologue recording with editable transcripts
 - **Optional STT**: Local Parakeet (`pnpm stt:up`) or OpenAI Whisper, with manual-text fallback
 - **Optional AI review**: Direct-point criteria, explanations, strengths, improvements, and local attempt persistence
 - **Mock exam integration**: Automatic grading and persisted detailed review on completed attempts
 
+### Accounts (Phase 2.2)
+
+- Register / sign in on this instance (email + password). No default operator account.
+- Profile and exam settings (level, target language) persist in PostgreSQL.
+- SMTP is optional (`EMAIL_PROVIDER=none` by default). Recover a password with `pnpm auth:set-password --email you@example.com`.
+
 ### 📊 Progress Dashboard
+
 - **Comprehensive Statistics**: Completion rates, average scores, best scores
 - **Recent Activity**: Time-based formatting (Today, Yesterday, X days ago)
 - **Per-skill analytics**: Reading, writing, listening, and speaking progress foundations
 - **Visual Indicators**: Completion badges, progress bars, trend displays
 
 ### 🤖 Optional AI Enhancement
+
 - **Bring-your-own-key**: OpenAI / OpenRouter via thin Nuxt server routes
 - **Generate & review**: Exercises and feedback when keys are configured
 - **Graceful degrade**: Core practice works without AI
@@ -73,7 +88,9 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 ## 🏗️ Architecture
 
 ### Offline-First Core ✅
-The completed Phase 1 core flows work without internet (localStorage):
+
+The completed Phase 1 core flows work without a cloud AI provider **after you are signed in** (local API/PostgreSQL):
+
 - Reading, writing, listening, and speaking practice
 - Goethe A2 mock exam Set 1
 - Progress tracking and statistics
@@ -81,7 +98,9 @@ The completed Phase 1 core flows work without internet (localStorage):
 - Full navigation and UI
 
 ### Optional Online Enhancement 🌐
+
 When LLM API keys are configured (optional):
+
 - Advanced AI-powered review and generation
 - Model answers / enhanced feedback
 
@@ -90,7 +109,8 @@ When LLM API keys are configured (optional):
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js**: v20.x or higher (LTS recommended)
+
+- **Node.js**: v24.x or higher (LTS recommended)
 - **pnpm**: v10.12.1+ (recommended) or npm/yarn
 
 ### Installation
@@ -110,10 +130,12 @@ npm install
 ### Development
 
 ```bash
-# Start development server at http://localhost:3000
+# Start PostgreSQL, then Nuxt :3000 and NestJS :3001
+pnpm dev:infra
 pnpm dev
 
-# The app will hot-reload as you make changes
+# First visit: register at http://localhost:3000/auth/register
+# Requires JWT_SECRET in the root `.env` (see `.env.example`)
 ```
 
 ### Optional: Enable AI Features
@@ -146,23 +168,28 @@ pnpm generate
 ## 🛠️ Tech Stack
 
 ### Core Framework
-- **Nuxt 3** (v3.17.5) - Meta-framework with auto-imports and file-based routing
-- **Vue 3** (v3.5.16) - Composition API with `<script setup>`
-- **TypeScript** (v5.8.3) - Strict mode for type safety
+
+- **Nuxt 4** (v4.5.2) - Meta-framework with auto-imports and file-based routing
+- **Vue 3** (v3.5.41) - Composition API with `<script setup>`
+- **TypeScript** (v6.0.3) - Strict mode for type safety
 
 ### UI & Styling
-- **Tailwind CSS** (v4.1.10) - Utility-first CSS framework
-- **VueUse** (v13.4.0) - Composition API utilities
+
+- **Tailwind CSS** (v4.3.3) - Utility-first CSS framework
+- **VueUse** (v14.4.0) - Composition API utilities
 
 ### State Management
-- **Pinia** (v3.0.3) - Vue store with localStorage persistence
+
+- **Pinia** (v4.0.3) - Vue store with localStorage persistence
 - **Composables** - Feature-specific reactive state management
 
 ### Internationalization
+
 - **@nuxtjs/i18n** (v9.5.5) - English UI, German content
 - Locales: `en` (default), `de`
 
 ### Development Tools
+
 - **ESLint** - Code linting with Vue and TypeScript rules
 - **Prettier** - Code formatting (2-space, single quotes)
 - **Husky** - Git hooks for pre-commit linting
@@ -173,7 +200,7 @@ pnpm generate
 ```text
 exam-one/
 ├── apps/
-│   ├── frontend/          # Nuxt 3 application and temporary Nitro AI endpoints
+│   ├── frontend/          # Nuxt 4 application
 │   └── backend/           # Standalone NestJS API
 ├── libraries/
 │   ├── contracts/         # Framework-neutral shared API contracts
@@ -199,10 +226,16 @@ pnpm dev
 
 This starts:
 
-- Nuxt with hot reload at `http://localhost:3000`
+- Nuxt with hot reload at `http://localhost:3000` (login-gated; register on first use)
 - NestJS with watch mode at `http://localhost:3001`
 - API documentation at `http://localhost:3001/api/docs`
 - PostgreSQL in Docker at `localhost:5432`
+
+Copy `.env.example` to `.env` and set `JWT_SECRET`. SMTP is off by default. To reset a local password:
+
+```bash
+pnpm auth:set-password --email you@example.com
+```
 
 The root `compose.yaml` is the repository's only Compose file. `pnpm dev:infra`
 selects just its `postgres` service for local hot-reload development. PostgreSQL
@@ -288,7 +321,8 @@ pnpm stt:up             # Start only local Parakeet STT from compose.yaml
 pnpm db:validate        # Validate the shared Prisma schema
 pnpm db:migrate         # Create and apply a development migration
 pnpm db:migrate:deploy  # Apply committed migrations
-pnpm db:seed            # Seed the development database
+pnpm db:seed            # No-op seed (register the first user in the app)
+pnpm auth:set-password  # Recover a local account password (`--email`)
 ```
 
 ## 📊 Project Status
@@ -306,19 +340,21 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 
 ### Later phases
 
-- **Current — Phase 2:** NestJS + PostgreSQL persistence cutover + Docker Compose self-host
+- **Current — Phase 2:** 2.1–2.4 done (backend, auth, practice persistence, NestJS AI/TTS/STT). Next is Compose runbook (2.5–2.6)
 - Phase 3: Public open-source release + docs site
 - Phase 4: Hosted cloud product
 
 ## 🎨 Design Philosophy
 
 ### User Experience Principles
+
 - **Delightful**: Smooth animations, encouraging feedback, celebration of progress
 - **Clear**: Intuitive navigation, obvious next actions, no jargon
 - **Fast**: < 2s load time, 60fps interactions, instant feedback
 - **Accessible**: WCAG 2.2 AA compliance, keyboard navigation, screen reader support
 
 ### Technical Principles
+
 - **Offline-First**: Core features work without internet
 - **Type-Safe**: TypeScript strict mode throughout
 - **Component-Based**: Atomic design with clear boundaries
@@ -329,27 +365,31 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 Contributions are welcome! Please follow these guidelines:
 
 ### Code Style
+
 - **TypeScript** for all new code
 - **Composition API** with `<script setup>` for Vue components
 - **Tailwind utilities** for styling (avoid custom CSS)
 - **2-space indentation**, single quotes, trailing commas (enforced by Prettier)
 
 ### Component Guidelines
+
 - Keep components under 300 lines (split if larger)
 - Extract reusable logic into composables
 - Use TypeScript interfaces from `utils/types.ts`
 - Follow atomic design: atoms → molecules → organisms
 
 ### Git Workflow
+
 - **Branch naming**: `feature/<description>`, `fix/<description>`, `chore/<description>`
 - **Commit format**: Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`)
 - **Pre-commit hooks**: Automatic linting and formatting via Husky
 
 ### Quality Checks
+
 - Repository-wide lint and strict TypeScript checks
 - Production builds for all workspace applications and libraries
 - Manual end-to-end checks of the completed German / Goethe A2 practice and mock-exam flows
-- Backend health endpoint E2E coverage for the Phase 2 scaffold
+- Backend health and auth unit/e2e coverage for the Phase 2 API
 
 ## 📚 Documentation
 
@@ -365,13 +405,13 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 ## 🎯 Roadmap
 
 ### Current Focus
-Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack cutover** while preserving the finished German / Goethe A2 product behavior.
+
+Phase 1 is complete. **2.1–2.4 are complete** (NestJS foundation, login-gated accounts, practice persistence, and the NestJS AI/TTS/STT proxy). The current focus is **2.5–2.6 Compose packaging and the self-host runbook** while preserving German / Goethe A2 practice behavior.
 
 ### Next Steps (In Priority Order)
-1. **Persistence Cutover** - Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
-2. **Account Flows** - Connect authentication, profile, and settings to the backend
-3. **AI API Migration** - Move provider adapters from temporary Nuxt routes to NestJS
-4. **Self-Host Runbook** - Complete single-command Docker Compose setup and backup/restore documentation
+
+1. **Docker Compose packaging (2.5)** — One root `compose.yaml` runbook polish for frontend, backend, Postgres, Kokoro, and Parakeet
+2. **Self-host runbook (2.6)** — First user, API keys, backup/restore of named volumes
 
 ## 📝 License
 
@@ -391,4 +431,4 @@ Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack
 
 **Built with ❤️ for German language learners**
 
-*Practice makes perfect—üben macht den Meister!*
+_Practice makes perfect—üben macht den Meister!_

@@ -1,1 +1,1 @@
-export type DatabaseIdentifier = string
+export * from '@prisma/client'

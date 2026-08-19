@@ -21,17 +21,17 @@ const isValidTheme = (value: string | null): value is Theme =>
 
 export const useTheme = () => {
   const theme = useState<Theme>('theme', () => 'light')
-  
+
   /**
    * Set a new theme
    */
   const setTheme = (newTheme: Theme) => {
     theme.value = newTheme
-    
+
     if (import.meta.client) {
       // Apply to DOM
       document.documentElement.setAttribute('data-theme', newTheme)
-      
+
       // Persist to localStorage
       try {
         localStorage.setItem(STORAGE_KEY, newTheme)
@@ -40,7 +40,7 @@ export const useTheme = () => {
       }
     }
   }
-  
+
   /**
    * Initialize theme from localStorage or default
    */
@@ -56,21 +56,21 @@ export const useTheme = () => {
       }
     }
   }
-  
+
   /**
    * Get current theme label
    */
   const currentThemeLabel = computed(() => {
     return AVAILABLE_THEMES.find(t => t.value === theme.value)?.label || 'Theme'
   })
-  
+
   /**
    * Get current theme icon
    */
   const currentThemeIcon = computed(() => {
     return AVAILABLE_THEMES.find(t => t.value === theme.value)?.icon || '🎨'
   })
-  
+
   return {
     theme: readonly(theme),
     setTheme,
@@ -79,6 +79,6 @@ export const useTheme = () => {
     currentThemeIcon,
     availableThemes: AVAILABLE_THEMES,
     lightThemes: LIGHT_THEMES,
-    darkThemes: DARK_THEMES
+    darkThemes: DARK_THEMES,
   }
 }
