@@ -26,17 +26,17 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.3 the app is **login-gated** and practice data is API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, and mock exams. Theme, locale, and playback prefs stay in the browser. AI requests still use temporary Nuxt server routes until 2.4.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.4 the app is **login-gated** and practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
 
 **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
-**Phase 2 is current:** 2.1–2.3 are done (backend, auth, practice persistence). Next is 2.4 AI-to-Nest. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+**Phase 2 is current:** 2.1–2.4 are done (backend, auth, practice persistence, NestJS AI/TTS/STT). Next is 2.5–2.6 Compose packaging and the self-host runbook. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
 
 ### Key directories
 
 | Path                          | Purpose                                                                                                      |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, utilities, and temporary Nitro AI endpoints  |
+| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, and utilities                                |
 | `apps/backend/`               | Standalone NestJS API; local default port is 3001                                                            |
 | `libraries/contracts/`        | Framework-neutral shared API contracts                                                                       |
 | `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
@@ -88,12 +88,12 @@ Prefix remaining client keys with `exam-one:` in kebab-case. Practice catalogs, 
 
 ### Server / AI endpoints
 
-Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures. Use `throw createError(...)` only for infrastructure failures.
+Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures. Invalid body is HTTP 400; missing session is HTTP 401.
 
 ## AI Integration
 
 - AI is **optional and provider-agnostic** (bring-your-own-key). Set `LLM_PROVIDER=openai` with `OPENAI_API_KEY`, or `LLM_PROVIDER=openrouter` with `OPENROUTER_API_KEY`; missing keys and upstream failures must degrade gracefully.
-- Keep provider SDK/configuration logic behind server adapters. Frontend AI requests use the thin `/api/*` endpoints and feature-scoped orchestration, preferably through composables when the behavior is shared.
+- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/llm`, `tts`, `stt`). Frontend AI requests use `aiFetch` to `/api/v1/ai|llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
 - Prompt templates currently live as typed seed data under `apps/frontend/data/{skill}/a2/` and are user-editable.
 - Generated mock sets require successful LLM configuration/connection and Docker TTS preflight checks; bundled Set 1 must remain available without them.
 - Writing and Speaking mock grading starts automatically. Persist full successful reviews with scores, and do not block completed results when optional aggregate AI review fails.

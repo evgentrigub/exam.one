@@ -6,9 +6,9 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts and practice persistence on PostgreSQL (2.2–2.3), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
+- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, and AI/TTS/STT proxy on PostgreSQL (2.2–2.4), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
-- AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through thin Nuxt server endpoints; degrades gracefully when unavailable
+- AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through NestJS; degrades gracefully when unavailable
 
 ## Current Focus
 
@@ -16,7 +16,8 @@ This file is the working guide for coding agents in this repository. It should b
 - **Done:** Mock exam offline Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
 - **Done:** Auth and account UI (2.2) — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
 - **Done:** Persistence cutover (2.3) — skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
-- **Current:** Phase 2.4 — move the temporary Nitro AI proxy to NestJS while preserving optional BYOK behavior
+- **Done:** AI, TTS, and STT proxy (2.4) — OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
+- **Current:** Phase 2.5–2.6 — Docker Compose packaging and self-host runbook
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
@@ -52,7 +53,7 @@ Use `pnpm`.
 
 ## Codebase Shape
 
-- `apps/frontend/` contains the Nuxt application, including pages, components, composables, stores, data, frontend utilities, and temporary Nitro AI endpoints
+- `apps/frontend/` contains the Nuxt application, including pages, components, composables, stores, data, and frontend utilities
 - `apps/backend/` contains the standalone NestJS API
 - `libraries/contracts/` contains framework-neutral shared API types
 - `libraries/database/` owns the Prisma schema, migrations, and seeds
@@ -76,7 +77,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Global
 
-- Phase-aware core: the shell is login-gated (2.2). Practice data is NestJS/PostgreSQL (2.3). Theme and playback prefs stay client-side
+- Phase-aware core: the shell is login-gated (2.2). Practice data is NestJS/PostgreSQL (2.3). AI/TTS/STT is NestJS (2.4). Theme and playback prefs stay client-side
 - SSR storage guards: guard `localStorage`, `window`, and `document` access with `import.meta.client` and `try/catch`
 - Local storage keys: prefix with `exam-one:`
 
@@ -95,7 +96,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Server
 
-- AI endpoints should return `{ data, error }` envelopes for business-level failures
+- AI endpoints should return `{ data, error }` envelopes for business-level failures via NestJS `/api/v1`
 - Reserve thrown errors for infrastructure/runtime failures
 
 ## UI And Styling Rules

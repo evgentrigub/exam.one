@@ -31,6 +31,7 @@ import { createJiti } from 'jiti'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const frontendRoot = path.join(repoRoot, 'apps/frontend')
+const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/tts')
 const audioRoot = path.join(frontendRoot, 'public/audio/listening/a2')
 
 const jiti = createJiti(import.meta.url, {
@@ -46,7 +47,7 @@ const listeningModule = await jiti.import(
 )
 const { defaultListeningTopics } = listeningModule
 
-const ttsModule = await jiti.import(path.join(frontendRoot, 'server/utils/tts/ttsAdapter.ts'))
+const ttsModule = await jiti.import(path.join(backendTtsRoot, 'tts.adapter.ts'))
 const {
   synthesizeListeningTranscript,
   checkTtsHealth,
@@ -54,7 +55,7 @@ const {
   listeningTranscriptHashKey,
 } = ttsModule
 
-const mapPoolModule = await jiti.import(path.join(frontendRoot, 'server/utils/tts/mapPool.ts'))
+const mapPoolModule = await jiti.import(path.join(backendTtsRoot, 'mapPool.ts'))
 const { mapPool, getTtsConcurrency } = mapPoolModule
 
 function hashTranscript(text) {
