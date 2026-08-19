@@ -128,21 +128,21 @@ export const useListeningGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = (await $fetch('/api/generate-listening', {
+        const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
           method: 'POST',
           body: { difficulty, prompts: [partPrompt] },
-        })) as unknown as { exercises: ListeningA2Exercise[]; error?: string }
+        })
 
-        if (response.error || !response.exercises || response.exercises.length === 0) {
+        if (response.error || !response.data || response.data.length === 0) {
           throw new Error(response.error || `No listening exercise generated for part ${part}`)
         }
 
-        generatedExercises.push(...response.exercises)
+        generatedExercises.push(...response.data)
         updateJobStatus(part, 'done')
 
         if (onPartComplete) {
           try {
-            onPartComplete(response.exercises)
+            onPartComplete(response.data)
           } catch (callbackError) {
             console.error('onPartComplete callback failed for listening part', part, callbackError)
           }

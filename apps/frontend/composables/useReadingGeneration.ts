@@ -130,21 +130,21 @@ export const useReadingGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = (await $fetch('/api/generate-reading', {
+        const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
           method: 'POST',
           body: { difficulty, prompts: [partPrompt] },
-        })) as unknown as { texts: ReadingExercise[]; error?: string }
+        })
 
-        if (response.error || !response.texts || response.texts.length === 0) {
+        if (response.error || !response.data || response.data.length === 0) {
           throw new Error(response.error || `No reading exercise generated for part ${part}`)
         }
 
-        generatedTexts.push(...response.texts)
+        generatedTexts.push(...response.data)
         updateJobStatus(part, 'done')
 
         if (onPartComplete) {
           try {
-            onPartComplete(response.texts)
+            onPartComplete(response.data)
           } catch (callbackError) {
             console.error('onPartComplete callback failed for reading part', part, callbackError)
           }

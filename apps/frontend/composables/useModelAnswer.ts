@@ -183,22 +183,18 @@ export function useModelAnswer() {
 
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = (await $fetch('/api/generate-model-answer', {
+      const response = await aiFetch<Partial<ModelAnswer>>('/ai/generate-model-answer', {
         method: 'POST',
         body: { topic, prompt },
-      })) as unknown as { text?: string; data?: unknown; error?: string | null }
+      })
 
       const current = getRecord(topic.id)
       if (current) {
         if (response.error) throw new Error(response.error)
         let parsedData = normalizeModelAnswerData(response.data)
 
-        if (!parsedData && response.text) {
-          try {
-            parsedData = normalizeModelAnswerData(JSON.parse(response.text) as unknown)
-          } catch {
-            parsedData = null
-          }
+        if (!parsedData) {
+          parsedData = null
         }
 
         if (parsedData) {

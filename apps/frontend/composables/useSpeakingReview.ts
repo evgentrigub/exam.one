@@ -2,13 +2,31 @@ import type {
   SpeakingA2Topic,
   SpeakingReviewData,
   SpeakingTranscripts,
+  SpeakingTopicA2Teil1,
+  SpeakingTopicA2Teil2,
 } from '~/utils/exercises/speaking'
+import {
+  reviewPromptSpeakingA2Teil1,
+  reviewPromptSpeakingA2Teil2,
+} from '~/data/speaking/a2/reviewSpeakingA2'
 
 type SpeakingReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
-interface SpeakingReviewResponse {
-  data: SpeakingReviewData | null
-  error: string | null
+function buildSpeakingReviewPrompt(
+  topic: SpeakingA2Topic,
+  transcripts: SpeakingTranscripts
+): string | null {
+  if (topic.testingPart === 1) {
+    const answers = transcripts.answers?.trim() ?? ''
+    const questions = transcripts.questions?.trim() ?? ''
+    return answers && questions
+      ? reviewPromptSpeakingA2Teil1(topic as SpeakingTopicA2Teil1, answers, questions)
+      : null
+  }
+  const monologue = transcripts.monologue?.trim() ?? ''
+  return monologue
+    ? reviewPromptSpeakingA2Teil2(topic as SpeakingTopicA2Teil2, monologue)
+    : null
 }
 
 export function useSpeakingReview() {
@@ -25,10 +43,19 @@ export function useSpeakingReview() {
     error.value = null
 
     try {
-      const response = (await $fetch('/api/review-speaking', {
+      const prompt = buildSpeakingReviewPrompt(topic, transcripts)
+      if (!prompt) {
+        throw new Error(
+          topic.testingPart === 1
+            ? 'Both Teil 1 transcripts are required for AI review.'
+            : 'A monologue transcript is required for AI review.'
+        )
+      }
+
+      const response = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
         method: 'POST',
-        body: { topic, transcripts },
-      })) as unknown as SpeakingReviewResponse
+        body: { prompt },
+      })
 
       if (response.error || !response.data) {
         throw new Error(response.error || 'AI review is unavailable.')
