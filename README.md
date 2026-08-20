@@ -22,8 +22,9 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
 | Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                 |
 | Phase 2.4 AI / speech     | **Complete** — LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                           |
+| Phase 2.5 Compose stack   | **Complete** — one `compose.yaml`, migrate/seed on boot, durable volumes, core-first `stack:up`    |
 
-**Current implementation focus:** Phase 2.5 Docker Compose packaging and 2.6 self-host runbook. See the roadmap.
+**Current implementation focus:** Phase 2.6 self-host runbook. See the roadmap.
 
 ## ✨ Features
 
@@ -255,12 +256,14 @@ pnpm dev:backend        # Run only NestJS in watch mode
 
 The root stack includes Nuxt, NestJS, PostgreSQL, four-voice Kokoro TTS, and
 Parakeet STT. Use the pnpm wrapper on first start: it downloads both speech-model
-sets into the gitignored host directories and then starts every service from
-`compose.yaml`.
+sets into the gitignored host directories, waits until Postgres, Nest (migrate +
+catalog seed), and Nuxt are healthy, then starts the speech sidecars and generates
+seed listening WAVs if they are missing.
 
 ```bash
 cp .env.example .env
 pnpm stack:setup       # Download and verify TTS and STT models only
+pnpm stack:verify-models
 pnpm stack:up
 pnpm stack:ps
 pnpm stack:logs
@@ -274,9 +277,12 @@ take a while. Later starts reuse the host model folders:
 
 - TTS models: `scripts/tts/victoria/models/`
 - STT model: `scripts/stt/parakeet/models/`
+- Seed listening WAVs: `apps/frontend/public/audio/listening/a2/`
 
-After the models exist, `docker compose up -d --build --wait` is also sufficient.
-The services are exposed at:
+`pnpm stack:up` starts the core app with `--wait`, then Kokoro and Parakeet
+without blocking login. Prefer that wrapper over a bare
+`docker compose up --wait` of every service (speech healthchecks can take several
+minutes). The services are exposed at:
 
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:3001`
@@ -296,8 +302,10 @@ pnpm stt:up     # download/start only Parakeet
 pnpm stt:down   # stop only Parakeet
 ```
 
-PostgreSQL and generated listening audio use named volumes. Do not pass
-`--volumes` to `docker compose down` unless both should be deleted.
+PostgreSQL and generated listening audio use named volumes. Seed listening WAVs
+bind-mount from the host project directory. Do not pass
+`--volumes` to `docker compose down` unless Postgres and generated audio should
+both be deleted.
 
 ## 🧪 Available Commands
 
@@ -310,7 +318,9 @@ pnpm type-check         # Type-check all workspace packages
 pnpm test               # Run package tests
 pnpm test:e2e           # Run the NestJS health endpoint e2e test
 pnpm stack:setup        # Download and verify all speech models without starting Compose
-pnpm stack:up           # Download speech models and start the complete Compose stack
+pnpm stack:verify-models # Fail if TTS/STT model snapshots are missing
+pnpm stack:up           # Download models, start core app, then speech, then seed WAVs if missing
+pnpm stack:seed-audio   # Generate bundled listening WAVs if they are not already on disk
 pnpm stack:down         # Stop the complete stack without deleting named volumes
 pnpm stack:logs         # Follow logs for all Compose services
 pnpm stack:ps           # Show service and health status
@@ -321,7 +331,7 @@ pnpm stt:up             # Start only local Parakeet STT from compose.yaml
 pnpm db:validate        # Validate the shared Prisma schema
 pnpm db:migrate         # Create and apply a development migration
 pnpm db:migrate:deploy  # Apply committed migrations
-pnpm db:seed            # No-op seed (register the first user in the app)
+pnpm db:seed            # Upsert bundled Goethe A2 exercises and mock Set 1
 pnpm auth:set-password  # Recover a local account password (`--email`)
 ```
 
@@ -340,7 +350,7 @@ Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product
 
 ### Later phases
 
-- **Current — Phase 2:** 2.1–2.4 done (backend, auth, practice persistence, NestJS AI/TTS/STT). Next is Compose runbook (2.5–2.6)
+- **Current — Phase 2:** 2.1–2.5 done (backend, auth, practice persistence, NestJS AI/TTS/STT, Compose packaging). Next is the self-host runbook (2.6)
 - Phase 3: Public open-source release + docs site
 - Phase 4: Hosted cloud product
 
@@ -406,12 +416,11 @@ Comprehensive project documentation is maintained in the `memory-bank/` director
 
 ### Current Focus
 
-Phase 1 is complete. **2.1–2.4 are complete** (NestJS foundation, login-gated accounts, practice persistence, and the NestJS AI/TTS/STT proxy). The current focus is **2.5–2.6 Compose packaging and the self-host runbook** while preserving German / Goethe A2 practice behavior.
+Phase 1 is complete. **2.1–2.5 are complete** (NestJS foundation, login-gated accounts, practice persistence, the NestJS AI/TTS/STT proxy, and Compose packaging). The current focus is **2.6 self-host runbook** while preserving German / Goethe A2 practice behavior.
 
 ### Next Steps (In Priority Order)
 
-1. **Docker Compose packaging (2.5)** — One root `compose.yaml` runbook polish for frontend, backend, Postgres, Kokoro, and Parakeet
-2. **Self-host runbook (2.6)** — First user, API keys, backup/restore of named volumes
+1. **Self-host runbook (2.6)** — First user, API keys, backup/restore of named volumes
 
 ## 📝 License
 

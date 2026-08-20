@@ -17,7 +17,7 @@ flowchart LR
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** NestJS / Prisma / Compose are in the repo. **2.1–2.4 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy). Next is Compose packaging (2.5) and the self-host runbook (2.6).
+> **Note:** NestJS / Prisma / Compose are in the repo. **2.1–2.5 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging). Next is the self-host runbook (2.6).
 
 The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. The architecture remains exam-agnostic so later phases can add other levels, languages, and providers without changing the completed Phase 1 definition.
 
@@ -100,7 +100,7 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 
 #### 2.5 Docker Compose packaging
 
-One root `compose.yaml` for frontend, backend, Postgres, Kokoro TTS, and Parakeet STT. Named volumes preserve Postgres data and generated listening audio; host model directories preserve speech weights. Local Parakeet uses the sub-1 GB Handy Q8 GGUF with a pinned `transcribe.cpp` runtime. Local development selects only the root file's `postgres` service.
+**Complete:** one root `compose.yaml` for frontend, backend, Postgres, Kokoro TTS, and Parakeet STT. `pnpm stack:up` downloads host-persisted speech models, waits on the core app (Postgres + Nest migrate/seed + Nuxt), then starts speech sidecars. Named volumes preserve Postgres data and generated listening audio; host directories preserve speech weights and seed `a2/` WAVs. Local Parakeet uses the sub-1 GB Handy Q8 GGUF with a pinned `transcribe.cpp` runtime. Local development selects only the root file's `postgres` service.
 
 #### 2.6 Self-host runbook
 
