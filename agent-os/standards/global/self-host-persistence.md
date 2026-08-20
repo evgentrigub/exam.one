@@ -2,7 +2,7 @@
 
 Rules for durable local data when exam.one runs as a Docker Compose full stack on the user's machine.
 
-**Cutover status:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, mock exams, and the LLM/TTS/STT proxy are NestJS (roadmap 2.2–2.4). Theme, locale, listening playback, and reading bookmarks may stay client-side (see `offline-first-core.md` and `localstorage-keys.md`).
+**Cutover status:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, mock exams, and the LLM/TTS/STT proxy are NestJS (roadmap 2.2–2.4). Compose packaging (2.5) boots that stack with migrate/seed on backend start. Theme, locale, listening playback, and reading bookmarks may stay client-side (see `offline-first-core.md` and `localstorage-keys.md`).
 
 ## Stack contract
 
