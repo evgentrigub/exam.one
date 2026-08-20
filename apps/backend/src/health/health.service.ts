@@ -10,7 +10,7 @@ export class HealthService {
 
   async readiness(): Promise<HealthReadyResponse> {
     try {
-      await this.prisma.$queryRaw`SELECT 1`
+      await this.prisma.$queryRaw`SELECT 1 FROM "_prisma_migrations" LIMIT 1`
       return { data: { status: 'ok', checks: { database: 'up' } } }
     } catch (error) {
       this.logger.warn(`Database readiness check failed: ${String(error)}`)
