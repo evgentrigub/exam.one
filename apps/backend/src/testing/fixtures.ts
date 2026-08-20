@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import type { Response } from 'express'
 import type {
   Attempt,
@@ -137,7 +138,7 @@ export function makeMockExamAttempt(
 
 export function makeCookieResponse(): Pick<Response, 'cookie' | 'clearCookie'> {
   return {
-    cookie: jest.fn(),
-    clearCookie: jest.fn(),
+    cookie: jest.fn() as unknown as Response['cookie'],
+    clearCookie: jest.fn() as unknown as Response['clearCookie'],
   }
 }

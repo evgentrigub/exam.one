@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { HealthReadyResponse } from '@exam-one/contracts'
 import { HealthController } from './health.controller'
@@ -34,5 +35,26 @@ describe('HealthController', () => {
 
     await expect(controller.ready()).resolves.toEqual(expected)
     expect(readiness).toHaveBeenCalledTimes(1)
+  })
+
+  it('throws 503 when readiness is degraded', async () => {
+    const degraded: HealthReadyResponse = {
+      data: { status: 'degraded', checks: { database: 'down' } },
+      error: {
+        code: 'DATABASE_UNAVAILABLE',
+        message: 'Database is not reachable',
+      },
+    }
+    readiness.mockResolvedValue(degraded)
+
+    try {
+      await controller.ready()
+      throw new Error('expected HttpException')
+    } catch (error) {
+      expect(error).toBeInstanceOf(HttpException)
+      const exception = error as HttpException
+      expect(exception.getStatus()).toBe(HttpStatus.SERVICE_UNAVAILABLE)
+      expect(exception.getResponse()).toEqual(degraded)
+    }
   })
 })
