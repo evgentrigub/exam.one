@@ -15,14 +15,15 @@ COPY apps/frontend apps/frontend
 RUN pnpm --filter @exam-one/contracts build \
   && pnpm --filter @exam-one/exam-content build \
   && pnpm --filter ./apps/frontend exec nuxt prepare \
-  && pnpm --filter ./apps/frontend build
+  && pnpm --filter ./apps/frontend exec nuxt build
 
 FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /workspace/apps/frontend/.output ./
 RUN mkdir -p /app/public/audio/listening/generated \
-    && chown -R node:node /app/public/audio/listening/generated
+    /app/public/audio/listening/a2 \
+    && chown -R node:node /app/public/audio
 USER node
 EXPOSE 3000
 CMD ["node", "server/index.mjs"]
