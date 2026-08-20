@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "outDir": "./dist",
     "rootDir": "./src",
-    "emitDeclarationOnly": true,
     "tsBuildInfoFile": "./dist/tsconfig.build.tsbuildinfo"
   },
   "include": ["src/**/*"],
