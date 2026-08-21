@@ -15,6 +15,7 @@ import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/revi
 import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
+import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -88,6 +89,8 @@ function getRecord(topicId: string): WritingReviewRecord | null {
 
 export function useWritingReview() {
   if (import.meta.client) void hydrateReviews()
+  const outputLanguage = useReviewOutputLanguage()
+
   function getReview(topicId: string): WritingReviewRecord | null {
     return getRecord(topicId)
   }
@@ -121,9 +124,9 @@ export function useWritingReview() {
     // Select prompts based on difficulty level
     if (topic.difficulty === 'A2') {
       if (topic.testingPart === 1) {
-        return reviewPromptA2Teil1(topic, userContent)
+        return reviewPromptA2Teil1(topic, userContent, outputLanguage.value)
       } else {
-        return reviewPromptA2Teil2(topic, userContent)
+        return reviewPromptA2Teil2(topic, userContent, outputLanguage.value)
       }
     } else {
       // C1 level

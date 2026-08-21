@@ -226,6 +226,7 @@ import { useAccountProfile, type PlanId } from '~/composables/useAccountProfile'
 import { plans } from '~/data/account/plans'
 import { ApiClientError } from '~/composables/useApi'
 import { passwordStrength, validatePassword } from '~/utils/authValidation'
+import { toLanguageOption } from '~/utils/types'
 
 usePageMeta('pageMeta.accountTitle', 'pageMeta.accountSubtitle')
 useHead({ title: 'Account — Exam.one' })
@@ -244,7 +245,7 @@ const form = reactive({
   name: '',
   email: '',
   examTargetDate: '',
-  locale: locale.value as 'en' | 'de',
+  locale: toLanguageOption(String(locale.value)),
 })
 
 const demoPlan = ref<PlanId>(profile.value.plan)
@@ -260,7 +261,7 @@ watch(editing, open => {
     form.name = profile.value.name
     form.email = profile.value.email
     form.examTargetDate = profile.value.examTargetDate
-    form.locale = locale.value as 'en' | 'de'
+    form.locale = toLanguageOption(String(locale.value))
     profileError.value = ''
   }
 })

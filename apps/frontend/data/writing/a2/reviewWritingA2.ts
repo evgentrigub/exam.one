@@ -1,8 +1,20 @@
-import type { WritingExercise } from '~/utils/types'
+import type { LanguageOptions, WritingExercise } from '~/utils/types'
 
-export const reviewPromptA2Teil1 = (topic: WritingExercise, userContent: string) => {
+function feedbackLanguageBlock(outputLanguage: LanguageOptions): string {
+  return `Язык обратной связи: ${outputLanguage}.
+Пиши на этом языке все комментарии (criteria.*.comment), правила (examples[].rule), priority_fixes и итоговый отчёт (report).
+В examples.error оставляй цитату ученика как есть. В examples.correction дай исправленный немецкий текст.`
+}
+
+export const reviewPromptA2Teil1 = (
+  topic: WritingExercise,
+  userContent: string,
+  outputLanguage: LanguageOptions
+) => {
   return ` Промпт для проверки A2 Schreiben (Goethe-Institut, модульный формат 2024) 
 Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben. Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.
+
+${feedbackLanguageBlock(outputLanguage)}
 
 Входные данные 
 Текст задания: ${topic.task} 
@@ -34,19 +46,19 @@ export const reviewPromptA2Teil1 = (topic: WritingExercise, userContent: string)
   "word_count": <число>, 
   "required_word_count": { "min": 20, "max": 30 }, 
   "criteria": { 
-    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<kurzer Kommentar auf Deutsch>" }, 
-    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<kurzer Kommentar auf Deutsch>" } 
+    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" }, 
+    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" } 
   }, 
   "teil_points_mess": <0–10>, 
   "teil_points_result": <teil_points_mess * 1.25>, 
   "teil_rule_applied": "none | E_zero_rule | wordcount_lt_50 | off_topic", 
   "register_check": { "expected": "du", "detected": "<du|sie|mixed|unknown>", "ok": true }, 
   "content_points_covered": { "required": 3, "covered": <0–3> }, 
-  "priority_fixes": [ "<исправление 1 в одной фразе>", "<исправление 2>", "<исправление 3>" ], 
+  "priority_fixes": [ "<исправление 1 в одной фразе на языке обратной связи>", "<исправление 2>", "<исправление 3>" ], 
   "examples": [ 
-    { "error": "<цитата из ответа>", "correction": "<исправление>", "rule": "<краткое объяснение>" } 
+    { "error": "<цитата из ответа>", "correction": "<исправленный немецкий текст>", "rule": "<краткое объяснение на языке обратной связи>" } 
   ], 
-  "report": "<короткий итоговый отчёт на русском: сильные стороны, провалы по критериям, что тренировать дальше>" 
+  "report": "<короткий итоговый отчёт на языке обратной связи: сильные стороны, провалы по критериям, что тренировать дальше>" 
 } 
 \`\`\`
 
@@ -55,9 +67,15 @@ export const reviewPromptA2Teil1 = (topic: WritingExercise, userContent: string)
 `
 }
 
-export const reviewPromptA2Teil2 = (topic: WritingExercise, userContent: string) => {
+export const reviewPromptA2Teil2 = (
+  topic: WritingExercise,
+  userContent: string,
+  outputLanguage: LanguageOptions
+) => {
   return ` Промпт для проверки A2 Schreiben (Goethe-Institut, модульный формат 2024) 
 Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben. Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.
+
+${feedbackLanguageBlock(outputLanguage)}
 
 Входные данные 
 Текст задания: ${topic.task} 
@@ -88,19 +106,19 @@ export const reviewPromptA2Teil2 = (topic: WritingExercise, userContent: string)
   "word_count": <число>, 
   "required_word_count": { "min": 30, "max": 40 }, 
   "criteria": { 
-    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<kurzer Kommentar auf Deutsch>" }, 
-    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<kurzer Kommentar auf Deutsch>" } 
+    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" }, 
+    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" } 
   }, 
   "teil_points_mess": <0–10>, 
   "teil_points_result": <teil_points_mess * 1.25>, 
   "teil_rule_applied": "none | E_zero_rule | wordcount_lt_50 | off_topic", 
   "register_check": { "expected": "sie", "detected": "<du|sie|mixed|unknown>", "ok": true }, 
   "content_points_covered": { "required": 3, "covered": <0–3> }, 
-  "priority_fixes": [ "<исправление 1 в одной фразе>", "<исправление 2>", "<исправление 3>" ], 
+  "priority_fixes": [ "<исправление 1 в одной фразе на языке обратной связи>", "<исправление 2>", "<исправление 3>" ], 
   "examples": [ 
-    { "error": "<цитата из ответа>", "correction": "<исправление>", "rule": "<краткое объяснение>" } 
+    { "error": "<цитата из ответа>", "correction": "<исправленный немецкий текст>", "rule": "<краткое объяснение на языке обратной связи>" } 
   ], 
-  "report": "<короткий итоговый отчёт на русском: сильные стороны, провалы по критериям, что тренировать дальше>" 
+  "report": "<короткий итоговый отчёт на языке обратной связи: сильные стороны, провалы по критериям, что тренировать дальше>" 
 } 
 \`\`\`
 `

@@ -1,4 +1,5 @@
 import type { SkillId } from '~/utils/labels'
+import type { LanguageOptions } from '~/utils/types'
 
 export interface MockExamOverviewItem {
   skill: SkillId
@@ -31,11 +32,10 @@ export interface MockExamOverviewInput {
 }
 
 export function buildMockExamOverviewPrompt(
-  locale: 'en' | 'de',
+  outputLanguage: LanguageOptions,
   result: MockExamOverviewInput
 ): string {
-  const language = locale === 'de' ? 'German' : 'English'
-  return `Review this Goethe A2 mock-exam result and give a concise learner overview in ${language}.
+  return `Review this Goethe A2 mock-exam result and give a concise learner overview in ${outputLanguage}.
 Identify what went well and what deserves more practice. Treat pending AI grades as provisional.
 Return only JSON with this shape:
 {"summary":"2-3 sentences","strengths":[{"skill":"reading|listening|writing|speaking","text":"..."}],"focusAreas":[{"skill":"reading|listening|writing|speaking","text":"..."}],"nextSteps":["..."]}

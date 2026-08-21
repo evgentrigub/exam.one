@@ -510,6 +510,7 @@ import {
   reviewPromptSpeakingA2Teil2,
 } from '~/data/speaking/a2/reviewSpeakingA2'
 import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
+import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type {
@@ -523,7 +524,8 @@ import type { SkillId } from '~/utils/labels'
 type ViewName = 'overview' | 'part' | 'exercise' | 'result'
 
 const route = useRoute()
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const reviewOutputLanguage = useReviewOutputLanguage()
 const requestedSetId = String(route.params['setId'] || '')
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const foundSet = computed(() => getSet(requestedSetId))
@@ -745,7 +747,7 @@ async function generateOverview(): Promise<void> {
     const response = await aiFetch<MockExamOverview>('/ai/review-mock-exam', {
       method: 'POST',
       body: {
-        prompt: buildMockExamOverviewPrompt(locale.value === 'de' ? 'de' : 'en', overviewInput()),
+        prompt: buildMockExamOverviewPrompt(reviewOutputLanguage.value, overviewInput()),
       },
     })
     if (response.error || !response.data)
@@ -880,8 +882,8 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
       if (!topic || !response.content?.trim()) return
       const prompt =
         topic.testingPart === 1
-          ? reviewPromptA2Teil1(topic, response.content)
-          : reviewPromptA2Teil2(topic, response.content)
+          ? reviewPromptA2Teil1(topic, response.content, reviewOutputLanguage.value)
+          : reviewPromptA2Teil2(topic, response.content, reviewOutputLanguage.value)
       const review = await aiFetch<AiReviewData>('/ai/review', {
         method: 'POST',
         body: { topic, userContent: response.content, prompt },
@@ -899,11 +901,13 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         ? reviewPromptSpeakingA2Teil1(
             topic as SpeakingTopicA2Teil1,
             response.transcripts.answers?.trim() ?? '',
-            response.transcripts.questions?.trim() ?? ''
+            response.transcripts.questions?.trim() ?? '',
+            reviewOutputLanguage.value
           )
         : reviewPromptSpeakingA2Teil2(
             topic as SpeakingTopicA2Teil2,
-            response.transcripts.monologue?.trim() ?? ''
+            response.transcripts.monologue?.trim() ?? '',
+            reviewOutputLanguage.value
           )
     const review = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
       method: 'POST',
