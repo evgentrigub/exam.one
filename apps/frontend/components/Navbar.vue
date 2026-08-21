@@ -250,6 +250,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '~/stores/settings'
+import { toLanguageOption, type LanguageOptions } from '~/utils/types'
 
 const settingsStore = useSettingsStore()
 const { examLevel, targetLanguage } = storeToRefs(settingsStore)
@@ -268,7 +269,7 @@ const closeDropdown = () => {
 
 // Language modal state
 const isLanguageModalOpen = ref(false)
-const tempInterfaceLanguage = ref<'en' | 'de'>(locale.value as 'en' | 'de')
+const tempInterfaceLanguage = ref<LanguageOptions>(toLanguageOption(String(locale.value)))
 const tempTargetLanguage = ref<'de' | 'en' | 'es'>(targetLanguage.value)
 const tempExamLevel = ref<'A2' | 'C1'>(examLevel.value)
 
@@ -276,7 +277,7 @@ const tempExamLevel = ref<'A2' | 'C1'>(examLevel.value)
  * Opens the language settings modal and initializes temp values
  */
 const openLanguageModal = () => {
-  tempInterfaceLanguage.value = locale.value as 'en' | 'de'
+  tempInterfaceLanguage.value = toLanguageOption(String(locale.value))
   tempTargetLanguage.value = targetLanguage.value
   tempExamLevel.value = examLevel.value
   isLanguageModalOpen.value = true
