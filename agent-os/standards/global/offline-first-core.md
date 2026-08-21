@@ -14,7 +14,7 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 **Goethe A2 skill progress:** Reading, Writing, Listening, Speaking, and mock exam mode are complete and tested (see `agent-os/product/roadmap.md`).
 
-### Phase 2 (current) — local self-hosted stack
+### Phase 2 (complete) — local self-hosted stack
 
 **2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
 
@@ -23,6 +23,8 @@ Every core practice flow works without a cloud AI provider once the user is in t
 **2.4 done:** optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
 **2.5 done:** one root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
+
+**2.6 done:** root README + `.env.example` document first-user setup, optional LLM keys, speech sidecars, and named-volume backup/restore.
 
 ## Exam references
 

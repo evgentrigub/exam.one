@@ -6,7 +6,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, and a packaged Docker Compose stack (2.2–2.5). Theme, locale, and playback prefs stay in the browser.
+- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, a packaged Docker Compose stack, and a self-host README runbook (2.2–2.6). Theme, locale, and playback prefs stay in the browser.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through NestJS; degrades gracefully when unavailable
 
@@ -18,7 +18,8 @@ This file is the working guide for coding agents in this repository. It should b
 - **Done:** Persistence cutover (2.3) — skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
 - **Done:** AI, TTS, and STT proxy (2.4) — OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
 - **Done:** Docker Compose packaging (2.5) — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
-- **Current:** Phase 2.6 — self-host runbook
+- **Done:** Self-host runbook (2.6) — README, `.env.example`, first user, API keys, named-volume backup/restore
+- **Current:** Phase 3 — public open-source release, community workflow, and a dedicated docs site
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack

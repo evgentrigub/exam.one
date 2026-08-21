@@ -17,7 +17,7 @@ flowchart LR
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** NestJS / Prisma / Compose are in the repo. **2.1–2.5 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging). Next is the self-host runbook (2.6).
+> **Note:** NestJS / Prisma / Compose are in the repo. **Phase 2 is complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging + self-host runbook). Next is Phase 3.
 
 The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. The architecture remains exam-agnostic so later phases can add other levels, languages, and providers without changing the completed Phase 1 definition.
 
@@ -61,7 +61,7 @@ i18n, settings, and progress UX solid enough that Phase 2 can freeze the product
 
 ---
 
-## Phase 2: Self-Hostable Full-Stack App (current)
+## Phase 2: Self-Hostable Full-Stack App (complete)
 
 Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). A self-hosted instance supports **multi-user registration** (email + password; no seeded operator). AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
 
@@ -70,7 +70,7 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 - **Frontend** — Vue.js (Nuxt)
 - **Backend** — NestJS API owning auth, practice persistence, and the LLM/TTS/STT proxy
 - **Database** — PostgreSQL for users, exercises, attempts, results, drafts, and settings
-- **Persistence (target)** — localStorage for exam/user data fully replaced by API-backed state. **Today:** accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, and mock exams are API-backed (2.2–2.3). Theme, locale, and playback prefs remain client-side.
+- **Persistence** — accounts, session, profile, exam settings, skill catalogs, attempts, drafts, generation jobs, and mock exams are API-backed. Theme, locale, and playback prefs remain client-side.
 - **Packaging** — single-command Docker Compose self-hosting with a **named Postgres volume** so data survives container removal/recreation
 
 ### Substages
@@ -90,9 +90,7 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 
 #### 2.3 Persistence cutover
 
-#### 2.3 Persistence cutover
-
-**Complete:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Shared Goethe A2 seeds (and bundled mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. Theme, locale, listening playback, and reading bookmarks stay client-side. Prompt templates stay out of this slice. Nitro AI remains until 2.4.
+**Complete:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Shared Goethe A2 seeds (and bundled mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. Theme, locale, listening playback, and reading bookmarks stay client-side. Prompt templates stay out of this slice.
 
 #### 2.4 AI move to NestJS
 
@@ -104,13 +102,13 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 
 #### 2.6 Self-host runbook
 
-Root README + env reference: install Docker, `compose up`, first user, configure API keys, backup/restore the named volume. Full documentation site waits for Phase 3.
+**Complete:** root README + `.env.example` cover Docker/Compose install, `pnpm stack:up`, first-user registration, optional LLM keys, speech sidecars, named-volume backup/restore, upgrades, and troubleshooting. Full documentation site waits for Phase 3.
 
-**Exit criteria:** all Phase 1 practice flows work against the DB-backed stack on localhost Docker Compose with durable volume data.
+**Exit criteria: met.** All Phase 1 practice flows work against the DB-backed stack on localhost Docker Compose with durable volume data. Phase 2 is complete.
 
 ---
 
-## Phase 3: Open-Source Release, Community, and Cloud Prep
+## Phase 3: Open-Source Release, Community, and Cloud Prep (current)
 
 Make the self-hosted solution public, document it properly, grow with community feedback, add open-source product enhancements, and prepare (but not yet ship) the hosted cloud product.
 

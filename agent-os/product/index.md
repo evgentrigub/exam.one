@@ -6,13 +6,14 @@ Use these files as the product reference set before implementing exam behavior, 
 
 - **Phase 1:** complete and tested. German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped as a local-first frontend product.
 - **Mock exam:** offline Set 1, locally persisted AI/TTS-generated sets, resumable generation, automatic grading, module-level detailed reviews, and an optional aggregate AI overview are complete.
-- **Phase 2:** current. Auth (2.2), practice persistence (2.3), AI-to-Nest (2.4), and Compose packaging (2.5) are complete. Next is the self-host runbook (2.6).
+- **Phase 2:** complete. Auth (2.2), practice persistence (2.3), AI-to-Nest (2.4), Compose packaging (2.5), and the self-host runbook (2.6) are done.
+- **Phase 3:** current. Public open-source release, community workflow, and a dedicated docs site.
 
 ## Core Product
 
 - `mission.md` - product problem, audience, positioning, and generic multi-language / multi-level framework goal.
 - `roadmap.md` - phase boundaries, supported exams per phase, skill status, and technical substages.
-- `tech-stack.md` - completed Phase 1 frontend architecture and the current Phase 2 Docker Compose full-stack target.
+- `tech-stack.md` - completed Phase 1 frontend architecture and the completed Phase 2 Docker Compose full stack.
 
 ## Exam References
 
@@ -25,4 +26,5 @@ Use these files as the product reference set before implementing exam behavior, 
 - Read the matching exam reference before implementing exam-specific content, prompts, review logic, scoring, or mock exam behavior.
 - Keep shared models and UI flows exam-agnostic; express provider/exam specifics through typed seed data, metadata, and prompt templates.
 - **Completed Phase 1:** core practice flows are offline-capable (localStorage); AI is an optional enhancement.
-- **Phase 2 (in progress):** accounts, session, profile, exam settings, skill practice, mock exams, progress, drafts, optional BYOK AI/TTS/STT, and Docker Compose packaging are NestJS-backed (2.2–2.5). Next is 2.6 (self-host runbook).
+- **Completed Phase 2:** accounts, session, profile, exam settings, skill practice, mock exams, progress, drafts, optional BYOK AI/TTS/STT, Docker Compose packaging, and the self-host README runbook are NestJS-backed (2.2–2.6).
+- **Phase 3 (current):** public GitHub release, community loop, and Docusaurus docs site.
