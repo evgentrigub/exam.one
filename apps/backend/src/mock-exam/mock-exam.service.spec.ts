@@ -22,6 +22,7 @@ describe('MockExamService', () => {
     mockExamAttempt: {
       findUnique: jest.Mock
       upsert: jest.Mock
+      update: jest.Mock
       deleteMany: jest.Mock
     }
   }
@@ -40,6 +41,7 @@ describe('MockExamService', () => {
       mockExamAttempt: {
         findUnique: jest.fn(),
         upsert: jest.fn(),
+        update: jest.fn(),
         deleteMany: jest.fn().mockResolvedValue({}),
       },
     }
@@ -241,6 +243,23 @@ describe('MockExamService', () => {
       update: { state: { module: 'listening' } },
       include: { set: true },
     })
+  })
+
+  it('retries upsertAttempt as an update when the unique constraint races', async () => {
+    const set = makeMockExamSet()
+    const attempt = makeMockExamAttempt({ set, state: { module: 'listening' } })
+    prisma.mockExamSet.findFirst.mockResolvedValue(set)
+    prisma.mockExamAttempt.upsert.mockRejectedValue({ code: 'P2002' })
+    prisma.mockExamAttempt.update.mockResolvedValue(attempt)
+
+    const result = await service.upsertAttempt(user, set.externalId, { module: 'listening' })
+
+    expect(prisma.mockExamAttempt.update).toHaveBeenCalledWith({
+      where: { userId_setId: { userId: user.id, setId: set.id } },
+      data: { state: { module: 'listening' } },
+      include: { set: true },
+    })
+    expect(result?.setExternalId).toBe(set.externalId)
   })
 
   it('rejects upsertAttempt when the set is missing', async () => {
