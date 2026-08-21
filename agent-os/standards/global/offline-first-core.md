@@ -2,7 +2,7 @@
 
 Phase-aware rules for exam practice flows, seed content, and AI. Filename kept as `offline-first-core.md` for existing links; treat this as the **core practice** standard.
 
-The product is a **generic, multi-language / multi-level exam framework** (Phase 1 shipping focus: German / Goethe A2 full skills + Goethe C1 Writing only; designed to extend to any language exam and any difficulty level). Keep core logic language-agnostic — never hard-code one language or provider into a core flow.
+The product is a **generic, multi-language / multi-level exam framework** (Phase 1 shipping focus: German / Goethe A2 full skills + Goethe C1 Writing only). Keep core logic language-agnostic — never hard-code one language or provider into a core flow. The typed exam-pack contract that lets forkers add English, Spanish, or another board is roadmap **2.11**; until then live content is Goethe-shaped.
 
 AI is an enhancement layer (exercise generation, review, grading), never a hard dependency of the core practice UI.
 
@@ -14,7 +14,9 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 **Goethe A2 skill progress:** Reading, Writing, Listening, Speaking, and mock exam mode are complete and tested (see `agent-os/product/roadmap.md`).
 
-### Phase 2 (complete) — local self-hosted stack
+### Phase 2 (current) — local self-hosted stack
+
+**2.1–2.6 done.** **2.7–2.11 current** (auth/settings UI fidelity, security, design comparison, exam-pack framework).
 
 **2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
 
@@ -25,6 +27,8 @@ Every core practice flow works without a cloud AI provider once the user is in t
 **2.5 done:** one root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
 
 **2.6 done:** root README + `.env.example` document first-user setup, optional LLM keys, speech sidecars, and named-volume backup/restore.
+
+**2.7–2.11 planned:** design-faithful auth and settings UI; security audit and fixes; design-vs-app punch list; then exam-pack interfaces, Goethe A2 on the registry, contributor flow, and A1 demo packs for English, German, and Spanish.
 
 ## Exam references
 
@@ -37,7 +41,7 @@ Keep the shared data model and UI flow exam-agnostic, then express exam-specific
 
 ## Static seed data
 
-Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/` until they are persisted.
+Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/` until they are persisted. The typed exam-pack registry (language, level, board, prompt kinds, output contracts) is roadmap **2.11**.
 
 ```
 libraries/exam-content/src/
