@@ -277,6 +277,9 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      prisma:
+        specifier: 6.5.0
+        version: 6.5.0(typescript@6.0.3)
     devDependencies:
       '@eslint/js':
         specifier: ^9.29.0
@@ -293,9 +296,6 @@ importers:
       prettier:
         specifier: ^3.9.6
         version: 3.9.6
-      prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@6.0.3)
       tsx:
         specifier: ^4.19.4
         version: 4.23.0

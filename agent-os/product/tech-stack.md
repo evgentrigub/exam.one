@@ -71,8 +71,8 @@ The core Speaking practice and mock-exam experience is complete and tested for t
 ## Deployment & Infra
 
 - A single root `compose.yaml` defines frontend, backend, PostgreSQL, Kokoro TTS,
-  and Parakeet STT. `pnpm stack:up` downloads host-persisted speech models and
-  starts the complete stack; per-service pnpm commands select from the same file.
+  and Parakeet STT. `pnpm stack:up` downloads host-persisted speech models, waits
+  on the core app after Nest migrate/seed, then starts speech sidecars.
 - **Phase 2 (primary):** **Docker Compose** on the user's laptop — orchestrates frontend, NestJS backend, and PostgreSQL with a named data volume
 - **Phase 2 runbook:** README + env templates for first-user setup and LLM keys (full Docusaurus docs site in Phase 3)
 - **Phase 4:** separately hosted cloud copy under paid plans

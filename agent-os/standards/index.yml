@@ -24,7 +24,7 @@ global:
   offline-first-core:
     description: 'Core practice: Phase 1 complete; Phase 2.2 login-gated Nest accounts; 2.3 practice data on Postgres; 2.4 Nest AI/TTS/STT; Goethe A2 + C1 Writing; BYOK AI; exam-content seed + API hydrate'
   self-host-persistence:
-    description: 'Phase 2 Docker Compose localhost stack; 2.2–2.4 accounts, practice data, and AI/TTS/STT on Nest; named volume; no required cloud'
+    description: 'Phase 2 Docker Compose localhost stack; 2.2–2.5 accounts, practice data, AI/TTS/STT, and Compose packaging; named volume; no required cloud'
   ssr-storage-guards:
     description: 'Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level; applies wherever browser storage remains'
 

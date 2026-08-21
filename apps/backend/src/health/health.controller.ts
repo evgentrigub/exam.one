@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse as ApiResponseDoc } from '@nestjs/swagger'
 import type { ApiResponse, HealthReadyResponse } from '@exam-one/contracts'
 import { Public } from '../common/decorators/public.decorator'
@@ -21,7 +21,12 @@ export class HealthController {
   @Get('ready')
   @ApiOperation({ summary: 'Readiness check (verifies database connectivity)' })
   @ApiResponseDoc({ status: 200, description: 'Readiness result' })
-  ready(): Promise<HealthReadyResponse> {
-    return this.health.readiness()
+  @ApiResponseDoc({ status: 503, description: 'Database is down or unmigrated' })
+  async ready(): Promise<HealthReadyResponse> {
+    const result = await this.health.readiness()
+    if (result.data?.status !== 'ok') {
+      throw new HttpException(result, HttpStatus.SERVICE_UNAVAILABLE)
+    }
+    return result
   }
 }

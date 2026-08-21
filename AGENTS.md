@@ -6,7 +6,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, and AI/TTS/STT proxy on PostgreSQL (2.2–2.4), and Compose foundations. Theme, locale, and playback prefs stay in the browser.
+- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, and a packaged Docker Compose stack (2.2–2.5). Theme, locale, and playback prefs stay in the browser.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through NestJS; degrades gracefully when unavailable
 
@@ -17,7 +17,8 @@ This file is the working guide for coding agents in this repository. It should b
 - **Done:** Auth and account UI (2.2) — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
 - **Done:** Persistence cutover (2.3) — skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
 - **Done:** AI, TTS, and STT proxy (2.4) — OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
-- **Current:** Phase 2.5–2.6 — Docker Compose packaging and self-host runbook
+- **Done:** Docker Compose packaging (2.5) — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
+- **Current:** Phase 2.6 — self-host runbook
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack
@@ -46,6 +47,8 @@ Use `pnpm`.
 - `pnpm type-check` - type-check all workspace projects
 - `pnpm test` - test all workspace projects
 - `pnpm stack:up` - prepare speech models and start the complete Docker Compose stack
+- `pnpm stack:verify-models` - fail if TTS/STT model snapshots are missing
+- `pnpm stack:seed-audio` - generate bundled listening WAVs if they are missing
 - `pnpm stack:down` - stop the complete stack without deleting named volumes
 - `pnpm tts:up` - prepare and start only Kokoro TTS
 - `pnpm stt:up` - prepare and start only Parakeet STT
@@ -60,7 +63,7 @@ Use `pnpm`.
 - `libraries/exam-content/` is the shared exam-content boundary
 - `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
 - `compose.yaml` is the only Compose file; it defines frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT
-- `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the complete stack after ensuring host-persisted speech models are present
+- `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the core app after migrate/seed, then speech sidecars, after ensuring host-persisted speech models are present
 - `agent-os/` contains project-specific product context and implementation standards
 
 ## Agent Priorities

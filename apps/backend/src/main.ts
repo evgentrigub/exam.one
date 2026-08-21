@@ -14,7 +14,8 @@ async function bootstrap(): Promise<void> {
 
   const logger = new Logger('Bootstrap')
   logger.log(`Backend ready at http://localhost:${port}`)
-  logger.log(`Health: http://localhost:${port}/api/v1/health`)
+  logger.log(`Liveness: http://localhost:${port}/api/v1/health`)
+  logger.log(`Readiness: http://localhost:${port}/api/v1/health/ready`)
 }
 
 void bootstrap()

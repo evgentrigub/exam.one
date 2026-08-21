@@ -9,6 +9,7 @@
 node_modules
 graphify-out
 exam-one-design
+apps/frontend/public/audio
 .env
 .env.*
 !.env.example
