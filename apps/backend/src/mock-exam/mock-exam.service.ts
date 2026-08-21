@@ -10,6 +10,15 @@ import {
 } from '../common/mappers/practice.mapper'
 import type { MockExamSetBodyDto } from './dto/mock-exam.dto'
 
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code: unknown }).code === 'P2002'
+  )
+}
+
 @Injectable()
 export class MockExamService {
   constructor(private readonly prisma: PrismaService) {}
@@ -94,13 +103,24 @@ export class MockExamService {
     if (!set) {
       throw new NotFoundException({ code: 'SET_NOT_FOUND', message: 'Mock exam set not found' })
     }
-    const row = await this.prisma.mockExamAttempt.upsert({
-      where: { userId_setId: { userId: user.id, setId: set.id } },
-      create: { userId: user.id, setId: set.id, state: asJson(state) },
-      update: { state: asJson(state) },
-      include: { set: true },
-    })
-    return toMockExamAttemptDto(row)
+    const data = { userId: user.id, setId: set.id, state: asJson(state) }
+    try {
+      const row = await this.prisma.mockExamAttempt.upsert({
+        where: { userId_setId: { userId: user.id, setId: set.id } },
+        create: data,
+        update: { state: data.state },
+        include: { set: true },
+      })
+      return toMockExamAttemptDto(row)
+    } catch (error) {
+      if (!isUniqueConstraintError(error)) throw error
+      const row = await this.prisma.mockExamAttempt.update({
+        where: { userId_setId: { userId: user.id, setId: set.id } },
+        data: { state: data.state },
+        include: { set: true },
+      })
+      return toMockExamAttemptDto(row)
+    }
   }
 
   async deleteAttempt(user: User, externalId: string): Promise<void> {

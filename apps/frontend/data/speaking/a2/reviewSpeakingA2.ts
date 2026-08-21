@@ -1,6 +1,7 @@
 import type { SpeakingTopicA2Teil1, SpeakingTopicA2Teil2 } from '~/utils/exercises/speaking'
+import type { LanguageOptions } from '~/utils/types'
 
-function outputRules(teil: 1 | 2): string {
+function outputRules(teil: 1 | 2, outputLanguage: LanguageOptions): string {
   const criteria =
     teil === 1
       ? [
@@ -13,7 +14,10 @@ function outputRules(teil: 1 | 2): string {
         ]
 
   return `
-Gib ausschließlich ein valides JSON-Objekt in diesem Schema zurück:
+Язык обратной связи: ${outputLanguage}.
+Пиши на этом языке все comment, strengths, improvements и summary.
+
+Верни только валидный JSON-объект по этой схеме:
 ${JSON.stringify(
   {
     teil,
@@ -21,80 +25,74 @@ ${JSON.stringify(
     maxPoints: teil === 1 ? 4 : 8,
     criteria: criteria.map(item => ({
       ...item,
-      comment: 'Kurzer konkreter Kommentar auf Deutsch',
+      comment: `краткий конкретный комментарий на языке обратной связи (${outputLanguage})`,
     })),
-    strengths: ['Konkrete Stärke auf Deutsch'],
-    improvements: ['Konkrete nächste Verbesserung auf Deutsch'],
-    summary: 'Kurze Gesamtbeurteilung auf Deutsch',
+    strengths: [`конкретная сильная сторона на языке обратной связи (${outputLanguage})`],
+    improvements: [`конкретный следующий шаг на языке обратной связи (${outputLanguage})`],
+    summary: `краткая общая оценка на языке обратной связи (${outputLanguage})`,
   },
   null,
   2
 )}
-Alle Punkte müssen ganze Zahlen innerhalb des jeweiligen Maximums sein.
-Kein Markdown und kein Text außerhalb des JSON-Objekts.
+Все баллы — целые числа в пределах своего максимума.
+Без Markdown и без текста вне JSON-объекта.
 `
 }
 
 export function reviewPromptSpeakingA2Teil1(
   topic: SpeakingTopicA2Teil1,
   answersTranscript: string,
-  questionsTranscript: string
+  questionsTranscript: string,
+  outputLanguage: LanguageOptions
 ): string {
   return `
-Du bist eine erfahrene Prüferin für Goethe-Zertifikat A2 Sprechen.
-Bewerte eine selbstständige, textbasierte Übungsadaption von Teil 1. Bewerte nur,
-was in den STT-Transkripten erkennbar ist; Aussprache darf nicht bewertet werden.
+Ты — опытный экзаменатор Goethe-Zertifikat A2 Sprechen.
+Оцени самостоятельную текстовую адаптацию Teil 1. Оценивай только то, что видно в STT-транскриптах; произношение не оценивай.
 
-Thema: ${topic.theme}
-Fragen, die beantwortet werden sollten:
+Тема: ${topic.theme}
+Вопросы, на которые нужно ответить:
 ${topic.answerQuestions.map((question, index) => `${index + 1}. ${question}`).join('\n')}
 
-Transkript der Antworten:
+Транскрипт ответов:
 ${answersTranscript}
 
-Fragen, die der Lernende stellen sollte:
+Вопросы, которые ученик должен задать:
 ${topic.askQuestions.map((question, index) => `${index + 1}. ${question}`).join('\n')}
 
-Transkript der gestellten Fragen:
+Транскрипт заданных вопросов:
 ${questionsTranscript}
 
-Vergib maximal 4 direkte Punkte:
-- answers, Label "Antworten", 0–2 Punkte: alle vier Fragen verständlich und mit
-  einfachen vollständigen A2-Sätzen beantwortet; kurze passende Details sind positiv.
-- questions, Label "Fragen stellen", 0–2 Punkte: alle vier Fragen erkennbar,
-  verständlich und grammatisch als Fragen formuliert.
+Максимум 4 прямых балла:
+- answers, Label "Antworten", 0–2 балла: все четыре вопроса понятно и простыми полными предложениями A2; короткие уместные детали — плюс.
+- questions, Label "Fragen stellen", 0–2 балла: все четыре вопроса узнаваемы, понятны и грамматически оформлены как вопросы.
 
-Setze teil auf 1, maxPoints auf 4 und gib genau die zwei Kriterien answers und
-questions mit jeweils maxPoints 2 zurück. totalPoints ist deren Summe.
-${outputRules(1)}
+Поставь teil = 1, maxPoints = 4 и верни ровно два критерия answers и questions с maxPoints 2 у каждого. totalPoints — их сумма.
+${outputRules(1, outputLanguage)}
 `
 }
 
 export function reviewPromptSpeakingA2Teil2(
   topic: SpeakingTopicA2Teil2,
-  monologueTranscript: string
+  monologueTranscript: string,
+  outputLanguage: LanguageOptions
 ): string {
   return `
-Du bist eine erfahrene Prüferin für Goethe-Zertifikat A2 Sprechen.
-Bewerte die Texttranskription eines Monologs aus Teil 2. Bewerte nur, was im
-Transkript erkennbar ist; Aussprache darf nicht bewertet werden.
+Ты — опытный экзаменатор Goethe-Zertifikat A2 Sprechen.
+Оцени текстовую транскрипцию монолога Teil 2. Оценивай только то, что видно в транскрипте; произношение не оценивай.
 
-Thema: ${topic.theme}
-Vier Leitpunkte:
+Тема: ${topic.theme}
+Четыре опорных пункта:
 ${topic.keywords.map((keyword, index) => `${index + 1}. ${keyword}`).join('\n')}
 
-STT-Transkript:
+STT-транскрипт:
 ${monologueTranscript}
 
-Vergib maximal 8 direkte Punkte:
-- taskCompletion, Label "Aufgabenerfüllung", 0–4 Punkte: Abdeckung der vier
-  Leitpunkte, Verständlichkeit und ein ausreichend zusammenhängender Monolog.
-- language, Label "Sprachliche Realisierung", 0–4 Punkte: passender A2-Wortschatz,
-  einfache grammatische Strukturen und Verknüpfungen wie und, aber oder deshalb.
-  Kleine mündliche Fehler sind erlaubt, solange die Aussage verständlich bleibt.
+Максимум 8 прямых баллов:
+- taskCompletion, Label "Aufgabenerfüllung", 0–4 балла: покрытие четырёх опорных пунктов, понятность и достаточно связный монолог.
+- language, Label "Sprachliche Realisierung", 0–4 балла: уместная лексика A2, простые грамматические структуры и связки вроде und, aber или deshalb.
+  Небольшие устные ошибки допустимы, пока высказывание понятно.
 
-Setze teil auf 2, maxPoints auf 8 und gib genau die zwei Kriterien taskCompletion
-und language mit jeweils maxPoints 4 zurück. totalPoints ist deren Summe.
-${outputRules(2)}
+Поставь teil = 2, maxPoints = 8 и верни ровно два критерия taskCompletion и language с maxPoints 4 у каждого. totalPoints — их сумма.
+${outputRules(2, outputLanguage)}
 `
 }

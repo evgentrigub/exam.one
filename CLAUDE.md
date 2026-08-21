@@ -16,6 +16,8 @@ pnpm format       # Prettier
 pnpm type-check   # type-check all workspace projects
 pnpm test         # test all workspace projects
 pnpm stack:up     # prepare speech models and start the complete Docker Compose stack
+pnpm stack:verify-models # fail if TTS/STT snapshots are missing
+pnpm stack:seed-audio    # generate bundled listening WAVs if missing
 pnpm stack:down   # stop the complete stack without deleting named volumes
 pnpm tts:up       # prepare and start only Kokoro TTS
 pnpm stt:up       # prepare and start only Parakeet STT
@@ -30,7 +32,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
-**Phase 2 is current:** 2.1–2.4 are done (backend, auth, practice persistence, NestJS AI/TTS/STT). Next is 2.5–2.6 Compose packaging and the self-host runbook. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+**Phase 2 is current:** 2.1–2.5 are done (backend, auth, practice persistence, NestJS AI/TTS/STT, Compose packaging). Next is 2.6 self-host runbook. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
 
 ### Key directories
 

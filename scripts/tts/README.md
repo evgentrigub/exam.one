@@ -53,11 +53,11 @@ Seed WAVs are typically gitignored; each machine regenerates them once.
 
 On a listening practice page, the sidebar shows:
 
-- **TTS health** (ready / offline) via Nuxt `/api/tts/health` → Kokoro `:8881`
+- **TTS health** (ready / offline) via NestJS `/api/v1/tts/health` → Kokoro `:8881`
 - A **missing audio** alert when expected files are not found
-- **Generate audio** — calls `/api/tts/generate-listening-audio`, writes
-  `public/audio/listening/generated/{exerciseId}/…`, and stores the `audio` map
-  on the exercise (localStorage, including overrides for seed exercises)
+- **Generate audio** — calls `/api/v1/tts/generate-listening-audio`, writes
+  generated WAVs onto the shared Compose volume (or `public/audio/listening/generated/`
+  in local `pnpm dev`), and stores the `audio` map on the exercise via the API
 
 Requires `pnpm tts:up` first. Segment and dialogue-turn synthesis run in parallel
 (`TTS_CONCURRENCY`, default 3).

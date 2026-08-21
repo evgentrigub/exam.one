@@ -352,9 +352,6 @@
   </div>
 
   <div v-else class="mx-auto max-w-[1080px] space-y-5 px-4 py-8 sm:px-6">
-    <div v-if="notice" class="alert alert-warning text-sm">
-      <Clock :size="17" /><span>{{ notice }}</span>
-    </div>
     <div class="flex items-center justify-between gap-3">
       <NuxtLink to="/mock-exam" class="btn btn-ghost btn-sm gap-1"
         ><ArrowLeft :size="14" /> {{ $t('mockExam.backToList') }}</NuxtLink
@@ -424,11 +421,17 @@
                 class="badge badge-success badge-sm gap-1"
                 ><Lock :size="11" /> {{ $t('mockExam.locked') }}</span
               >
-              <span v-else class="text-xs text-base-content/45"
-                >{{ state.modules[definition.skill].done.filter(Boolean).length }}/{{
-                  definition.exercises.length
-                }}</span
-              >
+              <div v-else class="flex items-center gap-2">
+                <TimerChip
+                  v-if="state.modules[definition.skill].endsAt"
+                  :seconds="moduleRemainingSeconds(definition.skill)"
+                />
+                <span class="text-xs text-base-content/45"
+                  >{{ state.modules[definition.skill].done.filter(Boolean).length }}/{{
+                    definition.exercises.length
+                  }}</span
+                >
+              </div>
             </div>
             <div
               v-if="state.modules[definition.skill].locked"
@@ -479,7 +482,6 @@ import {
   ChevronRight,
   CircleAlert,
   CircleCheck,
-  Clock,
   Headphones,
   Info,
   Lock,
@@ -508,6 +510,7 @@ import {
   reviewPromptSpeakingA2Teil2,
 } from '~/data/speaking/a2/reviewSpeakingA2'
 import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
+import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type {
@@ -521,7 +524,8 @@ import type { SkillId } from '~/utils/labels'
 type ViewName = 'overview' | 'part' | 'exercise' | 'result'
 
 const route = useRoute()
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const reviewOutputLanguage = useReviewOutputLanguage()
 const requestedSetId = String(route.params['setId'] || '')
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const foundSet = computed(() => getSet(requestedSetId))
@@ -542,7 +546,6 @@ const {
   completeExercise,
   updateExerciseGrade,
   lockModule,
-  expireModule,
   finishExam,
   resetExam,
   remainingSeconds,
@@ -555,7 +558,6 @@ const view = ref<ViewName>('overview')
 const activeSkill = ref<SkillId | null>(null)
 const activeIndex = ref(0)
 const nowTick = ref(Date.now())
-const notice = ref('')
 const overviewExpanded = ref(true)
 const activeGradingJobs = new Set<string>()
 let timerHandle: ReturnType<typeof setInterval> | null = null
@@ -621,7 +623,6 @@ onMounted(() => {
   }
   timerHandle = setInterval(() => {
     nowTick.value = Date.now()
-    if (activeSkill.value && remainingSeconds(activeSkill.value) <= 0) handleExpiry()
   }, 1000)
 })
 onUnmounted(() => {
@@ -746,7 +747,7 @@ async function generateOverview(): Promise<void> {
     const response = await aiFetch<MockExamOverview>('/ai/review-mock-exam', {
       method: 'POST',
       body: {
-        prompt: buildMockExamOverviewPrompt(locale.value === 'de' ? 'de' : 'en', overviewInput()),
+        prompt: buildMockExamOverviewPrompt(reviewOutputLanguage.value, overviewInput()),
       },
     })
     if (response.error || !response.data)
@@ -849,14 +850,9 @@ function finishModule(): void {
   goOverview()
 }
 
-function handleExpiry(): void {
-  if (!activeSkill.value || state.value.modules[activeSkill.value].locked) return
-  const expiredSkill = activeSkill.value
-  expireModule(expiredSkill)
-  if (expiredSkill === 'writing' || expiredSkill === 'speaking')
-    void gradePendingModule(expiredSkill)
-  notice.value = t('mockExam.timeExpired', { skill: t(`skill.${expiredSkill}`) })
-  goOverview()
+function moduleRemainingSeconds(skill: SkillId): number {
+  void nowTick.value
+  return remainingSeconds(skill)
 }
 
 function showResults(): void {
@@ -869,7 +865,6 @@ function reset(): void {
   if (import.meta.client && !confirm(t('mockExam.resetConfirm'))) return
   resetExam()
   activeSkill.value = null
-  notice.value = ''
   view.value = 'overview'
 }
 
@@ -887,8 +882,8 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
       if (!topic || !response.content?.trim()) return
       const prompt =
         topic.testingPart === 1
-          ? reviewPromptA2Teil1(topic, response.content)
-          : reviewPromptA2Teil2(topic, response.content)
+          ? reviewPromptA2Teil1(topic, response.content, reviewOutputLanguage.value)
+          : reviewPromptA2Teil2(topic, response.content, reviewOutputLanguage.value)
       const review = await aiFetch<AiReviewData>('/ai/review', {
         method: 'POST',
         body: { topic, userContent: response.content, prompt },
@@ -906,11 +901,13 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         ? reviewPromptSpeakingA2Teil1(
             topic as SpeakingTopicA2Teil1,
             response.transcripts.answers?.trim() ?? '',
-            response.transcripts.questions?.trim() ?? ''
+            response.transcripts.questions?.trim() ?? '',
+            reviewOutputLanguage.value
           )
         : reviewPromptSpeakingA2Teil2(
             topic as SpeakingTopicA2Teil2,
-            response.transcripts.monologue?.trim() ?? ''
+            response.transcripts.monologue?.trim() ?? '',
+            reviewOutputLanguage.value
           )
     const review = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
       method: 'POST',

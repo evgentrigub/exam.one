@@ -22,6 +22,8 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 **2.4 done:** optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
+**2.5 done:** one root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
+
 ## Exam references
 
 Before changing exam-specific seed data, prompt templates, scoring, grading, or mock exam behavior, read the matching product reference:

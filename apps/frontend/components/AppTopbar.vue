@@ -145,6 +145,7 @@
 
 <script setup lang="ts">
 import { Globe, ChevronDown, Cake, Sun, User, TrendingUp, LogOut } from 'lucide-vue-next'
+import type { LanguageOptions } from '~/utils/types'
 
 defineProps<{
   title?: string
@@ -156,12 +157,12 @@ const { profile, initials } = useAccountProfile()
 const { locale, setLocale } = useI18n()
 const { logout } = useAuth()
 
-const languages: { code: 'en' | 'de'; label: string }[] = [
+const languages: { code: LanguageOptions; label: string }[] = [
   { code: 'en', label: 'English' },
   { code: 'de', label: 'Deutsch' },
 ]
 
-function changeLocale(code: 'en' | 'de') {
+function changeLocale(code: LanguageOptions) {
   if (code !== locale.value) setLocale(code)
 }
 

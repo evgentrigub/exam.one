@@ -7,6 +7,18 @@ export type { Difficulty, WritingExercise, WritingTopicTypes }
  * Shared data structures for exercises, reviews, and user progress
  */
 
+export const LANGUAGE_OPTIONS = ['en', 'de'] as const
+export type LanguageOptions = (typeof LANGUAGE_OPTIONS)[number]
+export const DEFAULT_LANGUAGE: LanguageOptions = 'en'
+
+export function isLanguageOption(value: string): value is LanguageOptions {
+  return (LANGUAGE_OPTIONS as readonly string[]).includes(value)
+}
+
+export function toLanguageOption(value: string): LanguageOptions {
+  return isLanguageOption(value) ? value : DEFAULT_LANGUAGE
+}
+
 export interface UserProgress {
   textId: string
   completed: boolean
