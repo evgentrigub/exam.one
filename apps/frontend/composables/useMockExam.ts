@@ -94,13 +94,32 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   const state = ref<MockExamState>(createBlankMockExamState(currentSet.value))
   const isInitialized = ref(false)
   const initializedSetId = ref<string | null>(null)
+  let persistInFlight = false
+  let persistPending = false
 
   const persist = (): void => {
     if (import.meta.server) return
-    void apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
-      method: 'PUT',
-      body: { state: state.value },
-    }).catch(error => console.error('[mock-exam] persist failed', error))
+    if (persistInFlight) {
+      persistPending = true
+      return
+    }
+    persistInFlight = true
+    void (async () => {
+      try {
+        do {
+          persistPending = false
+          await apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+            method: 'PUT',
+            body: { state: state.value },
+          })
+        } while (persistPending)
+      } catch (error) {
+        console.error('[mock-exam] persist failed', error)
+      } finally {
+        persistInFlight = false
+        if (persistPending) persist()
+      }
+    })()
   }
 
   const calculateModuleScore = (skill: SkillId): void => {
@@ -128,15 +147,6 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     moduleState.grading = hasPending ? 'pending' : 'done'
   }
 
-  const expireModule = (skill: SkillId): void => {
-    const moduleState = state.value.modules[skill]
-    if (moduleState.locked) return
-    moduleState.locked = true
-    moduleState.endsAt = null
-    calculateModuleScore(skill)
-    persist()
-  }
-
   const initialize = async (force = false): Promise<void> => {
     if (
       (!force && isInitialized.value && initializedSetId.value === currentSet.value.id) ||
@@ -157,14 +167,18 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
           modules: Object.fromEntries(
             currentSet.value.modules.map(definition => {
               const saved = stored.modules?.[definition.skill]
+              const done = Array.from({ length: definition.exercises.length }, (_, index) =>
+                Boolean(saved?.done?.[index])
+              )
               return [
                 definition.skill,
                 {
                   ...blank.modules[definition.skill],
                   ...saved,
-                  done: Array.from({ length: definition.exercises.length }, (_, index) =>
-                    Boolean(saved?.done?.[index])
-                  ),
+                  done,
+                  // Timer expiry used to lock unfinished modules. Keep a lock only after
+                  // every exercise in the module was actually submitted.
+                  locked: Boolean(saved?.locked) && done.every(Boolean),
                   responses: saved?.responses ?? {},
                 },
               ]
@@ -178,6 +192,12 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
               : {}),
           },
         }
+        const restoredIncompleteLock = currentSet.value.modules.some(definition => {
+          const saved = stored.modules?.[definition.skill]
+          const moduleState = state.value.modules[definition.skill]
+          return Boolean(saved?.locked) && !moduleState.locked
+        })
+        if (restoredIncompleteLock) persist()
       }
     } catch (error) {
       console.warn('[mock-exam] read failed', error)
@@ -185,22 +205,10 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     }
     isInitialized.value = true
     initializedSetId.value = currentSet.value.id
-
-    for (const definition of currentSet.value.modules) {
-      const moduleState = state.value.modules[definition.skill]
-      if (
-        !moduleState.locked &&
-        moduleState.endsAt &&
-        Date.parse(moduleState.endsAt) <= Date.now()
-      ) {
-        expireModule(definition.skill)
-      }
-    }
   }
 
   const startExam = (): void => {
     if (!state.value.startedAt) state.value.startedAt = new Date().toISOString()
-    persist()
   }
 
   const startModule = (skill: SkillId): void => {
@@ -381,7 +389,6 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     completeExercise,
     updateExerciseGrade,
     lockModule,
-    expireModule,
     setGrading,
     finishExam,
     resetExam,

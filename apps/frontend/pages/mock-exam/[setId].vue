@@ -352,9 +352,6 @@
   </div>
 
   <div v-else class="mx-auto max-w-[1080px] space-y-5 px-4 py-8 sm:px-6">
-    <div v-if="notice" class="alert alert-warning text-sm">
-      <Clock :size="17" /><span>{{ notice }}</span>
-    </div>
     <div class="flex items-center justify-between gap-3">
       <NuxtLink to="/mock-exam" class="btn btn-ghost btn-sm gap-1"
         ><ArrowLeft :size="14" /> {{ $t('mockExam.backToList') }}</NuxtLink
@@ -424,11 +421,17 @@
                 class="badge badge-success badge-sm gap-1"
                 ><Lock :size="11" /> {{ $t('mockExam.locked') }}</span
               >
-              <span v-else class="text-xs text-base-content/45"
-                >{{ state.modules[definition.skill].done.filter(Boolean).length }}/{{
-                  definition.exercises.length
-                }}</span
-              >
+              <div v-else class="flex items-center gap-2">
+                <TimerChip
+                  v-if="state.modules[definition.skill].endsAt"
+                  :seconds="moduleRemainingSeconds(definition.skill)"
+                />
+                <span class="text-xs text-base-content/45"
+                  >{{ state.modules[definition.skill].done.filter(Boolean).length }}/{{
+                    definition.exercises.length
+                  }}</span
+                >
+              </div>
             </div>
             <div
               v-if="state.modules[definition.skill].locked"
@@ -479,7 +482,6 @@ import {
   ChevronRight,
   CircleAlert,
   CircleCheck,
-  Clock,
   Headphones,
   Info,
   Lock,
@@ -542,7 +544,6 @@ const {
   completeExercise,
   updateExerciseGrade,
   lockModule,
-  expireModule,
   finishExam,
   resetExam,
   remainingSeconds,
@@ -555,7 +556,6 @@ const view = ref<ViewName>('overview')
 const activeSkill = ref<SkillId | null>(null)
 const activeIndex = ref(0)
 const nowTick = ref(Date.now())
-const notice = ref('')
 const overviewExpanded = ref(true)
 const activeGradingJobs = new Set<string>()
 let timerHandle: ReturnType<typeof setInterval> | null = null
@@ -621,7 +621,6 @@ onMounted(() => {
   }
   timerHandle = setInterval(() => {
     nowTick.value = Date.now()
-    if (activeSkill.value && remainingSeconds(activeSkill.value) <= 0) handleExpiry()
   }, 1000)
 })
 onUnmounted(() => {
@@ -849,14 +848,9 @@ function finishModule(): void {
   goOverview()
 }
 
-function handleExpiry(): void {
-  if (!activeSkill.value || state.value.modules[activeSkill.value].locked) return
-  const expiredSkill = activeSkill.value
-  expireModule(expiredSkill)
-  if (expiredSkill === 'writing' || expiredSkill === 'speaking')
-    void gradePendingModule(expiredSkill)
-  notice.value = t('mockExam.timeExpired', { skill: t(`skill.${expiredSkill}`) })
-  goOverview()
+function moduleRemainingSeconds(skill: SkillId): number {
+  void nowTick.value
+  return remainingSeconds(skill)
 }
 
 function showResults(): void {
@@ -869,7 +863,6 @@ function reset(): void {
   if (import.meta.client && !confirm(t('mockExam.resetConfirm'))) return
   resetExam()
   activeSkill.value = null
-  notice.value = ''
   view.value = 'overview'
 }
 
