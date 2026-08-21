@@ -32,7 +32,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
-**Phase 2 is current:** 2.1–2.5 are done (backend, auth, practice persistence, NestJS AI/TTS/STT, Compose packaging). Next is 2.6 self-host runbook. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+**Phase 2 is complete:** 2.1–2.6 are done (backend, auth, practice persistence, NestJS AI/TTS/STT, Compose packaging, self-host runbook). Next is Phase 3. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
 
 ### Key directories
 
