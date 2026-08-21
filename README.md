@@ -24,8 +24,13 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Phase 2.4 AI / speech     | **Complete** — LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                           |
 | Phase 2.5 Compose stack   | **Complete** — one `compose.yaml`, migrate/seed on boot, durable volumes, core-first `stack:up`    |
 | Phase 2.6 self-host docs  | **Complete** — README runbook, env reference, first user, backup/restore                           |
+| Phase 2.7 auth UI         | **Planned** — design-faithful login, register, forgot, sent, reset, verify, welcome               |
+| Phase 2.8 profile / settings | **Planned** — settings shell, profile, learning plan, appearance, data; billing stays demo     |
+| Phase 2.9 security        | **Planned** — agent-led audit of auth, validation, secrets, Compose; fix confirmed issues         |
+| Phase 2.10 design compare | **Planned** — screen-by-screen design vs app punch list                                           |
+| Phase 2.11 exam packs     | **Planned** — typed exam-pack contract, Goethe A2 on the registry, A1 demo packs (en/de/es)       |
 
-**Phase 2 is complete.** Next is Phase 3 (public open-source release and a dedicated docs site). See the roadmap.
+**Phase 2.1–2.6 are complete.** Current work is 2.7–2.11. Phase 3 (public open-source release and a dedicated docs site) follows 2.11. See the roadmap.
 
 ## Features
 
@@ -489,8 +494,9 @@ Product context and standards live under [`agent-os/`](./agent-os/):
 
 ## Roadmap
 
-Phase 1 (frontend MVP) and Phase 2 (self-hostable Compose stack) are complete. Canonical status: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
+Phase 1 (frontend MVP) and Phase 2.1–2.6 (self-hostable Compose stack) are complete. Current work is 2.7–2.11. Canonical status: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
 
+- **Current — Phase 2.7–2.11:** auth/settings UI fidelity, security audit, design-vs-app comparison, generic exam-pack framework
 - **Next — Phase 3:** public GitHub release, community workflow, Docusaurus docs site
 - **Later — Phase 4:** hosted cloud product
 

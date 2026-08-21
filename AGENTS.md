@@ -6,7 +6,7 @@ This file is the working guide for coding agents in this repository. It should b
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
 - **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, a packaged Docker Compose stack, and a self-host README runbook (2.2–2.6). Theme, locale, and playback prefs stay in the browser.
+- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, a packaged Docker Compose stack, and a self-host README runbook (2.1–2.6 complete). Theme, locale, and playback prefs stay in the browser. Remaining Phase 2 work is 2.7–2.11.
 - Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through NestJS; degrades gracefully when unavailable
 
@@ -19,7 +19,8 @@ This file is the working guide for coding agents in this repository. It should b
 - **Done:** AI, TTS, and STT proxy (2.4) — OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
 - **Done:** Docker Compose packaging (2.5) — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
 - **Done:** Self-host runbook (2.6) — README, `.env.example`, first user, API keys, named-volume backup/restore
-- **Current:** Phase 3 — public open-source release, community workflow, and a dedicated docs site
+- **Current:** Phase 2.7–2.11 — auth UI fidelity, account/settings UI, security audit, design-vs-app comparison, then the generic exam-pack framework (A1 demo packs for English, German, and Spanish)
+- **Next:** Phase 3 — public open-source release, community workflow, and a dedicated docs site
 - Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
 
 ## Stack

@@ -1,6 +1,6 @@
 # Tech Stack
 
-> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2 is complete:** accounts, practice data, the AI/TTS/STT proxy, Compose packaging, and the self-host runbook are NestJS-backed (2.2–2.6). Cloud hosting remains Phase 4.
+> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2.1–2.6 are complete:** accounts, practice data, the AI/TTS/STT proxy, Compose packaging, and the self-host runbook are NestJS-backed. **Current is 2.7–2.11** (auth/settings UI fidelity, security, design comparison, exam-pack framework). Cloud hosting remains Phase 4.
 
 ## Frontend
 
@@ -14,12 +14,12 @@
 - **Pinia** (+ `pinia-plugin-persistedstate`) — state management
 - **VueUse** — composable utilities
 
-Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, password reset, verify, profile/settings). Those screens are wired to NestJS (roadmap 2.2). `/auth/**` is SSR'd; the login-gated app is client-only (`ssr: false`) because session cookies live on the API host.
+Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, password reset, verify, profile/settings). Those screens are wired to NestJS (roadmap 2.2). Design-faithful auth and settings surfaces are 2.7–2.8. `/auth/**` is SSR'd; the login-gated app is client-only (`ssr: false`) because session cookies live on the API host.
 
 ## Backend
 
 - **Completed Phase 1:** thin **Nuxt server routes** (`server/api/`) proxy requests to the configured LLM provider
-- **Completed Phase 2:** **NestJS** REST API (`/api/v1`). Auth is JWT httpOnly cookies, bcrypt passwords, optional SMTP (`EMAIL_PROVIDER=none|smtp`). Multi-user registration; no default operator account. Recover a local password with `pnpm auth:set-password`. LLM, Kokoro TTS, and Parakeet/Whisper STT proxies live on NestJS (2.4).
+- **Completed Phase 2.2–2.4:** **NestJS** REST API (`/api/v1`). Auth is JWT httpOnly cookies, bcrypt passwords, optional SMTP (`EMAIL_PROVIDER=none|smtp`). Multi-user registration; no default operator account. Recover a local password with `pnpm auth:set-password`. LLM, Kokoro TTS, and Parakeet/Whisper STT proxies live on NestJS (2.4).
 
 ## Database
 
@@ -31,7 +31,7 @@ Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, pa
 - **Bring-your-own-key, provider-agnostic architecture** — users supply their own LLM API keys
 - **Supported providers (current):** **OpenAI** and **OpenRouter**
 - Used for exercise generation, exercise review, and grading student answers
-- Prompt templates are bundled as editable demo templates
+- Prompt templates are bundled as editable demo templates under `apps/frontend/data/{skill}/` today; the typed exam-pack contract and A1 demo packs for English, German, and Spanish are roadmap 2.11
 - AI is an enhancement layer; core practice flows degrade gracefully when AI is unavailable
 
 ## Listening audio (complete and tested)
@@ -73,8 +73,9 @@ The core Speaking practice and mock-exam experience is complete and tested for t
 - A single root `compose.yaml` defines frontend, backend, PostgreSQL, Kokoro TTS,
   and Parakeet STT. `pnpm stack:up` downloads host-persisted speech models, waits
   on the core app after Nest migrate/seed, then starts speech sidecars.
-- **Phase 2 (complete):** **Docker Compose** on the user's laptop — orchestrates frontend, NestJS backend, and PostgreSQL with a named data volume
-- **Phase 2 runbook:** README + `.env.example` for first-user setup, LLM keys, and named-volume backup/restore (full Docusaurus docs site in Phase 3)
+- **Phase 2.1–2.6 (complete):** **Docker Compose** on the user's laptop — orchestrates frontend, NestJS backend, and PostgreSQL with a named data volume
+- **Phase 2 runbook:** README + `.env.example` for first-user setup, LLM keys, and named-volume backup/restore (full Docusaurus docs site in Phase 3; exam-pack contributor guide is 2.11, published in 3.3)
+- **Phase 2.7–2.11 (current):** auth/settings UI fidelity, security pass, design comparison, exam-pack framework
 - **Phase 4:** separately hosted cloud copy under paid plans
 
 ## Tooling

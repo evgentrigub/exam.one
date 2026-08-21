@@ -17,9 +17,9 @@ flowchart LR
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** NestJS / Prisma / Compose are in the repo. **Phase 2 is complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging + self-host runbook). Next is Phase 3.
+> **Note:** NestJS / Prisma / Compose are in the repo. **Phase 2.1–2.6 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging + self-host runbook). **Current is 2.7–2.11** (auth/settings UI fidelity, security, design comparison, exam-pack framework). Phase 3 follows.
 
-The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. The architecture remains exam-agnostic so later phases can add other levels, languages, and providers without changing the completed Phase 1 definition.
+The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. Goethe A2 remains the first complete exam product; the generic exam-pack contract (language, level, board, prompts, seed shapes) is the 2.11 gate before public open-source release.
 
 ### Skill status (Goethe A2)
 
@@ -61,7 +61,9 @@ i18n, settings, and progress UX solid enough that Phase 2 can freeze the product
 
 ---
 
-## Phase 2: Self-Hostable Full-Stack App (complete)
+## Phase 2: Self-Hostable Full-Stack App (current)
+
+**2.1–2.6 are complete.** Remaining work is 2.7–2.11 before Phase 3.
 
 Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). A self-hosted instance supports **multi-user registration** (email + password; no seeded operator). AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
 
@@ -104,11 +106,59 @@ Evolve the finished frontend MVP into a full-stack application that users run on
 
 **Complete:** root README + `.env.example` cover Docker/Compose install, `pnpm stack:up`, first-user registration, optional LLM keys, speech sidecars, named-volume backup/restore, upgrades, and troubleshooting. Full documentation site waits for Phase 3.
 
-**Exit criteria: met.** All Phase 1 practice flows work against the DB-backed stack on localhost Docker Compose with durable volume data. Phase 2 is complete.
+**2.1–2.6 exit: met.** All Phase 1 practice flows work against the DB-backed stack on localhost Docker Compose with durable volume data. Auth and account screens are functional (not yet design-faithful). Practice data and prompts remain Goethe-shaped until 2.11.
+
+#### 2.7 Auth UI fidelity
+
+**Current.** Close the gap between `exam-one-design/project/auth.jsx` and `apps/frontend/pages/auth/*` plus the auth layout and shared auth components.
+
+- Match the designed screens: login, register, forgot, sent, reset, reset-done, verify, welcome.
+- Shared chrome: split-card shell, field icons, blur validation, password show/hide, strength meter with labels, AuthAside readiness card.
+- Do **not** add Google OAuth (skipped in 2.2). A visual Google button, if present, stays disabled / self-host-unavailable.
+- Keep remember-me, lockout messaging, and copy aligned with the design without changing the NestJS auth contract unless a screen cannot be honest otherwise.
+
+#### 2.8 Account, profile, and settings UI
+
+Implement the designed settings shell and account surface from `exam-one-design/project/settings.jsx`, `settings-prefs.jsx`, and Account in `exercise-interior.jsx`.
+
+- Settings left nav and sections: Profile, Security, Plan & billing (demo), Learning plan, AI provider (instance status / test connection), Notifications, Appearance, Your data.
+- Wire existing Nest APIs. Cloud-only features (paid billing, Google connected accounts, push) stay demo or disabled.
+- Instance-level BYOK keys stay in env (2.4); the AI provider panel must not store per-user API keys.
+- Practice interiors, mock exam, dashboard, and progress stay out of this slice (2.10). Learning-plan exam-board/level UI may stay Goethe-scoped until 2.11.
+
+#### 2.9 Security analysis and fixes
+
+Agent-led review of the self-hosted stack, then fix confirmed issues in this stage.
+
+- NestJS auth: JWT httpOnly cookies, reset/verify tokens, lockout, session handling.
+- Input validation, injection, secrets in env, Compose exposure, frontend XSS.
+- Document residual risk that is accepted rather than fixed. This is not a pentest of third-party hosts.
+
+#### 2.10 Design-vs-implementation comparison
+
+Screen-by-screen compare `exam-one-design/project` (dashboard, shell, exercises, interiors, mock exam, progress, gen-queue, leftover auth/settings) to the Nuxt app.
+
+- Deliverable: a written punch list under `agent-os/product/` for later fixing.
+- This stage finds and plans inconsistencies; it does not implement the full visual backlog.
+
+#### 2.11 Generic exam-pack framework
+
+Last Phase 2 gate before public open-source release. Define an explicit exam-pack contract so a forker or future cloud catalog can add any language exam without editing Goethe-hardcoded modules.
+
+- Typed pack identity: language, CEFR level, exam board / format id.
+- Structure: modules, parts, timings, scoring.
+- Prompt kinds per skill/part: generator, model answer, review/grade, plus the JSON output contracts the LLM must satisfy.
+- Seed/exercise payload shapes registered against those contracts.
+- LLM/TTS/STT roles a pack may declare (still BYOK / instance env; packs do not embed API keys).
+- Move the live Goethe A2 product (and existing Goethe C1 writing prompts) onto a pack registry resolved by pack id. Replace the single `apps/frontend/data/examStructure/goetheA2.ts` plus `Difficulty = 'A2' | 'C1'` assumption.
+- Contributor flow: required files, prompt kinds, validation, seed upsert, and what the app will and will not do without a pack. First home: `agent-os/product/` plus a README pointer. Phase 3.3 publishes that guide in Docusaurus.
+- Demo A1 prompt + structure packs for **English, German, and Spanish** as proof the interface works — not three full A1 products (no complete seed catalogs, listening WAV libraries, or mock-exam sets at A1). Goethe A2 remains the only complete and tested exam product at the end of 2.11.
+
+**Phase 2 exit:** 2.1–2.6 still met; 2.7–2.8 UI matches the designed auth/account/settings surface; 2.9 findings fixed or documented; 2.10 punch list exists; 2.11 exam-pack interfaces, Goethe A2 migrated, contributor flow written, and A1 demo packs for en/de/es present. Then Phase 3.
 
 ---
 
-## Phase 3: Open-Source Release, Community, and Cloud Prep (current)
+## Phase 3: Open-Source Release, Community, and Cloud Prep
 
 Make the self-hosted solution public, document it properly, grow with community feedback, add open-source product enhancements, and prepare (but not yet ship) the hosted cloud product.
 
@@ -124,7 +174,7 @@ Triage issues and pull requests, accept external contributions under project sta
 
 #### 3.3 Docusaurus docs site
 
-Dedicated docs project ([Docusaurus](https://docusaurus.io/)): install/self-host, architecture, exam-framework extension guide, AI provider setup, troubleshooting; version docs as needed.
+Dedicated docs project ([Docusaurus](https://docusaurus.io/)): install/self-host, architecture, AI provider setup, troubleshooting; version docs as needed. The exam-framework extension guide **publishes the 2.11 contract and contributor flow**; it does not invent them.
 
 #### 3.4 Open-source product enhancements
 
@@ -150,7 +200,7 @@ Managed accounts, cloud sync across devices, and paid plans.
 
 #### 4.2 Exam expansion
 
-More Goethe levels beyond A2, plus additional language certifications and difficulty levels via the generic framework.
+More packs **on the 2.11 exam-pack interfaces**: further Goethe levels beyond A2, plus additional language certifications and difficulty levels. This stage does not define the framework.
 
 #### 4.3 Collaboration features
 
