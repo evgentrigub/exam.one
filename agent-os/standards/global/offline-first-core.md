@@ -1,50 +1,32 @@
 # Core Practice & Exam Framework
 
-Phase-aware rules for exam practice flows, seed content, and AI. Filename kept as `offline-first-core.md` for existing links; treat this as the **core practice** standard.
+Rules for exam practice flows, seed content, and AI. Filename kept as `offline-first-core.md` for existing links; treat this as the **core practice** standard.
 
-The product is a **generic, multi-language / multi-level exam framework** (Phase 1 shipping focus: German / Goethe A2 full skills + Goethe C1 Writing only). Keep core logic language-agnostic — never hard-code one language or provider into a core flow. The typed exam-pack contract is roadmap **2.11**; practice-ready packs for Goethe A1, Cambridge English A2, and DELE Spanish A2 are **2.12–2.14**. Until 2.11, live content is Goethe-shaped.
+The product is a **generic, multi-language / multi-level exam framework**. Live practice content is German / Goethe A2 across all four skills, plus Goethe C1 Writing prompts. Keep core logic language-agnostic — never hard-code one language or provider into a core flow.
 
 AI is an enhancement layer (exercise generation, review, grading), never a hard dependency of the core practice UI.
 
-## Phase boundaries
+## Current architecture
 
-### Phase 1 (complete) — frontend product
+Every core practice flow works without a cloud AI provider once the user is in the app: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation.
 
-Every core practice flow works without a cloud AI provider once the user is in the app: reading, writing, listening, and speaking practice, mock exam mode, progress, drafts, and navigation. Phase 1 stored practice data in localStorage.
+The app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
 
-**Goethe A2 skill progress:** Reading, Writing, Listening, Speaking, and mock exam mode are complete and tested (see `agent-os/product/roadmap.md`).
+Skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
 
-### Phase 2 (current) — local self-hosted stack
+Optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
-**2.1–2.6 done.** **2.7–2.14 current** (auth/settings UI fidelity, security, design comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs).
+One root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
 
-**2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
+Root README + `.env.example` document first-user setup, optional LLM keys, speech sidecars, and named-volume backup/restore.
 
-**2.3 done:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
+## Exam-specific behavior
 
-**2.4 done:** optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
-
-**2.5 done:** one root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
-
-**2.6 done:** root README + `.env.example` document first-user setup, optional LLM keys, speech sidecars, and named-volume backup/restore.
-
-**2.7–2.14 planned:** design-faithful auth and settings UI; security audit and fixes; design-vs-app punch list; exam-pack interfaces and Goethe A2 on the registry; then practice-ready packs for Goethe A1, Cambridge English A2 Key, and DELE A2.
-
-## Exam references
-
-Before changing exam-specific seed data, prompt templates, scoring, grading, or mock exam behavior, read the matching product reference:
-
-- German / Goethe A2: `agent-os/product/languages/german/german-exam-A2.md`
-- German / Goethe C1 (Writing only in Phase 1): `agent-os/product/languages/german/german-exam-C1.md`
-- German / Goethe A1 (roadmap 2.12): `agent-os/product/languages/german/german-exam-A1.md`
-- Cambridge English A2 Key (roadmap 2.13): `agent-os/product/languages/english/english-exam-A2.md`
-- DELE Spanish A2 (roadmap 2.14): `agent-os/product/languages/spanish/spanish-exam-A2.md`
-
-Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules.
+Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules in `@exam-one/exam-content` and `apps/frontend/data/`.
 
 ## Static seed data
 
-Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/` until they are persisted. The typed exam-pack registry (language, level, board, prompt kinds, output contracts) is roadmap **2.11**.
+Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/`.
 
 ```
 libraries/exam-content/src/
@@ -65,7 +47,7 @@ apps/frontend/data/
 - Practice lists overlay user-generated rows on seeds by `externalId` and hide `examOnly` / `EXAM_ONLY` items
 - The bundled prompt templates that generate / review / grade exercises are **editable demo templates**
 
-## Seed + API hydrate (after 2.3)
+## Seed + API hydrate
 
 Composables that own list data hydrate from NestJS after login:
 
@@ -77,8 +59,8 @@ Why: app updates can ship new seed content via `db:seed` without wiping user-gen
 
 ## Rules
 
-- **Phase 1:** a feature does not "require" the network if turning off AI still lets the user read, write, listen, speak, run a mock exam, and track progress
-- **Phase 2+:** core flows may require the local API/DB; they must not require a cloud SaaS or external AI provider
+- Core practice may require the local API/DB after login; it must not require a cloud SaaS or external AI provider
+- Turning off AI must still let the user read, write, listen, speak, run a mock exam, and track progress
 - Do not import a provider SDK (e.g. `openai`) or call AI endpoints from core flows directly — route through a composable that degrades gracefully (see `server/ai-response-envelope.md`)
 - AI is **bring-your-own-key**; supported providers today are **OpenAI** and **OpenRouter**. Core UI must render fine when every AI endpoint returns `{ data: null, error: ... }`
 - New exam skills add typed seed modules in `@exam-one/exam-content` and a `db:seed` upsert; do not ship unseeded empty states

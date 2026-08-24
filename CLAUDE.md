@@ -28,11 +28,9 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. After Phase 2.4 the app is **login-gated** and practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The app is **login-gated**. After sign-in, practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
 
-**Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
-
-**Phase 2.1–2.6 are complete:** backend, auth, practice persistence, NestJS AI/TTS/STT, Compose packaging, self-host runbook. **Current is 2.7–2.14** (auth/settings UI fidelity, security, design comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs). Phase 3 follows. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
 
 ### Key directories
 
@@ -45,16 +43,16 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 | `libraries/exam-content/`     | Shared exam-content boundary                                                                                 |
 | `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                        |
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
-| `agent-os/`                   | Product context and canonical implementation standards                                                       |
+| `agent-os/standards/`         | Canonical implementation standards                                                                           |
 
-### Frontend data lifecycle (after 2.3)
+### Frontend data lifecycle
 
 1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
 2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null). User-generated rows overlay seeds by `externalId`
 
 Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
 
-Prompt templates remain typed modules under `apps/frontend/data/{skill}/` until a later phase.
+Prompt templates remain typed modules under `apps/frontend/data/{skill}/`.
 
 ## Standards (read `agent-os/standards/` before editing)
 
@@ -99,7 +97,3 @@ Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for bu
 - Prompt templates currently live as typed seed data under `apps/frontend/data/{skill}/a2/` and are user-editable.
 - Generated mock sets require successful LLM configuration/connection and Docker TTS preflight checks; bundled Set 1 must remain available without them.
 - Writing and Speaking mock grading starts automatically. Persist full successful reviews with scores, and do not block completed results when optional aggregate AI review fails.
-
-## Design Reference
-
-Run `npx --yes serve exam-one-design/project -l 5174` to preview the design locally.

@@ -4,36 +4,19 @@ Open-source, self-hostable language exam prep. The German / Goethe A2 experience
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
-Design preview: `npx --yes serve exam-one-design/project -l 5174`
+## What's included
 
-## Current status
-
-Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
-
-| Area                      | Status                                                                                             |
-| ------------------------- | -------------------------------------------------------------------------------------------------- |
-| Phase 1 frontend MVP      | **Complete and tested**                                                                            |
-| Reading (Lesen)           | Complete — practice, scoring, explanations, progress, and optional generation                      |
-| Writing (Schreiben)       | Complete — drafts, submissions, optional AI grading, and detailed review                           |
-| Listening (Hoeren)        | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS                    |
-| Speaking (Sprechen)       | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review             |
-| Mock exam                 | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
-| Phase 2.1 backend         | **Complete** — NestJS, Prisma, health, Compose/Postgres                                            |
-| Phase 2.2 auth / accounts | **Complete** — login-gated NestJS session, profile, settings; optional SMTP                        |
-| Phase 2.3 practice data   | **Complete** — skill / mock / progress / drafts on NestJS + PostgreSQL after login                 |
-| Phase 2.4 AI / speech     | **Complete** — LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                           |
-| Phase 2.5 Compose stack   | **Complete** — one `compose.yaml`, migrate/seed on boot, durable volumes, core-first `stack:up`    |
-| Phase 2.6 self-host docs  | **Complete** — README runbook, env reference, first user, backup/restore                           |
-| Phase 2.7 auth UI         | **Planned** — design-faithful login, register, forgot, sent, reset, verify, welcome               |
-| Phase 2.8 profile / settings | **Planned** — settings shell, profile, learning plan, appearance, data; billing stays demo     |
-| Phase 2.9 security        | **Planned** — agent-led audit of auth, validation, secrets, Compose; fix confirmed issues         |
-| Phase 2.10 design compare | **Planned** — screen-by-screen design vs app punch list                                           |
-| Phase 2.11 exam packs     | **Planned** — typed exam-pack contract, Goethe A2 on the registry, contributor flow               |
-| Phase 2.12 German A1      | **Planned** — Goethe A1 structure, prompts, and seed/data files                                   |
-| Phase 2.13 English A2     | **Planned** — Cambridge English A2 Key structure, prompts, and seed/data files                    |
-| Phase 2.14 Spanish A2     | **Planned** — DELE A2 structure, prompts, and seed/data files                                     |
-
-**Phase 2.1–2.6 are complete.** Current work is 2.7–2.14. Phase 3 (public open-source release and a dedicated docs site) follows 2.14. See the roadmap.
+| Area              | What's available                                                                                   |
+| ----------------- | -------------------------------------------------------------------------------------------------- |
+| Reading (Lesen)   | Practice, scoring, explanations, progress, and optional generation                                 |
+| Writing (Schreiben) | Drafts, submissions, optional AI grading, and detailed review                                    |
+| Listening (Hoeren) | Four exam parts, stable audio, replay rules, and optional Docker TTS                              |
+| Speaking (Sprechen) | Recording, STT/manual transcripts, optional AI grading, and detailed review                      |
+| Mock exam         | Bundled Set 1, generated local sets, automatic grading, module reviews, and AI overview            |
+| Accounts          | Login-gated NestJS session, profile, and settings; optional SMTP                                   |
+| Persistence       | Skill / mock / progress / drafts on NestJS + PostgreSQL after login                                |
+| AI / speech       | Optional LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                                 |
+| Self-host         | One `compose.yaml`, migrate/seed on boot, durable volumes, README runbook                          |
 
 ## Features
 
@@ -120,9 +103,7 @@ Theme, locale, listening playback volume/speed, and reading bookmarks stay in th
 
 ## Self-host with Docker Compose
 
-This is the supported way to run exam.one on a laptop. Copy [`.env.example`](./.env.example) to `.env`, start the stack, register the first user, and optionally add LLM keys.
-
-A dedicated documentation site waits for Phase 3. This README is the runbook until then.
+This is the supported way to run exam.one on a laptop. Copy [`.env.example`](./.env.example) to `.env`, start the stack, register the first user, and optionally add LLM keys. This README is the operator runbook.
 
 ### Requirements
 
@@ -418,7 +399,7 @@ exam-one/
 │   ├── database/          # Prisma schema, migrations, and seeds
 │   ├── exam-content/      # Shared exam content boundary
 │   └── nestjs-libraries/  # Shared backend infrastructure boundary
-├── agent-os/              # Product context and implementation standards
+├── agent-os/              # Implementation standards
 ├── compose.yaml           # App + PostgreSQL + Kokoro TTS + Parakeet STT
 ├── pnpm-workspace.yaml
 └── package.json           # Workspace orchestration scripts
@@ -486,22 +467,8 @@ Contributions are welcome.
 
 ## Documentation
 
-Product context and standards live under [`agent-os/`](./agent-os/):
-
-- [`agent-os/product/mission.md`](./agent-os/product/mission.md) — problem, audience, positioning
-- [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md) — phases and skill status
-- [`agent-os/product/tech-stack.md`](./agent-os/product/tech-stack.md) — architecture and stack
-- [`agent-os/product/languages/german/german-exam-A2.md`](./agent-os/product/languages/german/german-exam-A2.md) — Goethe A2 product reference
 - [`agent-os/standards/`](./agent-os/standards/) — implementation standards
 - [`scripts/README.md`](./scripts/README.md) — TTS/STT operator notes
-
-## Roadmap
-
-Phase 1 (frontend MVP) and Phase 2.1–2.6 (self-hostable Compose stack) are complete. Current work is 2.7–2.14. Canonical status: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
-
-- **Current — Phase 2.7–2.14:** auth/settings UI fidelity, security audit, design-vs-app comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs
-- **Next — Phase 3:** public GitHub release, community workflow, Docusaurus docs site
-- **Later — Phase 4:** hosted cloud product
 
 ## License
 

@@ -9,7 +9,7 @@ interface AiResponse<T> {
 }
 ```
 
-- **Phase 2.4 onward:** NestJS owns the AI/TTS/STT proxy under `/api/v1` (`/llm`, `/ai`, `/tts`, `/stt`). Keep this envelope so frontend composables stay stable.
+- NestJS owns the AI/TTS/STT proxy under `/api/v1` (`/llm`, `/ai`, `/tts`, `/stt`). Keep this envelope so frontend composables stay stable.
 - Shared type: `AiResponse<T>` in `@exam-one/contracts` (distinct from REST `ApiResponse`, whose `error` is `{ code, message }`).
 
 AI is **bring-your-own-key** with a provider-agnostic contract — the key, provider, model, and (optional) base URL come from runtime/env config supplied by the self-hoster. **Supported providers today: OpenAI and OpenRouter.** Never hard-code a single provider into the endpoint contract; isolate provider specifics behind a helper.

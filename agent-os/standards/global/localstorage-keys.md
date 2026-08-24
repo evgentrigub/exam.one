@@ -1,6 +1,6 @@
 # localStorage Keys
 
-Practice catalogs, progress, drafts, generation jobs, and mock exams are **API-backed** (roadmap 2.3). Do not add new authoritative exam-data keys here.
+Practice catalogs, progress, drafts, generation jobs, and mock exams are **API-backed**. Do not add new authoritative exam-data keys here.
 
 All remaining app-owned keys in `localStorage` use the `exam-one:` prefix with a colon separator and kebab-case path.
 
@@ -16,7 +16,7 @@ Related client prefs that are not localStorage keys:
 
 ## Historical practice keys (retired)
 
-These were authoritative until 2.3. Do not read or write them. The one-time import helper has been removed.
+These keys are retired. Do not read or write them. The one-time import helper has been removed.
 
 ```
 exam-one:reading:texts
@@ -47,7 +47,7 @@ writing-reviews
 model-answers
 ```
 
-**Not implemented / out of 2.3:** `exam-one:prompt-templates`, `exam-one:ai-settings`. Prompts stay as TS modules; LLM keys stay in env.
+**Not implemented:** `exam-one:prompt-templates`, `exam-one:ai-settings`. Prompts stay as TS modules; LLM keys stay in env.
 
 ## Rules
 

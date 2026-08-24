@@ -20,11 +20,11 @@ composables:
 
 global:
   localstorage-keys:
-    description: 'Practice data is API-backed after 2.3; remaining client keys are theme/locale/playback/bookmarks; no secrets; const at top of owning files'
+    description: 'Practice data is API-backed; remaining client keys are theme/locale/playback/bookmarks; no secrets; const at top of owning files'
   offline-first-core:
-    description: 'Core practice: Phase 1 complete; Phase 2.2 login-gated Nest accounts; 2.3 practice data on Postgres; 2.4 Nest AI/TTS/STT; 2.7–2.14 current; Goethe A2 + C1 Writing; BYOK AI; exam-content seed + API hydrate; exam-pack contract is 2.11; A1/EN/ES packs are 2.12–2.14'
+    description: 'Core practice is login-gated Nest accounts, Postgres-backed practice data, Nest AI/TTS/STT, Goethe A2 + C1 Writing, BYOK AI, exam-content seed + API hydrate'
   self-host-persistence:
-    description: 'Phase 2 Docker Compose localhost stack; 2.1–2.6 accounts, practice data, AI/TTS/STT, Compose packaging, and README runbook; 2.7–2.14 current (UI fidelity, security, design compare, exam packs); named volume; no required cloud'
+    description: 'Docker Compose localhost stack: accounts, practice data, AI/TTS/STT, named volumes, README runbook; no required cloud'
   ssr-storage-guards:
     description: 'Guard every localStorage/window/document access with import.meta.client; wrap reads in try/catch; never at module top level; applies wherever browser storage remains'
 
@@ -36,6 +36,6 @@ styling:
   daisyui-setup:
     description: Tailwind v4 + daisyUI v5 single-pipeline setup via main.css and @tailwindcss/vite; enable only exposed themes
   theme-catalog:
-    description: Single source of truth for themes in useTheme.ts (Theme union + LIGHT/DARK arrays); useState + localStorage UI pref (ok in Phase 2+), not Pinia
+    description: Single source of truth for themes in useTheme.ts (Theme union + LIGHT/DARK arrays); useState + localStorage UI pref, not Pinia
   theming-mechanism:
     description: Switch themes via data-theme on <html> through useTheme().setTheme; no manual toggles, no dark variants needed

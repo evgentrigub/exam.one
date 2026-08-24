@@ -5,23 +5,20 @@ This file is the working guide for coding agents in this repository. It should b
 ## Project Summary
 
 - Product: `exam.one`, an open-source, self-hostable language exam prep platform — a generic, multi-language framework
-- **Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
-- Current app shape: pnpm monorepo with a completed Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, a packaged Docker Compose stack, and a self-host README runbook (2.1–2.6 complete). Theme, locale, and playback prefs stay in the browser. Remaining Phase 2 work is 2.7–2.14.
-- Primary features: all four core skill practices; offline and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
+- German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode are shipped end-to-end
+- App shape: pnpm monorepo with a Nuxt 4 frontend, NestJS auth/accounts, practice persistence, AI/TTS/STT proxy on PostgreSQL, a packaged Docker Compose stack, and a self-host README runbook. Theme, locale, and playback prefs stay in the browser.
+- Primary features: all four core skill practices; bundled and generated mock exam sets; automatic scoring and AI grading; detailed result reviews; editable prompt templates; progress tracking
 - AI usage: optional, bring-your-own-key and provider-agnostic enhancement, routed through NestJS; degrades gracefully when unavailable
 
-## Current Focus
+## What Ships Today
 
-- **Done:** German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
-- **Done:** Mock exam offline Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
-- **Done:** Auth and account UI (2.2) — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
-- **Done:** Persistence cutover (2.3) — skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
-- **Done:** AI, TTS, and STT proxy (2.4) — OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
-- **Done:** Docker Compose packaging (2.5) — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
-- **Done:** Self-host runbook (2.6) — README, `.env.example`, first user, API keys, named-volume backup/restore
-- **Current:** Phase 2.7–2.14 — auth UI fidelity, account/settings UI, security audit, design-vs-app comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs
-- **Next:** Phase 3 — public open-source release, community workflow, and a dedicated docs site
-- Canonical status: `agent-os/product/roadmap.md` and `agent-os/product/index.md`
+- German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
+- Mock exam bundled Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
+- Auth and account UI — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
+- Skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
+- OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
+- Docker Compose packaging — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
+- Self-host runbook — README, `.env.example`, first user, API keys, named-volume backup/restore
 
 ## Stack
 
@@ -66,7 +63,7 @@ Use `pnpm`.
 - `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
 - `compose.yaml` is the only Compose file; it defines frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT
 - `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the core app after migrate/seed, then speech sidecars, after ensuring host-persisted speech models are present
-- `agent-os/` contains project-specific product context and implementation standards
+- `agent-os/standards/` contains canonical implementation standards
 
 ## Agent Priorities
 
@@ -82,7 +79,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ### Global
 
-- Phase-aware core: the shell is login-gated (2.2). Practice data is NestJS/PostgreSQL (2.3). AI/TTS/STT is NestJS (2.4). Theme and playback prefs stay client-side
+- The shell is login-gated. Practice data is NestJS/PostgreSQL. AI/TTS/STT is NestJS. Theme and playback prefs stay client-side
 - SSR storage guards: guard `localStorage`, `window`, and `document` access with `import.meta.client` and `try/catch`
 - Local storage keys: prefix with `exam-one:`
 
@@ -113,8 +110,8 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ## Data And Persistence Rules
 
-- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates can stay under `apps/frontend/data/` until they are persisted
-- Exam-specific implementation details belong in `agent-os/product/languages/` reference docs; read the matching exam reference before changing prompt templates, seed exercises, scoring, grading, or mock exam behavior
+- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates can stay under `apps/frontend/data/`
+- Exam-specific seeds, prompts, scoring, grading, and mock exam behavior live in `@exam-one/exam-content` and `apps/frontend/data/`. Keep shared models and UI flows exam-agnostic
 - Skill catalogs, attempts, drafts, reviews, generation jobs, and mock exams are owned by NestJS/PostgreSQL after login. Do not add new authoritative practice keys to localStorage
 - Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
 
@@ -140,11 +137,6 @@ If you cannot run verification, state that clearly in your handoff.
 ## Useful Context Files
 
 - `README.md`
-- `agent-os/product/index.md`
-- `agent-os/product/mission.md`
-- `agent-os/product/tech-stack.md`
-- `agent-os/product/roadmap.md`
-- `agent-os/product/languages/german/german-exam-A2.md`
 - `agent-os/standards/index.yml`
 
 If a task touches a standardized area, read the matching file under `agent-os/standards/` before editing.
