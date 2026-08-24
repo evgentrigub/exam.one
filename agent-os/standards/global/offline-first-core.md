@@ -2,7 +2,7 @@
 
 Phase-aware rules for exam practice flows, seed content, and AI. Filename kept as `offline-first-core.md` for existing links; treat this as the **core practice** standard.
 
-The product is a **generic, multi-language / multi-level exam framework** (Phase 1 shipping focus: German / Goethe A2 full skills + Goethe C1 Writing only; designed to extend to any language exam and any difficulty level). Keep core logic language-agnostic — never hard-code one language or provider into a core flow.
+The product is a **generic, multi-language / multi-level exam framework** (Phase 1 shipping focus: German / Goethe A2 full skills + Goethe C1 Writing only). Keep core logic language-agnostic — never hard-code one language or provider into a core flow. The typed exam-pack contract is roadmap **2.11**; practice-ready packs for Goethe A1, Cambridge English A2, and DELE Spanish A2 are **2.12–2.14**. Until 2.11, live content is Goethe-shaped.
 
 AI is an enhancement layer (exercise generation, review, grading), never a hard dependency of the core practice UI.
 
@@ -16,6 +16,8 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 ### Phase 2 (current) — local self-hosted stack
 
+**2.1–2.6 done.** **2.7–2.14 current** (auth/settings UI fidelity, security, design comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs).
+
 **2.2 done:** the app is login-gated. Accounts, session, profile, and exam settings require the **local NestJS + PostgreSQL** stack.
 
 **2.3 done:** skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
@@ -24,18 +26,25 @@ Every core practice flow works without a cloud AI provider once the user is in t
 
 **2.5 done:** one root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
 
+**2.6 done:** root README + `.env.example` document first-user setup, optional LLM keys, speech sidecars, and named-volume backup/restore.
+
+**2.7–2.14 planned:** design-faithful auth and settings UI; security audit and fixes; design-vs-app punch list; exam-pack interfaces and Goethe A2 on the registry; then practice-ready packs for Goethe A1, Cambridge English A2 Key, and DELE A2.
+
 ## Exam references
 
 Before changing exam-specific seed data, prompt templates, scoring, grading, or mock exam behavior, read the matching product reference:
 
-- German / Goethe A2: `agent-os/product/german-exam-A2.md`
-- German / Goethe C1 (Writing only in Phase 1): `agent-os/product/german-exam-C1.md`
+- German / Goethe A2: `agent-os/product/languages/german/german-exam-A2.md`
+- German / Goethe C1 (Writing only in Phase 1): `agent-os/product/languages/german/german-exam-C1.md`
+- German / Goethe A1 (roadmap 2.12): `agent-os/product/languages/german/german-exam-A1.md`
+- Cambridge English A2 Key (roadmap 2.13): `agent-os/product/languages/english/english-exam-A2.md`
+- DELE Spanish A2 (roadmap 2.14): `agent-os/product/languages/spanish/spanish-exam-A2.md`
 
 Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules.
 
 ## Static seed data
 
-Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/` until they are persisted.
+Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/` until they are persisted. The typed exam-pack registry (language, level, board, prompt kinds, output contracts) is roadmap **2.11**.
 
 ```
 libraries/exam-content/src/
