@@ -17,9 +17,9 @@ flowchart LR
 
 The first usable, shippable version is **frontend only** for product flows — practice data does not require NestJS or PostgreSQL yet. The app is built in Nuxt/Vue, with thin Nuxt server routes proxying the user's LLM provider (bring-your-own-key). All user data (drafts, attempts, results) lives in localStorage. Core practice flows are **offline-capable** and do not require the network; AI is optional.
 
-> **Note:** NestJS / Prisma / Compose are in the repo. **Phase 2.1–2.6 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging + self-host runbook). **Current is 2.7–2.11** (auth/settings UI fidelity, security, design comparison, exam-pack framework). Phase 3 follows.
+> **Note:** NestJS / Prisma / Compose are in the repo. **Phase 2.1–2.6 are complete** (API + login-gated accounts + practice persistence + NestJS AI/TTS/STT proxy + Compose packaging + self-host runbook). **Current is 2.7–2.14** (auth/settings UI fidelity, security, design comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs). Phase 3 follows.
 
-The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. Goethe A2 remains the first complete exam product; the generic exam-pack contract (language, level, board, prompts, seed shapes) is the 2.11 gate before public open-source release.
+The German / Goethe A2 product is complete and tested across Reading, Writing, Listening, Speaking, and mock exam mode. Goethe A2 remains the first complete exam product. Exam product references live under `agent-os/product/languages/`. The generic exam-pack contract is 2.11; practice-ready packs for Goethe German A1, Cambridge English A2, and DELE Spanish A2 are 2.12–2.14.
 
 ### Skill status (Goethe A2)
 
@@ -63,7 +63,7 @@ i18n, settings, and progress UX solid enough that Phase 2 can freeze the product
 
 ## Phase 2: Self-Hostable Full-Stack App (current)
 
-**2.1–2.6 are complete.** Remaining work is 2.7–2.11 before Phase 3.
+**2.1–2.6 are complete.** Remaining work is 2.7–2.14 before Phase 3.
 
 Evolve the finished frontend MVP into a full-stack application that users run on their own laptop via **Docker Compose** (Nuxt frontend, NestJS backend, PostgreSQL). A self-hosted instance supports **multi-user registration** (email + password; no seeded operator). AI features still use the user's own LLM API keys (OpenAI / OpenRouter).
 
@@ -143,7 +143,7 @@ Screen-by-screen compare `exam-one-design/project` (dashboard, shell, exercises,
 
 #### 2.11 Generic exam-pack framework
 
-Last Phase 2 gate before public open-source release. Define an explicit exam-pack contract so a forker or future cloud catalog can add any language exam without editing Goethe-hardcoded modules.
+Define an explicit exam-pack contract so a forker or future catalog can add any language exam without editing Goethe-hardcoded modules. After 2.11, additional exams are registered packs (2.12–2.14), not forks of Goethe A2.
 
 - Typed pack identity: language, CEFR level, exam board / format id.
 - Structure: modules, parts, timings, scoring.
@@ -151,10 +151,34 @@ Last Phase 2 gate before public open-source release. Define an explicit exam-pac
 - Seed/exercise payload shapes registered against those contracts.
 - LLM/TTS/STT roles a pack may declare (still BYOK / instance env; packs do not embed API keys).
 - Move the live Goethe A2 product (and existing Goethe C1 writing prompts) onto a pack registry resolved by pack id. Replace the single `apps/frontend/data/examStructure/goetheA2.ts` plus `Difficulty = 'A2' | 'C1'` assumption.
-- Contributor flow: required files, prompt kinds, validation, seed upsert, and what the app will and will not do without a pack. First home: `agent-os/product/` plus a README pointer. Phase 3.3 publishes that guide in Docusaurus.
-- Demo A1 prompt + structure packs for **English, German, and Spanish** as proof the interface works — not three full A1 products (no complete seed catalogs, listening WAV libraries, or mock-exam sets at A1). Goethe A2 remains the only complete and tested exam product at the end of 2.11.
+- Contributor flow: required files, prompt kinds, validation, seed upsert, and what the app will and will not do without a pack. First home: `agent-os/product/` including `languages/`, plus a README pointer. Phase 3.3 publishes that guide in Docusaurus.
+- Goethe A2 remains the only complete and tested four-skill + mock product at the end of 2.11. Proof that other languages work is 2.12–2.14, not A1 demo stubs.
 
-**Phase 2 exit:** 2.1–2.6 still met; 2.7–2.8 UI matches the designed auth/account/settings surface; 2.9 findings fixed or documented; 2.10 punch list exists; 2.11 exam-pack interfaces, Goethe A2 migrated, contributor flow written, and A1 demo packs for en/de/es present. Then Phase 3.
+#### 2.12 Goethe German A1
+
+Practice-ready pack on the 2.11 registry for **Goethe-Zertifikat A1**.
+
+- Product reference: `agent-os/product/languages/german/german-exam-A1.md` (written in this stage).
+- Ready-to-use exam structure, prompts (generator / model answer / review), and seed/data files so A1 German is selectable and practiceable.
+- Not Goethe A2 parity: no required full mock-exam set or complete listening WAV library.
+
+#### 2.13 Cambridge English A2
+
+Practice-ready pack on the 2.11 registry for **Cambridge English A2 Key**.
+
+- Product reference: `agent-os/product/languages/english/english-exam-A2.md`.
+- Ready-to-use exam structure, prompts (generator / model answer / review), and seed/data files so A2 English is selectable and practiceable.
+- Same scope guard as 2.12: not a full Goethe-A2-equivalent product (no required complete mock set or listening WAV library).
+
+#### 2.14 DELE Spanish A2
+
+Practice-ready pack on the 2.11 registry for **DELE A2**.
+
+- Product reference: `agent-os/product/languages/spanish/spanish-exam-A2.md`.
+- Ready-to-use exam structure, prompts (generator / model answer / review), and seed/data files so A2 Spanish is selectable and practiceable.
+- Same scope guard as 2.12–2.13.
+
+**Phase 2 exit:** 2.1–2.6 still met; 2.7–2.8 UI matches the designed auth/account/settings surface; 2.9 findings fixed or documented; 2.10 punch list exists; 2.11 exam-pack interfaces, Goethe A2 migrated, and contributor flow written; 2.12–2.14 Goethe A1, Cambridge English A2, and DELE Spanish A2 packs registered with prompts and data files. Goethe A2 remains the only complete-and-tested four-skill + mock product. Then Phase 3.
 
 ---
 
@@ -200,7 +224,7 @@ Managed accounts, cloud sync across devices, and paid plans.
 
 #### 4.2 Exam expansion
 
-More packs **on the 2.11 exam-pack interfaces**: further Goethe levels beyond A2, plus additional language certifications and difficulty levels. This stage does not define the framework.
+More packs **on the 2.11 exam-pack interfaces** beyond the Phase 2 set (Goethe A2 complete; Goethe A1, Cambridge English A2, and DELE Spanish A2 as practice-ready packs): further levels and boards. This stage does not define the framework.
 
 #### 4.3 Collaboration features
 

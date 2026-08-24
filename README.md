@@ -28,9 +28,12 @@ Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md
 | Phase 2.8 profile / settings | **Planned** — settings shell, profile, learning plan, appearance, data; billing stays demo     |
 | Phase 2.9 security        | **Planned** — agent-led audit of auth, validation, secrets, Compose; fix confirmed issues         |
 | Phase 2.10 design compare | **Planned** — screen-by-screen design vs app punch list                                           |
-| Phase 2.11 exam packs     | **Planned** — typed exam-pack contract, Goethe A2 on the registry, A1 demo packs (en/de/es)       |
+| Phase 2.11 exam packs     | **Planned** — typed exam-pack contract, Goethe A2 on the registry, contributor flow               |
+| Phase 2.12 German A1      | **Planned** — Goethe A1 structure, prompts, and seed/data files                                   |
+| Phase 2.13 English A2     | **Planned** — Cambridge English A2 Key structure, prompts, and seed/data files                    |
+| Phase 2.14 Spanish A2     | **Planned** — DELE A2 structure, prompts, and seed/data files                                     |
 
-**Phase 2.1–2.6 are complete.** Current work is 2.7–2.11. Phase 3 (public open-source release and a dedicated docs site) follows 2.11. See the roadmap.
+**Phase 2.1–2.6 are complete.** Current work is 2.7–2.14. Phase 3 (public open-source release and a dedicated docs site) follows 2.14. See the roadmap.
 
 ## Features
 
@@ -488,15 +491,15 @@ Product context and standards live under [`agent-os/`](./agent-os/):
 - [`agent-os/product/mission.md`](./agent-os/product/mission.md) — problem, audience, positioning
 - [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md) — phases and skill status
 - [`agent-os/product/tech-stack.md`](./agent-os/product/tech-stack.md) — architecture and stack
-- [`agent-os/product/german-exam-A2.md`](./agent-os/product/german-exam-A2.md) — Goethe A2 product reference
+- [`agent-os/product/languages/german/german-exam-A2.md`](./agent-os/product/languages/german/german-exam-A2.md) — Goethe A2 product reference
 - [`agent-os/standards/`](./agent-os/standards/) — implementation standards
 - [`scripts/README.md`](./scripts/README.md) — TTS/STT operator notes
 
 ## Roadmap
 
-Phase 1 (frontend MVP) and Phase 2.1–2.6 (self-hostable Compose stack) are complete. Current work is 2.7–2.11. Canonical status: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
+Phase 1 (frontend MVP) and Phase 2.1–2.6 (self-hostable Compose stack) are complete. Current work is 2.7–2.14. Canonical status: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
 
-- **Current — Phase 2.7–2.11:** auth/settings UI fidelity, security audit, design-vs-app comparison, generic exam-pack framework
+- **Current — Phase 2.7–2.14:** auth/settings UI fidelity, security audit, design-vs-app comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs
 - **Next — Phase 3:** public GitHub release, community workflow, Docusaurus docs site
 - **Later — Phase 4:** hosted cloud product
 

@@ -1,6 +1,6 @@
 # Tech Stack
 
-> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2.1–2.6 are complete:** accounts, practice data, the AI/TTS/STT proxy, Compose packaging, and the self-host runbook are NestJS-backed. **Current is 2.7–2.11** (auth/settings UI fidelity, security, design comparison, exam-pack framework). Cloud hosting remains Phase 4.
+> **Phase 1 is complete** as a Nuxt/Vue product with thin Nuxt server routes proxying user-supplied LLM providers. **Phase 2.1–2.6 are complete:** accounts, practice data, the AI/TTS/STT proxy, Compose packaging, and the self-host runbook are NestJS-backed. **Current is 2.7–2.14** (auth/settings UI fidelity, security, design comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs). Cloud hosting remains Phase 4.
 
 ## Frontend
 
@@ -31,7 +31,7 @@ Vue/Nuxt reuses Scalo-derived auth, profile, and account UI (login, register, pa
 - **Bring-your-own-key, provider-agnostic architecture** — users supply their own LLM API keys
 - **Supported providers (current):** **OpenAI** and **OpenRouter**
 - Used for exercise generation, exercise review, and grading student answers
-- Prompt templates are bundled as editable demo templates under `apps/frontend/data/{skill}/` today; the typed exam-pack contract and A1 demo packs for English, German, and Spanish are roadmap 2.11
+- Prompt templates are bundled as editable demo templates under `apps/frontend/data/{skill}/` today; the typed exam-pack contract is roadmap 2.11; practice-ready packs for Goethe A1, Cambridge English A2, and DELE Spanish A2 are 2.12–2.14
 - AI is an enhancement layer; core practice flows degrade gracefully when AI is unavailable
 
 ## Listening audio (complete and tested)
@@ -75,7 +75,7 @@ The core Speaking practice and mock-exam experience is complete and tested for t
   on the core app after Nest migrate/seed, then starts speech sidecars.
 - **Phase 2.1–2.6 (complete):** **Docker Compose** on the user's laptop — orchestrates frontend, NestJS backend, and PostgreSQL with a named data volume
 - **Phase 2 runbook:** README + `.env.example` for first-user setup, LLM keys, and named-volume backup/restore (full Docusaurus docs site in Phase 3; exam-pack contributor guide is 2.11, published in 3.3)
-- **Phase 2.7–2.11 (current):** auth/settings UI fidelity, security pass, design comparison, exam-pack framework
+- **Phase 2.7–2.14 (current):** auth/settings UI fidelity, security pass, design comparison, exam-pack framework, then Goethe A1 / Cambridge English A2 / DELE Spanish A2 packs
 - **Phase 4:** separately hosted cloud copy under paid plans
 
 ## Tooling
