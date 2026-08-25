@@ -1,3 +1,15 @@
+auth:
+  apifetch-refresh:
+    description: credentials include; 401 refresh once; skip auth cookie-mutating paths
+  cookie-session:
+    description: HttpOnly exam_one_access JWT + hashed exam_one_refresh; no localStorage tokens
+  jwt-guard-public:
+    description: Global JwtAuthGuard; @Public only for health and unauthenticated auth actions
+  nuxt-auth-gate:
+    description: Client-only auth.global middleware; /auth SSR, rest ssr:false; safe redirect
+  optional-email-verification:
+    description: SMTP optional; unverified sessions still work; UI routes to /auth/verify
+
 components:
   card-layout:
     description: daisyUI card structure, colored header convention, and stretch/scroll rules for feature cards
@@ -18,6 +30,30 @@ composables:
   naming-and-shape:
     description: use* prefix, feature-scoped; return object with // State and // Methods sections; readonly for singleton state, writable for per-caller
 
+database:
+  json-payloads:
+    description: Exam-specific content in Json columns; add Prisma columns only for filter/index fields
+  migrations:
+    description: Local migrate dev; Docker boot migrate deploy then seed; never edit applied SQL
+  package-ownership:
+    description: '`@exam-one/database` owns schema, migrations, seed; Nest uses PrismaService'
+  partial-unique-indexes:
+    description: SQL-only unique indexes for seed Exercise and MockExamSet; do not drop
+  seed-upsert-overlay:
+    description: Seed upsert `userId` null; user overlay by externalId; SEED_LOCKED / SEED_ID
+
+exam-content:
+  exam-agnostic-core:
+    description: Goethe belongs in exam-content and frontend/data; Nest/Prisma/generic UI stay generic
+  exam-only-vs-practice:
+    description: default vs mockExam vs allDefault arrays; practice lists hide examOnly
+  exercise-ids:
+    description: Payload id is externalId; `{skill}-{level}-teil{n}-{seq}` and mock-a2-set1-*
+  listening-audio-paths:
+    description: Seed WAV helpers under /audio/listening/a2; generated files stay out of that tree
+  seeds-vs-prompts:
+    description: Seeds in exam-content; prompts currently in frontend/data; prompts should not move into Nest
+
 global:
   localstorage-keys:
     description: 'Practice data is API-backed; remaining client keys are theme/locale/playback/bookmarks; no secrets; const at top of owning files'
@@ -31,6 +67,18 @@ global:
 server:
   ai-response-envelope:
     description: 'BYOK AI endpoints (OpenAI/OpenRouter) return `{ data: T | null, error: string | null }` with HTTP 200 for business failures; NestJS `/api/v1` owns the proxy'
+  contracts-dto-mappers:
+    description: Map Prisma rows to `@exam-one/contracts` DTOs in common/mappers; ISO dates
+  exception-codes:
+    description: SNAKE_CASE `{ code, message }` on Nest HTTP exceptions; tests assert on code
+  feature-module-layout:
+    description: One folder per resource (controller/service/dto/module); Prisma via nestjs-libraries
+  request-validation:
+    description: class-validator DTOs; ValidationPipe whitelist + forbidNonWhitelisted + transform
+  rest-response-envelope:
+    description: REST `{ data }` envelope; throw HTTP exceptions on failure; distinct from AI envelope
+  uri-versioning:
+    description: Global prefix api + URI v1 → `/api/v1`; Swagger at `/api/docs`
 
 styling:
   daisyui-setup:
@@ -39,3 +87,14 @@ styling:
     description: Single source of truth for themes in useTheme.ts (Theme union + LIGHT/DARK arrays); useState + localStorage UI pref, not Pinia
   theming-mechanism:
     description: Switch themes via data-theme on <html> through useTheme().setTheme; no manual toggles, no dark variants needed
+
+testing:
+  ai-envelope-tests:
+    description: 'AI business failures assert `{ data: null, error }`; mock LlmService; no network'
+  frontend-no-unit-suite:
+    description: No frontend unit/e2e yet; don't add a runner unless asked; browser-check UI
+  nest-unit-mocks:
+    description: Colocate specs; mock PrismaService; fixtures + assert exception codes
+  unit-vs-e2e:
+    description: pnpm test is unit without Postgres; e2e is supertest + real DB for auth/health
+
