@@ -21,12 +21,11 @@
               <slot />
             </div>
           </div>
+          <div v-if="$slots['footer']" class="pt-6 text-center text-sm text-base-content/60">
+            <slot name="footer" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-useHead({ title: 'Exam.one' })
-</script>

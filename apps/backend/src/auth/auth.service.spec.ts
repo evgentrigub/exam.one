@@ -14,7 +14,7 @@ import { AuthTokenType } from '@exam-one/database'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { AuthService } from './auth.service'
 import { EmailService } from '../email/email.service'
-import { ACCESS_COOKIE, REFRESH_COOKIE } from './auth.constants'
+import { ACCESS_COOKIE, ACCESS_TTL_SECONDS, REFRESH_COOKIE } from './auth.constants'
 import { makeCookieResponse, makeUser } from '../testing/fixtures'
 
 jest.mock('bcrypt', () => ({
@@ -196,7 +196,44 @@ describe('AuthService', () => {
     expect(res.cookie).toHaveBeenCalledWith(
       REFRESH_COOKIE,
       expect.any(String),
-      expect.objectContaining({ httpOnly: true })
+      expect.objectContaining({ httpOnly: true, maxAge: expect.any(Number) })
+    )
+  })
+
+  it('omits cookie maxAge when remember is false', async () => {
+    const user = makeUser({ email: 'a@b.com' })
+    prisma.user.findUnique.mockResolvedValue(user)
+
+    await service.login(
+      { email: 'a@b.com', password: 'password1', remember: false },
+      res as Response
+    )
+
+    expect(res.cookie).toHaveBeenCalledWith(
+      ACCESS_COOKIE,
+      'access-token',
+      expect.not.objectContaining({ maxAge: expect.anything() })
+    )
+    expect(res.cookie).toHaveBeenCalledWith(
+      REFRESH_COOKIE,
+      expect.any(String),
+      expect.not.objectContaining({ maxAge: expect.anything() })
+    )
+  })
+
+  it('keeps persistent cookies when remember is true', async () => {
+    const user = makeUser({ email: 'a@b.com' })
+    prisma.user.findUnique.mockResolvedValue(user)
+
+    await service.login(
+      { email: 'a@b.com', password: 'password1', remember: true },
+      res as Response
+    )
+
+    expect(res.cookie).toHaveBeenCalledWith(
+      ACCESS_COOKIE,
+      'access-token',
+      expect.objectContaining({ maxAge: ACCESS_TTL_SECONDS * 1000 })
     )
   })
 

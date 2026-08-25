@@ -16,8 +16,13 @@ async function applyAuthGate(to: {
 
   if (isAuthRoute) {
     const session = await ensureSession()
-    if (session && to.path !== '/auth/verify' && to.path !== '/auth/reset') {
+    const stayOnAuth =
+      to.path === '/auth/verify' || to.path === '/auth/reset' || to.path === '/auth/welcome'
+    if (session && !stayOnAuth) {
       return navigateTo(safeAppPath(to.query['redirect']))
+    }
+    if (!session && to.path === '/auth/welcome') {
+      return navigateTo('/auth/login')
     }
     return
   }

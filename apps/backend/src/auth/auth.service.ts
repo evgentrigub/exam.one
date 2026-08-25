@@ -108,7 +108,7 @@ export class AuthService {
       })
     }
 
-    await this.setSessionCookies(user, res)
+    await this.setSessionCookies(user, res, dto.remember ?? true)
     return {
       user: toUserDto(user),
       requiresEmailVerification: this.email.isConfigured() && !user.emailVerified,
@@ -380,7 +380,7 @@ export class AuthService {
     })
   }
 
-  private async setSessionCookies(user: User, res: Response): Promise<void> {
+  private async setSessionCookies(user: User, res: Response, remember = true): Promise<void> {
     const secret = this.config.getOrThrow<AppConfig['JWT_SECRET']>('app.JWT_SECRET')
     const accessToken = await this.jwt.signAsync(
       { sub: user.id },
@@ -405,8 +405,11 @@ export class AuthService {
       path: '/',
     }
 
-    res.cookie(ACCESS_COOKIE, accessToken, { ...common, maxAge: ACCESS_TTL_SECONDS * 1000 })
-    res.cookie(REFRESH_COOKIE, refreshRaw, { ...common, maxAge: REFRESH_TTL_SECONDS * 1000 })
+    const accessOpts = remember ? { ...common, maxAge: ACCESS_TTL_SECONDS * 1000 } : common
+    const refreshOpts = remember ? { ...common, maxAge: REFRESH_TTL_SECONDS * 1000 } : common
+
+    res.cookie(ACCESS_COOKIE, accessToken, accessOpts)
+    res.cookie(REFRESH_COOKIE, refreshRaw, refreshOpts)
   }
 
   private clearSessionCookies(res: Response): void {

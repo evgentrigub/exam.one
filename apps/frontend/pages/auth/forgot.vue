@@ -1,18 +1,33 @@
 <template>
-  <AuthPageHeader
-    :title="$t('auth.forgotTitle')"
-    :subtitle="$t('auth.forgotSubtitle')"
-    back-to="/auth/login"
-    :back-label="$t('auth.backToSignIn')"
-  >
-    <div v-if="done" class="flex flex-col gap-4">
-      <div class="alert text-sm" :class="emailConfigured ? 'alert-success' : 'alert-info'">
-        <Info :size="16" />
-        <span class="text-pretty">{{ doneMessage }}</span>
+  <AuthPageHeader :title="headerTitle" back-to="/auth/login" :back-label="$t('auth.backToSignIn')">
+    <template #subtitle>
+      <i18n-t v-if="done" :keypath="sentSubtitleKey" tag="span" scope="global">
+        <template #email>
+          <span class="font-medium text-base-content">{{ email }}</span>
+        </template>
+      </i18n-t>
+      <template v-else>{{ $t('auth.forgotSubtitle') }}</template>
+    </template>
+
+    <div v-if="done" class="flex flex-col gap-5">
+      <div class="rounded-box bg-base-200 border border-base-300 p-5 flex items-start gap-3.5">
+        <div
+          class="grid size-10 place-items-center rounded-field bg-primary/10 text-primary shrink-0"
+        >
+          <MailCheck :size="19" />
+        </div>
+        <div class="text-sm text-base-content/70 text-pretty">{{ sentHint }}</div>
       </div>
-      <NuxtLink to="/auth/login" class="btn btn-primary w-full rounded-field">
-        {{ $t('auth.backToSignIn') }}
-      </NuxtLink>
+      <p class="text-center text-sm text-base-content/60">
+        {{ $t('auth.wrongAddress') }}
+        <button
+          type="button"
+          class="font-semibold text-primary hover:underline"
+          @click="done = false"
+        >
+          {{ $t('auth.tryAnother') }}
+        </button>
+      </p>
     </div>
 
     <form v-else class="flex flex-col gap-4" novalidate @submit.prevent="submit">
@@ -28,16 +43,13 @@
         @blur="error = validateEmail(email)"
       />
 
-      <button type="submit" class="btn btn-primary w-full rounded-field gap-2" :disabled="loading">
-        <span v-if="loading" class="loading loading-spinner loading-sm" />
-        <template v-else>{{ $t('auth.sendReset') }}</template>
-      </button>
+      <AuthSubmit :loading="loading">{{ $t('auth.sendReset') }}</AuthSubmit>
     </form>
   </AuthPageHeader>
 </template>
 
 <script setup lang="ts">
-import { Info, Mail } from 'lucide-vue-next'
+import { Mail, MailCheck } from 'lucide-vue-next'
 import { validateEmail } from '~/utils/authValidation'
 
 definePageMeta({ layout: 'auth', auth: false })
@@ -53,8 +65,20 @@ const done = ref(false)
 
 const emailConfigured = computed(() => authConfig.value?.emailConfigured === true)
 
-const doneMessage = computed(() =>
-  emailConfigured.value ? t('auth.forgotSentSmtp') : t('auth.forgotSentNoSmtp')
+const headerTitle = computed(() =>
+  done.value
+    ? emailConfigured.value
+      ? t('auth.sentTitle')
+      : t('auth.sentTitleNoSmtp')
+    : t('auth.forgotTitle')
+)
+
+const sentSubtitleKey = computed(() =>
+  emailConfigured.value ? 'auth.sentSubtitle' : 'auth.sentSubtitleNoSmtp'
+)
+
+const sentHint = computed(() =>
+  emailConfigured.value ? t('auth.sentHint') : t('auth.sentHintNoSmtp')
 )
 
 onMounted(() => {

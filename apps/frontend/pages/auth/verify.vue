@@ -1,5 +1,13 @@
 <template>
-  <AuthPageHeader :title="$t('auth.verifyTitle')" :subtitle="subtitle">
+  <AuthPageHeader :title="$t('auth.verifyTitle')">
+    <template #subtitle>
+      <i18n-t keypath="auth.verifySubtitle" tag="span" scope="global">
+        <template #email>
+          <span class="font-medium text-base-content">{{ email || '…' }}</span>
+        </template>
+      </i18n-t>
+    </template>
+
     <form class="flex flex-col gap-5" novalidate @submit.prevent="submit">
       <div>
         <div class="flex gap-2 justify-between">
@@ -23,25 +31,20 @@
         </div>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary w-full rounded-field gap-2"
-        :disabled="loading || code.length !== 6"
-      >
-        <span v-if="loading" class="loading loading-spinner loading-sm" />
-        <template v-else>{{ $t('auth.confirmEmail') }}</template>
-      </button>
+      <AuthSubmit :loading="loading" :disabled="code.length !== 6" :icon="Check">
+        {{ $t('auth.confirmEmail') }}
+      </AuthSubmit>
 
       <div class="text-center text-sm text-base-content/60">
-        <button
-          v-if="resent <= 0"
-          type="button"
-          class="font-semibold text-primary hover:underline"
-          @click="resend"
-        >
-          {{ $t('auth.resendCode') }}
-        </button>
-        <span v-else>{{ $t('auth.resendWait', { seconds: resent }) }}</span>
+        <template v-if="resent > 0">
+          {{ $t('auth.resendWait', { seconds: resent }) }}
+        </template>
+        <template v-else>
+          {{ $t('auth.didntGetIt') }}
+          <button type="button" class="font-semibold text-primary hover:underline" @click="resend">
+            {{ $t('auth.resendCode') }}
+          </button>
+        </template>
       </div>
 
       <button
@@ -56,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle } from 'lucide-vue-next'
+import { AlertCircle, Check } from 'lucide-vue-next'
 import { ApiClientError } from '~/composables/useApi'
 
 definePageMeta({ layout: 'auth', auth: false })
@@ -67,7 +70,6 @@ const route = useRoute()
 const { verifyEmail, resendVerification } = useAuth()
 
 const email = computed(() => String(route.query['email'] || ''))
-const subtitle = computed(() => t('auth.verifySubtitle', { email: email.value || '…' }))
 
 const digits = ref(['', '', '', '', '', ''])
 const refs = ref<(HTMLInputElement | null)[]>([])
@@ -137,7 +139,7 @@ async function submit() {
   error.value = ''
   try {
     await verifyEmail({ email: email.value, code: code.value })
-    await navigateTo('/dashboard')
+    await navigateTo('/auth/welcome')
   } catch (err) {
     error.value = err instanceof ApiClientError ? err.message : t('auth.invalidCode')
   } finally {

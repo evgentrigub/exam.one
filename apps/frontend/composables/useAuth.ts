@@ -54,7 +54,11 @@ export function useAuth() {
     return data
   }
 
-  async function login(input: { email: string; password: string }): Promise<AuthSessionData> {
+  async function login(input: {
+    email: string
+    password: string
+    remember?: boolean
+  }): Promise<AuthSessionData> {
     const data = await apiFetch<AuthSessionData>('/auth/login', {
       method: 'POST',
       body: input,
