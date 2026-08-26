@@ -12,6 +12,8 @@ export interface AccountProfile {
   email: string
   examTargetDate: string
   plan: PlanId
+  createdAt: string
+  emailVerified: boolean
 }
 
 function toLocalPlan(plan: ContractPlanId | string): PlanId {
@@ -25,6 +27,8 @@ function fromUser(user: UserDto | null): AccountProfile {
       email: '',
       examTargetDate: '',
       plan: 'free',
+      createdAt: '',
+      emailVerified: false,
     }
   }
   return {
@@ -32,13 +36,23 @@ function fromUser(user: UserDto | null): AccountProfile {
     email: user.email,
     examTargetDate: user.examTargetDate ?? '',
     plan: toLocalPlan(user.plan),
+    createdAt: user.createdAt,
+    emailVerified: user.emailVerified,
   }
 }
 
 export const useAccountProfile = () => {
   const { user, updateProfile } = useAuth()
+  const { locale } = useI18n()
 
   const profile = computed(() => fromUser(user.value))
+
+  const demoPlan = useState<PlanId | null>('account-demo-plan', () => null)
+  const effectivePlan = computed<PlanId>(() => demoPlan.value ?? profile.value.plan)
+
+  function setDemoPlan(plan: PlanId) {
+    demoPlan.value = plan
+  }
 
   const daysUntilExam = computed<number>(() => {
     if (!profile.value.examTargetDate) return 0
@@ -66,12 +80,35 @@ export const useAccountProfile = () => {
     })
   }
 
+  function formatDate(
+    iso: string,
+    options: Intl.DateTimeFormatOptions = {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }
+  ): string {
+    if (!iso) return '—'
+    const date = new Date(iso)
+    if (Number.isNaN(date.getTime())) return '—'
+    const tag = locale.value === 'de' ? 'de-DE' : 'en-GB'
+    return date.toLocaleDateString(tag, options)
+  }
+
+  const memberSince = computed(() =>
+    formatDate(profile.value.createdAt, { month: 'short', year: 'numeric' })
+  )
+
   return {
     // State
     profile,
     daysUntilExam,
     initials,
+    effectivePlan,
+    memberSince,
     // Methods
     saveProfile,
+    setDemoPlan,
+    formatDate,
   }
 }

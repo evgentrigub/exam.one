@@ -26,15 +26,11 @@ export const useSettingsStore = defineStore('settings', () => {
 
   async function persist(): Promise<void> {
     if (!import.meta.client) return
-    try {
-      const { updateSettings } = useAuth()
-      await updateSettings({
-        examLevel: examLevel.value,
-        targetLanguage: targetLanguage.value,
-      })
-    } catch {
-      // Keep local values; caller can surface errors
-    }
+    const { updateSettings } = useAuth()
+    await updateSettings({
+      examLevel: examLevel.value,
+      targetLanguage: targetLanguage.value,
+    })
   }
 
   return {

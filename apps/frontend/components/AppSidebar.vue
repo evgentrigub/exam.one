@@ -199,7 +199,8 @@ const landingUrl = computed(() => {
 
 function selectLevel(level: 'A2' | 'C1') {
   examLevel.value = level
-  router.push('/exercises')
+  void settingsStore.persist().catch(() => undefined)
+  void router.push('/exercises')
 }
 
 const levels: Array<'A2' | 'C1'> = ['A2', 'C1']

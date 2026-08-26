@@ -2,6 +2,7 @@
   <div class="form-control">
     <label class="label pb-1 flex items-center gap-1.5" :for="id">
       <span class="label-text text-sm font-medium">{{ label }}</span>
+      <slot name="labelSuffix" />
     </label>
     <label
       class="input input-bordered flex items-center gap-2 w-full rounded-field"

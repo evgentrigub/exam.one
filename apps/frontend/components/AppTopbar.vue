@@ -114,6 +114,12 @@
               <User :size="15" /> {{ $t('shell.accountSubscription') }}
             </NuxtLink>
             <NuxtLink
+              to="/settings?section=profile"
+              class="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200"
+            >
+              <Settings :size="15" /> {{ $t('shell.settings') }}
+            </NuxtLink>
+            <NuxtLink
               to="/progress"
               class="w-full flex items-center gap-2.5 px-3 h-9 rounded-field text-sm hover:bg-base-200"
             >
@@ -144,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import { Globe, ChevronDown, Cake, Sun, User, TrendingUp, LogOut } from 'lucide-vue-next'
+import { Globe, ChevronDown, Cake, Sun, User, Settings, TrendingUp, LogOut } from 'lucide-vue-next'
 import type { LanguageOptions } from '~/utils/types'
 
 defineProps<{
