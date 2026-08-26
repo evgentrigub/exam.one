@@ -305,7 +305,7 @@ const saveLanguageSettings = async () => {
   // Update exam level
   examLevel.value = tempExamLevel.value
 
-  await settingsStore.persist()
+  await settingsStore.persist().catch(() => undefined)
   closeLanguageModal()
 }
 
