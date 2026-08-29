@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import type {
   AiResponse,
   DeleteListeningAudioData,
@@ -22,6 +23,7 @@ export class TtsController {
 
   @Post('generate-listening-audio')
   @HttpCode(200)
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @ApiOperation({ summary: 'Synthesize listening WAVs and write them to the shared audio volume' })
   generateListeningAudio(
     @Body() body: GenerateListeningAudioDto
@@ -31,6 +33,7 @@ export class TtsController {
 
   @Post('delete-listening-audio')
   @HttpCode(200)
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @ApiOperation({ summary: 'Delete generated listening audio directories' })
   deleteListeningAudio(
     @Body() body: DeleteListeningAudioDto

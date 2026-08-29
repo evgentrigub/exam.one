@@ -2,6 +2,7 @@ import { Test, type TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
 import { TtsService } from './tts.service'
 import * as adapter from './tts.adapter'
+import { containedAudioPath } from './listening-audio'
 
 jest.mock('./tts.adapter', () => ({
   checkTtsHealth: jest.fn(),
@@ -9,6 +10,9 @@ jest.mock('./tts.adapter', () => ({
 }))
 
 const checkTtsHealth = adapter.checkTtsHealth as jest.MockedFunction<typeof adapter.checkTtsHealth>
+const synthesizeListeningTranscript = adapter.synthesizeListeningTranscript as jest.MockedFunction<
+  typeof adapter.synthesizeListeningTranscript
+>
 
 describe('TtsService', () => {
   async function createService() {
@@ -40,6 +44,7 @@ describe('TtsService', () => {
 
   beforeEach(() => {
     checkTtsHealth.mockReset()
+    synthesizeListeningTranscript.mockReset()
   })
 
   it('reports offline health without throwing', async () => {
@@ -71,5 +76,34 @@ describe('TtsService', () => {
       data: null,
       error: 'TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.',
     })
+  })
+
+  it('rejects traversal exercise ids without synthesizing', async () => {
+    checkTtsHealth.mockResolvedValue(true)
+    const service = await createService()
+    await expect(
+      service.generateListeningAudio({
+        id: '../../tmp/x',
+        title: 'Teil 1',
+        testingPart: 1,
+        difficulty: 'A2',
+        items: [{ id: 'i1', transcript: 'Hallo' }],
+      })
+    ).resolves.toEqual({
+      data: null,
+      error: 'Exercise id is not a valid generated listening id.',
+    })
+    expect(synthesizeListeningTranscript).not.toHaveBeenCalled()
+    expect(checkTtsHealth).not.toHaveBeenCalled()
+  })
+
+  it('keeps generated audio paths inside the configured root', () => {
+    const root = '/tmp/exam-one-audio'
+    expect(containedAudioPath(root, 'listening-a2-part1-abc/shared.wav')).toBe(
+      '/tmp/exam-one-audio/listening-a2-part1-abc/shared.wav'
+    )
+    expect(containedAudioPath(root, '../etc/passwd')).toBeNull()
+    expect(containedAudioPath(root, '/tmp/escaped.wav')).toBeNull()
+    expect(containedAudioPath(root, 'listening-a2-part1-abc/../secret.wav')).toBeNull()
   })
 })

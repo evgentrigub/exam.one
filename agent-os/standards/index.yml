@@ -5,6 +5,10 @@ auth:
     description: HttpOnly exam_one_access JWT + hashed exam_one_refresh; no localStorage tokens
   jwt-guard-public:
     description: Global JwtAuthGuard; @Public only for health and unauthenticated auth actions
+  jwt-secret:
+    description: JWT_SECRET ≥32 chars; reject empty and change-me-in-production at boot
+  login-lockout:
+    description: 5 failed logins per email in 15m → 429; dummy bcrypt on missing users
   nuxt-auth-gate:
     description: Client-only auth.global middleware; /auth SSR, rest ssr:false; safe redirect
   optional-email-verification:
@@ -77,6 +81,8 @@ server:
     description: class-validator DTOs; ValidationPipe whitelist + forbidNonWhitelisted + transform
   rest-response-envelope:
     description: REST `{ data }` envelope; throw HTTP exceptions on failure; distinct from AI envelope
+  security-headers:
+    description: Helmet on Nest without API CSP; Swagger off in production unless SWAGGER_ENABLED; Nuxt frame-ancestors
   uri-versioning:
     description: Global prefix api + URI v1 → `/api/v1`; Swagger at `/api/docs`
 

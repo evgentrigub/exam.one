@@ -121,6 +121,10 @@ async function main(): Promise<void> {
     console.error('Password must be at least 8 characters.')
     process.exit(1)
   }
+  if (password.length > 72) {
+    console.error('Password must be at most 72 characters.')
+    process.exit(1)
+  }
 
   const prisma = new PrismaClient()
   try {

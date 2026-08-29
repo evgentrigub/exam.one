@@ -1,4 +1,5 @@
-import { IsEmail, IsString, MinLength } from 'class-validator'
+import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator'
+import { PASSWORD_MAX_LENGTH } from '../auth.constants'
 
 export class RegisterDto {
   @IsString()
@@ -10,5 +11,6 @@ export class RegisterDto {
 
   @IsString()
   @MinLength(8)
+  @MaxLength(PASSWORD_MAX_LENGTH)
   password!: string
 }

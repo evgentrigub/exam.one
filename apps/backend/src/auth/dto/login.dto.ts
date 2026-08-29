@@ -1,4 +1,5 @@
-import { IsBoolean, IsEmail, IsOptional, IsString, MinLength } from 'class-validator'
+import { IsBoolean, IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
+import { PASSWORD_MAX_LENGTH } from '../auth.constants'
 
 export class LoginDto {
   @IsEmail()
@@ -6,6 +7,7 @@ export class LoginDto {
 
   @IsString()
   @MinLength(1)
+  @MaxLength(PASSWORD_MAX_LENGTH)
   password!: string
 
   @IsOptional()

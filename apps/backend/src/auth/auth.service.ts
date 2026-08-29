@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -20,6 +22,9 @@ import {
   ACCESS_COOKIE,
   ACCESS_TTL_SECONDS,
   BCRYPT_ROUNDS,
+  DUMMY_PASSWORD_HASH,
+  LOGIN_LOCKOUT_MS,
+  LOGIN_MAX_FAILURES,
   REFRESH_COOKIE,
   REFRESH_TTL_SECONDS,
   RESET_TOKEN_TTL_MS,
@@ -33,9 +38,16 @@ import type { ForgotPasswordDto } from './dto/forgot-password.dto'
 import type { ResetPasswordDto } from './dto/reset-password.dto'
 import type { ChangePasswordDto } from './dto/change-password.dto'
 
+interface LoginLockoutState {
+  failures: number
+  firstFailureAt: number
+  lockedUntil?: number
+}
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name)
+  private readonly loginLockouts = new Map<string, LoginLockoutState>()
 
   constructor(
     private readonly prisma: PrismaService,
@@ -92,8 +104,12 @@ export class AuthService {
 
   async login(dto: LoginDto, res: Response): Promise<AuthSessionData> {
     const email = dto.email.trim().toLowerCase()
+    this.assertLoginNotLocked(email)
+
     const user = await this.prisma.user.findUnique({ where: { email } })
     if (!user?.passwordHash) {
+      await bcrypt.compare(dto.password, DUMMY_PASSWORD_HASH)
+      this.recordLoginFailure(email)
       throw new UnauthorizedException({
         code: 'INVALID_CREDENTIALS',
         message: 'That email and password don’t match',
@@ -102,12 +118,14 @@ export class AuthService {
 
     const ok = await bcrypt.compare(dto.password, user.passwordHash)
     if (!ok) {
+      this.recordLoginFailure(email)
       throw new UnauthorizedException({
         code: 'INVALID_CREDENTIALS',
         message: 'That email and password don’t match',
       })
     }
 
+    this.clearLoginLockout(email)
     await this.setSessionCookies(user, res, dto.remember ?? true)
     return {
       user: toUserDto(user),
@@ -175,16 +193,11 @@ export class AuthService {
   async verifyEmail(dto: VerifyEmailDto, res: Response): Promise<AuthSessionData> {
     const email = dto.email.trim().toLowerCase()
     const user = await this.prisma.user.findUnique({ where: { email } })
-    if (!user) {
+    if (!user || user.emailVerified) {
       throw new BadRequestException({
         code: 'INVALID_CODE',
         message: 'That code isn’t right. Check the latest email.',
       })
-    }
-
-    if (user.emailVerified) {
-      await this.setSessionCookies(user, res)
-      return { user: toUserDto(user), requiresEmailVerification: false }
     }
 
     const tokenHash = this.hashToken(dto.code.trim())
@@ -328,7 +341,11 @@ export class AuthService {
     return { user: toUserDto(user), requiresEmailVerification: false }
   }
 
-  async changePassword(user: User, dto: ChangePasswordDto): Promise<MessageResponse> {
+  async changePassword(
+    user: User,
+    dto: ChangePasswordDto,
+    res: Response
+  ): Promise<MessageResponse> {
     if (!user.passwordHash) {
       throw new BadRequestException({
         code: 'NO_PASSWORD',
@@ -355,7 +372,49 @@ export class AuthService {
       }),
     ])
 
+    const updated = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+    await this.setSessionCookies(updated, res)
     return { data: { message: 'Password updated' } }
+  }
+
+  private assertLoginNotLocked(email: string): void {
+    const state = this.loginLockouts.get(email)
+    if (!state?.lockedUntil) return
+    if (Date.now() < state.lockedUntil) {
+      throw new HttpException(
+        {
+          code: 'TOO_MANY_ATTEMPTS',
+          message: 'Too many attempts. Try again in a moment.',
+        },
+        HttpStatus.TOO_MANY_REQUESTS
+      )
+    }
+    this.loginLockouts.delete(email)
+  }
+
+  private recordLoginFailure(email: string): void {
+    const now = Date.now()
+    const state = this.loginLockouts.get(email)
+    if (!state || now - state.firstFailureAt > LOGIN_LOCKOUT_MS) {
+      this.loginLockouts.set(email, { failures: 1, firstFailureAt: now })
+      return
+    }
+
+    const failures = state.failures + 1
+    if (failures >= LOGIN_MAX_FAILURES) {
+      this.loginLockouts.set(email, {
+        failures,
+        firstFailureAt: state.firstFailureAt,
+        lockedUntil: now + LOGIN_LOCKOUT_MS,
+      })
+      return
+    }
+
+    this.loginLockouts.set(email, { ...state, failures })
+  }
+
+  private clearLoginLockout(email: string): void {
+    this.loginLockouts.delete(email)
   }
 
   private async issueAndSendVerificationCode(user: User): Promise<void> {

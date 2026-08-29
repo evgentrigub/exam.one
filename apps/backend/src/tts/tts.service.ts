@@ -8,8 +8,10 @@ import { mapPool } from './mapPool'
 import {
   buildGeneratedListeningAudioMap,
   collectListeningAudioSegments,
+  containedAudioPath,
   GENERATED_EXERCISE_ID_RE,
   isListeningExercise,
+  isSafeGeneratedExerciseId,
 } from './listening-audio'
 import { checkTtsHealth, synthesizeListeningTranscript, type TtsConfig } from './tts.adapter'
 
@@ -51,8 +53,8 @@ export class TtsService {
       return { data: null, error: 'Missing listening exercise payload' }
     }
     const exercise = exerciseValue
-    if (!exercise.id) {
-      return { data: null, error: 'Exercise is missing an id; cannot write audio files.' }
+    if (!exercise.id || !isSafeGeneratedExerciseId(exercise.id)) {
+      return { data: null, error: 'Exercise id is not a valid generated listening id.' }
     }
 
     const config = this.ttsConfig()
@@ -75,10 +77,19 @@ export class TtsService {
     }
 
     const root = this.audioRoot()
+    for (const segment of segments) {
+      if (!containedAudioPath(root, segment.relativePath)) {
+        return { data: null, error: 'Exercise id is not a valid generated listening id.' }
+      }
+    }
+
     try {
       await mapPool(segments, config.concurrency, async segment => {
         const bytes = await synthesizeListeningTranscript(segment.transcript, config)
-        const absolute = path.join(root, segment.relativePath)
+        const absolute = containedAudioPath(root, segment.relativePath)
+        if (!absolute) {
+          throw new Error('Refusing to write audio outside the generated audio directory.')
+        }
         await mkdir(path.dirname(absolute), { recursive: true })
         await writeFile(absolute, bytes)
       })
@@ -97,8 +108,10 @@ export class TtsService {
     const root = this.audioRoot()
     let deleted = 0
     for (const exerciseId of ids) {
+      const absolute = containedAudioPath(root, exerciseId)
+      if (!absolute) continue
       try {
-        await rm(path.join(root, exerciseId), { recursive: true, force: true })
+        await rm(absolute, { recursive: true, force: true })
         deleted += 1
       } catch (error) {
         this.logger.warn(`delete-listening-audio failed id=${exerciseId}`, error)

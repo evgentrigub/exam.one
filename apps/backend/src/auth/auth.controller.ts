@@ -130,8 +130,9 @@ export class AuthController {
   @ApiOperation({ summary: 'Change password while signed in' })
   changePassword(
     @CurrentUser() user: User,
-    @Body() dto: ChangePasswordDto
+    @Body() dto: ChangePasswordDto,
+    @NestRes({ passthrough: true }) res: Response
   ): Promise<MessageResponse> {
-    return this.auth.changePassword(user, dto)
+    return this.auth.changePassword(user, dto, res)
   }
 }

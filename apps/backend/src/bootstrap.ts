@@ -2,10 +2,27 @@ import { ValidationPipe, VersioningType, type INestApplication } from '@nestjs/c
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 import { json, urlencoded } from 'express'
+import helmet from 'helmet'
 import { RequestIdInterceptor } from './common/interceptors/request-id.interceptor'
+
+export function isSwaggerEnabled(
+  nodeEnv = process.env['NODE_ENV'],
+  swaggerEnabled = process.env['SWAGGER_ENABLED']
+): boolean {
+  if (swaggerEnabled === 'true') return true
+  if (swaggerEnabled === 'false') return false
+  return (nodeEnv ?? 'development') !== 'production'
+}
 
 export function configureApp(app: INestApplication): void {
   app.enableShutdownHooks()
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      referrerPolicy: { policy: 'no-referrer' },
+    })
+  )
   app.use(cookieParser())
   app.use(json({ limit: '5mb' }))
   app.use(urlencoded({ extended: true, limit: '5mb' }))
@@ -25,6 +42,8 @@ export function configureApp(app: INestApplication): void {
     origin: frontendUrl,
     credentials: true,
   })
+
+  if (!isSwaggerEnabled()) return
 
   const config = new DocumentBuilder()
     .setTitle('exam.one API')

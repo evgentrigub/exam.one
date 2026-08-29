@@ -2,7 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 const CONTENT_SECURITY_POLICY =
-  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' http://localhost:3001 http://127.0.0.1:3001;"
+  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' http://localhost:3001 http://127.0.0.1:3001; frame-ancestors 'self';"
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-18',
