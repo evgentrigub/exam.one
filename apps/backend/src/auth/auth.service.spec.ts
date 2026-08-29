@@ -143,6 +143,7 @@ describe('AuthService', () => {
     await expect(
       service.login({ email: 'a@b.com', password: 'x' }, res as Response)
     ).rejects.toBeInstanceOf(UnauthorizedException)
+    expect(mockedBcrypt.compare).toHaveBeenCalledWith('x', expect.any(String))
   })
 
   it('exposes emailConfigured false by default', () => {
@@ -329,15 +330,18 @@ describe('AuthService', () => {
     }
   })
 
-  it('issues a session when the email is already verified', async () => {
+  it('rejects verifyEmail when the email is already verified', async () => {
     const user = makeUser({ emailVerified: true })
     prisma.user.findUnique.mockResolvedValue(user)
 
-    const result = await service.verifyEmail({ email: user.email, code: '123456' }, res as Response)
-
-    expect(result.requiresEmailVerification).toBe(false)
-    expect(prisma.$transaction).not.toHaveBeenCalled()
-    expect(res.cookie).toHaveBeenCalled()
+    try {
+      await service.verifyEmail({ email: user.email, code: '123456' }, res as Response)
+      fail('expected BadRequestException')
+    } catch (error) {
+      expectCode(error, BadRequestException, 'INVALID_CODE')
+    }
+    expect(prisma.authToken.findFirst).not.toHaveBeenCalled()
+    expect(res.cookie).not.toHaveBeenCalled()
   })
 
   it('rejects verifyEmail when the code is invalid', async () => {
@@ -474,10 +478,14 @@ describe('AuthService', () => {
     const user = makeUser({ passwordHash: null })
 
     try {
-      await service.changePassword(user, {
-        currentPassword: 'old',
-        newPassword: 'password1',
-      })
+      await service.changePassword(
+        user,
+        {
+          currentPassword: 'old',
+          newPassword: 'password1',
+        },
+        res as Response
+      )
       fail('expected BadRequestException')
     } catch (error) {
       expectCode(error, BadRequestException, 'NO_PASSWORD')
@@ -488,23 +496,32 @@ describe('AuthService', () => {
     mockedBcrypt.compare.mockResolvedValue(false as never)
 
     try {
-      await service.changePassword(makeUser(), {
-        currentPassword: 'wrong',
-        newPassword: 'password1',
-      })
+      await service.changePassword(
+        makeUser(),
+        {
+          currentPassword: 'wrong',
+          newPassword: 'password1',
+        },
+        res as Response
+      )
       fail('expected BadRequestException')
     } catch (error) {
       expectCode(error, BadRequestException, 'INVALID_PASSWORD')
     }
   })
 
-  it('updates the password hash and deletes refresh tokens', async () => {
+  it('updates the password hash, deletes refresh tokens, and rotates cookies', async () => {
     const user = makeUser()
+    prisma.user.findUniqueOrThrow.mockResolvedValue(user)
 
-    const result = await service.changePassword(user, {
-      currentPassword: 'oldpassword',
-      newPassword: 'newpassword',
-    })
+    const result = await service.changePassword(
+      user,
+      {
+        currentPassword: 'oldpassword',
+        newPassword: 'newpassword',
+      },
+      res as Response
+    )
 
     expect(result).toEqual({ data: { message: 'Password updated' } })
     expect(prisma.$transaction).toHaveBeenCalled()
@@ -515,5 +532,49 @@ describe('AuthService', () => {
     expect(prisma.authToken.deleteMany).toHaveBeenCalledWith({
       where: { userId: user.id, type: AuthTokenType.REFRESH },
     })
+    expect(res.cookie).toHaveBeenCalledTimes(2)
+  })
+
+  it('locks login after five failures for the same email', async () => {
+    mockedBcrypt.compare.mockResolvedValue(false as never)
+    prisma.user.findUnique.mockResolvedValue(makeUser({ email: 'lock@example.com' }))
+
+    for (let i = 0; i < 5; i++) {
+      await expect(
+        service.login({ email: 'lock@example.com', password: 'wrong' }, res as Response)
+      ).rejects.toBeInstanceOf(UnauthorizedException)
+    }
+
+    try {
+      await service.login({ email: 'lock@example.com', password: 'wrong' }, res as Response)
+      fail('expected HttpException')
+    } catch (error) {
+      expectCode(error, HttpException, 'TOO_MANY_ATTEMPTS')
+      expect((error as HttpException).getStatus()).toBe(429)
+    }
+    expect(res.cookie).not.toHaveBeenCalled()
+  })
+
+  it('clears login lockout after a successful sign-in', async () => {
+    mockedBcrypt.compare.mockResolvedValue(false as never)
+    const user = makeUser({ email: 'reset-lock@example.com' })
+    prisma.user.findUnique.mockResolvedValue(user)
+
+    for (let i = 0; i < 4; i++) {
+      await expect(
+        service.login({ email: 'reset-lock@example.com', password: 'wrong' }, res as Response)
+      ).rejects.toBeInstanceOf(UnauthorizedException)
+    }
+
+    mockedBcrypt.compare.mockResolvedValue(true as never)
+    await service.login(
+      { email: 'reset-lock@example.com', password: 'password1' },
+      res as Response
+    )
+
+    mockedBcrypt.compare.mockResolvedValue(false as never)
+    await expect(
+      service.login({ email: 'reset-lock@example.com', password: 'wrong' }, res as Response)
+    ).rejects.toBeInstanceOf(UnauthorizedException)
   })
 })

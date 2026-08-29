@@ -8,6 +8,7 @@ exam_one_refresh   opaque hex, sha256 in AuthToken   30 days
 ```
 
 - Flags: `httpOnly`, `sameSite: 'lax'`, `path: '/'`, `secure` from `AUTH_COOKIE_SECURE`.
+- `JWT_SECRET` must pass `requireJwtSecret` (≥32 characters, not the example placeholder).
 - Store refresh/verify/reset secrets as hashes (`sha256`). Never persist the raw refresh token.
 - CORS must use `credentials: true` and a concrete `FRONTEND_URL` origin.
 - Do not rename these cookies (Swagger cookie auth + tests).

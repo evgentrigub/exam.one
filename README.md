@@ -124,7 +124,7 @@ pnpm install
 cp .env.example .env
 ```
 
-Set `JWT_SECRET` in `.env` to a long random value before you share the instance:
+Set `JWT_SECRET` in `.env` **before the first boot**. NestJS refuses to start if it is missing, shorter than 32 characters, or still the example placeholder:
 
 ```bash
 # example
@@ -154,11 +154,11 @@ Services:
 | -------------- | ---------------------------------------- |
 | Frontend       | http://localhost:3000                    |
 | Backend        | http://localhost:3001                    |
-| API docs       | http://localhost:3001/api/docs           |
+| API docs       | http://localhost:3001/api/docs (local `pnpm dev`; Compose production needs `SWAGGER_ENABLED=true`) |
 | Health         | http://localhost:3001/api/v1/health/ready |
-| PostgreSQL     | localhost:5432                           |
-| Kokoro TTS     | http://localhost:8881/v1/audio/voices    |
-| Parakeet STT   | http://localhost:8882/health             |
+| PostgreSQL     | 127.0.0.1:5432                           |
+| Kokoro TTS     | http://127.0.0.1:8881/v1/audio/voices    |
+| Parakeet STT   | http://127.0.0.1:8882/health             |
 
 Prefer `pnpm stack:up` over a bare `docker compose up --wait` of every service. Speech healthchecks can take several minutes.
 
@@ -300,7 +300,7 @@ Copy [`.env.example`](./.env.example) and edit. Groups:
 | ----------------------------- | -------------------------------------------------------------------- |
 | App and network               | `FRONTEND_PORT`, `BACKEND_PORT`, `FRONTEND_URL`, `NUXT_PUBLIC_API_URL`, `FRONTEND_LANDING_URL`, `NODE_ENV` |
 | Database                      | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, `POSTGRES_VOLUME_NAME`, `DATABASE_URL` |
-| Auth                          | `JWT_SECRET` (required), `AUTH_COOKIE_SECURE`                        |
+| Auth                          | `JWT_SECRET` (required, ≥32 chars, not the placeholder), `AUTH_COOKIE_SECURE`, `SWAGGER_ENABLED` |
 | Email                         | `EMAIL_PROVIDER`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` |
 | LLM                           | `LLM_PROVIDER`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `LLM_REASONING_EFFORT` |
 | STT                           | `STT_PROVIDER`, `STT_BASE_URL`, `STT_PORT`, `STT_CPU_THREADS`, `STT_MODEL`, `STT_OPENAI_MODEL` |
@@ -309,9 +309,11 @@ Copy [`.env.example`](./.env.example) and edit. Groups:
 
 Production notes:
 
-- Replace `JWT_SECRET`. Rotating it signs everyone out.
+- Set `JWT_SECRET` to at least 32 random characters (`openssl rand -base64 48`). The backend will not start with an empty or placeholder value. Rotating it signs everyone out.
 - Set `AUTH_COOKIE_SECURE=true` only behind HTTPS.
 - Change `POSTGRES_PASSWORD` if the instance is reachable beyond localhost.
+- Postgres, Kokoro, and Parakeet are bound to `127.0.0.1`. To share them on a LAN, change those Compose `ports` binds to `0.0.0.0`.
+- Swagger is off in the Compose stack (`NODE_ENV=production`) unless `SWAGGER_ENABLED=true`.
 - Keep `EMAIL_PROVIDER=none` unless you have a working SMTP server.
 
 ### Troubleshooting
@@ -334,6 +336,9 @@ Confirm Postgres volume is still present (`docker volume ls`). `stack:down` does
 **Cookies not set / immediate sign-out**  
 Keep `AUTH_COOKIE_SECURE=false` on `http://localhost`. Set it `true` only when the browser uses HTTPS.
 
+**JWT_SECRET missing or rejected**  
+NestJS will not boot if `JWT_SECRET` is empty, shorter than 32 characters, or still `change-me-in-production`. Generate one with `openssl rand -base64 48`.
+
 **JWT_SECRET changed**  
 Every session is invalid. Sign in again.
 
@@ -349,6 +354,7 @@ Use this path when you want hot reload. PostgreSQL still runs in Docker; Nuxt an
 ```bash
 pnpm install
 cp .env.example .env
+openssl rand -base64 48   # paste into JWT_SECRET
 pnpm dev:infra
 pnpm dev
 ```
@@ -357,8 +363,8 @@ This starts:
 
 - Nuxt with hot reload at http://localhost:3000 (login-gated; register on first use)
 - NestJS with watch mode at http://localhost:3001
-- API documentation at http://localhost:3001/api/docs
-- PostgreSQL in Docker at localhost:5432
+- API documentation at http://localhost:3001/api/docs (`pnpm dev` only; Compose needs `SWAGGER_ENABLED=true`)
+- PostgreSQL in Docker at 127.0.0.1:5432
 
 The root `compose.yaml` is the only Compose file. `pnpm dev:infra` selects just its `postgres` service. Data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down` only stops the service.
 

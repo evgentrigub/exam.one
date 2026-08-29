@@ -39,4 +39,19 @@ describe('SttService', () => {
       error: 'No audio recording was provided.',
     })
   })
+
+  it('returns a business error for a disallowed MIME type', async () => {
+    const service = await createService()
+    await expect(
+      service.transcribe({
+        buffer: Buffer.from('not-audio'),
+        size: 9,
+        originalname: 'payload.exe',
+        mimetype: 'application/octet-stream',
+      })
+    ).resolves.toEqual({
+      data: null,
+      error: 'Unsupported audio type. Use webm, wav, mp3, ogg, or m4a.',
+    })
+  })
 })

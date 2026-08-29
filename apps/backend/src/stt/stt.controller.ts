@@ -1,6 +1,7 @@
 import { Controller, Get, HttpCode, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import type { AiResponse, SttHealthData, TranscriptionData } from '@exam-one/contracts'
 import { SttService } from './stt.service'
 
@@ -19,6 +20,7 @@ export class SttController {
 
   @Post('transcribe')
   @HttpCode(200)
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Transcribe a speaking recording' })
   @UseInterceptors(

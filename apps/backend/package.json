@@ -33,6 +33,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
+    "helmet": "^8.3.0",
     "multer": "^2.0.2",
     "nodemailer": "^9.0.5",
     "openai": "^5.12.2",

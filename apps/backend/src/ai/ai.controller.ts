@@ -1,5 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import type { AiResponse } from '@exam-one/contracts'
 import type { ListeningA2Exercise, ReadingExercise, SpeakingA2Topic, SpeakingReviewData, WritingExercise } from '@exam-one/exam-content'
 import {
@@ -19,6 +20,7 @@ import { GenerateWritingService, type ModelAnswerData } from './generate-writing
 import { ReviewService, type MockExamOverview, type WritingReviewData } from './review.service'
 
 @ApiTags('ai')
+@Throttle({ default: { limit: 20, ttl: 60_000 } })
 @Controller('ai')
 export class AiController {
   constructor(

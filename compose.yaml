@@ -4,6 +4,9 @@ name: exam-one
 # speech-to-text services. On the first run, use `pnpm stack:up` so the TTS and
 # STT model snapshots are downloaded to their gitignored host directories
 # before Docker starts the read-only model mounts.
+#
+# PostgreSQL, Kokoro, and Parakeet publish on 127.0.0.1 (host-only). Change the
+# bind to 0.0.0.0 only if you intentionally share those ports on the LAN.
 
 services:
   frontend:
@@ -44,8 +47,9 @@ services:
       NODE_ENV: production
       FRONTEND_URL: 'http://localhost:${FRONTEND_PORT:-3000}'
       DATABASE_URL: 'postgresql://${POSTGRES_USER:-exam_one}:${POSTGRES_PASSWORD:-exam_one}@postgres:5432/${POSTGRES_DB:-exam_one}?schema=public'
-      JWT_SECRET: '${JWT_SECRET:-change-me-in-production}'
+      JWT_SECRET: '${JWT_SECRET}'
       AUTH_COOKIE_SECURE: '${AUTH_COOKIE_SECURE:-false}'
+      SWAGGER_ENABLED: '${SWAGGER_ENABLED:-}'
       EMAIL_PROVIDER: '${EMAIL_PROVIDER:-none}'
       SMTP_HOST: '${SMTP_HOST:-}'
       SMTP_PORT: '${SMTP_PORT:-587}'
@@ -94,7 +98,7 @@ services:
       POSTGRES_USER: '${POSTGRES_USER:-exam_one}'
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-exam_one}'
     ports:
-      - '${POSTGRES_PORT:-5432}:5432'
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -119,7 +123,7 @@ services:
       MKL_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
       NUMEXPR_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
     ports:
-      - '${TTS_PORT:-8881}:8881'
+      - '127.0.0.1:${TTS_PORT:-8881}:8881'
     volumes:
       - ./scripts/tts/victoria/models:/app/models:ro
     healthcheck:
@@ -142,7 +146,7 @@ services:
       PARAKEET_MODEL_ID: handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
       STT_CPU_THREADS: '${STT_CPU_THREADS:-4}'
     ports:
-      - '${STT_PORT:-8882}:8882'
+      - '127.0.0.1:${STT_PORT:-8882}:8882'
     volumes:
       - ./scripts/stt/parakeet/models:/app/models:ro
     healthcheck:

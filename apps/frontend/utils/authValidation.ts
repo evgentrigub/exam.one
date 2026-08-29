@@ -7,6 +7,7 @@ export function validateEmail(value: string): string {
 export function validatePassword(value: string): string {
   if (!value) return 'Password is required'
   if (value.length < 8) return 'Password must be at least 8 characters'
+  if (value.length > 72) return 'Password must be at most 72 characters'
   return ''
 }
 

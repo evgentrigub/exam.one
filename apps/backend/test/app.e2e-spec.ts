@@ -13,7 +13,7 @@ describe('Auth + health (e2e)', () => {
   const email = `e2e-${Date.now()}@exam.one`
 
   beforeEach(async () => {
-    process.env['JWT_SECRET'] ??= 'e2e-test-secret'
+    process.env['JWT_SECRET'] = 'e2e-test-secret-at-least-32-chars'
     process.env['DATABASE_URL'] ??=
       'postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public'
     process.env['FRONTEND_URL'] ??= 'http://localhost:3000'
@@ -85,6 +85,52 @@ describe('Auth + health (e2e)', () => {
     await agent.post('/api/v1/auth/logout').expect(201)
 
     await request(app.getHttpServer()).get('/api/v1/users/me').expect(401)
+  })
+
+  it('does not issue a session from verify-email when the account is already verified', async () => {
+    const agent = request.agent(app.getHttpServer())
+    await agent
+      .post('/api/v1/auth/register')
+      .send({ name: 'E2E User', email, password: 'password12' })
+      .expect(201)
+    await agent.post('/api/v1/auth/logout').expect(201)
+
+    const verify = await request(app.getHttpServer())
+      .post('/api/v1/auth/verify-email')
+      .send({ email, code: '000000' })
+      .expect(400)
+
+    expect(verify.body).toEqual(
+      expect.objectContaining({
+        code: 'INVALID_CODE',
+      })
+    )
+    expect(verify.headers['set-cookie']).toBeUndefined()
+
+    await request(app.getHttpServer()).get('/api/v1/auth/me').expect(401)
+  })
+
+  it('locks login after five failed attempts', async () => {
+    const agent = request.agent(app.getHttpServer())
+    await agent
+      .post('/api/v1/auth/register')
+      .send({ name: 'E2E User', email, password: 'password12' })
+      .expect(201)
+    await agent.post('/api/v1/auth/logout').expect(201)
+
+    for (let i = 0; i < 5; i++) {
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email, password: 'wrong-password' })
+        .expect(401)
+    }
+
+    const locked = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({ email, password: 'wrong-password' })
+      .expect(429)
+
+    expect(locked.body).toEqual(expect.objectContaining({ code: 'TOO_MANY_ATTEMPTS' }))
   })
 
   it('unauthenticated /llm/health is 401; authed health returns the AI envelope', async () => {

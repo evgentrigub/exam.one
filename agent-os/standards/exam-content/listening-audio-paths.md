@@ -10,4 +10,5 @@ Build seed audio maps with `buildSeedListeningAudioMap` in `@exam-one/exam-conte
 
 - Seed WAVs live under `public/audio/listening/a2/`. Mock Set 1 reuses those files (new id, same paths).
 - Generated files go to `GENERATED_LISTENING_AUDIO_DIR` (Compose volume or `public/audio/listening/generated/`). Never write TTS into the seed `a2/` tree.
+- Generated exercise ids must match `GENERATED_EXERCISE_ID_RE` (`listening-a2-part[1-4]-…`). Item ids must match `GENERATED_ITEM_ID_RE`. Resolve write/delete paths and require they stay under the audio root.
 - Postgres stores paths only, not bytes.

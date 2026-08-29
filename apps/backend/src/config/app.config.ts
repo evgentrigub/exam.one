@@ -36,12 +36,33 @@ export interface AppConfig {
   GENERATED_LISTENING_AUDIO_DIR: string
 }
 
+const MIN_JWT_SECRET_LENGTH = 32
+const PLACEHOLDER_JWT_SECRET = 'change-me-in-production'
+
 function requireEnv(name: string): string {
   const value = process.env[name]
   if (!value) {
     throw new Error(`${name} is not set. Provide it via the environment or .env file.`)
   }
   return value
+}
+
+export function requireJwtSecret(value: string | undefined): string {
+  const secret = value?.trim() ?? ''
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set. Generate one with: openssl rand -base64 48')
+  }
+  if (secret === PLACEHOLDER_JWT_SECRET) {
+    throw new Error(
+      'JWT_SECRET must not use the example placeholder. Generate one with: openssl rand -base64 48'
+    )
+  }
+  if (secret.length < MIN_JWT_SECRET_LENGTH) {
+    throw new Error(
+      `JWT_SECRET must be at least ${MIN_JWT_SECRET_LENGTH} characters. Generate one with: openssl rand -base64 48`
+    )
+  }
+  return secret
 }
 
 function emailProvider(): 'none' | 'smtp' {
@@ -68,7 +89,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
   DATABASE_URL: requireEnv('DATABASE_URL'),
   FRONTEND_URL: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
-  JWT_SECRET: requireEnv('JWT_SECRET'),
+  JWT_SECRET: requireJwtSecret(process.env['JWT_SECRET']),
   AUTH_COOKIE_SECURE: process.env['AUTH_COOKIE_SECURE'] === 'true',
   EMAIL_PROVIDER: emailProvider(),
   SMTP_HOST: process.env['SMTP_HOST'] ?? '',

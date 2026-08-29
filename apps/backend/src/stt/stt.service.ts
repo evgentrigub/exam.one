@@ -5,6 +5,34 @@ import type { AppConfig } from '../config/app.config'
 import { checkSttHealth, getSttConfig, transcribeAudio, type SttConfig } from './stt.adapter'
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024
+const ALLOWED_STT_MIME_TYPES = new Set([
+  'audio/webm',
+  'audio/wav',
+  'audio/x-wav',
+  'audio/wave',
+  'audio/mpeg',
+  'audio/mp3',
+  'audio/ogg',
+  'audio/mp4',
+  'audio/m4a',
+  'audio/x-m4a',
+  'audio/aac',
+])
+const ALLOWED_STT_EXTENSIONS = new Set(['.webm', '.wav', '.mp3', '.mpeg', '.ogg', '.m4a', '.mp4', '.aac'])
+
+export function normalizeSttMimeType(raw?: string): string {
+  const [base] = (raw ?? '').split(';')
+  return (base ?? '').trim().toLowerCase()
+}
+
+export function isAllowedSttUpload(file: { originalname?: string; mimetype?: string }): boolean {
+  const mime = normalizeSttMimeType(file.mimetype)
+  if (ALLOWED_STT_MIME_TYPES.has(mime)) return true
+  const name = (file.originalname ?? '').toLowerCase()
+  const dot = name.lastIndexOf('.')
+  if (dot < 0) return false
+  return ALLOWED_STT_EXTENSIONS.has(name.slice(dot))
+}
 
 @Injectable()
 export class SttService {
@@ -46,6 +74,12 @@ export class SttService {
     if (file.size > MAX_AUDIO_BYTES) {
       return { data: null, error: 'The audio recording is larger than 25 MB.' }
     }
+    if (!isAllowedSttUpload(file)) {
+      return {
+        data: null,
+        error: 'Unsupported audio type. Use webm, wav, mp3, ogg, or m4a.',
+      }
+    }
 
     try {
       const config = this.sttConfig()
@@ -53,7 +87,7 @@ export class SttService {
         {
           data: Uint8Array.from(file.buffer).buffer,
           fileName: file.originalname || 'speaking.webm',
-          mimeType: file.mimetype || 'application/octet-stream',
+          mimeType: normalizeSttMimeType(file.mimetype) || 'audio/webm',
         },
         config
       )
