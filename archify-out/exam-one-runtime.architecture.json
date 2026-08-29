@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "exam.one runtime architecture",
+    "locale": "en",
+    "output": "exam-one-runtime.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/evgentrigub/exam.one.git",
+      "revision": "0c7b6eecdd919ca09a4ace49e30171ea4933985d"
+    },
+    "views": [
+      {
+        "id": "request-path",
+        "label": "Primary request path",
+        "focus": ["learner", "nuxt", "nest", "postgres", "jwt"],
+        "note": "Browser to Nuxt to Nest /api/v1 to PostgreSQL."
+      },
+      {
+        "id": "speech-sidecars",
+        "label": "Local speech sidecars",
+        "focus": ["nest", "kokoro", "parakeet"],
+        "note": "Kokoro and Parakeet stay on 127.0.0.1."
+      },
+      {
+        "id": "byok-ai",
+        "label": "BYOK LLM path",
+        "focus": ["nest", "llm"],
+        "note": "OpenAI or OpenRouter fails as { data: null, error }."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "learner",
+      "type": "external",
+      "label": "Learner",
+      "sublabel": "Browser",
+      "pos": [40, 240],
+      "size": [128, 56],
+      "sources": [
+        {
+          "path": "agent-os/standards/auth/nuxt-auth-gate.md",
+          "line": 3,
+          "label": "auth gate"
+        }
+      ]
+    },
+    {
+      "id": "nuxt",
+      "type": "frontend",
+      "label": "Nuxt 4",
+      "sublabel": ":3000",
+      "pos": [250, 240],
+      "size": [140, 56],
+      "sources": [
+        {
+          "path": "compose.yaml",
+          "line": 12,
+          "end_line": 39,
+          "label": "frontend service"
+        },
+        {
+          "path": "apps/frontend/composables/useApi.ts",
+          "line": 148,
+          "label": "apiFetch"
+        }
+      ]
+    },
+    {
+      "id": "jwt",
+      "type": "security",
+      "label": "JwtAuthGuard",
+      "sublabel": "exam_one_access",
+      "tag": "HttpOnly",
+      "pos": [500, 70],
+      "size": [150, 58],
+      "sources": [
+        {
+          "path": "apps/backend/src/common/guards/jwt-auth.guard.ts",
+          "line": 12,
+          "end_line": 28,
+          "label": "cookie JWT"
+        },
+        {
+          "path": "agent-os/standards/auth/cookie-session.md",
+          "line": 5,
+          "end_line": 7,
+          "label": "session cookies"
+        }
+      ]
+    },
+    {
+      "id": "nest",
+      "type": "backend",
+      "label": "NestJS API",
+      "sublabel": "/api/v1 :3001",
+      "pos": [500, 240],
+      "size": [150, 56],
+      "sources": [
+        {
+          "path": "apps/backend/src/app.module.ts",
+          "line": 24,
+          "end_line": 56,
+          "label": "AppModule"
+        },
+        {
+          "path": "apps/backend/src/bootstrap.ts",
+          "line": 29,
+          "end_line": 30,
+          "label": "URI v1"
+        }
+      ]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "named volume :5432",
+      "brand": "postgresql",
+      "pos": [760, 240],
+      "size": [150, 56],
+      "sources": [
+        {
+          "path": "compose.yaml",
+          "line": 94,
+          "end_line": 111,
+          "label": "postgres service"
+        },
+        {
+          "path": "agent-os/standards/database/package-ownership.md",
+          "line": 3,
+          "label": "Prisma owner"
+        }
+      ]
+    },
+    {
+      "id": "kokoro",
+      "type": "backend",
+      "label": "Kokoro TTS",
+      "sublabel": ":8881",
+      "tag": "127.0.0.1",
+      "pos": [380, 400],
+      "size": [140, 56],
+      "sources": [
+        {
+          "path": "compose.yaml",
+          "line": 113,
+          "end_line": 137,
+          "label": "kokoro-voices"
+        }
+      ]
+    },
+    {
+      "id": "parakeet",
+      "type": "backend",
+      "label": "Parakeet STT",
+      "sublabel": ":8882",
+      "tag": "127.0.0.1",
+      "pos": [620, 400],
+      "size": [140, 56],
+      "sources": [
+        {
+          "path": "compose.yaml",
+          "line": 139,
+          "end_line": 162,
+          "label": "parakeet"
+        }
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "external",
+      "label": "OpenAI / OpenRouter",
+      "sublabel": "BYOK LLM",
+      "brand": "openai",
+      "tag": "optional",
+      "pos": [760, 70],
+      "size": [150, 58],
+      "sources": [
+        {
+          "path": "apps/backend/src/llm/llm.adapter.ts",
+          "line": 3,
+          "end_line": 6,
+          "label": "providers"
+        },
+        {
+          "path": "agent-os/standards/server/ai-response-envelope.md",
+          "line": 15,
+          "label": "BYOK envelope"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Compose localhost · operator-owned",
+      "wraps": ["nuxt", "jwt", "nest", "postgres", "kokoro", "parakeet"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Cookie session",
+      "wraps": ["jwt", "nest"]
+    },
+    {
+      "kind": "region",
+      "label": "External SaaS · instance keys",
+      "wraps": ["llm"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "learner-to-nuxt",
+      "from": "learner",
+      "to": "nuxt",
+      "label": "HTTPS :3000",
+      "variant": "emphasis"
+    },
+    {
+      "id": "nuxt-to-nest",
+      "from": "nuxt",
+      "to": "nest",
+      "label": "/api/v1 + cookies",
+      "variant": "emphasis"
+    },
+    {
+      "id": "nest-to-postgres",
+      "from": "nest",
+      "to": "postgres",
+      "label": "Prisma",
+      "variant": "emphasis"
+    },
+    {
+      "id": "jwt-to-nest",
+      "from": "jwt",
+      "to": "nest",
+      "label": "verify JWT",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "nest-to-llm",
+      "from": "nest",
+      "to": "llm",
+      "label": "BYOK LLM",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "nest-to-kokoro",
+      "from": "nest",
+      "to": "kokoro",
+      "label": "TTS",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "nest-to-parakeet",
+      "from": "nest",
+      "to": "parakeet",
+      "label": "STT",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Primary path",
+      "items": [
+        "Login-gated catalogs, attempts, drafts, and mock sets hydrate from /api/v1",
+        "apiFetch sends cookies and retries once on 401 via /auth/refresh"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Trust and ownership",
+      "items": [
+        "Operator owns Compose; Postgres, Kokoro, and Parakeet bind 127.0.0.1",
+        "HttpOnly exam_one_access (15m) plus hashed exam_one_refresh (30d)"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Optional AI and persistence",
+      "items": [
+        "Missing LLM keys or sidecars return HTTP 200 { data: null, error }; Set 1 still works",
+        "Prisma seeds from @exam-one/exam-content; theme and playback stay in the browser"
+      ]
+    }
+  ]
+}
