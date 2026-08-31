@@ -180,18 +180,34 @@
         <div
           v-for="ex in filtered"
           :key="ex.id"
-          class="bg-base-100 border border-base-300 ring-soft rounded-box p-5 card-hov cursor-pointer"
+          class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 card-hov cursor-pointer relative"
           @click="openExercise(ex)"
         >
-          <div class="flex items-start justify-between mb-3">
-            <div
-              class="w-9 h-9 rounded-selector flex items-center justify-center"
-              :class="`bg-${ex.skill}-soft`"
-            >
-              <component :is="skillIcon(ex.skill)" :size="16" :class="`text-${ex.skill}`" />
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="level-pip">{{ ex.difficulty }}</span>
+          <div class="flex items-center gap-2">
+            <SkillBadge :skill="ex.skill" size="xs" />
+            <span class="level-pip">{{ ex.difficulty }}</span>
+            <span class="ml-auto flex items-center gap-1.5">
+              <span
+                v-if="ex.part"
+                class="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                :class="`${meta(ex.skill).softBgClass} ${meta(ex.skill).textClass}`"
+              >
+                {{ $t('exercisesUi.part') }} {{ ex.part }}
+              </span>
+              <span
+                v-if="ex.status === 'mastered'"
+                class="tooltip tooltip-left text-success"
+                :data-tip="$t('status.mastered')"
+              >
+                <CheckCircle2 :size="15" aria-hidden="true" />
+              </span>
+              <span
+                v-if="ex.hasDraft"
+                class="tooltip tooltip-left text-warning"
+                :data-tip="$t('exercisesUi.draftSaved')"
+              >
+                <PencilLine :size="15" aria-hidden="true" />
+              </span>
               <button
                 v-if="ex.skill === 'writing'"
                 class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error"
@@ -202,17 +218,12 @@
               >
                 <Trash2 :size="13" aria-hidden="true" />
               </button>
-            </div>
+            </span>
           </div>
-          <p class="text-sm font-semibold mb-1 line-clamp-2">{{ ex.title }}</p>
-          <p class="text-xs text-base-content/50 capitalize mb-3">
-            {{ $t('skill.' + ex.skill) }} · {{ getTypeLabel(ex.type, t)
-            }}<span v-if="ex.part" class="uppercase">
-              · {{ $t('exercisesUi.part') }} {{ ex.part }}</span
-            >
-          </p>
+          <div class="font-display font-bold text-lg mt-2 leading-tight">{{ ex.title }}</div>
+          <div v-if="ex.subtitle" class="text-xs text-base-content/60 mt-0.5">{{ ex.subtitle }}</div>
 
-          <div class="flex items-center gap-3 text-xs text-base-content/50 mb-3">
+          <div class="mt-3 flex items-center gap-3 text-[11px] text-base-content/60">
             <span class="flex items-center gap-1">
               <Clock :size="11" />
               {{ ex.minutes }} {{ $t('exercisesUi.min') }}
@@ -223,19 +234,16 @@
             </span>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="mt-3 flex items-center gap-2">
             <progress
               class="progress flex-1 h-1.5"
               :class="progressClass(ex.skill)"
               :value="ex.pct"
               max="100"
             />
-            <span class="text-xs font-mono text-base-content/40 w-8 text-right">{{ ex.pct }}%</span>
-            <span
-              class="text-[10px] font-semibold px-1.5 py-0.5 rounded-selector"
-              :class="statusClass(ex.status)"
-              >{{ statusLabel(ex.status) }}</span
-            >
+            <span class="text-[10px] font-mono text-base-content/60 w-6 text-right">{{
+              ex.pct
+            }}%</span>
           </div>
           <button
             v-if="ex.skill === 'writing' && ex.status === 'mastered'"
@@ -379,10 +387,11 @@ import {
   Trash2,
   Info,
   Sparkles,
+  CheckCircle2,
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { getAvailableExamParts } from '~/data/examStructure/goetheA2'
-import type { ExerciseStatus, SkillId } from '~/utils/labels'
+import type { SkillId } from '~/utils/labels'
 import { parseSkillPartKeys } from '~/utils/generation/partJobs'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
@@ -395,7 +404,7 @@ import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useSpeakingGeneration } from '~/composables/useSpeakingGeneration'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
-import { getSkillMeta, getSkillLabel, getStatusLabel, getTypeLabel } from '~/utils/labels'
+import { getSkillMeta, getSkillLabel, getTypeLabel } from '~/utils/labels'
 import GenerateExercisesModal from '~/components/exercises/GenerateExercisesModal.vue'
 
 usePageMeta('pageMeta.exercisesTitle', 'pageMeta.exercisesSubtitle')
@@ -618,97 +627,106 @@ watch(() => [route.query['skill'], route.query['part']], applyQuery)
 // Unified exercise list
 type UnifiedExercise = {
   id: string
-  skill: string
+  skill: SkillId
   title: string
+  subtitle?: string | undefined
   type: string
   difficulty: string
   minutes: number
-  words?: number
+  words?: number | undefined
   pct: number
   status: 'new' | 'inprogress' | 'mastered'
-  part?: number
+  part?: number | undefined
+  hasDraft?: boolean | undefined
 }
 
 const allExercises = computed<UnifiedExercise[]>(() => {
   const rStats = getProgressStats()
   const readingList = getTexts()
-    .filter(t => t.difficulty === examLevel.value)
-    .map(t => {
+    .filter(item => item.difficulty === examLevel.value)
+    .map(item => {
       const activity = rStats.recentActivity?.find(
-        (a: { textId: string; percentage: number }) => a.textId === t.id
+        (a: { textId: string; percentage: number }) => a.textId === item.id
       )
       const pct = activity ? activity.percentage : 0
-      const completed = isTextCompleted(t.id)
+      const completed = isTextCompleted(item.id)
+      const typeLabel = getTypeLabel(item.textType, t)
+      const partLabel = item.testingPart ? `${t('exercisesUi.part')} ${item.testingPart}` : ''
       return {
-        id: t.id,
-        skill: 'reading',
-        title: t.title,
-        type: t.textType,
-        difficulty: t.difficulty,
-        minutes: t.estimatedReadingTime,
-        words: t.wordCount,
+        id: item.id,
+        skill: 'reading' as const,
+        title: item.title,
+        subtitle: [typeLabel, partLabel].filter(Boolean).join(' · '),
+        type: item.textType,
+        difficulty: item.difficulty,
+        minutes: item.estimatedReadingTime,
+        words: item.wordCount,
         pct,
         status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
-        part: t.testingPart,
-      } as UnifiedExercise
+        part: item.testingPart,
+      } satisfies UnifiedExercise
     })
 
   const draftTopicIds = new Set(getAllWritingSessions().map(session => session.topicId))
   const writingList = getTopics()
-    .filter(t => t.difficulty === examLevel.value)
-    .map(t => {
-      const completed = isWritingTopicCompleted(t.id)
-      const progress = getWritingTopicProgress(t.id)
-      const hasDraft = draftTopicIds.has(t.id)
+    .filter(item => item.difficulty === examLevel.value)
+    .map(item => {
+      const completed = isWritingTopicCompleted(item.id)
+      const progress = getWritingTopicProgress(item.id)
+      const hasDraft = draftTopicIds.has(item.id)
       return {
-        id: t.id,
-        skill: 'writing',
-        title: t.title,
-        type: t.topicType,
-        difficulty: t.difficulty,
-        minutes: t.estimatedTime,
-        words: t.wordCount.max,
+        id: item.id,
+        skill: 'writing' as const,
+        title: item.title,
+        subtitle: item.description || getTypeLabel(item.topicType, t),
+        type: item.topicType,
+        difficulty: item.difficulty,
+        minutes: item.estimatedTime,
+        words: item.wordCount.max,
         pct: completed ? 100 : hasDraft ? 50 : progress ? 25 : 0,
         status: completed ? 'mastered' : hasDraft || progress ? 'inprogress' : 'new',
-        part: t.testingPart,
-      } as UnifiedExercise
+        part: item.testingPart,
+        hasDraft: hasDraft && !completed,
+      } satisfies UnifiedExercise
     })
 
   const listeningList = getListening()
-    .filter(e => e.difficulty === examLevel.value)
-    .map(e => {
-      const id = e.id ?? ''
+    .filter(item => item.difficulty === examLevel.value)
+    .map(item => {
+      const id = item.id ?? ''
       const progress = getListeningProgress(id)
       const pct = progress?.percentage ?? 0
       const completed = isListeningCompleted(id)
       return {
         id,
-        skill: 'listening',
-        title: e.title,
-        type: LISTENING_TYPE_BY_PART[e.testingPart] ?? 'listening',
-        difficulty: e.difficulty,
-        minutes: LISTENING_MINUTES_BY_PART[e.testingPart] ?? 6,
+        skill: 'listening' as const,
+        title: item.title,
+        subtitle: `${t('exercisesUi.part')} ${item.testingPart}`,
+        type: LISTENING_TYPE_BY_PART[item.testingPart] ?? 'listening',
+        difficulty: item.difficulty,
+        minutes: LISTENING_MINUTES_BY_PART[item.testingPart] ?? 6,
         pct,
         status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
-        part: e.testingPart,
-      } as UnifiedExercise
+        part: item.testingPart,
+      } satisfies UnifiedExercise
     })
 
   const speakingList = getSpeaking()
-    .filter(t => t.difficulty === examLevel.value)
-    .map(t => {
-      const completed = isSpeakingCompleted(t.id)
+    .filter(item => item.difficulty === examLevel.value)
+    .map(item => {
+      const completed = isSpeakingCompleted(item.id)
       return {
-        id: t.id,
-        skill: 'speaking',
-        title: t.theme,
-        type: t.topicType,
-        difficulty: t.difficulty,
-        minutes: SPEAKING_MINUTES_BY_PART[t.testingPart] ?? 7,
+        id: item.id,
+        skill: 'speaking' as const,
+        title: item.theme,
+        subtitle: getTypeLabel(item.topicType, t),
+        type: item.topicType,
+        difficulty: item.difficulty,
+        minutes: SPEAKING_MINUTES_BY_PART[item.testingPart] ?? 7,
         pct: completed ? 100 : 0,
         status: completed ? 'mastered' : 'new',
-        part: t.testingPart,
-      } as UnifiedExercise
+        part: item.testingPart,
+      } satisfies UnifiedExercise
     })
 
   return [...readingList, ...writingList, ...listeningList, ...speakingList]
@@ -788,17 +806,12 @@ function skillIcon(skill: string): Component {
   return map[skill] ?? BookOpen
 }
 
-function statusLabel(status: string) {
-  return getStatusLabel(status as ExerciseStatus, t)
+function progressClass(skill: string) {
+  return getSkillMeta(skill).progressClass
 }
 
-function statusClass(status: string) {
-  const map: Record<string, string> = {
-    new: 'bg-base-200 text-base-content/50',
-    inprogress: 'bg-warning/20 text-warning',
-    mastered: 'bg-success/20 text-success',
-  }
-  return map[status] ?? ''
+function meta(skill: SkillId) {
+  return getSkillMeta(skill)
 }
 
 function openExercise(ex: UnifiedExercise) {
@@ -819,10 +832,6 @@ function deleteWritingTopic(ex: UnifiedExercise) {
   if (confirmed) {
     void deleteTopic(ex.id)
   }
-}
-
-function progressClass(skill: string) {
-  return getSkillMeta(skill).progressClass
 }
 
 function resetFilters() {

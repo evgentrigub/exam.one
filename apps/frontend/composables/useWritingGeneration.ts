@@ -5,10 +5,6 @@
 
 // C1 is disabled in this build; re-enable with the level toggle later.
 // import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/exerciseGeneratorWritingC1'
-import {
-  generateTopicsA2Part1,
-  generateTopicsA2Part2,
-} from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { PartGenerationJob } from '~/utils/generation/partJobs'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 import {
@@ -31,6 +27,7 @@ export interface WritingGenerationOptions {
 }
 
 export const useWritingGeneration = () => {
+  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
   const state = ref<GenerationState>({
     isGenerating: false,
     difficulty: null,
@@ -144,9 +141,7 @@ export const useWritingGeneration = () => {
 
   const getPromptForPart = (part: 1 | 2, difficulty: Difficulty, numberOfTopics = 3): string => {
     if (difficulty === 'A2') {
-      return part === 1
-        ? generateTopicsA2Part1(numberOfTopics)
-        : generateTopicsA2Part2(numberOfTopics)
+      return generatorPrompt('writing', part, numberOfTopics)
     }
     // C1 disabled in this build — kept for later:
     // if (difficulty === 'C1') {
@@ -168,6 +163,8 @@ export const useWritingGeneration = () => {
     const pendingJobs = state.value.jobs.filter(
       job => job.status === 'queued' || job.status === 'failed'
     )
+
+    await hydratePrompts()
 
     for (const job of pendingJobs) {
       const part = job.part as 1 | 2

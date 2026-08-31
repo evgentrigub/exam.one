@@ -1,5 +1,16 @@
-import { IsBoolean, IsDefined, IsObject, IsString, ValidateNested } from 'class-validator'
+import {
+  IsBoolean,
+  IsDefined,
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator'
 import { Type } from 'class-transformer'
+import type { GenerationJobStatus } from '@exam-one/contracts'
+
+const STATUSES = ['IDLE', 'RUNNING', 'COMPLETED', 'FAILED'] as const
 
 export class MockExamSetBodyDto {
   @IsString()
@@ -39,6 +50,10 @@ export class UpsertMockExamAttemptDto {
 }
 
 export class UpsertMockGenerationDto {
+  @IsOptional()
+  @IsIn(STATUSES)
+  status?: GenerationJobStatus
+
   @IsObject()
   payload!: Record<string, unknown>
 }

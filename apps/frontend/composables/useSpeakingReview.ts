@@ -42,6 +42,32 @@ export function useSpeakingReview() {
   const review = ref<SpeakingReviewData | null>(null)
   const error = ref<string | null>(null)
   const outputLanguage = useReviewOutputLanguage()
+  const { hydrate: hydratePrompts, filledOrDefault } = usePromptOverrides()
+
+  function numbered(items: string[]): string {
+    return items.map((item, index) => `${index + 1}. ${item}`).join('\n')
+  }
+
+  function speakingReviewVars(
+    topic: SpeakingA2Topic,
+    transcripts: SpeakingTranscripts
+  ): Record<string, string> {
+    const teil1 = topic.testingPart === 1 ? (topic as SpeakingTopicA2Teil1) : null
+    const teil2 = topic.testingPart === 2 ? (topic as SpeakingTopicA2Teil2) : null
+    return {
+      topicId: topic.id,
+      theme: topic.theme,
+      task: topic.theme,
+      answerQuestions: teil1 ? numbered(teil1.answerQuestions) : '',
+      askQuestions: teil1 ? numbered(teil1.askQuestions) : '',
+      keywords: teil2 ? numbered(teil2.keywords) : '',
+      answers: transcripts.answers?.trim() ?? '',
+      questions: transcripts.questions?.trim() ?? '',
+      monologue: transcripts.monologue?.trim() ?? '',
+      userContent: transcripts.monologue?.trim() || transcripts.answers?.trim() || '',
+      outputLanguage: outputLanguage.value,
+    }
+  }
 
   async function requestReview(
     topic: SpeakingA2Topic,
@@ -52,7 +78,17 @@ export function useSpeakingReview() {
     error.value = null
 
     try {
-      const prompt = buildSpeakingReviewPrompt(topic, transcripts, outputLanguage.value)
+      await hydratePrompts()
+      const fallback = buildSpeakingReviewPrompt(topic, transcripts, outputLanguage.value)
+      const prompt = fallback
+        ? filledOrDefault(
+            'speaking',
+            topic.testingPart,
+            'review',
+            fallback,
+            speakingReviewVars(topic, transcripts)
+          )
+        : null
       if (!prompt) {
         throw new Error(
           topic.testingPart === 1

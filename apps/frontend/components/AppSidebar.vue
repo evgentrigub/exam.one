@@ -10,10 +10,12 @@
       aria-label="Open the Exam.one landing page"
       class="flex items-center gap-2.5 px-4 h-14 shrink-0 border-b border-base-300 transition-colors hover:bg-base-200"
     >
-      <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-        <span class="text-primary-content font-bold text-sm font-display">E</span>
+      <div class="w-7 h-7 rounded-field bg-primary text-primary-content grid place-items-center shrink-0">
+        <span class="font-display font-bold text-sm">E</span>
       </div>
-      <span class="font-display text-base font-semibold tracking-tight">Exam.one</span>
+      <span class="font-display text-lg font-bold leading-none tracking-tight">
+        Exam<span class="text-primary">.one</span>
+      </span>
     </a>
 
     <!-- Main nav -->
@@ -43,20 +45,20 @@
         {{ $t('nav.examFormat') }}
       </NuxtLink>
       <NuxtLink
-        to="/progress"
-        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
-        :class="isActive('/progress') ? 'nav-item-active' : 'text-base-content/70'"
-      >
-        <TrendingUp :size="16" />
-        {{ $t('nav.progress') }}
-      </NuxtLink>
-      <NuxtLink
         to="/mock-exam"
         class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
         :class="isActive('/mock-exam') ? 'nav-item-active' : 'text-base-content/70'"
       >
         <FileText :size="16" />
         {{ $t('nav.mockExams') }}
+      </NuxtLink>
+      <NuxtLink
+        to="/progress"
+        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
+        :class="isActive('/progress') ? 'nav-item-active' : 'text-base-content/70'"
+      >
+        <TrendingUp :size="16" />
+        {{ $t('nav.progress') }}
       </NuxtLink>
     </nav>
 
@@ -75,7 +77,7 @@
             <BookOpen :size="14" class="text-reading" />
             {{ $t('skill.reading') }}
           </span>
-          <span class="level-pip text-reading">{{ readingCount }}</span>
+          <span class="text-xs text-base-content/50">{{ readingCount }}</span>
         </NuxtLink>
         <NuxtLink
           to="/exercises?skill=writing"
@@ -86,7 +88,7 @@
             <PenLine :size="14" class="text-writing" />
             {{ $t('skill.writing') }}
           </span>
-          <span class="level-pip text-writing">{{ writingCount }}</span>
+          <span class="text-xs text-base-content/50">{{ writingCount }}</span>
         </NuxtLink>
         <NuxtLink
           to="/exercises?skill=listening"
@@ -97,7 +99,7 @@
             <Headphones :size="14" class="text-listening" />
             {{ $t('skill.listening') }}
           </span>
-          <span class="level-pip text-listening">{{ listeningCount }}</span>
+          <span class="text-xs text-base-content/50">{{ listeningCount }}</span>
         </NuxtLink>
         <NuxtLink
           to="/exercises?skill=speaking"
@@ -108,7 +110,7 @@
             <Mic :size="14" class="text-speaking" />
             {{ $t('skill.speaking') }}
           </span>
-          <span class="level-pip text-speaking">{{ speakingCount }}</span>
+          <span class="text-xs text-base-content/50">{{ speakingCount }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -137,7 +139,17 @@
           <div class="min-w-0">
             <div class="text-sm font-semibold leading-tight">Goethe {{ examLevel }}</div>
             <div class="text-[11px] text-base-content/60">
-              {{ $t('shell.examTargetMeta', { days: 42 }) }}
+              <template v-if="hasExamDate">
+                {{ $t('shell.examTargetMeta', { days: daysUntilExam }) }}
+              </template>
+              <button
+                v-else
+                type="button"
+                class="text-base-content/50 hover:text-primary hover:underline"
+                @click.stop="router.push('/settings?section=learning')"
+              >
+                {{ $t('shell.setExamDate') }}
+              </button>
             </div>
           </div>
         </NuxtLink>
@@ -184,12 +196,14 @@ import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useListeningExercises } from '~/composables/useListeningExercises'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
+import { useAccountProfile } from '~/composables/useAccountProfile'
 
 const route = useRoute()
 const router = useRouter()
 const runtimeConfig = useRuntimeConfig()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+const { daysUntilExam, hasExamDate } = useAccountProfile()
 
 const landingUrl = computed(() => {
   const configuredUrl = String(runtimeConfig.public.frontendLandingUrl || '').trim()

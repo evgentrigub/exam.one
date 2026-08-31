@@ -90,6 +90,7 @@ function getRecord(topicId: string): WritingReviewRecord | null {
 export function useWritingReview() {
   if (import.meta.client) void hydrateReviews()
   const outputLanguage = useReviewOutputLanguage()
+  const { hydrate: hydratePrompts, filledOrDefault } = usePromptOverrides()
 
   function getReview(topicId: string): WritingReviewRecord | null {
     return getRecord(topicId)
@@ -121,21 +122,24 @@ export function useWritingReview() {
   }
 
   function getReviewPrompt(topic: WritingExercise, userContent: string) {
-    // Select prompts based on difficulty level
     if (topic.difficulty === 'A2') {
-      if (topic.testingPart === 1) {
-        return reviewPromptA2Teil1(topic, userContent, outputLanguage.value)
-      } else {
-        return reviewPromptA2Teil2(topic, userContent, outputLanguage.value)
-      }
-    } else {
-      // C1 level
-      if (topic.testingPart === 1) {
-        return reviewPromptC1Teil1(topic, userContent)
-      } else {
-        return reviewPromptC1Teil2(topic, userContent)
-      }
+      const part = topic.testingPart === 2 ? 2 : 1
+      const fallback =
+        part === 1
+          ? reviewPromptA2Teil1(topic, userContent, outputLanguage.value)
+          : reviewPromptA2Teil2(topic, userContent, outputLanguage.value)
+      return filledOrDefault('writing', part, 'review', fallback, {
+        task: topic.task,
+        requirements: topic.requirements?.join(', ') ?? '',
+        userContent,
+        outputLanguage: outputLanguage.value,
+        topicId: topic.id,
+      })
     }
+    if (topic.testingPart === 1) {
+      return reviewPromptC1Teil1(topic, userContent)
+    }
+    return reviewPromptC1Teil2(topic, userContent)
   }
 
   /**
@@ -144,6 +148,7 @@ export function useWritingReview() {
    * available, the call site is prepared but disabled by default.
    */
   async function requestReview(topic: WritingExercise, userContent: string): Promise<void> {
+    await hydratePrompts()
     const prompt = getReviewPrompt(topic, userContent)
     const requestedAt = new Date().toISOString()
     saveRecord({

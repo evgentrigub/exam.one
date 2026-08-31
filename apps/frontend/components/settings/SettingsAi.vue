@@ -58,7 +58,9 @@
           <FileText :size="15" class="mt-0.5 shrink-0 opacity-60" />
           <span class="text-pretty">
             {{ $t('settings.aiPromptHint') }}
-            <code class="font-mono text-xs text-base-content/85">apps/frontend/data/{skill}/</code>
+            <NuxtLink to="/settings?section=prompts" class="link link-primary">
+              {{ $t('settings.navPrompts') }}
+            </NuxtLink>
           </span>
         </div>
       </div>

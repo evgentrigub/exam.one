@@ -25,6 +25,7 @@ export interface ReadingGenerationOptions {
 }
 
 export const useReadingGeneration = () => {
+  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
   const state = ref<PartGenerationState>({
     isGenerating: false,
     difficulty: null,
@@ -118,10 +119,12 @@ export const useReadingGeneration = () => {
       job => job.status === 'queued' || job.status === 'failed'
     )
 
+    await hydratePrompts()
+
     for (const job of pendingJobs) {
       const part = job.part
-      const partPrompt = readingA2Parts(1).find(p => p.part === part)
-      if (!partPrompt) {
+      const prompt = generatorPrompt('reading', part, 1)
+      if (!prompt) {
         updateJobStatus(part, 'failed', `No prompt configured for part ${part}`)
         loopError = `No prompt configured for part ${part}`
         continue
@@ -132,7 +135,7 @@ export const useReadingGeneration = () => {
       try {
         const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
           method: 'POST',
-          body: { difficulty, prompts: [partPrompt] },
+          body: { difficulty, prompts: [{ part, prompt }] },
         })
 
         if (response.error || !response.data || response.data.length === 0) {

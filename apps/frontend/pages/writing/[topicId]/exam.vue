@@ -22,36 +22,15 @@
     </div>
 
     <template v-else>
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex items-start gap-3 min-w-0">
-          <NuxtLink
-            to="/exercises?skill=writing"
-            class="mt-1 w-9 h-9 rounded-full border border-base-300 hover:bg-base-200 grid place-items-center text-base-content/70 shrink-0"
-            aria-label="Back to writing exercises"
-          >
-            <ArrowLeft :size="14" aria-hidden="true" />
-          </NuxtLink>
-          <div class="min-w-0">
-            <div
-              class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50"
-            >
-              <PenLine :size="11" aria-hidden="true" />
-              Writing practice · {{ topic.topicType }}
-            </div>
-            <h1 class="font-display text-[28px] font-bold leading-tight mt-1 truncate">
-              {{ topic.title }}
-            </h1>
-            <div class="text-sm text-base-content/60 mt-1">
-              Goethe {{ topic.difficulty }} · Teil {{ topic.testingPart || 2 }} ·
-              {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words
-            </div>
-          </div>
-        </div>
-        <span
-          class="text-[11px] font-mono font-semibold px-2 py-1 rounded-full bg-base-200 shrink-0"
-          >{{ topic.difficulty }}</span
-        >
-      </div>
+      <ExerciseHeader
+        skill="writing"
+        :type="topic.topicType"
+        :title="topic.title"
+        :subtitle="`Goethe ${topic.difficulty} · Teil ${topic.testingPart || 2} · ${topic.wordCount.min}–${topic.wordCount.max} words`"
+        :level="topic.difficulty"
+        to="/exercises?skill=writing"
+        :back-label="$t('exercisesUi.skillPractice', { skill: $t('skill.writing') })"
+      />
 
       <WritingSession :topic="topic" @complete="handleWritingComplete" />
     </template>
@@ -59,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, PenLine } from 'lucide-vue-next'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { WritingExercise } from '~/utils/types'
 import WritingSession from '~/components/writing/WritingSession.vue'

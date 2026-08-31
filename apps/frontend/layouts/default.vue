@@ -7,6 +7,7 @@
         <slot />
       </main>
     </div>
+    <GenerationJobHost />
   </div>
 </template>
 

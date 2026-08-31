@@ -1,11 +1,4 @@
-import { listeningA2Parts } from '~/data/listening/a2/exerciseGeneratorListeningA2'
 import { createGoetheA2MockExamSet, type MockExamContent } from '~/data/mockExam/goetheA2'
-import { readingA2Parts } from '~/data/reading/a2/exerciseGeneratorReadingA2'
-import { speakingA2Parts } from '~/data/speaking/a2/exerciseGeneratorSpeakingA2'
-import {
-  generateTopicsA2Part1,
-  generateTopicsA2Part2,
-} from '~/data/writing/a2/exerciseGeneratorWritingA2'
 import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
@@ -13,6 +6,7 @@ import type { SkillId } from '~/utils/labels'
 import type { WritingExercise } from '~/utils/types'
 import type { GenerationJobDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
+import { nestStatusFromPayload } from '~/composables/useGenerationJobs'
 
 export type MockGenerationStatus = 'queued' | 'running' | 'done' | 'failed'
 export type MockGenerationJobKind = 'content' | 'audio'
@@ -109,6 +103,7 @@ function createDraft(setNumber: number): MockGenerationDraft {
 }
 
 export const useMockExamGeneration = () => {
+  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
   const draft = useState<MockGenerationDraft | null>('mock-exam-generation-draft', () => null)
   const isInitialized = useState<boolean>('mock-exam-generation-initialized', () => false)
   const preflight = useState<MockExamPreflight>('mock-exam-generation-preflight', () => ({
@@ -136,7 +131,10 @@ export const useMockExamGeneration = () => {
     if (draft.value) {
       void apiFetch('/mock-exam/generation', {
         method: 'PUT',
-        body: { payload: draft.value },
+        body: {
+          payload: draft.value,
+          status: nestStatusFromPayload('MOCK', draft.value),
+        },
       }).catch(error => console.error('[mock-exam-generation] persist failed', error))
     } else {
       void apiFetch('/mock-exam/generation', { method: 'DELETE' }).catch(() => undefined)
@@ -225,10 +223,10 @@ export const useMockExamGeneration = () => {
     if (!draft.value) return
 
     if (skill === 'reading') {
-      const prompt = readingA2Parts(1).find(candidate => candidate.part === part)
+      const prompt = generatorPrompt('reading', part, 1)
       const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
         method: 'POST',
-        body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
+        body: { difficulty: 'A2', prompts: prompt ? [{ part, prompt }] : [] },
       })
       if (response.error || !response.data?.[0])
         throw new Error(response.error || `No reading exercise generated for Teil ${part}.`)
@@ -240,10 +238,10 @@ export const useMockExamGeneration = () => {
     }
 
     if (skill === 'listening') {
-      const prompt = listeningA2Parts(1).find(candidate => candidate.part === part)
+      const prompt = generatorPrompt('listening', part, 1)
       const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
         method: 'POST',
-        body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
+        body: { difficulty: 'A2', prompts: prompt ? [{ part, prompt }] : [] },
       })
       if (response.error || !response.data?.[0])
         throw new Error(response.error || `No listening exercise generated for Teil ${part}.`)
@@ -255,7 +253,7 @@ export const useMockExamGeneration = () => {
     }
 
     if (skill === 'writing') {
-      const prompt = part === 1 ? generateTopicsA2Part1(1) : generateTopicsA2Part2(1)
+      const prompt = generatorPrompt('writing', part, 1)
       const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
         method: 'POST',
         body: { prompt, part, difficulty: 'A2' },
@@ -270,10 +268,10 @@ export const useMockExamGeneration = () => {
       return
     }
 
-    const prompt = speakingA2Parts(1).find(candidate => candidate.part === part)
+    const prompt = generatorPrompt('speaking', part, 1)
     const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
       method: 'POST',
-      body: { difficulty: 'A2', prompts: prompt ? [prompt] : [] },
+      body: { difficulty: 'A2', prompts: prompt ? [{ part, prompt }] : [] },
     })
     if (response.error || !response.data?.[0])
       throw new Error(response.error || `No speaking exercise generated for Teil ${part}.`)
@@ -304,6 +302,7 @@ export const useMockExamGeneration = () => {
 
   const runPipeline = async (): Promise<boolean> => {
     if (!draft.value) return false
+    await hydratePrompts()
     draft.value.status = 'running'
     draft.value.error = null
     persist()

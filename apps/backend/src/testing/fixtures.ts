@@ -7,6 +7,7 @@ import type {
   GenerationJob,
   MockExamAttempt,
   MockExamSet,
+  PromptOverride,
   Result,
   Setting,
   User,
@@ -92,6 +93,20 @@ export function makeDraft(overrides: Partial<Draft> = {}): Draft {
     skill: 'WRITING',
     topicId: 'topic-1',
     payload: { text: 'Hallo' },
+    updatedAt: NOW,
+    ...overrides,
+  }
+}
+
+export function makePromptOverride(overrides: Partial<PromptOverride> = {}): PromptOverride {
+  return {
+    id: 'prompt-1',
+    userId: 'user-1',
+    skill: 'READING',
+    level: 'A2',
+    part: 1,
+    kind: 'GENERATOR',
+    body: 'Generate a reading text.',
     updatedAt: NOW,
     ...overrides,
   }

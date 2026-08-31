@@ -1,35 +1,16 @@
 <template>
   <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6">
-    <!-- Page header -->
-    <div v-if="text" class="flex items-start justify-between gap-4">
-      <div class="flex items-start gap-3 min-w-0">
-        <button
-          class="mt-1 w-9 h-9 rounded-full border border-base-300 hover:bg-base-200 grid place-items-center text-base-content/70 shrink-0"
-          aria-label="Back to reading exercises"
-          @click="goBack"
-        >
-          <ArrowLeft :size="14" />
-        </button>
-        <div class="min-w-0">
-          <div
-            class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50 flex-wrap"
-          >
-            <BookOpen :size="11" />
-            Reading practice · {{ textTypeLabel }}
-          </div>
-          <h1 class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content">
-            {{ text.title }}
-          </h1>
-          <div class="text-sm text-base-content/60 mt-1">
-            {{ subtitle }}
-          </div>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-        <span class="level-pip">{{ text.difficulty }}</span>
-        <span v-if="text.testingPart" class="level-pip">Teil {{ text.testingPart }}</span>
-      </div>
-    </div>
+    <ExerciseHeader
+      v-if="text"
+      skill="reading"
+      :type="textTypeLabel"
+      :title="text.title"
+      :subtitle="subtitle"
+      :level="text.difficulty"
+      :part="text.testingPart"
+      :back-label="$t('exercisesUi.skillPractice', { skill: $t('skill.reading') })"
+      @back="goBack"
+    />
 
     <!-- 2-col layout -->
     <div v-if="text" class="grid grid-cols-12 gap-6 items-start">
@@ -157,7 +138,6 @@
 <script setup lang="ts">
 import {
   AlignLeft,
-  ArrowLeft,
   Bell,
   BookOpen,
   Bookmark,

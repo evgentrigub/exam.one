@@ -11,6 +11,13 @@ import { GenerationJobsService } from './generation-jobs.service'
 export class GenerationJobsController {
   constructor(private readonly jobs: GenerationJobsService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'List resumable generation jobs' })
+  async list(@CurrentUser() user: User): Promise<ApiResponse<GenerationJobDto[]>> {
+    const data = await this.jobs.list(user)
+    return { data }
+  }
+
   @Get(':kind')
   @ApiOperation({ summary: 'Get resumable generation state' })
   async get(

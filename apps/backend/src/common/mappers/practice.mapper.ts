@@ -6,6 +6,7 @@ import type {
   MockExamAttemptDto,
   MockExamSetDto,
   MockExamSetSummaryDto,
+  PromptOverrideDto,
   ResultDto,
 } from '@exam-one/contracts'
 import type {
@@ -15,6 +16,7 @@ import type {
   GenerationJob,
   MockExamAttempt,
   MockExamSet,
+  PromptOverride,
   Result,
 } from '@exam-one/database'
 
@@ -65,6 +67,19 @@ export function toDraftDto(row: Draft): DraftDto {
     skill: row.skill,
     topicId: row.topicId,
     payload: row.payload,
+    updatedAt: row.updatedAt.toISOString(),
+  }
+}
+
+export function toPromptOverrideDto(row: PromptOverride): PromptOverrideDto {
+  return {
+    id: row.id,
+    userId: row.userId,
+    skill: row.skill,
+    level: row.level,
+    part: row.part,
+    kind: row.kind,
+    body: row.body,
     updatedAt: row.updatedAt.toISOString(),
   }
 }

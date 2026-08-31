@@ -121,6 +121,7 @@ function getRecord(topicId: string): ModelAnswerRecord | null {
 
 export function useModelAnswer() {
   if (import.meta.client) void hydrateModelAnswers()
+  const { hydrate: hydratePrompts, filledOrDefault } = usePromptOverrides()
   function getModelAnswer(topicId: string): ModelAnswer | null {
     const record = getRecord(topicId)
     return record?.modelAnswer || null
@@ -148,13 +149,17 @@ export function useModelAnswer() {
 
   function getGenerationPrompt(topic: WritingExercise): string {
     switch (topic.difficulty) {
-      case 'A2':
-        switch (topic.testingPart) {
-          case 1:
-            return generateModelAnswerA2Part1(topic.task, topic.id)
-          default:
-            return generateModelAnswerA2Part2(topic.task, topic.id)
-        }
+      case 'A2': {
+        const part = topic.testingPart === 2 ? 2 : 1
+        const fallback =
+          part === 1
+            ? generateModelAnswerA2Part1(topic.task, topic.id)
+            : generateModelAnswerA2Part2(topic.task, topic.id)
+        return filledOrDefault('writing', part, 'answer', fallback, {
+          task: topic.task,
+          topicId: topic.id,
+        })
+      }
       case 'C1':
         switch (topic.testingPart) {
           case 1:
@@ -172,6 +177,7 @@ export function useModelAnswer() {
    * Uses OpenAI API if available, otherwise returns error.
    */
   async function generateModelAnswer(topic: WritingExercise): Promise<void> {
+    await hydratePrompts()
     const prompt = getGenerationPrompt(topic)
 
     saveRecord({

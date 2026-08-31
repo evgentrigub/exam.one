@@ -106,7 +106,7 @@ export class MockExamController {
     @CurrentUser() user: User,
     @Body() dto: UpsertMockGenerationDto
   ): Promise<ApiResponse<GenerationJobDto>> {
-    const data = await this.generationJobs.upsert(user, 'MOCK', dto.payload)
+    const data = await this.generationJobs.upsert(user, 'MOCK', dto.payload, dto.status ?? 'IDLE')
     return { data }
   }
 

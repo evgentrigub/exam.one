@@ -9,6 +9,14 @@ import { toGenerationJobDto } from '../common/mappers/practice.mapper'
 export class GenerationJobsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async list(user: User): Promise<GenerationJobDto[]> {
+    const rows = await this.prisma.generationJob.findMany({
+      where: { userId: user.id },
+      orderBy: { updatedAt: 'desc' },
+    })
+    return rows.map(toGenerationJobDto)
+  }
+
   async get(user: User, kind: Skill): Promise<GenerationJobDto | null> {
     const row = await this.prisma.generationJob.findUnique({
       where: { userId_kind: { userId: user.id, kind } },

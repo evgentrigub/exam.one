@@ -25,6 +25,7 @@ export interface SpeakingGenerationOptions {
 }
 
 export const useSpeakingGeneration = () => {
+  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
   const state = ref<PartGenerationState>({
     isGenerating: false,
     difficulty: null,
@@ -116,10 +117,12 @@ export const useSpeakingGeneration = () => {
       job => job.status === 'queued' || job.status === 'failed'
     )
 
+    await hydratePrompts()
+
     for (const job of pendingJobs) {
       const part = job.part
-      const partPrompt = speakingA2Parts(1).find(p => p.part === part)
-      if (!partPrompt) {
+      const prompt = generatorPrompt('speaking', part, 1)
+      if (!prompt) {
         updateJobStatus(part, 'failed', `No prompt configured for part ${part}`)
         loopError = `No prompt configured for part ${part}`
         continue
@@ -130,7 +133,7 @@ export const useSpeakingGeneration = () => {
       try {
         const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
           method: 'POST',
-          body: { difficulty, prompts: [partPrompt] },
+          body: { difficulty, prompts: [{ part, prompt }] },
         })
 
         if (response.error || !response.data || response.data.length === 0) {

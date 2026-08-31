@@ -54,12 +54,19 @@ export const useAccountProfile = () => {
     demoPlan.value = plan
   }
 
-  const daysUntilExam = computed<number>(() => {
-    if (!profile.value.examTargetDate) return 0
+  const hasExamDate = computed(() => {
+    if (!profile.value.examTargetDate) return false
     const target = new Date(profile.value.examTargetDate)
-    if (Number.isNaN(target.getTime())) return 0
+    return !Number.isNaN(target.getTime())
+  })
+
+  const daysUntilExam = computed<number>(() => {
+    if (!hasExamDate.value) return 0
+    const target = new Date(profile.value.examTargetDate)
     return Math.max(0, Math.ceil((target.getTime() - Date.now()) / 86400000))
   })
+
+  const firstName = computed(() => profile.value.name.trim().split(/\s+/).filter(Boolean)[0] ?? '')
 
   const initials = computed<string>(() => {
     const parts = profile.value.name.trim().split(/\s+/).filter(Boolean)
@@ -102,7 +109,9 @@ export const useAccountProfile = () => {
   return {
     // State
     profile,
+    hasExamDate,
     daysUntilExam,
+    firstName,
     initials,
     effectivePlan,
     memberSince,

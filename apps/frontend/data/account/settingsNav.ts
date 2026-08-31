@@ -3,6 +3,7 @@ export const SETTINGS_SECTIONS = [
   'plan',
   'learning',
   'ai',
+  'prompts',
   'notify',
   'appearance',
   'data',

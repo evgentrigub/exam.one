@@ -8,6 +8,7 @@ describe('GenerationJobsService', () => {
   let prisma: {
     generationJob: {
       findUnique: jest.Mock
+      findMany: jest.Mock
       upsert: jest.Mock
       deleteMany: jest.Mock
     }
@@ -19,6 +20,7 @@ describe('GenerationJobsService', () => {
     prisma = {
       generationJob: {
         findUnique: jest.fn(),
+        findMany: jest.fn(),
         upsert: jest.fn(),
         deleteMany: jest.fn().mockResolvedValue({}),
       },
@@ -29,6 +31,20 @@ describe('GenerationJobsService', () => {
     }).compile()
 
     service = module.get(GenerationJobsService)
+  })
+
+  it('lists jobs for the current user', async () => {
+    const job = makeGenerationJob({ status: 'RUNNING' })
+    prisma.generationJob.findMany.mockResolvedValue([job])
+
+    const result = await service.list(user)
+
+    expect(prisma.generationJob.findMany).toHaveBeenCalledWith({
+      where: { userId: user.id },
+      orderBy: { updatedAt: 'desc' },
+    })
+    expect(result).toHaveLength(1)
+    expect(result[0]?.status).toBe('RUNNING')
   })
 
   it('returns null when no job exists', async () => {

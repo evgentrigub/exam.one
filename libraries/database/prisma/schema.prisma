@@ -43,6 +43,12 @@ enum GenerationJobStatus {
   FAILED
 }
 
+enum PromptKind {
+  GENERATOR
+  ANSWER
+  REVIEW
+}
+
 model User {
   id               String            @id @default(cuid())
   email            String            @unique
@@ -59,6 +65,7 @@ model User {
   mockExamSets     MockExamSet[]
   mockExamAttempts MockExamAttempt[]
   generationJobs   GenerationJob[]
+  promptOverrides  PromptOverride[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -183,4 +190,19 @@ model GenerationJob {
   updatedAt DateTime            @updatedAt
 
   @@unique([userId, kind])
+}
+
+model PromptOverride {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill     Skill
+  level     ExamLevel
+  part      Int
+  kind      PromptKind
+  body      String
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, skill, level, part, kind])
+  @@index([userId])
 }

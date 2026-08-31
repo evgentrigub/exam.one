@@ -19,6 +19,7 @@ import { AttemptsModule } from './attempts/attempts.module'
 import { ResultsModule } from './results/results.module'
 import { DraftsModule } from './drafts/drafts.module'
 import { GenerationJobsModule } from './generation-jobs/generation-jobs.module'
+import { PromptOverridesModule } from './prompt-overrides/prompt-overrides.module'
 import { MockExamModule } from './mock-exam/mock-exam.module'
 
 @Module({
@@ -49,6 +50,7 @@ import { MockExamModule } from './mock-exam/mock-exam.module'
     ResultsModule,
     DraftsModule,
     GenerationJobsModule,
+    PromptOverridesModule,
     MockExamModule,
   ],
   providers: [
