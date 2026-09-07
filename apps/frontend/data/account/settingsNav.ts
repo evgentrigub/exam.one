@@ -3,7 +3,6 @@ export const SETTINGS_SECTIONS = [
   'plan',
   'learning',
   'ai',
-  'prompts',
   'notify',
   'appearance',
   'data',
@@ -11,7 +10,7 @@ export const SETTINGS_SECTIONS = [
 
 export type SettingsSectionId = (typeof SETTINGS_SECTIONS)[number]
 
-const PROFILE_ALIASES = new Set(['security', 'connected'])
+const PROFILE_ALIASES = new Set(['security', 'connected', 'prompts'])
 
 export function resolveSettingsSection(raw: unknown): SettingsSectionId {
   const value = Array.isArray(raw) ? raw[0] : raw

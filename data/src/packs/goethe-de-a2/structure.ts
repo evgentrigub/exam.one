@@ -1,32 +1,6 @@
-import type { SkillId } from '~/utils/labels'
+import type { ExamModule } from '../../types'
 
-/**
- * Goethe-Zertifikat A2 exam structure (modular 2024 format).
- * Drives the "Exam format" page. Sourced from agent-os/product/german-exam-A2.md
- * and the design prototype's EXAM_STRUCTURE.
- */
-
-export interface ExamPart {
-  n: number
-  title: string
-  format: string
-  short: string
-  goal: string
-  skill: string
-  available?: boolean
-}
-
-export interface ExamModule {
-  id: SkillId
-  label: string
-  minutes: number
-  points: number
-  summary: string
-  scoringNote: string
-  parts: ExamPart[]
-}
-
-export const goetheA2Structure: ExamModule[] = [
+export const goetheDeA2Structure: ExamModule[] = [
   {
     id: 'reading',
     label: 'Reading (Lesen)',
@@ -43,15 +17,16 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Read a short article (~200 words) and answer 5 a/b/c questions.',
         goal: 'Understand the main points and key details of an informational text.',
         skill: 'Detailed reading of authentic everyday texts.',
+        itemFormat: 'selection',
       },
       {
         n: 2,
         title: 'Display board / schedule',
         format: '5 scenarios · choose the place (a · b · c)',
-        short:
-          'Find information on a display board or timetable — pick the right floor or location.',
+        short: 'Find information on a display board or timetable — pick the right floor or location.',
         goal: 'Locate one specific piece of information quickly in everyday signage.',
         skill: 'Selective / scanning reading.',
+        itemFormat: 'selection',
       },
       {
         n: 3,
@@ -60,14 +35,16 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Read a personal email (~230 words) and answer 5 a/b/c questions.',
         goal: 'Grasp intentions, feelings and details in personal correspondence.',
         skill: 'Reading private correspondence.',
+        itemFormat: 'selection',
       },
       {
         n: 4,
         title: 'Matching advertisements',
         format: 'Match ads a–f to 5 people (one answer is always "x")',
         short: 'Match the right advertisement to each person — one always has no match (x).',
-        goal: 'Connect each person\u2019s needs to a suitable offer.',
+        goal: "Connect each person's needs to a suitable offer.",
         skill: 'Matching & inference under time pressure.',
+        itemFormat: 'matching',
       },
     ],
   },
@@ -87,6 +64,7 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Short announcements and messages — 5 questions, audio played twice.',
         goal: 'Catch key information in short, spoken messages.',
         skill: 'Detailed listening to short audio.',
+        itemFormat: 'selection',
       },
       {
         n: 2,
@@ -95,6 +73,7 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'One long dialogue — match people to options, 9 choices, played once.',
         goal: 'Follow a longer conversation and assign the right detail to each person.',
         skill: 'Matching while listening.',
+        itemFormat: 'matching',
       },
       {
         n: 3,
@@ -103,6 +82,7 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Short everyday conversations — 5 multiple-choice questions, played once.',
         goal: 'Understand short exchanges in daily situations.',
         skill: 'Gist & detail in conversation.',
+        itemFormat: 'selection',
       },
       {
         n: 4,
@@ -112,6 +92,7 @@ export const goetheA2Structure: ExamModule[] = [
           'A radio interview — decide whether 5 statements are correct (Ja / Nein), played twice.',
         goal: 'Understand opinions and statements in a longer interview.',
         skill: 'True / false judgement.',
+        itemFormat: 'true-false',
       },
     ],
   },
@@ -130,6 +111,7 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Write a short, informal message to a friend using "du" with 3 content points.',
         goal: 'Communicate simple personal information in a casual register.',
         skill: 'Informal everyday writing.',
+        itemFormat: 'freeform',
       },
       {
         n: 2,
@@ -138,6 +120,7 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Write a polite email using "Sie" with greeting, sign-off and 3 content points.',
         goal: 'Make a polite request or reply in a formal register.',
         skill: 'Formal correspondence.',
+        itemFormat: 'freeform',
       },
     ],
   },
@@ -157,15 +140,17 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Ask your partner 4 questions from prompt cards and answer theirs.',
         goal: 'Exchange personal information in a simple interview.',
         skill: 'Asking & answering questions.',
+        itemFormat: 'recording',
       },
       {
         n: 2,
         title: 'Monologue',
         format: 'Talk on a topic using 4 keywords + follow-ups (8 pts)',
         short:
-          'Talk about yourself on a topic using 4 keywords, then answer the examiner\u2019s questions.',
+          "Talk about yourself on a topic using 4 keywords, then answer the examiner's questions.",
         goal: 'Speak coherently about familiar, personal topics.',
         skill: 'Connected, structured speech.',
+        itemFormat: 'recording',
       },
       {
         n: 3,
@@ -174,19 +159,9 @@ export const goetheA2Structure: ExamModule[] = [
         short: 'Plan a shared activity together using a personal calendar that has busy slots.',
         goal: 'Negotiate and agree on an arrangement with a partner.',
         skill: 'Interactive negotiation.',
+        itemFormat: 'recording',
         available: false,
       },
     ],
   },
 ]
-
-export const goetheA2TotalMinutes = goetheA2Structure.reduce((sum, m) => sum + m.minutes, 0)
-export const goetheA2TotalPoints = goetheA2Structure.reduce((sum, m) => sum + m.points, 0)
-
-export function getAvailableExamParts(skill: SkillId): ExamPart[] {
-  return (
-    goetheA2Structure
-      .find(module => module.id === skill)
-      ?.parts.filter(part => part.available !== false) ?? []
-  )
-}

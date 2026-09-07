@@ -1,5 +1,4 @@
-import type { SkillId } from '~/utils/labels'
-import type { LanguageOptions } from '~/utils/types'
+import type { SkillId } from '../../../types'
 
 export interface MockExamOverviewItem {
   skill: SkillId
@@ -32,7 +31,7 @@ export interface MockExamOverviewInput {
 }
 
 export function buildMockExamOverviewPrompt(
-  outputLanguage: LanguageOptions,
+  outputLanguage: string,
   result: MockExamOverviewInput
 ): string {
   return `Review this Goethe A2 mock-exam result and give a concise learner overview in ${outputLanguage}.
