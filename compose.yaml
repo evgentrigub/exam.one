@@ -66,10 +66,12 @@ services:
       TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
       TTS_SPEED: '${TTS_SPEED:-1.0}'
       TTS_LANG: '${TTS_LANG:-de}'
+      TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
       STT_PROVIDER: '${STT_PROVIDER:-local}'
       STT_BASE_URL: 'http://parakeet:8882'
       STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
+      STT_LANGUAGES: '${STT_LANGUAGES:-de}'
       STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
       GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
     ports:

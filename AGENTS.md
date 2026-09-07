@@ -60,6 +60,7 @@ Use `pnpm`.
 - `libraries/contracts/` contains framework-neutral shared API types
 - `libraries/database/` owns the Prisma schema, migrations, and seeds
 - `libraries/exam-content/` is the shared exam-content boundary
+- `data/` (`@exam-one/exam-packs`) holds exam structure and PromptSpecs
 - `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
 - `compose.yaml` is the only Compose file; it defines frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT
 - `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the core app after migrate/seed, then speech sidecars, after ensuring host-persisted speech models are present
@@ -110,14 +111,14 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ## Data And Persistence Rules
 
-- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates can stay under `apps/frontend/data/`
-- Exam-specific seeds, prompts, scoring, grading, and mock exam behavior live in `@exam-one/exam-content` and `apps/frontend/data/`. Keep shared models and UI flows exam-agnostic
+- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates live under `data/src/packs/` (`@exam-one/exam-packs`)
+- Exam-specific seeds, scoring, and mock payloads live in `@exam-one/exam-content`. Pack structure and prompts live in `data/src/packs/`. Keep shared models and UI flows exam-agnostic
 - Skill catalogs, attempts, drafts, reviews, generation jobs, and mock exams are owned by NestJS/PostgreSQL after login. Do not add new authoritative practice keys to localStorage
 - Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
 
 ## AI Integration Rules
 
-- Keep prompts and AI-specific logic isolated from core user flows; ship prompt templates as editable demo templates
+- Keep prompts and AI-specific logic isolated from core user flows; pack `PromptSpec`s live under `data/src/packs/`
 - Keep AI provider-agnostic (bring-your-own-key); do not hard-code a single provider into core or endpoint contracts
 - Avoid blocking UI completion on AI responses
 - Handle missing API keys and upstream failures explicitly
