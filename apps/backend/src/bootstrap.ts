@@ -47,10 +47,103 @@ export function configureApp(app: INestApplication): void {
 
   const config = new DocumentBuilder()
     .setTitle('exam.one API')
-    .setDescription('Backend API for exam.one')
-    .setVersion('0.0.1')
-    .addCookieAuth('exam_one_access')
+    .setDescription(
+      [
+        '# exam.one Backend API',
+        '',
+        'Open-source, self-hostable language exam preparation platform providing comprehensive practice, mock exams, AI grading, and speech services.',
+        '',
+        '## Architecture & Design',
+        '- **Backend**: Standalone NestJS application running on port 3001 with global prefix `/api` and URI versioning `/v1`.',
+        '- **Frontend**: Nuxt 4 web application running on port 3000.',
+        '- **Database**: PostgreSQL with Prisma ORM for accounts, learning settings, practice catalogs, user attempts, and mock sets.',
+        '- **Speech Services**: Local or containerized Kokoro TTS (synthesis) and Parakeet/Whisper STT (transcription).',
+        '',
+        '## Authentication Architecture',
+        '- Authentication is session-based using **HTTP-only cookies**:',
+        '  - `exam_one_access`: Short-lived JWT access token sent automatically by browsers/Postman cookie jars.',
+        '  - `exam_one_refresh`: Long-lived refresh token used to rotate access tokens at `/api/v1/auth/refresh`.',
+        '- When email verification is required (`requiresEmailVerification: true`), protected routes return `403 Forbidden` until confirmed with a 6-digit code.',
+        '- Local accounts can also be recovered or password-reset via CLI: `pnpm auth:set-password --email user@example.com`.',
+        '',
+        '## Multi-Exam Pack Context (`x-exam-pack`)',
+        '- exam.one supports multiple modular exam packs (e.g. `goethe-de-a2`, `goethe-de-c1`).',
+        '- Requests resolve the active pack via the following cascade:',
+        '  1. Explicit `x-exam-pack` header if provided in the HTTP request.',
+        '  2. Authenticated user learning settings (`Setting.packId`).',
+        '  3. Default system pack fallback (`goethe-de-a2`).',
+        '- Inactive packs (such as C1) allow read-only historical attempt review but reject new practice attempts.',
+        '',
+        '## API Response Envelopes',
+        '- **Standard REST API** (`ApiResponse<T>`):',
+        '  ```json',
+        '  {',
+        '    "data": { ... },',
+        '    "error": null',
+        '  }',
+        '  ```',
+        '  On business/validation error: `{ "data": null, "error": { "code": "...", "message": "...", "details": ... } }`.',
+        '- **AI & Speech Services** (`AiResponse<T>`):',
+        '  ```json',
+        '  {',
+        '    "data": { ... },',
+        '    "error": null',
+        '  }',
+        '  ```',
+        '  Returns HTTP 200 with `{ "data": null, "error": "Reason" }` when an AI provider key is unconfigured or speech container is unavailable, allowing graceful client-side degradation.',
+        '',
+        '## Rate Limiting & Throttling',
+        '- Global limit: **120 requests/minute** per IP across all endpoints.',
+        '- Authentication sensitive endpoints (`/auth/login`, `/auth/register`, `/auth/verify-email`, etc.): **5 to 20 requests/minute**.',
+        '- AI and TTS generation endpoints: **20 requests/minute**.',
+        '',
+        '## HTTP Status Code Conventions',
+        '- `200 OK`: Successful retrieval or execution.',
+        '- `201 Created`: Resource successfully created.',
+        '- `400 Bad Request`: Validation failure or unsupported pack parameter.',
+        '- `401 Unauthorized`: Missing or invalid session cookie.',
+        '- `403 Forbidden`: Email unverified or resource belongs to another user.',
+        '- `404 Not Found`: Resource does not exist.',
+        '- `429 Too Many Requests`: Exceeded rate limit window.',
+        '- `503 Service Unavailable`: Database or underlying service readiness check failure.'
+      ].join('\n')
+    )
+    .setVersion('1.0.0')
+    .addCookieAuth('exam_one_access', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'exam_one_access',
+      description: 'HTTP-only JWT access token cookie set during login or registration',
+    })
+    .addApiKey(
+      {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-exam-pack',
+        description: 'Target exam pack identifier (e.g. goethe-de-a2). Resolves to active user setting if omitted.',
+      },
+      'x-exam-pack'
+    )
+    .addTag('health', 'Service liveness and database connectivity readiness checks')
+    .addTag('auth', 'Authentication, registration, email verification, session refresh, and password recovery')
+    .addTag('users', 'User profile management')
+    .addTag('settings', 'Learning settings, exam level, and active exam pack preferences')
+    .addTag('exercises', 'Skill practice catalog and user-generated practice exercises')
+    .addTag('attempts', 'Skill practice attempt submissions, scoring, and historical records')
+    .addTag('drafts', 'Draft management for ongoing exercise and writing sessions')
+    .addTag('ai', 'LLM exercise generation, model answers, automated grading, and mock reviews')
+    .addTag('llm', 'LLM provider connectivity and runtime configuration health')
+    .addTag('tts', 'Kokoro Text-to-Speech synthesis and audio file lifecycle management')
+    .addTag('stt', 'Parakeet and Whisper Speech-to-Text audio transcription services')
+    .addTag('mock-exam', 'Mock exam sets, full-module attempts, grading states, and drafts')
+    .addTag('generation-jobs', 'Asynchronous resumable generation jobs across practice skills and mock exams')
     .build()
+
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api/docs', app, document)
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customSiteTitle: 'exam.one API Documentation',
+  })
 }

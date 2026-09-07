@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req, Res as NestRes } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiOperation, ApiResponse as ApiResponseDoc, ApiTags } from '@nestjs/swagger'
 import { Throttle } from '@nestjs/throttler'
 import type {
   ApiResponse,
@@ -9,6 +9,12 @@ import type {
 } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
 import type { Request, Response } from 'express'
+import {
+  ApiErrorDto,
+  AuthConfigResponseDto,
+  AuthSessionResponseDto,
+  MessageResponseDto,
+} from '../dto/api-response.dto'
 import { CurrentUser } from '../decorators/current-user.decorator'
 import { Public } from '../decorators/public.decorator'
 import { AuthService } from './auth.service'
@@ -28,7 +34,11 @@ export class AuthController {
 
   @Public()
   @Get('config')
-  @ApiOperation({ summary: 'Auth instance config (email / registration)' })
+  @ApiOperation({
+    summary: 'Auth instance config (email / registration)',
+    description: 'Returns server configuration flags indicating whether SMTP email delivery is enabled and whether open registration is allowed.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Authentication configuration flags', type: AuthConfigResponseDto })
   config(): ApiResponse<AuthConfigDto> {
     return { data: this.auth.getConfig() }
   }
@@ -36,7 +46,14 @@ export class AuthController {
   @Public()
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('register')
-  @ApiOperation({ summary: 'Register a new account' })
+  @ApiOperation({
+    summary: 'Register a new account',
+    description: 'Registers a new user account and sets `exam_one_access` and `exam_one_refresh` HTTP-only session cookies. If email delivery is configured, sets `requiresEmailVerification: true` until verified.',
+  })
+  @ApiResponseDoc({ status: 201, description: 'Account created and session established', type: AuthSessionResponseDto })
+  @ApiResponseDoc({ status: 400, description: 'Validation failure or weak password', type: ApiErrorDto })
+  @ApiResponseDoc({ status: 403, description: 'Registration is currently disabled', type: ApiErrorDto })
+  @ApiResponseDoc({ status: 409, description: 'Email address is already registered', type: ApiErrorDto })
   async register(
     @Body() dto: RegisterDto,
     @NestRes({ passthrough: true }) res: Response
@@ -48,7 +65,13 @@ export class AuthController {
   @Public()
   @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @Post('login')
-  @ApiOperation({ summary: 'Sign in' })
+  @ApiOperation({
+    summary: 'Sign in',
+    description: 'Authenticates user credentials and issues `exam_one_access` and `exam_one_refresh` HTTP-only session cookies.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Successfully authenticated session', type: AuthSessionResponseDto })
+  @ApiResponseDoc({ status: 400, description: 'Validation failure', type: ApiErrorDto })
+  @ApiResponseDoc({ status: 401, description: 'Invalid email or password', type: ApiErrorDto })
   async login(
     @Body() dto: LoginDto,
     @NestRes({ passthrough: true }) res: Response
@@ -59,7 +82,11 @@ export class AuthController {
 
   @Public()
   @Post('logout')
-  @ApiOperation({ summary: 'Sign out' })
+  @ApiOperation({
+    summary: 'Sign out',
+    description: 'Revokes the active refresh token session and clears both `exam_one_access` and `exam_one_refresh` cookies.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Session revoked and cookies cleared', type: MessageResponseDto })
   logout(
     @Req() req: Request,
     @NestRes({ passthrough: true }) res: Response
@@ -70,7 +97,12 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
-  @ApiOperation({ summary: 'Refresh access cookie' })
+  @ApiOperation({
+    summary: 'Refresh access cookie',
+    description: 'Reads the `exam_one_refresh` HTTP-only cookie, validates token validity, and issues a refreshed `exam_one_access` cookie.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Access token cookie successfully refreshed', type: AuthSessionResponseDto })
+  @ApiResponseDoc({ status: 401, description: 'Missing, invalid, or revoked refresh cookie', type: ApiErrorDto })
   async refresh(
     @Req() req: Request,
     @NestRes({ passthrough: true }) res: Response
@@ -81,7 +113,13 @@ export class AuthController {
   }
 
   @Get('me')
-  @ApiOperation({ summary: 'Current session' })
+  @ApiCookieAuth('exam_one_access')
+  @ApiOperation({
+    summary: 'Current session',
+    description: 'Returns the session user profile and email confirmation status for the active `exam_one_access` session.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Current session profile', type: AuthSessionResponseDto })
+  @ApiResponseDoc({ status: 401, description: 'Unauthorized - invalid or missing session cookie', type: ApiErrorDto })
   me(@CurrentUser() user: User): ApiResponse<AuthSessionData> {
     return { data: this.auth.me(user) }
   }
@@ -89,7 +127,12 @@ export class AuthController {
   @Public()
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('verify-email')
-  @ApiOperation({ summary: 'Confirm email with 6-digit code' })
+  @ApiOperation({
+    summary: 'Confirm email with 6-digit code',
+    description: 'Validates the 6-digit code sent to the users email address, marks `emailVerified: true`, and updates session cookies.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Email confirmed and access granted', type: AuthSessionResponseDto })
+  @ApiResponseDoc({ status: 400, description: 'Invalid or expired confirmation code', type: ApiErrorDto })
   async verifyEmail(
     @Body() dto: VerifyEmailDto,
     @NestRes({ passthrough: true }) res: Response
@@ -101,7 +144,12 @@ export class AuthController {
   @Public()
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('resend-verification')
-  @ApiOperation({ summary: 'Resend verification code' })
+  @ApiOperation({
+    summary: 'Resend verification code',
+    description: 'Generates and delivers a fresh 6-digit email confirmation code if the account is unverified.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Verification code resent if account exists', type: MessageResponseDto })
+  @ApiResponseDoc({ status: 429, description: 'Rate limit exceeded (5 requests/minute)', type: ApiErrorDto })
   resendVerification(@Body() dto: ResendVerificationDto): Promise<MessageResponse> {
     return this.auth.resendVerification(dto)
   }
@@ -109,7 +157,12 @@ export class AuthController {
   @Public()
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('forgot-password')
-  @ApiOperation({ summary: 'Request password reset' })
+  @ApiOperation({
+    summary: 'Request password reset',
+    description: 'Sends a secure password reset link and token to the provided email address if the account exists.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Password reset email queued', type: MessageResponseDto })
+  @ApiResponseDoc({ status: 429, description: 'Rate limit exceeded', type: ApiErrorDto })
   forgotPassword(@Body() dto: ForgotPasswordDto): Promise<MessageResponse> {
     return this.auth.forgotPassword(dto)
   }
@@ -117,7 +170,12 @@ export class AuthController {
   @Public()
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('reset-password')
-  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiOperation({
+    summary: 'Reset password with token',
+    description: 'Resets the account password using the token sent via email, revokes prior sessions, and establishes a new session.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Password reset successfully', type: AuthSessionResponseDto })
+  @ApiResponseDoc({ status: 400, description: 'Invalid or expired reset token', type: ApiErrorDto })
   async resetPassword(
     @Body() dto: ResetPasswordDto,
     @NestRes({ passthrough: true }) res: Response
@@ -127,7 +185,14 @@ export class AuthController {
   }
 
   @Post('change-password')
-  @ApiOperation({ summary: 'Change password while signed in' })
+  @ApiCookieAuth('exam_one_access')
+  @ApiOperation({
+    summary: 'Change password while signed in',
+    description: 'Updates password for the currently signed-in user after verifying their current password.',
+  })
+  @ApiResponseDoc({ status: 200, description: 'Password changed successfully', type: MessageResponseDto })
+  @ApiResponseDoc({ status: 400, description: 'Incorrect current password or weak new password', type: ApiErrorDto })
+  @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   changePassword(
     @CurrentUser() user: User,
     @Body() dto: ChangePasswordDto,
