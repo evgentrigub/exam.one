@@ -1,6 +1,6 @@
 import { Test, type TestingModule } from '@nestjs/testing'
 import { GenerateReadingService } from '../../../src/ai/generate-reading.service'
-import { LlmService } from '../../../src/llm/llm.service'
+import { LlmService } from '../../../src/ai/llm.service'
 
 describe('GenerateReadingService', () => {
   it('returns a business error when no LLM key is configured', async () => {

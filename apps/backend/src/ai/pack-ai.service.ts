@@ -11,8 +11,8 @@ import {
   type PromptVars,
 } from '@exam-one/exam-packs'
 import type { AiResponse } from '@exam-one/contracts'
-import { packContext } from '../common/pack-context.interceptor'
-import { LlmService } from '../llm/llm.service'
+import { packContext } from '../core/interceptors/pack-context.interceptor'
+import { LlmService } from './llm.service'
 import { extractJsonArray } from './json'
 
 @Injectable()

@@ -8,8 +8,8 @@ import type {
   MockExamSetSummaryDto,
 } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
-import { GenerationJobsService } from '../generation-jobs/generation-jobs.service'
+import { CurrentUser } from '../core/decorators/current-user.decorator'
+import { GenerationJobsService } from './generation-jobs.service'
 import {
   CreateMockExamSetDto,
   UpsertMockExamAttemptDto,

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { HttpException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { DraftsService } from '../../../src/drafts/drafts.service'
+import { DraftsService } from '../../../src/practice/drafts.service'
 import { makeDraft, makeUser } from '../../../src/testing/fixtures'
 
 function expectCode(

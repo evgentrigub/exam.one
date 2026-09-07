@@ -5,7 +5,7 @@ import request from 'supertest'
 import { createPrismaClient } from '@exam-one/database'
 import { AppModule } from '../src/app.module'
 import { configureApp } from '../src/bootstrap'
-import { LlmService } from '../src/llm/llm.service'
+import { LlmService } from '../src/ai/llm.service'
 
 describe('Auth + health (e2e)', () => {
   let app: INestApplication

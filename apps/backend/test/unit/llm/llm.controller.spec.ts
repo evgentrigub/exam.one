@@ -1,6 +1,6 @@
 import { Test, type TestingModule } from '@nestjs/testing'
-import { LlmController } from '../../../src/llm/llm.controller'
-import { LlmService } from '../../../src/llm/llm.service'
+import { LlmController } from '../../../src/ai/llm.controller'
+import { LlmService } from '../../../src/ai/llm.service'
 
 describe('LlmController', () => {
   it('delegates health to LlmService', async () => {

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Patch } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { ApiResponse, UserDto } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
+import { CurrentUser } from '../core/decorators/current-user.decorator'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 

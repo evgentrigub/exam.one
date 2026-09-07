@@ -4,8 +4,8 @@ import { Reflector } from '@nestjs/core'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { JwtAuthGuard } from '../../../../src/common/guards/jwt-auth.guard'
-import { ACCESS_COOKIE } from '../../../../src/auth/auth.constants'
+import { JwtAuthGuard } from '../../../../src/core/guards/jwt-auth.guard'
+import { ACCESS_COOKIE } from '../../../../src/core/auth/auth.constants'
 import { makeUser } from '../../../../src/testing/fixtures'
 
 describe('JwtAuthGuard', () => {

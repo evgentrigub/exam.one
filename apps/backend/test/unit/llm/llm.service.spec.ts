@@ -1,9 +1,9 @@
 import { Test, type TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
-import { LlmService } from '../../../src/llm/llm.service'
-import * as adapter from '../../../src/llm/llm.adapter'
+import { LlmService } from '../../../src/ai/llm.service'
+import * as adapter from '../../../src/ai/llm.adapter'
 
-jest.mock('../../../src/llm/llm.adapter', () => ({
+jest.mock('../../../src/ai/llm.adapter', () => ({
   getLlmConfig: jest.fn(),
   callLlm: jest.fn(),
   verifyLlmConnection: jest.fn(),

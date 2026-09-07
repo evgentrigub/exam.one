@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { HealthReadyResponse } from '@exam-one/contracts'
-import { HealthController } from '../../../src/health/health.controller'
-import { HealthService } from '../../../src/health/health.service'
+import { HealthController } from '../../../src/core/health/health.controller'
+import { HealthService } from '../../../src/core/health/health.service'
 
 describe('HealthController', () => {
   let controller: HealthController

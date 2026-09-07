@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { ExercisesService } from '../../../src/exercises/exercises.service'
+import { ExercisesService } from '../../../src/practice/exercises.service'
 import { makeExercise, makeUser } from '../../../src/testing/fixtures'
 
 function expectCode(

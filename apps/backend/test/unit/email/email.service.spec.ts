@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
-import { EmailService } from '../../../src/email/email.service'
+import { EmailService } from '../../../src/core/email/email.service'
 
 const sendMail = jest.fn().mockResolvedValue({})
 const createTransport = jest.fn().mockReturnValue({ sendMail })

@@ -7,7 +7,7 @@ import type {
   ReadingExercise,
   ReadingPromptPart,
 } from '@exam-one/exam-content'
-import { LlmService } from '../llm/llm.service'
+import { LlmService } from './llm.service'
 import type { GenerateReadingDto } from './dto/ai.dto'
 import {
   goetheExtractTextsFromResponse as extractTextsFromResponse,

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { HttpException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { AttemptsService } from '../../../src/attempts/attempts.service'
-import { ExercisesService } from '../../../src/exercises/exercises.service'
+import { AttemptsService } from '../../../src/practice/attempts.service'
+import { ExercisesService } from '../../../src/practice/exercises.service'
 import { makeAttempt, makeExercise, makeResult, makeUser } from '../../../src/testing/fixtures'
 
 function expectCode(

@@ -4,7 +4,7 @@ import { goetheReviewSystem0 } from '@exam-one/exam-packs'
 import { Injectable, Logger } from '@nestjs/common'
 import type { AiResponse } from '@exam-one/contracts'
 import type { SpeakingReviewData } from '@exam-one/exam-content'
-import { LlmService } from '../llm/llm.service'
+import { LlmService } from './llm.service'
 import { extractJsonObject } from './json'
 import type { ReviewMockExamDto, ReviewSpeakingDto, ReviewWritingDto } from './dto/ai.dto'
 import {

@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 import { json, urlencoded } from 'express'
 import helmet from 'helmet'
-import { RequestIdInterceptor } from './common/interceptors/request-id.interceptor'
+import { RequestIdInterceptor } from './core/interceptors/request-id.interceptor'
 
 export function isSwaggerEnabled(
   nodeEnv = process.env['NODE_ENV'],

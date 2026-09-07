@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { SettingsService } from '../../../src/settings/settings.service'
+import { SettingsService } from '../../../src/users/settings.service'
 import { makeSetting, makeUser } from '../../../src/testing/fixtures'
 
 describe('SettingsService', () => {

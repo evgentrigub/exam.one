@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { GenerationJobsService } from '../../../src/generation-jobs/generation-jobs.service'
+import { GenerationJobsService } from '../../../src/mock-exam/generation-jobs.service'
 import { makeGenerationJob, makeUser } from '../../../src/testing/fixtures'
 
 describe('GenerationJobsService', () => {

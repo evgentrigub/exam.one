@@ -1,10 +1,10 @@
 import { Test, type TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
-import { TtsService } from '../../../src/tts/tts.service'
-import * as adapter from '../../../src/tts/tts.adapter'
-import { containedAudioPath } from '../../../src/tts/listening-audio'
+import { TtsService } from '../../../src/speech/tts/tts.service'
+import * as adapter from '../../../src/speech/tts/tts.adapter'
+import { containedAudioPath } from '../../../src/speech/tts/listening-audio'
 
-jest.mock('../../../src/tts/tts.adapter', () => ({
+jest.mock('../../../src/speech/tts/tts.adapter', () => ({
   checkTtsHealth: jest.fn(),
   synthesizeListeningTranscript: jest.fn(),
 }))

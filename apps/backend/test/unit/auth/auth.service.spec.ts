@@ -12,13 +12,13 @@ import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
 import { AuthTokenType } from '@exam-one/database'
 import { PrismaService } from '@exam-one/nestjs-libraries'
-import { AuthService } from '../../../src/auth/auth.service'
-import { EmailService } from '../../../src/email/email.service'
+import { AuthService } from '../../../src/core/auth/auth.service'
+import { EmailService } from '../../../src/core/email/email.service'
 import {
   ACCESS_COOKIE,
   ACCESS_TTL_SECONDS,
   REFRESH_COOKIE,
-} from '../../../src/auth/auth.constants'
+} from '../../../src/core/auth/auth.constants'
 import { makeCookieResponse, makeUser } from '../../../src/testing/fixtures'
 
 jest.mock('bcrypt', () => ({

@@ -5,7 +5,7 @@ import type {
   Difficulty,
   ListeningA2Exercise,
 } from '@exam-one/exam-content'
-import { LlmService } from '../llm/llm.service'
+import { LlmService } from './llm.service'
 import { extractJsonArray, nonEmptyString } from './json'
 import type { GenerateListeningDto } from './dto/ai.dto'
 import { goetheListeningPromptPart as ListeningPromptPart, goetheIsListeningA2Part as isListeningA2Part, goetheIsValidForPart as isValidForPart, goetheNormaliseExercise as normaliseExercise } from '@exam-one/exam-packs'
