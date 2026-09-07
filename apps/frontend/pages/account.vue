@@ -12,7 +12,7 @@
             <h2 class="font-display text-2xl font-bold truncate">{{ profile.name }}</h2>
             <div class="text-sm text-base-content/60 truncate">
               {{
-                $t('account.learningLine', { email: profile.email, level: examLevel })
+                $t('account.learningLine', { email: profile.email, level: pack.title })
               }}
             </div>
           </div>
@@ -154,16 +154,13 @@ import {
   ArrowUpCircle,
   ArrowDownCircle,
 } from 'lucide-vue-next'
-import { storeToRefs } from 'pinia'
-import { useSettingsStore } from '~/stores/settings'
 import { plans } from '~/data/account/plans'
 
 usePageMeta('pageMeta.accountTitle', 'pageMeta.accountSubtitle')
 useHead({ title: 'Account — Exam.one' })
 
 const { t } = useI18n()
-const settingsStore = useSettingsStore()
-const { examLevel } = storeToRefs(settingsStore)
+const { pack } = useActivePack()
 const { profile, initials, effectivePlan, memberSince, formatDate, setDemoPlan } =
   useAccountProfile()
 
@@ -173,7 +170,7 @@ const currentPlan = computed(() => plans.find(plan => plan.id === effectivePlan.
 const statTiles = computed(() => [
   { label: t('account.memberSince'), value: memberSince.value },
   { label: t('account.currentPlan'), value: t(currentPlan.value.nameKey) },
-  { label: t('account.examTarget'), value: t('account.goetheLevel', { level: examLevel.value }) },
+  { label: t('account.examTarget'), value: pack.value.title },
   { label: t('account.examDate'), value: formatDate(profile.value.examTargetDate) },
 ])
 

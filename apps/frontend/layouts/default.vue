@@ -7,15 +7,22 @@
         <slot />
       </main>
     </div>
-    <GenerationJobHost />
+    <GenerationJobHost :key="`${auth.user.value?.id}:${settingsStore.packId}`" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { resetPackScope } from '~/utils/packScope'
 const { t, te } = useI18n()
 const pageTitle = useState<string>('pageTitle', () => 'Exam.one')
 const pageSubtitle = useState<string>('pageSubtitle', () => '')
 const settingsStore = useSettingsStore()
+const auth = useAuth()
+watch(
+  () => [settingsStore.packId, auth.user.value?.id],
+  () => resetPackScope(),
+  { flush: 'sync' }
+)
 
 onMounted(() => {
   void settingsStore.hydrateFromApi()

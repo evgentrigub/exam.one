@@ -1,3 +1,4 @@
+import { useSettingsStore } from '~/stores/settings'
 import type { AiResponse } from '@exam-one/contracts'
 import { refreshAccessCookie } from '~/composables/useApi'
 
@@ -35,7 +36,9 @@ function envelopeFromUnknown(value: unknown, fallback: string): AiResponse<never
   return { data: null, error: fallback }
 }
 
-type AiFetchOptions = {
+export type AiFetchOptions = {
+  packId?: string
+
   method?: 'GET' | 'POST'
   body?: unknown
 }
@@ -49,10 +52,12 @@ async function requestAiOnce<T>(path: string, options: AiFetchOptions = {}): Pro
   const fetchOptions: {
     method: 'GET' | 'POST'
     credentials: 'include'
+    headers: Record<string, string>
     body?: BodyInit | Record<string, unknown> | null
   } = {
     method: options.method ?? 'GET',
     credentials: 'include',
+    headers: { 'x-exam-pack': options.packId ?? useSettingsStore().packId },
   }
   if (options.body !== undefined) {
     fetchOptions.body = options.body as BodyInit | Record<string, unknown> | null
@@ -76,6 +81,7 @@ export async function aiFetch<T>(
   path: string,
   options: AiFetchOptions = {}
 ): Promise<AiResponse<T>> {
+  options = { ...options, packId: options.packId ?? useSettingsStore().packId }
   try {
     return await requestAiOnce<T>(path, options)
   } catch (error: unknown) {

@@ -31,7 +31,7 @@ import { createJiti } from 'jiti'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const frontendRoot = path.join(repoRoot, 'apps/frontend')
-const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/tts')
+const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/speech/tts')
 const audioRoot = path.join(frontendRoot, 'public/audio/listening/a2')
 
 const jiti = createJiti(import.meta.url, {

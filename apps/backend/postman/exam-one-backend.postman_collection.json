@@ -2,9 +2,9 @@
   "info": {
     "_postman_id": "exam-one-backend-api-v1",
     "name": "exam.one Backend API",
-    "description": "NestJS API for exam.one (accounts, practice persistence, and AI/TTS/STT proxy).\n\n**Base URL:** `{{baseUrl}}` → default `http://localhost:3001`\n**Prefix:** `/api/v1`\n\n**Auth:** httpOnly cookies `exam_one_access` and `exam_one_refresh`.\nIn Postman: turn on **Settings → General → Automatically follow redirects**, and for cookie endpoints enable **Send cookies** / use the Cookie jar. After Register or Login, Postman should store Set-Cookie headers; subsequent Authed requests will send them.\n\n**AI / speech:** `/api/v1/ai`, `/llm`, `/tts`, and `/stt` are cookie-authed and return `{ data, error }` with HTTP 200 for missing keys and upstream failures. Invalid bodies are HTTP 400; missing session is HTTP 401. LLM, Kokoro, and Parakeet/Whisper are optional — health checks report availability without failing the collection.\n\n**Suggested flow:** Health → Auth Config → Register (or Login) → Auth Me → Users Me → Settings Me → LLM / TTS / STT health → Generate reading → Change Password → Logout.",
+    "description": "exam.one Backend API v1.0.0 — NestJS production API for exam.one (authentication, user profiles, learning settings, practice persistence, mock exams, AI grading, and speech proxy).\n\n**Swagger OpenAPI Documentation:** Comprehensive interactive documentation, models, and schemas are available at `http://localhost:3001/api/docs`.\n\n**Base URL:** `{{baseUrl}}` → default `http://localhost:3001`\n**API Prefix & Version:** `/api/v1`\n\n**Authentication (HTTP-only Cookies):**\n- `exam_one_access`: Short-lived JWT access cookie.\n- `exam_one_refresh`: Long-lived refresh token cookie.\n- Enable Postman Cookie jar / **Send cookies** and turn on **Settings → General → Automatically follow redirects**. After Register or Login, Set-Cookie headers are automatically stored and transmitted in subsequent authed requests.\n\n**Exam Pack Context (`x-exam-pack`):**\n- Modular exam pack identifier (`packId`, default `goethe-de-a2`).\n- Pack resolution cascade: explicit `x-exam-pack` header → authenticated user setting (`Setting.packId`) → default pack (`goethe-de-a2`).\n- Inactive historical packs (such as `goethe-de-c1`) permit read-only attempt inspection.\n\n**Response Envelopes:**\n- REST APIs: `{ \"data\": T, \"error\": null }` with standard HTTP error codes (400, 401, 403, 404, 429, 503).\n- AI and Speech APIs: `{ \"data\": T | null, \"error\": string | null }` returning HTTP 200 for missing keys or unavailable upstream containers, enabling graceful client degradation.\n\n**Suggested Flow:**\nHealth (Readiness) → Auth Config → Register (or Login) → Auth Me → Users Me → Settings Me → AI / Speech health → Generate reading → Save exercise → Create attempt → Review result → Mock exam sets → Logout.\n\nImport README.md beside this collection for the complete request workflow. Select requests individually: the collection includes account mutations, DELETE/reset requests, and optional provider calls. JSON payload variables must contain complete objects for the selected pack; use catalog/generation requests to capture them. Do not submit rendering snapshots: the server creates them.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "0.5.0"
+    "version": "1.0.0"
   },
   "variable": [
     {
@@ -35,6 +35,131 @@
     {
       "key": "resetToken",
       "value": "",
+      "type": "string"
+    },
+    {
+      "key": "packId",
+      "value": "goethe-de-a2",
+      "type": "string"
+    },
+    {
+      "key": "historyPackId",
+      "value": "goethe-de-c1",
+      "type": "string"
+    },
+    {
+      "key": "skill",
+      "value": "READING",
+      "type": "string"
+    },
+    {
+      "key": "exerciseExternalId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "attemptId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "historyAttemptId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "generationKind",
+      "value": "READING",
+      "type": "string"
+    },
+    {
+      "key": "part",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "cefr",
+      "value": "A2",
+      "type": "string"
+    },
+    {
+      "key": "exercisePayload",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "writingTopic",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "speakingTopic",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "listeningExercise",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "audioMap",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "answers",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "review",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "mockSetId",
+      "value": "goethe-a2-set-1",
+      "type": "string"
+    },
+    {
+      "key": "generatedMockSet",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "mockState",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "generationPayload",
+      "value": "{}",
+      "type": "string"
+    },
+    {
+      "key": "userContent",
+      "value": "Hallo Lena, ich bin krank und kann heute nicht kommen. Können wir uns am Samstag treffen? Liebe Grüße!",
+      "type": "string"
+    },
+    {
+      "key": "generationPrompt",
+      "value": "Replace with the complete generator PromptSpec assembled from data/ for the selected skill and part.",
+      "type": "string"
+    },
+    {
+      "key": "answerPrompt",
+      "value": "Replace with the complete answer PromptSpec assembled from data/ and the selected topic.",
+      "type": "string"
+    },
+    {
+      "key": "reviewPrompt",
+      "value": "Replace with the complete review PromptSpec assembled from data/, topic and answers.",
+      "type": "string"
+    },
+    {
+      "key": "mockReviewPrompt",
+      "value": "Replace with the assembled pack mock overview prompt and completed results.",
       "type": "string"
     }
   ],
@@ -327,10 +452,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"examLevel\": \"A2\",\n  \"targetLanguage\": \"de\"\n}"
+              "raw": "{\n  \"packId\": \"{{packId}}\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/settings/me",
-            "description": "Authed (cookie). `examLevel`: `A2` | `C1`. `targetLanguage`: string (e.g. `de`)."
+            "description": "Select a registered live pack. The server derives language and CEFR from that pack. Inactive/unknown pack IDs return HTTP 400."
           },
           "response": []
         }
@@ -343,7 +468,13 @@
           "name": "LLM health",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
             "url": "{{baseUrl}}/api/v1/llm/health",
             "description": "Authed (cookie). `{ data, error }` envelope. Missing keys are HTTP 200 with configured=false."
           },
@@ -353,7 +484,13 @@
           "name": "TTS health",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
             "url": "{{baseUrl}}/api/v1/tts/health",
             "description": "Authed (cookie). Kokoro availability."
           },
@@ -363,7 +500,13 @@
           "name": "STT health",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
             "url": "{{baseUrl}}/api/v1/stt/health",
             "description": "Authed (cookie). Local Parakeet or OpenAI Whisper readiness."
           },
@@ -373,17 +516,1092 @@
           "name": "Generate reading",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"difficulty\": \"A2\",\n  \"prompts\": [{ \"part\": 1, \"prompt\": \"Generate one Goethe A2 Lesen Teil 1 exercise as JSON.\" }]\n}"
+              "raw": "{\n  \"difficulty\": \"{{cefr}}\",\n  \"prompts\": [{ \"part\": {{part}}, \"prompt\": {{generationPromptJson}} }]\n}"
             },
-            "url": "{{baseUrl}}/api/v1/ai/generate-reading",
+            "url": "{{baseUrl}}/api/v1/llm/generate-reading",
             "description": "Authed (cookie). HTTP 200 `{ data, error }` even when the LLM key is missing."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 200 && !body.error && Array.isArray(body.data) && body.data.length) {",
+                  "  pm.collectionVariables.set('exercisePayload', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exercisePayload', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exerciseExternalId', body.data[0].id);",
+                  "  pm.collectionVariables.set('skill', 'READING');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate listening",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/generate-listening",
+            "description": "Use a complete pack generator prompt. Registered part and pack identity are validated.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"difficulty\":\"{{cefr}}\",\"prompts\":[{\"part\":{{part}},\"prompt\":{{generationPromptJson}}}]}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 200 && !body.error && Array.isArray(body.data) && body.data.length) {",
+                  "  pm.collectionVariables.set('listeningExercise', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exercisePayload', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exerciseExternalId', body.data[0].id);",
+                  "  pm.collectionVariables.set('skill', 'LISTENING');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate speaking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/generate-speaking",
+            "description": "Use a complete pack generator prompt. Registered part and pack identity are validated.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"difficulty\":\"{{cefr}}\",\"prompts\":[{\"part\":{{part}},\"prompt\":{{generationPromptJson}}}]}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 200 && !body.error && Array.isArray(body.data) && body.data.length) {",
+                  "  pm.collectionVariables.set('speakingTopic', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exercisePayload', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exerciseExternalId', body.data[0].id);",
+                  "  pm.collectionVariables.set('skill', 'SPEAKING');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate writing topics",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/generate-topics",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"difficulty\":\"{{cefr}}\",\"part\":{{part}},\"prompt\":{{generationPromptJson}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 200 && !body.error && Array.isArray(body.data) && body.data.length) {",
+                  "  pm.collectionVariables.set('writingTopic', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exercisePayload', JSON.stringify(body.data[0]));",
+                  "  pm.collectionVariables.set('exerciseExternalId', body.data[0].id);",
+                  "  pm.collectionVariables.set('skill', 'WRITING');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate writing model answer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/generate-model-answer",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"topic\":{{writingTopic}},\"prompt\":{{answerPromptJson}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review writing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/review",
+            "description": "Set answers to the pack field IDs. Validated reviews may contain fractional points. Missing AI returns a business error.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"topic\":{{writingTopic}},\"userContent\":{{userContentJson}},\"answers\":{{answers}},\"prompt\":{{reviewPromptJson}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review speaking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/review-speaking",
+            "description": "Provide the registered topic/part and transcript answers.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"topic\":{{speakingTopic}},\"answers\":{{answers}},\"prompt\":{{reviewPromptJson}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review mock overview",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/llm/review-mock-exam",
+            "description": "Optional overview. Unavailable for packs without a mock factory.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"prompt\":{{mockReviewPromptJson}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate listening audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/tts/generate-listening-audio",
+            "description": "Pack language/voices must be installed; unsupported capabilities return an unavailable response. Save returned audio using Exercises → Update audio.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"exercise\":{{listeningExercise}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.data && body.data.audio) pm.collectionVariables.set('audioMap', JSON.stringify(body.data.audio));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete generated listening audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/tts/delete-listening-audio",
+            "description": "Deletes generated audio in the current user/pack namespace; historical unnamespaced audio is retained.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exerciseIds\": [\n    \"{{exerciseExternalId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transcribe recording",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/stt/transcribe",
+            "description": "Choose a local audio file for multipart field `file` (maximum 25 MiB). Language comes from the selected pack. Missing/unsupported STT preserves manual transcript workflows.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Choose an audio recording"
+                }
+              ]
+            }
           },
           "response": []
         }
       ]
+    },
+    {
+      "name": "Exercises",
+      "item": [
+        {
+          "name": "List catalog and capture first exercise",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/exercises?skill={{skill}}",
+            "description": "Current pack's visible seed/user catalog. Captures its first payload and ID for subsequent manual requests."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (Array.isArray(body.data) && body.data.length) {",
+                  "  const row = body.data[0];",
+                  "  pm.collectionVariables.set('exerciseExternalId', row.externalId);",
+                  "  pm.collectionVariables.set('exercisePayload', JSON.stringify(row.payload));",
+                  "  const key = {WRITING:'writingTopic', SPEAKING:'speakingTopic', LISTENING:'listeningExercise'}[row.skill];",
+                  "  if (key) pm.collectionVariables.set(key, JSON.stringify(row.payload));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Save generated exercise",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/exercises",
+            "description": "Run generation first. Payload shape and part depend on the pack; this stores a user-owned exercise.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"skill\":\"{{skill}}\",\"payload\":{{exercisePayload}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update audio",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/exercises/{{exerciseExternalId}}/audio",
+            "description": "Update a user-owned listening exercise after generating audio.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"audio\":{{audioMap}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete user exercise",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/exercises/{{exerciseExternalId}}",
+            "description": "Deletes a user-owned exercise in the selected pack; bundled seeds cannot be deleted."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Attempts and history",
+      "item": [
+        {
+          "name": "List active pack attempts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts?skill={{skill}}",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "List past exams across packs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts?skill={{skill}}&history=true",
+            "description": "Owner-only history across all packs, including inactive C1. Repeat for each of the four skills."
+          },
+          "response": []
+        },
+        {
+          "name": "Create attempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts",
+            "description": "Save the exercise first. Generic objective answers map question IDs to zero-based indices; Goethe uses {\"responses\":{questionId:index}}. Writing/recording answers use configured field/segment IDs. The server creates the snapshot and derives objective scores.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"skill\":\"{{skill}}\",\"exerciseExternalId\":\"{{exerciseExternalId}}\",\"answers\":{{answers}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 201 && body.data) pm.collectionVariables.set('attemptId', body.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get attempt detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts/{{attemptId}}",
+            "description": "Owner-only detail, including stored pack, snapshot, answers and result. Its pack may differ from the current selection."
+          },
+          "response": []
+        },
+        {
+          "name": "Update attempt answers",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts/{{attemptId}}",
+            "description": "Only a current-pack, owner-held live-pack attempt can be updated. Scores use the stored snapshot.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"answers\":{{answers}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save validated criterion review",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts/{{attemptId}}",
+            "description": "Set review to the complete validated review object. Generic rubric totals are checked and converted server-side; Goethe uses its historical review wrappers.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"result\":{\"review\":{{review}}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get inactive C1 history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{historyPackId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts?skill={{skill}}",
+            "description": "Set skill=WRITING. This explicit history-pack header lists C1 attempts for the owner."
+          },
+          "response": []
+        },
+        {
+          "name": "Get inactive historical attempt detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{historyPackId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/attempts/{{historyAttemptId}}",
+            "description": "Copy a database attempt id from a history list. Read-only review does not enable C1 generation or grading."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Drafts",
+      "item": [
+        {
+          "name": "List drafts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/drafts?skill={{skill}}",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get draft",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/drafts/{{skill}}/{{exerciseExternalId}}",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Save draft",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/drafts/{{skill}}/{{exerciseExternalId}}",
+            "description": "Payload is format-specific. Generic practice uses answers; legacy Goethe sessions use their own draft shapes. Copy a saved app draft to reproduce its exact resume format.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"payload\":{\"answers\":{{answers}}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete draft",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/drafts/{{skill}}/{{exerciseExternalId}}",
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Generation jobs",
+      "item": [
+        {
+          "name": "List jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/generation-jobs",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get job",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/generation-jobs/{{generationKind}}",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Save job",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/generation-jobs/{{generationKind}}",
+            "description": "Use the originating flow's payload shape, including completed artifacts needed for resume. Kinds: READING, WRITING, LISTENING, SPEAKING, MOCK.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\":\"RUNNING\",\"payload\":{{generationPayload}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear job",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/generation-jobs/{{generationKind}}",
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mock exams",
+      "item": [
+        {
+          "name": "List sets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get set and stored rules",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets/{{mockSetId}}",
+            "description": "Bundled Goethe Set 1 by default. Returns content, module timing/scoring/replay definitions and pass rules."
+          },
+          "response": []
+        },
+        {
+          "name": "Save generated set",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets",
+            "description": "Supply a complete factory-produced set with a unique id, examId, level, title, generated, createdAt, modules, content and rules. Packs without a factory are unavailable. Existing sets remain immutable.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"set\":{{generatedMockSet}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete generated set",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets/{{mockSetId}}",
+            "description": "Use a generated user-owned set ID; bundled Set 1 is protected."
+          },
+          "response": []
+        },
+        {
+          "name": "Get attempt state",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets/{{mockSetId}}/attempt",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Save attempt state",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets/{{mockSetId}}/attempt",
+            "description": "Use a full state captured from the app, with module progress and completed results.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"state\":{{mockState}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset attempt",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/sets/{{mockSetId}}/attempt",
+            "description": "Removes the current user's saved attempt state for this set."
+          },
+          "response": []
+        },
+        {
+          "name": "Get generation draft",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/generation",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Save generation draft",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/generation",
+            "description": "Alias for the current pack's MOCK generation job.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\":\"RUNNING\",\"payload\":{{generationPayload}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear generation draft",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/mock-exam/generation",
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "['generationPrompt', 'answerPrompt', 'reviewPrompt', 'mockReviewPrompt', 'userContent'].forEach(function (key) {",
+          "  pm.variables.set(key + 'Json', JSON.stringify(pm.variables.get(key) || ''));",
+          "});"
+        ]
+      }
     }
   ]
 }

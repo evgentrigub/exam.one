@@ -2,7 +2,7 @@ import type { Difficulty } from './common'
 
 export type ListeningA2Part = 1 | 2 | 3 | 4
 
-export type ListeningDifficulty = Extract<Difficulty, 'A2'>
+export type ListeningDifficulty = Difficulty
 
 export type ListeningMcqAnswerIndex = 0 | 1 | 2
 

@@ -7,38 +7,16 @@
           <div
             class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-base-content/50"
           >
-            <Flag :size="13" /> Goethe / telc · {{ examLevel }}
+            <Flag :size="13" /> {{ pack.title }}
           </div>
           <h1 class="font-display text-2xl font-bold mt-2 leading-tight">
             {{ $t('examFormatUi.tagline') }}
           </h1>
 
-          <!-- Level selector -->
-          <div class="mt-3 flex gap-2">
-            <button
-              v-for="level in levels"
-              :key="level"
-              type="button"
-              class="h-8 px-4 rounded-full text-xs font-semibold border transition-colors"
-              :class="
-                examLevel === level
-                  ? 'bg-primary text-primary-content border-primary'
-                  : 'bg-base-100 border-base-300 text-base-content/70 hover:border-base-content/30'
-              "
-              :aria-pressed="examLevel === level"
-              @click="examLevel = level"
-            >
-              {{ level }}
-            </button>
-          </div>
-
-          <p v-if="examLevel === 'A2'" class="text-sm text-base-content/65 mt-2 max-w-xl">
+          <p class="text-sm text-base-content/65 mt-2 max-w-xl">
             {{ $t('examFormatUi.intro', { parts: totalParts }) }}
           </p>
-          <p v-else class="text-sm text-base-content/65 mt-2 max-w-xl">
-            {{ $t('examFormatUi.structureLater') }}
-          </p>
-          <div v-if="examLevel === 'A2'" class="mt-4 flex flex-wrap gap-2">
+          <div class="mt-4 flex flex-wrap gap-2">
             <button
               v-for="mod in modules"
               :key="mod.id"
@@ -53,7 +31,6 @@
 
         <!-- 2×2 module tiles -->
         <div
-          v-if="examLevel === 'A2'"
           class="grid grid-cols-2 border-t md:border-t-0 md:border-l border-base-300"
         >
           <div
@@ -79,7 +56,7 @@
     </div>
 
     <!-- Totals strip -->
-    <div v-if="examLevel === 'A2'" class="flex flex-wrap gap-3">
+    <div class="flex flex-wrap gap-3">
       <div class="flex items-center gap-2 rounded-field bg-base-200/60 px-3 py-2">
         <Clock :size="15" class="text-base-content/50" />
         <span class="text-sm font-medium"
@@ -97,7 +74,7 @@
 
     <!-- Per-skill structure cards -->
     <section
-      v-for="mod in examLevel === 'A2' ? modules : []"
+      v-for="mod in modules"
       :key="mod.id"
       class="bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden"
     >
@@ -234,15 +211,9 @@ import {
   ArrowRight,
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
-import { storeToRefs } from 'pinia'
-import {
-  goetheA2Structure,
-  goetheA2TotalMinutes,
-  goetheA2TotalPoints,
-  type ExamModule,
-} from '~/data/examStructure/goetheA2'
+import type { ExamModule } from '@exam-one/exam-packs'
+import { packTotalMinutes, packTotalPoints } from '@exam-one/exam-packs'
 import type { SkillId } from '~/utils/labels'
-import { useSettingsStore } from '~/stores/settings'
 import StructureStat from '~/components/examFormat/StructureStat.vue'
 
 usePageMeta('pageMeta.examFormatTitle', 'pageMeta.examFormatSubtitle')
@@ -250,14 +221,11 @@ useHead({ title: 'Exam format — Exam.one' })
 
 const router = useRouter()
 
-const settingsStore = useSettingsStore()
-const { examLevel } = storeToRefs(settingsStore)
-const levels: Array<'A2' | 'C1'> = ['A2', 'C1']
-
-const modules = goetheA2Structure
-const totalMinutes = goetheA2TotalMinutes
-const totalPoints = goetheA2TotalPoints
-const totalParts = modules.reduce((sum, m) => sum + m.parts.length, 0)
+const { pack } = useActivePack()
+const modules = computed(() => pack.value.structure)
+const totalMinutes = computed(() => packTotalMinutes(pack.value))
+const totalPoints = computed(() => packTotalPoints(pack.value))
+const totalParts = computed(() => modules.value.reduce((sum, m) => sum + m.parts.length, 0))
 
 const ICONS: Record<SkillId, Component> = {
   reading: BookOpen,

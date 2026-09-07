@@ -34,6 +34,7 @@ export function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
   return {
     id: 'ex-1',
     userId: null,
+    packId: 'goethe-de-a2',
     skill: 'READING',
     level: 'A2',
     source: 'seed',
@@ -47,6 +48,7 @@ export function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
 
 export function makeMockExamSet(overrides: Partial<MockExamSet> = {}): MockExamSet {
   return {
+    packId: 'goethe-de-a2',
     id: 'set-1',
     userId: null,
     externalId: 'set-1',
@@ -56,6 +58,7 @@ export function makeMockExamSet(overrides: Partial<MockExamSet> = {}): MockExamS
     generated: false,
     content: { listening: [] },
     modules: {},
+    rules: null,
     createdAt: NOW,
     ...overrides,
   }
@@ -63,6 +66,8 @@ export function makeMockExamSet(overrides: Partial<MockExamSet> = {}): MockExamS
 
 export function makeAttempt(overrides: Partial<Attempt> = {}): Attempt {
   return {
+    packId: 'goethe-de-a2',
+    snapshot: null,
     id: 'att-1',
     userId: 'user-1',
     exerciseId: null,
@@ -88,6 +93,7 @@ export function makeResult(overrides: Partial<Result> = {}): Result {
 
 export function makeDraft(overrides: Partial<Draft> = {}): Draft {
   return {
+    packId: 'goethe-de-a2',
     id: 'draft-1',
     userId: 'user-1',
     skill: 'WRITING',
@@ -116,6 +122,7 @@ export function makeGenerationJob(overrides: Partial<GenerationJob> = {}): Gener
   return {
     id: 'job-1',
     userId: 'user-1',
+    packId: 'goethe-de-a2',
     kind: 'READING',
     status: 'IDLE',
     payload: { step: 1 },
@@ -128,6 +135,7 @@ export function makeSetting(overrides: Partial<Setting> = {}): Setting {
   return {
     id: 'setting-1',
     userId: 'user-1',
+    packId: 'goethe-de-a2',
     examLevel: 'A2',
     targetLanguage: 'de',
     updatedAt: NOW,

@@ -1,3 +1,5 @@
+import { getPack } from '@exam-one/exam-packs'
+import { resolveUserPackId } from '../core/context/active-pack'
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import type { MockExamAttemptDto, MockExamSetDto, MockExamSetSummaryDto } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
@@ -24,8 +26,9 @@ export class MockExamService {
   constructor(private readonly prisma: PrismaService) {}
 
   async listSets(user: User): Promise<MockExamSetSummaryDto[]> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const rows = await this.prisma.mockExamSet.findMany({
-      where: { OR: [{ generated: false, userId: null }, { userId: user.id }] },
+      where: { packId, OR: [{ generated: false, userId: null }, { userId: user.id }] },
       orderBy: { createdAt: 'asc' },
     })
     return rows.map(toMockExamSetSummaryDto)
@@ -40,33 +43,38 @@ export class MockExamService {
   }
 
   async createSet(user: User, set: MockExamSetBodyDto): Promise<MockExamSetDto> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
+    const pack = getPack(packId)
+    if (!pack?.live || !pack.createMockSet) throw new ForbiddenException({ code: 'MOCK_UNAVAILABLE', message: 'This pack does not support mock exams' })
     const existing = await this.prisma.mockExamSet.findFirst({
-      where: { userId: user.id, externalId: set.id },
+      where: { userId: user.id, packId, externalId: set.id },
     })
     const data = {
       userId: user.id,
       externalId: set.id,
-      examId: set.examId,
-      level: set.level,
+      packId,
+      examId: packId,
+      level: pack.cefr,
       title: set.title,
       generated: true,
       content: asJson(set.content),
       modules: asJson(set.modules),
+      ...(set.rules ? { rules: asJson(set.rules) } : {}),
       createdAt: new Date(set.createdAt),
     }
-    const row = existing
-      ? await this.prisma.mockExamSet.update({ where: { id: existing.id }, data })
-      : await this.prisma.mockExamSet.create({ data })
+    // Completed and resumable attempts always retain the set definition they started with.
+    const row = existing ?? await this.prisma.mockExamSet.create({ data })
     return toMockExamSetDto(row)
   }
 
   async deleteSet(user: User, externalId: string): Promise<string[]> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const row = await this.prisma.mockExamSet.findFirst({
-      where: { userId: user.id, externalId },
+      where: { userId: user.id, packId, externalId },
     })
     if (!row) {
       const seed = await this.prisma.mockExamSet.findFirst({
-        where: { generated: false, externalId },
+        where: { generated: false, packId, externalId },
       })
       if (seed) {
         throw new ForbiddenException({
@@ -131,10 +139,12 @@ export class MockExamService {
     })
   }
 
-  private findSet(user: User, externalId: string) {
+  private async findSet(user: User, externalId: string) {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     return this.prisma.mockExamSet.findFirst({
       where: {
         externalId,
+        packId,
         OR: [{ generated: false, userId: null }, { userId: user.id }],
       },
     })

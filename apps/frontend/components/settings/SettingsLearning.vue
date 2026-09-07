@@ -23,7 +23,7 @@
             <span class="label-text text-sm font-medium">{{ $t('settings.targetLevel') }}</span>
           </span>
           <SetChoice
-            v-model:value="level"
+            v-model:value="selectedPackId"
             cols="grid-cols-2 sm:grid-cols-4 max-w-xl"
             :options="levelOptions"
           />
@@ -65,6 +65,7 @@
 <script setup lang="ts">
 import { Calendar, Hourglass } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
+import { listLivePacks } from '@exam-one/exam-packs'
 import { useSettingsStore } from '~/stores/settings'
 import type { SetChoiceOption } from '~/components/settings/SetChoice.vue'
 import { ApiClientError } from '~/composables/useApi'
@@ -72,17 +73,18 @@ import { ApiClientError } from '~/composables/useApi'
 const { t } = useI18n()
 const { profile, saveProfile } = useAccountProfile()
 const settingsStore = useSettingsStore()
-const { examLevel } = storeToRefs(settingsStore)
+const { packId } = storeToRefs(settingsStore)
 
-const examBoard = ref('goethe')
-const level = ref(examLevel.value)
+const livePacks = listLivePacks()
+const examBoard = ref(livePacks.find(pack => pack.packId === packId.value)?.board ?? livePacks[0]?.board ?? '')
+const selectedPackId = ref(packId.value)
 const examDate = ref(profile.value.examTargetDate)
 const error = ref('')
 
 watch(
-  () => examLevel.value,
+  () => packId.value,
   value => {
-    level.value = value
+    selectedPackId.value = value
   }
 )
 watch(
@@ -100,18 +102,24 @@ const remainingLabel = computed(() => {
   return t('settings.daysCount', { n: days })
 })
 
-const boardOptions = computed<SetChoiceOption[]>(() => [
-  { id: 'goethe', label: t('settings.goethe'), desc: t('settings.goetheDesc') },
-  { id: 'cambridge', label: t('settings.cambridge'), disabled: true },
-  { id: 'ielts', label: t('settings.ielts'), disabled: true },
-])
+const boardOptions = computed<SetChoiceOption[]>(() => [...new Set(livePacks.map(pack => pack.board))].map(board => ({ id: board, label: board })))
+watch(examBoard, board => {
+  if (!livePacks.some(pack => pack.packId === selectedPackId.value && pack.board === board)) selectedPackId.value = livePacks.find(pack => pack.board === board)?.packId ?? packId.value
+})
 
-const levelOptions = computed<SetChoiceOption[]>(() => [
-  { id: 'A2', label: 'A2', desc: t('settings.levelA2Desc') },
-  { id: 'B1', label: 'B1', disabled: true },
-  { id: 'B2', label: 'B2', disabled: true },
-  { id: 'C1', label: 'C1', desc: t('settings.levelC1Desc') },
-])
+const levelOptions = computed<SetChoiceOption[]>(() => {
+  const liveForBoard = livePacks.filter(pack => pack.board === examBoard.value)
+  return [
+    ...liveForBoard.map(pack => ({
+      id: pack.packId,
+      label: pack.cefr,
+      desc: pack.title,
+    })),
+    { id: 'b1-soon', label: 'B1', disabled: true },
+    { id: 'b2-soon', label: 'B2', disabled: true },
+    { id: 'c1-soon', label: 'C1', desc: t('settings.levelC1Desc'), disabled: true },
+  ]
+})
 
 async function onSave() {
   error.value = ''
@@ -121,8 +129,7 @@ async function onSave() {
       email: profile.value.email,
       examTargetDate: examDate.value,
     })
-    examLevel.value = level.value === 'C1' ? 'C1' : 'A2'
-    await settingsStore.persist()
+    await settingsStore.selectPack(selectedPackId.value)
   } catch (err) {
     error.value = err instanceof ApiClientError ? err.message : t('settings.saveFailed')
     throw err

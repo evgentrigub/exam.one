@@ -16,14 +16,14 @@
           <div class="text-xs font-semibold uppercase tracking-wider">
             {{ $t('mockExam.provisionalResult') }}
           </div>
-          <h1 class="mt-1 font-display text-3xl font-bold">{{ roundedOverall }} / 100</h1>
+          <h1 class="mt-1 font-display text-3xl font-bold">{{ roundedOverall }} / {{ maximumPoints }}</h1>
           <p class="mt-1 text-sm opacity-80">
-            {{ roundedOverall >= 60 ? $t('mockExam.passMessage') : $t('mockExam.almostMessage') }}
+            {{ roundedOverall >= passPoints ? $t('mockExam.passMessage') : $t('mockExam.almostMessage') }}
           </p>
         </div>
         <div class="sm:ml-auto sm:text-right">
-          <div class="font-mono text-3xl font-bold">{{ roundedOverall }}%</div>
-          <div class="text-xs opacity-70">{{ $t('mockExam.passMark') }}</div>
+          <div class="font-mono text-3xl font-bold">{{ Math.round(roundedOverall / maximumPoints * 100) }}%</div>
+          <div class="text-xs opacity-70">{{ passPoints }} / {{ maximumPoints }}</div>
         </div>
       </div>
     </div>
@@ -231,6 +231,7 @@
     <ListeningSession
       v-else-if="activeSkill === 'listening' && listeningExercise"
       :exercise="listeningExercise"
+      :configured-replays="activeExercise?.replays"
       exam-mode
       :initial-answers="activeResponse?.answers ?? {}"
       @finish="leaveExercise"
@@ -501,24 +502,15 @@ import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
 import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
 import type { MockExamExerciseDefinition, MockExamModuleDefinition } from '~/data/mockExam/goetheA2'
-import type { MockExamOverview, MockExamOverviewInput } from '~/data/mockExam/reviewMockExamA2'
-import { buildMockExamOverviewPrompt } from '~/data/mockExam/reviewMockExamA2'
+import type { MockExamOverview, MockExamOverviewInput } from '@exam-one/exam-packs'
+import { buildMockExamOverviewPrompt } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
-import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
-import {
-  reviewPromptSpeakingA2Teil1,
-  reviewPromptSpeakingA2Teil2,
-} from '~/data/speaking/a2/reviewSpeakingA2'
 import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
-import type {
-  SpeakingA2Topic,
-  SpeakingReviewData,
-  SpeakingTopicA2Teil1,
-  SpeakingTopicA2Teil2,
-} from '~/utils/exercises/speaking'
+import type { SpeakingA2Topic, SpeakingReviewData } from '~/utils/exercises/speaking'
+import { speakingReviewVars } from '~/composables/useSpeakingReview'
 import type { SkillId } from '~/utils/labels'
 
 type ViewName = 'overview' | 'part' | 'exercise' | 'result'
@@ -526,6 +518,7 @@ type ViewName = 'overview' | 'part' | 'exercise' | 'result'
 const route = useRoute()
 const { t } = useI18n()
 const reviewOutputLanguage = useReviewOutputLanguage()
+const { assemble } = usePackPrompt()
 const requestedSetId = String(route.params['setId'] || '')
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const foundSet = computed(() => getSet(requestedSetId))
@@ -586,11 +579,13 @@ const lockedCount = computed(
   () => set.value.modules.filter(module => state.value.modules[module.skill].locked).length
 )
 const roundedOverall = computed(() => Math.round(overallPoints.value))
+const maximumPoints = computed(() => set.value.rules?.maximumPoints ?? goetheA2MockExamSet1.rules!.maximumPoints)
+const passPoints = computed(() => set.value.rules?.passPoints ?? goetheA2MockExamSet1.rules!.passPoints)
 const hasPendingAiGrading = computed(() =>
   (['writing', 'speaking'] as const).some(skill => isAiReviewInProgress(skill))
 )
 const resultBannerClass = computed(() =>
-  roundedOverall.value >= 60
+  roundedOverall.value >= passPoints.value
     ? 'border-success/40 bg-success/10 text-success'
     : 'border-warning/40 bg-warning/10 text-warning'
 )
@@ -744,7 +739,7 @@ async function generateOverview(): Promise<void> {
   if (state.value.aiOverview.status === 'loading' || hasPendingAiGrading.value) return
   startOverview()
   try {
-    const response = await aiFetch<MockExamOverview>('/ai/review-mock-exam', {
+    const response = await aiFetch<MockExamOverview>('/llm/review-mock-exam', {
       method: 'POST',
       body: {
         prompt: buildMockExamOverviewPrompt(reviewOutputLanguage.value, overviewInput()),
@@ -880,11 +875,16 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
     if (skill === 'writing') {
       const topic = set.value.content.writing.find(item => item.id === exerciseId)
       if (!topic || !response.content?.trim()) return
-      const prompt =
-        topic.testingPart === 1
-          ? reviewPromptA2Teil1(topic, response.content, reviewOutputLanguage.value)
-          : reviewPromptA2Teil2(topic, response.content, reviewOutputLanguage.value)
-      const review = await aiFetch<AiReviewData>('/ai/review', {
+      const part = topic.testingPart === 2 ? 2 : 1
+      const prompt = assemble('writing', part, 'review', {
+        task: topic.task,
+        requirements: topic.requirements?.join(', ') ?? '',
+        userContent: response.content,
+        outputLanguage: reviewOutputLanguage.value,
+        topicId: topic.id,
+      })
+      if (!prompt) throw new Error(`No writing review prompt is configured for part ${part}`)
+      const review = await aiFetch<AiReviewData>('/llm/review', {
         method: 'POST',
         body: { topic, userContent: response.content, prompt },
       })
@@ -896,22 +896,18 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
 
     const topic = set.value.content.speaking.find(item => item.id === exerciseId)
     if (!topic || !response.transcripts) return
-    const speakingPrompt =
-      topic.testingPart === 1
-        ? reviewPromptSpeakingA2Teil1(
-            topic as SpeakingTopicA2Teil1,
-            response.transcripts.answers?.trim() ?? '',
-            response.transcripts.questions?.trim() ?? '',
-            reviewOutputLanguage.value
-          )
-        : reviewPromptSpeakingA2Teil2(
-            topic as SpeakingTopicA2Teil2,
-            response.transcripts.monologue?.trim() ?? '',
-            reviewOutputLanguage.value
-          )
-    const review = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
+    const speakingPrompt = assemble(
+      'speaking',
+      topic.testingPart,
+      'review',
+      speakingReviewVars(topic, response.transcripts, reviewOutputLanguage.value)
+    )
+    if (!speakingPrompt) {
+      throw new Error(`No speaking review prompt is configured for part ${topic.testingPart}`)
+    }
+    const review = await aiFetch<SpeakingReviewData>('/llm/review-speaking', {
       method: 'POST',
-      body: { prompt: speakingPrompt },
+      body: { prompt: speakingPrompt, topic, answers: response.transcripts },
     })
     if (review.error || !review.data) throw new Error(review.error || 'Speaking grade unavailable.')
     updateExerciseGrade('speaking', exerciseId, review.data.totalPoints, null, review.data)

@@ -1,5 +1,5 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
-import type { MockExamOverview } from '~/data/mockExam/reviewMockExamA2'
+import type { MockExamOverview } from '@exam-one/exam-packs'
 import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 import type { AiReviewDataA2 } from '~/utils/types'
@@ -90,6 +90,7 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
+  const requestPackId = useSettingsStore().packId
   const currentSet = computed(() => toValue(setSource))
   const state = ref<MockExamState>(createBlankMockExamState(currentSet.value))
   const isInitialized = ref(false)
@@ -109,6 +110,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
         do {
           persistPending = false
           await apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+            packId: requestPackId,
             method: 'PUT',
             body: { state: state.value },
           })
@@ -155,7 +157,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
       return
     try {
       const saved = await apiFetch<MockExamAttemptDto | null>(
-        `/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`
+        `/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, { packId: requestPackId }
       )
       const raw = saved?.state
       if (raw && typeof raw === 'object') {
@@ -293,6 +295,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     state.value = createBlankMockExamState(currentSet.value)
     if (import.meta.client) {
       void apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+        packId: requestPackId,
         method: 'DELETE',
       }).catch(() => undefined)
     }

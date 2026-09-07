@@ -24,6 +24,7 @@ export interface AppConfig {
   OPENROUTER_MODEL: string
   LLM_REASONING_EFFORT: string
   TTS_BASE_URL: string
+  TTS_VOICES: string
   TTS_VOICE: string
   TTS_SPEED: number
   TTS_LANG: string
@@ -31,6 +32,7 @@ export interface AppConfig {
   TTS_CONCURRENCY: number
   STT_PROVIDER: SttProviderName
   STT_BASE_URL: string
+  STT_LANGUAGES: string
   STT_MODEL: string
   STT_OPENAI_MODEL: string
   GENERATED_LISTENING_AUDIO_DIR: string
@@ -104,6 +106,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   OPENROUTER_MODEL: (process.env['OPENROUTER_MODEL'] ?? 'google/gemma-4-26b-a4b-it:free').trim(),
   LLM_REASONING_EFFORT: (process.env['LLM_REASONING_EFFORT'] ?? 'medium').trim(),
   TTS_BASE_URL: (process.env['TTS_BASE_URL'] ?? 'http://127.0.0.1:8881').replace(/\/$/, ''),
+  TTS_VOICES: process.env['TTS_VOICES'] ?? 'martin,bernd,victoria,eva',
   TTS_VOICE: process.env['TTS_VOICE'] ?? 'martin',
   TTS_SPEED: Number(process.env['TTS_SPEED'] ?? '1.0') || 1.0,
   TTS_LANG: process.env['TTS_LANG'] ?? 'de',
@@ -111,6 +114,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   TTS_CONCURRENCY: Number(process.env['TTS_CONCURRENCY'] ?? '3') || 3,
   STT_PROVIDER: sttProvider(),
   STT_BASE_URL: (process.env['STT_BASE_URL'] ?? 'http://127.0.0.1:8882').replace(/\/+$/, ''),
+  STT_LANGUAGES: process.env['STT_LANGUAGES'] ?? 'de',
   STT_MODEL: process.env['STT_MODEL'] ?? 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
   STT_OPENAI_MODEL: process.env['STT_OPENAI_MODEL'] ?? 'whisper-1',
   GENERATED_LISTENING_AUDIO_DIR:

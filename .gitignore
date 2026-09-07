@@ -12,6 +12,9 @@ apps/frontend/public/audio
 # Local Parakeet model snapshot; regenerate via pnpm stt:up
 scripts/stt/parakeet/models/
 
+# Prisma Client is generated at build / type-check time
+libraries/database/src/generated/
+
 # Node dependencies
 node_modules
 **/node_modules

@@ -3,7 +3,6 @@
  * Manages per-part AI reading exercise generation with API persistence.
  */
 
-import { readingA2Parts } from '~/data/reading/a2/exerciseGeneratorReadingA2'
 import {
   filterJobsByParts,
   parseSkillPartKeys,
@@ -25,7 +24,8 @@ export interface ReadingGenerationOptions {
 }
 
 export const useReadingGeneration = () => {
-  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
+  const requestPackId = useSettingsStore().packId
+  const { pack, assemble, generators } = usePackPrompt(requestPackId)
   const state = ref<PartGenerationState>({
     isGenerating: false,
     difficulty: null,
@@ -48,7 +48,7 @@ export const useReadingGeneration = () => {
     if (import.meta.server) return
 
     try {
-      const parsed = (await loadGenerationJob('READING')) as PartGenerationState | null
+      const parsed = (await loadGenerationJob('READING', requestPackId)) as PartGenerationState | null
       if (!parsed) return
 
       // Treat stale in-progress states as abandoned and clear them.
@@ -78,7 +78,7 @@ export const useReadingGeneration = () => {
 
   const saveState = () => {
     if (import.meta.server) return
-    void saveGenerationJob('READING', state.value).catch(error =>
+    void saveGenerationJob('READING', state.value, undefined, requestPackId).catch(error =>
       console.error('Failed to save reading generation state:', error)
     )
   }
@@ -93,7 +93,7 @@ export const useReadingGeneration = () => {
     }
 
     if (import.meta.client) {
-      void clearGenerationJob('READING').catch(() => undefined)
+      void clearGenerationJob('READING', requestPackId).catch(() => undefined)
     }
   }
 
@@ -119,11 +119,9 @@ export const useReadingGeneration = () => {
       job => job.status === 'queued' || job.status === 'failed'
     )
 
-    await hydratePrompts()
-
     for (const job of pendingJobs) {
       const part = job.part
-      const prompt = generatorPrompt('reading', part, 1)
+      const prompt = assemble('reading', part, 'generator', { count: 1 })
       if (!prompt) {
         updateJobStatus(part, 'failed', `No prompt configured for part ${part}`)
         loopError = `No prompt configured for part ${part}`
@@ -133,7 +131,8 @@ export const useReadingGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
+        const response = await aiFetch<ReadingExercise[]>('/llm/generate-reading', {
+          packId: requestPackId,
           method: 'POST',
           body: { difficulty, prompts: [{ part, prompt }] },
         })
@@ -178,14 +177,13 @@ export const useReadingGeneration = () => {
   }
 
   const generateReading = async (
-    difficulty: Difficulty = 'A2',
+    difficulty: Difficulty = pack.value.cefr,
     options: ReadingGenerationOptions = {}
   ): Promise<ReadingExercise[]> => {
-    if (difficulty !== 'A2') {
-      throw new Error(`Unsupported difficulty level: ${difficulty}`)
+    const allParts = generators('reading', 1)
+    if (allParts.length === 0) {
+      throw new Error('No reading generator prompts are configured for the active exam pack')
     }
-
-    const allParts = readingA2Parts(1)
     const selectedParts = filterJobsByParts(allParts, options.parts)
     const partsToGenerate = selectedParts.length > 0 ? selectedParts : allParts
 

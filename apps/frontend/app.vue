@@ -2,12 +2,14 @@
   <div>
     <NuxtRouteAnnouncer />
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage :page-key="route => `${route.path}:${auth.user.value?.id}:${settings.packId}`" />
     </NuxtLayout>
   </div>
 </template>
 
 <script setup lang="ts">
+const auth = useAuth()
+const settings = useSettingsStore()
 // Initialize theme system
 const { theme, initTheme } = useTheme()
 

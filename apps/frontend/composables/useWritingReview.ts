@@ -10,9 +10,8 @@
  */
 
 import type { WritingExercise, AiReviewData } from '~/utils/types'
+import { onPackReset, packEpoch } from '~/utils/packScope'
 import { ref } from 'vue'
-import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/reviewTextWritingC1'
-import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
@@ -34,6 +33,7 @@ interface WritingReviewRecord {
 const reviews = ref<Record<string, WritingReviewRecord>>({})
 const reviewVersion = ref(0)
 let hydrated = false
+onPackReset(() => { reviews.value = {}; hydrated = false; reviewVersion.value++ })
 
 function persistReview(record: WritingReviewRecord): void {
   void apiFetch('/attempts', {
@@ -88,9 +88,11 @@ function getRecord(topicId: string): WritingReviewRecord | null {
 }
 
 export function useWritingReview() {
+  const requestPackId = useSettingsStore().packId
+  const requestEpoch = packEpoch()
   if (import.meta.client) void hydrateReviews()
   const outputLanguage = useReviewOutputLanguage()
-  const { hydrate: hydratePrompts, filledOrDefault } = usePromptOverrides()
+  const { assemble } = usePackPrompt(requestPackId)
 
   function getReview(topicId: string): WritingReviewRecord | null {
     return getRecord(topicId)
@@ -122,24 +124,18 @@ export function useWritingReview() {
   }
 
   function getReviewPrompt(topic: WritingExercise, userContent: string) {
-    if (topic.difficulty === 'A2') {
-      const part = topic.testingPart === 2 ? 2 : 1
-      const fallback =
-        part === 1
-          ? reviewPromptA2Teil1(topic, userContent, outputLanguage.value)
-          : reviewPromptA2Teil2(topic, userContent, outputLanguage.value)
-      return filledOrDefault('writing', part, 'review', fallback, {
-        task: topic.task,
-        requirements: topic.requirements?.join(', ') ?? '',
-        userContent,
-        outputLanguage: outputLanguage.value,
-        topicId: topic.id,
-      })
+    const part = topic.testingPart === 2 ? 2 : 1
+    const prompt = assemble('writing', part, 'review', {
+      task: topic.task,
+      requirements: topic.requirements?.join(', ') ?? '',
+      userContent,
+      outputLanguage: outputLanguage.value,
+      topicId: topic.id,
+    })
+    if (!prompt) {
+      throw new Error(`No writing review prompt is configured for part ${part}`)
     }
-    if (topic.testingPart === 1) {
-      return reviewPromptC1Teil1(topic, userContent)
-    }
-    return reviewPromptC1Teil2(topic, userContent)
+    return prompt
   }
 
   /**
@@ -148,7 +144,6 @@ export function useWritingReview() {
    * available, the call site is prepared but disabled by default.
    */
   async function requestReview(topic: WritingExercise, userContent: string): Promise<void> {
-    await hydratePrompts()
     const prompt = getReviewPrompt(topic, userContent)
     const requestedAt = new Date().toISOString()
     saveRecord({
@@ -162,10 +157,12 @@ export function useWritingReview() {
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = await aiFetch<AiReviewData>('/ai/review', {
+      const response = await aiFetch<AiReviewData>('/llm/review', {
+        packId: requestPackId,
         method: 'POST',
         body: { topic, userContent, prompt },
       })
+      if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)
       if (current) {
         if (
@@ -187,6 +184,7 @@ export function useWritingReview() {
         saveRecord(update)
       }
     } catch (error) {
+      if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)
       if (current) {
         if (

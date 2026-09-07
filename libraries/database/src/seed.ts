@@ -1,10 +1,10 @@
 import {
   Prisma,
-  PrismaClient,
+  type PrismaClient,
   type ExamLevel,
   type ExerciseVisibility,
   type Skill,
-} from '@prisma/client'
+} from './generated/prisma/client'
 import {
   allDefaultListeningTopics,
   allDefaultReadingTopics,
@@ -47,17 +47,19 @@ async function upsertExercise(
   }
 ): Promise<void> {
   const existing = await prisma.exercise.findFirst({
-    where: { source: 'seed', externalId: input.externalId },
+    where: { source: 'seed', packId: input.level === 'C1' ? 'goethe-de-c1' : 'goethe-de-a2', externalId: input.externalId },
   })
+  const data = {
+    skill: input.skill,
+    level: input.level,
+    packId: input.level === 'C1' ? 'goethe-de-c1' : 'goethe-de-a2' as const,
+    visibility: input.visibility,
+    payload: asJson(input.payload),
+  }
   if (existing) {
     await prisma.exercise.update({
       where: { id: existing.id },
-      data: {
-        skill: input.skill,
-        level: input.level,
-        visibility: input.visibility,
-        payload: asJson(input.payload),
-      },
+      data,
     })
     return
   }
@@ -65,6 +67,7 @@ async function upsertExercise(
     data: {
       skill: input.skill,
       level: input.level,
+      packId: input.level === 'C1' ? 'goethe-de-c1' : 'goethe-de-a2',
       source: 'seed',
       visibility: input.visibility,
       externalId: input.externalId,
@@ -139,12 +142,14 @@ async function seedMockSet1(prisma: PrismaClient): Promise<void> {
   const data = {
     userId: null,
     externalId: set.id,
+    packId: 'goethe-de-a2',
     examId: set.examId,
     level: set.level,
     title: set.title,
     generated: false,
     content: asJson(set.content),
     modules: asJson(set.modules),
+    ...(set.rules ? { rules: asJson(set.rules) } : {}),
     createdAt: new Date(set.createdAt),
   }
   if (existing) {

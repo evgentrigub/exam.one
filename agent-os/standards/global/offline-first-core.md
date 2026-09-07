@@ -2,7 +2,7 @@
 
 Rules for exam practice flows, seed content, and AI. Filename kept as `offline-first-core.md` for existing links; treat this as the **core practice** standard.
 
-The product is a **generic, multi-language / multi-level exam framework**. Live practice content is German / Goethe A2 across all four skills, plus Goethe C1 Writing prompts. Keep core logic language-agnostic — never hard-code one language or provider into a core flow.
+The product is a **generic, multi-language / multi-level exam framework**. Live practice content is German / Goethe A2 across all four skills (the `goethe-de-a2` pack). Keep core logic language-agnostic — never hard-code one language or provider into a core flow.
 
 AI is an enhancement layer (exercise generation, review, grading), never a hard dependency of the core practice UI.
 
@@ -22,11 +22,11 @@ Root README + `.env.example` document first-user setup, optional LLM keys, speec
 
 ## Exam-specific behavior
 
-Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules in `@exam-one/exam-content` and `apps/frontend/data/`.
+Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules in `@exam-one/exam-content` and `@exam-one/exam-packs` (`data/src/packs/`).
 
 ## Static seed data
 
-Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** stay as typed modules under `apps/frontend/data/`.
+Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null, `packId` set). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** live as `PromptSpec` modules under `data/src/packs/{packId}/`.
 
 ```
 libraries/exam-content/src/
@@ -35,17 +35,17 @@ libraries/exam-content/src/
   seeds/listening.ts
   seeds/speaking.ts
   seeds/mock-exam.ts
-apps/frontend/data/
-  reading/a2/exerciseGeneratorReadingA2.ts    # editable demo prompt template
-  writing/a2/exerciseGeneratorWritingA2.ts
-  writing/a2/reviewWritingA2.ts
+data/src/packs/goethe-de-a2/
+  pack.ts
+  prompts/reading.ts
+  prompts/writing.ts
   ...
 ```
 
 - Seed modules export typed arrays / functions (never untyped JSON)
 - Defaults are an **immutable seed**. Never mutate the default array at runtime
 - Practice lists overlay user-generated rows on seeds by `externalId` and hide `examOnly` / `EXAM_ONLY` items
-- The bundled prompt templates that generate / review / grade exercises are **editable demo templates**
+- The bundled prompt templates that generate / review / grade exercises live as pack `PromptSpec`s under `data/src/packs/`
 
 ## Seed + API hydrate
 

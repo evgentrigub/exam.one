@@ -99,6 +99,10 @@ Durable storage:
 
 Theme, locale, listening playback volume/speed, and reading bookmarks stay in the browser.
 
+### Exam packs
+
+Exam definitions, LLM prompts, runtime rules, grading criteria and payload adapters live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack using the five supported exercise formats by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`. Bundled Goethe exercise payloads stay in `@exam-one/exam-content`. Goethe A2 is the only live production pack; inactive C1 attempts remain reviewable under **Progress → Past exams**. See the [verification and migration rollout guide](data/VERIFICATION.md).
+
 ---
 
 ## Self-host with Docker Compose
@@ -400,16 +404,38 @@ exam-one/
 ├── apps/
 │   ├── frontend/          # Nuxt 4 application
 │   └── backend/           # Standalone NestJS API
+│       └── postman/       # Importable API collection and usage guide
+├── data/                  # @exam-one/exam-packs: exam definitions and shared runtime
+│   └── src/
+│       ├── packs/         # Pack structure, prompts, rules and compatibility adapters
+│       ├── testing/       # Synthetic fixtures; excluded from production registration
+│       ├── registry.ts    # Registered packs and live availability
+│       └── runtime.ts     # Five formats, view adapters and grading contracts
 ├── libraries/
-│   ├── contracts/         # Framework-neutral shared API contracts
-│   ├── database/          # Prisma schema, migrations, and seeds
-│   ├── exam-content/      # Shared exam content boundary
-│   └── nestjs-libraries/  # Shared backend infrastructure boundary
+│   ├── contracts/         # Request/response types shared by Nuxt and NestJS
+│   ├── database/          # Prisma schema, migrations, client exports and seed upserts
+│   ├── exam-content/      # Bundled Goethe exercises, content types and mock Set 1
+│   └── nestjs-libraries/  # PrismaModule/PrismaService for NestJS injection and lifecycle
 ├── agent-os/              # Implementation standards
+├── scripts/               # Stack/speech utilities and pack migration/acceptance checks
 ├── compose.yaml           # App + PostgreSQL + Kokoro TTS + Parakeet STT
 ├── pnpm-workspace.yaml
 └── package.json           # Workspace orchestration scripts
 ```
+
+`data/` and `libraries/*` are internal pnpm workspace packages consumed by the applications; they do not run as separate servers. Edit `src/` and Prisma schema/migration files. `dist/` is generated build output, and `node_modules/` contains installed dependencies and workspace links.
+
+| Change you want to make | Owning directory |
+| --- | --- |
+| Add a supported exam, change prompts, timing, replay or grading rules | `data/` |
+| Change bundled passages, questions, topics or Goethe mock content | [libraries/exam-content](libraries/exam-content/README.md) |
+| Change the API's request/response shapes | [libraries/contracts](libraries/contracts/README.md) |
+| Change tables, indexes, migrations or seed persistence | [libraries/database](libraries/database/README.md) |
+| Change NestJS database connection/injection behavior | [libraries/nestjs-libraries](libraries/nestjs-libraries/README.md) |
+| Change screens and browser interactions | `apps/frontend/` |
+| Change endpoints, authorization or server orchestration | `apps/backend/` |
+
+For manual API exploration, import the [Postman collection](apps/backend/postman/exam-one-backend.postman_collection.json) and follow its [usage guide](apps/backend/postman/README.md). Pack-scoped requests send `x-exam-pack: {{packId}}`; omitting that header uses the user's active pack. Historical attempt reads resolve the saved record's identity and snapshot.
 
 ## Commands
 

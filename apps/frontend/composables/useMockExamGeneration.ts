@@ -1,4 +1,9 @@
-import { createGoetheA2MockExamSet, type MockExamContent } from '~/data/mockExam/goetheA2'
+import type { MockExamContent } from '~/data/mockExam/goetheA2'
+import {
+  getAvailableExamParts,
+  type ExamPack,
+  type SkillId as PackSkillId,
+} from '@exam-one/exam-packs'
 import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
@@ -84,39 +89,54 @@ function createJobs(skill: SkillId, parts: number[]): MockGenerationJob[] {
   )
 }
 
-function createDraft(setNumber: number): MockGenerationDraft {
+function createDraft(pack: ExamPack, setNumber: number): MockGenerationDraft {
+  const alias = pack.examIds.find(id => id === 'goethe-a2') ?? pack.packId
+  const readingParts = getAvailableExamParts(pack, 'reading').map(part => part.n)
+  const listeningParts = getAvailableExamParts(pack, 'listening').map(part => part.n)
+  const writingParts = getAvailableExamParts(pack, 'writing').map(part => part.n)
+  const speakingParts = getAvailableExamParts(pack, 'speaking').map(part => part.n)
   return {
     setNumber,
-    setId: `goethe-a2-set-${setNumber}`,
+    setId: `${alias}-set-${setNumber}`,
     status: 'queued',
     startedAt: new Date().toISOString(),
     completedAt: null,
     error: null,
     modules: [
-      { skill: 'reading', status: 'queued', jobs: createJobs('reading', [1, 2, 3, 4]) },
-      { skill: 'listening', status: 'queued', jobs: createJobs('listening', [1, 2, 3, 4]) },
-      { skill: 'writing', status: 'queued', jobs: createJobs('writing', [1, 2]) },
-      { skill: 'speaking', status: 'queued', jobs: createJobs('speaking', [1, 2]) },
+      { skill: 'reading', status: 'queued', jobs: createJobs('reading', readingParts) },
+      { skill: 'listening', status: 'queued', jobs: createJobs('listening', listeningParts) },
+      { skill: 'writing', status: 'queued', jobs: createJobs('writing', writingParts) },
+      { skill: 'speaking', status: 'queued', jobs: createJobs('speaking', speakingParts) },
     ],
     content: blankContent(),
   }
 }
 
 export const useMockExamGeneration = () => {
-  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
-  const draft = useState<MockGenerationDraft | null>('mock-exam-generation-draft', () => null)
-  const isInitialized = useState<boolean>('mock-exam-generation-initialized', () => false)
-  const preflight = useState<MockExamPreflight>('mock-exam-generation-preflight', () => ({
-    checking: false,
-    checkedAt: null,
-    llmConfigured: false,
-    llmConnected: false,
-    ttsAvailable: false,
-    provider: null,
-    model: null,
-    llmMessage: null,
-    ttsMessage: null,
-  }))
+  const requestPackId = useSettingsStore().packId
+  const { pack, assemble } = usePackPrompt(requestPackId)
+  const draft = useState<MockGenerationDraft | null>(
+    `mock-exam-generation-draft:${useAuth().user.value?.id}:${requestPackId}`,
+    () => null
+  )
+  const isInitialized = useState<boolean>(
+    `mock-exam-generation-initialized:${useAuth().user.value?.id}:${requestPackId}`,
+    () => false
+  )
+  const preflight = useState<MockExamPreflight>(
+    `mock-exam-generation-preflight:${useAuth().user.value?.id}:${requestPackId}`,
+    () => ({
+      checking: false,
+      checkedAt: null,
+      llmConfigured: false,
+      llmConnected: false,
+      ttsAvailable: false,
+      provider: null,
+      model: null,
+      llmMessage: null,
+      ttsMessage: null,
+    })
+  )
   const { addSet } = useMockExamSets()
 
   const isGenerating = computed(() => draft.value?.status === 'running')
@@ -130,6 +150,7 @@ export const useMockExamGeneration = () => {
     if (import.meta.server) return
     if (draft.value) {
       void apiFetch('/mock-exam/generation', {
+        packId: requestPackId,
         method: 'PUT',
         body: {
           payload: draft.value,
@@ -137,14 +158,18 @@ export const useMockExamGeneration = () => {
         },
       }).catch(error => console.error('[mock-exam-generation] persist failed', error))
     } else {
-      void apiFetch('/mock-exam/generation', { method: 'DELETE' }).catch(() => undefined)
+      void apiFetch('/mock-exam/generation', { method: 'DELETE', packId: requestPackId }).catch(
+        () => undefined
+      )
     }
   }
 
   const initialize = async (): Promise<void> => {
     if (isInitialized.value || import.meta.server) return
     try {
-      const saved = await apiFetch<GenerationJobDto | null>('/mock-exam/generation')
+      const saved = await apiFetch<GenerationJobDto | null>('/mock-exam/generation', {
+        packId: requestPackId,
+      })
       const raw = saved?.payload
       if (raw && typeof raw === 'object') {
         const stored = raw as MockGenerationDraft
@@ -221,12 +246,14 @@ export const useMockExamGeneration = () => {
 
   const generateContentJob = async (skill: SkillId, part: number): Promise<void> => {
     if (!draft.value) return
+    const difficulty = pack.value.cefr
+    const prompt = assemble(skill as PackSkillId, part, 'generator', { count: 1 })
 
     if (skill === 'reading') {
-      const prompt = generatorPrompt('reading', part, 1)
-      const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
+      const response = await aiFetch<ReadingExercise[]>('/llm/generate-reading', {
+        packId: requestPackId,
         method: 'POST',
-        body: { difficulty: 'A2', prompts: prompt ? [{ part, prompt }] : [] },
+        body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
       })
       if (response.error || !response.data?.[0])
         throw new Error(response.error || `No reading exercise generated for Teil ${part}.`)
@@ -238,10 +265,10 @@ export const useMockExamGeneration = () => {
     }
 
     if (skill === 'listening') {
-      const prompt = generatorPrompt('listening', part, 1)
-      const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
+      const response = await aiFetch<ListeningA2Exercise[]>('/llm/generate-listening', {
+        packId: requestPackId,
         method: 'POST',
-        body: { difficulty: 'A2', prompts: prompt ? [{ part, prompt }] : [] },
+        body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
       })
       if (response.error || !response.data?.[0])
         throw new Error(response.error || `No listening exercise generated for Teil ${part}.`)
@@ -253,10 +280,10 @@ export const useMockExamGeneration = () => {
     }
 
     if (skill === 'writing') {
-      const prompt = generatorPrompt('writing', part, 1)
-      const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
+      const response = await aiFetch<WritingExercise[]>('/llm/generate-topics', {
+        packId: requestPackId,
         method: 'POST',
-        body: { prompt, part, difficulty: 'A2' },
+        body: { prompt, part, difficulty },
       })
       const topic = response.data?.[0]
       if (response.error || !topic)
@@ -268,10 +295,10 @@ export const useMockExamGeneration = () => {
       return
     }
 
-    const prompt = generatorPrompt('speaking', part, 1)
-    const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
+    const response = await aiFetch<SpeakingA2Topic[]>('/llm/generate-speaking', {
+      packId: requestPackId,
       method: 'POST',
-      body: { difficulty: 'A2', prompts: prompt ? [{ part, prompt }] : [] },
+      body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
     })
     if (response.error || !response.data?.[0])
       throw new Error(response.error || `No speaking exercise generated for Teil ${part}.`)
@@ -288,6 +315,7 @@ export const useMockExamGeneration = () => {
     const response = await aiFetch<{ audio: ListeningExerciseAudioMap; written: number }>(
       '/tts/generate-listening-audio',
       {
+        packId: requestPackId,
         method: 'POST',
         body: { exercise },
       }
@@ -302,7 +330,6 @@ export const useMockExamGeneration = () => {
 
   const runPipeline = async (): Promise<boolean> => {
     if (!draft.value) return false
-    await hydratePrompts()
     draft.value.status = 'running'
     draft.value.error = null
     persist()
@@ -337,8 +364,11 @@ export const useMockExamGeneration = () => {
       persist()
     }
 
-    const completedSet = createGoetheA2MockExamSet(draft.value.setNumber, draft.value.content)
-    await addSet(completedSet)
+    const completedSet = pack.value.createMockSet?.(draft.value.setNumber, draft.value.content)
+    if (!completedSet) {
+      throw new Error('The active exam pack cannot create a mock set.')
+    }
+    await addSet(completedSet, requestPackId)
     draft.value.status = 'done'
     draft.value.completedAt = new Date().toISOString()
     draft.value.error = null
@@ -349,7 +379,7 @@ export const useMockExamGeneration = () => {
 
   const startGeneration = async (setNumber: number): Promise<boolean> => {
     if (isGenerating.value || !preflightReady.value) return false
-    draft.value = createDraft(setNumber)
+    draft.value = createDraft(pack.value, setNumber)
     persist()
     return runPipeline()
   }

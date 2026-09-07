@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
 import type { INestApplication } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import request from 'supertest'
-import { PrismaClient } from '@exam-one/database'
+import { createPrismaClient } from '@exam-one/database'
 import { AppModule } from '../src/app.module'
 import { configureApp } from '../src/bootstrap'
-import { LlmService } from '../src/llm/llm.service'
+import { LlmService } from '../src/ai/llm.service'
 
 describe('Auth + health (e2e)', () => {
   let app: INestApplication
-  const prisma = new PrismaClient()
+  const prisma = createPrismaClient()
   const email = `e2e-${Date.now()}@exam.one`
 
   beforeEach(async () => {

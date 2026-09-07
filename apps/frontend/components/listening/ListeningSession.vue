@@ -332,10 +332,12 @@ const props = withDefaults(
   defineProps<{
     exercise: ListeningA2Exercise
     examMode?: boolean
+    configuredReplays?: number | undefined
     initialAnswers?: Record<string, number | undefined>
   }>(),
   {
     examMode: false,
+    configuredReplays: undefined,
     initialAnswers: () => ({}),
   }
 )
@@ -433,7 +435,7 @@ const instructions = computed(() => {
 })
 
 const replayLimit = computed(() =>
-  currentExercise.value.testingPart === 1 || currentExercise.value.testingPart === 4 ? 2 : 1
+  props.configuredReplays ?? (currentExercise.value.testingPart === 1 || currentExercise.value.testingPart === 4 ? 2 : 1)
 )
 
 const partTimeSec: Record<number, number> = { 1: 600, 2: 480, 3: 600, 4: 480 }
@@ -656,7 +658,7 @@ function finish() {
     })
     return
   }
-  saveListeningCompletion(currentExercise.value.id ?? '', score.value, model.value.questions.length)
+  saveListeningCompletion(currentExercise.value.id ?? '', score.value, model.value.questions.length, { ...answers })
 }
 
 function restart() {

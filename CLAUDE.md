@@ -41,6 +41,7 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 | `libraries/contracts/`        | Framework-neutral shared API contracts                                                                       |
 | `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
 | `libraries/exam-content/`     | Shared exam-content boundary                                                                                 |
+| `data/`                       | `@exam-one/exam-packs`: exam structure and PromptSpecs (`src/packs/{packId}/`)                               |
 | `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                        |
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/standards/`         | Canonical implementation standards                                                                           |
@@ -48,11 +49,11 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 ### Frontend data lifecycle
 
 1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
-2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null). User-generated rows overlay seeds by `externalId`
+2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null, `packId` set). User-generated rows overlay seeds by `(packId, externalId)`
 
 Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
 
-Prompt templates remain typed modules under `apps/frontend/data/{skill}/`.
+Prompt templates remain typed `PromptSpec` modules under `data/src/packs/{packId}/`.
 
 ## Standards (read `agent-os/standards/` before editing)
 
@@ -93,8 +94,8 @@ Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for bu
 ## AI Integration
 
 - AI is **optional and provider-agnostic** (bring-your-own-key). Set `LLM_PROVIDER=openai` with `OPENAI_API_KEY`, or `LLM_PROVIDER=openrouter` with `OPENROUTER_API_KEY`; missing keys and upstream failures must degrade gracefully.
-- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/llm`, `tts`, `stt`). Frontend AI requests use `aiFetch` to `/api/v1/ai|llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
-- Prompt templates currently live as typed seed data under `apps/frontend/data/{skill}/a2/` and are user-editable.
+- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/ai`, `speech`). Frontend AI requests use `aiFetch` to `/api/v1/llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
+- Prompt templates currently live as typed `PromptSpec` modules under `data/src/packs/{packId}/`. Generation always uses pack defaults (prompt overrides are unmounted).
 - Generated mock sets require successful LLM configuration/connection and Docker TTS preflight checks; bundled Set 1 must remain available without them.
 - Writing and Speaking mock grading starts automatically. Persist full successful reviews with scores, and do not block completed results when optional aggregate AI review fails.
 

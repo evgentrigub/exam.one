@@ -18,6 +18,7 @@ export function toSettingDto(setting: Setting): SettingDto {
   return {
     id: setting.id,
     userId: setting.userId,
+    packId: setting.packId,
     examLevel: setting.examLevel,
     targetLanguage: setting.targetLanguage,
     updatedAt: setting.updatedAt.toISOString(),

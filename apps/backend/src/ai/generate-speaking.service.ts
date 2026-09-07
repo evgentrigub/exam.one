@@ -1,59 +1,11 @@
+import { goetheGenerateSpeakingSystem0 } from '@exam-one/exam-packs'
 import { Injectable, Logger } from '@nestjs/common'
 import type { AiResponse } from '@exam-one/contracts'
-import type { Difficulty, SpeakingA2Part, SpeakingA2Topic, SpeakingFourCards } from '@exam-one/exam-content'
-import { LlmService } from '../llm/llm.service'
-import { generateSpeakingId } from './ids'
-import { extractJsonArray, isRecord, nonEmptyString } from './json'
+import type { Difficulty, SpeakingA2Topic } from '@exam-one/exam-content'
+import { LlmService } from './llm.service'
+import { extractJsonArray, nonEmptyString } from './json'
 import type { GenerateSpeakingDto } from './dto/ai.dto'
-
-interface SpeakingPromptPart {
-  part: SpeakingA2Part
-  prompt: string
-}
-
-function isSpeakingA2Part(value: unknown): value is SpeakingA2Part {
-  return value === 1 || value === 2
-}
-
-function isFourCards(value: unknown): value is SpeakingFourCards {
-  return Array.isArray(value) && value.length === 4 && value.every(nonEmptyString)
-}
-
-function normaliseTopic(
-  value: unknown,
-  part: SpeakingA2Part,
-  difficulty: Difficulty
-): SpeakingA2Topic | null {
-  if (!isRecord(value) || !nonEmptyString(value['theme'])) return null
-  const id = generateSpeakingId(part, difficulty)
-  const createdAt = new Date().toISOString()
-  const supportedDifficulty = 'A2' as const
-
-  if (part === 1) {
-    if (!isFourCards(value['answerQuestions']) || !isFourCards(value['askQuestions'])) return null
-    return {
-      id,
-      testingPart: 1,
-      topicType: 'interview',
-      difficulty: supportedDifficulty,
-      theme: value['theme'],
-      answerQuestions: value['answerQuestions'],
-      askQuestions: value['askQuestions'],
-      createdAt,
-    }
-  }
-
-  if (!isFourCards(value['keywords'])) return null
-  return {
-    id,
-    testingPart: 2,
-    topicType: 'monologue',
-    difficulty: supportedDifficulty,
-    theme: value['theme'],
-    keywords: value['keywords'],
-    createdAt,
-  }
-}
+import { goetheSpeakingPromptPart as SpeakingPromptPart, goetheIsSpeakingA2Part as isSpeakingA2Part, goetheNormaliseTopic as normaliseTopic } from '@exam-one/exam-packs'
 
 @Injectable()
 export class GenerateSpeakingService {
@@ -113,7 +65,7 @@ export class GenerateSpeakingService {
         {
           role: 'system',
           content:
-            'You are an expert Goethe-Institut exam creator. Generate speaking topics according to the specifications provided. Return ONLY a valid JSON array of topic objects, no additional text.',
+            goetheGenerateSpeakingSystem0,
         },
         { role: 'user', content: job.prompt },
       ],

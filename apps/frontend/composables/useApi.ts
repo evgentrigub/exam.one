@@ -1,3 +1,5 @@
+import { packEpoch } from '~/utils/packScope'
+import { useSettingsStore } from '~/stores/settings'
 import type { ApiError, ApiResponse } from '@exam-one/contracts'
 
 export class ApiClientError extends Error {
@@ -60,7 +62,9 @@ export async function refreshAccessCookie(): Promise<boolean> {
   return refreshInFlight
 }
 
-type ApiFetchOptions = {
+export type ApiFetchOptions = {
+  packId?: string
+
   method?: string
   body?: unknown
   query?: Record<string, string>
@@ -73,11 +77,13 @@ async function requestOnce<T>(path: string, options: ApiFetchOptions = {}): Prom
     const fetchOptions: {
       method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
       credentials: 'include'
+      headers: Record<string, string>
       body?: BodyInit | Record<string, unknown> | null
       query?: Record<string, string>
     } = {
       method: (options.method ?? 'GET') as 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE',
       credentials: 'include',
+      headers: { 'x-exam-pack': options.packId ?? useSettingsStore().packId },
     }
     if (options.body !== undefined) {
       fetchOptions.body = options.body as BodyInit | Record<string, unknown> | null
@@ -146,8 +152,12 @@ async function requestOnce<T>(path: string, options: ApiFetchOptions = {}): Prom
 }
 
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+  options = { ...options, packId: options.packId ?? useSettingsStore().packId }
+  const epoch = packEpoch()
   try {
-    return await requestOnce<T>(path, options)
+    const result = await requestOnce<T>(path, options)
+    if (epoch !== packEpoch() && (options.method ?? 'GET') === 'GET') throw new ApiClientError(409, { code: 'PACK_CHANGED', message: 'Exam selection changed' })
+    return result
   } catch (error: unknown) {
     if (
       import.meta.client &&
@@ -156,7 +166,9 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
       shouldAttemptRefresh(path) &&
       (await refreshAccessCookie())
     ) {
-      return requestOnce<T>(path, options)
+      const result = await requestOnce<T>(path, options)
+      if (epoch !== packEpoch() && (options.method ?? 'GET') === 'GET') throw new ApiClientError(409, { code: 'PACK_CHANGED', message: 'Exam selection changed' })
+      return result
     }
     throw error
   }

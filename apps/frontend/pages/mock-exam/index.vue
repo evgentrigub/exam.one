@@ -8,10 +8,11 @@
         {{ $t('mockExam.fullSimulation') }}
       </div>
       <h1 class="mt-2 font-display text-3xl font-bold">{{ $t('mockExam.title') }}</h1>
-      <p class="mt-1 text-sm text-base-content/60">{{ $t('mockExam.listDescription') }}</p>
+      <p v-if="pack.createMockSet" class="mt-1 text-sm text-base-content/60">{{ $t('mockExam.listDescription') }}</p>
     </div>
 
-    <ClientOnly>
+    <p v-if="!pack.createMockSet" class="alert">Mock exams are not available for this exam pack.</p>
+    <ClientOnly v-else>
       <div class="grid gap-5 lg:grid-cols-2">
         <MockExamSetCard v-for="set in sets" :key="set.id" :set="set" @delete="deleteSet" />
 
@@ -60,9 +61,10 @@
 <script setup lang="ts">
 import { FileCheck2, Plus, Sparkles } from 'lucide-vue-next'
 
-usePageMeta('Mock exams', 'Timed Goethe A2 exam simulations')
+usePageMeta('Mock exams', 'Exam simulations and availability')
 useHead({ title: 'Mock exams' })
 
+const { pack } = useActivePack()
 const preflightOpen = ref(false)
 const { sets, nextSetNumber, deleteSet } = useMockExamSets()
 const { isGenerating, startGeneration } = useMockExamGeneration()

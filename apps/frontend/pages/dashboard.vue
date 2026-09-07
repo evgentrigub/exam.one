@@ -33,7 +33,7 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-xs text-base-content/60">
               <Flag :size="12" />
-              Goethe {{ examLevel }}
+              {{ pack.title }}
             </div>
             <h2 class="font-display text-2xl font-bold mt-1">
               {{ $t('dashboard.examReady', { pct: overallReadiness }) }}
@@ -222,7 +222,7 @@
         <div class="p-5 flex items-center justify-between gap-3">
           <div>
             <h2 class="font-display text-lg font-bold">
-              {{ $t('dashboard.yourMockExams') }} · {{ examLevel }}
+              {{ $t('dashboard.yourMockExams') }} · {{ pack.title }}
             </h2>
           </div>
           <NuxtLink to="/mock-exam" class="btn btn-primary btn-sm gap-1">
@@ -279,6 +279,7 @@ const { t } = useI18n()
 const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+const { pack } = useActivePack()
 
 const { skillStats, overallReadiness, weakestSkills } = useSkillStats()
 const { daysUntilExam, hasExamDate, firstName } = useAccountProfile()
@@ -288,7 +289,7 @@ watchEffect(() => {
     ? t('dashboard.welcomeBack', { name: firstName.value })
     : t('dashboard.welcomeBackFallback')
   const subtitle = hasExamDate.value
-    ? t('dashboard.examInDays', { level: examLevel.value, days: daysUntilExam.value })
+    ? t('dashboard.examInDays', { level: pack.value.title, days: daysUntilExam.value })
     : t('dashboard.setExamDateSubtitle')
   usePageMeta(title, subtitle)
 })

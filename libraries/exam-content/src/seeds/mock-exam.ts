@@ -20,6 +20,7 @@ export interface MockExamExerciseDefinition {
   title: string
   part: number
   maxRawPoints: number
+  replays?: number
 }
 
 export interface MockExamModuleDefinition {
@@ -41,6 +42,7 @@ export interface MockExamSet {
   createdAt: string
   modules: MockExamModuleDefinition[]
   content: MockExamContent
+  rules?: { maximumPoints: number; passPoints: number }
 }
 
 export const goetheA2MockExamSet1: MockExamSet = {
@@ -49,6 +51,7 @@ export const goetheA2MockExamSet1: MockExamSet = {
   level: 'A2',
   title: 'Goethe-Zertifikat A2 · Set 1',
   generated: false,
+  rules: { maximumPoints: 100, passPoints: 60 },
   createdAt: '2026-08-09',
   modules: [
     {
@@ -74,6 +77,7 @@ export const goetheA2MockExamSet1: MockExamSet = {
         id: `mock-a2-set1-listening-teil${part}`,
         title: `Hören · Teil ${part}`,
         part,
+        replays: part === 1 || part === 4 ? 2 : 1,
         maxRawPoints: 5,
       })),
     },
@@ -144,6 +148,7 @@ export function createGoetheA2MockExamSet(
             ? exercise.title
             : `${skill} · Teil ${exercise.testingPart}`,
       part: exercise.testingPart ?? 1,
+      ...(skill === 'listening' ? { replays: exercise.testingPart === 1 || exercise.testingPart === 4 ? 2 : 1 } : {}),
       maxRawPoints:
         skill === 'speaking' ? (exercise.testingPart === 1 ? 4 : 8) : skill === 'writing' ? 10 : 5,
     })),
@@ -155,6 +160,7 @@ export function createGoetheA2MockExamSet(
     level: 'A2',
     title: `Goethe-Zertifikat A2 · Set ${setNumber}`,
     generated: true,
+    rules: { maximumPoints: 100, passPoints: 60 },
     createdAt: new Date().toISOString(),
     modules: [
       definition('reading', 30, 20, 25, 1.25),

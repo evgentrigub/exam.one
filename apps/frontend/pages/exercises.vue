@@ -1,5 +1,6 @@
 <template>
-  <div class="max-w-[1240px] mx-auto p-6 space-y-5">
+  <PackExerciseHub v-if="!pack.compatibility" :key="pack.packId" :pack-id="pack.packId" />
+  <div v-else class="max-w-[1240px] mx-auto p-6 space-y-5">
     <!-- Filter panel -->
     <div
       class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3 overflow-visible"
@@ -134,7 +135,6 @@
     <ClientOnly>
       <GenerateExercisesModal
         v-if="genOpen"
-        :level="examLevel"
         @close="genOpen = false"
         @generate="handleGenerateFromModal"
       />
@@ -390,8 +390,8 @@ import {
   CheckCircle2,
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
-import { getAvailableExamParts } from '~/data/examStructure/goetheA2'
 import type { SkillId } from '~/utils/labels'
+import type { SkillId as PackSkillId } from '@exam-one/exam-packs'
 import { parseSkillPartKeys } from '~/utils/generation/partJobs'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
@@ -415,6 +415,7 @@ const route = useRoute()
 const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+const { partsFor, pack } = useActivePack()
 
 const { getTexts, addTexts } = useReadingTexts()
 const { getTopics, addTopics, deleteTopic } = useWritingTopics()
@@ -469,7 +470,7 @@ const {
 const genOpen = ref(false)
 
 type GeneratePayload = {
-  level: 'A2' | 'C1'
+  level: string
   skills: SkillId[]
   parts: string[]
   count: number
@@ -491,7 +492,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         if (readingGenerationError.value) {
           alert(readingGenerationError.value)
         }
-      } else if (skill === 'writing' && examLevel.value === 'A2') {
+      } else if (skill === 'writing') {
         const selectedParts = payload.parts
           .filter(p => p.startsWith('writing:'))
           .map(p => Number(p.split(':')[1]))
@@ -501,7 +502,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
           parts: partsToGenerate,
           onPartComplete: items => void addTopics(items),
         })
-      } else if (skill === 'listening' && examLevel.value === 'A2') {
+      } else if (skill === 'listening') {
         const parts = parseSkillPartKeys('listening', payload.parts)
         await generateListening(examLevel.value, {
           parts: parts.length ? parts : undefined,
@@ -510,7 +511,7 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
         if (listeningGenerationError.value) {
           alert(listeningGenerationError.value)
         }
-      } else if (skill === 'speaking' && examLevel.value === 'A2') {
+      } else if (skill === 'speaking') {
         const parts = parseSkillPartKeys('speaking', payload.parts)
         await generateSpeaking(examLevel.value, {
           parts: parts.length ? parts : undefined,
@@ -596,7 +597,7 @@ const partFilterSkills = computed<SkillId[]>(() =>
 )
 
 function partsForSkill(skill: SkillId) {
-  return getAvailableExamParts(skill)
+  return partsFor(skill as PackSkillId)
 }
 
 // Apply ?skill= and ?part= query params

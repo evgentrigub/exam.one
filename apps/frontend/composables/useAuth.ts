@@ -139,6 +139,7 @@ export function useAuth() {
   }
 
   async function updateSettings(input: {
+    packId?: string
     examLevel?: 'A2' | 'C1'
     targetLanguage?: string
   }): Promise<SettingDto> {

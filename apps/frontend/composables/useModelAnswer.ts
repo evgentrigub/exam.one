@@ -6,15 +6,8 @@
  */
 
 import type { WritingExercise, ModelAnswer } from '~/utils/types'
+import { onPackReset, packEpoch } from '~/utils/packScope'
 import { ref } from 'vue'
-import {
-  generateModelAnswerC1Part1,
-  generateModelAnswerC1Part2,
-} from '~/data/writing/c1/answerGeneratorWritingC1'
-import {
-  generateModelAnswerA2Part1,
-  generateModelAnswerA2Part2,
-} from '~/data/writing/a2/answerGeneratorWritingA2'
 import { generateUUID } from '~/utils/uuid'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
@@ -34,6 +27,7 @@ interface ModelAnswerRecord {
 const answers = ref<Record<string, ModelAnswerRecord>>({})
 const modelAnswerVersion = ref(0)
 let hydrated = false
+onPackReset(() => { answers.value = {}; hydrated = false; modelAnswerVersion.value++ })
 
 function persistModelAnswer(record: ModelAnswerRecord): void {
   void apiFetch('/attempts', {
@@ -120,8 +114,10 @@ function getRecord(topicId: string): ModelAnswerRecord | null {
 }
 
 export function useModelAnswer() {
+  const requestPackId = useSettingsStore().packId
+  const requestEpoch = packEpoch()
   if (import.meta.client) void hydrateModelAnswers()
-  const { hydrate: hydratePrompts, filledOrDefault } = usePromptOverrides()
+  const { assemble } = usePackPrompt(requestPackId)
   function getModelAnswer(topicId: string): ModelAnswer | null {
     const record = getRecord(topicId)
     return record?.modelAnswer || null
@@ -148,28 +144,15 @@ export function useModelAnswer() {
   }
 
   function getGenerationPrompt(topic: WritingExercise): string {
-    switch (topic.difficulty) {
-      case 'A2': {
-        const part = topic.testingPart === 2 ? 2 : 1
-        const fallback =
-          part === 1
-            ? generateModelAnswerA2Part1(topic.task, topic.id)
-            : generateModelAnswerA2Part2(topic.task, topic.id)
-        return filledOrDefault('writing', part, 'answer', fallback, {
-          task: topic.task,
-          topicId: topic.id,
-        })
-      }
-      case 'C1':
-        switch (topic.testingPart) {
-          case 1:
-            return generateModelAnswerC1Part1(topic.task, topic.id)
-          default:
-            return generateModelAnswerC1Part2(topic.task, topic.id)
-        }
-      default:
-        throw new Error(`Unsupported difficulty level: ${topic.difficulty}`)
+    const part = topic.testingPart === 2 ? 2 : 1
+    const prompt = assemble('writing', part, 'answer', {
+      task: topic.task,
+      topicId: topic.id,
+    })
+    if (!prompt) {
+      throw new Error(`No model-answer prompt is configured for writing part ${part}`)
     }
+    return prompt
   }
 
   /**
@@ -177,7 +160,6 @@ export function useModelAnswer() {
    * Uses OpenAI API if available, otherwise returns error.
    */
   async function generateModelAnswer(topic: WritingExercise): Promise<void> {
-    await hydratePrompts()
     const prompt = getGenerationPrompt(topic)
 
     saveRecord({
@@ -189,11 +171,13 @@ export function useModelAnswer() {
 
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = await aiFetch<Partial<ModelAnswer>>('/ai/generate-model-answer', {
+      const response = await aiFetch<Partial<ModelAnswer>>('/llm/generate-model-answer', {
+        packId: requestPackId,
         method: 'POST',
         body: { topic, prompt },
       })
 
+      if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)
       if (current) {
         if (response.error) throw new Error(response.error)
@@ -231,6 +215,7 @@ export function useModelAnswer() {
         }
       }
     } catch (error) {
+      if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)
       if (current) {
         saveRecord({
