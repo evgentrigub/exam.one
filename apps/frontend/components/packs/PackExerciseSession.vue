@@ -294,7 +294,7 @@ async function submit() {
     if (view.value.questions) result = objectiveScore(view.value, rules.value, answers.value)
     else {
       const response = await aiFetch<CriterionReview>(
-        props.skill === 'speaking' ? '/ai/review-speaking' : '/ai/review',
+        props.skill === 'speaking' ? '/llm/review-speaking' : '/llm/review',
         {
           packId: requestPackId,
           method: 'POST',

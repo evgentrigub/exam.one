@@ -250,7 +250,7 @@ export const useMockExamGeneration = () => {
     const prompt = assemble(skill as PackSkillId, part, 'generator', { count: 1 })
 
     if (skill === 'reading') {
-      const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
+      const response = await aiFetch<ReadingExercise[]>('/llm/generate-reading', {
         packId: requestPackId,
         method: 'POST',
         body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
@@ -265,7 +265,7 @@ export const useMockExamGeneration = () => {
     }
 
     if (skill === 'listening') {
-      const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
+      const response = await aiFetch<ListeningA2Exercise[]>('/llm/generate-listening', {
         packId: requestPackId,
         method: 'POST',
         body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
@@ -280,7 +280,7 @@ export const useMockExamGeneration = () => {
     }
 
     if (skill === 'writing') {
-      const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
+      const response = await aiFetch<WritingExercise[]>('/llm/generate-topics', {
         packId: requestPackId,
         method: 'POST',
         body: { prompt, part, difficulty },
@@ -295,7 +295,7 @@ export const useMockExamGeneration = () => {
       return
     }
 
-    const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
+    const response = await aiFetch<SpeakingA2Topic[]>('/llm/generate-speaking', {
       packId: requestPackId,
       method: 'POST',
       body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },

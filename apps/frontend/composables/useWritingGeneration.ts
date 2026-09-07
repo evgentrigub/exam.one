@@ -168,7 +168,7 @@ export const useWritingGeneration = () => {
       try {
         const prompt = getPromptForPart(part)
 
-        const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
+        const response = await aiFetch<WritingExercise[]>('/llm/generate-topics', {
           packId: requestPackId,
           method: 'POST',
           body: {

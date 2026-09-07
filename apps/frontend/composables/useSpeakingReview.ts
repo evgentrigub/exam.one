@@ -77,7 +77,7 @@ export function useSpeakingReview() {
         throw new Error(`No speaking review prompt is configured for part ${topic.testingPart}`)
       }
 
-      const response = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
+      const response = await aiFetch<SpeakingReviewData>('/llm/review-speaking', {
         method: 'POST',
         body: { prompt, topic, answers: transcripts },
       })

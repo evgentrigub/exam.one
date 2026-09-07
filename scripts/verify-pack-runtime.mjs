@@ -62,7 +62,7 @@ assert.equal(setting.body.data.targetLanguage, 'en')
 for (const module of syntheticEnglishA1.structure) for (const part of module.parts) {
   const endpoint = module.id === 'writing' ? 'generate-topics' : `generate-${module.id}`
   const body = module.id === 'writing' ? { part: part.n, prompt: 'default', difficulty: 'A1' } : { difficulty: 'A1', prompts: [{ part: part.n, prompt: 'default' }] }
-  const response = await agent.post(`/api/v1/ai/${endpoint}`).set(headers).send(body).expect(200)
+  const response = await agent.post(`/api/v1/llm/${endpoint}`).set(headers).send(body).expect(200)
   assert.equal(response.body.error, null, response.body.error)
   const payload = response.body.data[0]
   assert.equal(payload.difficulty, 'A1')
@@ -75,7 +75,7 @@ for (const module of syntheticEnglishA1.structure) for (const part of module.par
   assert.equal(attempt.body.data.packId, 'synthetic-en-a1')
   assert.equal(attempt.body.data.snapshot.version, 1)
   if (part.itemFormat === 'freeform' || part.itemFormat === 'recording') {
-    const response = await agent.post(module.id === 'writing' ? '/api/v1/ai/review' : '/api/v1/ai/review-speaking').set(headers).send({ topic: payload, answers: draft.body.data.payload.answers, prompt: 'default', ...(module.id === 'writing' ? { userContent: 'Please come to lunch' } : {}) }).expect(200)
+    const response = await agent.post(module.id === 'writing' ? '/api/v1/llm/review' : '/api/v1/llm/review-speaking').set(headers).send({ topic: payload, answers: draft.body.data.payload.answers, prompt: 'default', ...(module.id === 'writing' ? { userContent: 'Please come to lunch' } : {}) }).expect(200)
     assert.equal(response.body.error, null, response.body.error)
     assert.equal(response.body.data.maxPoints, 3.5)
     const graded = await agent.patch(`/api/v1/attempts/${attempt.body.data.id}`).set(headers).send({ result: { score: 999, maxScore: 999, review: response.body.data } }).expect(200)
@@ -121,13 +121,13 @@ assert.match(unsupportedStt.body.error, /unavailable/i)
 const generationBody = { difficulty: 'A1', prompts: [{ part: 7, prompt: 'default' }] }
 for (const mode of ['missing', 'invalid']) {
   providerMode = mode
-  const failure = await agent.post('/api/v1/ai/generate-reading').set(headers).send(generationBody).expect(200)
+  const failure = await agent.post('/api/v1/llm/generate-reading').set(headers).send(generationBody).expect(200)
   assert.equal(failure.body.data, null)
   assert(failure.body.error)
 }
 providerMode = 'delayed'
 const entered = new Promise(resolve => { providerEntered = resolve })
-const outstanding = agent.post('/api/v1/ai/generate-reading').set(headers).send(generationBody).then(response => response)
+const outstanding = agent.post('/api/v1/llm/generate-reading').set(headers).send(generationBody).then(response => response)
 await entered
 await agent.patch('/api/v1/settings/me').set(headers).send({ packId: 'goethe-de-a2' }).expect(200)
 releaseProvider()
@@ -139,7 +139,7 @@ const history = await prisma.attempt.create({ data: { userId: user.id, packId: '
 await agent.get(`/api/v1/attempts/${history.id}`).set(headers).expect(200)
 await agent.patch(`/api/v1/attempts/${history.id}`).set(headers).send({ answers: {} }).expect(404)
 await agent.patch('/api/v1/settings/me').send({ packId: 'goethe-de-c1' }).expect(400)
-await agent.post('/api/v1/ai/generate-reading').set('x-exam-pack','goethe-de-c1').send(generationBody).expect(400)
+await agent.post('/api/v1/llm/generate-reading').set('x-exam-pack','goethe-de-c1').send(generationBody).expect(400)
 const stranger = request.agent(app.getHttpServer())
 await stranger.post('/api/v1/auth/register').send({ email: `other-${email}`, password, name: 'Other fixture user' }).expect(201)
 await stranger.get(`/api/v1/attempts/${history.id}`).set(headers).expect(404)

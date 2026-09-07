@@ -129,7 +129,7 @@ export const useSpeakingGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = await aiFetch<SpeakingA2Topic[]>('/ai/generate-speaking', {
+        const response = await aiFetch<SpeakingA2Topic[]>('/llm/generate-speaking', {
           packId: requestPackId,
           method: 'POST',
           body: { difficulty, prompts: [{ part, prompt }] },

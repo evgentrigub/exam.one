@@ -94,7 +94,7 @@ Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for bu
 ## AI Integration
 
 - AI is **optional and provider-agnostic** (bring-your-own-key). Set `LLM_PROVIDER=openai` with `OPENAI_API_KEY`, or `LLM_PROVIDER=openrouter` with `OPENROUTER_API_KEY`; missing keys and upstream failures must degrade gracefully.
-- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/ai`, `speech`). Frontend AI requests use `aiFetch` to `/api/v1/ai|llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
+- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/ai`, `speech`). Frontend AI requests use `aiFetch` to `/api/v1/llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
 - Prompt templates currently live as typed `PromptSpec` modules under `data/src/packs/{packId}/`. Generation always uses pack defaults (prompt overrides are unmounted).
 - Generated mock sets require successful LLM configuration/connection and Docker TTS preflight checks; bundled Set 1 must remain available without them.
 - Writing and Speaking mock grading starts automatically. Persist full successful reviews with scores, and do not block completed results when optional aggregate AI review fails.

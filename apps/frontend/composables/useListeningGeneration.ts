@@ -129,7 +129,7 @@ export const useListeningGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
+        const response = await aiFetch<ListeningA2Exercise[]>('/llm/generate-listening', {
           packId: requestPackId,
           method: 'POST',
           body: { difficulty, prompts: [{ part, prompt }] },

@@ -26,7 +26,7 @@ import { GenerateWritingService } from './generate-writing.service'
 import { PackAiService } from './pack-ai.service'
 import { ReviewService } from './review.service'
 
-@ApiTags('ai')
+@ApiTags('llm')
 @ApiCookieAuth('exam_one_access')
 @ApiHeader({
   name: 'x-exam-pack',
@@ -34,7 +34,7 @@ import { ReviewService } from './review.service'
   description: 'Target exam pack identifier (e.g. goethe-de-a2). Resolves to active user setting if omitted.',
 })
 @Throttle({ default: { limit: 20, ttl: 60_000 } })
-@Controller('ai')
+@Controller('llm')
 export class AiController {
   constructor(
     private readonly packs: PackAiService,

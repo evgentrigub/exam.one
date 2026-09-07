@@ -104,7 +104,7 @@ async function generate(skill: SkillId, part: number, restored?: unknown[]) {
         ? { difficulty: pack.cefr, part, prompt: 'pack default' }
         : { difficulty: pack.cefr, prompts: [{ part, prompt: 'pack default' }] }
     if (!payloads) {
-      const response = await aiFetch<unknown[]>(`/ai/${endpoint}`, {
+      const response = await aiFetch<unknown[]>(`/llm/${endpoint}`, {
         packId: requestPackId,
         method: 'POST',
         body,

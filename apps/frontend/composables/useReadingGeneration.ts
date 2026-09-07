@@ -131,7 +131,7 @@ export const useReadingGeneration = () => {
       updateJobStatus(part, 'running')
 
       try {
-        const response = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
+        const response = await aiFetch<ReadingExercise[]>('/llm/generate-reading', {
           packId: requestPackId,
           method: 'POST',
           body: { difficulty, prompts: [{ part, prompt }] },

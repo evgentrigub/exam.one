@@ -531,7 +531,7 @@
               "mode": "raw",
               "raw": "{\n  \"difficulty\": \"{{cefr}}\",\n  \"prompts\": [{ \"part\": {{part}}, \"prompt\": {{generationPromptJson}} }]\n}"
             },
-            "url": "{{baseUrl}}/api/v1/ai/generate-reading",
+            "url": "{{baseUrl}}/api/v1/llm/generate-reading",
             "description": "Authed (cookie). HTTP 200 `{ data, error }` even when the LLM key is missing."
           },
           "response": [],
@@ -569,7 +569,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/generate-listening",
+            "url": "{{baseUrl}}/api/v1/llm/generate-listening",
             "description": "Use a complete pack generator prompt. Registered part and pack identity are validated.",
             "body": {
               "mode": "raw",
@@ -616,7 +616,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/generate-speaking",
+            "url": "{{baseUrl}}/api/v1/llm/generate-speaking",
             "description": "Use a complete pack generator prompt. Registered part and pack identity are validated.",
             "body": {
               "mode": "raw",
@@ -663,7 +663,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/generate-topics",
+            "url": "{{baseUrl}}/api/v1/llm/generate-topics",
             "description": "",
             "body": {
               "mode": "raw",
@@ -710,7 +710,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/generate-model-answer",
+            "url": "{{baseUrl}}/api/v1/llm/generate-model-answer",
             "description": "",
             "body": {
               "mode": "raw",
@@ -740,7 +740,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/review",
+            "url": "{{baseUrl}}/api/v1/llm/review",
             "description": "Set answers to the pack field IDs. Validated reviews may contain fractional points. Missing AI returns a business error.",
             "body": {
               "mode": "raw",
@@ -770,7 +770,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/review-speaking",
+            "url": "{{baseUrl}}/api/v1/llm/review-speaking",
             "description": "Provide the registered topic/part and transcript answers.",
             "body": {
               "mode": "raw",
@@ -800,7 +800,7 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/ai/review-mock-exam",
+            "url": "{{baseUrl}}/api/v1/llm/review-mock-exam",
             "description": "Optional overview. Unavailable for packs without a mock factory.",
             "body": {
               "mode": "raw",

@@ -171,7 +171,7 @@ export function useModelAnswer() {
 
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = await aiFetch<Partial<ModelAnswer>>('/ai/generate-model-answer', {
+      const response = await aiFetch<Partial<ModelAnswer>>('/llm/generate-model-answer', {
         packId: requestPackId,
         method: 'POST',
         body: { topic, prompt },

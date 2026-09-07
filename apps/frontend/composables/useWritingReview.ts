@@ -157,7 +157,7 @@ export function useWritingReview() {
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = await aiFetch<AiReviewData>('/ai/review', {
+      const response = await aiFetch<AiReviewData>('/llm/review', {
         packId: requestPackId,
         method: 'POST',
         body: { topic, userContent, prompt },

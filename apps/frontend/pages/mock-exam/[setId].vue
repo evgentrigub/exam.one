@@ -739,7 +739,7 @@ async function generateOverview(): Promise<void> {
   if (state.value.aiOverview.status === 'loading' || hasPendingAiGrading.value) return
   startOverview()
   try {
-    const response = await aiFetch<MockExamOverview>('/ai/review-mock-exam', {
+    const response = await aiFetch<MockExamOverview>('/llm/review-mock-exam', {
       method: 'POST',
       body: {
         prompt: buildMockExamOverviewPrompt(reviewOutputLanguage.value, overviewInput()),
@@ -884,7 +884,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         topicId: topic.id,
       })
       if (!prompt) throw new Error(`No writing review prompt is configured for part ${part}`)
-      const review = await aiFetch<AiReviewData>('/ai/review', {
+      const review = await aiFetch<AiReviewData>('/llm/review', {
         method: 'POST',
         body: { topic, userContent: response.content, prompt },
       })
@@ -905,7 +905,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
     if (!speakingPrompt) {
       throw new Error(`No speaking review prompt is configured for part ${topic.testingPart}`)
     }
-    const review = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
+    const review = await aiFetch<SpeakingReviewData>('/llm/review-speaking', {
       method: 'POST',
       body: { prompt: speakingPrompt, topic, answers: response.transcripts },
     })
