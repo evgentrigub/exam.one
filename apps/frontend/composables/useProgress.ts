@@ -1,3 +1,4 @@
+import { onPackReset, packEpoch } from '~/utils/packScope'
 import type { AttemptDto, DraftDto, Skill } from '@exam-one/contracts'
 import type { WritingSubmission, WritingFeedbackModel } from '~/utils/types'
 import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
@@ -85,8 +86,10 @@ const writingProgress = ref<Record<string, WritingProgress>>({})
 const writingDrafts = ref<Record<string, WritingSessionModel>>({})
 const listeningProgress = ref<Record<string, ListeningProgress>>({})
 const speakingProgress = ref<Record<string, SpeakingProgress>>({})
+const progressSources = { readingProgress, readingSession, writingProgress, writingDrafts, listeningProgress, speakingProgress }
 const hydrated = ref(false)
 let hydratePromise: Promise<void> | null = null
+onPackReset(() => { readingProgress.value = {}; writingProgress.value = {}; listeningProgress.value = {}; speakingProgress.value = {}; readingSession.value = null; writingDrafts.value = {}; hydrated.value = false; hydratePromise = null })
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -222,6 +225,7 @@ function speakingFromAttempts(rows: AttemptDto[]): Record<string, SpeakingProgre
 async function hydrate(): Promise<void> {
   if (!import.meta.client || hydrated.value) return
   if (hydratePromise) return hydratePromise
+  const epoch = packEpoch()
   hydratePromise = (async () => {
     try {
       const [reading, writing, listening, speaking, readingDrafts, writingDraftRows] =
@@ -233,6 +237,7 @@ async function hydrate(): Promise<void> {
           fetchDrafts('READING'),
           fetchDrafts('WRITING'),
         ])
+      if (epoch !== packEpoch()) return
       readingProgress.value = quizFromAttempts(reading)
       writingProgress.value = writingFromAttempts(writing)
       listeningProgress.value = quizFromAttempts(listening)
@@ -275,19 +280,37 @@ async function hydrate(): Promise<void> {
       writingDrafts.value = drafts
       hydrated.value = true
     } catch (error) {
+      if (epoch !== packEpoch()) return
       console.error('Failed to load progress from API:', error)
       hydrated.value = true
     } finally {
-      hydratePromise = null
+      if (epoch === packEpoch()) hydratePromise = null
     }
   })()
   return hydratePromise
 }
 
 export const useProgress = () => {
+  const requestPackId = useSettingsStore().packId
+  const { apiFetch } = usePackRequest(requestPackId)
+  const requestEpoch = packEpoch()
+  // A session that finishes after a switch may save its own attempt without touching the new view.
+  function sessionRef<T>(source: Ref<T>) {
+    let last = source.value
+    return computed({
+      get: () => requestEpoch === packEpoch() ? (last = source.value) : last,
+      set: (value: T) => { last = value; if (requestEpoch === packEpoch()) source.value = value },
+    })
+  }
+  const readingProgress = sessionRef(progressSources.readingProgress)
+  const readingSession = sessionRef(progressSources.readingSession)
+  const writingProgress = sessionRef(progressSources.writingProgress)
+  const writingDrafts = sessionRef(progressSources.writingDrafts)
+  const listeningProgress = sessionRef(progressSources.listeningProgress)
+  const speakingProgress = sessionRef(progressSources.speakingProgress)
   const getProgressData = (): Record<string, QuizProgress> => readingProgress.value
 
-  const saveQuizCompletion = (textId: string, score: number, totalQuestions: number) => {
+  const saveQuizCompletion = (textId: string, score: number, totalQuestions: number, responses: Record<string, number | undefined> = {}) => {
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
     const current = readingProgress.value[textId]
@@ -305,11 +328,12 @@ export const useProgress = () => {
       },
     }
     void apiFetch('/attempts', {
+      packId: requestPackId,
       method: 'POST',
       body: {
         skill: 'READING',
         exerciseExternalId: textId,
-        answers: { score, totalQuestions },
+        answers: { score, totalQuestions, responses },
         result: { score, maxScore: totalQuestions, percentage },
       },
     }).catch(error => console.warn('Failed to save reading attempt', error))
@@ -328,6 +352,7 @@ export const useProgress = () => {
     }
     readingSession.value = session
     void apiFetch(`/drafts/READING/${encodeURIComponent(textId)}`, {
+      packId: requestPackId,
       method: 'PUT',
       body: { payload: session },
     }).catch(error => console.warn('Failed to save reading session', error))
@@ -339,7 +364,7 @@ export const useProgress = () => {
     const textId = readingSession.value?.textId
     readingSession.value = null
     if (!textId) return
-    void apiFetch(`/drafts/READING/${encodeURIComponent(textId)}`, { method: 'DELETE' }).catch(
+    void apiFetch(`/drafts/READING/${encodeURIComponent(textId)}`, { method: 'DELETE', packId: requestPackId }).catch(
       () => undefined
     )
   }
@@ -425,6 +450,7 @@ export const useProgress = () => {
     }
     clearWritingSession(topicId)
     void apiFetch('/attempts', {
+      packId: requestPackId,
       method: 'POST',
       body: {
         skill: 'WRITING',
@@ -445,6 +471,7 @@ export const useProgress = () => {
     }
     writingDrafts.value = { ...writingDrafts.value, [topicId]: session }
     void apiFetch(`/drafts/WRITING/${encodeURIComponent(topicId)}`, {
+      packId: requestPackId,
       method: 'PUT',
       body: { payload: session },
     }).catch(error => console.warn('Failed to save writing draft', error))
@@ -456,7 +483,7 @@ export const useProgress = () => {
   const clearWritingSession = (topicId: string) => {
     const { [topicId]: _removed, ...rest } = writingDrafts.value
     writingDrafts.value = rest
-    void apiFetch(`/drafts/WRITING/${encodeURIComponent(topicId)}`, { method: 'DELETE' }).catch(
+    void apiFetch(`/drafts/WRITING/${encodeURIComponent(topicId)}`, { method: 'DELETE', packId: requestPackId }).catch(
       () => undefined
     )
   }
@@ -514,7 +541,7 @@ export const useProgress = () => {
 
   const getListeningProgressData = (): Record<string, ListeningProgress> => listeningProgress.value
 
-  const saveListeningCompletion = (exerciseId: string, score: number, totalQuestions: number) => {
+  const saveListeningCompletion = (exerciseId: string, score: number, totalQuestions: number, responses: Record<string, number | undefined> = {}) => {
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
     const current = listeningProgress.value[exerciseId]
@@ -532,11 +559,12 @@ export const useProgress = () => {
       },
     }
     void apiFetch('/attempts', {
+      packId: requestPackId,
       method: 'POST',
       body: {
         skill: 'LISTENING',
         exerciseExternalId: exerciseId,
-        answers: { score, totalQuestions },
+        answers: { score, totalQuestions, responses },
         result: { score, maxScore: totalQuestions, percentage },
       },
     }).catch(error => console.warn('Failed to save listening attempt', error))
@@ -594,6 +622,7 @@ export const useProgress = () => {
       },
     }
     void apiFetch('/attempts', {
+      packId: requestPackId,
       method: 'POST',
       body: {
         skill: 'SPEAKING',

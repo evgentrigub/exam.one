@@ -30,22 +30,24 @@ export async function listGenerationJobs(): Promise<GenerationJobDto[]> {
   return apiFetch<GenerationJobDto[]>('/generation-jobs')
 }
 
-export async function loadGenerationJob(kind: Skill): Promise<unknown | null> {
-  const row = await apiFetch<GenerationJobDto | null>(`/generation-jobs/${kind}`)
+export async function loadGenerationJob(kind: Skill, packId = useSettingsStore().packId): Promise<unknown | null> {
+  const row = await apiFetch<GenerationJobDto | null>(`/generation-jobs/${kind}`, { packId })
   return row?.payload ?? null
 }
 
 export async function saveGenerationJob(
   kind: Skill,
   payload: unknown,
-  status?: GenerationJobStatus
+  status?: GenerationJobStatus,
+  packId = useSettingsStore().packId
 ): Promise<void> {
   await apiFetch(`/generation-jobs/${kind}`, {
+    packId,
     method: 'PUT',
     body: { payload, status: status ?? nestStatusFromPayload(kind, payload) },
   })
 }
 
-export async function clearGenerationJob(kind: Skill): Promise<void> {
-  await apiFetch(`/generation-jobs/${kind}`, { method: 'DELETE' })
+export async function clearGenerationJob(kind: Skill, packId = useSettingsStore().packId): Promise<void> {
+  await apiFetch(`/generation-jobs/${kind}`, { packId, method: 'DELETE' })
 }

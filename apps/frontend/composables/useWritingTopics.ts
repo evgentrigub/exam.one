@@ -1,3 +1,4 @@
+import { onPackReset, packEpoch } from '~/utils/packScope'
 import type { WritingExercise } from '~/utils/types'
 import {
   createSkillExercise,
@@ -8,22 +9,29 @@ import {
 const topics = ref<WritingExercise[]>([])
 const isInitialized = ref(false)
 let hydratePromise: Promise<void> | null = null
+onPackReset(() => { topics.value = []; isInitialized.value = false; hydratePromise = null })
 
 export const useWritingTopics = () => {
+  const requestPackId = useSettingsStore().packId
+  const requestEpoch = packEpoch()
   const hydrate = async (): Promise<void> => {
     if (import.meta.server) return
     if (isInitialized.value) return
     if (hydratePromise) return hydratePromise
+    const epoch = packEpoch()
     hydratePromise = (async () => {
       try {
-        topics.value = await fetchSkillExercises<WritingExercise>('WRITING')
+        const loaded = await fetchSkillExercises<WritingExercise>('WRITING')
+        if (epoch !== packEpoch()) return
+        topics.value = loaded
         isInitialized.value = true
       } catch (error) {
+        if (epoch !== packEpoch()) return
         console.error('Failed to load writing topics from API:', error)
         topics.value = []
         isInitialized.value = true
       } finally {
-        hydratePromise = null
+        if (epoch === packEpoch()) hydratePromise = null
       }
     })()
     return hydratePromise
@@ -38,8 +46,8 @@ export const useWritingTopics = () => {
     const current = topics.value.find(topic => topic.id === id)
     if (!current || current.examOnly) return false
     try {
-      await deleteSkillExercise(id)
-      topics.value = topics.value.filter(topic => topic.id !== id)
+      await deleteSkillExercise(id, requestPackId)
+      if (requestEpoch === packEpoch()) topics.value = topics.value.filter(topic => topic.id !== id)
       return true
     } catch {
       return false
@@ -48,8 +56,8 @@ export const useWritingTopics = () => {
 
   const addTopic = async (topic: WritingExercise): Promise<void> => {
     if (topics.value.some(item => item.id === topic.id)) return
-    const saved = await createSkillExercise('WRITING', topic)
-    topics.value = [...topics.value, saved]
+    const saved = await createSkillExercise('WRITING', topic, requestPackId)
+    if (requestEpoch === packEpoch()) topics.value = [...topics.value, saved]
   }
 
   const addTopics = async (items: WritingExercise[]): Promise<void> => {

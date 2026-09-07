@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-[1100px] mx-auto p-6 space-y-6">
+    <NuxtLink to="/past-exams" class="btn btn-ghost btn-sm">Past exams</NuxtLink>
     <!-- Header -->
     <div>
       <h1 class="text-2xl font-display font-semibold">Your progress</h1>

@@ -1,3 +1,4 @@
+import { onPackReset, packEpoch } from '~/utils/packScope'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import {
   createSkillExercise,
@@ -8,22 +9,29 @@ import {
 const texts = ref<ReadingExercise[]>([])
 const isInitialized = ref(false)
 let hydratePromise: Promise<void> | null = null
+onPackReset(() => { texts.value = []; isInitialized.value = false; hydratePromise = null })
 
 export const useReadingTexts = () => {
+  const requestPackId = useSettingsStore().packId
+  const requestEpoch = packEpoch()
   const hydrate = async (): Promise<void> => {
     if (import.meta.server) return
     if (isInitialized.value) return
     if (hydratePromise) return hydratePromise
+    const epoch = packEpoch()
     hydratePromise = (async () => {
       try {
-        texts.value = await fetchSkillExercises<ReadingExercise>('READING')
+        const loaded = await fetchSkillExercises<ReadingExercise>('READING')
+        if (epoch !== packEpoch()) return
+        texts.value = loaded
         isInitialized.value = true
       } catch (error) {
+        if (epoch !== packEpoch()) return
         console.error('Failed to load reading texts from API:', error)
         texts.value = []
         isInitialized.value = true
       } finally {
-        hydratePromise = null
+        if (epoch === packEpoch()) hydratePromise = null
       }
     })()
     return hydratePromise
@@ -38,8 +46,8 @@ export const useReadingTexts = () => {
     const current = texts.value.find(text => text.id === id)
     if (!current || current.examOnly) return false
     try {
-      await deleteSkillExercise(id)
-      texts.value = texts.value.filter(text => text.id !== id)
+      await deleteSkillExercise(id, requestPackId)
+      if (requestEpoch === packEpoch()) texts.value = texts.value.filter(text => text.id !== id)
       return true
     } catch (error) {
       console.warn('Cannot delete reading text', error)
@@ -49,8 +57,8 @@ export const useReadingTexts = () => {
 
   const addText = async (text: ReadingExercise): Promise<void> => {
     if (texts.value.some(item => item.id === text.id)) return
-    const saved = await createSkillExercise('READING', text)
-    texts.value = [...texts.value, saved]
+    const saved = await createSkillExercise('READING', text, requestPackId)
+    if (requestEpoch === packEpoch()) texts.value = [...texts.value, saved]
   }
 
   const addTexts = async (newTexts: ReadingExercise[]): Promise<void> => {

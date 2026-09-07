@@ -15,15 +15,17 @@ export async function fetchSkillExercises<T extends { id?: string }>(skill: Skil
 
 export async function createSkillExercise<T extends { id: string }>(
   skill: Skill,
-  payload: T
+  payload: T,
+  packId = useSettingsStore().packId
 ): Promise<T> {
   const row = await apiFetch<ExerciseDto>('/exercises', {
+    packId,
     method: 'POST',
     body: { skill, payload },
   })
   return exercisePayloads<T>([row])[0] ?? payload
 }
 
-export async function deleteSkillExercise(externalId: string): Promise<void> {
-  await apiFetch(`/exercises/${encodeURIComponent(externalId)}`, { method: 'DELETE' })
+export async function deleteSkillExercise(externalId: string, packId = useSettingsStore().packId): Promise<void> {
+  await apiFetch(`/exercises/${encodeURIComponent(externalId)}`, { method: 'DELETE', packId })
 }

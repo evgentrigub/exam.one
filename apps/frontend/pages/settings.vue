@@ -31,7 +31,6 @@
         <SettingsPlan v-else-if="section === 'plan'" />
         <SettingsLearning v-else-if="section === 'learning'" />
         <SettingsAi v-else-if="section === 'ai'" />
-        <SettingsPrompts v-else-if="section === 'prompts'" />
         <SettingsNotify v-else-if="section === 'notify'" />
         <SettingsAppearance v-else-if="section === 'appearance'" />
         <SettingsData v-else-if="section === 'data'" />
@@ -45,7 +44,6 @@ import {
   Bell,
   CreditCard,
   Database,
-  FileText,
   Palette,
   Sparkles,
   Target,
@@ -75,7 +73,6 @@ const nav: {
     items: [
       { id: 'learning', labelKey: 'settings.navLearning', icon: Target },
       { id: 'ai', labelKey: 'settings.navAi', icon: Sparkles },
-      { id: 'prompts', labelKey: 'settings.navPrompts', icon: FileText },
       { id: 'notify', labelKey: 'settings.navNotify', icon: Bell },
     ],
   },

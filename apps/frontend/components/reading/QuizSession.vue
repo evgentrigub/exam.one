@@ -217,7 +217,7 @@ function finishQuiz() {
     })
     return
   }
-  saveQuizCompletion(props.text.id, score.value, questions.value.length)
+  saveQuizCompletion(props.text.id, score.value, questions.value.length, { ...answeredQuestions.value })
   clearSession()
 }
 

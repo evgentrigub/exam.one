@@ -195,6 +195,7 @@
           }}</span>
           <select
             v-model="tempTargetLanguage"
+            disabled
             class="select select-bordered select-primary w-full shadow"
           >
             <option value="de">🇩🇪 Deutsch (German)</option>
@@ -202,31 +203,6 @@
             <option value="es" disabled>
               🇪🇸 Español (Spanish) - {{ $t('settings.availableSoon') }}
             </option>
-          </select>
-        </fieldset>
-
-        <!-- Exam Level -->
-        <fieldset class="border border-base-300 rounded-lg p-4 shadow-sm">
-          <legend class="text-sm font-semibold flex items-center gap-2 px-2">
-            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            {{ $t('settings.examLevel') }}
-          </legend>
-          <span class="text-xs opacity-60 block mb-2">{{
-            $t('settings.examLevelDescription')
-          }}</span>
-          <select
-            v-model="tempExamLevel"
-            class="select select-bordered select-primary w-full shadow"
-          >
-            <option value="A2">A2 - Elementary</option>
-            <option value="C1">C1 - Advanced</option>
           </select>
         </fieldset>
 
@@ -253,7 +229,7 @@ import { useSettingsStore } from '~/stores/settings'
 import { toLanguageOption, type LanguageOptions } from '~/utils/types'
 
 const settingsStore = useSettingsStore()
-const { examLevel, targetLanguage } = storeToRefs(settingsStore)
+const { targetLanguage } = storeToRefs(settingsStore)
 const { locale, setLocale } = useI18n()
 
 // Theme management
@@ -270,8 +246,7 @@ const closeDropdown = () => {
 // Language modal state
 const isLanguageModalOpen = ref(false)
 const tempInterfaceLanguage = ref<LanguageOptions>(toLanguageOption(String(locale.value)))
-const tempTargetLanguage = ref<'de' | 'en' | 'es'>(targetLanguage.value)
-const tempExamLevel = ref<'A2' | 'C1'>(examLevel.value)
+const tempTargetLanguage = ref<string>(targetLanguage.value)
 
 /**
  * Opens the language settings modal and initializes temp values
@@ -279,7 +254,6 @@ const tempExamLevel = ref<'A2' | 'C1'>(examLevel.value)
 const openLanguageModal = () => {
   tempInterfaceLanguage.value = toLanguageOption(String(locale.value))
   tempTargetLanguage.value = targetLanguage.value
-  tempExamLevel.value = examLevel.value
   isLanguageModalOpen.value = true
 }
 
@@ -300,10 +274,7 @@ const saveLanguageSettings = async () => {
   }
 
   // Update target exam language
-  targetLanguage.value = tempTargetLanguage.value
-
-  // Update exam level
-  examLevel.value = tempExamLevel.value
+  // Target language is owned by the selected exam pack.
 
   await settingsStore.persist().catch(() => undefined)
   closeLanguageModal()

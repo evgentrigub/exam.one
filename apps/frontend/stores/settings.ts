@@ -1,43 +1,59 @@
 import { defineStore } from 'pinia'
+import { DEFAULT_PACK_ID, getLivePack } from '@exam-one/exam-packs'
+import type { Difficulty } from '~/utils/types'
 
 /**
  * Settings store
- * Exam level and target language are loaded from NestJS /settings/me after login.
+ * Active pack and target language are loaded from NestJS /settings/me after login.
  * Theme stays client-side (useTheme).
  */
 export const useSettingsStore = defineStore('settings', () => {
-  const examLevel = ref<'A2' | 'C1'>('A2')
-  const targetLanguage = ref<'de' | 'en' | 'es'>('de')
+  const packId = ref(DEFAULT_PACK_ID)
+  const targetLanguage = ref<string>('de')
   const hydrated = ref(false)
+
+  const examLevel = computed<Difficulty>(() => {
+    const cefr = getLivePack(packId.value).cefr
+    return cefr
+  })
 
   async function hydrateFromApi(): Promise<void> {
     if (!import.meta.client) return
     try {
       const { getSettings } = useAuth()
       const settings = await getSettings()
-      examLevel.value = settings.examLevel === 'C1' ? 'C1' : 'A2'
+      packId.value = settings.packId || DEFAULT_PACK_ID
       const lang = settings.targetLanguage
-      targetLanguage.value = lang === 'en' || lang === 'es' ? lang : 'de'
+      targetLanguage.value = lang
       hydrated.value = true
     } catch {
       hydrated.value = true
     }
   }
 
+  async function selectPack(id: string): Promise<void> {
+    const { updateSettings } = useAuth()
+    const saved = await updateSettings({ packId: id })
+    targetLanguage.value = saved.targetLanguage
+    packId.value = saved.packId
+  }
+
   async function persist(): Promise<void> {
     if (!import.meta.client) return
     const { updateSettings } = useAuth()
     await updateSettings({
-      examLevel: examLevel.value,
+      packId: packId.value,
       targetLanguage: targetLanguage.value,
     })
   }
 
   return {
+    packId,
     examLevel,
     targetLanguage,
     hydrated,
     hydrateFromApi,
     persist,
+    selectPack,
   }
 })

@@ -137,7 +137,7 @@
             <Flag :size="16" />
           </div>
           <div class="min-w-0">
-            <div class="text-sm font-semibold leading-tight">Goethe {{ examLevel }}</div>
+            <div class="text-sm font-semibold leading-tight">{{ pack.title }}</div>
             <div class="text-[11px] text-base-content/60">
               <template v-if="hasExamDate">
                 {{ $t('shell.examTargetMeta', { days: daysUntilExam }) }}
@@ -153,26 +153,6 @@
             </div>
           </div>
         </NuxtLink>
-        <div class="mt-3 flex gap-1.5">
-          <button
-            v-for="level in levels"
-            :key="level"
-            type="button"
-            class="flex-1 h-8 rounded-selector text-xs font-semibold transition-colors"
-            :class="
-              examLevel === level
-                ? 'bg-primary text-primary-content'
-                : 'bg-base-100 text-base-content/70 hover:bg-base-300'
-            "
-            :aria-pressed="examLevel === level"
-            @click="selectLevel(level)"
-          >
-            {{ level }}
-          </button>
-        </div>
-        <div class="mt-2 text-[10px] text-base-content/50 text-center">
-          {{ $t('shell.tapLevel') }}
-        </div>
       </div>
     </div>
   </aside>
@@ -203,6 +183,7 @@ const router = useRouter()
 const runtimeConfig = useRuntimeConfig()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+const { pack } = useActivePack()
 const { daysUntilExam, hasExamDate } = useAccountProfile()
 
 const landingUrl = computed(() => {
@@ -210,14 +191,6 @@ const landingUrl = computed(() => {
   if (/^https?:\/\//i.test(configuredUrl)) return configuredUrl
   return `http://${configuredUrl || 'localhost:3001'}`
 })
-
-function selectLevel(level: 'A2' | 'C1') {
-  examLevel.value = level
-  void settingsStore.persist().catch(() => undefined)
-  void router.push('/exercises')
-}
-
-const levels: Array<'A2' | 'C1'> = ['A2', 'C1']
 
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()

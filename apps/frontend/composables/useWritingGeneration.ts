@@ -3,8 +3,6 @@
  * Manages per-part AI writing generation with API persistence
  */
 
-// C1 is disabled in this build; re-enable with the level toggle later.
-// import { generateTopicsC1Part1, generateTopicsC1Part2 } from '~/data/writing/c1/exerciseGeneratorWritingC1'
 import type { PartGenerationJob } from '~/utils/generation/partJobs'
 import type { WritingExercise, Difficulty } from '~/utils/types'
 import {
@@ -27,7 +25,8 @@ export interface WritingGenerationOptions {
 }
 
 export const useWritingGeneration = () => {
-  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
+  const requestPackId = useSettingsStore().packId
+  const { pack, assemble, generators } = usePackPrompt(requestPackId)
   const state = ref<GenerationState>({
     isGenerating: false,
     difficulty: null,
@@ -57,7 +56,7 @@ export const useWritingGeneration = () => {
     if (import.meta.server) return
 
     try {
-      const parsed = (await loadGenerationJob('WRITING')) as
+      const parsed = (await loadGenerationJob('WRITING', requestPackId)) as
         (GenerationState & { part?: 1 | 2 }) | null
       if (!parsed) return
 
@@ -106,7 +105,7 @@ export const useWritingGeneration = () => {
    */
   const saveState = () => {
     if (import.meta.server) return
-    void saveGenerationJob('WRITING', state.value).catch(error =>
+    void saveGenerationJob('WRITING', state.value, undefined, requestPackId).catch(error =>
       console.error('Failed to save writing generation state:', error)
     )
   }
@@ -124,7 +123,7 @@ export const useWritingGeneration = () => {
     }
 
     if (import.meta.client) {
-      void clearGenerationJob('WRITING').catch(() => undefined)
+      void clearGenerationJob('WRITING', requestPackId).catch(() => undefined)
     }
   }
 
@@ -139,15 +138,12 @@ export const useWritingGeneration = () => {
     saveState()
   }
 
-  const getPromptForPart = (part: 1 | 2, difficulty: Difficulty, numberOfTopics = 3): string => {
-    if (difficulty === 'A2') {
-      return generatorPrompt('writing', part, numberOfTopics)
+  const getPromptForPart = (part: 1 | 2, numberOfTopics = 3): string => {
+    const prompt = assemble('writing', part, 'generator', { count: numberOfTopics })
+    if (!prompt) {
+      throw new Error(`No writing generator prompt is configured for part ${part}`)
     }
-    // C1 disabled in this build — kept for later:
-    // if (difficulty === 'C1') {
-    //   return part === 1 ? generateTopicsC1Part1() : generateTopicsC1Part2()
-    // }
-    throw new Error(`Unsupported difficulty level: ${difficulty}`)
+    return prompt
   }
 
   /**
@@ -164,17 +160,16 @@ export const useWritingGeneration = () => {
       job => job.status === 'queued' || job.status === 'failed'
     )
 
-    await hydratePrompts()
-
     for (const job of pendingJobs) {
       const part = job.part as 1 | 2
 
       updateJobStatus(part, 'running')
 
       try {
-        const prompt = getPromptForPart(part, difficulty)
+        const prompt = getPromptForPart(part)
 
         const response = await aiFetch<WritingExercise[]>('/ai/generate-topics', {
+          packId: requestPackId,
           method: 'POST',
           body: {
             prompt,
@@ -228,20 +223,19 @@ export const useWritingGeneration = () => {
    * Generate writing exercises for specified part(s) and difficulty
    */
   const generateWriting = async (
-    difficulty: Difficulty = 'A2',
+    difficulty: Difficulty = pack.value.cefr,
     options: WritingGenerationOptions = {}
   ): Promise<WritingExercise[]> => {
-    if (difficulty !== 'A2') {
-      throw new Error(`Unsupported difficulty level: ${difficulty}`)
-    }
-
+    const availableParts = generators('writing', 3).map(item => item.part)
     const requestedParts =
       options.parts === undefined
-        ? [1, 2]
+        ? availableParts
         : Array.isArray(options.parts)
           ? options.parts
           : [options.parts]
-    const partsToGenerate = requestedParts.filter((p): p is 1 | 2 => p === 1 || p === 2)
+    const partsToGenerate = requestedParts.filter((p): p is 1 | 2 =>
+      availableParts.includes(p)
+    )
 
     if (partsToGenerate.length === 0) {
       throw new Error('No valid writing parts to generate')

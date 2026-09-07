@@ -65,7 +65,7 @@ export function getSkillMeta(skill: string): SkillMeta {
 
 type TranslateFn = (key: string, ...args: unknown[]) => string
 
-const titleCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1)
+const titleCase = (value: string = '') => value.charAt(0).toUpperCase() + value.slice(1)
 
 /** Localized skill label, e.g. `t('skill.reading')` → "Reading". */
 export function getSkillLabel(skill: string, t: TranslateFn): string {

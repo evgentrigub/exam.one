@@ -51,18 +51,6 @@
           </div>
           <p class="text-xs text-base-content/55 mt-2">{{ $t('settings.aiModelHint') }}</p>
         </div>
-
-        <div
-          class="flex items-start gap-2.5 rounded-field bg-base-200 p-3.5 text-sm text-base-content/70"
-        >
-          <FileText :size="15" class="mt-0.5 shrink-0 opacity-60" />
-          <span class="text-pretty">
-            {{ $t('settings.aiPromptHint') }}
-            <NuxtLink to="/settings?section=prompts" class="link link-primary">
-              {{ $t('settings.navPrompts') }}
-            </NuxtLink>
-          </span>
-        </div>
       </div>
     </SetCard>
   </div>
@@ -70,7 +58,7 @@
 
 <script setup lang="ts">
 import type { LlmHealthData } from '@exam-one/contracts'
-import { AlertCircle, CheckCircle2, FileText } from 'lucide-vue-next'
+import { AlertCircle, CheckCircle2 } from 'lucide-vue-next'
 import { aiFetch } from '~/composables/useAiApi'
 import type { SetChoiceOption } from '~/components/settings/SetChoice.vue'
 

@@ -8,12 +8,15 @@ COPY libraries/contracts/package.json libraries/contracts/package.json
 COPY libraries/database/package.json libraries/database/package.json
 COPY libraries/exam-content/package.json libraries/exam-content/package.json
 COPY libraries/nestjs-libraries/package.json libraries/nestjs-libraries/package.json
+COPY data/package.json data/package.json
 RUN pnpm install --frozen-lockfile
 COPY libraries/contracts libraries/contracts
 COPY libraries/exam-content libraries/exam-content
+COPY data data
 COPY apps/frontend apps/frontend
 RUN pnpm --filter @exam-one/contracts build \
   && pnpm --filter @exam-one/exam-content build \
+  && pnpm --filter @exam-one/exam-packs build \
   && pnpm --filter ./apps/frontend exec nuxt prepare \
   && pnpm --filter ./apps/frontend exec nuxt build
 

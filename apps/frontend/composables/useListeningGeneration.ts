@@ -3,7 +3,6 @@
  * Manages per-part AI listening exercise generation with API persistence.
  */
 
-import { listeningA2Parts } from '~/data/listening/a2/exerciseGeneratorListeningA2'
 import {
   filterJobsByParts,
   type PartGenerationJob,
@@ -25,7 +24,8 @@ export interface ListeningGenerationOptions {
 }
 
 export const useListeningGeneration = () => {
-  const { hydrate: hydratePrompts, generatorPrompt } = usePromptOverrides()
+  const requestPackId = useSettingsStore().packId
+  const { pack, assemble, generators } = usePackPrompt(requestPackId)
   const state = ref<PartGenerationState>({
     isGenerating: false,
     difficulty: null,
@@ -48,7 +48,7 @@ export const useListeningGeneration = () => {
     if (import.meta.server) return
 
     try {
-      const parsed = (await loadGenerationJob('LISTENING')) as PartGenerationState | null
+      const parsed = (await loadGenerationJob('LISTENING', requestPackId)) as PartGenerationState | null
       if (!parsed) return
 
       if (parsed.isGenerating && parsed.startedAt) {
@@ -76,7 +76,7 @@ export const useListeningGeneration = () => {
 
   const saveState = () => {
     if (import.meta.server) return
-    void saveGenerationJob('LISTENING', state.value).catch(error =>
+    void saveGenerationJob('LISTENING', state.value, undefined, requestPackId).catch(error =>
       console.error('Failed to save listening generation state:', error)
     )
   }
@@ -91,7 +91,7 @@ export const useListeningGeneration = () => {
     }
 
     if (import.meta.client) {
-      void clearGenerationJob('LISTENING').catch(() => undefined)
+      void clearGenerationJob('LISTENING', requestPackId).catch(() => undefined)
     }
   }
 
@@ -117,11 +117,9 @@ export const useListeningGeneration = () => {
       job => job.status === 'queued' || job.status === 'failed'
     )
 
-    await hydratePrompts()
-
     for (const job of pendingJobs) {
       const part = job.part
-      const prompt = generatorPrompt('listening', part, 1)
+      const prompt = assemble('listening', part, 'generator', { count: 1 })
       if (!prompt) {
         updateJobStatus(part, 'failed', `No prompt configured for part ${part}`)
         loopError = `No prompt configured for part ${part}`
@@ -132,6 +130,7 @@ export const useListeningGeneration = () => {
 
       try {
         const response = await aiFetch<ListeningA2Exercise[]>('/ai/generate-listening', {
+          packId: requestPackId,
           method: 'POST',
           body: { difficulty, prompts: [{ part, prompt }] },
         })
@@ -176,14 +175,13 @@ export const useListeningGeneration = () => {
   }
 
   const generateListening = async (
-    difficulty: Difficulty = 'A2',
+    difficulty: Difficulty = pack.value.cefr,
     options: ListeningGenerationOptions = {}
   ): Promise<ListeningA2Exercise[]> => {
-    if (difficulty !== 'A2') {
-      throw new Error(`Unsupported difficulty level: ${difficulty}`)
+    const allParts = generators('listening', 1)
+    if (allParts.length === 0) {
+      throw new Error('No listening generator prompts are configured for the active exam pack')
     }
-
-    const allParts = listeningA2Parts(1)
     const selectedParts = filterJobsByParts(allParts, options.parts)
     const partsToGenerate = selectedParts.length > 0 ? selectedParts : allParts
 

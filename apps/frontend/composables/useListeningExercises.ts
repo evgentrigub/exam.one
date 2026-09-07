@@ -1,3 +1,4 @@
+import { onPackReset, packEpoch } from '~/utils/packScope'
 import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 import type { ExerciseDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
@@ -6,22 +7,29 @@ import { createSkillExercise, fetchSkillExercises } from '~/composables/usePract
 const exercises = ref<ListeningA2Exercise[]>([])
 const isInitialized = ref(false)
 let hydratePromise: Promise<void> | null = null
+onPackReset(() => { exercises.value = []; isInitialized.value = false; hydratePromise = null })
 
 export const useListeningExercises = () => {
+  const requestPackId = useSettingsStore().packId
+  const requestEpoch = packEpoch()
   const hydrate = async (): Promise<void> => {
     if (import.meta.server) return
     if (isInitialized.value) return
     if (hydratePromise) return hydratePromise
+    const epoch = packEpoch()
     hydratePromise = (async () => {
       try {
-        exercises.value = await fetchSkillExercises<ListeningA2Exercise>('LISTENING')
+        const loaded = await fetchSkillExercises<ListeningA2Exercise>('LISTENING')
+        if (epoch !== packEpoch()) return
+        exercises.value = loaded
         isInitialized.value = true
       } catch (error) {
+        if (epoch !== packEpoch()) return
         console.error('Failed to load listening exercises from API:', error)
         exercises.value = []
         isInitialized.value = true
       } finally {
-        hydratePromise = null
+        if (epoch === packEpoch()) hydratePromise = null
       }
     })()
     return hydratePromise
@@ -36,8 +44,8 @@ export const useListeningExercises = () => {
     const unique = items.filter(item => !exercises.value.some(existing => existing.id === item.id))
     for (const item of unique) {
       if (!item.id) continue
-      const saved = await createSkillExercise('LISTENING', { ...item, id: item.id })
-      exercises.value = [...exercises.value, saved]
+      const saved = await createSkillExercise('LISTENING', { ...item, id: item.id }, requestPackId)
+      if (requestEpoch === packEpoch()) exercises.value = [...exercises.value, saved]
     }
   }
 
@@ -49,12 +57,13 @@ export const useListeningExercises = () => {
     if (!current) return undefined
     try {
       const row = await apiFetch<ExerciseDto>(`/exercises/${encodeURIComponent(id)}/audio`, {
+        packId: requestPackId,
         method: 'PUT',
         body: { audio },
       })
       const payload = (row.payload ?? { ...current, audio }) as ListeningA2Exercise
       const updated = { ...payload, id: payload.id ?? id, audio }
-      exercises.value = exercises.value.map(item => (item.id === id ? updated : item))
+      if (requestEpoch === packEpoch()) exercises.value = exercises.value.map(item => (item.id === id ? updated : item))
       return updated
     } catch (error) {
       console.error('Failed to update listening audio:', error)

@@ -58,7 +58,6 @@
 <script setup lang="ts">
 import { Info, ListChecks } from 'lucide-vue-next'
 import type { SkillId } from '~/utils/labels'
-import { goetheA2Structure } from '~/data/examStructure/goetheA2'
 
 const props = defineProps<{
   skill: SkillId
@@ -69,16 +68,17 @@ const props = defineProps<{
 
 const emit = defineEmits<{ toggle: [] }>()
 
+const { pack } = useActivePack()
 const chipRef = ref<HTMLButtonElement | null>(null)
 const hover = ref(false)
 const pos = ref({ x: 0, y: 0 })
 
 const part = computed(() =>
-  goetheA2Structure.find(m => m.id === props.skill)?.parts.find(p => p.n === props.n)
+  pack.value.structure.find(m => m.id === props.skill)?.parts.find(p => p.n === props.n)
 )
 
 const skillLabel = computed(() => {
-  const raw = goetheA2Structure.find(m => m.id === props.skill)?.label ?? props.skill
+  const raw = pack.value.structure.find(m => m.id === props.skill)?.label ?? props.skill
   return raw.replace(/\s*\(.*\)\s*/, '')
 })
 

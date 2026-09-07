@@ -5,69 +5,45 @@ import type {
   SpeakingTopicA2Teil1,
   SpeakingTopicA2Teil2,
 } from '~/utils/exercises/speaking'
-import {
-  reviewPromptSpeakingA2Teil1,
-  reviewPromptSpeakingA2Teil2,
-} from '~/data/speaking/a2/reviewSpeakingA2'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { LanguageOptions } from '~/utils/types'
 
 type SpeakingReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
-function buildSpeakingReviewPrompt(
+function numbered(items: string[]): string {
+  return items.map((item, index) => `${index + 1}. ${item}`).join('\n')
+}
+
+export function speakingReviewVars(
   topic: SpeakingA2Topic,
   transcripts: SpeakingTranscripts,
   outputLanguage: LanguageOptions
-): string | null {
-  if (topic.testingPart === 1) {
-    const answers = transcripts.answers?.trim() ?? ''
-    const questions = transcripts.questions?.trim() ?? ''
-    return answers && questions
-      ? reviewPromptSpeakingA2Teil1(
-          topic as SpeakingTopicA2Teil1,
-          answers,
-          questions,
-          outputLanguage
-        )
-      : null
+): Record<string, string> {
+  const teil1 = topic.testingPart === 1 ? (topic as SpeakingTopicA2Teil1) : null
+  const teil2 = topic.testingPart === 2 ? (topic as SpeakingTopicA2Teil2) : null
+  return {
+    topicId: topic.id,
+    theme: topic.theme,
+    task: topic.theme,
+    answerQuestions: teil1 ? numbered(teil1.answerQuestions) : '',
+    askQuestions: teil1 ? numbered(teil1.askQuestions) : '',
+    keywords: teil2 ? numbered(teil2.keywords) : '',
+    answers: transcripts.answers?.trim() ?? '',
+    questions: transcripts.questions?.trim() ?? '',
+    monologue: transcripts.monologue?.trim() ?? '',
+    userContent: transcripts.monologue?.trim() || transcripts.answers?.trim() || '',
+    outputLanguage,
   }
-  const monologue = transcripts.monologue?.trim() ?? ''
-  return monologue
-    ? reviewPromptSpeakingA2Teil2(topic as SpeakingTopicA2Teil2, monologue, outputLanguage)
-    : null
 }
 
 export function useSpeakingReview() {
+  const requestPackId = useSettingsStore().packId
+  const { aiFetch } = usePackRequest(requestPackId)
   const status = ref<SpeakingReviewStatus>('idle')
   const review = ref<SpeakingReviewData | null>(null)
   const error = ref<string | null>(null)
   const outputLanguage = useReviewOutputLanguage()
-  const { hydrate: hydratePrompts, filledOrDefault } = usePromptOverrides()
-
-  function numbered(items: string[]): string {
-    return items.map((item, index) => `${index + 1}. ${item}`).join('\n')
-  }
-
-  function speakingReviewVars(
-    topic: SpeakingA2Topic,
-    transcripts: SpeakingTranscripts
-  ): Record<string, string> {
-    const teil1 = topic.testingPart === 1 ? (topic as SpeakingTopicA2Teil1) : null
-    const teil2 = topic.testingPart === 2 ? (topic as SpeakingTopicA2Teil2) : null
-    return {
-      topicId: topic.id,
-      theme: topic.theme,
-      task: topic.theme,
-      answerQuestions: teil1 ? numbered(teil1.answerQuestions) : '',
-      askQuestions: teil1 ? numbered(teil1.askQuestions) : '',
-      keywords: teil2 ? numbered(teil2.keywords) : '',
-      answers: transcripts.answers?.trim() ?? '',
-      questions: transcripts.questions?.trim() ?? '',
-      monologue: transcripts.monologue?.trim() ?? '',
-      userContent: transcripts.monologue?.trim() || transcripts.answers?.trim() || '',
-      outputLanguage: outputLanguage.value,
-    }
-  }
+  const { assemble } = usePackPrompt(requestPackId)
 
   async function requestReview(
     topic: SpeakingA2Topic,
@@ -78,28 +54,32 @@ export function useSpeakingReview() {
     error.value = null
 
     try {
-      await hydratePrompts()
-      const fallback = buildSpeakingReviewPrompt(topic, transcripts, outputLanguage.value)
-      const prompt = fallback
-        ? filledOrDefault(
-            'speaking',
-            topic.testingPart,
-            'review',
-            fallback,
-            speakingReviewVars(topic, transcripts)
-          )
-        : null
+      if (topic.testingPart === 1) {
+        const answers = transcripts.answers?.trim() ?? ''
+        const questions = transcripts.questions?.trim() ?? ''
+        if (!answers || !questions) {
+          throw new Error('Both Teil 1 transcripts are required for AI review.')
+        }
+      } else {
+        const monologue = transcripts.monologue?.trim() ?? ''
+        if (!monologue) {
+          throw new Error('A monologue transcript is required for AI review.')
+        }
+      }
+
+      const prompt = assemble(
+        'speaking',
+        topic.testingPart,
+        'review',
+        speakingReviewVars(topic, transcripts, outputLanguage.value)
+      )
       if (!prompt) {
-        throw new Error(
-          topic.testingPart === 1
-            ? 'Both Teil 1 transcripts are required for AI review.'
-            : 'A monologue transcript is required for AI review.'
-        )
+        throw new Error(`No speaking review prompt is configured for part ${topic.testingPart}`)
       }
 
       const response = await aiFetch<SpeakingReviewData>('/ai/review-speaking', {
         method: 'POST',
-        body: { prompt },
+        body: { prompt, topic, answers: transcripts },
       })
 
       if (response.error || !response.data) {
