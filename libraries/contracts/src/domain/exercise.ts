@@ -8,6 +8,7 @@ export type ExerciseScope = 'practice' | 'all'
 
 export interface ExerciseDto {
   id: string
+  packId: string
   skill: Skill
   level: ExamLevel
   source: ExerciseSource | string

@@ -1,6 +1,7 @@
 import type { Skill } from './enums'
 
 export interface DraftDto {
+  packId: string
   id: string
   userId: string
   skill: Skill

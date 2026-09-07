@@ -1,4 +1,5 @@
 export interface MockExamSetSummaryDto {
+  packId: string
   id: string
   externalId: string
   examId: string
@@ -9,6 +10,7 @@ export interface MockExamSetSummaryDto {
 }
 
 export interface MockExamSetDto extends MockExamSetSummaryDto {
+  rules?: unknown
   content: unknown
   modules: unknown
 }
@@ -23,6 +25,7 @@ export interface CreateMockExamSetRequest {
     createdAt: string
     modules: unknown
     content: unknown
+    rules?: unknown
   }
 }
 

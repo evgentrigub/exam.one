@@ -5,6 +5,7 @@ export type GenerationJobStatus = 'IDLE' | 'RUNNING' | 'COMPLETED' | 'FAILED'
 export interface GenerationJobDto {
   id: string
   userId: string
+  packId: string
   kind: Skill
   status: GenerationJobStatus | string
   payload: unknown
