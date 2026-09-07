@@ -12,6 +12,7 @@ function expectCode(error: unknown, type: typeof HttpException, code: string) {
 describe('MockExamService', () => {
   let service: MockExamService
   let prisma: {
+    setting: { findUnique: jest.Mock }
     mockExamSet: {
       findMany: jest.Mock
       findFirst: jest.Mock
@@ -31,6 +32,7 @@ describe('MockExamService', () => {
 
   beforeEach(async () => {
     prisma = {
+      setting: { findUnique: jest.fn().mockResolvedValue({ packId: 'goethe-de-a2' }) },
       mockExamSet: {
         findMany: jest.fn().mockResolvedValue([]),
         findFirst: jest.fn(),
@@ -67,7 +69,7 @@ describe('MockExamService', () => {
     const rows = await service.listSets(user)
 
     expect(prisma.mockExamSet.findMany).toHaveBeenCalledWith({
-      where: { OR: [{ generated: false, userId: null }, { userId: user.id }] },
+      where: { packId: 'goethe-de-a2', OR: [{ generated: false, userId: null }, { userId: user.id }] },
       orderBy: { createdAt: 'asc' },
     })
     expect(rows.map(row => row.externalId)).toEqual(['set-1', 'generated-set'])
@@ -127,7 +129,7 @@ describe('MockExamService', () => {
     expect(result.externalId).toBe('gen-1')
   })
 
-  it('updates an existing set for the same externalId', async () => {
+  it('preserves the stored definition when the same externalId is submitted again', async () => {
     const existing = makeMockExamSet({
       id: 'existing',
       userId: user.id,
@@ -148,10 +150,7 @@ describe('MockExamService', () => {
       modules: {},
     })
 
-    expect(prisma.mockExamSet.update).toHaveBeenCalledWith({
-      where: { id: existing.id },
-      data: expect.objectContaining({ title: 'Updated' }),
-    })
+    expect(prisma.mockExamSet.update).not.toHaveBeenCalled()
     expect(prisma.mockExamSet.create).not.toHaveBeenCalled()
   })
 

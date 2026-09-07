@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import type { ExamLevel, PromptKind, PromptOverrideDto, Skill } from '@exam-one/contracts'
-import type { User } from '@exam-one/database'
+import type { PromptKind, PromptOverrideDto, Skill } from '@exam-one/contracts'
+import type { User, ExamLevel } from '@exam-one/database'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { toPromptOverrideDto } from '../common/mappers/practice.mapper'
 
@@ -13,10 +13,10 @@ function invalidSlot(): never {
 
 export function assertPromptSlot(
   skill: Skill,
-  level: ExamLevel,
+  level: string,
   part: number,
   kind: PromptKind
-): void {
+): asserts level is ExamLevel {
   if (skill === 'MOCK' || level !== 'A2') invalidSlot()
 
   if (skill === 'READING' || skill === 'LISTENING') {
@@ -48,7 +48,7 @@ export class PromptOverridesService {
   async upsert(
     user: User,
     skill: Skill,
-    level: ExamLevel,
+    level: string,
     part: number,
     kind: PromptKind,
     body: string
@@ -67,7 +67,7 @@ export class PromptOverridesService {
   async remove(
     user: User,
     skill: Skill,
-    level: ExamLevel,
+    level: string,
     part: number,
     kind: PromptKind
   ): Promise<void> {

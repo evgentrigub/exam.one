@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
-    "dev": "pnpm --filter @exam-one/database build && pnpm --filter @exam-one/nestjs-libraries build && nest start --watch",
+    "dev": "pnpm --filter @exam-one/database build && pnpm --filter @exam-one/nestjs-libraries build && pnpm --filter @exam-one/exam-packs build && nest start --watch",
     "start": "node dist/main",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -20,6 +20,7 @@
     "@exam-one/contracts": "workspace:*",
     "@exam-one/database": "workspace:*",
     "@exam-one/exam-content": "workspace:*",
+    "@exam-one/exam-packs": "workspace:*",
     "@exam-one/nestjs-libraries": "workspace:*",
     "@nestjs/common": "^11.2.1",
     "@nestjs/config": "^4.0.4",
@@ -86,6 +87,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@exam-one/exam-packs$": "<rootDir>/../../../data/src/index.ts",
+      "^@exam-one/exam-content$": "<rootDir>/../../../libraries/exam-content/src/index.ts"
+    }
   }
 }

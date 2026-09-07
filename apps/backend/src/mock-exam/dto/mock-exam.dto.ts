@@ -13,6 +13,10 @@ import type { GenerationJobStatus } from '@exam-one/contracts'
 const STATUSES = ['IDLE', 'RUNNING', 'COMPLETED', 'FAILED'] as const
 
 export class MockExamSetBodyDto {
+  @IsOptional()
+  @IsObject()
+  rules?: Record<string, unknown>
+
   @IsString()
   id!: string
 

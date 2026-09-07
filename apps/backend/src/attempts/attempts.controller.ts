@@ -17,8 +17,13 @@ export class AttemptsController {
     @CurrentUser() user: User,
     @Query() query: ListAttemptsQueryDto
   ): Promise<ApiResponse<AttemptDto[]>> {
-    const data = await this.attempts.list(user, query.skill)
+    const data = await this.attempts.list(user, query.skill, query.history === 'true')
     return { data }
+  }
+
+  @Get(':id')
+  async detail(@CurrentUser() user: User, @Param('id') id: string): Promise<ApiResponse<AttemptDto>> {
+    return { data: await this.attempts.detail(user, id) }
   }
 
   @Post()

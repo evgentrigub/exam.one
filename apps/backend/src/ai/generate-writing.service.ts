@@ -1,83 +1,13 @@
+import { goetheGenerateWritingSystem1 } from '@exam-one/exam-packs'
+import { goetheGenerateWritingSystem0 } from '@exam-one/exam-packs'
 import { Injectable, Logger } from '@nestjs/common'
 import type { AiResponse } from '@exam-one/contracts'
-import type { Difficulty, WritingExercise } from '@exam-one/exam-content'
+import type { WritingExercise } from '@exam-one/exam-content'
 import { LlmService } from '../llm/llm.service'
 import { generateTopicId } from './ids'
-import { extractJsonArray, extractJsonObject, isRecord } from './json'
+import { extractJsonArray, extractJsonObject } from './json'
 import type { GenerateModelAnswerDto, GenerateTopicsDto } from './dto/ai.dto'
-
-export interface ModelAnswerData {
-  content: string
-  wordCount: number
-  highlights?: {
-    greeting?: string
-    mainPoints?: string[]
-    closing?: string
-    keyPhrases?: string[]
-  }
-}
-
-function stringArray(value: unknown): string[] | null {
-  return Array.isArray(value) && value.every(item => typeof item === 'string') ? value : null
-}
-
-function normalizeGeneratedTopic(
-  value: unknown,
-  part: 1 | 2,
-  difficulty: Difficulty
-): Omit<WritingExercise, 'id' | 'createdAt'> | null {
-  if (!isRecord(value)) return null
-  const wordCount = value['wordCount']
-  const category = stringArray(value['category'])
-  const requirements = stringArray(value['requirements'])
-  if (!isRecord(wordCount) || !category || !requirements) return null
-  if (
-    typeof value['title'] !== 'string' ||
-    typeof value['topicType'] !== 'string' ||
-    typeof value['estimatedTime'] !== 'number' ||
-    typeof value['description'] !== 'string' ||
-    typeof value['task'] !== 'string' ||
-    typeof wordCount['min'] !== 'number' ||
-    typeof wordCount['max'] !== 'number'
-  ) {
-    return null
-  }
-  return {
-    title: value['title'],
-    topicType: value['topicType'],
-    difficulty,
-    testingPart: part,
-    estimatedTime: value['estimatedTime'],
-    wordCount: { min: wordCount['min'], max: wordCount['max'] },
-    category,
-    description: value['description'],
-    task: value['task'],
-    requirements,
-  }
-}
-
-function optionalStringArray(value: unknown): string[] | undefined {
-  return Array.isArray(value) && value.every(item => typeof item === 'string') ? value : undefined
-}
-
-function normalizeModelAnswer(value: unknown): ModelAnswerData | null {
-  if (!isRecord(value) || typeof value['content'] !== 'string') return null
-  const wordCount = Number(value['wordCount'])
-  if (!Number.isFinite(wordCount) || wordCount < 0) return null
-  const highlights = isRecord(value['highlights']) ? value['highlights'] : {}
-  const normalizedHighlights: NonNullable<ModelAnswerData['highlights']> = {}
-  const mainPoints = optionalStringArray(highlights['mainPoints'])
-  const keyPhrases = optionalStringArray(highlights['keyPhrases'])
-  if (typeof highlights['greeting'] === 'string') normalizedHighlights.greeting = highlights['greeting']
-  if (typeof highlights['closing'] === 'string') normalizedHighlights.closing = highlights['closing']
-  if (mainPoints) normalizedHighlights.mainPoints = mainPoints
-  if (keyPhrases) normalizedHighlights.keyPhrases = keyPhrases
-  return {
-    content: value['content'],
-    wordCount,
-    ...(Object.keys(normalizedHighlights).length > 0 && { highlights: normalizedHighlights }),
-  }
-}
+import { goetheModelAnswerData as ModelAnswerData, goetheNormalizeGeneratedTopic as normalizeGeneratedTopic, goetheNormalizeModelAnswer as normalizeModelAnswer } from '@exam-one/exam-packs'
 
 @Injectable()
 export class GenerateWritingService {
@@ -96,7 +26,7 @@ export class GenerateWritingService {
           {
             role: 'system',
             content:
-              'You are an expert Goethe-Institut exam creator. Generate writing topics according to the specifications provided. Return ONLY valid JSON array of WritingTopic objects, no additional text.',
+              goetheGenerateWritingSystem0,
           },
           { role: 'user', content: body.prompt },
         ],
@@ -115,7 +45,7 @@ export class GenerateWritingService {
 
       const difficulty = body.difficulty === 'C1' ? 'C1' : 'A2'
       const normalizedTopics = topics
-        .map(topic => normalizeGeneratedTopic(topic, body.part, difficulty))
+        .map(topic => normalizeGeneratedTopic(topic, body.part === 2 ? 2 : 1, difficulty))
         .filter((topic): topic is Omit<WritingExercise, 'id' | 'createdAt'> => topic !== null)
 
       if (normalizedTopics.length === 0) {
@@ -128,7 +58,7 @@ export class GenerateWritingService {
 
       const topicsWithUniqueIds = normalizedTopics.map(topic => ({
         ...topic,
-        id: generateTopicId(body.part, difficulty),
+        id: generateTopicId(body.part === 2 ? 2 : 1, difficulty),
         createdAt: new Date().toISOString(),
       }))
       return { data: topicsWithUniqueIds, error: null }
@@ -151,7 +81,7 @@ export class GenerateWritingService {
         {
           role: 'system',
           content:
-            'You are an expert Goethe-Institut exam creator. Generate model answers according to the specifications provided. Return ONLY a valid JSON object with no additional text, explanation, or markdown outside the JSON.',
+            goetheGenerateWritingSystem1,
         },
         { role: 'user', content: body.prompt },
       ])
@@ -168,3 +98,5 @@ export class GenerateWritingService {
     }
   }
 }
+
+export type { goetheModelAnswerData as ModelAnswerData } from '@exam-one/exam-packs'

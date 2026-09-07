@@ -1,3 +1,5 @@
+import { getLivePack } from '@exam-one/exam-packs'
+import { packContext } from '../common/pack-context.interceptor'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import type { AiResponse, SttHealthData, TranscriptionData } from '@exam-one/contracts'
@@ -41,13 +43,16 @@ export class SttService {
   constructor(private readonly config: ConfigService) {}
 
   private sttConfig(): SttConfig {
-    return getSttConfig({
+    const language = getLivePack(packContext.getStore()?.packId).speech.sttLang
+    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de').split(',').map(value => value.trim())
+    if (!installedLanguages.includes(language)) throw new Error(`Speech recognition for ${language} is unavailable on this instance. You can enter a transcript manually.`)
+    return { ...getSttConfig({
       provider: this.config.get<AppConfig['STT_PROVIDER']>('app.STT_PROVIDER'),
       baseUrl: this.config.get<string>('app.STT_BASE_URL'),
       model: this.config.get<string>('app.STT_MODEL'),
       openaiModel: this.config.get<string>('app.STT_OPENAI_MODEL'),
       openaiApiKey: this.config.get<string>('app.OPENAI_API_KEY'),
-    })
+    }), language }
   }
 
   async health(): Promise<AiResponse<SttHealthData>> {

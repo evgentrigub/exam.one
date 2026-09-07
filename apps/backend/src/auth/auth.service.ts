@@ -84,6 +84,7 @@ export class AuthService {
         emailVerified: !emailConfigured,
         settings: {
           create: {
+            packId: 'goethe-de-a2',
             examLevel: 'A2',
             targetLanguage: 'de',
           },

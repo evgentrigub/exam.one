@@ -12,6 +12,9 @@ describe('GenerationJobsService', () => {
       upsert: jest.Mock
       deleteMany: jest.Mock
     }
+    setting: {
+      findUnique: jest.Mock
+    }
   }
 
   const user = makeUser()
@@ -23,6 +26,9 @@ describe('GenerationJobsService', () => {
         findMany: jest.fn(),
         upsert: jest.fn(),
         deleteMany: jest.fn().mockResolvedValue({}),
+      },
+      setting: {
+        findUnique: jest.fn().mockResolvedValue({ packId: 'goethe-de-a2' }),
       },
     }
 
@@ -40,7 +46,7 @@ describe('GenerationJobsService', () => {
     const result = await service.list(user)
 
     expect(prisma.generationJob.findMany).toHaveBeenCalledWith({
-      where: { userId: user.id },
+      where: { userId: user.id, packId: 'goethe-de-a2' },
       orderBy: { updatedAt: 'desc' },
     })
     expect(result).toHaveLength(1)
@@ -60,7 +66,7 @@ describe('GenerationJobsService', () => {
     const result = await service.get(user, 'READING')
 
     expect(prisma.generationJob.findUnique).toHaveBeenCalledWith({
-      where: { userId_kind: { userId: user.id, kind: 'READING' } },
+      where: { userId_packId_kind: { userId: user.id, packId: 'goethe-de-a2', kind: 'READING' } },
     })
     expect(result?.status).toBe('RUNNING')
   })
@@ -71,9 +77,10 @@ describe('GenerationJobsService', () => {
     await service.upsert(user, 'READING', { step: 1 })
 
     expect(prisma.generationJob.upsert).toHaveBeenCalledWith({
-      where: { userId_kind: { userId: user.id, kind: 'READING' } },
+      where: { userId_packId_kind: { userId: user.id, packId: 'goethe-de-a2', kind: 'READING' } },
       create: {
         userId: user.id,
+        packId: 'goethe-de-a2',
         kind: 'READING',
         status: 'IDLE',
         payload: { step: 1 },
@@ -99,7 +106,7 @@ describe('GenerationJobsService', () => {
     await service.remove(user, 'SPEAKING')
 
     expect(prisma.generationJob.deleteMany).toHaveBeenCalledWith({
-      where: { userId: user.id, kind: 'SPEAKING' },
+      where: { userId: user.id, packId: 'goethe-de-a2', kind: 'SPEAKING' },
     })
   })
 })

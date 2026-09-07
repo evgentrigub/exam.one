@@ -6,9 +6,13 @@ import {
 } from '@nestjs/common'
 import type { ExerciseDto, Skill } from '@exam-one/contracts'
 import type { Exercise, User } from '@exam-one/database'
+import { getLivePack, record, validateView } from '@exam-one/exam-packs'
 import { PrismaService } from '@exam-one/nestjs-libraries'
+import { resolveUserPackId } from '../common/active-pack'
 import { asJson, payloadId } from '../common/json'
 import { toExerciseDto } from '../common/mappers/practice.mapper'
+
+function examLevelOf(cefr: string): string { return cefr }
 
 @Injectable()
 export class ExercisesService {
@@ -19,9 +23,11 @@ export class ExercisesService {
   }
 
   async list(user: User, skill: Skill): Promise<ExerciseDto[]> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const rows = await this.prisma.exercise.findMany({
       where: {
         skill,
+        packId,
         OR: [{ source: 'seed' }, { userId: user.id }],
       },
       orderBy: { createdAt: 'asc' },
@@ -41,12 +47,13 @@ export class ExercisesService {
   }
 
   async findForUser(user: User, skill: Skill, externalId: string): Promise<Exercise | null> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const owned = await this.prisma.exercise.findFirst({
-      where: { userId: user.id, skill, externalId },
+      where: { userId: user.id, skill, packId, externalId },
     })
     if (owned) return owned
     return this.prisma.exercise.findFirst({
-      where: { source: 'seed', skill, externalId },
+      where: { source: 'seed', skill, packId, externalId },
     })
   }
 
@@ -59,8 +66,22 @@ export class ExercisesService {
       })
     }
 
+    const packId = await resolveUserPackId(this.prisma, user.id)
+    const pack = getLivePack(packId)
+    const level = examLevelOf(pack.cefr)
+    if (!pack.compatibility) {
+      try {
+        const partNumber = record(payload)['testingPart']
+        const part = pack.structure.find(module => module.id === skill.toLowerCase())?.parts.find(part => part.n === partNumber && part.available !== false)
+        if (!part?.adapter || !part.runtime) throw new Error(`Unknown ${skill} part ${String(partNumber)}`)
+        validateView(part.adapter.project(payload), part.runtime)
+      } catch (error) {
+        throw new BadRequestException({ code: 'INVALID_PAYLOAD', message: error instanceof Error ? error.message : 'Invalid exercise payload' })
+      }
+    }
+
     const existing = await this.prisma.exercise.findFirst({
-      where: { userId: user.id, skill, externalId },
+      where: { userId: user.id, skill, packId, externalId },
     })
     if (existing) {
       const updated = await this.prisma.exercise.update({
@@ -71,7 +92,7 @@ export class ExercisesService {
     }
 
     const seed = await this.prisma.exercise.findFirst({
-      where: { source: 'seed', skill, externalId },
+      where: { source: 'seed', skill, packId, externalId },
     })
     if (seed) {
       throw new BadRequestException({
@@ -83,8 +104,9 @@ export class ExercisesService {
     const created = await this.prisma.exercise.create({
       data: {
         userId: user.id,
+        packId,
         skill,
-        level: 'A2',
+        level,
         source: 'generated',
         visibility: 'PRACTICE',
         externalId,
@@ -115,7 +137,7 @@ export class ExercisesService {
 
     if (row.source === 'seed') {
       const owned = await this.prisma.exercise.findFirst({
-        where: { userId: user.id, skill: 'LISTENING', externalId },
+        where: { userId: user.id, skill: 'LISTENING', packId: row.packId, externalId },
       })
       if (owned) {
         const updated = await this.prisma.exercise.update({
@@ -127,6 +149,7 @@ export class ExercisesService {
       const created = await this.prisma.exercise.create({
         data: {
           userId: user.id,
+          packId: row.packId,
           skill: 'LISTENING',
           level: row.level,
           source: 'generated',
@@ -146,12 +169,13 @@ export class ExercisesService {
   }
 
   async remove(user: User, externalId: string): Promise<void> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const row = await this.prisma.exercise.findFirst({
-      where: { userId: user.id, externalId },
+      where: { userId: user.id, packId, externalId },
     })
     if (!row) {
       const seed = await this.prisma.exercise.findFirst({
-        where: { source: 'seed', externalId },
+        where: { source: 'seed', packId, externalId },
       })
       if (seed) {
         throw new ForbiddenException({

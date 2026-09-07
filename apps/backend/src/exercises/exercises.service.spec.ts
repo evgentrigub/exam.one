@@ -25,6 +25,9 @@ describe('ExercisesService', () => {
       update: jest.Mock
       delete: jest.Mock
     }
+    setting: {
+      findUnique: jest.Mock
+    }
   }
 
   const user = makeUser()
@@ -38,6 +41,9 @@ describe('ExercisesService', () => {
         create: jest.fn(),
         update: jest.fn(),
         delete: jest.fn().mockResolvedValue({}),
+      },
+      setting: {
+        findUnique: jest.fn().mockResolvedValue({ packId: 'goethe-de-a2' }),
       },
     }
 

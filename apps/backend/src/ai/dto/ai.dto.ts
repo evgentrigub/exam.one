@@ -2,12 +2,10 @@ import { Type } from 'class-transformer'
 import {
   ArrayMinSize,
   IsArray,
-  IsIn,
   IsInt,
   IsObject,
   IsOptional,
   IsString,
-  Max,
   Min,
   MinLength,
   ValidateNested,
@@ -16,7 +14,6 @@ import {
 export class SkillPromptPartDto {
   @IsInt()
   @Min(1)
-  @Max(4)
   part!: number
 
   @IsString()
@@ -25,8 +22,8 @@ export class SkillPromptPartDto {
 }
 
 export class GenerateReadingDto {
-  @IsIn(['A2', 'C1'])
-  difficulty!: 'A2' | 'C1'
+  @IsString()
+  difficulty!: string
 
   @IsOptional()
   @IsString()
@@ -41,8 +38,8 @@ export class GenerateReadingDto {
 }
 
 export class GenerateListeningDto {
-  @IsIn(['A2', 'C1'])
-  difficulty!: 'A2' | 'C1'
+  @IsString()
+  difficulty!: string
 
   @IsArray()
   @ArrayMinSize(1)
@@ -52,8 +49,8 @@ export class GenerateListeningDto {
 }
 
 export class GenerateSpeakingDto {
-  @IsIn(['A2', 'C1'])
-  difficulty!: 'A2' | 'C1'
+  @IsString()
+  difficulty!: string
 
   @IsArray()
   @ArrayMinSize(1)
@@ -69,12 +66,11 @@ export class GenerateTopicsDto {
 
   @IsInt()
   @Min(1)
-  @Max(2)
-  part!: 1 | 2
+  part!: number
 
   @IsOptional()
-  @IsIn(['A2', 'C1'])
-  difficulty?: 'A2' | 'C1'
+  @IsString()
+  difficulty?: string
 }
 
 export class GenerateModelAnswerDto {
@@ -87,6 +83,10 @@ export class GenerateModelAnswerDto {
 }
 
 export class ReviewWritingDto {
+  @IsOptional()
+  @IsObject()
+  answers?: Record<string, unknown>
+
   @IsObject()
   topic!: Record<string, unknown>
 
@@ -100,6 +100,14 @@ export class ReviewWritingDto {
 }
 
 export class ReviewSpeakingDto {
+  @IsOptional()
+  @IsObject()
+  topic?: Record<string, unknown>
+
+  @IsOptional()
+  @IsObject()
+  answers?: Record<string, unknown>
+
   @IsString()
   @MinLength(1)
   prompt!: string

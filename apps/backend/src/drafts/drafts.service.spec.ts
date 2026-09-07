@@ -12,6 +12,7 @@ function expectCode(error: unknown, type: typeof HttpException, code: string) {
 describe('DraftsService', () => {
   let service: DraftsService
   let prisma: {
+    setting: { findUnique: jest.Mock }
     draft: {
       count: jest.Mock
       findMany: jest.Mock
@@ -25,6 +26,7 @@ describe('DraftsService', () => {
 
   beforeEach(async () => {
     prisma = {
+      setting: { findUnique: jest.fn().mockResolvedValue({ packId: 'goethe-de-a2' }) },
       draft: {
         count: jest.fn().mockResolvedValue(0),
         findMany: jest.fn().mockResolvedValue([]),
@@ -47,7 +49,7 @@ describe('DraftsService', () => {
     const rows = await service.list(user, 'WRITING')
 
     expect(prisma.draft.findMany).toHaveBeenCalledWith({
-      where: { userId: user.id, skill: 'WRITING' },
+      where: { userId: user.id, packId: 'goethe-de-a2', skill: 'WRITING' },
       orderBy: { updatedAt: 'desc' },
     })
     expect(rows[0]?.topicId).toBe('t-1')
@@ -67,21 +69,22 @@ describe('DraftsService', () => {
 
     expect(prisma.draft.findUnique).toHaveBeenCalledWith({
       where: {
-        userId_skill_topicId: { userId: user.id, skill: 'WRITING', topicId: draft.topicId },
+        userId_packId_skill_topicId: { userId: user.id, packId: 'goethe-de-a2', skill: 'WRITING', topicId: draft.topicId },
       },
     })
     expect(result?.payload).toEqual({ text: 'Hallo' })
   })
 
-  it('upserts by the compound userId_skill_topicId key', async () => {
+  it('upserts by the compound userId_packId_skill_topicId key', async () => {
     prisma.draft.upsert.mockResolvedValue(makeDraft({ payload: { text: 'Neu' } }))
 
     await service.upsert(user, 'WRITING', 'topic-1', { text: 'Neu' })
 
     expect(prisma.draft.upsert).toHaveBeenCalledWith({
-      where: { userId_skill_topicId: { userId: user.id, skill: 'WRITING', topicId: 'topic-1' } },
+      where: { userId_packId_skill_topicId: { userId: user.id, packId: 'goethe-de-a2', skill: 'WRITING', topicId: 'topic-1' } },
       create: {
         userId: user.id,
+        packId: 'goethe-de-a2',
         skill: 'WRITING',
         topicId: 'topic-1',
         payload: { text: 'Neu' },

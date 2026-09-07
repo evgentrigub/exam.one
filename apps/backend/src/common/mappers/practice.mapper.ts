@@ -23,6 +23,7 @@ import type {
 export function toExerciseDto(row: Exercise): ExerciseDto {
   return {
     id: row.id,
+    packId: row.packId,
     skill: row.skill,
     level: row.level,
     source: row.source,
@@ -50,6 +51,8 @@ export function toAttemptDto(
 ): AttemptDto {
   return {
     id: row.id,
+    packId: row.packId,
+    snapshot: row.snapshot,
     userId: row.userId,
     exerciseId: row.exerciseId,
     exerciseExternalId: row.exercise?.externalId ?? null,
@@ -63,6 +66,7 @@ export function toAttemptDto(
 export function toDraftDto(row: Draft): DraftDto {
   return {
     id: row.id,
+    packId: row.packId,
     userId: row.userId,
     skill: row.skill,
     topicId: row.topicId,
@@ -88,6 +92,7 @@ export function toGenerationJobDto(row: GenerationJob): GenerationJobDto {
   return {
     id: row.id,
     userId: row.userId,
+    packId: row.packId,
     kind: row.kind,
     status: row.status,
     payload: row.payload,
@@ -98,6 +103,7 @@ export function toGenerationJobDto(row: GenerationJob): GenerationJobDto {
 export function toMockExamSetSummaryDto(row: MockExamSet): MockExamSetSummaryDto {
   return {
     id: row.id,
+    packId: row.packId,
     externalId: row.externalId,
     examId: row.examId,
     level: row.level,
@@ -112,6 +118,7 @@ export function toMockExamSetDto(row: MockExamSet): MockExamSetDto {
     ...toMockExamSetSummaryDto(row),
     content: row.content,
     modules: row.modules,
+    rules: row.rules,
   }
 }
 

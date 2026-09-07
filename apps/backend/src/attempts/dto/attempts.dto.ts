@@ -3,6 +3,7 @@ import {
   IsObject,
   IsOptional,
   IsInt,
+  IsNumber,
   Min,
   Max,
   ValidateNested,
@@ -14,18 +15,22 @@ import type { Skill } from '@exam-one/contracts'
 const SKILLS = ['READING', 'WRITING', 'LISTENING', 'SPEAKING'] as const
 
 export class ListAttemptsQueryDto {
+  @IsOptional()
+  @IsIn(['true', 'false'])
+  history?: string
+
   @IsIn(SKILLS)
   skill!: Skill
 }
 
 export class AttemptResultDto {
   @IsOptional()
-  @IsInt()
+  @IsNumber()
   @Min(0)
   score?: number | null
 
   @IsOptional()
-  @IsInt()
+  @IsNumber()
   @Min(0)
   maxScore?: number | null
 

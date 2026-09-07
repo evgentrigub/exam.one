@@ -13,6 +13,7 @@ function expectCode(error: unknown, type: typeof HttpException, code: string) {
 describe('AttemptsService', () => {
   let service: AttemptsService
   let prisma: {
+    setting: { findUnique: jest.Mock }
     attempt: {
       count: jest.Mock
       findMany: jest.Mock
@@ -27,6 +28,7 @@ describe('AttemptsService', () => {
 
   beforeEach(async () => {
     prisma = {
+      setting: { findUnique: jest.fn().mockResolvedValue({ packId: 'goethe-de-a2' }) },
       attempt: {
         count: jest.fn().mockResolvedValue(0),
         findMany: jest.fn().mockResolvedValue([]),

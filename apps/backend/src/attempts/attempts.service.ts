@@ -1,4 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  getPack,
+  objectiveScore,
+  validateReview,
+  type RuntimeSnapshot,
+  type SkillId,
+} from '@exam-one/exam-packs'
+import { resolveUserPackId } from '../common/active-pack'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { AttemptDto, Skill } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
 import { PrismaService } from '@exam-one/nestjs-libraries'
@@ -18,23 +26,76 @@ export class AttemptsService {
     return this.prisma.attempt.count()
   }
 
-  async list(user: User, skill: Skill): Promise<AttemptDto[]> {
+  async list(user: User, skill: Skill, history = false): Promise<AttemptDto[]> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const rows = await this.prisma.attempt.findMany({
-      where: { userId: user.id, skill },
+      where: { userId: user.id, skill, ...(history ? {} : { packId }) },
       include: { result: true, exercise: true },
       orderBy: { submittedAt: 'asc' },
     })
     return rows.map(toAttemptDto)
   }
 
+  async detail(user: User, id: string): Promise<AttemptDto> {
+    const row = await this.prisma.attempt.findFirst({
+      where: { id, userId: user.id },
+      include: { result: true, exercise: true },
+    })
+    if (!row)
+      throw new NotFoundException({ code: 'ATTEMPT_NOT_FOUND', message: 'Attempt not found' })
+    return toAttemptDto(row)
+  }
+
   async create(user: User, dto: CreateAttemptDto): Promise<AttemptDto> {
+    const packId = await resolveUserPackId(this.prisma, user.id)
     const exercise = dto.exerciseExternalId
       ? await this.exercises.findForUser(user, dto.skill, dto.exerciseExternalId)
       : null
 
+    if (dto.exerciseExternalId && !exercise)
+      throw new NotFoundException({
+        code: 'EXERCISE_NOT_FOUND',
+        message: 'Exercise not found in this pack',
+      })
+    const payload = exercise?.payload as Record<string, unknown> | undefined
+    const skill = dto.skill.toLowerCase() as SkillId
+    const part = getPack(packId)
+      ?.structure.find(m => m.id === skill)
+      ?.parts.find(p => p.n === payload?.['testingPart'])
+    const view = part?.adapter && payload ? part.adapter.project(payload) : undefined
+    const compatibility = getPack(packId)?.compatibility
+    const snapshot =
+      view && part?.runtime
+        ? {
+            version: 1,
+            packId,
+            skill,
+            part: part.n,
+            view,
+            rules: part.runtime,
+            ...(compatibility ? { compatibility, payload } : {}),
+          }
+        : { version: 0, packId, payload: payload ?? null }
+    if (!getPack(packId)?.compatibility && snapshot.version === 1)
+      dto.result = this.checkedResult(snapshot as RuntimeSnapshot, dto.answers, dto.result)
+    if (snapshot.version === 1) this.validateStoredReview(snapshot as RuntimeSnapshot, dto.result)
+    if (
+      compatibility &&
+      view?.questions &&
+      part?.runtime &&
+      dto.answers['responses'] &&
+      typeof dto.answers['responses'] === 'object'
+    ) {
+      dto.result = {
+        ...dto.result,
+        ...objectiveScore(view, part.runtime, dto.answers['responses'] as Record<string, unknown>),
+      }
+    }
     const created = await this.prisma.attempt.create({
       data: {
         userId: user.id,
+        packId,
+        snapshot: asJson(snapshot),
         skill: dto.skill,
         exerciseId: exercise?.id ?? null,
         answers: asJson(dto.answers),
@@ -65,6 +126,37 @@ export class AttemptsService {
       throw new NotFoundException({ code: 'ATTEMPT_NOT_FOUND', message: 'Attempt not found' })
     }
 
+    if (!getPack(existing.packId)?.live)
+      throw new NotFoundException({
+        code: 'PACK_UNAVAILABLE',
+        message: 'Historical attempts are read-only',
+      })
+    if (existing.packId !== (await resolveUserPackId(this.prisma, user.id)))
+      throw new NotFoundException({
+        code: 'ATTEMPT_NOT_FOUND',
+        message: 'Attempt not found in this pack',
+      })
+    const snapshot = existing.snapshot as unknown as RuntimeSnapshot | null
+    if (snapshot?.version === 1) this.validateStoredReview(snapshot, dto.result)
+    if (snapshot?.version === 1 && !snapshot.compatibility) {
+      dto.result = this.checkedResult(
+        snapshot,
+        dto.answers ?? (existing.answers as Record<string, unknown>),
+        dto.result
+      )
+    }
+    if (snapshot?.version === 1 && snapshot.compatibility && snapshot.view.questions) {
+      const answers = dto.answers ?? (existing.answers as Record<string, unknown>)
+      if (answers['responses'] && typeof answers['responses'] === 'object')
+        dto.result = {
+          ...dto.result,
+          ...objectiveScore(
+            snapshot.view,
+            snapshot.rules,
+            answers['responses'] as Record<string, unknown>
+          ),
+        }
+    }
     const updated = await this.prisma.attempt.update({
       where: { id },
       data: {
@@ -98,6 +190,68 @@ export class AttemptsService {
       include: { result: true, exercise: true },
     })
     return toAttemptDto(updated)
+  }
+
+  private checkedResult(
+    snapshot: RuntimeSnapshot,
+    answers: Record<string, unknown>,
+    result?: AttemptResultDto
+  ): AttemptResultDto {
+    if (snapshot.view.questions)
+      return { ...result, ...objectiveScore(snapshot.view, snapshot.rules, answers) }
+    if (result?.review === undefined) {
+      if (result?.score != null || result?.maxScore != null)
+        throw new BadRequestException({
+          code: 'INVALID_REVIEW',
+          message: 'A validated criterion review is required for this score',
+        })
+      return result ?? {}
+    }
+    try {
+      const review = validateReview(result.review, snapshot.rules)
+      if (
+        snapshot.rules.fields?.some(
+          field =>
+            field.zeroBelowWords !== undefined &&
+            String(answers[field.id] ?? '')
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean).length < field.zeroBelowWords
+        )
+      ) {
+        review.totalPoints = 0
+        review.criteria = review.criteria.map(criterion => ({ ...criterion, points: 0 }))
+      }
+      const multiplier = snapshot.rules.multiplier ?? 1
+      return {
+        review,
+        score: review.totalPoints * multiplier,
+        maxScore: review.maxPoints * multiplier,
+        percentage: review.maxPoints
+          ? Math.round((review.totalPoints / review.maxPoints) * 100)
+          : 0,
+      }
+    } catch (error) {
+      throw new BadRequestException({
+        code: 'INVALID_REVIEW',
+        message: error instanceof Error ? error.message : 'Invalid review',
+      })
+    }
+  }
+
+  private validateStoredReview(snapshot: RuntimeSnapshot, result?: AttemptResultDto): void {
+    if (result?.review === undefined) return
+    const adapter = getPack(snapshot.packId)
+      ?.structure.find(module => module.id === snapshot.skill)
+      ?.parts.find(part => part.n === snapshot.part)?.adapter
+    try {
+      adapter?.validateStoredReview?.(result.review, snapshot.rules)
+    } catch (error) {
+      throw new BadRequestException({
+        code: 'INVALID_REVIEW',
+        message: error instanceof Error ? error.message : 'Invalid saved review',
+      })
+    }
   }
 
   async upsertLatestResult(

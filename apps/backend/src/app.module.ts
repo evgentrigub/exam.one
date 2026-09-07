@@ -1,5 +1,6 @@
+import { PackContextInterceptor } from './common/pack-context.interceptor'
 import { Module } from '@nestjs/common'
-import { APP_GUARD } from '@nestjs/core'
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
 import { ConfigModule } from '@nestjs/config'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { PrismaModule } from '@exam-one/nestjs-libraries'
@@ -19,7 +20,6 @@ import { AttemptsModule } from './attempts/attempts.module'
 import { ResultsModule } from './results/results.module'
 import { DraftsModule } from './drafts/drafts.module'
 import { GenerationJobsModule } from './generation-jobs/generation-jobs.module'
-import { PromptOverridesModule } from './prompt-overrides/prompt-overrides.module'
 import { MockExamModule } from './mock-exam/mock-exam.module'
 
 @Module({
@@ -50,10 +50,10 @@ import { MockExamModule } from './mock-exam/mock-exam.module'
     ResultsModule,
     DraftsModule,
     GenerationJobsModule,
-    PromptOverridesModule,
     MockExamModule,
   ],
   providers: [
+    { provide: APP_INTERCEPTOR, useClass: PackContextInterceptor },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],

@@ -15,6 +15,7 @@ export interface SttEnvSource {
 }
 
 export interface SttConfig {
+  language?: string
   provider: SttProvider
   baseUrl: string
   model: string
@@ -86,7 +87,7 @@ export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): 
 
   const form = new FormData()
   form.append('model', config.model)
-  form.append('language', 'de')
+  form.append('language', config.language ?? 'de')
   form.append('response_format', 'json')
   form.append('file', new Blob([audio.data], { type: audio.mimeType }), audio.fileName)
 
