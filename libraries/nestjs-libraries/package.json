@@ -24,7 +24,6 @@
   "dependencies": {
     "@exam-one/database": "workspace:*",
     "@nestjs/common": "^11.2.1",
-    "@prisma/client": "6.5.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

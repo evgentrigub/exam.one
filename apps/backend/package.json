@@ -14,7 +14,7 @@
     "type-check": "tsc --noEmit && tsc -p tsconfig.spec.json --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@exam-one/contracts": "workspace:*",

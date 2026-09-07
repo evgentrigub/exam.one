@@ -7,12 +7,15 @@ if [ "$(id -u)" = "0" ]; then
   chown -R node:node "${AUDIO_DIR}"
 fi
 
-SCHEMA="${PRISMA_SCHEMA_PATH:-/app/node_modules/@exam-one/database/prisma/schema.prisma}"
-if [ ! -f "${SCHEMA}" ]; then
+DB_PACKAGE="${PRISMA_PACKAGE_PATH:-/app/node_modules/@exam-one/database}"
+if [ ! -f "${DB_PACKAGE}/prisma.config.ts" ]; then
   SCHEMA="$(find /app/node_modules -path '*/@exam-one/database/prisma/schema.prisma' 2>/dev/null | head -n1 || true)"
+  if [ -n "${SCHEMA}" ] && [ -f "${SCHEMA}" ]; then
+    DB_PACKAGE="$(dirname "$(dirname "${SCHEMA}")")"
+  fi
 fi
-if [ -z "${SCHEMA}" ] || [ ! -f "${SCHEMA}" ]; then
-  echo "Prisma schema not found in the backend image." >&2
+if [ -z "${DB_PACKAGE}" ] || [ ! -f "${DB_PACKAGE}/prisma.config.ts" ]; then
+  echo "Prisma config not found in the backend image." >&2
   exit 1
 fi
 
@@ -45,7 +48,11 @@ run_as_app() {
 echo "Applying Prisma migrations..."
 # migrate deploy is a one-shot bootstrap; run as root so Prisma can read
 # baked engines without needing write access to root-owned node_modules.
-"${PRISMA_BIN}" migrate deploy --schema="${SCHEMA}"
+# Prisma 7 reads the datasource URL from prisma.config.ts in the database package.
+(
+  cd "${DB_PACKAGE}"
+  "${PRISMA_BIN}" migrate deploy
+)
 
 echo "Upserting bundled exam catalog..."
 run_as_app node "${SEED_CLI}"

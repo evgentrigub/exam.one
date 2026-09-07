@@ -3,7 +3,7 @@ import { createInterface } from 'node:readline'
 import { resolve } from 'node:path'
 import { readFileSync, existsSync } from 'node:fs'
 import * as bcrypt from 'bcrypt'
-import { AuthTokenType, PrismaClient } from '@prisma/client'
+import { AuthTokenType, createPrismaClient } from '../src'
 
 const BCRYPT_ROUNDS = 10
 
@@ -126,7 +126,7 @@ async function main(): Promise<void> {
     process.exit(1)
   }
 
-  const prisma = new PrismaClient()
+  const prisma = createPrismaClient()
   try {
     const user = await prisma.user.findUnique({ where: { email } })
     if (!user) {

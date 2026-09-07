@@ -14,38 +14,38 @@
   "files": [
     "dist",
     "src",
-    "prisma"
+    "prisma",
+    "prisma.config.ts"
   ],
   "scripts": {
-    "build": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate && prisma generate && tsc -p tsconfig.json",
-    "db:generate": "prisma generate",
-    "type-check": "tsc --noEmit",
+    "build": "PRISMA_HIDE_UPDATE_MESSAGE=1 prisma generate && tsc -p tsconfig.json",
+    "db:generate": "PRISMA_HIDE_UPDATE_MESSAGE=1 prisma generate",
+    "type-check": "PRISMA_HIDE_UPDATE_MESSAGE=1 prisma generate && tsc --noEmit",
     "lint": "eslint .",
-    "test": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate",
-    "db:validate": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma validate",
-    "db:migrate": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate dev",
-    "db:migrate:deploy": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate deploy",
+    "test": "PRISMA_HIDE_UPDATE_MESSAGE=1 prisma validate",
+    "db:validate": "PRISMA_HIDE_UPDATE_MESSAGE=1 prisma validate",
+    "db:migrate": "PRISMA_HIDE_UPDATE_MESSAGE=1 DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate dev",
+    "db:migrate:deploy": "PRISMA_HIDE_UPDATE_MESSAGE=1 DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate deploy",
     "db:seed": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} tsx prisma/seed.ts",
     "auth:set-password": "tsx scripts/set-password.ts"
   },
   "dependencies": {
     "@exam-one/exam-content": "workspace:*",
-    "@prisma/client": "6.5.0",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
     "bcrypt": "^6.0.0",
-    "prisma": "6.5.0"
+    "pg": "^8.16.3",
+    "prisma": "7.10.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^24.13.3",
+    "@types/pg": "^8.15.6",
     "eslint": "^9.29.0",
     "prettier": "^3.9.6",
     "tsx": "^4.19.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.34.1"
-  },
-  "prisma": {
-    "schema": "prisma/schema.prisma",
-    "seed": "tsx prisma/seed.ts"
   }
 }

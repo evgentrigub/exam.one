@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client'
+import { createPrismaClient } from '../src/client'
 import { seedCatalog } from '../src/seed'
 
-const prisma = new PrismaClient()
+const prisma = createPrismaClient()
 
 seedCatalog(prisma)
   .then(summary => {

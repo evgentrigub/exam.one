@@ -23,24 +23,20 @@ RUN pnpm --filter @exam-one/exam-content build \
   && pnpm --filter @exam-one/nestjs-libraries build \
   && pnpm --filter ./apps/backend build
 RUN pnpm deploy --filter ./apps/backend --prod --legacy /production
-# pnpm deploy --prod reinstalls production node_modules from the store and
-# drops the client written by `prisma generate` during the database build.
-# It also skips @prisma/engines postinstall, so migrate would try to download
-# schema-engine into a root-owned directory at runtime.
+# pnpm deploy --prod skips @prisma/engines postinstall, so migrate would try
+# to download schema-engine into a root-owned directory at runtime. Query
+# engines are no longer required: Prisma 7 Client is generated into
+# @exam-one/database and compiled to dist/.
 RUN set -eu; \
-  src="$(find /workspace/node_modules/.pnpm -type d -path '*/node_modules/.prisma/client' | head -n1)"; \
-  dest="$(find /production/node_modules/.pnpm -type d -path '*/node_modules/@prisma/client' | head -n1)"; \
   src_engines="$(find /workspace/node_modules/.pnpm -type d -path '*/node_modules/@prisma/engines' | head -n1)"; \
   dest_engines="$(find /production/node_modules/.pnpm -type d -path '*/node_modules/@prisma/engines' | head -n1)"; \
-  if [ -z "$src" ] || [ -z "$dest" ] || [ -z "$src_engines" ] || [ -z "$dest_engines" ]; then \
-    echo "Prisma client/engines copy failed. src='$src' dest='$dest' src_engines='$src_engines' dest_engines='$dest_engines'"; \
+  if [ -z "$src_engines" ] || [ -z "$dest_engines" ]; then \
+    echo "Prisma engines copy failed. src_engines='$src_engines' dest_engines='$dest_engines'"; \
     find /workspace/node_modules/.pnpm -maxdepth 3 -iname '*prisma*' -print | head; \
     find /production/node_modules/.pnpm -maxdepth 3 -iname '*prisma*' -print | head; \
     exit 1; \
   fi; \
-  mkdir -p "$dest/../../.prisma"; \
-  cp -a "$src" "$dest/../../.prisma/client"; \
-  cp -a "$src_engines"/schema-engine-* "$src_engines"/libquery_engine-* "$dest_engines"/; \
+  cp -a "$src_engines"/schema-engine-* "$dest_engines"/ 2>/dev/null || true; \
   if ! ls "$dest_engines"/schema-engine-* >/dev/null 2>&1; then \
     echo "Prisma schema-engine copy produced no binaries in $dest_engines"; \
     ls -la "$src_engines" "$dest_engines"; \

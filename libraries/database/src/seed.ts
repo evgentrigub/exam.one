@@ -1,10 +1,10 @@
 import {
   Prisma,
-  PrismaClient,
+  type PrismaClient,
   type ExamLevel,
   type ExerciseVisibility,
   type Skill,
-} from '@prisma/client'
+} from './generated/prisma/client'
 import {
   allDefaultListeningTopics,
   allDefaultReadingTopics,

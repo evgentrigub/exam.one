@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client'
+import { createPrismaClient } from './client'
 import { seedCatalog } from './seed'
 
 async function main(): Promise<void> {
-  const prisma = new PrismaClient()
+  const prisma = createPrismaClient()
   try {
     const summary = await seedCatalog(prisma)
     console.info(
