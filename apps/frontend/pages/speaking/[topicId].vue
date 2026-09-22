@@ -35,9 +35,10 @@ const { getTopicById } = useSpeakingExercises()
 const topicId = computed(() => String(route.params['topicId'] || ''))
 const topic = computed<SpeakingA2Topic | null>(() => getTopicById(topicId.value) || null)
 
+const { pack, labelFor } = useActivePack()
 const speakingSubtitle = computed(() => {
   if (!topic.value) return ''
-  return `Goethe ${topic.value.difficulty} · Teil ${topic.value.testingPart}`
+  return `${pack.value.title} · ${labelFor('speaking', topic.value.testingPart)}`
 })
 
 watchEffect(() => {

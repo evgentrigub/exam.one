@@ -92,7 +92,7 @@ async function requestOnce<T>(path: string, options: ApiFetchOptions = {}): Prom
       fetchOptions.query = options.query
     }
 
-    const res = await $fetch<ApiResponse<T>>(url, fetchOptions)
+    const res = (await $fetch(url, fetchOptions)) as ApiResponse<T>
 
     if (res.error) {
       throw new ApiClientError(400, res.error)

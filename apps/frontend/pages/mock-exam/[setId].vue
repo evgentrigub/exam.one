@@ -500,8 +500,7 @@ import ListeningSession from '~/components/listening/ListeningSession.vue'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
-import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
-import type { MockExamExerciseDefinition, MockExamModuleDefinition } from '~/data/mockExam/goetheA2'
+import type { MockExamExerciseDefinition, MockExamModuleDefinition, MockExamSet } from '@exam-one/exam-content'
 import type { MockExamOverview, MockExamOverviewInput } from '@exam-one/exam-packs'
 import { buildMockExamOverviewPrompt } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
@@ -521,11 +520,24 @@ const reviewOutputLanguage = useReviewOutputLanguage()
 const { assemble } = usePackPrompt()
 const requestedSetId = String(route.params['setId'] || '')
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
+const { pack } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
-const set = computed(() => foundSet.value ?? goetheA2MockExamSet1)
+const bundledSet = computed(() => pack.value.bundledMockSet as MockExamSet | undefined)
+const unavailableSet: MockExamSet = {
+  id: 'unavailable',
+  examId: '',
+  level: '',
+  title: 'Mock exam',
+  generated: false,
+  createdAt: '',
+  modules: [],
+  content: { reading: [], listening: [], writing: [], speaking: [] },
+  rules: { maximumPoints: 100, passPoints: 60 },
+}
+const set = computed(() => foundSet.value ?? bundledSet.value ?? unavailableSet)
 const validSet = computed(() => Boolean(foundSet.value) || !setsInitialized.value)
 
-usePageMeta('Mock exam', 'Timed Goethe A2 simulation')
+usePageMeta('Mock exam', pack.value.title)
 useHead({ title: computed(() => `${set.value.title} – Mock exam`) })
 
 const {
@@ -579,8 +591,8 @@ const lockedCount = computed(
   () => set.value.modules.filter(module => state.value.modules[module.skill].locked).length
 )
 const roundedOverall = computed(() => Math.round(overallPoints.value))
-const maximumPoints = computed(() => set.value.rules?.maximumPoints ?? goetheA2MockExamSet1.rules!.maximumPoints)
-const passPoints = computed(() => set.value.rules?.passPoints ?? goetheA2MockExamSet1.rules!.passPoints)
+const maximumPoints = computed(() => set.value.rules?.maximumPoints ?? 100)
+const passPoints = computed(() => set.value.rules?.passPoints ?? 60)
 const hasPendingAiGrading = computed(() =>
   (['writing', 'speaking'] as const).some(skill => isAiReviewInProgress(skill))
 )

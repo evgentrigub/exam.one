@@ -1,4 +1,5 @@
 import type { ExamPack } from '../../types'
+import { c1WritingTips } from './practice-copy'
 
 /** Structural stub only — not a live product. */
 export const goetheDeC1: ExamPack = {
@@ -26,6 +27,20 @@ export const goetheDeC1: ExamPack = {
           goal: 'Stub',
           skill: 'Writing',
           itemFormat: 'freeform',
+          practiceLabel: 'Teil 1',
+          tips: c1WritingTips[1],
+        },
+        {
+          n: 2,
+          title: 'Formal letter',
+          format: 'Free writing',
+          short: 'Historical C1 writing tips.',
+          goal: 'Stub',
+          skill: 'Writing',
+          itemFormat: 'freeform',
+          available: false,
+          practiceLabel: 'Teil 2',
+          tips: c1WritingTips[2],
         },
       ],
     },

@@ -1,15 +1,50 @@
-import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
+import { DEFAULT_PACK_ID, getLivePack } from '@exam-one/exam-packs'
+import type {
+  ListeningA2Exercise,
+  ListeningExerciseA2Teil1,
+  ListeningExerciseA2Teil2,
+  ListeningExerciseA2Teil3,
+  ListeningExerciseA2Teil4,
+  ListeningExerciseAudioMap,
+} from '~/utils/exercises/listening'
 
 export const LISTENING_AUDIO_EXT = 'wav' as const
 
-/** Deterministic public path for a shared-transcript seed exercise (Teil 2 / 4). */
-export function sharedListeningAudioPath(exerciseId: string): string {
-  return `/audio/listening/a2/${exerciseId}/shared.${LISTENING_AUDIO_EXT}`
+function seedPrefix(): string {
+  try {
+    const id = useSettingsStore().packId
+    return getLivePack(id || DEFAULT_PACK_ID).speech.audioPathPrefix.replace(/\/$/, '')
+  } catch {
+    return getLivePack(DEFAULT_PACK_ID).speech.audioPathPrefix.replace(/\/$/, '')
+  }
 }
 
-/** Deterministic public path for a per-item seed segment (Teil 1 / 3). */
-export function itemListeningAudioPath(exerciseId: string, itemId: string): string {
-  return `/audio/listening/a2/${exerciseId}/${itemId}.${LISTENING_AUDIO_EXT}`
+export function usesItemAudio(
+  exercise: ListeningA2Exercise
+): exercise is ListeningExerciseA2Teil1 | ListeningExerciseA2Teil3 {
+  return 'items' in exercise && exercise.items.some(item => Boolean(item.id))
+}
+
+export function isSharedMatchingListening(
+  exercise: ListeningA2Exercise
+): exercise is ListeningExerciseA2Teil2 {
+  return 'options' in exercise && exercise.questions.some(question => 'person' in question)
+}
+
+export function isStatementListening(
+  exercise: ListeningA2Exercise
+): exercise is ListeningExerciseA2Teil4 {
+  return 'questions' in exercise && exercise.questions.some(question => 'statement' in question)
+}
+
+/** Deterministic public path for a shared-transcript seed exercise. */
+export function sharedListeningAudioPath(exerciseId: string, prefix = seedPrefix()): string {
+  return `${prefix}/${exerciseId}/shared.${LISTENING_AUDIO_EXT}`
+}
+
+/** Deterministic public path for a per-item seed segment. */
+export function itemListeningAudioPath(exerciseId: string, itemId: string, prefix = seedPrefix()): string {
+  return `${prefix}/${exerciseId}/${itemId}.${LISTENING_AUDIO_EXT}`
 }
 
 /** On-demand TTS output path for a shared transcript. */
@@ -27,7 +62,7 @@ export function generatedItemListeningAudioPath(exerciseId: string, itemId: stri
  * Prefers an explicit `audio.shared` map entry, else the derived seed path.
  */
 export function resolveSharedListeningAudioSrc(exercise: ListeningA2Exercise): string | undefined {
-  if (exercise.testingPart !== 2 && exercise.testingPart !== 4) return undefined
+  if (usesItemAudio(exercise)) return undefined
   const id = exercise.id
   if (!id) return undefined
   return exercise.audio?.shared ?? sharedListeningAudioPath(id)
@@ -41,7 +76,7 @@ export function resolveItemListeningAudioSrc(
   exercise: ListeningA2Exercise,
   itemId: string
 ): string | undefined {
-  if (exercise.testingPart !== 1 && exercise.testingPart !== 3) return undefined
+  if (!usesItemAudio(exercise)) return undefined
   const exerciseId = exercise.id
   if (!exerciseId) return undefined
   return exercise.audio?.items?.[itemId] ?? itemListeningAudioPath(exerciseId, itemId)
@@ -49,7 +84,7 @@ export function resolveItemListeningAudioSrc(
 
 /** Collect every expected audio URL for an exercise (for availability probes). */
 export function collectListeningAudioSrcs(exercise: ListeningA2Exercise): string[] {
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     return exercise.items
       .map(item => {
         const itemId = item.id
@@ -70,7 +105,7 @@ export function buildSeedListeningAudioMap(
   const id = exercise.id
   if (!id) return undefined
 
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     const items: Record<string, string> = {}
     for (const item of exercise.items) {
       const itemId = item.id
@@ -90,7 +125,7 @@ export function buildGeneratedListeningAudioMap(
   const id = exercise.id
   if (!id) return undefined
 
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     const items: Record<string, string> = {}
     for (const item of exercise.items) {
       const itemId = item.id
@@ -116,7 +151,7 @@ export function collectListeningAudioSegments(
   const id = exercise.id
   if (!id) return []
 
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     return exercise.items.flatMap(item => {
       const itemId = item.id
       if (!itemId || !item.transcript.trim()) return []

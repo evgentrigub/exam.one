@@ -182,9 +182,8 @@ const displayCategories = computed(() => {
     }))
 })
 
-const displayTestingPart = computed(() => {
-  return props.topic.testingPart === 1 ? 'Teil 1' : 'Teil 2'
-})
+const { labelFor } = useActivePack()
+const displayTestingPart = computed(() => labelFor('writing', props.topic.testingPart))
 
 // Topic type badge styling (daisyUI)
 const topicBadgeClasses: Record<string, string> = {

@@ -36,13 +36,17 @@ export function generatedItemListeningAudioPath(exerciseId: string, itemId: stri
   return `/audio/listening/generated/${exerciseId}/${itemId}.${LISTENING_AUDIO_EXT}`
 }
 
+export function usesItemAudio(exercise: LooseListeningExercise): boolean {
+  return (exercise.items ?? []).some(item => Boolean(item.id))
+}
+
 export function buildGeneratedListeningAudioMap(
   exercise: LooseListeningExercise
 ): ListeningExerciseAudioMap | undefined {
   const id = exercise.id
   if (!id || !isSafeGeneratedExerciseId(id)) return undefined
 
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     const items: Record<string, string> = {}
     for (const item of exercise.items ?? []) {
       const itemId = item.id
@@ -61,7 +65,7 @@ export function collectListeningAudioSegments(
   const id = exercise.id
   if (!id || !isSafeGeneratedExerciseId(id)) return []
 
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     return (exercise.items ?? []).flatMap(item => {
       const itemId = item.id
       const transcript = item.transcript?.trim() ?? ''

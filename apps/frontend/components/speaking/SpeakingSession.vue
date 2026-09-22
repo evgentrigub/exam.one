@@ -297,24 +297,37 @@ const activeRecording = ref<SegmentKey | null>(null)
 const submitted = ref(false)
 const recordingEpoch = ref(0)
 
-const instruction = computed(() =>
-  props.topic.testingPart === 1
-    ? 'First answer all four partner questions. Then make a second recording in which you ask all four questions.'
-    : 'Talk about the topic using all four keywords. Aim for a few connected sentences.'
+const { pack } = useActivePack()
+const speakingPart = computed(() =>
+  pack.value.structure
+    .find(module => module.id === 'speaking')
+    ?.parts.find(part => part.n === props.topic.testingPart)
+)
+const isInterview = computed(
+  () => speakingPart.value?.runtime?.segments?.some(segment => segment.id === 'answers') ?? false
+)
+
+const instruction = computed(
+  () =>
+    speakingPart.value?.instruction ??
+    (isInterview.value
+      ? 'First answer all four partner questions. Then make a second recording in which you ask all four questions.'
+      : 'Talk about the topic using all four keywords. Aim for a few connected sentences.')
 )
 
 const promptGroups = computed(() => {
-  if (props.topic.testingPart === 1) {
+  const topic = props.topic
+  if ('answerQuestions' in topic) {
     return [
-      { label: 'Phase A · Questions to answer', items: [...props.topic.answerQuestions] },
-      { label: 'Phase B · Questions to ask', items: [...props.topic.askQuestions] },
+      { label: 'Phase A · Questions to answer', items: [...topic.answerQuestions] },
+      { label: 'Phase B · Questions to ask', items: [...topic.askQuestions] },
     ]
   }
-  return [{ label: 'Keywords', items: [...props.topic.keywords] }]
+  return [{ label: 'Keywords', items: [...topic.keywords] }]
 })
 
 const segments = computed<SessionSegment[]>(() => {
-  if (props.topic.testingPart === 1) {
+  if (isInterview.value) {
     return [
       {
         key: 'answers',
@@ -343,19 +356,10 @@ const segments = computed<SessionSegment[]>(() => {
   ]
 })
 
-const usefulPhrases = computed(() =>
-  props.topic.testingPart === 1
-    ? [
-        'Ich … normalerweise, weil …',
-        'Am Wochenende … ich oft …',
-        'Wie oft … du …?',
-        'Was machst du, wenn …?',
-      ]
-    : ['Also, ich …', 'Normalerweise …', 'Außerdem …', 'Ich finde das …, weil …']
-)
+const usefulPhrases = computed(() => [...(speakingPart.value?.phrases ?? [])])
 
 const requiredSegmentKeys = computed<SegmentKey[]>(() =>
-  props.topic.testingPart === 1 ? ['answers', 'questions'] : ['monologue']
+  isInterview.value ? ['answers', 'questions'] : ['monologue']
 )
 
 watch(
@@ -438,7 +442,7 @@ async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<v
 }
 
 function attemptTranscripts(): SpeakingTranscripts {
-  if (props.topic.testingPart === 1) {
+  if (isInterview.value) {
     return {
       answers: transcripts.answers.trim(),
       questions: transcripts.questions.trim(),
@@ -448,7 +452,7 @@ function attemptTranscripts(): SpeakingTranscripts {
 }
 
 function combinedTranscript(): string {
-  if (props.topic.testingPart === 1) {
+  if (isInterview.value) {
     return `Antworten:\n${transcripts.answers.trim()}\n\nFragen:\n${transcripts.questions.trim()}`
   }
   return transcripts.monologue.trim()

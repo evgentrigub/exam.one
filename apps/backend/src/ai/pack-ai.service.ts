@@ -7,6 +7,7 @@ import {
   record,
   validateView,
   validateReview,
+  type LlmComplete,
   type SkillId,
   type PromptVars,
 } from '@exam-one/exam-packs'
@@ -22,8 +23,78 @@ export class PackAiService {
   pack() {
     return getPack(packContext.getStore()?.packId ?? DEFAULT_PACK_ID)!
   }
-  isGeneric(): boolean {
-    return !this.pack().compatibility
+
+  private configured(): boolean {
+    return this.llm.getConfig() !== null
+  }
+
+  private missingKey(): AiResponse<unknown> {
+    return { data: null, error: this.llm.missingKeyError() }
+  }
+
+  private complete: LlmComplete = (messages, options) => this.llm.complete(messages, options)
+
+  async generateForSkill(
+    skill: SkillId,
+    body: Record<string, unknown>,
+    parts: number[]
+  ): Promise<AiResponse<unknown>> {
+    const runner = this.pack().compatibilityAi
+    if (runner) {
+      if (!this.configured()) return this.missingKey()
+      const result =
+        skill === 'reading'
+          ? await runner.generateReading(body, this.complete)
+          : skill === 'listening'
+            ? await runner.generateListening(body, this.complete)
+            : skill === 'speaking'
+              ? await runner.generateSpeaking(body, this.complete)
+              : await runner.generateWriting(body, this.complete)
+      return this.validateGenerated(skill, Promise.resolve(result))
+    }
+    return this.generate(skill, parts)
+  }
+
+  async answerFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const runner = this.pack().compatibilityAi
+    if (runner) {
+      if (!this.configured()) return this.missingKey()
+      return runner.generateModelAnswer(body, this.complete)
+    }
+    return this.respond('writing', Number(body['topic'] && (body['topic'] as Record<string, unknown>)['testingPart']), 'answer', body['topic'], {})
+  }
+
+  async reviewWritingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const runner = this.pack().compatibilityAi
+    if (runner) {
+      if (!this.configured()) return this.missingKey()
+      return runner.reviewWriting(body, this.complete)
+    }
+    const topic = (body['topic'] ?? {}) as Record<string, unknown>
+    return this.respond(
+      'writing',
+      Number(topic['testingPart']),
+      'review',
+      topic,
+      body['answers'] ?? { answer: body['userContent'] }
+    )
+  }
+
+  async reviewSpeakingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const runner = this.pack().compatibilityAi
+    if (runner) return runner.reviewSpeaking(body, this.configured(), this.complete)
+    const topic = body['topic'] as Record<string, unknown> | undefined
+    return this.respond('speaking', Number(topic?.['testingPart']), 'review', topic, body['answers'] ?? {})
+  }
+
+  async reviewMockFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    if (!this.pack().createMockSet) {
+      return { data: null, error: 'Mock exams are unavailable for this pack' }
+    }
+    const runner = this.pack().compatibilityAi
+    if (runner) return runner.reviewMockExam(body, this.configured(), this.complete)
+    if (!this.configured()) return this.missingKey()
+    return { data: null, error: 'Mock overview is unavailable for this pack' }
   }
 
   partError(skill: SkillId, parts: number[]): string | null {

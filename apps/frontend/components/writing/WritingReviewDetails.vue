@@ -11,13 +11,13 @@
       </div>
       <div v-if="isA2" class="rounded-box border border-base-300 bg-base-200/40 p-3">
         <div class="text-xs text-base-content/55">{{ $t('writing.reviewDetails.messPoints') }}</div>
-        <div class="mt-1 font-semibold">{{ a2Review?.teil_points_mess }}/10</div>
+        <div class="mt-1 font-semibold">{{ a2Review?.teil_points_mess }}/{{ rawMax }}</div>
       </div>
       <div v-if="isA2" class="rounded-box border border-base-300 bg-base-200/40 p-3">
         <div class="text-xs text-base-content/55">
           {{ $t('writing.reviewDetails.resultPoints') }}
         </div>
-        <div class="mt-1 font-semibold">{{ a2Review?.teil_points_result }}/12.5</div>
+        <div class="mt-1 font-semibold">{{ a2Review?.teil_points_result }}/{{ resultMax }}</div>
       </div>
       <div v-if="!isA2" class="rounded-box border border-base-300 bg-base-200/40 p-3">
         <div class="text-xs text-base-content/55">{{ $t('writing.reviewDetails.teilPoints') }}</div>
@@ -155,6 +155,18 @@ import { isA2Review } from '~/utils/types'
 const props = defineProps<{ review: AiReviewData }>()
 const { t } = useI18n()
 
+const { pack } = useActivePack()
+const writingRules = computed(() => {
+  const teil = Number(props.review.teil) || 1
+  return pack.value.structure
+    .find(module => module.id === 'writing')
+    ?.parts.find(part => part.n === teil)?.runtime
+})
+const rawMax = computed(() => writingRules.value?.maxPoints ?? 10)
+const resultMax = computed(() => {
+  const value = rawMax.value * (writingRules.value?.multiplier ?? 1.25)
+  return Number.isInteger(value) ? String(value) : String(value)
+})
 const isA2 = computed(() => isA2Review(props.review))
 const a2Review = computed<AiReviewDataA2 | null>(() =>
   isA2Review(props.review) ? props.review : null

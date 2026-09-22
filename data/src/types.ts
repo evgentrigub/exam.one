@@ -20,6 +20,14 @@ export interface ExamPart {
   runtime?: PartRuntime
   adapter?: ExerciseAdapter
   available?: boolean
+  /** Short label shown in the existing exercise chrome, such as "Teil 1". */
+  practiceLabel?: string
+  /** Optional coach copy for this part. Shown in the existing tips list. */
+  tips?: readonly string[]
+  /** Optional phrase list for this part. Shown in the existing speaking card. */
+  phrases?: readonly string[]
+  /** Instruction line for this part. Shown above the speaking prompts. */
+  instruction?: string
 }
 
 export interface ExamModule {
@@ -73,6 +81,34 @@ export interface ExamPack {
   prompts: readonly PromptSpec[]
   speech: SpeechConfig
   createMockSet?: (setNumber: number, content: MockExamContent) => MockExamSet
+  bundledMockSet?: MockExamSet
+  compatibilityAi?: CompatibilityAi
+}
+
+export interface LlmMessage {
+  role: 'system' | 'user'
+  content: string
+}
+
+export type LlmComplete = (
+  messages: LlmMessage[],
+  options?: { temperature?: number; maxTokens?: number }
+) => Promise<string>
+
+export interface AiResult {
+  data: unknown
+  error: string | null
+}
+
+export interface CompatibilityAi {
+  generateReading(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateListening(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateSpeaking(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateWriting(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateModelAnswer(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  reviewWriting(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  reviewSpeaking(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
+  reviewMockExam(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
 }
 
 export const DEFAULT_PACK_ID = 'goethe-de-a2'

@@ -17,10 +17,14 @@ export type {
 } from './packs/goethe-de-a2/prompts/mock-exam'
 export { DEFAULT_PACK_ID } from './types'
 export type {
+  AiResult,
+  CompatibilityAi,
   ExamModule,
   ExamPack,
   ExamPart,
   ItemFormat,
+  LlmComplete,
+  LlmMessage,
   PromptKind,
   PromptSpec,
   PromptSpecFields,
