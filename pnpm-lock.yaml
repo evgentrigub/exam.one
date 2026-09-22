@@ -26,9 +26,6 @@ importers:
       '@exam-one/database':
         specifier: workspace:*
         version: link:../../libraries/database
-      '@exam-one/exam-content':
-        specifier: workspace:*
-        version: link:../../libraries/exam-content
       '@exam-one/exam-packs':
         specifier: workspace:*
         version: link:../../data
@@ -168,9 +165,6 @@ importers:
       '@exam-one/contracts':
         specifier: workspace:*
         version: link:../../libraries/contracts
-      '@exam-one/exam-content':
-        specifier: workspace:*
-        version: link:../../libraries/exam-content
       '@exam-one/exam-packs':
         specifier: workspace:*
         version: link:../../data
@@ -258,10 +252,6 @@ importers:
         version: 3.3.10(typescript@6.0.3)
 
   data:
-    dependencies:
-      '@exam-one/exam-content':
-        specifier: workspace:*
-        version: link:../libraries/exam-content
     devDependencies:
       '@eslint/js':
         specifier: ^9.29.0
@@ -299,9 +289,9 @@ importers:
 
   libraries/database:
     dependencies:
-      '@exam-one/exam-content':
+      '@exam-one/exam-packs':
         specifier: workspace:*
-        version: link:../exam-content
+        version: link:../../data
       '@prisma/adapter-pg':
         specifier: 7.10.0
         version: 7.10.0
@@ -339,24 +329,6 @@ importers:
       tsx:
         specifier: ^4.19.4
         version: 4.23.0
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
-      typescript-eslint:
-        specifier: ^8.34.1
-        version: 8.63.0(eslint@9.29.0(jiti@2.7.0))(typescript@6.0.3)
-
-  libraries/exam-content:
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.29.0
-        version: 9.29.0
-      eslint:
-        specifier: ^9.29.0
-        version: 9.29.0(jiti@2.7.0)
-      prettier:
-        specifier: ^3.9.6
-        version: 3.9.6
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

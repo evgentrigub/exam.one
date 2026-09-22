@@ -48,7 +48,7 @@ database:
 
 exam-content:
   exam-agnostic-core:
-    description: Goethe belongs in exam-content and data/packs; Nest/Prisma/generic UI stay generic
+    description: Goethe belongs in data/src/packs; Nest/Prisma/generic UI stay generic
   exam-only-vs-practice:
     description: default vs mockExam vs allDefault arrays; practice lists hide examOnly
   exercise-ids:
@@ -56,13 +56,13 @@ exam-content:
   listening-audio-paths:
     description: Seed WAV helpers under /audio/listening/a2; generated files stay out of that tree
   seeds-vs-prompts:
-    description: Seeds in exam-content; prompts in data/src/packs; prompts should not move into Nest
+    description: Seeds and prompts live in data/src/packs; prompts should not move into Nest
 
 global:
   localstorage-keys:
     description: 'Practice data is API-backed; remaining client keys are theme/locale/playback/bookmarks; no secrets; const at top of owning files'
   offline-first-core:
-    description: 'Core practice is login-gated Nest accounts, Postgres-backed practice data, Nest AI/TTS/STT, Goethe A2 live pack, BYOK AI, exam-content seed + API hydrate'
+    description: 'Core practice is login-gated Nest accounts, Postgres-backed practice data, Nest AI/TTS/STT, Goethe A2 live pack, BYOK AI, pack seed + API hydrate'
   self-host-persistence:
     description: 'Docker Compose localhost stack: accounts, practice data, AI/TTS/STT, named volumes, README runbook; no required cloud'
   ssr-storage-guards:

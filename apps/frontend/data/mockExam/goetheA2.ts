@@ -3,10 +3,10 @@ export {
   mockExamSets,
   getMockExamSet,
   createGoetheA2MockExamSet,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'
 export type {
   MockExamContent,
   MockExamExerciseDefinition,
   MockExamModuleDefinition,
   MockExamSet,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'

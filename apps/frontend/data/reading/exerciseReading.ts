@@ -2,4 +2,4 @@ export {
   defaultReadingTopics,
   mockExamReadingTopics,
   allDefaultReadingTopics,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'

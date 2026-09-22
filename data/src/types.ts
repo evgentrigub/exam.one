@@ -1,5 +1,5 @@
 import type { ExerciseAdapter, PartRuntime } from './runtime'
-import type { MockExamContent, MockExamSet } from '@exam-one/exam-content'
+import type { MockExamContent, MockExamSet } from './packs/goethe-de-a2/content'
 
 export type SkillId = 'reading' | 'writing' | 'listening' | 'speaking'
 

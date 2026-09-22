@@ -101,7 +101,7 @@ Theme, locale, listening playback volume/speed, and reading bookmarks stay in th
 
 ### Exam packs
 
-Exam definitions, LLM prompts, runtime rules, grading criteria and payload adapters live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack using the five supported exercise formats by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`. Bundled Goethe exercise payloads stay in `@exam-one/exam-content`. Goethe A2 is the only live production pack; inactive C1 attempts remain reviewable under **Progress → Past exams**. See the [verification and migration rollout guide](data/VERIFICATION.md).
+Exam definitions, LLM prompts, runtime rules, grading criteria, payload adapters, and optional bundled seeds live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack using the five supported exercise formats by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`. Goethe A2 bundled passages, questions, topics, and mock Set 1 live in `data/src/packs/goethe-de-a2/content/`. Goethe A2 is the only live production pack; inactive C1 attempts remain reviewable under **Progress → Past exams**. See the [verification and migration rollout guide](data/VERIFICATION.md).
 
 ---
 
@@ -407,14 +407,13 @@ exam-one/
 │       └── postman/       # Importable API collection and usage guide
 ├── data/                  # @exam-one/exam-packs: exam definitions and shared runtime
 │   └── src/
-│       ├── packs/         # Pack structure, prompts, rules and compatibility adapters
+│       ├── packs/         # Pack structure, prompts, rules, adapters, and optional seeds
 │       ├── testing/       # Synthetic fixtures; excluded from production registration
 │       ├── registry.ts    # Registered packs and live availability
 │       └── runtime.ts     # Five formats, view adapters and grading contracts
 ├── libraries/
 │   ├── contracts/         # Request/response types shared by Nuxt and NestJS
 │   ├── database/          # Prisma schema, migrations, client exports and seed upserts
-│   ├── exam-content/      # Bundled Goethe exercises, content types and mock Set 1
 │   └── nestjs-libraries/  # PrismaModule/PrismaService for NestJS injection and lifecycle
 ├── agent-os/              # Implementation standards
 ├── scripts/               # Stack/speech utilities and pack migration/acceptance checks
@@ -427,8 +426,7 @@ exam-one/
 
 | Change you want to make | Owning directory |
 | --- | --- |
-| Add a supported exam, change prompts, timing, replay or grading rules | `data/` |
-| Change bundled passages, questions, topics or Goethe mock content | [libraries/exam-content](libraries/exam-content/README.md) |
+| Add a supported exam, change prompts, timing, replay, grading rules, or bundled passages | `data/` |
 | Change the API's request/response shapes | [libraries/contracts](libraries/contracts/README.md) |
 | Change tables, indexes, migrations or seed persistence | [libraries/database](libraries/database/README.md) |
 | Change NestJS database connection/injection behavior | [libraries/nestjs-libraries](libraries/nestjs-libraries/README.md) |

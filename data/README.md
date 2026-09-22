@@ -5,12 +5,12 @@ Forkers add an exam by creating a folder under `src/packs/` and registering it i
 | Path | What lives here |
 | --- | --- |
 | `src/types.ts` | Generic pack, module, and `PromptSpec` contracts |
-| `src/packs/goethe-de-a2/` | Live Goethe A2 template (structure + prompts) |
+| `src/packs/goethe-de-a2/` | Live Goethe A2 template (structure, prompts, bundled seeds) |
 | `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
 
 Each prompt slot is a `PromptSpec` with `role`, `task`, `rules`, optional `examples`, and `outputContract`. Runtime values (`{count}`, `{task}`, `{userContent}`, …) are interpolated by `assemble()`.
 
-Seed exercise payloads stay in `@exam-one/exam-content`. After the pack-author skill ships (roadmap 2.11b), new packs can be generated from an exam brief into this tree.
+Optional bundled seeds, payload types, and mock Set 1 live in that pack's `content/` folder. New packs stay seed-free unless they ship bundled exercises. After the pack-author skill ships (roadmap 2.11b), new packs can be generated from an exam brief into this tree.
 
 ## Runtime contract
 

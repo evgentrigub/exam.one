@@ -6,7 +6,7 @@ import {
   validateView,
   goetheDeA2,
 } from '@exam-one/exam-packs'
-import { goetheA2MockExamSet1 } from '@exam-one/exam-content'
+import { goetheA2MockExamSet1 } from '@exam-one/exam-packs'
 import { syntheticEnglishA1, syntheticPayloads } from '../../../../../data/src/testing/english-a1'
 
 describe('Data-only pack runtime', () => {

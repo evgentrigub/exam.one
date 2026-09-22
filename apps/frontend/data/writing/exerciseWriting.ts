@@ -2,4 +2,4 @@ export {
   defaultWritingTopics,
   mockExamWritingTopics,
   allDefaultWritingTopics,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'

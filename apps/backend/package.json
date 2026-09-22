@@ -19,7 +19,6 @@
   "dependencies": {
     "@exam-one/contracts": "workspace:*",
     "@exam-one/database": "workspace:*",
-    "@exam-one/exam-content": "workspace:*",
     "@exam-one/exam-packs": "workspace:*",
     "@exam-one/nestjs-libraries": "workspace:*",
     "@nestjs/common": "^11.2.1",
@@ -91,8 +90,7 @@
     "coverageDirectory": "coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@exam-one/exam-packs$": "<rootDir>/../../data/src/index.ts",
-      "^@exam-one/exam-content$": "<rootDir>/../../libraries/exam-content/src/index.ts"
+      "^@exam-one/exam-packs$": "<rootDir>/../../data/src/index.ts"
     }
   }
 }

@@ -59,8 +59,7 @@ Use `pnpm`.
 - `apps/backend/` contains the standalone NestJS API
 - `libraries/contracts/` contains framework-neutral shared API types
 - `libraries/database/` owns the Prisma schema, migrations, and seeds
-- `libraries/exam-content/` is the shared exam-content boundary
-- `data/` (`@exam-one/exam-packs`) holds exam structure and PromptSpecs
+- `data/` (`@exam-one/exam-packs`) holds exam structure, PromptSpecs, and optional bundled seeds under `src/packs/{packId}/`
 - `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
 - `compose.yaml` is the only Compose file; it defines frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT
 - `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the core app after migrate/seed, then speech sidecars, after ensuring host-persisted speech models are present
@@ -111,8 +110,8 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 
 ## Data And Persistence Rules
 
-- Exercise seed payloads live in `@exam-one/exam-content` and are upserted by Prisma `db:seed`. Prompt templates live under `data/src/packs/` (`@exam-one/exam-packs`)
-- Exam-specific seeds, scoring, and mock payloads live in `@exam-one/exam-content`. Pack structure and prompts live in `data/src/packs/`. Keep shared models and UI flows exam-agnostic
+- Exercise seed payloads live in the owning pack under `data/src/packs/{packId}/content/` (`@exam-one/exam-packs`) and are upserted by Prisma `db:seed`. Prompt templates live in the same pack folder
+- Exam-specific seeds, scoring, and mock payloads live with that pack under `data/src/packs/`. Keep shared models and UI flows exam-agnostic
 - Skill catalogs, attempts, drafts, reviews, generation jobs, and mock exams are owned by NestJS/PostgreSQL after login. Do not add new authoritative practice keys to localStorage
 - Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
 

@@ -6,7 +6,7 @@ import type {
   ReadingExercise,
   ReadingQuestionType,
   ReadingTextType,
-} from '@exam-one/exam-content'
+} from '../content'
 import { generateReadingId } from './ids'
 import { extractJsonArray, isRecord } from './json'
 

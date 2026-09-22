@@ -1,4 +1,4 @@
-import type { SpeakingReviewCriterion, SpeakingReviewData } from '@exam-one/exam-content'
+import type { SpeakingReviewCriterion, SpeakingReviewData } from '../content'
 import { isRecord } from './json'
 import { goetheDeA2 } from '../pack'
 import type { PartRuntime } from '../../../runtime'

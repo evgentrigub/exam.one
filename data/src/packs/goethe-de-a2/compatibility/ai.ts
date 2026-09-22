@@ -1,4 +1,4 @@
-import type { Difficulty } from '@exam-one/exam-content'
+import type { Difficulty } from '../content'
 import type { AiResult, LlmComplete } from '../../../types'
 import { extractJsonArray, extractJsonObject, nonEmptyString } from './json'
 import {

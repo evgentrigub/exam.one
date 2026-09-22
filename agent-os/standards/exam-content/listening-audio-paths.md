@@ -1,6 +1,6 @@
 # Listening Audio Paths
 
-Build seed audio maps with `buildSeedListeningAudioMap` in `@exam-one/exam-content`. Do not hand-write path strings.
+Build seed audio maps with `buildSeedListeningAudioMap` in the owning pack's `content/` folder (`data/src/packs/goethe-de-a2/content/`). Do not hand-write path strings.
 
 ```
 /audio/listening/a2/{exerciseId}/shared.wav          # Teil 2 / 4

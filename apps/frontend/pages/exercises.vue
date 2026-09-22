@@ -414,7 +414,7 @@ const route = useRoute()
 const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
-const { partsFor, pack } = useActivePack()
+const { partsFor } = useActivePack()
 
 const { getTexts, addTexts } = useReadingTexts()
 const { getTopics, addTopics, deleteTopic } = useWritingTopics()

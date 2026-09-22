@@ -1,5 +1,5 @@
 import { attachGoetheRuntime } from './runtime'
-import { createGoetheA2MockExamSet, goetheA2MockExamSet1 } from '@exam-one/exam-content'
+import { createGoetheA2MockExamSet, goetheA2MockExamSet1 } from './content'
 import type { ExamPack } from '../../types'
 import { goetheCompatibilityAi } from './compatibility/ai'
 import { listeningPrompts } from './prompts/listening'

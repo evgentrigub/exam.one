@@ -10,7 +10,7 @@ import type {
   ListeningItemA2Teil3,
   ListeningQuestionA2Teil2,
   ListeningQuestionA2Teil4,
-} from '@exam-one/exam-content'
+} from '../content'
 import { generateListeningId } from './ids'
 import { isRecord, nonEmptyString } from './json'
 

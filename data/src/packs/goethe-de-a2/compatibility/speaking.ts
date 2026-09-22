@@ -1,4 +1,4 @@
-import type { Difficulty, SpeakingA2Part, SpeakingA2Topic, SpeakingFourCards } from '@exam-one/exam-content'
+import type { Difficulty, SpeakingA2Part, SpeakingA2Topic, SpeakingFourCards } from '../content'
 import { generateSpeakingId } from './ids'
 import { isRecord, nonEmptyString } from './json'
 

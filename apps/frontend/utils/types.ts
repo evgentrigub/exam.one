@@ -1,4 +1,4 @@
-import type { Difficulty, WritingExercise, WritingTopicTypes } from '@exam-one/exam-content'
+import type { Difficulty, WritingExercise, WritingTopicTypes } from '@exam-one/exam-packs'
 
 export type { Difficulty, WritingExercise, WritingTopicTypes }
 

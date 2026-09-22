@@ -292,7 +292,7 @@
       "title": "Optional AI and persistence",
       "items": [
         "Missing LLM keys or sidecars return HTTP 200 { data: null, error }; Set 1 still works",
-        "Prisma seeds from @exam-one/exam-content; theme and playback stay in the browser"
+        "Prisma seeds from @exam-one/exam-packs; theme and playback stay in the browser"
       ]
     }
   ]

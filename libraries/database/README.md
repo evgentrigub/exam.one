@@ -17,7 +17,7 @@ Owns the PostgreSQL schema, Prisma migrations, Prisma Client exports and bundled
 
 ## When to change it
 
-Change this package for table, column, relation, index or seed-persistence changes. It imports bundled content from [exam-content](../exam-content/README.md). [nestjs-libraries](../nestjs-libraries/README.md) wraps its Prisma Client in an injectable NestJS service.
+Change this package for table, column, relation, index or seed-persistence changes. It imports bundled Goethe A2 content from [`@exam-one/exam-packs`](../../data/README.md). [nestjs-libraries](../nestjs-libraries/README.md) wraps its Prisma Client in an injectable NestJS service.
 
 Pack definitions and grading belong in [data/](../../data/README.md); API DTOs belong in [contracts](../contracts/README.md). Stage 2.11 stores pack ownership, versioned attempt snapshots, fractional scores and mock rules here. Adding a pack using supported formats needs no schema change.
 

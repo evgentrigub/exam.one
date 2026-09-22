@@ -9,4 +9,4 @@ export type {
   SpeakingTranscripts,
   SpeakingReviewCriterion,
   SpeakingReviewData,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'

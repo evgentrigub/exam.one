@@ -36,6 +36,7 @@ export type {
 
 export * from './runtime'
 export { validatePacks } from './validation'
+export * from './packs/goethe-de-a2/content'
 
 export { extractTextsFromResponse as goetheExtractTextsFromResponse, normaliseText as goetheNormaliseText } from './packs/goethe-de-a2/compatibility/reading'
 export const goetheGenerateReadingSystem0 = 'You are an expert Goethe-Institut exam creator. Generate reading comprehension exercises according to the specifications provided. Return ONLY a valid JSON array of GermanText objects with questions, no additional text.'

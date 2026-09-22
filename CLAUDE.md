@@ -40,8 +40,7 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 | `apps/backend/`               | Standalone NestJS API; local default port is 3001                                                            |
 | `libraries/contracts/`        | Framework-neutral shared API contracts                                                                       |
 | `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
-| `libraries/exam-content/`     | Shared exam-content boundary                                                                                 |
-| `data/`                       | `@exam-one/exam-packs`: exam structure and PromptSpecs (`src/packs/{packId}/`)                               |
+| `data/`                       | `@exam-one/exam-packs`: exam structure, PromptSpecs, and optional bundled seeds (`src/packs/{packId}/`)       |
 | `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                        |
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/standards/`         | Canonical implementation standards                                                                           |
@@ -49,7 +48,7 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 ### Frontend data lifecycle
 
 1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
-2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-content` (`source=seed`, `userId` null, `packId` set). User-generated rows overlay seeds by `(packId, externalId)`
+2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`source=seed`, `userId` null, `packId` set). User-generated rows overlay seeds by `(packId, externalId)`
 
 Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
 

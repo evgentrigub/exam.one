@@ -1,4 +1,4 @@
-import type { Difficulty } from '@exam-one/exam-content'
+import type { Difficulty } from '../content'
 
 function randomSuffix(): string {
   return Math.random().toString(36).substring(2, 7)

@@ -500,9 +500,14 @@ import ListeningSession from '~/components/listening/ListeningSession.vue'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
-import type { MockExamExerciseDefinition, MockExamModuleDefinition, MockExamSet } from '@exam-one/exam-content'
-import type { MockExamOverview, MockExamOverviewInput } from '@exam-one/exam-packs'
-import { buildMockExamOverviewPrompt } from '@exam-one/exam-packs'
+import {
+  buildMockExamOverviewPrompt,
+  type MockExamExerciseDefinition,
+  type MockExamModuleDefinition,
+  type MockExamOverview,
+  type MockExamOverviewInput,
+  type MockExamSet,
+} from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'

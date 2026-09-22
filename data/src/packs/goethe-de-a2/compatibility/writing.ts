@@ -1,4 +1,4 @@
-import type { Difficulty, WritingExercise } from '@exam-one/exam-content'
+import type { Difficulty, WritingExercise } from '../content'
 import { isRecord } from './json'
 
 
