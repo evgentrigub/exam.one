@@ -67,20 +67,3 @@ export function extractJsonObject(rawText: string): unknown | null {
   }
   return null
 }
-
-export function tryParseJsonCandidates(rawText: string): unknown[] {
-  const candidates: unknown[] = []
-  const fenced = rawText.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]
-  if (fenced) {
-    try {
-      candidates.push(JSON.parse(fenced.trim()) as unknown)
-    } catch {
-      // ignore
-    }
-  }
-  const object = extractJsonObject(rawText)
-  if (object !== null) candidates.push(object)
-  const array = extractJsonArray(rawText)
-  if (array !== null) candidates.push(array)
-  return candidates
-}
