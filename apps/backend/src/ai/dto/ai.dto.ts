@@ -128,6 +128,15 @@ export class GenerateModelAnswerDto {
   @IsString()
   @MinLength(1)
   prompt!: string
+
+  @ApiPropertyOptional({
+    description: 'Language for the feedback text. Defaults to English when omitted.',
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  outputLanguage?: string
+
 }
 
 export class ReviewWritingDto {
@@ -165,6 +174,15 @@ export class ReviewWritingDto {
   @IsString()
   @MinLength(1)
   prompt!: string
+
+  @ApiPropertyOptional({
+    description: 'Language for the feedback text. Defaults to English when omitted.',
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  outputLanguage?: string
+
 }
 
 export class ReviewSpeakingDto {
@@ -194,6 +212,15 @@ export class ReviewSpeakingDto {
   @IsString()
   @MinLength(1)
   prompt!: string
+
+  @ApiPropertyOptional({
+    description: 'Language for the feedback text. Defaults to English when omitted.',
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  outputLanguage?: string
+
 }
 
 export class ReviewMockExamDto {

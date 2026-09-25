@@ -7,6 +7,7 @@ import {
   record,
   validateView,
   validateReview,
+  coerceAnswerIndices,
   type LlmComplete,
   type SkillId,
   type PromptVars,
@@ -15,6 +16,42 @@ import type { AiResponse } from '@exam-one/contracts'
 import { packContext } from '../core/interceptors/pack-context.interceptor'
 import { LlmService } from './llm.service'
 import { extractJsonArray } from './json'
+
+/**
+ * Give every generated question or item a stable id.
+ *
+ * Models are told not to emit ids, and the projected view needs unique ones:
+ * `validateView` rejects duplicates, and generated listening audio is keyed by
+ * question id, so without this per-item audio never attaches.
+ */
+function withQuestionIds(payload: Record<string, unknown>): Record<string, unknown> {
+  const id = String(payload['id'])
+  const stamp = (rows: unknown, prefix: string): unknown =>
+    Array.isArray(rows)
+      ? rows.map((row, index) =>
+          row && typeof row === 'object' && !Array.isArray(row)
+            ? { id: `${id}-${prefix}${index + 1}`, ...(row as Record<string, unknown>) }
+            : row
+        )
+      : rows
+  return {
+    ...payload,
+    ...(payload['items'] ? { items: stamp(payload['items'], 'i') } : {}),
+    ...(payload['questions'] ? { questions: stamp(payload['questions'], 'q') } : {}),
+  }
+}
+
+/** How many exercises to generate in one call. The writing screen asks for several. */
+function count(body: Record<string, unknown>): number {
+  const value = body['count']
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? Math.floor(value) : 1
+}
+
+/** Feedback language from the request, defaulting to English when the client omits it. */
+function language(body: Record<string, unknown>): string {
+  const value = body['outputLanguage']
+  return typeof value === 'string' && value.trim() ? value : 'en'
+}
 
 @Injectable()
 export class PackAiService {
@@ -40,33 +77,42 @@ export class PackAiService {
     parts: number[]
   ): Promise<AiResponse<unknown>> {
     const runner = this.pack().compatibilityAi
-    if (runner) {
+    const legacy =
+      skill === 'reading'
+        ? runner?.generateReading
+        : skill === 'listening'
+          ? runner?.generateListening
+          : skill === 'speaking'
+            ? runner?.generateSpeaking
+            : runner?.generateWriting
+    if (legacy) {
       if (!this.configured()) return this.missingKey()
-      const result =
-        skill === 'reading'
-          ? await runner.generateReading(body, this.complete)
-          : skill === 'listening'
-            ? await runner.generateListening(body, this.complete)
-            : skill === 'speaking'
-              ? await runner.generateSpeaking(body, this.complete)
-              : await runner.generateWriting(body, this.complete)
+      const result = await legacy.call(runner, body, this.complete)
       return this.validateGenerated(skill, Promise.resolve(result))
     }
-    return this.generate(skill, parts)
+    return this.generate(skill, parts, count(body))
   }
 
   async answerFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
     const runner = this.pack().compatibilityAi
-    if (runner) {
+    if (runner?.generateModelAnswer) {
       if (!this.configured()) return this.missingKey()
       return runner.generateModelAnswer(body, this.complete)
     }
-    return this.respond('writing', Number(body['topic'] && (body['topic'] as Record<string, unknown>)['testingPart']), 'answer', body['topic'], {})
+    const topic = (body['topic'] ?? {}) as Record<string, unknown>
+    return this.respond(
+      'writing',
+      Number(topic['testingPart']),
+      'answer',
+      topic,
+      {},
+      language(body)
+    )
   }
 
   async reviewWritingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
     const runner = this.pack().compatibilityAi
-    if (runner) {
+    if (runner?.reviewWriting) {
       if (!this.configured()) return this.missingKey()
       return runner.reviewWriting(body, this.complete)
     }
@@ -76,15 +122,23 @@ export class PackAiService {
       Number(topic['testingPart']),
       'review',
       topic,
-      body['answers'] ?? { answer: body['userContent'] }
+      body['answers'] ?? { answer: body['userContent'] },
+      language(body)
     )
   }
 
   async reviewSpeakingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
     const runner = this.pack().compatibilityAi
-    if (runner) return runner.reviewSpeaking(body, this.configured(), this.complete)
+    if (runner?.reviewSpeaking) return runner.reviewSpeaking(body, this.configured(), this.complete)
     const topic = body['topic'] as Record<string, unknown> | undefined
-    return this.respond('speaking', Number(topic?.['testingPart']), 'review', topic, body['answers'] ?? {})
+    return this.respond(
+      'speaking',
+      Number(topic?.['testingPart']),
+      'review',
+      topic,
+      body['answers'] ?? {},
+      language(body)
+    )
   }
 
   async reviewMockFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
@@ -92,7 +146,7 @@ export class PackAiService {
       return { data: null, error: 'Mock exams are unavailable for this pack' }
     }
     const runner = this.pack().compatibilityAi
-    if (runner) return runner.reviewMockExam(body, this.configured(), this.complete)
+    if (runner?.reviewMockExam) return runner.reviewMockExam(body, this.configured(), this.complete)
     if (!this.configured()) return this.missingKey()
     return { data: null, error: 'Mock overview is unavailable for this pack' }
   }
@@ -138,7 +192,7 @@ export class PackAiService {
     }
   }
 
-  async generate(skill: SkillId, parts: number[]): Promise<AiResponse<unknown[]>> {
+  async generate(skill: SkillId, parts: number[], count = 1): Promise<AiResponse<unknown[]>> {
     try {
       const pack = this.pack()
       if (!pack.live) throw new Error('This pack is unavailable for new practice')
@@ -151,19 +205,23 @@ export class PackAiService {
         const spec = findPrompt(pack, skill, n, 'generator')
         if (!part?.adapter || !part.runtime || !spec)
           throw new Error(`Unsupported ${skill} part ${n}`)
-        const raw = await this.llm.complete([
-          { role: 'user', content: spec.assemble({ count: 1 }) },
-        ])
-        const parsed = extractJsonArray(raw)
+        const content = spec.assemble({ count })
+        // A model that returns unparseable text usually succeeds on a second attempt;
+        // one retry is what the exercise generators have always done.
+        let parsed = extractJsonArray(await this.llm.complete([{ role: 'user', content }], spec.llm))
+        if (!parsed?.length)
+          parsed = extractJsonArray(await this.llm.complete([{ role: 'user', content }], spec.llm))
         if (!parsed?.length) throw new Error('The provider did not return an exercise array')
         for (const value of parsed) {
-          const payload = {
-            ...record(value),
-            id: `${skill}-${pack.packId}-${randomUUID()}`,
+          const id = `${skill}-${pack.packId}-${randomUUID()}`
+          const payload = withQuestionIds({
+            ...coerceAnswerIndices(record(value)),
+            id,
             testingPart: n,
             difficulty: pack.cefr,
             createdAt: new Date().toISOString(),
-          }
+          })
+          part.validate?.(payload, part.runtime)
           validateView(part.adapter.project(payload), part.runtime)
           output.push(payload)
         }
@@ -179,7 +237,8 @@ export class PackAiService {
     n: number,
     kind: 'answer' | 'review',
     payload: unknown,
-    answers: unknown
+    answers: unknown,
+    outputLanguage = 'en'
   ): Promise<AiResponse<unknown>> {
     try {
       const pack = this.pack()
@@ -192,12 +251,26 @@ export class PackAiService {
       const prompt = findPrompt(pack, skill, n, kind)
       if (!prompt) throw new Error('This prompt is unavailable')
       if (!this.llm.getConfig()) return { data: null, error: this.llm.missingKeyError() }
-      const vars: PromptVars = {
-        task: JSON.stringify(payload),
-        userContent: JSON.stringify(answers),
-        outputLanguage: 'en',
-      }
-      const raw = await this.llm.complete([{ role: 'user', content: prompt.assemble(vars) }])
+      // A pack may need more than the three generic variables; anything it does not
+      // supply would otherwise reach the model as a literal "{placeholder}".
+      const vars: PromptVars = pack.buildReviewVars
+        ? pack.buildReviewVars({
+            skill,
+            part: n,
+            kind,
+            payload: record(payload),
+            answers: record(answers),
+            outputLanguage,
+          })
+        : {
+            task: JSON.stringify(payload),
+            userContent: JSON.stringify(answers),
+            outputLanguage,
+          }
+      const raw = await this.llm.complete(
+        [{ role: 'user', content: prompt.assemble(vars) }],
+        prompt.llm
+      )
       if (kind === 'answer') return { data: { text: raw }, error: null }
       const cleaned = raw.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '')
       const review = validateReview(JSON.parse(cleaned), part.runtime)

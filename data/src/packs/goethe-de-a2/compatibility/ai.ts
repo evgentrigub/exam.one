@@ -344,8 +344,12 @@ export async function reviewMockExam(
   }
 }
 
+/**
+ * Modules still on the legacy runner. Entries are removed one at a time as each
+ * module moves to the generic prompt path; `PackAiService` falls through for any
+ * member that is absent. Reading now runs on the generic path.
+ */
 export const goetheCompatibilityAi = {
-  generateReading,
   generateListening,
   generateSpeaking,
   generateWriting,

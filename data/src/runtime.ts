@@ -45,13 +45,37 @@ export interface ExerciseView {
   audio?: string
   transcript?: string
 }
+/** A concrete error the learner made, with the correction and the rule behind it. */
+export interface ReviewExample {
+  error: string
+  correction: string
+  rule: string
+}
+
+/** A named check a rubric may report on, such as register or content coverage. */
+export interface ReviewCheck {
+  id: string
+  expected?: string
+  detected?: string
+  ok?: boolean
+  required?: number
+  covered?: number
+}
+
 export interface CriterionReview {
-  criteria: Array<RubricCriterion & { points: number; comment: string }>
+  criteria: Array<RubricCriterion & { points: number; comment: string; grade?: string }>
   totalPoints: number
   maxPoints: number
   summary: string
   strengths: string[]
   improvements: string[]
+  /** Optional richer feedback. A pack may emit any subset; absent fields are simply not rendered. */
+  examples?: ReviewExample[]
+  priorityFixes?: string[]
+  report?: string
+  wordCount?: { actual: number; min?: number; max?: number }
+  ruleApplied?: string
+  checks?: ReviewCheck[]
 }
 export interface ExerciseAdapter {
   project(payload: unknown): ExerciseView
@@ -232,6 +256,7 @@ export function validateReview(value: unknown, rules: PartRuntime): CriterionRev
       ...definition,
       points: row['points'],
       comment: typeof row['comment'] === 'string' ? row['comment'] : '',
+      ...(typeof row['grade'] === 'string' ? { grade: row['grade'] } : {}),
     }
   })
   const totalPoints = checked.reduce((sum, c) => sum + c.points, 0)
@@ -253,5 +278,40 @@ export function validateReview(value: unknown, rules: PartRuntime): CriterionRev
     improvements: Array.isArray(review['improvements'])
       ? review['improvements'].filter((s): s is string => typeof s === 'string')
       : [],
+    ...reviewExtras(review),
   }
+}
+
+/** Optional richer feedback a rubric may report. Anything malformed is dropped, not thrown on. */
+function reviewExtras(review: Record<string, unknown>): Partial<CriterionReview> {
+  const strings = (value: unknown): string[] | undefined =>
+    Array.isArray(value) ? value.filter((s): s is string => typeof s === 'string') : undefined
+  const examples = Array.isArray(review['examples'])
+    ? review['examples'].filter(
+        (item): item is ReviewExample =>
+          isRecord(item) &&
+          typeof item['error'] === 'string' &&
+          typeof item['correction'] === 'string' &&
+          typeof item['rule'] === 'string'
+      )
+    : undefined
+  const checks = Array.isArray(review['checks'])
+    ? review['checks'].filter((item): item is ReviewCheck => isRecord(item) && typeof item['id'] === 'string')
+    : undefined
+  const wordCount = isRecord(review['wordCount']) && typeof review['wordCount']['actual'] === 'number'
+    ? (review['wordCount'] as CriterionReview['wordCount'])
+    : undefined
+  const priorityFixes = strings(review['priorityFixes'])
+  return {
+    ...(examples?.length ? { examples } : {}),
+    ...(priorityFixes?.length ? { priorityFixes } : {}),
+    ...(typeof review['report'] === 'string' ? { report: review['report'] } : {}),
+    ...(wordCount ? { wordCount } : {}),
+    ...(typeof review['ruleApplied'] === 'string' ? { ruleApplied: review['ruleApplied'] } : {}),
+    ...(checks?.length ? { checks } : {}),
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }

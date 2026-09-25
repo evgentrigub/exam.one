@@ -51,6 +51,23 @@ function loadEnv() {
 
 // ---------------------------------------------------------------- scoring
 
+/** Same fence-then-bracket scan the backend uses. */
+function extractArray(raw) {
+  if (typeof raw !== 'string') return null
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1] ?? raw
+  const start = fenced.indexOf('[')
+  if (start < 0) return null
+  for (let end = fenced.lastIndexOf(']'); end > start; end = fenced.lastIndexOf(']', end - 1)) {
+    try {
+      const value = JSON.parse(fenced.slice(start, end + 1))
+      if (Array.isArray(value)) return value
+    } catch {
+      // keep shrinking
+    }
+  }
+  return null
+}
+
 const pack = packs.getPack('goethe-de-a2')
 assert(pack, 'goethe-de-a2 is not registered')
 
@@ -188,6 +205,28 @@ async function runEval() {
 
   const runner = pack.compatibilityAi
   const results = []
+
+  // Mirrors PackAiService.generate() for modules that have left the legacy runner,
+  // so the eval exercises the same code path production uses.
+  const generic = async (skill, part, complete) => {
+    const spec = packs.findPrompt(pack, skill, part, 'generator')
+    const definition = pack.structure
+      .find(m => m.id === skill)
+      ?.parts.find(p => p.n === part && p.available !== false)
+    const content = spec.assemble({ count: 1 })
+    let parsed = extractArray(await complete([{ role: 'user', content }], spec.llm))
+    if (!parsed?.length) parsed = extractArray(await complete([{ role: 'user', content }], spec.llm))
+    if (!parsed?.length) return { data: null, error: 'The provider did not return an exercise array' }
+    const data = parsed.map(value => ({
+      ...packs.coerceAnswerIndices(value),
+      id: `${skill}-${pack.packId}-${Math.random().toString(36).slice(2)}`,
+      testingPart: part,
+      difficulty: pack.cefr,
+      createdAt: new Date().toISOString(),
+    }))
+    for (const payload of data) definition?.validate?.(payload, definition.runtime)
+    return { data, error: null }
+  }
   console.log(`provider=${config.provider} model=${config.model} effort=${config.reasoningEffort ?? 'n/a'} n=${N}\n`)
 
   for (const { skill, part } of GENERATORS) {
@@ -198,12 +237,15 @@ async function runEval() {
       ? { difficulty: 'A2', part, prompt }
       : { difficulty: 'A2', prompts: [{ part, prompt }] }
     const method = { reading: 'generateReading', listening: 'generateListening', speaking: 'generateSpeaking', writing: 'generateWriting' }[skill]
+    const onGenericPath = typeof runner?.[method] !== 'function'
 
     for (let i = 0; i < N; i += 1) {
       const started = Date.now()
       let row = { skill, part, sample: i + 1, ok: false, problems: [], ms: 0, error: null }
       try {
-        const res = await runner[method](body, complete)
+        const res = onGenericPath
+          ? await generic(skill, part, complete)
+          : await runner[method](body, complete)
         row.ms = Date.now() - started
         if (res.error) row.error = res.error
         else if (!Array.isArray(res.data) || res.data.length === 0) row.error = 'empty data'

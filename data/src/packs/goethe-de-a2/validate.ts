@@ -1,0 +1,85 @@
+// Per-part checks on a generated payload, beyond what the projected view can express.
+//
+// `validateView` only sees the projection, so anything the projection discards or
+// synthesises is invisible to it: the Goethe adapter coerces missing values into
+// strings and builds `fields`/`segments` from the part rules, which makes those
+// checks tautological. These guards assert the payload itself.
+
+const READING_TEXT_TYPES = [
+  'email',
+  'notice',
+  'article',
+  'advertisement',
+  'instructions',
+  'announcement',
+  'list',
+] as const
+
+const READING_QUESTION_TYPES = [
+  'comprehension',
+  'vocabulary',
+  'grammar',
+  'inference',
+  'selective',
+  'matching',
+] as const
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function fail(message: string): never {
+  throw new Error(`Generated exercise is invalid: ${message}`)
+}
+
+function requireString(value: unknown, field: string): void {
+  if (typeof value !== 'string' || !value.trim()) fail(`${field} must be a non-empty string`)
+}
+
+function requireStringArray(value: unknown, field: string): void {
+  if (!Array.isArray(value) || value.some(item => typeof item !== 'string'))
+    fail(`${field} must be an array of strings`)
+}
+
+/**
+ * Coerce a numeric answer index written as a string.
+ *
+ * Models routinely return `"2"` instead of `2`. The legacy normaliser accepted and
+ * coerced it; `validateView` rejects it outright, so coerce before validating or the
+ * generic path is stricter than the path it replaces.
+ */
+export function coerceAnswerIndices(payload: Record<string, unknown>): Record<string, unknown> {
+  const rows = payload['questions'] ?? payload['items']
+  if (!Array.isArray(rows)) return payload
+  const coerced = rows.map(row => {
+    if (!isRecord(row)) return row
+    const answer = row['correctAnswer']
+    if (typeof answer !== 'string') return row
+    const parsed = Number(answer)
+    return Number.isInteger(parsed) ? { ...row, correctAnswer: parsed } : row
+  })
+  return payload['questions'] ? { ...payload, questions: coerced } : { ...payload, items: coerced }
+}
+
+/** Reading: text metadata and per-question shape the projection drops. */
+export function validateReading(payload: Record<string, unknown>): void {
+  requireString(payload['title'], 'title')
+  requireString(payload['content'], 'content')
+  if (!READING_TEXT_TYPES.includes(payload['textType'] as (typeof READING_TEXT_TYPES)[number]))
+    fail(`textType must be one of ${READING_TEXT_TYPES.join(', ')}`)
+  if (typeof payload['estimatedReadingTime'] !== 'number') fail('estimatedReadingTime must be a number')
+  if (typeof payload['wordCount'] !== 'number') fail('wordCount must be a number')
+  requireStringArray(payload['topics'], 'topics')
+
+  const questions = payload['questions']
+  if (!Array.isArray(questions)) fail('questions must be an array')
+  for (const [index, row] of questions.entries()) {
+    const at = `questions[${index}]`
+    if (!isRecord(row)) fail(`${at} must be an object`)
+    requireString(row['question'], `${at}.question`)
+    requireString(row['explanation'], `${at}.explanation`)
+    requireStringArray(row['options'], `${at}.options`)
+    if (!READING_QUESTION_TYPES.includes(row['type'] as (typeof READING_QUESTION_TYPES)[number]))
+      fail(`${at}.type must be one of ${READING_QUESTION_TYPES.join(', ')}`)
+  }
+}

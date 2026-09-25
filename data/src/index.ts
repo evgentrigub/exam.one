@@ -35,5 +35,6 @@ export type {
 } from './types'
 
 export * from './runtime'
+export { coerceAnswerIndices } from './packs/goethe-de-a2/validate'
 export { validatePacks } from './validation'
 export * from './packs/goethe-de-a2/content'

@@ -19,6 +19,12 @@ export interface ExamPart {
   itemFormat: ItemFormat
   runtime?: PartRuntime
   adapter?: ExerciseAdapter
+  /**
+   * Assert anything about a generated payload that the projected view cannot express.
+   * `validateView` only sees the projection, so shape rules a pack depends on — exact
+   * item counts, per-item transcripts, required metadata — belong here. Throw to reject.
+   */
+  validate?(payload: Record<string, unknown>, rules: PartRuntime): void
   available?: boolean
   /** Short label shown in the existing exercise chrome, such as "Teil 1". */
   practiceLabel?: string
@@ -50,6 +56,12 @@ export interface PromptSpecFields {
   examples?: readonly string[]
   outputPrelude?: string
   outputContract: string
+  /**
+   * Provider settings for this prompt. A long generator needs a high `maxTokens`
+   * or the response is truncated and cannot be parsed. Note that `temperature`
+   * is ignored by OpenAI reasoning models, which take `reasoning_effort` instead.
+   */
+  llm?: { temperature?: number; maxTokens?: number }
 }
 
 export interface PromptSpec extends PromptSpecFields {
@@ -82,6 +94,22 @@ export interface ExamPack {
   speech: SpeechConfig
   createMockSet?: (setNumber: number, content: MockExamContent) => MockExamSet
   bundledMockSet?: MockExamSet
+  /**
+   * Build the prompt variables an `answer` or `review` prompt needs, from the stored
+   * exercise payload and the learner's submission.
+   *
+   * Without this a pack may only use `{task}`, `{userContent}` and `{outputLanguage}`.
+   * Any other placeholder is passed through to the model as literal text, so a prompt
+   * that expects, say, `{monologue}` would be graded with the token still in it.
+   */
+  buildReviewVars?(input: {
+    skill: SkillId
+    part: number
+    kind: 'answer' | 'review'
+    payload: Record<string, unknown>
+    answers: Record<string, unknown>
+    outputLanguage: string
+  }): PromptVars
   compatibilityAi?: CompatibilityAi
 }
 
@@ -100,15 +128,21 @@ export interface AiResult {
   error: string | null
 }
 
+/**
+ * Legacy per-skill AI runners, retired one module at a time.
+ *
+ * Every member is optional: a pack drops an entry once that module runs on the generic
+ * prompt path, and the service falls through to `generate()` / `respond()` for it.
+ */
 export interface CompatibilityAi {
-  generateReading(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateListening(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateSpeaking(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateWriting(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateModelAnswer(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  reviewWriting(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  reviewSpeaking(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
-  reviewMockExam(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
+  generateReading?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateListening?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateSpeaking?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateWriting?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  generateModelAnswer?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  reviewWriting?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
+  reviewSpeaking?(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
+  reviewMockExam?(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
 }
 
 export const DEFAULT_PACK_ID = 'goethe-de-a2'

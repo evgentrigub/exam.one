@@ -1,6 +1,7 @@
 import { defineAdapter, record, type ExerciseView, type PartRuntime } from '../../runtime'
 import type { ExamModule } from '../../types'
 import { isValidA2Review, isSpeakingReviewData } from './compatibility/review'
+import { validateReading } from './validate'
 
 /** Compatibility projection: the original seed JSON and session components remain valid. */
 export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
@@ -126,7 +127,8 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
         )
           throw new Error('Invalid saved speaking rubric or total')
       }
-      return { ...part, runtime: rules, adapter }
+      const validate = module.id === 'reading' ? validateReading : undefined
+      return { ...part, runtime: rules, adapter, ...(validate ? { validate } : {}) }
     }),
   }))
 }
