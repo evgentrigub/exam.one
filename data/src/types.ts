@@ -110,6 +110,11 @@ export interface ExamPack {
     answers: Record<string, unknown>
     outputLanguage: string
   }): PromptVars
+  /**
+   * Id for a newly generated exercise, when the pack needs a particular shape.
+   * Return `undefined` to take the generic `<skill>-<packId>-<uuid>` id.
+   */
+  exerciseId?(skill: SkillId, part: number): string | undefined
   compatibilityAi?: CompatibilityAi
 }
 

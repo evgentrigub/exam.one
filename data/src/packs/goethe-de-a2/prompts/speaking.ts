@@ -7,6 +7,7 @@ export const speakingPrompts: PromptSpec[] = [
     skill: 'speaking',
     part: 1,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 2000 },
     role: AUTHOR_ROLE,
     task: 'Task: generate {count} independent exercises for the Sprechen A2 part: Teil 1 (Gespräch zur Kontaktaufnahme).',
     rules: [
@@ -29,6 +30,7 @@ export const speakingPrompts: PromptSpec[] = [
     skill: 'speaking',
     part: 2,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 2000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the spoken Sprechen A2 part: Teil 2 (Über sich sprechen).',
     rules: [

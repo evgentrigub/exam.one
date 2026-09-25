@@ -83,3 +83,56 @@ export function validateReading(payload: Record<string, unknown>): void {
       fail(`${at}.type must be one of ${READING_QUESTION_TYPES.join(', ')}`)
   }
 }
+
+/** Exactly five rows, which is the fixed Goethe A2 shape for every listening Teil. */
+function requireFive(value: unknown, field: string): unknown[] {
+  if (!Array.isArray(value) || value.length !== 5) fail(`${field} must contain exactly 5 entries`)
+  return value as unknown[]
+}
+
+/**
+ * Listening: contexts, transcripts and per-Teil item shape.
+ *
+ * `validateView` already covers the item count, the per-Teil option count and the answer
+ * range, but it never sees a transcript — the projection carries it only as optional extra
+ * data. A transcript-less exercise therefore validates, stores, and can never have audio
+ * synthesised for it, because `collectListeningAudioSegments` skips empty transcripts.
+ */
+export function validateListening(payload: Record<string, unknown>): void {
+  requireString(payload['title'], 'title')
+  const part = payload['testingPart']
+
+  // Teil 1 and 3 are five independent recordings: the transcript hangs off each item.
+  if (part === 1 || part === 3) {
+    for (const [index, row] of requireFive(payload['items'], 'items').entries()) {
+      const at = `items[${index}]`
+      if (!isRecord(row)) fail(`${at} must be an object`)
+      if (part === 1) requireString(row['context'], `${at}.context`)
+      requireString(row['transcript'], `${at}.transcript`)
+      requireString(row['question'], `${at}.question`)
+      requireString(row['explanation'], `${at}.explanation`)
+    }
+    return
+  }
+
+  // Teil 2 and 4 are one recording with five questions against it.
+  requireString(payload['context'], 'context')
+  requireString(payload['transcript'], 'transcript')
+  if (part === 2) {
+    if (!Array.isArray(payload['options']) || payload['options'].length !== 9)
+      fail('options must contain exactly 9 entries')
+    requireStringArray(payload['options'], 'options')
+  }
+  for (const [index, row] of requireFive(payload['questions'], 'questions').entries()) {
+    const at = `questions[${index}]`
+    if (!isRecord(row)) fail(`${at} must be an object`)
+    requireString(row['explanation'], `${at}.explanation`)
+    if (part === 2) {
+      requireString(row['person'], `${at}.person`)
+      continue
+    }
+    requireString(row['statement'], `${at}.statement`)
+    if (typeof row['correctAnswer'] !== 'boolean') fail(`${at}.correctAnswer must be a boolean`)
+    if (row['type'] !== 'true_false') fail(`${at}.type must be "true_false"`)
+  }
+}

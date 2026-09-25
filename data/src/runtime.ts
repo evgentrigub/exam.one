@@ -315,3 +315,27 @@ function reviewExtras(review: Record<string, unknown>): Partial<CriterionReview>
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
+
+/**
+ * Give every generated question or item a stable id.
+ *
+ * Models are told not to emit ids, and the projected view needs unique ones:
+ * `validateView` rejects duplicates, and generated listening audio is keyed by
+ * question id, so without this per-item audio never attaches.
+ */
+export function withQuestionIds(payload: Record<string, unknown>): Record<string, unknown> {
+  const id = String(payload['id'])
+  const stamp = (rows: unknown, prefix: string): unknown =>
+    Array.isArray(rows)
+      ? rows.map((row, index) =>
+          row && typeof row === 'object' && !Array.isArray(row)
+            ? { id: `${id}-${prefix}${index + 1}`, ...(row as Record<string, unknown>) }
+            : row
+        )
+      : rows
+  return {
+    ...payload,
+    ...(payload['items'] ? { items: stamp(payload['items'], 'i') } : {}),
+    ...(payload['questions'] ? { questions: stamp(payload['questions'], 'q') } : {}),
+  }
+}

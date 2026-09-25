@@ -75,6 +75,7 @@ export const writingPrompts: PromptSpec[] = [
     skill: 'writing',
     part: 1,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 2500 },
     role: AUTHOR_ROLE,
     task: 'Task: generate {count} independent exercises for the Schreiben A2 part: Teil 1 (Kurznachricht / SMS). Write ALL exercise instructions in GERMAN. No model answers — only the task prompts themselves.',
     rules: [
@@ -115,6 +116,7 @@ Schreiben Sie zu allen drei Punkten.`,
     skill: 'writing',
     part: 2,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 2500 },
     role: AUTHOR_ROLE,
     task: 'Task: generate {count} independent exercises for the Schreiben A2 part: Teil 2 (E-Mail). Write ALL exercise instructions in GERMAN. No model answers — only the task prompts themselves.',
     rules: [

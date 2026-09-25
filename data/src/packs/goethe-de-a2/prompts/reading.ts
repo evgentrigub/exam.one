@@ -9,6 +9,7 @@ export const readingPrompts: PromptSpec[] = [
     skill: 'reading',
     part: 1,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the Lesen A2 module: Teil 1 (Informationen in Medientexten verstehen).',
     rules: [
@@ -56,6 +57,7 @@ Generate {count} new texts (different topics) as JSON.`,
     skill: 'reading',
     part: 2,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the Lesen A2 module: Teil 2 (Informationstafeln, Veranstaltungsprogramme etc. verstehen).',
     rules: [
@@ -102,6 +104,7 @@ Generate {count} new list-style texts (different topics: TV schedule, festival p
     skill: 'reading',
     part: 3,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the Lesen A2 module: Teil 3 (Korrespondenz lesen und verstehen).',
     rules: [
@@ -149,6 +152,7 @@ Generate {count} new letters (different topics: a holiday, a house move, a new j
     skill: 'reading',
     part: 4,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the Lesen A2 module: Teil 4 (Anzeigen verstehen / Zuordnung).',
     rules: [

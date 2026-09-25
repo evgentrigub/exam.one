@@ -7,6 +7,7 @@ export const listeningPrompts: PromptSpec[] = [
     skill: 'listening',
     part: 1,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercise sets for the Hören A2 module: Teil 1 (Informationen im Radio, auf dem Anrufbeantworter, bei Durchsagen verstehen).',
     rules: [
@@ -51,6 +52,7 @@ Generate {count} new sets of 5 situations as JSON. Use a different topic for eac
     skill: 'listening',
     part: 2,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the Hören A2 module: Teil 2 (Ein zusammenhängendes Gespräch verstehen).',
     rules: [
@@ -97,6 +99,7 @@ Generate {count} new exercises as JSON. Dialogue topics: choosing presents, who 
     skill: 'listening',
     part: 3,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercise sets for the Hören A2 module: Teil 3 (Einzelgespräche verstehen).',
     rules: [
@@ -139,6 +142,7 @@ Generate {count} new sets of 5 dialogues as JSON. Use a different topic for each
     skill: 'listening',
     part: 4,
     kind: 'generator',
+    llm: { temperature: 0.8, maxTokens: 4000 },
     role: AUTHOR_ROLE,
     task: 'Your task: generate {count} unique exercises for the Hören A2 module: Teil 4 (Ein Radiointerview verstehen).',
     rules: [

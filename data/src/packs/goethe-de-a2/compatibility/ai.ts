@@ -350,7 +350,6 @@ export async function reviewMockExam(
  * member that is absent. Reading now runs on the generic path.
  */
 export const goetheCompatibilityAi = {
-  generateListening,
   generateSpeaking,
   generateWriting,
   generateModelAnswer,

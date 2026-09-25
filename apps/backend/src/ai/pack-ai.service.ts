@@ -7,6 +7,7 @@ import {
   record,
   validateView,
   validateReview,
+  withQuestionIds,
   coerceAnswerIndices,
   type LlmComplete,
   type SkillId,
@@ -16,30 +17,6 @@ import type { AiResponse } from '@exam-one/contracts'
 import { packContext } from '../core/interceptors/pack-context.interceptor'
 import { LlmService } from './llm.service'
 import { extractJsonArray } from './json'
-
-/**
- * Give every generated question or item a stable id.
- *
- * Models are told not to emit ids, and the projected view needs unique ones:
- * `validateView` rejects duplicates, and generated listening audio is keyed by
- * question id, so without this per-item audio never attaches.
- */
-function withQuestionIds(payload: Record<string, unknown>): Record<string, unknown> {
-  const id = String(payload['id'])
-  const stamp = (rows: unknown, prefix: string): unknown =>
-    Array.isArray(rows)
-      ? rows.map((row, index) =>
-          row && typeof row === 'object' && !Array.isArray(row)
-            ? { id: `${id}-${prefix}${index + 1}`, ...(row as Record<string, unknown>) }
-            : row
-        )
-      : rows
-  return {
-    ...payload,
-    ...(payload['items'] ? { items: stamp(payload['items'], 'i') } : {}),
-    ...(payload['questions'] ? { questions: stamp(payload['questions'], 'q') } : {}),
-  }
-}
 
 /** How many exercises to generate in one call. The writing screen asks for several. */
 function count(body: Record<string, unknown>): number {
@@ -213,7 +190,7 @@ export class PackAiService {
           parsed = extractJsonArray(await this.llm.complete([{ role: 'user', content }], spec.llm))
         if (!parsed?.length) throw new Error('The provider did not return an exercise array')
         for (const value of parsed) {
-          const id = `${skill}-${pack.packId}-${randomUUID()}`
+          const id = pack.exerciseId?.(skill, n) ?? `${skill}-${pack.packId}-${randomUUID()}`
           const payload = withQuestionIds({
             ...coerceAnswerIndices(record(value)),
             id,
