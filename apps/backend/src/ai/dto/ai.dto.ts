@@ -192,32 +192,23 @@ export class ReviewWritingDto {
 }
 
 export class ReviewSpeakingDto {
-  @ApiPropertyOptional({
+  // `topic` and `answers` are required: the server assembles the rubric prompt from them, so
+  // a request without them would grade an empty submission and return a confident score.
+  @ApiProperty({
     description: 'Speaking card or topic payload',
     type: Object,
     example: { testingPart: 2, topic: 'Wohnen', card: 'Wohnort' },
   })
-  @IsOptional()
   @IsObject()
-  topic?: Record<string, unknown>
-
-  @ApiPropertyOptional({
-    description: 'Transcribed user speech answers dictionary',
-    type: Object,
-    example: { transcript: 'Ich wohne in Berlin seit zwei Jahren.' },
-  })
-  @IsOptional()
-  @IsObject()
-  answers?: Record<string, unknown>
+  topic!: Record<string, unknown>
 
   @ApiProperty({
-    description: 'Prompt specification with evaluation rubric',
-    example: 'Grade this spoken response against Goethe A2 speaking criteria...',
-    minLength: 1,
+    description: 'Transcribed user speech, keyed by segment id',
+    type: Object,
+    example: { monologue: 'Ich wohne in Berlin seit zwei Jahren.' },
   })
-  @IsString()
-  @MinLength(1)
-  prompt!: string
+  @IsObject()
+  answers!: Record<string, unknown>
 
   @ApiPropertyOptional({
     description: 'Language for the feedback text. Defaults to English when omitted.',
@@ -231,11 +222,14 @@ export class ReviewSpeakingDto {
 
 export class ReviewMockExamDto {
   @ApiProperty({
-    description: 'Prompt containing complete multi-module mock exam results and aggregated scoring prompt',
-    example: 'Produce an aggregate overview of the candidates performance across all 4 modules...',
-    minLength: 1,
+    description: 'Completed mock exam result: overall points plus per-module scores and responses',
+    type: Object,
   })
+  @IsObject()
+  result!: Record<string, unknown>
+
+  @ApiPropertyOptional({ description: 'Language for the generated overview', example: 'de' })
+  @IsOptional()
   @IsString()
-  @MinLength(1)
-  prompt!: string
+  outputLanguage?: string
 }

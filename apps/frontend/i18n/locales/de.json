@@ -637,7 +637,11 @@
     "strengths": "Stärken",
     "improvements": "Verbesserungsschwerpunkte",
     "noStrengths": "Es wurden keine konkreten Stärken ausgegeben.",
-    "noImprovements": "Es wurden keine konkreten Verbesserungen ausgegeben."
+    "noImprovements": "Es wurden keine konkreten Verbesserungen ausgegeben.",
+    "answers": "Antworten",
+    "questions": "Fragen stellen",
+    "taskCompletion": "Aufgabenerfüllung",
+    "language": "Sprachliche Realisierung"
   },
   "mockExam": {
     "title": "Modellprüfungen",

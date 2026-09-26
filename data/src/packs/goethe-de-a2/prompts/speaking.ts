@@ -18,9 +18,11 @@ export const speakingPrompts: PromptSpec[] = [
       '4. All questions must be short, natural, at CEFR A2 and use Du-Form. The two lists must not repeat each other.',
       '5. answerQuestions: partner questions the learner can answer in 1–2 full sentences.',
       '6. askQuestions: questions the learner has to say aloud clearly and grammatically correctly.',
+      '7. topicType: always the exact string "interview".',
     ],
     outputPrelude: `OUTPUT FORMAT: a valid JSON array matching the SpeakingTopicA2Teil1 interface. ${JSON_ONLY}`,
     outputContract: `{
+  "topicType": "interview",
   "theme": "Fragen zur Person",
   "answerQuestions": ["Wie heißt du?", "Woher kommst du?", "Wo wohnst du jetzt?", "Welche Sprachen sprichst du?"],
   "askQuestions": ["Wie alt bist du?", "Was machst du beruflich?", "Hast du Geschwister?", "Was ist dein Lieblingsessen?"]
@@ -38,9 +40,11 @@ export const speakingPrompts: PromptSpec[] = [
       '1. Format: for each exercise generate one main theme question (theme) and exactly 4 prompt words (keywords).',
       '2. Themes (theme): the main question must concern the candidate\'s own life. Possible topics: family, housing, daily routine, weekends, holidays, shopping, hobbies, work or study.',
       '3. Prompt words (keywords): 4 short words or mini-questions that help the learner build a monologue (for example "Sport?", "mit wem?", "Sonntagabend?", "lange schlafen?").',
+      '4. topicType: always the exact string "monologue".',
     ],
     outputPrelude: `OUTPUT FORMAT: a valid JSON array matching the SpeakingTopicA2Teil2 interface. ${JSON_ONLY}`,
     outputContract: `{
+  "topicType": "monologue",
   "theme": "Was machen Sie in Ihrer Freizeit?",
   "keywords": ["Sich ausruhen?", "Sport?", "Ausgehen?", "Mit wem?"]
 }`,
@@ -121,11 +125,10 @@ Transcript of the questions asked:
       'A maximum of 4 raw points.',
       'answers, Label "Answers", 0–2 points: all four questions answered intelligibly in simple full A2 sentences.',
       'questions, Label "Questions", 0–2 points: all four questions recognisable, intelligible and grammatically formed as questions.',
-      'Set teil = 1, maxPoints = 4 and return exactly the two criteria answers and questions, each with maxPoints 2. totalPoints is their sum.',
+      'Set maxPoints = 4 and return exactly the two criteria answers and questions, each with maxPoints 2. totalPoints is their sum.',
       'All points are integers within their own maximum. No Markdown and no text outside the JSON object.',
     ],
     outputContract: `{
-  "teil": 1,
   "totalPoints": 0,
   "maxPoints": 4,
   "criteria": [
@@ -157,11 +160,10 @@ STT transcript:
       'A maximum of 8 raw points.',
       'taskCompletion, Label "Task completion", 0–4 points: coverage of the four prompt points, intelligibility and a reasonably connected monologue.',
       'language, Label "Language", 0–4 points: appropriate A2 vocabulary, simple grammatical structures and connectors (und, aber, deshalb). Minor spoken errors are acceptable as long as the utterance stays intelligible.',
-      'Set teil = 2, maxPoints = 8 and return exactly the two criteria taskCompletion and language, each with maxPoints 4. totalPoints is their sum.',
+      'Set maxPoints = 8 and return exactly the two criteria taskCompletion and language, each with maxPoints 4. totalPoints is their sum.',
       'All points are integers. No Markdown and no text outside the JSON object.',
     ],
     outputContract: `{
-  "teil": 2,
   "totalPoints": 0,
   "maxPoints": 8,
   "criteria": [

@@ -637,7 +637,11 @@
     "strengths": "Strengths",
     "improvements": "Areas to improve",
     "noStrengths": "No specific strengths were returned.",
-    "noImprovements": "No specific improvements were returned."
+    "noImprovements": "No specific improvements were returned.",
+    "answers": "Answers",
+    "questions": "Questions",
+    "taskCompletion": "Task completion",
+    "language": "Language"
   },
   "mockExam": {
     "title": "Mock exams",

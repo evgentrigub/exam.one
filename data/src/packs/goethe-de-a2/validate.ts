@@ -166,3 +166,32 @@ export function validateWriting(payload: Record<string, unknown>): void {
   if (typeof wordCount['min'] !== 'number' || typeof wordCount['max'] !== 'number')
     fail('wordCount must have numeric min and max')
 }
+
+/** Every speaking card list is exactly four non-empty prompts; the UI is built around it. */
+function requireFourCards(value: unknown, field: string): void {
+  if (!Array.isArray(value) || value.length !== 4)
+    fail(`${field} must contain exactly 4 entries`)
+  ;(value as unknown[]).forEach((item, index) => requireString(item, `${field}[${index}]`))
+}
+
+/**
+ * Speaking: theme, card lists and the topic type.
+ *
+ * `validateView` is tautological here for the same reason as writing — the adapter builds
+ * `view.segments` from the part rules and `validateView` compares them straight back. It
+ * also never sees `topicType`, which is display-only but load-bearing: the session header
+ * renders "Interview" or "Monologue" from it, so a missing value mislabels a Teil 1 card.
+ */
+export function validateSpeaking(payload: Record<string, unknown>): void {
+  requireString(payload['theme'], 'theme')
+  const part = payload['testingPart']
+  const expected = part === 1 ? 'interview' : 'monologue'
+  if (payload['topicType'] !== expected) fail(`topicType must be "${expected}" for Teil ${part}`)
+
+  if (part === 1) {
+    requireFourCards(payload['answerQuestions'], 'answerQuestions')
+    requireFourCards(payload['askQuestions'], 'askQuestions')
+    return
+  }
+  requireFourCards(payload['keywords'], 'keywords')
+}

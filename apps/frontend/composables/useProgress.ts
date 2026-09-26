@@ -1,7 +1,8 @@
 import { onPackReset, packEpoch } from '~/utils/packScope'
 import type { AttemptDto, DraftDto, Skill } from '@exam-one/contracts'
 import type { WritingSubmission, WritingFeedbackModel } from '~/utils/types'
-import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
+import type { CriterionReview } from '@exam-one/exam-packs'
+import type { SpeakingTranscripts } from '~/utils/exercises/speaking'
 import { apiFetch } from '~/composables/useApi'
 
 interface QuizProgress {
@@ -59,7 +60,7 @@ export interface SpeakingAttempt {
   durationSec: number
   transcript?: string
   transcripts?: SpeakingTranscripts
-  review?: SpeakingReviewData
+  review?: CriterionReview
   selfScore?: number
   submittedAt: string
 }
@@ -190,9 +191,9 @@ function speakingFromAttempts(rows: AttemptDto[]): Record<string, SpeakingProgre
         ? { transcripts: answers['transcripts'] as unknown as SpeakingTranscripts }
         : {}),
       ...(isRecord(reviewSource['review'])
-        ? { review: reviewSource['review'] as unknown as SpeakingReviewData }
+        ? { review: reviewSource['review'] as unknown as CriterionReview }
         : isRecord(answers['review'])
-          ? { review: answers['review'] as unknown as SpeakingReviewData }
+          ? { review: answers['review'] as unknown as CriterionReview }
           : {}),
       ...(typeof answers['selfScore'] === 'number' ? { selfScore: answers['selfScore'] } : {}),
     }
@@ -583,7 +584,7 @@ export const useProgress = () => {
       durationSec: number
       transcript?: string
       transcripts?: SpeakingTranscripts
-      review?: SpeakingReviewData
+      review?: CriterionReview
       selfScore?: number
     }
   ) => {

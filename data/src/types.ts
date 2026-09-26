@@ -115,7 +115,18 @@ export interface ExamPack {
    * Return `undefined` to take the generic `<skill>-<packId>-<uuid>` id.
    */
   exerciseId?(skill: SkillId, part: number): string | undefined
-  compatibilityAi?: CompatibilityAi
+  /**
+   * Cross-module review, such as a mock-exam overview, which has no skill or part and so
+   * cannot be reached through `findPrompt`. Absent, the endpoint reports it unavailable.
+   */
+  mockOverview?: {
+    llm?: { temperature?: number; maxTokens?: number }
+    system: string
+    /** `result` is the pack's own input shape; the service passes the request body through. */
+    assemble(outputLanguage: string, result: unknown): string
+    /** Narrow and trim the model's JSON, or return null to report it unreadable. */
+    parse(value: unknown): unknown
+  }
 }
 
 export interface LlmMessage {
@@ -127,27 +138,5 @@ export type LlmComplete = (
   messages: LlmMessage[],
   options?: { temperature?: number; maxTokens?: number }
 ) => Promise<string>
-
-export interface AiResult {
-  data: unknown
-  error: string | null
-}
-
-/**
- * Legacy per-skill AI runners, retired one module at a time.
- *
- * Every member is optional: a pack drops an entry once that module runs on the generic
- * prompt path, and the service falls through to `generate()` / `respond()` for it.
- */
-export interface CompatibilityAi {
-  generateReading?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateListening?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateSpeaking?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateWriting?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  generateModelAnswer?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  reviewWriting?(body: Record<string, unknown>, complete: LlmComplete): Promise<AiResult>
-  reviewSpeaking?(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
-  reviewMockExam?(body: Record<string, unknown>, configured: boolean, complete: LlmComplete): Promise<AiResult>
-}
 
 export const DEFAULT_PACK_ID = 'goethe-de-a2'

@@ -7,6 +7,4 @@ export type {
   SpeakingTopicA2Teil2,
   SpeakingA2Topic,
   SpeakingTranscripts,
-  SpeakingReviewCriterion,
-  SpeakingReviewData,
 } from '@exam-one/exam-packs'

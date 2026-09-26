@@ -6,8 +6,12 @@ import {
   type PartRuntime,
 } from '../../runtime'
 import type { ExamModule } from '../../types'
-import { isSpeakingReviewData } from './compatibility/review'
-import { validateListening, validateReading, validateWriting } from './validate'
+import {
+  validateListening,
+  validateReading,
+  validateSpeaking,
+  validateWriting,
+} from './validate'
 
 /** Compatibility projection: the original seed JSON and session components remain valid. */
 export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
@@ -130,13 +134,18 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
             }
           }
         }
-        if (
-          module.id === 'speaking' &&
-          review['review'] !== undefined &&
-          (!isSpeakingReviewData(review['review'], savedRules) || review['review'].teil !== n)
-        )
-          throw new Error('Invalid saved speaking rubric or total')
+        // Speaking rubrics are `CriterionReview` too. An older rubric still carrying `teil`
+        // validates unchanged: the extra key is ignored, and the numbers it used to be
+        // checked against are the ones `validateReview` checks.
+        if (module.id === 'speaking' && review['review'] !== undefined) {
+          try {
+            validateReview(review['review'], savedRules)
+          } catch {
+            throw new Error('Invalid saved speaking rubric or total')
+          }
+        }
       }
+      // Every module now carries a payload guard; `validateView` only sees the projection.
       const validate =
         module.id === 'reading'
           ? validateReading
@@ -144,8 +153,8 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
             ? validateListening
             : module.id === 'writing'
               ? validateWriting
-              : undefined
-      return { ...part, runtime: rules, adapter, ...(validate ? { validate } : {}) }
+              : validateSpeaking
+      return { ...part, runtime: rules, adapter, validate }
     }),
   }))
 }

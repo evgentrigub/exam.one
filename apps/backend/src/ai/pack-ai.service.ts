@@ -53,29 +53,10 @@ export class PackAiService {
     body: Record<string, unknown>,
     parts: number[]
   ): Promise<AiResponse<unknown>> {
-    const runner = this.pack().compatibilityAi
-    const legacy =
-      skill === 'reading'
-        ? runner?.generateReading
-        : skill === 'listening'
-          ? runner?.generateListening
-          : skill === 'speaking'
-            ? runner?.generateSpeaking
-            : runner?.generateWriting
-    if (legacy) {
-      if (!this.configured()) return this.missingKey()
-      const result = await legacy.call(runner, body, this.complete)
-      return this.validateGenerated(skill, Promise.resolve(result))
-    }
     return this.generate(skill, parts, count(body))
   }
 
   async answerFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
-    const runner = this.pack().compatibilityAi
-    if (runner?.generateModelAnswer) {
-      if (!this.configured()) return this.missingKey()
-      return runner.generateModelAnswer(body, this.complete)
-    }
     const topic = (body['topic'] ?? {}) as Record<string, unknown>
     return this.respond(
       'writing',
@@ -88,11 +69,6 @@ export class PackAiService {
   }
 
   async reviewWritingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
-    const runner = this.pack().compatibilityAi
-    if (runner?.reviewWriting) {
-      if (!this.configured()) return this.missingKey()
-      return runner.reviewWriting(body, this.complete)
-    }
     const topic = (body['topic'] ?? {}) as Record<string, unknown>
     return this.respond(
       'writing',
@@ -105,8 +81,6 @@ export class PackAiService {
   }
 
   async reviewSpeakingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
-    const runner = this.pack().compatibilityAi
-    if (runner?.reviewSpeaking) return runner.reviewSpeaking(body, this.configured(), this.complete)
     const topic = body['topic'] as Record<string, unknown> | undefined
     return this.respond(
       'speaking',
@@ -119,13 +93,35 @@ export class PackAiService {
   }
 
   async reviewMockFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
-    if (!this.pack().createMockSet) {
+    const pack = this.pack()
+    if (!pack.createMockSet) {
       return { data: null, error: 'Mock exams are unavailable for this pack' }
     }
-    const runner = this.pack().compatibilityAi
-    if (runner?.reviewMockExam) return runner.reviewMockExam(body, this.configured(), this.complete)
-    if (!this.configured()) return this.missingKey()
-    return { data: null, error: 'Mock overview is unavailable for this pack' }
+    // Checked before dispatch: an unconfigured provider has always reported the missing key
+    // rather than the pack's own unavailability.
+    if (!this.configured()) {
+      return {
+        data: null,
+        error: 'AI overview is unavailable because no LLM API key is configured.',
+      }
+    }
+    const overview = pack.mockOverview
+    if (!overview) return { data: null, error: 'Mock overview is unavailable for this pack' }
+    try {
+      const raw = await this.llm.complete(
+        [
+          { role: 'system', content: overview.system },
+          { role: 'user', content: overview.assemble(language(body), body['result']) },
+        ],
+        overview.llm
+      )
+      const parsed = overview.parse(extractJsonObject(raw ?? ''))
+      return parsed
+        ? { data: parsed, error: null }
+        : { data: null, error: 'The AI overview response could not be read. Please try again.' }
+    } catch {
+      return { data: null, error: 'AI overview generation failed. Please try again.' }
+    }
   }
 
   partError(skill: SkillId, parts: number[]): string | null {
@@ -183,25 +179,31 @@ export class PackAiService {
         if (!part?.adapter || !part.runtime || !spec)
           throw new Error(`Unsupported ${skill} part ${n}`)
         const content = spec.assemble({ count })
-        // A model that returns unparseable text usually succeeds on a second attempt;
-        // one retry is what the exercise generators have always done.
-        let parsed = extractJsonArray(await this.llm.complete([{ role: 'user', content }], spec.llm))
-        if (!parsed?.length)
-          parsed = extractJsonArray(await this.llm.complete([{ role: 'user', content }], spec.llm))
-        if (!parsed?.length) throw new Error('The provider did not return an exercise array')
-        for (const value of parsed) {
-          const id = pack.exerciseId?.(skill, n) ?? `${skill}-${pack.packId}-${randomUUID()}`
-          const payload = withQuestionIds({
-            ...coerceAnswerIndices(record(value)),
-            id,
-            testingPart: n,
-            difficulty: pack.cefr,
-            createdAt: new Date().toISOString(),
+        // A model that returns unparseable output, or output that misses a field the pack
+        // requires, usually succeeds on a second attempt; one retry is what the exercise
+        // generators have always done. The retry covers validation too, because a prompt
+        // that asks for a fixed field is occasionally ignored and one bad draft should not
+        // fail the whole request.
+        const attempt = async (): Promise<Record<string, unknown>[]> => {
+          const parsed = extractJsonArray(
+            await this.llm.complete([{ role: 'user', content }], spec.llm)
+          )
+          if (!parsed?.length) throw new Error('The provider did not return an exercise array')
+          return parsed.map(value => {
+            const id = pack.exerciseId?.(skill, n) ?? `${skill}-${pack.packId}-${randomUUID()}`
+            const payload = withQuestionIds({
+              ...coerceAnswerIndices(record(value)),
+              id,
+              testingPart: n,
+              difficulty: pack.cefr,
+              createdAt: new Date().toISOString(),
+            })
+            part.validate?.(payload, part.runtime!)
+            validateView(part.adapter!.project(payload), part.runtime!)
+            return payload
           })
-          part.validate?.(payload, part.runtime)
-          validateView(part.adapter.project(payload), part.runtime)
-          output.push(payload)
         }
+        output.push(...(await attempt().catch(() => attempt())))
       }
       return { data: output, error: null }
     } catch (error) {

@@ -2,8 +2,8 @@
 //
 // Drives the 12 generator prompts through the real LLM and scores the output against the
 // same validators production uses, so a prompt rewrite can be compared before/after.
-// Needs no Nest, no database and no HTTP server: it talks to the compatibility runner and
-// the LLM adapter directly.
+// Needs no Nest, no database and no HTTP server: it mirrors PackAiService.generate() and
+// talks to the LLM adapter directly.
 //
 //   node scripts/eval-prompts.mjs --control          # free: score the bundled seeds only
 //   node scripts/eval-prompts.mjs --n 3 --out FILE   # real run, 3 samples per prompt
@@ -203,11 +203,9 @@ async function runEval() {
     return callLlm(config, messages, options)
   }
 
-  const runner = pack.compatibilityAi
   const results = []
 
-  // Mirrors PackAiService.generate() for modules that have left the legacy runner,
-  // so the eval exercises the same code path production uses.
+  // Mirrors PackAiService.generate() so the eval exercises the code path production uses.
   const generic = async (skill, part, complete) => {
     const spec = packs.findPrompt(pack, skill, part, 'generator')
     const definition = pack.structure
@@ -237,20 +235,12 @@ async function runEval() {
   for (const { skill, part } of GENERATORS) {
     const spec = packs.findPrompt(pack, skill, part, 'generator')
     if (!spec) { console.log(`  ${skill} ${part}: no generator prompt`); continue }
-    const prompt = spec.assemble({ count: 1 })
-    const body = skill === 'writing'
-      ? { difficulty: 'A2', part, prompt }
-      : { difficulty: 'A2', prompts: [{ part, prompt }] }
-    const method = { reading: 'generateReading', listening: 'generateListening', speaking: 'generateSpeaking', writing: 'generateWriting' }[skill]
-    const onGenericPath = typeof runner?.[method] !== 'function'
 
     for (let i = 0; i < N; i += 1) {
       const started = Date.now()
       let row = { skill, part, sample: i + 1, ok: false, problems: [], ms: 0, error: null }
       try {
-        const res = onGenericPath
-          ? await generic(skill, part, complete)
-          : await runner[method](body, complete)
+        const res = await generic(skill, part, complete)
         row.ms = Date.now() - started
         if (res.error) row.error = res.error
         else if (!Array.isArray(res.data) || res.data.length === 0) row.error = 'empty data'

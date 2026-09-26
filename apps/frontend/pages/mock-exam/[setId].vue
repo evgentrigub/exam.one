@@ -500,22 +500,20 @@ import ListeningSession from '~/components/listening/ListeningSession.vue'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
-import {
-  buildMockExamOverviewPrompt,
-  type CriterionReview,
-  type MockExamExerciseDefinition,
-  type MockExamModuleDefinition,
-  type MockExamOverview,
-  type MockExamOverviewInput,
-  type MockExamSet,
+import type {
+  CriterionReview,
+  MockExamExerciseDefinition,
+  MockExamModuleDefinition,
+  MockExamOverview,
+  MockExamOverviewInput,
+  MockExamSet,
 } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import type { WritingExercise } from '~/utils/types'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
-import type { SpeakingA2Topic, SpeakingReviewData } from '~/utils/exercises/speaking'
-import { speakingReviewVars } from '~/composables/useSpeakingReview'
+import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 
 type ViewName = 'overview' | 'part' | 'exercise' | 'result'
@@ -759,9 +757,7 @@ async function generateOverview(): Promise<void> {
   try {
     const response = await aiFetch<MockExamOverview>('/llm/review-mock-exam', {
       method: 'POST',
-      body: {
-        prompt: buildMockExamOverviewPrompt(reviewOutputLanguage.value, overviewInput()),
-      },
+      body: { result: overviewInput(), outputLanguage: reviewOutputLanguage.value },
     })
     if (response.error || !response.data)
       throw new Error(response.error || 'AI overview is unavailable.')
@@ -904,7 +900,12 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
       if (!prompt) throw new Error(`No writing review prompt is configured for part ${part}`)
       const review = await aiFetch<CriterionReview>('/llm/review', {
         method: 'POST',
-        body: { topic, userContent: response.content, prompt },
+        body: {
+          topic,
+          userContent: response.content,
+          prompt,
+          outputLanguage: reviewOutputLanguage.value,
+        },
       })
       if (review.error || !review.data) throw new Error(review.error || 'Writing grade unavailable.')
       // `totalPoints` is the same number `teil_points_mess` was: the criteria sum to
@@ -915,18 +916,13 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
 
     const topic = set.value.content.speaking.find(item => item.id === exerciseId)
     if (!topic || !response.transcripts) return
-    const speakingPrompt = assemble(
-      'speaking',
-      topic.testingPart,
-      'review',
-      speakingReviewVars(topic, response.transcripts, reviewOutputLanguage.value)
-    )
-    if (!speakingPrompt) {
-      throw new Error(`No speaking review prompt is configured for part ${topic.testingPart}`)
-    }
-    const review = await aiFetch<SpeakingReviewData>('/llm/review-speaking', {
+    const review = await aiFetch<CriterionReview>('/llm/review-speaking', {
       method: 'POST',
-      body: { prompt: speakingPrompt, topic, answers: response.transcripts },
+      body: {
+        topic,
+        answers: response.transcripts,
+        outputLanguage: reviewOutputLanguage.value,
+      },
     })
     if (review.error || !review.data) throw new Error(review.error || 'Speaking grade unavailable.')
     updateExerciseGrade('speaking', exerciseId, review.data.totalPoints, null, review.data)
