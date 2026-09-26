@@ -28,7 +28,7 @@ All payloads have a title and optional `text`. Objective formats support a share
 
 Rubrics use `criteria: [{id, label, maxPoints}]`, `maxPoints`, and optional `multiplier`. Objective weights must sum to the raw maximum. Rubric criteria must sum to their declared maximum. Scores may be fractional; percentages retain integer display rounding. A generated review returns `criteria` with points/comments, `totalPoints`, `maxPoints`, `summary`, `strengths`, and `improvements`. The API validates totals and derives scores, including configured zero-word rules. The synthetic fixture demonstrates a 3.5-point rubric.
 
-Registry startup rejects duplicate identities, unsupported formats, missing runtime/adapters/prompts, invalid part references, impossible counts/word bounds and inconsistent rubric totals. Error messages identify the pack and part. Existing Goethe JSON uses compatibility projections and review validation under `src/packs/goethe-de-a2/`; its practice raw scores and mock conversion remain distinct.
+Registry startup rejects duplicate identities, unsupported formats, missing runtime/adapters/prompts, invalid part references, impossible counts/word bounds and inconsistent rubric totals. Error messages identify the pack and part. Existing Goethe JSON is projected and its reviews validated by the adapter under `src/packs/goethe-de-a2/`; its practice raw scores and mock conversion remain distinct.
 
 ## Contributor workflow
 
@@ -43,7 +43,7 @@ See `src/testing/english-a1.ts` for a deliberately synthetic, unofficial English
 
 Frontend requests capture explicit `packId`; the transport sends `x-exam-pack` on the existing API paths. Requests without it resolve the user's active setting. Part-based requests must name a registered available part. Invalid or inactive identities cannot start practice, generation or grading. Catalogs, drafts, attempts, jobs, mock sets and generated audio are isolated by pack and user; exercise external IDs can repeat across packs.
 
-New attempts store a version-1 rendering/rubric snapshot. Historical review uses that snapshot and the stored pack, independent of the current selection. Version-0 compatibility snapshots preserve old payloads. Progress → Past exams uses owner-scoped attempt detail and supports inactive C1 history without retries or grading. Unattributable old records retain `legacy-history`, which is not selectable. Existing Goethe routes and seed IDs remain valid.
+New attempts store a version-1 rendering/rubric snapshot. Historical review uses that snapshot and the stored pack, independent of the current selection. Version-0 snapshots preserve old payloads for attempts whose exercise could not be projected. Progress → Past exams uses owner-scoped attempt detail and supports inactive C1 history without retries or grading. Unattributable old records retain `legacy-history`, which is not selectable. Existing Goethe routes and seed IDs remain valid.
 
 Mock definitions persist their own timing, replay, scoring and pass rules. A pack without a factory has an explicit unavailable mock state. Goethe's provisional speaking arithmetic is preserved. Prompt overrides remain unmounted; their unused database table is retained.
 

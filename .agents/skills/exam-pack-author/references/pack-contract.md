@@ -12,7 +12,7 @@ Read the current repository sources before authoring. Paths below are relative t
 | `data/src/validation.ts` | Registry configuration validation and its limits |
 | `data/src/registry.ts` | Existing identities, aliases, and registration |
 | `data/src/testing/english-a1.ts` | Original synthetic examples of all five formats; not a production registration |
-| `data/src/packs/goethe-de-a2/pack.ts` and its sibling files | Live exam structure and detailed prompt examples; includes Goethe-specific compatibility behavior |
+| `data/src/packs/goethe-de-a2/pack.ts` and its sibling files | Live exam structure and detailed prompt examples; the reference implementation of every optional pack slot |
 | `apps/backend/src/ai/pack-ai.service.ts` | Read-only reference for generic generation, prompt variables, and review processing |
 
 ## Identity and configuration
@@ -23,7 +23,7 @@ Modules use the existing IDs `reading`, `listening`, `writing`, and `speaking`. 
 
 Available parts need a runtime configuration and adapter. Configure positive practice minutes and raw `maxPoints`, plus applicable counts, matching reuse, replay limits, writing fields, recording segments, and rubric criteria. Criterion maxima sum to raw `maxPoints`. A multiplier is separate from the raw rubric; do not apply it twice. Module totals and durations should reflect the documented exam/practice scope, with any conversion explained in `scoringNote`.
 
-New packs normally omit `compatibility` and `createMockSet`. The Goethe compatibility flag routes to historical behavior and is not a template for new boards. Adding a pack does not install content into the database or supply a mock factory automatically.
+New packs normally omit `createMockSet`. The optional slots — `exerciseId`, `buildReviewVars`, `mockOverview` — exist for packs whose storage or review conventions need them; omit them and the generic path applies. Adding a pack does not install content into the database or supply a mock factory automatically.
 
 ## Generic payload conventions
 

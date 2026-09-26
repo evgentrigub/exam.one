@@ -23,7 +23,7 @@ Use individual requests as a manual API toolbox. Running the whole collection al
 - Set `answers` to a JSON object matching the exercise. Generic objective tasks use question IDs and zero-based option indices. Goethe objective practice uses `{"responses":{"question-id":0}}`. Generic writing and recording use configured field/segment IDs.
 - **Attempts → Create attempt** captures `attemptId`. The API creates the rendering/grading snapshot; clients do not submit one. **Get attempt detail** returns it with the answers and result.
 - `history=true` lists all packs for the chosen skill. The explicit C1 examples use `historyPackId=goethe-de-c1`; set `skill=WRITING` and copy an ID into `historyAttemptId`. Reads remain owner-scoped. New C1 practice, grading, and settings selection are unavailable.
-- Review endpoints require complete topic/answer context. Use `review` for a full returned criterion review when saving generic feedback; Goethe persistence retains its compatibility wrappers. Fractional scores are supported, and invalid totals are rejected.
+- Review endpoints require complete topic/answer context. Use `review` for a full returned criterion review when saving generic feedback; the writing and speaking screens persist their own wrappers around it, which the pack adapter unwraps. Fractional scores are supported, and invalid totals are rejected.
 
 JSON-object variables such as `answers`, `exercisePayload`, `review`, `generatedMockSet`, and `mockState` are inserted as raw JSON, without quotes. Initial `{}` values are templates to replace with actual data. Collection-level pre-request code JSON-escapes prompt and writing text variables, allowing multiline content safely.
 

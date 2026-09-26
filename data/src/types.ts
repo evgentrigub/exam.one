@@ -86,7 +86,6 @@ export interface ExamPack {
   language: string
   cefr: string
   title: string
-  compatibility?: 'goethe-a2-v1'
   live: boolean
   examIds: readonly string[]
   structure: ExamModule[]

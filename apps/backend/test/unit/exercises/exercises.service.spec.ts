@@ -18,6 +18,26 @@ function expectCode(
   expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
 }
 
+/**
+ * A payload the pack can project. The write-gate validates every created exercise now that
+ * the compatibility flag is gone, so a bare `{ id, title }` stub no longer reaches the store.
+ */
+function readingPayload(id: string, title = 'Seed') {
+  return {
+    id,
+    title,
+    content: 'Seed text',
+    testingPart: 1,
+    questions: Array.from({ length: 5 }, (_, index) => ({
+      id: `${id}-q${index + 1}`,
+      question: `Frage ${index + 1}`,
+      options: ['a', 'b', 'c'],
+      correctAnswer: 1,
+      explanation: 'Steht im Text.',
+    })),
+  }
+}
+
 describe('ExercisesService', () => {
   let service: ExercisesService
   let prisma: {
@@ -64,7 +84,7 @@ describe('ExercisesService', () => {
         id: 'row-1',
         skill: 'READING',
         externalId: 'reading-a2-teil1-001',
-        payload: { id: 'reading-a2-teil1-001', title: 'Seed' },
+        payload: readingPayload('reading-a2-teil1-001'),
       }),
     ])
 
@@ -80,13 +100,13 @@ describe('ExercisesService', () => {
         source: 'generated',
         visibility: 'PRACTICE',
         externalId: 'generated-1',
-        payload: { id: 'generated-1', title: 'New' },
+        payload: readingPayload('generated-1', 'New'),
         createdAt: new Date('2026-01-02'),
         userId: user.id,
       })
     )
 
-    const created = await service.create(user, 'READING', { id: 'generated-1', title: 'New' })
+    const created = await service.create(user, 'READING', readingPayload('generated-1', 'New'))
     expect(created.externalId).toBe('generated-1')
     expect(prisma.exercise.create).toHaveBeenCalled()
   })
@@ -132,20 +152,20 @@ describe('ExercisesService', () => {
       userId: user.id,
       source: 'generated',
       externalId: 'generated-1',
-      payload: { id: 'generated-1', title: 'Old' },
+      payload: readingPayload('generated-1', 'Old'),
     })
-    const updated = { ...existing, payload: { id: 'generated-1', title: 'New' } }
+    const updated = { ...existing, payload: readingPayload('generated-1', 'New') }
     prisma.exercise.findFirst.mockResolvedValue(existing)
     prisma.exercise.update.mockResolvedValue(updated)
 
-    const result = await service.create(user, 'READING', { id: 'generated-1', title: 'New' })
+    const result = await service.create(user, 'READING', readingPayload('generated-1', 'New'))
 
     expect(prisma.exercise.update).toHaveBeenCalledWith({
       where: { id: existing.id },
-      data: { payload: { id: 'generated-1', title: 'New' } },
+      data: { payload: readingPayload('generated-1', 'New') },
     })
     expect(prisma.exercise.create).not.toHaveBeenCalled()
-    expect(result.payload).toEqual({ id: 'generated-1', title: 'New' })
+    expect(result.payload).toEqual(readingPayload('generated-1', 'New'))
   })
 
   it('rejects create against a bundled seed id', async () => {
@@ -169,7 +189,7 @@ describe('ExercisesService', () => {
           userId: user.id,
           source: 'generated',
           externalId: 'gen-a',
-          payload: { id: 'gen-a' },
+          payload: readingPayload('gen-a'),
         })
       )
       .mockResolvedValueOnce(
@@ -178,11 +198,11 @@ describe('ExercisesService', () => {
           userId: user.id,
           source: 'generated',
           externalId: 'gen-b',
-          payload: { id: 'gen-b' },
+          payload: readingPayload('gen-b'),
         })
       )
 
-    const created = await service.createMany(user, 'READING', [{ id: 'gen-a' }, { id: 'gen-b' }])
+    const created = await service.createMany(user, 'READING', [readingPayload('gen-a'), readingPayload('gen-b')])
 
     expect(created.map(row => row.externalId)).toEqual(['gen-a', 'gen-b'])
     expect(prisma.exercise.create).toHaveBeenCalledTimes(2)

@@ -20,7 +20,6 @@ export const goetheDeA2: ExamPack = {
   cefr: 'A2',
   title: 'Goethe A2',
   live: true,
-  compatibility: 'goethe-a2-v1',
   examIds: ['goethe-de-a2', 'goethe-a2'],
   structure: attachGoetheRuntime(withPracticeCopy(goetheDeA2Structure)),
   prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts, ...speakingPrompts],

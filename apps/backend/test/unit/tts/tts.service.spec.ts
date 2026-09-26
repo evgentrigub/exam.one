@@ -2,6 +2,7 @@ import { Test, type TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
 import { TtsService } from '../../../src/speech/tts/tts.service'
 import * as adapter from '../../../src/speech/tts/tts.adapter'
+import { createHash } from 'node:crypto'
 import { containedAudioPath } from '../../../src/speech/tts/listening-audio'
 
 jest.mock('../../../src/speech/tts/tts.adapter', () => ({
@@ -53,12 +54,18 @@ describe('TtsService', () => {
     await expect(service.health()).resolves.toEqual({ data: { ok: false }, error: null })
   })
 
-  it('ignores invalid ids when deleting generated audio', async () => {
+  it('skips empty ids and cannot delete outside the audio root', async () => {
     const service = await createService()
-    await expect(service.deleteListeningAudio(['../etc/passwd', 'not-an-id'])).resolves.toEqual({
+    await expect(service.deleteListeningAudio(['', '   '.trim()])).resolves.toEqual({
       data: { deleted: 0 },
       error: null,
     })
+    // A traversal id is neutralised by hashing rather than rejected by pattern: whatever it
+    // resolves to still lives inside the configured root.
+    const digest = createHash('sha256')
+      .update(JSON.stringify(['goethe-de-a2', undefined, '../../etc/passwd']))
+      .digest('hex')
+    expect(containedAudioPath('/tmp/exam-one-audio', digest)).toContain('/tmp/exam-one-audio/')
   })
 
   it('returns a business error when TTS is offline', async () => {
@@ -70,7 +77,15 @@ describe('TtsService', () => {
         title: 'Teil 1',
         testingPart: 1,
         difficulty: 'A2',
-        items: [],
+        items: Array.from({ length: 5 }, (_, index) => ({
+          id: `listening-a2-part1-abc-i${index + 1}`,
+          context: 'c',
+          transcript: 'Hallo',
+          question: 'Q',
+          options: ['a', 'b', 'c'],
+          correctAnswer: 0,
+          explanation: 'e',
+        })),
       })
     ).resolves.toEqual({
       data: null,
@@ -78,23 +93,33 @@ describe('TtsService', () => {
     })
   })
 
-  it('rejects traversal exercise ids without synthesizing', async () => {
+  it('never lets an exercise id reach the audio path', async () => {
     checkTtsHealth.mockResolvedValue(true)
+    synthesizeListeningTranscript.mockResolvedValue(Buffer.from('RIFF'))
     const service = await createService()
-    await expect(
-      service.generateListeningAudio({
-        id: '../../tmp/x',
-        title: 'Teil 1',
-        testingPart: 1,
-        difficulty: 'A2',
-        items: [{ id: 'i1', transcript: 'Hallo' }],
-      })
-    ).resolves.toEqual({
-      data: null,
-      error: 'Exercise id is not a valid generated listening id.',
+    const response = await service.generateListeningAudio({
+      id: '../../tmp/x',
+      title: 'Teil 1',
+      testingPart: 1,
+      difficulty: 'A2',
+      items: Array.from({ length: 5 }, (_, index) => ({
+        id: `i${index + 1}`,
+        context: 'c',
+        transcript: 'Hallo',
+        question: 'Q',
+        options: ['a', 'b', 'c'],
+        correctAnswer: 0,
+        explanation: 'e',
+      })),
     })
-    expect(synthesizeListeningTranscript).not.toHaveBeenCalled()
-    expect(checkTtsHealth).not.toHaveBeenCalled()
+    // The id is hashed into the directory name, so traversal is impossible by construction
+    // rather than rejected by pattern: no emitted url may contain the raw id.
+    const urls = Object.values(response.data?.audio.items ?? {})
+    expect(urls.length).toBeGreaterThan(0)
+    for (const url of urls) {
+      expect(url).not.toContain('..')
+      expect(url).toMatch(/^\/audio\/listening\/generated\/[0-9a-f]{64}\/item-\d+\.wav$/)
+    }
   })
 
   it('keeps generated audio paths inside the configured root', () => {
