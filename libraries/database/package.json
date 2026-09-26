@@ -27,6 +27,7 @@
     "db:migrate": "PRISMA_HIDE_UPDATE_MESSAGE=1 DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate dev",
     "db:migrate:deploy": "PRISMA_HIDE_UPDATE_MESSAGE=1 DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} prisma migrate deploy",
     "db:seed": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} tsx prisma/seed.ts",
+    "db:prune": "DATABASE_URL=${DATABASE_URL:-postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public} tsx src/prune-cli.ts",
     "auth:set-password": "tsx scripts/set-password.ts"
   },
   "dependencies": {
