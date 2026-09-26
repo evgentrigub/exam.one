@@ -758,5 +758,19 @@
     "yourAnswer": "Deine Antwort",
     "true": "Richtig",
     "false": "Falsch"
+  },
+  "pastExams": {
+    "back": "Zurück zum Fortschritt",
+    "title": "Frühere Prüfungen",
+    "intro": "Gespeicherte Versuche aus allen Prüfungen. Frühere Versuche sind schreibgeschützt.",
+    "empty": "Noch keine gespeicherten Versuche.",
+    "ungraded": "Nicht bewertet",
+    "yourAnswer": "Deine Antwort",
+    "correctAnswer": "Richtige Antwort",
+    "notAnswered": "Nicht beantwortet",
+    "transcript": "Transkript",
+    "exercise": "Übung",
+    "yourAnswers": "Deine Antworten",
+    "savedFeedback": "Gespeichertes Feedback"
   }
 }

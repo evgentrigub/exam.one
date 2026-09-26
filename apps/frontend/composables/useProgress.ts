@@ -140,7 +140,14 @@ function writingFromAttempts(rows: AttemptDto[]): Record<string, WritingProgress
     const topicId = row.exerciseExternalId
     if (!topicId) continue
     const answers = isRecord(row.answers) ? row.answers : {}
-    if (answers['kind'] === 'model-answer' || answers['kind'] === 'artifact') continue
+    // `writing-review` rows cache an AI review, not a submission. Without this they are
+    // rebuilt as phantom submissions with wordCount 0 and inflate the attempt count.
+    if (
+      answers['kind'] === 'model-answer' ||
+      answers['kind'] === 'artifact' ||
+      answers['kind'] === 'writing-review'
+    )
+      continue
     const submission: WritingSubmission = {
       id: typeof answers['id'] === 'string' ? answers['id'] : row.id,
       topicId,

@@ -216,6 +216,44 @@ export function validateView(view: ExerciseView, rules: PartRuntime): void {
   }
 }
 
+/**
+ * Flatten a stored attempt's answers to the `{ id: value }` map the view is scored and
+ * rendered against.
+ *
+ * The client stores a *submission record*, not a flat map: reading and listening nest their
+ * choices under `responses`, writing keeps the essay under `content`, and speaking keeps its
+ * transcripts under `transcripts`. Those names are load-bearing — the practice screens rebuild
+ * their history from them by key — so this is a permanent adapter between the two shapes
+ * rather than a migration shim. Flat values are preferred, so a caller that already passes a
+ * flat map is unaffected.
+ */
+export function resolveAnswers(
+  view: ExerciseView,
+  answers: Record<string, unknown>
+): Record<string, unknown> {
+  const responses = isRecord(answers['responses']) ? answers['responses'] : {}
+  const transcripts = isRecord(answers['transcripts']) ? answers['transcripts'] : {}
+  const resolved: Record<string, unknown> = {}
+
+  for (const question of view.questions ?? []) {
+    const value = answers[question.id] ?? responses[question.id]
+    if (value !== undefined) resolved[question.id] = value
+  }
+  for (const field of view.fields ?? []) {
+    const value = answers[field.id] ?? answers['content']
+    if (value !== undefined) resolved[field.id] = value
+  }
+  for (const segment of view.segments ?? []) {
+    // A single-segment part may have stored only the combined `transcript`.
+    const value =
+      answers[segment.id] ??
+      transcripts[segment.id] ??
+      ((view.segments ?? []).length === 1 ? answers['transcript'] : undefined)
+    if (value !== undefined) resolved[segment.id] = value
+  }
+  return resolved
+}
+
 export function objectiveScore(
   view: ExerciseView,
   rules: PartRuntime,
