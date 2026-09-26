@@ -135,6 +135,7 @@
                   <WritingReviewDetails
                     v-if="response(definition.id)?.writingReview"
                     :review="response(definition.id)!.writingReview!"
+                    :teil="definition.part"
                   />
                   <div
                     v-else-if="isDeterministicWritingZero(definition.id, definition.part)"

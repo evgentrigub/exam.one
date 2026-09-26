@@ -1,8 +1,8 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
-import type { MockExamOverview } from '@exam-one/exam-packs'
+import type { MockExamOverview, CriterionReview  } from '@exam-one/exam-packs'
 import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
-import type { AiReviewDataA2 } from '~/utils/types'
+import type { DeepReadonly } from 'vue'
 import type { MockExamAttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
 
@@ -19,7 +19,7 @@ export interface MockExerciseResult {
   rawScore?: number | null
   grading?: MockGradingStatus
   error?: string | null
-  writingReview?: AiReviewDataA2
+  writingReview?: DeepReadonly<CriterionReview>
   speakingReview?: SpeakingReviewData
 }
 
@@ -253,7 +253,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     exerciseId: string,
     rawScore: number | null,
     error: string | null = null,
-    review: AiReviewDataA2 | SpeakingReviewData | null = null
+    review: CriterionReview | SpeakingReviewData | null = null
   ): void => {
     const moduleState = state.value.modules[skill]
     const current = moduleState.responses[exerciseId]
@@ -263,7 +263,7 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
       rawScore,
       grading: rawScore === null ? 'pending' : 'done',
       error,
-      ...(skill === 'writing' && review ? { writingReview: review as AiReviewDataA2 } : {}),
+      ...(skill === 'writing' && review ? { writingReview: review as CriterionReview } : {}),
       ...(skill === 'speaking' && review ? { speakingReview: review as SpeakingReviewData } : {}),
     }
     calculateModuleScore(skill)

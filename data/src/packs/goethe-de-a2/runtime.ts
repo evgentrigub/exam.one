@@ -1,7 +1,13 @@
-import { defineAdapter, record, type ExerciseView, type PartRuntime } from '../../runtime'
+import {
+  defineAdapter,
+  record,
+  validateReview,
+  type ExerciseView,
+  type PartRuntime,
+} from '../../runtime'
 import type { ExamModule } from '../../types'
-import { isValidA2Review, isSpeakingReviewData } from './compatibility/review'
-import { validateListening, validateReading } from './validate'
+import { isSpeakingReviewData } from './compatibility/review'
+import { validateListening, validateReading, validateWriting } from './validate'
 
 /** Compatibility projection: the original seed JSON and session components remain valid. */
 export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
@@ -114,11 +120,15 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
         const writing = review['writingReview']
         if (module.id === 'writing' && writing && typeof writing === 'object') {
           const response = record(writing)['responseData']
-          if (
-            response !== undefined &&
-            (!isValidA2Review(response, savedRules) || response.teil !== n)
-          )
-            throw new Error('Invalid saved writing rubric or total')
+          // Writing rubrics are stored as a `CriterionReview`; the part is implied by the
+          // attempt's own snapshot, so the rubric no longer carries a `teil` to cross-check.
+          if (response !== undefined) {
+            try {
+              validateReview(response, savedRules)
+            } catch {
+              throw new Error('Invalid saved writing rubric or total')
+            }
+          }
         }
         if (
           module.id === 'speaking' &&
@@ -132,7 +142,9 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
           ? validateReading
           : module.id === 'listening'
             ? validateListening
-            : undefined
+            : module.id === 'writing'
+              ? validateWriting
+              : undefined
       return { ...part, runtime: rules, adapter, ...(validate ? { validate } : {}) }
     }),
   }))

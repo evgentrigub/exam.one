@@ -502,6 +502,7 @@ import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
 import {
   buildMockExamOverviewPrompt,
+  type CriterionReview,
   type MockExamExerciseDefinition,
   type MockExamModuleDefinition,
   type MockExamOverview,
@@ -509,7 +510,7 @@ import {
   type MockExamSet,
 } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
-import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
@@ -901,13 +902,14 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         topicId: topic.id,
       })
       if (!prompt) throw new Error(`No writing review prompt is configured for part ${part}`)
-      const review = await aiFetch<AiReviewData>('/llm/review', {
+      const review = await aiFetch<CriterionReview>('/llm/review', {
         method: 'POST',
         body: { topic, userContent: response.content, prompt },
       })
-      if (review.error || !review.data || !isA2Review(review.data))
-        throw new Error(review.error || 'Writing grade unavailable.')
-      updateExerciseGrade('writing', exerciseId, review.data.teil_points_mess, null, review.data)
+      if (review.error || !review.data) throw new Error(review.error || 'Writing grade unavailable.')
+      // `totalPoints` is the same number `teil_points_mess` was: the criteria sum to
+      // `maxPoints: 10`, so the score the page shows is unchanged.
+      updateExerciseGrade('writing', exerciseId, review.data.totalPoints, null, review.data)
       return
     }
 

@@ -351,9 +351,6 @@ export async function reviewMockExam(
  */
 export const goetheCompatibilityAi = {
   generateSpeaking,
-  generateWriting,
-  generateModelAnswer,
-  reviewWriting,
   reviewSpeaking,
   reviewMockExam,
 }

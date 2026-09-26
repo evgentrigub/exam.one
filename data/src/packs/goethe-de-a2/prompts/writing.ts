@@ -28,47 +28,42 @@ const ANSWER_CONTRACT = `{
 JSON fields: do not change topicId; content is the model response; wordCount is an integer; highlights explains why the response is exemplary.
 Important: responses must be realistic and contemporary. ${JSON_ONLY}`
 
-const REVIEW_JSON_TEIL1 = `Output JSON format (strict):
+/**
+ * Rubric output in the generic `CriterionReview` shape.
+ *
+ * `validateReview` checks the criterion ids, each `maxPoints` and that `totalPoints` is the
+ * exact sum, so those are spelled out here rather than left to the model. `label` is echoed
+ * back for readability only - the card resolves its labels from i18n keyed by criterion id,
+ * so a label the model invents is never displayed. Result Points are derived from the part's
+ * multiplier at render time and are deliberately not asked for.
+ */
+function reviewContract(teil: 1 | 2): string {
+  const words = teil === 1 ? { min: 20, max: 30 } : { min: 30, max: 40 }
+  const register = teil === 1 ? 'du' : 'sie'
+  return `Output JSON format (strict):
 {
-  "teil": 1,
-  "word_count": <number>,
-  "required_word_count": { "min": 20, "max": 30 },
-  "criteria": {
-    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" },
-    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" }
-  },
-  "teil_points_mess": <0–10>,
-  "teil_points_result": <teil_points_mess * 1.25>,
-  "teil_rule_applied": "none | E_zero_rule | wordcount_below_minimum | off_topic",
-  "register_check": { "expected": "du", "detected": "<du|sie|mixed|unknown>", "ok": true },
-  "content_points_covered": { "required": 3, "covered": <0–3> },
-  "priority_fixes": [ "<fix 1>", "<fix 2>", "<fix 3>" ],
+  "criteria": [
+    { "id": "aufgabenerfuellung", "label": "Task completion", "maxPoints": 5, "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" },
+    { "id": "sprache", "label": "Language", "maxPoints": 5, "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" }
+  ],
+  "totalPoints": <the exact sum of the two points values, 0-10>,
+  "maxPoints": 10,
+  "summary": "<one sentence in the feedback language>",
+  "strengths": [ "<what the learner did well>" ],
+  "improvements": [ "<what to work on next>" ],
+  "wordCount": { "actual": <number>, "min": ${words.min}, "max": ${words.max} },
+  "ruleApplied": "none | E_zero_rule | wordcount_below_minimum | off_topic",
+  "checks": [
+    { "id": "register", "expected": "${register}", "detected": "<du|sie|mixed|unknown>", "ok": <true|false> },
+    { "id": "contentPoints", "required": 3, "covered": <0-3> }
+  ],
+  "priorityFixes": [ "<fix 1>", "<fix 2>", "<fix 3>" ],
   "examples": [
     { "error": "<quotation from the learner response>", "correction": "<corrected German text>", "rule": "<short explanation>" }
   ],
   "report": "<short closing report>"
 }`
-
-const REVIEW_JSON_TEIL2 = `Output JSON format (strict):
-{
-  "teil": 2,
-  "word_count": <number>,
-  "required_word_count": { "min": 30, "max": 40 },
-  "criteria": {
-    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" },
-    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" }
-  },
-  "teil_points_mess": <0–10>,
-  "teil_points_result": <teil_points_mess * 1.25>,
-  "teil_rule_applied": "none | E_zero_rule | wordcount_below_minimum | off_topic",
-  "register_check": { "expected": "sie", "detected": "<du|sie|mixed|unknown>", "ok": true },
-  "content_points_covered": { "required": 3, "covered": <0–3> },
-  "priority_fixes": [ "<fix 1>", "<fix 2>", "<fix 3>" ],
-  "examples": [
-    { "error": "<quotation from the learner response>", "correction": "<corrected German text>", "rule": "<short explanation>" }
-  ],
-  "report": "<short closing report>"
-}`
+}
 
 export const writingPrompts: PromptSpec[] = [
   definePrompt({
@@ -184,7 +179,7 @@ Schreiben Sie zu allen drei Punkten.`,
     kind: 'review',
     role: WRITING_EXAMINER_ROLE,
     task: `Feedback language: {outputLanguage}.
-Write every comment (criteria.*.comment), rule (examples[].rule), priority_fixes entry and the closing report in that language.
+Write every comment (criteria[].comment), rule (examples[].rule), priorityFixes entry, summary, strengths, improvements and the closing report in that language.
 In examples.error keep the learner's wording exactly as written. In examples.correction give the corrected German text.
 
 Input
@@ -193,13 +188,13 @@ Requirements: {requirements}
 Learner response: {userContent}`,
     rules: [
       'Confirm the exercise type: Teil 1 (Kurznachricht / SMS, du-Form).',
-      'Check the length: 20–30 words. If the response is under 50% of that (fewer than 10 words) or off topic, award E (0) for Aufgabenerfüllung and zero the whole Teil 1 ("E_zero_rule").',
+      'Check the length: 20–30 words. If the response is under 50% of that (fewer than 10 words) or off topic, award E (0) for Aufgabenerfüllung and zero the whole Teil 1 (ruleApplied "E_zero_rule").',
       'Mark against 2 criteria (A–E): 1. Aufgabenerfüllung: all 3 content points covered, an appropriate addressee and du-Form. 2. Sprache: intelligibility, simple cohesion, basic A2 vocabulary.',
       'Dropping the subject at the start of an SMS is not penalised. Emoji are allowed. An informal greeting and closing are required.',
-      'Messpunkte scale: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. Total for Teil 1: 0–10; Result Points = Messpunkte × 1.25.',
+      'Messpunkte scale: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. totalPoints for Teil 1 is the sum of the two criteria, 0–10.',
       'Give specific feedback. List 3–6 typical errors with exact corrections. Do not rewrite the whole text.',
     ],
-    outputContract: REVIEW_JSON_TEIL1,
+    outputContract: reviewContract(1),
   }),
   definePrompt({
     skill: 'writing',
@@ -207,7 +202,7 @@ Learner response: {userContent}`,
     kind: 'review',
     role: WRITING_EXAMINER_ROLE,
     task: `Feedback language: {outputLanguage}.
-Write every comment (criteria.*.comment), rule (examples[].rule), priority_fixes entry and the closing report in that language.
+Write every comment (criteria[].comment), rule (examples[].rule), priorityFixes entry, summary, strengths, improvements and the closing report in that language.
 In examples.error keep the learner's wording exactly as written. In examples.correction give the corrected German text.
 
 Input
@@ -216,12 +211,12 @@ Requirements: {requirements}
 Learner response: {userContent}`,
     rules: [
       'Confirm the exercise type: Teil 2 ((halb-)formelle E-Mail, Sie-Form).',
-      'Check the length: 30–40 words. If the response is under 50% of that (fewer than 15 words) or off topic, award E (0) and zero Teil 2 ("E_zero_rule").',
+      'Check the length: 30–40 words. If the response is under 50% of that (fewer than 15 words) or off topic, award E (0) and zero Teil 2 (ruleApplied "E_zero_rule").',
       'Mark against 2 criteria: 1. Aufgabenerfüllung: all 3 content points, Anrede/Grußformel, Sie-Form. 2. Sprache: intelligibility, basic connectors, A2 vocabulary.',
       'Connectors are required. The email must open with a (semi-)formal salutation and end with a closing formula and the FULL NAME.',
-      'Messpunkte scale: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. Total for Teil 2: 0–10; Result Points = Messpunkte × 1.25.',
+      'Messpunkte scale: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. totalPoints for Teil 2 is the sum of the two criteria, 0–10.',
       'Give specific feedback and 3–6 typical errors with corrections.',
     ],
-    outputContract: REVIEW_JSON_TEIL2,
+    outputContract: reviewContract(2),
   }),
 ]

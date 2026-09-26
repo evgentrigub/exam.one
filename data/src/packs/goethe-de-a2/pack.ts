@@ -2,6 +2,7 @@ import { attachGoetheRuntime } from './runtime'
 import { createGoetheA2MockExamSet, goetheA2MockExamSet1 } from './content'
 import type { ExamPack } from '../../types'
 import { goetheA2ExerciseId } from './exercise-id'
+import { goetheA2ReviewVars } from './review-vars'
 import { goetheCompatibilityAi } from './compatibility/ai'
 import { listeningPrompts } from './prompts/listening'
 import { readingPrompts } from './prompts/reading'
@@ -37,5 +38,6 @@ export const goetheDeA2: ExamPack = {
   createMockSet: createGoetheA2MockExamSet,
   bundledMockSet: goetheA2MockExamSet1,
   exerciseId: goetheA2ExerciseId,
+  buildReviewVars: goetheA2ReviewVars,
   compatibilityAi: goetheCompatibilityAi,
 }

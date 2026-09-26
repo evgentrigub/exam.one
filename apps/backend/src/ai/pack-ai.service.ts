@@ -16,7 +16,7 @@ import {
 import type { AiResponse } from '@exam-one/contracts'
 import { packContext } from '../core/interceptors/pack-context.interceptor'
 import { LlmService } from './llm.service'
-import { extractJsonArray } from './json'
+import { extractJsonArray, extractJsonObject } from './json'
 
 /** How many exercises to generate in one call. The writing screen asks for several. */
 function count(body: Record<string, unknown>): number {
@@ -248,9 +248,12 @@ export class PackAiService {
         [{ role: 'user', content: prompt.assemble(vars) }],
         prompt.llm
       )
-      if (kind === 'answer') return { data: { text: raw }, error: null }
-      const cleaned = raw.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '')
-      const review = validateReview(JSON.parse(cleaned), part.runtime)
+      const parsed = extractJsonObject(raw)
+      if (!parsed) throw new Error('The provider did not return a JSON object')
+      // A model answer is handed to the client as-is: the prompt's contract already matches
+      // the `{ content, wordCount, highlights }` shape the writing screen renders.
+      if (kind === 'answer') return { data: parsed, error: null }
+      const review = validateReview(parsed, part.runtime)
       const responses = record(answers)
       if (
         part.runtime.fields?.some(

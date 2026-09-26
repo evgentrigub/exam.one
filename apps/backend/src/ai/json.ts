@@ -35,3 +35,42 @@ export function extractJsonArray(rawText: string): unknown[] | null {
 
   return null
 }
+
+/**
+ * Pull a single JSON object out of a model response.
+ *
+ * Models wrap JSON in prose or a ``` fence often enough that a bare `JSON.parse` is not
+ * safe. Mirrors `extractJsonArray`: prefer a fenced block, then scan inward from the first
+ * `{` for the longest tail that parses.
+ */
+export function extractJsonObject(rawText: string): Record<string, unknown> | null {
+  const blockStart = rawText.indexOf('```json')
+  const fenceStart = blockStart >= 0 ? blockStart + 7 : -1
+
+  if (fenceStart >= 0) {
+    const fenceEnd = rawText.indexOf('```', fenceStart)
+    if (fenceEnd > fenceStart) {
+      try {
+        const parsed: unknown = JSON.parse(rawText.slice(fenceStart, fenceEnd).trim())
+        if (isRecord(parsed)) return parsed
+      } catch {
+        // fall through to brace scan
+      }
+    }
+  }
+
+  const firstBrace = rawText.indexOf('{')
+  if (firstBrace < 0) return null
+
+  for (let j = rawText.length - 1; j > firstBrace; j--) {
+    if (rawText[j] !== '}') continue
+    try {
+      const parsed: unknown = JSON.parse(rawText.slice(firstBrace, j + 1))
+      if (isRecord(parsed)) return parsed
+    } catch {
+      // continue trying shorter tails
+    }
+  }
+
+  return null
+}

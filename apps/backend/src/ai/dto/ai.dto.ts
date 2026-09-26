@@ -105,6 +105,12 @@ export class GenerateTopicsDto {
   @IsOptional()
   @IsString()
   difficulty?: string
+
+  @ApiPropertyOptional({ description: 'How many topics to generate in one call', example: 3, minimum: 1 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  count?: number
 }
 
 export class GenerateModelAnswerDto {

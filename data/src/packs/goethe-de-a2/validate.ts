@@ -136,3 +136,33 @@ export function validateListening(payload: Record<string, unknown>): void {
     if (row['type'] !== 'true_false') fail(`${at}.type must be "true_false"`)
   }
 }
+
+const WRITING_TOPIC_TYPES = ['note', 'email'] as const
+
+/**
+ * Writing: the task text and its metadata.
+ *
+ * For writing, `validateView` is tautological — the adapter builds `fields` from the part
+ * rules and `validateView` then compares them back to those same rules, so it can never
+ * fail. Nothing checks the payload itself. That matters more here than elsewhere, because
+ * `buildReviewVars` feeds `task` and `requirements` straight into the review prompt: a topic
+ * generated without them would be graded against a blank exercise.
+ */
+export function validateWriting(payload: Record<string, unknown>): void {
+  requireString(payload['title'], 'title')
+  requireString(payload['description'], 'description')
+  requireString(payload['task'], 'task')
+  if (!WRITING_TOPIC_TYPES.includes(payload['topicType'] as (typeof WRITING_TOPIC_TYPES)[number]))
+    fail(`topicType must be one of ${WRITING_TOPIC_TYPES.join(', ')}`)
+  if (typeof payload['estimatedTime'] !== 'number') fail('estimatedTime must be a number')
+  requireStringArray(payload['category'], 'category')
+
+  const requirements = payload['requirements']
+  requireStringArray(requirements, 'requirements')
+  if ((requirements as string[]).length === 0) fail('requirements must not be empty')
+
+  const wordCount = payload['wordCount']
+  if (!isRecord(wordCount)) fail('wordCount must be an object')
+  if (typeof wordCount['min'] !== 'number' || typeof wordCount['max'] !== 'number')
+    fail('wordCount must have numeric min and max')
+}
