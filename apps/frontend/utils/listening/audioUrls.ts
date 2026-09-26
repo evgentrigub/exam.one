@@ -48,18 +48,15 @@ export function itemListeningAudioPath(exerciseId: string, itemId: string, prefi
 }
 
 /** On-demand TTS output path for a shared transcript. */
-export function generatedSharedListeningAudioPath(exerciseId: string): string {
-  return `/audio/listening/generated/${exerciseId}/shared.${LISTENING_AUDIO_EXT}`
-}
-
-/** On-demand TTS output path for a per-item segment. */
-export function generatedItemListeningAudioPath(exerciseId: string, itemId: string): string {
-  return `/audio/listening/generated/${exerciseId}/${itemId}.${LISTENING_AUDIO_EXT}`
-}
-
 /**
  * Resolve the audio URL for a shared exercise player.
- * Prefers an explicit `audio.shared` map entry, else the derived seed path.
+ *
+ * Prefers an explicit `audio.shared` map entry, else the derived seed path. For a *generated*
+ * exercise that derived path cannot exist - generated audio lives under a sha256 directory the
+ * client cannot compute - and that is deliberate: the availability probe 404s, which is what
+ * raises the missing-audio banner and the Generate audio button. Returning undefined instead
+ * would leave no expected sources, so nothing would look missing and nothing would offer to
+ * generate it.
  */
 export function resolveSharedListeningAudioSrc(exercise: ListeningA2Exercise): string | undefined {
   if (usesItemAudio(exercise)) return undefined
@@ -68,10 +65,7 @@ export function resolveSharedListeningAudioSrc(exercise: ListeningA2Exercise): s
   return exercise.audio?.shared ?? sharedListeningAudioPath(id)
 }
 
-/**
- * Resolve the audio URL for a per-item player.
- * Prefers `audio.items[itemId]`, else the derived seed path.
- */
+/** Resolve the audio URL for a per-item player. Same fallback rationale as the shared case. */
 export function resolveItemListeningAudioSrc(
   exercise: ListeningA2Exercise,
   itemId: string
@@ -82,15 +76,18 @@ export function resolveItemListeningAudioSrc(
   return exercise.audio?.items?.[itemId] ?? itemListeningAudioPath(exerciseId, itemId)
 }
 
-/** Collect every expected audio URL for an exercise (for availability probes). */
+/**
+ * Collect every expected audio URL for an exercise, for the availability probe.
+ *
+ * `usesItemAudio` is true when *some* item carries an id, so an item without one still gets a
+ * player - built on the same synthesised id the session uses. Skipping those here would make
+ * the exercise report fewer sources than it renders, leaving a silent player with no source
+ * and no missing-audio banner.
+ */
 export function collectListeningAudioSrcs(exercise: ListeningA2Exercise): string[] {
   if (usesItemAudio(exercise)) {
     return exercise.items
-      .map(item => {
-        const itemId = item.id
-        if (!itemId) return undefined
-        return resolveItemListeningAudioSrc(exercise, itemId)
-      })
+      .map((item, index) => resolveItemListeningAudioSrc(exercise, item.id ?? `${exercise.id}-i${index}`))
       .filter((src): src is string => Boolean(src))
   }
 
@@ -119,60 +116,3 @@ export function buildSeedListeningAudioMap(
 }
 
 /** Build audio map pointing at on-demand generated/ paths. */
-export function buildGeneratedListeningAudioMap(
-  exercise: ListeningA2Exercise
-): ListeningExerciseAudioMap | undefined {
-  const id = exercise.id
-  if (!id) return undefined
-
-  if (usesItemAudio(exercise)) {
-    const items: Record<string, string> = {}
-    for (const item of exercise.items) {
-      const itemId = item.id
-      if (!itemId) continue
-      items[itemId] = generatedItemListeningAudioPath(id, itemId)
-    }
-    return { items }
-  }
-
-  return { shared: generatedSharedListeningAudioPath(id) }
-}
-
-export interface ListeningAudioSegment {
-  relativePath: string
-  publicUrl: string
-  transcript: string
-}
-
-/** Segments to synthesize for an exercise (relative to public/). */
-export function collectListeningAudioSegments(
-  exercise: ListeningA2Exercise
-): ListeningAudioSegment[] {
-  const id = exercise.id
-  if (!id) return []
-
-  if (usesItemAudio(exercise)) {
-    return exercise.items.flatMap(item => {
-      const itemId = item.id
-      if (!itemId || !item.transcript.trim()) return []
-      const publicUrl = generatedItemListeningAudioPath(id, itemId)
-      return [
-        {
-          relativePath: `audio/listening/generated/${id}/${itemId}.${LISTENING_AUDIO_EXT}`,
-          publicUrl,
-          transcript: item.transcript,
-        },
-      ]
-    })
-  }
-
-  if (!exercise.transcript?.trim()) return []
-  const publicUrl = generatedSharedListeningAudioPath(id)
-  return [
-    {
-      relativePath: `audio/listening/generated/${id}/shared.${LISTENING_AUDIO_EXT}`,
-      publicUrl,
-      transcript: exercise.transcript,
-    },
-  ]
-}

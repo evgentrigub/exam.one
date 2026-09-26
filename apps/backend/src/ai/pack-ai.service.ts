@@ -190,7 +190,7 @@ export class PackAiService {
           )
           if (!parsed?.length) throw new Error('The provider did not return an exercise array')
           return parsed.map(value => {
-            const id = pack.exerciseId?.(skill, n) ?? `${skill}-${pack.packId}-${randomUUID()}`
+            const id = `${skill}-${pack.packId}-${randomUUID()}`
             const payload = withQuestionIds({
               ...coerceAnswerIndices(record(value)),
               id,

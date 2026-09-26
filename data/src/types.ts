@@ -110,11 +110,6 @@ export interface ExamPack {
     outputLanguage: string
   }): PromptVars
   /**
-   * Id for a newly generated exercise, when the pack needs a particular shape.
-   * Return `undefined` to take the generic `<skill>-<packId>-<uuid>` id.
-   */
-  exerciseId?(skill: SkillId, part: number): string | undefined
-  /**
    * Cross-module review, such as a mock-exam overview, which has no skill or part and so
    * cannot be reached through `findPrompt`. Absent, the endpoint reports it unavailable.
    */

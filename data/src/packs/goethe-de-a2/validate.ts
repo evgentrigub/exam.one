@@ -96,7 +96,7 @@ function requireFive(value: unknown, field: string): unknown[] {
  * `validateView` already covers the item count, the per-Teil option count and the answer
  * range, but it never sees a transcript — the projection carries it only as optional extra
  * data. A transcript-less exercise therefore validates, stores, and can never have audio
- * synthesised for it, because `collectListeningAudioSegments` skips empty transcripts.
+ * synthesised for it: `generatePackAudio` emits a segment only where a transcript exists.
  */
 export function validateListening(payload: Record<string, unknown>): void {
   requireString(payload['title'], 'title')

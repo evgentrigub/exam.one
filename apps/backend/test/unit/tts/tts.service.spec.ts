@@ -124,11 +124,16 @@ describe('TtsService', () => {
 
   it('keeps generated audio paths inside the configured root', () => {
     const root = '/tmp/exam-one-audio'
-    expect(containedAudioPath(root, 'listening-a2-part1-abc/shared.wav')).toBe(
-      '/tmp/exam-one-audio/listening-a2-part1-abc/shared.wav'
+    // The shape the service actually writes: a sha256 directory, then a positional file.
+    const digest = 'a'.repeat(64)
+    expect(containedAudioPath(root, `${digest}/item-0.wav`)).toBe(
+      `/tmp/exam-one-audio/${digest}/item-0.wav`
+    )
+    expect(containedAudioPath(root, `${digest}/shared.wav`)).toBe(
+      `/tmp/exam-one-audio/${digest}/shared.wav`
     )
     expect(containedAudioPath(root, '../etc/passwd')).toBeNull()
     expect(containedAudioPath(root, '/tmp/escaped.wav')).toBeNull()
-    expect(containedAudioPath(root, 'listening-a2-part1-abc/../secret.wav')).toBeNull()
+    expect(containedAudioPath(root, `${digest}/../secret.wav`)).toBeNull()
   })
 })

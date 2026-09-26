@@ -216,9 +216,7 @@ async function runEval() {
     if (!parsed?.length) parsed = extractArray(await complete([{ role: 'user', content }], spec.llm))
     if (!parsed?.length) return { data: null, error: 'The provider did not return an exercise array' }
     const data = parsed.map(value => {
-      const id =
-        pack.exerciseId?.(skill, part) ??
-        `${skill}-${pack.packId}-${Math.random().toString(36).slice(2)}`
+      const id = `${skill}-${pack.packId}-${Math.random().toString(36).slice(2)}`
       return packs.withQuestionIds({
         ...packs.coerceAnswerIndices(value),
         id,
