@@ -1,8 +1,20 @@
-# Stage 2.11 verification and rollout
+# Pack verification and rollout
 
-Verified locally on 2026-09-05–06. This records working-tree verification, not a production deployment. Goethe A2 is the only live production registration; the synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
+Working-tree verification, not a production deployment. Live registrations: `goethe-de-a2` (default) and `goethe-de-a1`. The synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
 
-## Reproducible acceptance
+## Stage 2.15 — Goethe A1 (2026-09-27)
+
+Branch `german-a1`, verified plan by plan against the local Docker stack (PostgreSQL, Kokoro TTS, Parakeet STT) with a disposable test account and the configured OpenAI provider.
+
+- **Sources.** The structure was checked against the official _Start Deutsch 1_ Modellsatz (02/2024) and Durchführungsbestimmungen (2025) before any prompt was written. Summary in `src/packs/goethe-de-a1/brief.md`; the product reference is `agent-os/product/languages/german/german-exam-A1.md` in the docs repository.
+- **A2 parity.** `a2-projection-parity.spec.ts` snapshots the view projected from every bundled A2 payload. It was recorded before the projection moved to `goethe-shared/` and passes unchanged. `pnpm db:seed` against an existing database left every A2 seed row identical (24 rows, same ids, visibility and level). A2 reading, listening, writing and speaking screens were re-checked in the browser after each plan.
+- **Offline.** `node scripts/eval-prompts.mjs --pack goethe-de-a1 --control` passes for all 11 seeds; the A2 control passes unchanged. Unit coverage is 270 tests across 34 suites (268 backend, 2 infrastructure), including the A1 pack and speaking specs: projections, per-part validators, placeholder resolution for every answer and review prompt, rubric totals, and the server-side speaking transcript guard.
+- **Live generation.** The eval harness ran every A1 generator three times: reading 9/9, listening 9/9, writing 6/6, speaking 9/9, each on the first call. In the app, one generation per part stored through the write gate and rendered.
+- **Live practice, per part.** Reading and listening seeds scored and stored correctly (4/5, 6/6). Listening seed audio was generated on demand through **Generate audio**, stored on the user's copy of the seed, and played. The form-fill seed with one wrong entry was reviewed 4/5 in German; the message seed 10/10. The three speaking seeds were reviewed 3/3, 5.25/6 (a one-word answer at half points) and 6/6. Past exams shows every attempt structurally.
+- **Fixed during verification** (these affected A2 as well): the listening-audio route answered HEAD with the SPA shell, so a missing file looked present and the Generate audio notice never appeared; catalogs and progress fetched with the default pack before settings loaded and were never refetched for a non-default pack; a TTS request that hit a just-closed keep-alive socket failed a whole dialogue (now retried once); practice writing reviews never sent the feedback language, so they were English in every locale.
+- **Not covered.** No A1 mock exams exist, so no mock was run. Pronunciation is not assessed (transcripts only). A hard reload of a reading exercise page, or of a submitted writing task, starts before the catalog or progress has loaded — the same behaviour as A2.
+
+## Stage 2.11 reproducible acceptance (2026-09-05–06)
 
 Use Node 24+, pnpm 10+ and a disposable PostgreSQL 17 container named `exam-one-pack-check`, published only on `127.0.0.1:55432`. The acceptance database is `pack_check`. Never point these checks at user or production databases.
 
@@ -15,7 +27,7 @@ The HTTP harness verifies all five formats with parts 7/9/11/13/15, generation, 
 
 `node scripts/rehearse-pack-migrations.mjs` creates two new disposable databases in the dedicated container. All eight migrations passed on a fresh database and on representative pre-pack data. The upgrade assertions preserve C1 exercise/attempt/draft identity, response text and score, and retain ambiguous history under `legacy-history`. Final rehearsal databases: `pack_fresh_1788627294408` and `pack_upgrade_1788627294408`.
 
-## Regression evidence
+## Regression evidence (through 2.14)
 
 - Workspace `pnpm lint`, `pnpm type-check`, `pnpm test` and `pnpm build` passed. Unit coverage is 218 tests (216 backend, 2 infrastructure) across 29 suites, including pack projections for all bundled Goethe mock exercises, unchanged payloads/raw practice scoring, registry errors, audio projection, rubric validation, per-part payload guards for all four skills, stored-answer resolution and saved-rubric validation.
 - Database-backed auth/health regressions passed all six tests with `DATABASE_URL` pointing to the same disposable instance using `pnpm test:e2e`.

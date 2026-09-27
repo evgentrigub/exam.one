@@ -101,7 +101,12 @@ Theme, locale, listening playback volume/speed, and reading bookmarks stay in th
 
 ### Exam packs
 
-Exam definitions, LLM prompts, runtime rules, grading criteria, payload adapters, and optional bundled seeds live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack using the five supported exercise formats by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`. Goethe A2 bundled passages, questions, topics, and mock Set 1 live in `data/src/packs/goethe-de-a2/content/`. Goethe A2 is the only live production pack; inactive C1 attempts remain reviewable under **Progress → Past exams**. See the [verification and migration rollout guide](data/VERIFICATION.md).
+Exam definitions, LLM prompts, runtime rules, grading criteria, payload adapters, and optional bundled seeds live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`; it can use the five exercise formats and the form-fill, word-card and request-card screens. 
+Two packs are live: 
+**Goethe A1 · Start Deutsch 1**. 
+**Goethe A2**. 
+
+Select one under **Settings → Learning plan**. See the [verification and migration rollout guide](data/VERIFICATION.md).
 
 ---
 

@@ -9,7 +9,7 @@ Turn supplied exam requirements into a locally selectable practice pack. The cod
 
 ## Locate the project and requirements
 
-Work from the application repository containing `data/src/types.ts` and `data/src/registry.ts`. Source paths in this skill are relative to that repository root. Project-local copies live in `.cursor/skills/exam-pack-author/` for Cursor and `.agents/skills/exam-pack-author/` for Codex. Both contain regular files; neither requires a global installation. When maintaining this skill, keep both copies and their supporting resources identical. Open the application repository in the agent, rather than only its parent workspace.
+Work from the application repository containing `data/src/types.ts` and `data/src/registry.ts`. Source paths in this skill are relative to that repository root. The skill lives in `.agents/skills/exam-pack-author/` as regular files; it needs no global installation. If a copy is added for another agent, keep the copies and their supporting resources identical. Open the application repository in the agent, rather than only its parent workspace.
 
 Read the current pack types, runtime helpers, and registry using [the contract reference](references/pack-contract.md). These sources take precedence over this reference if they have changed. No private documentation repository or separately installed skill is required.
 
@@ -19,7 +19,7 @@ Ask targeted questions when missing or contradictory requirements affect structu
 
 ## Choose supported scope
 
-Map each part to selection, matching, true/false, freeform, or recording. Preserve the exam's part numbering within each module. Use existing generic adapters for ordinary packs.
+Map each part to selection, matching, true/false, freeform, or recording, and to its skill's default screen or an existing `layout` (`form-fill`, `word-cards`, `request-cards`). Preserve the exam's part numbering within each module.
 
 Explain unsupported interactions such as a live conversational partner. Do not silently replace them with recordings or label a reduced practice pack as a complete exam. Obtain the user's chosen reduced scope before proceeding with a partial pack, retain excluded parts as `available: false` where representable, and record the gaps in the brief. A resolved, explicitly reduced practice scope can be activated; unresolved requirements cannot.
 
@@ -27,18 +27,18 @@ Default to no mock factory. A practice pack does not imply a complete mock exam,
 
 ## Author inside data
 
-For a new pack, change only its folder under `data/src/packs/<packId>/` and the import/entry needed in `data/src/registry.ts`. Do not edit other packs, `apps/`, `libraries/`, package scripts, migrations, or shared runtime code. If the requested behavior needs such changes, explain the framework gap and leave that work outside this authoring task.
+For a new pack, change only its folder under `data/src/packs/<packId>/` and the import/entry needed in `data/src/registry.ts`, plus frontend i18n keys for any new criterion ids or exercise types. Do not edit other packs, `apps/` code, `libraries/`, package scripts, migrations, or shared runtime code. A part that none of the screens or layouts can express is a framework gap: explain it and leave that work outside this authoring task, rather than forcing the task into an unsuitable screen.
 
 Before writing, check the proposed folder, `packId`, and aliases against existing packs, including inactive identities. Reject collisions; do not overwrite or repurpose an existing identity.
 
 Create:
 
 - `pack.ts`, with the `ExamPack` definition and a named export.
-- Pack-local structure/runtime configuration and generator/answer/review PromptSpecs, split into files when helpful.
-- `samples.ts`, containing original example payloads for each available module/part, plus example reviews for rubric-scored parts. These are validation inputs, not database seeds or an official question bank.
+- Structure, runtime rules, per-part `validate` guards, and generator/answer/review PromptSpecs, split per module when helpful. Add `buildReviewVars` when a prompt names more than the generic variables.
+- Original example payloads for every available part, in the raw shape its screen reads. Ship them as seeds (`content/seeds/`, listed in `seedExercises`) when the pack should open with a catalog, or keep them as pack-local samples. Either way they are validation inputs, not an official question bank.
 - `brief.md`, with normalized requirements, source references, and agreed limitations.
 
-Use `formatAdapter` and `definePrompt`; consult [the contract reference](references/pack-contract.md) for payload and prompt conventions. Do not copy the synthetic fixture's demonstration wording or Goethe's mock factory into a new exam. Start unregistered with `live: false` while authoring.
+Use `definePrompt`, and an adapter that projects the raw payload shape; consult [the contract reference](references/pack-contract.md) for payload, layout and prompt conventions. `data/src/packs/goethe-de-a1/` is the worked example. Do not copy the synthetic fixture's demonstration wording or Goethe's mock factory into a new exam. Start unregistered with `live: false` while authoring.
 
 ## Validate and activate
 
