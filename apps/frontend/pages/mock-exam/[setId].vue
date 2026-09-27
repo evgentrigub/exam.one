@@ -18,7 +18,11 @@
           </div>
           <h1 class="mt-1 font-display text-3xl font-bold">{{ roundedOverall }} / {{ maximumPoints }}</h1>
           <p class="mt-1 text-sm opacity-80">
-            {{ roundedOverall >= passPoints ? $t('mockExam.passMessage') : $t('mockExam.almostMessage') }}
+            {{
+              roundedOverall >= passPoints
+                ? $t('mockExam.passMessage', { points: passPoints })
+                : $t('mockExam.almostMessage')
+            }}
           </p>
         </div>
         <div class="sm:ml-auto sm:text-right">
@@ -30,7 +34,7 @@
 
     <div class="alert border border-warning/30 bg-warning/10 text-sm">
       <Info :size="18" class="text-warning" />
-      <span>{{ $t('mockExam.provisionalSpeakingNote') }}</span>
+      <span>{{ provisionalSpeakingNote }}</span>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">
@@ -511,6 +515,8 @@ import type {
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import type { WritingExercise } from '~/utils/types'
 import { UNAVAILABLE_MOCK_SET } from '~/utils/mockExam/unavailableSet'
+import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
+import { writingReviewPayload } from '~/utils/writing/formFill'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
@@ -590,6 +596,18 @@ const passPoints = computed(() => set.value.rules?.passPoints ?? 60)
 const hasPendingAiGrading = computed(() =>
   (['writing', 'speaking'] as const).some(skill => isAiReviewInProgress(skill))
 )
+/**
+ * A set that scores fewer speaking parts than the exam has (Goethe A2: Teil 1–2 of 3) says so;
+ * a complete one only notes that speaking is graded from transcripts.
+ */
+const provisionalSpeakingNote = computed(() => {
+  const examParts =
+    pack.value.structure.find(module => module.id === 'speaking')?.parts.length ?? 0
+  const setParts = set.value.modules.find(module => module.skill === 'speaking')?.exercises.length ?? 0
+  return setParts < examParts
+    ? t('mockExam.provisionalSpeakingNote')
+    : t('mockExam.provisionalSpeakingNoteTranscript')
+})
 const resultBannerClass = computed(() =>
   roundedOverall.value >= passPoints.value
     ? 'border-success/40 bg-success/10 text-success'
@@ -819,11 +837,10 @@ function completeActiveExercise(payload: Omit<MockExerciseResult, 'exerciseId'>)
   }
 
   if (skill === 'writing') {
-    const part = writingExercise.value?.testingPart ?? 1
-    const zeroThreshold = part === 1 ? 10 : 15
-    const wordCount = payload.wordCount ?? 0
-    result.rawScore = wordCount < zeroThreshold ? 0 : null
-    result.grading = wordCount < zeroThreshold ? 'done' : 'pending'
+    const threshold = writingZeroThreshold(pack.value, writingExercise.value?.testingPart ?? 1)
+    const zero = threshold !== undefined && (payload.wordCount ?? 0) < threshold
+    result.rawScore = zero ? 0 : null
+    result.grading = zero ? 'done' : 'pending'
   } else if (skill === 'speaking') {
     result.rawScore = null
     result.grading = 'pending'
@@ -892,7 +909,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         method: 'POST',
         body: {
           topic,
-          userContent: response.content,
+          ...writingReviewPayload(topic, response.content),
           prompt,
           outputLanguage: reviewOutputLanguage.value,
         },

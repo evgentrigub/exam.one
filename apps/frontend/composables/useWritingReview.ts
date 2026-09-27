@@ -12,7 +12,7 @@
 import type { CriterionReview } from '@exam-one/exam-packs'
 import type { WritingExercise } from '~/utils/types'
 import { onPackReset, packEpoch } from '~/utils/packScope'
-import { formatFormValues, isFormFillTopic, parseFormValues } from '~/utils/writing/formFill'
+import { writingReviewPayload } from '~/utils/writing/formFill'
 import { ref } from 'vue'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
@@ -125,19 +125,6 @@ export function useWritingReview() {
     return requestReview(topic, userContent)
   }
 
-  /**
-   * A form is submitted as its entries keyed by field id, which is what its reviewer grades;
-   * `userContent` stays a readable version, since the DTO requires one. An essay is its text.
-   */
-  function reviewAnswers(
-    topic: WritingExercise,
-    userContent: string
-  ): { userContent: string; answers?: Record<string, string> } {
-    if (!isFormFillTopic(topic)) return { userContent }
-    const answers = parseFormValues(userContent)
-    return { userContent: formatFormValues(topic, answers), answers }
-  }
-
   function getReviewPrompt(topic: WritingExercise, userContent: string) {
     const part = topic.testingPart === 2 ? 2 : 1
     const prompt = assemble('writing', part, 'review', {
@@ -177,7 +164,7 @@ export function useWritingReview() {
       const response = await aiFetch<CriterionReview>('/llm/review', {
         packId: requestPackId,
         method: 'POST',
-        body: { topic, ...reviewAnswers(topic, userContent), prompt, outputLanguage: outputLanguage.value },
+        body: { topic, ...writingReviewPayload(topic, userContent), prompt, outputLanguage: outputLanguage.value },
       })
       if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)

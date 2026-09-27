@@ -6,7 +6,7 @@ const prisma = createPrismaClient()
 seedCatalog(prisma)
   .then(summary => {
     console.info(
-      `Seeded exercises: reading=${summary.reading} writing=${summary.writing} listening=${summary.listening} speaking=${summary.speaking}; mock set 1 upserted.`
+      `Seeded exercises: reading=${summary.reading} writing=${summary.writing} listening=${summary.listening} speaking=${summary.speaking}; bundled mock sets upserted.`
     )
     console.info(
       `Per pack: ${Object.entries(summary.packs).map(([id, n]) => `${id}=${n}`).join(' ')}`

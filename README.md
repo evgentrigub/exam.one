@@ -1,6 +1,6 @@
 # Exam.one
 
-Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode.
+Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
@@ -12,7 +12,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 | Writing (Schreiben) | Drafts, submissions, optional AI grading, and detailed review                                    |
 | Listening (Hoeren) | Four exam parts, stable audio, replay rules, and optional Docker TTS                              |
 | Speaking (Sprechen) | Recording, STT/manual transcripts, optional AI grading, and detailed review                      |
-| Mock exam         | Bundled Set 1, generated local sets, automatic grading, module reviews, and AI overview            |
+| Mock exam         | Bundled Set 1 per pack (Goethe A2, A1), generated local sets, automatic grading, reviews, AI overview |
 | Accounts          | Login-gated NestJS session, profile, and settings; optional SMTP                                   |
 | Persistence       | Skill / mock / progress / drafts on NestJS + PostgreSQL after login                                |
 | AI / speech       | Optional LLM, Kokoro TTS, and Parakeet/Whisper STT proxy on NestJS                                 |
@@ -67,7 +67,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 After you are signed in, core practice runs against the **local** NestJS API and PostgreSQL. No cloud account is required.
 
 - Reading, writing, listening, and speaking practice
-- Goethe A2 mock exam Set 1
+- Goethe A2 and Goethe A1 mock exam Set 1
 - Progress tracking, drafts, and resume
 - Full navigation and UI
 
@@ -95,7 +95,7 @@ Durable storage:
 | Named volume `postgres_data`     | Users, settings, catalogs, attempts, drafts, mock exams    |
 | Named volume `generated_listening_audio` | On-demand listening WAVs written by NestJS          |
 | Host dirs `scripts/*/models/`    | TTS and STT model weights (gitignored, reused across runs) |
-| Host dir `apps/frontend/public/audio/listening/a2/` | Bundled seed listening WAVs             |
+| Host dirs `apps/frontend/public/audio/listening/a2/`, `a1/` | Bundled seed listening WAVs (A2 seeds, A1 mock Set 1) |
 
 Theme, locale, listening playback volume/speed, and reading bookmarks stay in the browser.
 
@@ -103,8 +103,8 @@ Theme, locale, listening playback volume/speed, and reading bookmarks stay in th
 
 Exam definitions, LLM prompts, runtime rules, grading criteria, payload adapters, and optional bundled seeds live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`; it can use the five exercise formats and the form-fill, word-card and request-card screens. 
 Two packs are live: 
-**Goethe A1 · Start Deutsch 1**. 
-**Goethe A2**. 
+**Goethe A1 · Start Deutsch 1** (practice and mock exams). 
+**Goethe A2** (practice and mock exams). 
 
 Select one under **Settings → Learning plan**. See the [verification and migration rollout guide](data/VERIFICATION.md).
 
@@ -281,7 +281,7 @@ docker run --rm \
   alpine tar -xzf /backup/listening-audio-YYYYMMDD.tar.gz -C /target
 ```
 
-Seed WAVs under `apps/frontend/public/audio/listening/a2/` live on the host bind mount; copy that directory if you regenerated them. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
+Seed WAVs under `apps/frontend/public/audio/listening/a2/` and `a1/` live on host bind mounts; copy that directory if you regenerated them. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
 
 ### Stop, wipe, and upgrade
 
@@ -464,7 +464,7 @@ pnpm stt:up              # Start only local Parakeet STT from compose.yaml
 pnpm db:validate         # Validate the shared Prisma schema
 pnpm db:migrate          # Create and apply a development migration
 pnpm db:migrate:deploy   # Apply committed migrations
-pnpm db:seed             # Upsert bundled Goethe A2 exercises and mock Set 1
+pnpm db:seed             # Upsert every pack's bundled exercises and mock Set 1
 pnpm auth:set-password   # Recover a local account password (`--email`)
 pnpm generate:listening-audio  # Synthesize seed WAVs (requires Kokoro)
 ```

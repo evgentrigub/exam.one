@@ -23,17 +23,19 @@
     >
       <UserRound :size="15" />
     </span>
-    <blockquote
+    <div
       class="relative rounded-box rounded-tl-none border border-base-300 bg-base-200/60 px-4 py-3"
     >
-      <figcaption class="text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
+      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
         {{ $t('speaking.cards.partnerSays') }}
         <span v-if="card.topic" class="normal-case tracking-normal font-normal">
           · {{ card.topic }}</span
         >
-      </figcaption>
-      <p class="mt-1 text-[15px] font-medium leading-snug" :lang="lang">{{ card.cue }}</p>
-    </blockquote>
+      </p>
+      <blockquote class="mt-1 text-[15px] font-medium leading-snug" :lang="lang">
+        {{ card.cue }}
+      </blockquote>
+    </div>
   </figure>
 </template>
 

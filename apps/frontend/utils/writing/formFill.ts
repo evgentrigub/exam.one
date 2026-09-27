@@ -51,6 +51,20 @@ export function countFormWords(values: FormValues): number {
   )
 }
 
+/**
+ * The review request body for a submission. A form is sent as its entries keyed by field id,
+ * which is what its reviewer grades; `userContent` stays a readable version, since the DTO
+ * requires one. An essay is its text.
+ */
+export function writingReviewPayload(
+  topic: WritingExercise,
+  content: string
+): { userContent: string; answers?: FormValues } {
+  if (!isFormFillTopic(topic)) return { userContent: content }
+  const answers = parseFormValues(content)
+  return { userContent: formatFormValues(topic, answers), answers }
+}
+
 /** Stored content for display: readable lines for a form, the text itself otherwise. */
 export function displayWritingContent(topic: WritingExercise | null | undefined, content: string): string {
   return topic && isFormFillTopic(topic) ? formatFormValues(topic, parseFormValues(content)) : content

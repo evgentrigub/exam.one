@@ -4,7 +4,7 @@ import {
   type ExerciseVisibility,
   type Skill,
 } from './generated/prisma/client'
-import { goetheA2MockExamSet1, listPacks, type SkillId } from '@exam-one/exam-packs'
+import { listPacks, type SkillId } from '@exam-one/exam-packs'
 
 export interface SeedCatalogSummary {
   reading: number
@@ -88,33 +88,37 @@ async function seedPacks(prisma: PrismaClient): Promise<SeedCatalogSummary> {
   return summary
 }
 
-async function seedMockSet1(prisma: PrismaClient): Promise<void> {
-  const set = goetheA2MockExamSet1
-  const existing = await prisma.mockExamSet.findFirst({
-    where: { generated: false, externalId: set.id, userId: null },
-  })
-  const data = {
-    userId: null,
-    externalId: set.id,
-    packId: 'goethe-de-a2',
-    examId: set.examId,
-    level: set.level,
-    title: set.title,
-    generated: false,
-    content: asJson(set.content),
-    modules: asJson(set.modules),
-    ...(set.rules ? { rules: asJson(set.rules) } : {}),
-    createdAt: new Date(set.createdAt),
+/** Upsert every registered pack's bundled mock set (its Set 1) as a shared, non-generated row. */
+async function seedBundledMockSets(prisma: PrismaClient): Promise<void> {
+  for (const pack of listPacks()) {
+    const set = pack.bundledMockSet
+    if (!set) continue
+    const existing = await prisma.mockExamSet.findFirst({
+      where: { generated: false, userId: null, packId: pack.packId, externalId: set.id },
+    })
+    const data = {
+      userId: null,
+      externalId: set.id,
+      packId: pack.packId,
+      examId: set.examId,
+      level: set.level,
+      title: set.title,
+      generated: false,
+      content: asJson(set.content),
+      modules: asJson(set.modules),
+      ...(set.rules ? { rules: asJson(set.rules) } : {}),
+      createdAt: new Date(set.createdAt),
+    }
+    if (existing) {
+      await prisma.mockExamSet.update({ where: { id: existing.id }, data })
+      continue
+    }
+    await prisma.mockExamSet.create({ data })
   }
-  if (existing) {
-    await prisma.mockExamSet.update({ where: { id: existing.id }, data })
-    return
-  }
-  await prisma.mockExamSet.create({ data })
 }
 
 export async function seedCatalog(prisma: PrismaClient): Promise<SeedCatalogSummary> {
   const summary = await seedPacks(prisma)
-  await seedMockSet1(prisma)
+  await seedBundledMockSets(prisma)
   return summary
 }

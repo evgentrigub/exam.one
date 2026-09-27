@@ -117,9 +117,9 @@
                   <div
                     class="mt-2 min-h-32 whitespace-pre-line rounded-box border border-base-300 p-4 text-sm leading-6"
                   >
-                    {{ response(definition.id)?.content || $t('mockExam.noResponse') }}
+                    {{ writingResponseText(exercise, definition.id) || $t('mockExam.noResponse') }}
                   </div>
-                  <p class="mt-2 text-xs text-base-content/50">
+                  <p v-if="!isFormFillTopic(exercise)" class="mt-2 text-xs text-base-content/50">
                     {{
                       $t('mockExam.wordCountResult', {
                         count: response(definition.id)?.wordCount ?? 0,
@@ -132,8 +132,14 @@
                     <Sparkles :size="17" class="text-primary" />
                     <h3 class="text-sm font-semibold">{{ $t('mockExam.detailedAiReview') }}</h3>
                   </div>
+                  <FormFillReviewDetails
+                    v-if="response(definition.id)?.writingReview && isFormFillTopic(exercise)"
+                    :review="response(definition.id)!.writingReview!"
+                    :entries="formEntries(exercise, definition.id)"
+                    :teil="definition.part"
+                  />
                   <WritingReviewDetails
-                    v-if="response(definition.id)?.writingReview"
+                    v-else-if="response(definition.id)?.writingReview"
                     :review="response(definition.id)!.writingReview!"
                     :teil="definition.part"
                   />
@@ -200,7 +206,7 @@
                       :key="key"
                     >
                       <div class="text-xs font-semibold uppercase text-base-content/45">
-                        {{ key }}
+                        {{ segmentLabel(definition.part, String(key)) }}
                       </div>
                       <div class="mt-1 whitespace-pre-line">
                         {{ text || $t('mockExam.noResponse') }}
@@ -249,8 +255,17 @@ import { ArrowLeft, CircleAlert, Info, Lock, Sparkles } from 'lucide-vue-next'
 import ReviewQuestionList from '~/components/mockExam/ReviewQuestionList.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
+import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
 import type { MockExamSet } from '@exam-one/exam-packs'
 import { UNAVAILABLE_MOCK_SET } from '~/utils/mockExam/unavailableSet'
+import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
+import type { WritingExercise } from '~/utils/types'
+import {
+  blankRows,
+  displayWritingContent,
+  isFormFillTopic,
+  parseFormValues,
+} from '~/utils/writing/formFill'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import { isSharedMatchingListening, isStatementListening, usesItemAudio } from '~/utils/listening/audioUrls'
 import type { ReadingExercise } from '~/utils/exercises/reading'
@@ -307,12 +322,38 @@ function exerciseScore(exerciseId: string): string {
 }
 
 function writingMinimumWords(part: number): number {
-  return part === 1 ? 10 : 15
+  return writingZeroThreshold(pack.value, part) ?? 0
 }
 
 function isDeterministicWritingZero(exerciseId: string, part: number): boolean {
   const result = response(exerciseId)
-  return result?.rawScore === 0 && (result.wordCount ?? 0) < writingMinimumWords(part)
+  const threshold = writingZeroThreshold(pack.value, part)
+  return threshold !== undefined && result?.rawScore === 0 && (result.wordCount ?? 0) < threshold
+}
+
+/** A form is stored as its entries; show them as readable "Label: entry" lines. */
+function writingResponseText(exercise: WritingExercise, exerciseId: string): string {
+  const content = response(exerciseId)?.content
+  return content ? displayWritingContent(exercise, content) : ''
+}
+
+function formEntries(exercise: WritingExercise, exerciseId: string) {
+  const values = parseFormValues(response(exerciseId)?.content)
+  return blankRows(exercise).map(row => ({
+    id: row.field,
+    label: row.label,
+    answer: values[row.field] ?? '',
+  }))
+}
+
+/** A transcript heading: the part's own segment label, or the stored key. */
+function segmentLabel(part: number, key: string): string {
+  return (
+    pack.value.structure
+      .find(module => module.id === 'speaking')
+      ?.parts.find(item => item.n === part)
+      ?.runtime?.segments?.find(segment => segment.id === key)?.label ?? key
+  )
 }
 
 function missingReviewTitle(exerciseId: string): string {
@@ -397,6 +438,8 @@ function listeningTranscript(exercise: ListeningA2Exercise): string {
 
 function speakingPrompts(exercise: SpeakingA2Topic): string[] {
   if ('answerQuestions' in exercise) return [...exercise.answerQuestions, ...exercise.askQuestions]
-  return 'keywords' in exercise ? exercise.keywords : exercise.cards.map(card => card.cue)
+  return 'keywords' in exercise
+    ? exercise.keywords
+    : exercise.cards.map(card => (card.topic ? `${card.topic} · ${card.cue}` : card.cue))
 }
 </script>

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Generate bundled A2 listening WAVs when the host seed directory is empty.
- * Skips when seed WAVs already exist. Waits for Kokoro on the host port.
+ * Generate bundled listening WAVs when a pack's host seed directory is empty (Goethe A2
+ * seeds under /a2, Goethe A1 mock Set 1 under /a1). Skips when every directory already has
+ * WAVs. Waits for Kokoro on the host port.
  */
 import { mkdir, readdir } from 'node:fs/promises'
 import path from 'node:path'
@@ -9,11 +10,13 @@ import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const audioRoot = path.join(repoRoot, 'apps/frontend/public/audio/listening/a2')
 const ttsBaseUrl = (process.env.TTS_BASE_URL ?? 'http://127.0.0.1:8881').replace(/\/$/, '')
 const timeoutMs = Number(process.env.STACK_SEED_AUDIO_TIMEOUT_MS ?? 480000)
 
-async function hasSeedWavs() {
+const { bundledAudioDirs } = await import('./generate-listening-audio.mjs')
+const audioRoots = bundledAudioDirs()
+
+async function hasSeedWavs(audioRoot) {
   try {
     const entries = await readdir(audioRoot, { recursive: true })
     return entries.some(entry => String(entry).endsWith('.wav'))
@@ -53,9 +56,10 @@ function runGenerate() {
 }
 
 async function main() {
-  await mkdir(audioRoot, { recursive: true })
+  for (const audioRoot of audioRoots) await mkdir(audioRoot, { recursive: true })
 
-  if (await hasSeedWavs()) {
+  const present = await Promise.all(audioRoots.map(hasSeedWavs))
+  if (present.every(Boolean)) {
     console.log('[stack:seed-audio] Seed listening WAVs already present; skipping generation.')
     return
   }
