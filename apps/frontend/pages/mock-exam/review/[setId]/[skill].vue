@@ -396,8 +396,7 @@ function listeningTranscript(exercise: ListeningA2Exercise): string {
 }
 
 function speakingPrompts(exercise: SpeakingA2Topic): string[] {
-  return 'answerQuestions' in exercise
-    ? [...exercise.answerQuestions, ...exercise.askQuestions]
-    : exercise.keywords
+  if ('answerQuestions' in exercise) return [...exercise.answerQuestions, ...exercise.askQuestions]
+  return 'keywords' in exercise ? exercise.keywords : exercise.cards.map(card => card.cue)
 }
 </script>

@@ -227,6 +227,16 @@ export class PackAiService {
       if (!pack.live || !part?.adapter || !part.runtime)
         throw new Error('This exercise is unavailable')
       part.adapter.project(payload)
+      // A blank transcript would be graded anyway, and the model returns a confident score
+      // for nothing. The screen blocks it too; this covers every other caller.
+      if (skill === 'speaking' && kind === 'review') {
+        const transcripts = record(answers)
+        const missing = (part.runtime.segments ?? []).filter(
+          segment => !String(transcripts[segment.id] ?? '').trim()
+        )
+        if (missing.length)
+          throw new Error(`A transcript is required for ${missing.map(s => s.id).join(', ')}`)
+      }
       const prompt = findPrompt(pack, skill, n, kind)
       if (!prompt) throw new Error('This prompt is unavailable')
       if (!this.llm.getConfig()) return { data: null, error: this.llm.missingKeyError() }

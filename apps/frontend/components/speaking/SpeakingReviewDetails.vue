@@ -73,6 +73,21 @@ const CRITERION_LABELS: Record<string, string> = {
   questions: 'speakingReview.questions',
   taskCompletion: 'speakingReview.taskCompletion',
   language: 'speakingReview.language',
+  ...Object.fromEntries(
+    [
+      'introduction',
+      'spelling',
+      'number',
+      'ask1',
+      'answer1',
+      'ask2',
+      'answer2',
+      'request1',
+      'response1',
+      'request2',
+      'response2',
+    ].map(id => [id, `speakingReview.${id}`])
+  ),
 }
 
 const criteria = computed(() =>

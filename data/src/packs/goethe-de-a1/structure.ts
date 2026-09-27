@@ -129,7 +129,6 @@ export const goetheDeA1Structure: ExamModule[] = [
         goal: 'Give basic information about yourself.',
         skill: 'Simple personal presentation.',
         itemFormat: 'recording',
-        available: false,
       },
       {
         n: 2,
@@ -140,7 +139,6 @@ export const goetheDeA1Structure: ExamModule[] = [
         skill: 'Asking & answering questions.',
         itemFormat: 'recording',
         layout: 'word-cards',
-        available: false,
       },
       {
         n: 3,
@@ -151,7 +149,6 @@ export const goetheDeA1Structure: ExamModule[] = [
         skill: 'Requests & reactions.',
         itemFormat: 'recording',
         layout: 'request-cards',
-        available: false,
       },
     ],
   },

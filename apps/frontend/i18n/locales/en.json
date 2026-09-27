@@ -40,7 +40,10 @@
     "post": "Post",
     "advertisement": "Advertisement",
     "instructions": "Instructions",
-    "voicemail": "Voicemail"
+    "voicemail": "Voicemail",
+    "introduction": "Introduction",
+    "requests": "Requests",
+    "form": "Form"
   },
   "home": {
     "title": "Exam.one",
@@ -663,7 +666,18 @@
     "answers": "Answers",
     "questions": "Questions",
     "taskCompletion": "Task completion",
-    "language": "Language"
+    "language": "Language",
+    "introduction": "Introduction",
+    "spelling": "Spelling",
+    "number": "Number",
+    "ask1": "Question 1",
+    "answer1": "Answer 1",
+    "ask2": "Question 2",
+    "answer2": "Answer 2",
+    "request1": "Request 1",
+    "response1": "Reaction 1",
+    "request2": "Request 2",
+    "response2": "Reaction 2"
   },
   "mockExam": {
     "title": "Mock exams",
@@ -794,5 +808,30 @@
     "exercise": "Exercise",
     "yourAnswers": "Your answers",
     "savedFeedback": "Saved feedback"
+  },
+  "speaking": {
+    "cards": {
+      "wordCard": "Word card",
+      "requestCard": "Your card",
+      "topic": "Topic",
+      "partnerSays": "Your partner",
+      "placeholder": "Type or edit the transcript of this turn…",
+      "ask": {
+        "title": "Round {round} · Ask a question",
+        "description": "Make a question with the word on your card."
+      },
+      "answer": {
+        "title": "Round {round} · Answer your partner",
+        "description": "Answer the question in one short sentence."
+      },
+      "request": {
+        "title": "Round {round} · Make a request",
+        "description": "Ask politely for what is on your card."
+      },
+      "respond": {
+        "title": "Round {round} · React to the request",
+        "description": "Say yes or no politely, with a short reason."
+      }
+    }
   }
 }

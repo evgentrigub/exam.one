@@ -38,3 +38,7 @@ Write every comment, summary, strength, improvement and report in that language.
 /** The single "return only JSON" instruction. */
 export const JSON_ONLY =
   'Return ONLY valid JSON. No prose, explanation or Markdown before or after the JSON.'
+
+/** Examiner voice for the Sprechen review prompts. */
+export const SPEAKING_EXAMINER_ROLE =
+  'You are an experienced Goethe-Zertifikat A1 (Start Deutsch 1) Sprechen examiner. You judge only what is visible in a speech-to-text transcript: never pronunciation or fluency.'

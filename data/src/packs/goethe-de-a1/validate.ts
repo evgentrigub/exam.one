@@ -162,3 +162,40 @@ export function validateWriting(payload: Record<string, unknown>, rules: PartRun
   }
   requireWritingTopic(payload, ['email', 'note'])
 }
+
+const SPEAKING_TOPIC_TYPE: Record<number, string> = { 1: 'introduction', 2: 'interview', 3: 'requests' }
+/** Teil 2 alternates asking and answering; Teil 3 alternates requesting and reacting. */
+const CARD_KINDS: Record<number, readonly string[]> = {
+  2: ['ask', 'answer', 'ask', 'answer'],
+  3: ['request', 'respond', 'request', 'respond'],
+}
+
+/**
+ * Sprechen. Teil 1 is a keyword introduction on the monologue screen. Teil 2 and 3 are card
+ * exchanges: one card per configured segment, in order, each of the kind the round needs —
+ * the screen draws the card above its recording, so a missing card is a missing recording.
+ */
+export function validateSpeaking(payload: Record<string, unknown>, rules: PartRuntime): void {
+  const part = Number(payload['testingPart'])
+  requireString(payload['theme'], 'theme')
+  if (payload['topicType'] !== SPEAKING_TOPIC_TYPE[part])
+    fail(`topicType must be "${SPEAKING_TOPIC_TYPE[part]}" for Teil ${part}`)
+
+  if (part === 1) {
+    const keywords = payload['keywords']
+    if (!Array.isArray(keywords) || keywords.length < 7 || keywords.length > 10)
+      fail('keywords must contain 7 to 10 entries')
+    keywords.forEach((keyword, index) => requireString(keyword, `keywords[${index}]`))
+    return
+  }
+
+  const cards = requireRows(payload['cards'], 'cards', rules.segments?.length ?? 4)
+  const ids = (rules.segments ?? []).map(segment => segment.id)
+  cards.forEach((card, index) => {
+    const at = `cards[${index}]`
+    if (card['segment'] !== ids[index]) fail(`${at}.segment must be "${ids[index]}"`)
+    if (card['kind'] !== CARD_KINDS[part]?.[index]) fail(`${at}.kind must be "${CARD_KINDS[part]?.[index]}"`)
+    requireString(card['cue'], `${at}.cue`)
+    if (part === 2) requireString(card['topic'], `${at}.topic`)
+  })
+}

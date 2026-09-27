@@ -1,7 +1,7 @@
 import type { PartRuntime } from '../../runtime'
 import type { ExamModule, ExamPart, SkillId } from '../../types'
 import { goetheRawAdapter } from '../goethe-shared/raw-adapter'
-import { validateListening, validateReading, validateWriting } from './validate'
+import { validateListening, validateReading, validateSpeaking, validateWriting } from './validate'
 
 /** The five blank entries of the Teil 1 form, each worth one point. */
 export const FORM_FIELDS = [1, 2, 3, 4, 5].map(n => ({ id: `field${n}`, label: `Entry ${n}` }))
@@ -43,12 +43,42 @@ const RULES: Partial<Record<SkillId, Record<number, PartRuntime>>> = {
       ],
     },
   },
+  // Official maxima 3 / 6 / 6. The split into turns is a practice decomposition of them.
+  speaking: {
+    1: {
+      minutes: 5,
+      maxPoints: 3,
+      segments: [{ id: 'monologue', label: 'Introduction' }],
+      criteria: [
+        { id: 'introduction', label: 'Introduction', maxPoints: 1 },
+        { id: 'spelling', label: 'Spelling', maxPoints: 1 },
+        { id: 'number', label: 'Number', maxPoints: 1 },
+      ],
+    },
+    2: cardRules(['ask1', 'answer1', 'ask2', 'answer2'], ['Question', 'Answer', 'Question', 'Answer']),
+    3: cardRules(
+      ['request1', 'response1', 'request2', 'response2'],
+      ['Request', 'Reaction', 'Request', 'Reaction']
+    ),
+  },
+}
+
+/** Four turns of 1.5 points: two rounds of "make it" and "react to it". */
+function cardRules(ids: string[], labels: string[]): PartRuntime {
+  const segments = ids.map((id, i) => ({ id, label: `${labels[i]} ${Math.floor(i / 2) + 1}` }))
+  return {
+    minutes: 5,
+    maxPoints: 6,
+    segments,
+    criteria: segments.map(segment => ({ ...segment, maxPoints: 1.5 })),
+  }
 }
 
 const VALIDATORS: Partial<Record<SkillId, NonNullable<ExamPart['validate']>>> = {
   reading: validateReading,
   listening: validateListening,
   writing: validateWriting,
+  speaking: validateSpeaking,
 }
 
 /** Attach rules, the shared Goethe projection and the payload guard to every available part. */

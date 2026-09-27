@@ -25,7 +25,7 @@ export interface MockExamOverviewInput {
       total: number | null
       wordCount?: number
       content?: string
-      transcripts?: Record<string, string>
+      transcripts?: Record<string, string | undefined>
     }>
   }>
 }

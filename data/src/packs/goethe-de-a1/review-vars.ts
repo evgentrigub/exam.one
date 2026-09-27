@@ -60,6 +60,7 @@ export function goetheA1ReviewVars(input: {
   outputLanguage: string
 }): PromptVars {
   const { skill, part, kind, payload, answers, outputLanguage } = input
+  if (skill === 'speaking') return speakingVars(part, payload, answers, outputLanguage)
   if (skill !== 'writing')
     return { task: JSON.stringify(payload), userContent: JSON.stringify(answers), outputLanguage }
 
@@ -83,4 +84,50 @@ export function goetheA1ReviewVars(input: {
     userContent: text(answers['answer'] ?? answers['content'] ?? answers['userContent']),
     outputLanguage,
   }
+}
+
+const TURN: Record<string, string> = {
+  ask: 'the learner asks a question from their word card',
+  answer: 'the learner answers the partner question',
+  request: 'the learner makes a request from their card',
+  respond: 'the learner reacts to the partner request',
+}
+
+/**
+ * Speaking variables. Teil 1 is one monologue over the keywords. A card exchange lists every
+ * turn with its card and the learner's transcript, keyed by segment id so the rubric can
+ * echo the ids back.
+ */
+function speakingVars(
+  part: number,
+  payload: Record<string, unknown>,
+  answers: Record<string, unknown>,
+  outputLanguage: string
+): PromptVars {
+  const theme = text(payload['theme'])
+  if (part === 1) {
+    const keywords = Array.isArray(payload['keywords'])
+      ? payload['keywords'].filter((k): k is string => typeof k === 'string')
+      : []
+    return {
+      theme,
+      task: theme,
+      keywords: keywords.map((k, i) => `${i + 1}. ${k}`).join('\n'),
+      monologue: text(answers['monologue']).trim(),
+      userContent: text(answers['monologue']).trim(),
+      topicId: text(payload['id']),
+      outputLanguage,
+    }
+  }
+  const cards = Array.isArray(payload['cards']) ? payload['cards'].map(record) : []
+  const turns = cards
+    .map(card => {
+      const segment = text(card['segment'])
+      const topic = text(card['topic'])
+      const cue = `${topic ? `${topic} · ` : ''}${text(card['cue'])}`
+      const said = text(answers[segment]).trim() || '—'
+      return `${segment} — ${TURN[text(card['kind'])] ?? 'turn'}. Card: "${cue}". Learner said: "${said}"`
+    })
+    .join('\n')
+  return { theme, task: theme, turns, userContent: turns, topicId: text(payload['id']), outputLanguage }
 }

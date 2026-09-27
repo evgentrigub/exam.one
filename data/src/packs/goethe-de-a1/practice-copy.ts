@@ -21,6 +21,30 @@ const writingTips = {
   ],
 } as const
 
+const speakingCopy = {
+  1: {
+    sessionTitle: 'Introduction',
+    practiceMinutes: 5,
+    instruction:
+      'Introduce yourself using every keyword, then spell the word and say the number. Record it all in one go.',
+    phrases: ['Ich heiße …', 'Ich bin … Jahre alt.', 'Ich komme aus …', 'Ich wohne in …', 'Ich spreche …', 'Ich bin … von Beruf.', 'Mein Hobby ist …'],
+  },
+  2: {
+    sessionTitle: 'Ask & answer',
+    practiceMinutes: 5,
+    instruction:
+      'Two rounds. Ask a question with the word on your card, then answer your partner’s question. Record each turn separately.',
+    phrases: ['Was …?', 'Wo …?', 'Wann …?', 'Hast du …?', 'Magst du …?', 'Ich … gern …'],
+  },
+  3: {
+    sessionTitle: 'Requests',
+    practiceMinutes: 5,
+    instruction:
+      'Two rounds. Make a polite request for what is on your card, then react to your partner’s request. Record each turn separately.',
+    phrases: ['Können Sie bitte …?', 'Kannst du mir bitte … geben?', '…, bitte.', 'Ja, gern. Hier, bitte.', 'Tut mir leid, …', 'Kein Problem.'],
+  },
+} as const
+
 /** Session and catalog chrome, in the same slots A2 fills (see `ExamPart`). */
 const listeningChrome = {
   1: { practiceSubtitle: 'Short conversations', practiceType: 'dialog', practiceMinutes: 8, practiceTimerSec: 480 },
@@ -36,6 +60,7 @@ export function withPracticeCopy(modules: ExamModule[]): ExamModule[] {
       ...part,
       practiceLabel: `Teil ${part.n}`,
       ...(module.id === 'writing' ? { tips: writingTips[part.n as 1 | 2] } : {}),
+      ...(module.id === 'speaking' ? speakingCopy[part.n as 1 | 2 | 3] : {}),
       ...(module.id === 'listening'
         ? {
             instruction: listeningInstructions[part.n as 1 | 2 | 3],

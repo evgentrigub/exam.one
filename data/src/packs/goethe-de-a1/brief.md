@@ -42,5 +42,4 @@ recording is bundled.
 
 ## Status
 
-Lesen, Hören and Schreiben are available. Sprechen is listed but disabled until its screens land
-(roadmap 2.15, Plan 4).
+All four modules are available (roadmap 2.15).
