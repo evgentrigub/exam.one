@@ -56,3 +56,57 @@ export const speakingA1Seeds: (SpeakingKeywordTopic | SpeakingCardsTopic)[] = [
     ],
   },
 ]
+
+/** Dedicated mock-exam Set 1 tasks, one per Teil. Original, not official; `examOnly`. */
+export const mockSpeakingA1Seeds: (SpeakingKeywordTopic | SpeakingCardsTopic)[] = [
+  {
+    id: 'mock-a1-set1-speaking-teil1',
+    theme: 'Sich vorstellen',
+    topicType: 'introduction',
+    testingPart: 1,
+    difficulty: 'A1',
+    createdAt: '2026-09-27',
+    examOnly: true,
+    keywords: [
+      'Name?',
+      'Alter?',
+      'Land?',
+      'Wohnort?',
+      'Sprachen?',
+      'Beruf?',
+      'Hobby?',
+      'Buchstabieren Sie Ihren Vornamen.',
+      'Sagen Sie Ihre Hausnummer und Postleitzahl.',
+    ],
+  },
+  {
+    id: 'mock-a1-set1-speaking-teil2',
+    theme: 'Wohnen · Einkaufen',
+    topicType: 'interview',
+    testingPart: 2,
+    difficulty: 'A1',
+    createdAt: '2026-09-27',
+    examOnly: true,
+    cards: [
+      { segment: 'ask1', kind: 'ask', topic: 'Wohnen', cue: 'Küche' },
+      { segment: 'answer1', kind: 'answer', topic: 'Wohnen', cue: 'Wie viele Zimmer hat deine Wohnung?' },
+      { segment: 'ask2', kind: 'ask', topic: 'Einkaufen', cue: 'Supermarkt' },
+      { segment: 'answer2', kind: 'answer', topic: 'Einkaufen', cue: 'Was kaufst du am Wochenende?' },
+    ],
+  },
+  {
+    id: 'mock-a1-set1-speaking-teil3',
+    theme: 'Bitten im Alltag',
+    topicType: 'requests',
+    testingPart: 3,
+    difficulty: 'A1',
+    createdAt: '2026-09-27',
+    examOnly: true,
+    cards: [
+      { segment: 'request1', kind: 'request', cue: 'das Fenster öffnen' },
+      { segment: 'response1', kind: 'respond', cue: 'Kannst du mir bitte dein Handy geben?' },
+      { segment: 'request2', kind: 'request', cue: 'ein Glas Wasser' },
+      { segment: 'response2', kind: 'respond', cue: 'Können Sie mir bitte helfen?' },
+    ],
+  },
+]

@@ -52,9 +52,9 @@ exam-content:
   exam-only-vs-practice:
     description: default vs mockExam vs allDefault arrays; practice lists hide examOnly
   exercise-ids:
-    description: Payload id is externalId; `{skill}-{level}-teil{n}-{seq}` and mock-a2-set1-*
+    description: Payload id is externalId; `{skill}-{level}-teil{n}-{seq}` and mock-{a2,a1}-set1-*
   listening-audio-paths:
-    description: Seed WAV helpers under /audio/listening/a2; generated files stay out of that tree
+    description: Seed WAV helpers under each pack's audioPathPrefix (/a2, /a1); generated files stay out of those trees
   seeds-vs-prompts:
     description: Seeds and prompts live in data/src/packs; prompts should not move into Nest
 

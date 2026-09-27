@@ -1,5 +1,18 @@
 import type { ExamPack } from '../../types'
-import { listeningA1Seeds, readingA1Seeds, speakingA1Seeds, writingA1Seeds } from './content'
+import {
+  createGoetheA1MockExamSet,
+  goetheA1MockExamSet1,
+  listeningA1Seeds,
+  mockListeningA1Seeds,
+  mockReadingA1Seeds,
+  mockSpeakingA1Seeds,
+  mockWritingA1Seeds,
+  readingA1Seeds,
+  speakingA1Seeds,
+  writingA1Seeds,
+} from './content'
+import { A1_AUDIO_PATH_PREFIX } from './content/listening-audio'
+import { createGoetheMockOverview } from '../goethe-shared/mock-overview'
 import { withPracticeCopy } from './practice-copy'
 import { listeningPrompts } from './prompts/listening'
 import { readingPrompts } from './prompts/reading'
@@ -12,8 +25,9 @@ import { goetheDeA1Structure } from './structure'
 export const GOETHE_DE_A1_PACK_ID = 'goethe-de-a1'
 
 /**
- * Goethe-Zertifikat A1: Start Deutsch 1 — a practice pack, not A2 parity: no mock exams and no
- * bundled audio. Sources and adaptations are in `brief.md`.
+ * Goethe-Zertifikat A1: Start Deutsch 1 — all four modules plus mock exams: a bundled Set 1
+ * (with seed WAVs) and generated sets. Practice seeds ship without audio. Sources and
+ * adaptations are in `brief.md`.
  */
 export const goetheDeA1: ExamPack = {
   packId: GOETHE_DE_A1_PACK_ID,
@@ -34,13 +48,18 @@ export const goetheDeA1: ExamPack = {
       { id: 'eva', gender: 'female' },
     ],
     sttLang: 'de',
-    audioPathPrefix: '/audio/listening/a1',
+    audioPathPrefix: A1_AUDIO_PATH_PREFIX,
   },
+  // Practice seeds first, then the mock Set 1 payloads, which are flagged `examOnly` and stored
+  // as `EXAM_ONLY`, keeping them out of the practice catalogs.
   seedExercises: {
-    reading: readingA1Seeds as unknown as Record<string, unknown>[],
-    listening: listeningA1Seeds as unknown as Record<string, unknown>[],
-    writing: writingA1Seeds as unknown as Record<string, unknown>[],
-    speaking: speakingA1Seeds as unknown as Record<string, unknown>[],
+    reading: [...readingA1Seeds, ...mockReadingA1Seeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningA1Seeds, ...mockListeningA1Seeds] as unknown as Record<string, unknown>[],
+    writing: [...writingA1Seeds, ...mockWritingA1Seeds] as unknown as Record<string, unknown>[],
+    speaking: [...speakingA1Seeds, ...mockSpeakingA1Seeds] as unknown as Record<string, unknown>[],
   },
+  createMockSet: createGoetheA1MockExamSet,
+  bundledMockSet: goetheA1MockExamSet1,
   buildReviewVars: goetheA1ReviewVars,
+  mockOverview: createGoetheMockOverview('Goethe A1'),
 }

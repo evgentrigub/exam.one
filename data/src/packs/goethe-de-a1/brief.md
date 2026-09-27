@@ -38,8 +38,20 @@ recording is bundled.
 - Schreiben Teil 1 uses the *form fill* screen; Teil 2 uses a 20–50 word guidance range, no auto-zero.
 - Sprechen is solo practice with fixed partner cues; feedback grades the transcript only. Teil 2 and 3
   use the *word cards* and *request cards* screens.
-- No mock exams.
+
+## Mock exams
+
+- Bundled **Set 1** (`goethe-a1-set-1`): 11 original exam-only exercises (`mock-a1-set1-*`, `examOnly: true`),
+  one per Teil, in `content/seeds/*` and assembled in `content/seeds/mock-exam.ts`. Its listening items point at
+  seed WAVs under `/audio/listening/a1/`, written by `pnpm generate:listening-audio` (run by `pnpm stack:seed-audio`),
+  so Set 1 works without an LLM key or a TTS service.
+- Generated sets (`goethe-a1-set-N`) run the shared resumable pipeline after the LLM and TTS preflight.
+- Modules in the A2 order (Lesen 25, Hören 20, Schreiben 20, Sprechen 15 minutes). Each module converts its 15 raw
+  points to 25 with the exact factor 25/15 (the official ×1.66, whose rounded total is the same); 100 in total,
+  pass mark 60. Listening replays follow the runtime: Teil 1 and 3 twice, Teil 2 once.
+- Writing and Speaking are graded automatically by AI; there is no word-count zero rule. Speaking is graded from
+  transcripts only, so its score is marked provisional.
 
 ## Status
 
-All four modules are available (roadmap 2.15).
+All four modules are available (roadmap 2.15), plus mock exams.

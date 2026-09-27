@@ -187,3 +187,185 @@ export const readingA1Seeds: ReadingA1Exercise[] = [
     ]),
   },
 ]
+
+/**
+ * Dedicated mock-exam Set 1 texts, one per Teil. Original, not official; kept out of the
+ * practice lists by `examOnly`.
+ */
+export const mockReadingA1Seeds: ReadingA1Exercise[] = [
+  {
+    id: 'mock-a1-set1-reading-teil1',
+    title: 'Modellprüfung Set 1 · Zwei Nachrichten',
+    content: [
+      'Liebe Sophie,',
+      'am Freitag habe ich Geburtstag. Ich mache eine kleine Party bei mir zu Hause. Sie beginnt um 19 Uhr. Meine Adresse ist Lindenstraße 8, dritter Stock. Du musst nichts mitbringen, ich koche Pizza für alle. Kommst du?',
+      'Viele Grüße',
+      'Marta',
+      '',
+      'Hallo Herr Wagner,',
+      'leider kann ich morgen nicht zur Arbeit kommen. Ich bin krank und gehe am Vormittag zum Arzt. Frau Klein macht meine Termine am Nachmittag. Am Donnerstag bin ich wieder im Büro.',
+      'Mit freundlichen Grüßen',
+      'Jonas Richter',
+    ].join('\n'),
+    textType: 'email',
+    testingPart: 1,
+    difficulty: 'A1',
+    estimatedReadingTime: 3,
+    wordCount: 88,
+    topics: ['Freunde', 'Arbeit'],
+    createdAt: '2026-09-27',
+    examOnly: true,
+    questions: questions('mock-a1-set1-reading-teil1', 'comprehension', [
+      {
+        question: 'Die Party von Marta beginnt am Abend.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Die Party beginnt um 19 Uhr, also am Abend.',
+      },
+      {
+        question: 'Sophie soll etwas zu essen mitbringen.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Marta schreibt: „Du musst nichts mitbringen, ich koche Pizza für alle.“',
+      },
+      {
+        question: 'Marta wohnt im dritten Stock.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Die Adresse ist Lindenstraße 8, dritter Stock.',
+      },
+      {
+        question: 'Jonas geht morgen am Nachmittag zum Arzt.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Jonas geht am Vormittag zum Arzt; am Nachmittag macht Frau Klein seine Termine.',
+      },
+      {
+        question: 'Jonas arbeitet am Donnerstag wieder.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Jonas schreibt: „Am Donnerstag bin ich wieder im Büro.“',
+      },
+    ]),
+  },
+  {
+    id: 'mock-a1-set1-reading-teil2',
+    title: 'Modellprüfung Set 1 · Wo finden Sie Informationen?',
+    content: 'Lesen Sie die Situationen 1 bis 5. Wo finden Sie Informationen? Wählen Sie a oder b.',
+    textType: 'advertisement',
+    testingPart: 2,
+    difficulty: 'A1',
+    estimatedReadingTime: 4,
+    wordCount: 150,
+    topics: ['Einkaufen', 'Reisen', 'Freizeit'],
+    createdAt: '2026-09-27',
+    examOnly: true,
+    questions: questions('mock-a1-set1-reading-teil2', 'selective', [
+      {
+        question: 'Sie möchten am Samstag mit dem Zug nach München fahren.',
+        options: [
+          'www.bahn-reise.de – Fahrkarten online kaufen: alle Züge in Deutschland, auch am Wochenende.',
+          'www.muenchen-hotels.de – Hotels und Zimmer in München: ab 59 Euro pro Nacht.',
+        ],
+        correctAnswer: 0,
+        explanation: 'Auf der Bahn-Seite finden Sie Züge und Fahrkarten; die andere Seite hat nur Hotels.',
+      },
+      {
+        question: 'Sie brauchen neue Schuhe für Ihren Sohn.',
+        options: [
+          'www.kinder-mode.de – Hosen, Jacken und Schuhe für Kinder von 2 bis 12 Jahren.',
+          'www.schuh-reparatur.de – Wir reparieren Ihre Schuhe schnell und billig.',
+        ],
+        correctAnswer: 0,
+        explanation: 'Kinder-Mode verkauft Schuhe für Kinder; die andere Seite repariert nur Schuhe.',
+      },
+      {
+        question: 'Sie möchten am Abend schwimmen gehen.',
+        options: [
+          'www.hallenbad-nord.de – Hallenbad Nord: Montag bis Freitag 6 bis 22 Uhr geöffnet.',
+          'www.see-camping.de – Camping am See: Plätze für Zelte, Mai bis September.',
+        ],
+        correctAnswer: 0,
+        explanation: 'Das Hallenbad ist bis 22 Uhr offen; der Campingplatz ist kein Schwimmbad am Abend.',
+      },
+      {
+        question: 'Ihr Computer ist kaputt. Sie suchen Hilfe.',
+        options: [
+          'www.computer-kurs.de – Computerkurse für Anfänger, jeden Dienstag in der Volkshochschule.',
+          'www.pc-service-hahn.de – PC-Service Hahn: Wir reparieren Computer und Laptops, auch bei Ihnen zu Hause.',
+        ],
+        correctAnswer: 1,
+        explanation: 'Der PC-Service repariert Computer; der Kurs hilft nicht bei einem kaputten Computer.',
+      },
+      {
+        question: 'Sie möchten eine Katze haben.',
+        options: [
+          'www.tierheim-mitte.de – Tierheim Mitte: Katzen und Hunde suchen ein neues Zuhause.',
+          'www.tierarzt-sommer.de – Tierarztpraxis Sommer: Sprechstunde Montag bis Samstag.',
+        ],
+        correctAnswer: 0,
+        explanation: 'Im Tierheim können Sie eine Katze bekommen; der Tierarzt behandelt nur kranke Tiere.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-a1-set1-reading-teil3',
+    title: 'Modellprüfung Set 1 · Schilder und Informationen',
+    content: [
+      '1 · An der Tür der Bäckerei',
+      '„Montag Ruhetag. Dienstag bis Sonntag 6.30 bis 13 Uhr.“',
+      '',
+      '2 · Im Hotel',
+      '„Frühstück im Restaurant, 1. Stock, von 7 bis 10 Uhr.“',
+      '',
+      '3 · An der Bushaltestelle',
+      '„Linie 12 fährt heute nicht. Bitte nehmen Sie die Linie 14.“',
+      '',
+      '4 · Im Museum',
+      '„Fotografieren verboten. Taschen bitte an der Garderobe abgeben.“',
+      '',
+      '5 · Im Supermarkt',
+      '„Heute: Äpfel aus der Region, 1 Kilo nur 1,99 Euro.“',
+    ].join('\n'),
+    textType: 'notice',
+    testingPart: 3,
+    difficulty: 'A1',
+    estimatedReadingTime: 3,
+    wordCount: 70,
+    topics: ['Alltag', 'Stadt'],
+    createdAt: '2026-09-27',
+    examOnly: true,
+    questions: questions('mock-a1-set1-reading-teil3', 'comprehension', [
+      {
+        question: 'Schild 1: Am Montag können Sie in der Bäckerei Brot kaufen.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Montag ist Ruhetag, die Bäckerei ist geschlossen.',
+      },
+      {
+        question: 'Schild 2: Das Frühstück ist im ersten Stock.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Frühstück gibt es im Restaurant im 1. Stock.',
+      },
+      {
+        question: 'Schild 3: Heute fahren Sie mit der Linie 14.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Die Linie 12 fährt heute nicht; Sie sollen die Linie 14 nehmen.',
+      },
+      {
+        question: 'Schild 4: Im Museum dürfen Sie Fotos machen.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Auf dem Schild steht: „Fotografieren verboten.“',
+      },
+      {
+        question: 'Schild 5: Ein Kilo Äpfel kostet heute weniger als 2 Euro.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Ein Kilo Äpfel kostet heute 1,99 Euro.',
+      },
+    ]),
+  },
+]

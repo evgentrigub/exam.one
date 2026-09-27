@@ -1,4 +1,5 @@
 import type { ListeningA1Exercise, ListeningA1Item, TrueFalse } from '../types'
+import { withSeedAudio } from '../listening-audio'
 
 const TRUE_FALSE: TrueFalse = ['Richtig', 'Falsch']
 
@@ -178,3 +179,179 @@ export const listeningA1Seeds: ListeningA1Exercise[] = [
     ]),
   },
 ]
+
+/**
+ * Dedicated mock-exam Set 1 recordings, one exercise per Teil. Original, not official.
+ *
+ * Unlike the practice seeds they carry an `audio` map pointing at bundled seed WAVs, which
+ * `pnpm generate:listening-audio` writes, so Set 1 plays without a TTS service.
+ */
+const mockListeningA1Payloads: ListeningA1Exercise[] = [
+  {
+    id: 'mock-a1-set1-listening-teil1',
+    title: 'Modellprüfung Set 1 · Teil 1: Kurze Gespräche',
+    testingPart: 1,
+    difficulty: 'A1',
+    createdAt: '2026-09-27',
+    examOnly: true,
+    items: items('mock-a1-set1-listening-teil1', [
+      {
+        context: 'In der Bäckerei.',
+        transcript:
+          'Frau: Guten Morgen, ich möchte vier Brötchen, bitte. Verkäufer: Gern. Sonst noch etwas? Frau: Ja, ein Brot. Verkäufer: Das macht zusammen 4,60 Euro. Frau: 6,40? Verkäufer: Nein, vier Euro sechzig.',
+        question: 'Wie viel bezahlt die Frau?',
+        options: ['6,40 Euro.', '4,60 Euro.', '4,16 Euro.'],
+        correctAnswer: 1,
+        explanation: 'Der Verkäufer korrigiert: nicht 6,40, sondern vier Euro sechzig.',
+      },
+      {
+        context: 'Auf der Straße.',
+        transcript:
+          'Mann: Entschuldigung, wo ist hier die Post? Frau: Die Post? Gehen Sie hier geradeaus und dann die zweite Straße links. Mann: Die zweite links, danke. Frau: Die Post ist neben der Bank.',
+        question: 'Wo ist die Post?',
+        options: ['Neben der Bank.', 'Neben dem Bahnhof.', 'Neben dem Supermarkt.'],
+        correctAnswer: 0,
+        explanation: 'Die Frau sagt: „Die Post ist neben der Bank.“',
+      },
+      {
+        context: 'Am Telefon mit einem Freund.',
+        transcript:
+          'Frau: Hallo Ben, gehen wir heute ins Kino? Mann: Heute kann ich nicht, ich muss arbeiten. Frau: Und morgen? Mann: Morgen ist Freitag, da habe ich Zeit. Frau: Gut, dann morgen.',
+        question: 'Wann gehen sie ins Kino?',
+        options: ['Heute.', 'Am Donnerstag.', 'Am Freitag.'],
+        correctAnswer: 2,
+        explanation: 'Heute muss Ben arbeiten; morgen ist Freitag, dann gehen sie ins Kino.',
+      },
+      {
+        context: 'Im Kaufhaus.',
+        transcript:
+          'Mann: Entschuldigung, wo finde ich Hemden? Verkäuferin: Hemden für Herren sind im zweiten Stock. Mann: Im zweiten? Nicht im ersten? Verkäuferin: Nein, im ersten Stock sind Schuhe.',
+        question: 'Wo sind die Hemden?',
+        options: ['Im Erdgeschoss.', 'Im ersten Stock.', 'Im zweiten Stock.'],
+        correctAnswer: 2,
+        explanation: 'Hemden für Herren sind im zweiten Stock; im ersten Stock sind Schuhe.',
+      },
+      {
+        context: 'Im Restaurant.',
+        transcript:
+          'Kellner: Was möchten Sie trinken? Frau: Einen Kaffee, bitte. Kellner: Mit Milch? Frau: Nein, danke. Ach, haben Sie auch Tee? Kellner: Ja, natürlich. Frau: Dann nehme ich lieber einen Tee.',
+        question: 'Was trinkt die Frau?',
+        options: ['Kaffee.', 'Tee.', 'Kaffee mit Milch.'],
+        correctAnswer: 1,
+        explanation: 'Die Frau bestellt zuerst Kaffee, aber dann nimmt sie lieber einen Tee.',
+      },
+      {
+        context: 'In der Schule.',
+        transcript:
+          'Frau: Herr Kaya, wann beginnt morgen der Elternabend? Mann: Um halb acht. Frau: Um halb sieben? Mann: Nein, um halb acht, also um 19.30 Uhr.',
+        question: 'Wann beginnt der Elternabend?',
+        options: ['Um 18.30 Uhr.', 'Um 19.30 Uhr.', 'Um 20.30 Uhr.'],
+        correctAnswer: 1,
+        explanation: 'Der Elternabend beginnt um halb acht, also um 19.30 Uhr.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-a1-set1-listening-teil2',
+    title: 'Modellprüfung Set 1 · Teil 2: Durchsagen',
+    testingPart: 2,
+    difficulty: 'A1',
+    createdAt: '2026-09-27',
+    examOnly: true,
+    items: items('mock-a1-set1-listening-teil2', [
+      {
+        context: 'Am Bahnhof.',
+        transcript:
+          'Achtung, eine Information: Der Intercity nach Köln fährt heute nicht von Gleis 7, sondern von Gleis 9 ab. Abfahrt 14.12 Uhr.',
+        question: 'Der Zug nach Köln fährt von Gleis 9.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Der Intercity fährt heute nicht von Gleis 7, sondern von Gleis 9.',
+      },
+      {
+        context: 'Im Supermarkt.',
+        transcript:
+          'Liebe Kundinnen und Kunden, heute im Angebot: Orangen, ein Kilo für nur 1,50 Euro. Sie finden die Orangen gleich am Eingang.',
+        question: 'Die Orangen sind heute teurer.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Die Orangen sind im Angebot, ein Kilo kostet nur 1,50 Euro.',
+      },
+      {
+        context: 'Am Flughafen.',
+        transcript:
+          'Information zum Flug LH 204 nach Wien: Der Flug hat 45 Minuten Verspätung. Neue Abflugzeit ist 11.30 Uhr. Bitte warten Sie am Ausgang C 3.',
+        question: 'Der Flug nach Wien fliegt pünktlich.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Der Flug nach Wien hat 45 Minuten Verspätung.',
+      },
+      {
+        context: 'Im Schwimmbad.',
+        transcript:
+          'Liebe Gäste, unser Schwimmbad schließt in 15 Minuten. Bitte kommen Sie jetzt aus dem Wasser. Morgen sind wir ab 8 Uhr wieder für Sie da.',
+        question: 'Die Gäste sollen jetzt aus dem Wasser kommen.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Das Schwimmbad schließt bald; die Gäste sollen jetzt aus dem Wasser kommen.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-a1-set1-listening-teil3',
+    title: 'Modellprüfung Set 1 · Teil 3: Nachrichten am Telefon',
+    testingPart: 3,
+    difficulty: 'A1',
+    createdAt: '2026-09-27',
+    examOnly: true,
+    items: items('mock-a1-set1-listening-teil3', [
+      {
+        context: 'Die Arztpraxis ruft an.',
+        transcript:
+          'Guten Tag, Frau Novak, hier ist die Praxis Doktor Schulz. Ihr Termin am Dienstag geht leider nicht. Können Sie am Mittwoch um 9 Uhr kommen? Bitte rufen Sie uns zurück. Danke.',
+        question: 'Wann ist der neue Termin?',
+        options: ['Am Dienstag.', 'Am Mittwoch.', 'Am Donnerstag.'],
+        correctAnswer: 1,
+        explanation: 'Der Termin am Dienstag geht nicht; die Praxis fragt nach Mittwoch um 9 Uhr.',
+      },
+      {
+        context: 'Ein Freund ruft an.',
+        transcript:
+          'Hallo Anna, hier ist David. Wir treffen uns heute nicht am Bahnhof, sondern vor dem Café Rosa. Das ist am Marktplatz. Bis um sieben!',
+        question: 'Wo treffen sich Anna und David?',
+        options: ['Am Bahnhof.', 'Im Kino.', 'Vor dem Café.'],
+        correctAnswer: 2,
+        explanation: 'Sie treffen sich nicht am Bahnhof, sondern vor dem Café Rosa.',
+      },
+      {
+        context: 'Das Möbelhaus ruft an.',
+        transcript:
+          'Guten Tag, hier ist das Möbelhaus Krone. Ihr neuer Tisch ist da. Wir bringen ihn am Samstag zwischen 10 und 12 Uhr zu Ihnen nach Hause. Auf Wiederhören.',
+        question: 'Was bringt das Möbelhaus am Samstag?',
+        options: ['Einen Tisch.', 'Ein Bett.', 'Einen Schrank.'],
+        correctAnswer: 0,
+        explanation: 'Das Möbelhaus sagt: „Ihr neuer Tisch ist da.“',
+      },
+      {
+        context: 'Die Mutter ruft an.',
+        transcript:
+          'Hallo Paula, hier ist Mama. Kannst du heute nach der Schule einkaufen? Wir brauchen Milch und Eier. Brot habe ich schon. Das Geld liegt in der Küche. Tschüs!',
+        question: 'Was soll Paula kaufen?',
+        options: ['Brot und Milch.', 'Milch und Eier.', 'Eier und Brot.'],
+        correctAnswer: 1,
+        explanation: 'Paula soll Milch und Eier kaufen; Brot hat die Mutter schon.',
+      },
+      {
+        context: 'Das Hotel ruft an.',
+        transcript:
+          'Guten Abend, Herr Lopez, hier ist das Hotel Seeblick. Sie haben ein Zimmer für drei Nächte reserviert. Das Zimmer kostet 85 Euro pro Nacht, mit Frühstück. Bis bald!',
+        question: 'Was kostet das Zimmer pro Nacht?',
+        options: ['58 Euro.', '85 Euro.', '80 Euro.'],
+        correctAnswer: 1,
+        explanation: 'Das Hotel sagt: 85 Euro pro Nacht, mit Frühstück.',
+      },
+    ]),
+  },
+]
+
+export const mockListeningA1Seeds: ListeningA1Exercise[] = mockListeningA1Payloads.map(withSeedAudio)

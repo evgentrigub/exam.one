@@ -74,6 +74,13 @@ function cardRules(ids: string[], labels: string[]): PartRuntime {
   }
 }
 
+/** The rules of one part, for callers outside the structure such as the mock factory. */
+export function a1PartRules(skill: SkillId, n: number): PartRuntime {
+  const rules = RULES[skill]?.[n]
+  if (!rules) throw new Error(`goethe-de-a1: no runtime rules for ${skill}:${n}`)
+  return rules
+}
+
 const VALIDATORS: Partial<Record<SkillId, NonNullable<ExamPart['validate']>>> = {
   reading: validateReading,
   listening: validateListening,

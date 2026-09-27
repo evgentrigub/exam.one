@@ -6,7 +6,7 @@ Forkers add an exam by creating a folder under `src/packs/` and registering it i
 | --- | --- |
 | `src/types.ts` | Generic pack, module, and `PromptSpec` contracts |
 | `src/packs/goethe-de-a2/` | Live Goethe A2 (structure, prompts, bundled seeds, mock factory) |
-| `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (practice pack: all four modules, one seed per part, no mocks) |
+| `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (all four modules, one seed per part, mock factory and bundled Set 1) |
 | `src/packs/goethe-shared/` | The raw-payload projection both Goethe packs use |
 | `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
 

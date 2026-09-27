@@ -24,6 +24,8 @@ export interface ReadingA1Exercise {
   wordCount: number
   topics: string[]
   createdAt: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
   questions: ReadingA1Question[]
 }
 
@@ -43,5 +45,9 @@ export interface ListeningA1Exercise {
   testingPart: 1 | 2 | 3
   difficulty: 'A1'
   createdAt: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
+  /** Bundled seed WAVs, one per item; absent on practice seeds, which generate on demand. */
+  audio?: { items: Record<string, string> }
   items: ListeningA1Item[]
 }
