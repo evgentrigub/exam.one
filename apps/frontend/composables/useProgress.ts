@@ -438,7 +438,9 @@ export const useProgress = () => {
     content: string,
     wordCount: number,
     timeSpent?: number,
-    feedback?: WritingFeedbackModel
+    feedback?: WritingFeedbackModel,
+    /** Form-fill entries keyed by field id, stored alongside so each field resolves on its own. */
+    fields?: Record<string, string>
   ) => {
     const submissionId = `${topicId}-${Date.now()}`
     const submittedAt = new Date().toISOString()
@@ -477,7 +479,7 @@ export const useProgress = () => {
       body: {
         skill: 'WRITING',
         exerciseExternalId: topicId,
-        answers: newSubmission,
+        answers: fields ? { ...fields, ...newSubmission } : newSubmission,
       },
     }).catch(error => console.warn('Failed to save writing submission', error))
   }

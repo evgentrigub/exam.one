@@ -3,6 +3,7 @@ import {
   getLivePack,
   goetheDeA1,
   objectiveScore,
+  validateReview,
   validateView,
   type SkillId,
 } from '@exam-one/exam-packs'
@@ -89,10 +90,110 @@ describe('Goethe A1 pack', () => {
   })
 
   it('leaves no unresolved placeholder in a generator prompt but {count}', () => {
-    for (const spec of goetheDeA1.prompts) {
+    for (const spec of goetheDeA1.prompts.filter(p => p.kind === 'generator')) {
       const text = spec.assemble({ count: 2 })
       expect(text).not.toMatch(/\{(?!count\})[a-zA-Z]+\}/)
       expect(text).not.toContain('{count}')
     }
+  })
+
+  it.each([1, 2])('projects and validates the writing Teil %i seed', n => {
+    const p = part('writing', n)
+    const payload = seed('writing', n)
+    expect(() => validateView(p.adapter!.project(payload), p.runtime!)).not.toThrow()
+    expect(() => p.validate!(payload, p.runtime!)).not.toThrow()
+  })
+
+  it('uses the form-fill layout for Teil 1 and names each field after its form row', () => {
+    const p = part('writing', 1)
+    expect(p.layout).toBe('form-fill')
+    const view = p.adapter!.project(seed('writing', 1))
+    expect(view.fields!.map(f => f.prompt)).toEqual([
+      'Herkunftsland',
+      'Beruf',
+      'Anzahl der Personen',
+      'Kurszeit',
+      'Telefon (Handy)',
+    ])
+  })
+
+  it('rejects a form whose blanks are not field1–field5 in order', () => {
+    const payload = seed('writing', 1)
+    const rows = (payload['form'] as { rows: Record<string, unknown>[] }).rows
+    rows[1]!['field'] = 'field2'
+    expect(() => part('writing', 1).validate!(payload, part('writing', 1).runtime!)).toThrow(
+      'the blank rows must be field1'
+    )
+  })
+
+  it('rejects a form without an expected entry, or with one outside its options', () => {
+    const missing = seed('writing', 1)
+    delete (missing['expected'] as Record<string, unknown>)['field3']
+    expect(() => part('writing', 1).validate!(missing, part('writing', 1).runtime!)).toThrow('expected.field3')
+    const outside = seed('writing', 1)
+    ;(outside['expected'] as Record<string, unknown>)['field4'] = 'Nachmittag'
+    expect(() => part('writing', 1).validate!(outside, part('writing', 1).runtime!)).toThrow(
+      'expected.field4 must be one of its options'
+    )
+  })
+
+  it.each([
+    [1, 'answer'],
+    [1, 'review'],
+    [2, 'answer'],
+    [2, 'review'],
+  ] as const)('resolves every placeholder in the writing Teil %i %s prompt', (n, kind) => {
+    const vars = goetheDeA1.buildReviewVars!({
+      skill: 'writing',
+      part: n,
+      kind,
+      payload: seed('writing', n),
+      answers: { field1: 'Marokko', answer: 'Liebe Damen und Herren, …' },
+      outputLanguage: 'de',
+    })
+    const text = findPrompt(goetheDeA1, 'writing', n, kind)!.assemble(vars)
+    expect(text).not.toMatch(/\{[a-zA-Z]+\}/)
+  })
+
+  it('lists each form entry by field id and label for the reviewer', () => {
+    const vars = goetheDeA1.buildReviewVars!({
+      skill: 'writing',
+      part: 1,
+      kind: 'review',
+      payload: seed('writing', 1),
+      answers: { field1: 'Marokko', field3: 'zwei' },
+      outputLanguage: 'en',
+    })
+    expect(vars['userContent']).toContain('field1 (Herkunftsland): Marokko')
+    expect(vars['userContent']).toContain('field2 (Beruf): —')
+    expect(vars['expected']).toContain('field4 (Kurszeit): Abend')
+  })
+
+  it('accepts a 1/0 form review and rejects a wrong total', () => {
+    const rules = part('writing', 1).runtime!
+    const review = {
+      criteria: rules.criteria!.map((c, i) => ({ ...c, points: i === 2 ? 0 : 1, comment: 'ok' })),
+      totalPoints: 4,
+      maxPoints: 5,
+      summary: 'Gut',
+      strengths: [],
+      improvements: [],
+    }
+    expect(validateReview(review, rules).totalPoints).toBe(4)
+    expect(() => validateReview({ ...review, totalPoints: 5 }, rules)).toThrow()
+  })
+
+  it('accepts a 3/1.5/0 message review for Teil 2', () => {
+    const rules = part('writing', 2).runtime!
+    const points: Record<string, number> = { content1: 3, content2: 1.5, content3: 3, communication: 0.5 }
+    const review = {
+      criteria: rules.criteria!.map(c => ({ ...c, points: points[c.id], comment: 'ok' })),
+      totalPoints: 8,
+      maxPoints: 10,
+      summary: 'Gut',
+      strengths: [],
+      improvements: [],
+    }
+    expect(validateReview(review, rules).totalPoints).toBe(8)
   })
 })

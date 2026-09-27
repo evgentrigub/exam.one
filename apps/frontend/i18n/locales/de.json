@@ -607,7 +607,11 @@
       "examples": "Korrekturbeispiele",
       "error": "Original",
       "correction": "Korrektur",
-      "report": "Bewertungsbericht"
+      "report": "Bewertungsbericht",
+      "contentPoint1": "Inhaltspunkt 1",
+      "contentPoint2": "Inhaltspunkt 2",
+      "contentPoint3": "Inhaltspunkt 3",
+      "communication": "Anrede und Gruß"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -630,6 +634,23 @@
       "generating": "Musterantwort wird generiert...",
       "canGenerate": "Eine Musterantwort kann für dieses Thema generiert werden",
       "generateButton": "Musterantwort generieren"
+    },
+    "formFill": {
+      "title": "Formular",
+      "filled": "ausgefüllt",
+      "progress": "Ausgefüllte Angaben",
+      "saveDraft": "Entwurf speichern",
+      "submit": "Abgeben",
+      "saveAndExit": "Speichern & beenden",
+      "submitted": "Abgegeben",
+      "autoSaved": "Entwurf gerade automatisch gespeichert",
+      "entryCount": "{count} Angaben",
+      "correctEntries": "Richtige Angaben",
+      "entries": "Deine Angaben",
+      "correct": "Richtig",
+      "wrong": "Nicht richtig",
+      "strengths": "Das war gut",
+      "improvements": "Nächstes Mal prüfen"
     }
   },
   "speakingReview": {

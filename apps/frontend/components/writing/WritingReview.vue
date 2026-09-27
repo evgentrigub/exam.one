@@ -66,7 +66,13 @@
 
         <!-- Review View -->
         <div v-if="selectedView === 'review' && reviewData">
-          <WritingReviewDetails :review="reviewData" :teil="currentTopic?.testingPart ?? 1" />
+          <FormFillReviewDetails
+            v-if="formEntries"
+            :review="reviewData"
+            :entries="formEntries"
+            :teil="currentTopic?.testingPart ?? 1"
+          />
+          <WritingReviewDetails v-else :review="reviewData" :teil="currentTopic?.testingPart ?? 1" />
         </div>
 
         <pre
@@ -114,6 +120,13 @@
 <script setup lang="ts">
 import { AlertTriangle, CheckCircle2, Clock } from 'lucide-vue-next'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
+import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
+import {
+  blankRows,
+  displayWritingContent,
+  isFormFillTopic,
+  parseFormValues,
+} from '~/utils/writing/formFill'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
 import { useWritingTopics } from '~/composables/useWritingTopics'
@@ -160,7 +173,15 @@ const reviewData = computed<CriterionReview | null>(() => {
 
 const latestSubmissionText = computed(() => {
   const sub = getLatestSubmission(props.topicId)
-  return sub?.content || ''
+  return sub?.content ? displayWritingContent(currentTopic.value, sub.content) : ''
+})
+
+/** A form-fill task's entries beside their form labels; null for an essay. */
+const formEntries = computed(() => {
+  const topic = currentTopic.value
+  if (!topic || !isFormFillTopic(topic)) return null
+  const values = parseFormValues(getLatestSubmission(props.topicId)?.content)
+  return blankRows(topic).map(row => ({ id: row.field, label: row.label, answer: values[row.field] ?? '' }))
 })
 
 const selectedView = ref<'review' | 'answer' | 'task'>('review')

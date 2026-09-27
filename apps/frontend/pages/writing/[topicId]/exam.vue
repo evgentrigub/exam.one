@@ -26,7 +26,11 @@
         skill="writing"
         :type="topic.topicType"
         :title="topic.title"
-        :subtitle="`${pack.title} · ${labelFor('writing', topic.testingPart || 2)} · ${topic.wordCount.min}–${topic.wordCount.max} words`"
+        :subtitle="`${pack.title} · ${labelFor('writing', topic.testingPart || 2)} · ${
+          isFormFillTopic(topic)
+            ? $t('writing.formFill.entryCount', { count: blankRows(topic).length })
+            : `${topic.wordCount.min}–${topic.wordCount.max} words`
+        }`"
         :level="topic.difficulty"
         to="/exercises?skill=writing"
         :back-label="$t('exercisesUi.skillPractice', { skill: $t('skill.writing') })"
@@ -41,6 +45,7 @@
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { WritingExercise } from '~/utils/types'
 import WritingSession from '~/components/writing/WritingSession.vue'
+import { blankRows, isFormFillTopic } from '~/utils/writing/formFill'
 
 const route = useRoute()
 const { getTopicById, isInitialized } = useWritingTopics()

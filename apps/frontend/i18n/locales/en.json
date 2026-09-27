@@ -607,7 +607,11 @@
       "examples": "Correction examples",
       "error": "Original",
       "correction": "Correction",
-      "report": "Review report"
+      "report": "Review report",
+      "contentPoint1": "Content point 1",
+      "contentPoint2": "Content point 2",
+      "contentPoint3": "Content point 3",
+      "communication": "Greeting and closing"
     },
     "modelAnswer": {
       "title": "Model Answer",
@@ -630,6 +634,23 @@
       "generating": "Generating model answer...",
       "canGenerate": "A model answer can be generated for this topic",
       "generateButton": "Generate Model Answer"
+    },
+    "formFill": {
+      "title": "Form",
+      "filled": "filled",
+      "progress": "Entries filled in",
+      "saveDraft": "Save Draft",
+      "submit": "Submit",
+      "saveAndExit": "Save & Exit",
+      "submitted": "Submitted",
+      "autoSaved": "Draft auto-saved just now",
+      "entryCount": "{count} entries",
+      "correctEntries": "Correct entries",
+      "entries": "Your entries",
+      "correct": "Correct",
+      "wrong": "Not correct",
+      "strengths": "What went well",
+      "improvements": "Check next time"
     }
   },
   "speakingReview": {
