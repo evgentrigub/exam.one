@@ -71,23 +71,6 @@ export class ExercisesService {
     const packId = await resolveUserPackId(this.prisma, user.id)
     const pack = getLivePack(packId)
     const level = examLevelOf(pack.cefr)
-    if (!pack.compatibility) {
-      try {
-        const partNumber = record(payload)['testingPart']
-        const part = pack.structure
-          .find(module => module.id === skill.toLowerCase())
-          ?.parts.find(part => part.n === partNumber && part.available !== false)
-        if (!part?.adapter || !part.runtime)
-          throw new Error(`Unknown ${skill} part ${String(partNumber)}`)
-        validateView(part.adapter.project(payload), part.runtime)
-      } catch (error) {
-        throw new BadRequestException({
-          code: 'INVALID_PAYLOAD',
-          message: error instanceof Error ? error.message : 'Invalid exercise payload',
-        })
-      }
-    }
-
     const existing = await this.prisma.exercise.findFirst({
       where: { userId: user.id, skill, packId, externalId },
     })
@@ -107,6 +90,25 @@ export class ExercisesService {
         code: 'SEED_ID',
         message: 'Cannot overwrite bundled seed content',
       })
+    }
+
+    // Every stored exercise must project to a valid view; generated ones already cleared a
+    // stricter bar in PackAiService, so this catches hand-rolled and stale payloads.
+    {
+      try {
+        const partNumber = record(payload)['testingPart']
+        const part = pack.structure
+          .find(module => module.id === skill.toLowerCase())
+          ?.parts.find(part => part.n === partNumber && part.available !== false)
+        if (!part?.adapter || !part.runtime)
+          throw new Error(`Unknown ${skill} part ${String(partNumber)}`)
+        validateView(part.adapter.project(payload), part.runtime)
+      } catch (error) {
+        throw new BadRequestException({
+          code: 'INVALID_PAYLOAD',
+          message: error instanceof Error ? error.message : 'Invalid exercise payload',
+        })
+      }
     }
 
     const created = await this.prisma.exercise.create({

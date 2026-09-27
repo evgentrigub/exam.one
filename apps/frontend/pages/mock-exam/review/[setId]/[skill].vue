@@ -48,7 +48,7 @@
       >
         <div class="card-body gap-5 p-5 sm:p-7">
           <div class="flex flex-wrap items-start gap-3 border-b border-base-300 pb-4">
-            <span class="badge badge-primary badge-outline">Teil {{ definition.part }}</span>
+            <span class="badge badge-primary badge-outline">{{ labelFor(skill, definition.part) }}</span>
             <div class="min-w-0 flex-1">
               <h2 class="font-display text-xl font-bold">{{ definition.title }}</h2>
               <p class="mt-1 text-xs text-base-content/50">{{ exerciseScore(definition.id) }}</p>
@@ -135,6 +135,7 @@
                   <WritingReviewDetails
                     v-if="response(definition.id)?.writingReview"
                     :review="response(definition.id)!.writingReview!"
+                    :teil="definition.part"
                   />
                   <div
                     v-else-if="isDeterministicWritingZero(definition.id, definition.part)"
@@ -248,8 +249,9 @@ import { ArrowLeft, CircleAlert, Info, Lock, Sparkles } from 'lucide-vue-next'
 import ReviewQuestionList from '~/components/mockExam/ReviewQuestionList.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
-import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
+import type { MockExamSet } from '@exam-one/exam-packs'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
+import { isSharedMatchingListening, isStatementListening, usesItemAudio } from '~/utils/listening/audioUrls'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
@@ -266,8 +268,11 @@ const skill = (
 ) as SkillId
 const validSkill = requestedSkill === skill
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
+const { pack, labelFor } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
-const set = computed(() => foundSet.value ?? goetheA2MockExamSet1)
+const set = computed(
+  () => (foundSet.value ?? pack.value.bundledMockSet) as MockExamSet
+)
 const { state, isInitialized: examInitialized } = useMockExam(set)
 
 const ready = computed(() => setsInitialized.value && examInitialized.value)
@@ -354,7 +359,7 @@ function readingQuestions(exercise: ReadingExercise): ReviewQuestion[] {
 }
 
 function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     return exercise.items.map((item, index) => ({
       id: item.id ?? `${exercise.id}-item-${index}`,
       prompt: item.question,
@@ -363,7 +368,7 @@ function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
       explanation: item.explanation,
     }))
   }
-  if (exercise.testingPart === 2) {
+  if (isSharedMatchingListening(exercise)) {
     return exercise.questions.map((question, index) => ({
       id: question.id ?? `${exercise.id}-question-${index}`,
       prompt: question.person,
@@ -372,6 +377,7 @@ function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
       explanation: question.explanation,
     }))
   }
+  if (!isStatementListening(exercise)) return []
   return exercise.questions.map((question, index) => ({
     id: question.id ?? `${exercise.id}-question-${index}`,
     prompt: question.statement,
@@ -382,14 +388,14 @@ function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
 }
 
 function listeningTranscript(exercise: ListeningA2Exercise): string {
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     return exercise.items.map((item, index) => `${index + 1}. ${item.transcript}`).join('\n\n')
   }
   return exercise.transcript
 }
 
 function speakingPrompts(exercise: SpeakingA2Topic): string[] {
-  return exercise.testingPart === 1
+  return 'answerQuestions' in exercise
     ? [...exercise.answerQuestions, ...exercise.askQuestions]
     : exercise.keywords
 }

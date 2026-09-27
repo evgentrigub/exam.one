@@ -13,13 +13,7 @@ import type {
 } from '@exam-one/contracts'
 import type { AppConfig } from '../../config/app.config'
 import { mapPool } from './mapPool'
-import {
-  buildGeneratedListeningAudioMap,
-  collectListeningAudioSegments,
-  containedAudioPath,
-  isListeningExercise,
-  isSafeGeneratedExerciseId,
-} from './listening-audio'
+import { containedAudioPath } from './listening-audio'
 import { checkTtsHealth, synthesizeListeningTranscript, type TtsConfig } from './tts.adapter'
 
 @Injectable()
@@ -81,74 +75,9 @@ export class TtsService {
   async generateListeningAudio(
     exerciseValue: unknown
   ): Promise<AiResponse<GenerateListeningAudioData>> {
-    if (!getLivePack(packContext.getStore()?.packId).compatibility)
-      return this.generatePackAudio(exerciseValue)
-    if (!isListeningExercise(exerciseValue)) {
-      return { data: null, error: 'Missing listening exercise payload' }
-    }
-    const exercise = exerciseValue
-    if (!exercise.id || !isSafeGeneratedExerciseId(exercise.id)) {
-      return { data: null, error: 'Exercise id is not a valid generated listening id.' }
-    }
-
-    let config: TtsConfig
-    try {
-      config = this.ttsConfig()
-    } catch (error) {
-      return { data: null, error: error instanceof Error ? error.message : 'TTS unavailable' }
-    }
-    const healthy = await checkTtsHealth(config)
-    if (!healthy) {
-      return {
-        data: null,
-        error: 'TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.',
-      }
-    }
-
-    const directory = this.audioDirectory(exercise.id)
-    const segments = collectListeningAudioSegments(exercise).map(segment => ({
-      ...segment,
-      relativePath: `${directory}/${segment.relativePath}`,
-    }))
-    if (segments.length === 0) {
-      return { data: null, error: 'No transcripts found to synthesize for this exercise.' }
-    }
-
-    const audioMap = buildGeneratedListeningAudioMap(exercise)
-    if (!audioMap) {
-      return { data: null, error: 'Could not build audio path map for this exercise.' }
-    }
-    const namespaceUrl = (url: string) =>
-      url.replace('/audio/listening/generated/', `/audio/listening/generated/${directory}/`)
-    if (audioMap.shared) audioMap.shared = namespaceUrl(audioMap.shared)
-    if (audioMap.items)
-      audioMap.items = Object.fromEntries(
-        Object.entries(audioMap.items).map(([id, url]) => [id, namespaceUrl(url)])
-      )
-
-    const root = this.audioRoot()
-    for (const segment of segments) {
-      if (!containedAudioPath(root, segment.relativePath)) {
-        return { data: null, error: 'Exercise id is not a valid generated listening id.' }
-      }
-    }
-
-    try {
-      await mapPool(segments, config.concurrency, async segment => {
-        const bytes = await synthesizeListeningTranscript(segment.transcript, config)
-        const absolute = containedAudioPath(root, segment.relativePath)
-        if (!absolute) {
-          throw new Error('Refusing to write audio outside the generated audio directory.')
-        }
-        await mkdir(path.dirname(absolute), { recursive: true })
-        await writeFile(absolute, bytes)
-      })
-      return { data: { audio: audioMap, written: segments.length }, error: null }
-    } catch (error: unknown) {
-      this.logger.error('generate-listening-audio failed', error)
-      const message = error instanceof Error ? error.message : 'Audio generation failed.'
-      return { data: null, error: message }
-    }
+    // Every pack synthesises through the projected view; the legacy per-payload path went
+    // with the Goethe A2 compatibility flag.
+    return this.generatePackAudio(exerciseValue)
   }
 
   private async generatePackAudio(value: unknown): Promise<AiResponse<GenerateListeningAudioData>> {
@@ -163,10 +92,9 @@ export class TtsService {
       const view = part.adapter.project(payload)
       validateView(view, part.runtime)
       const config = this.ttsConfig()
+      // Keep the actionable wording the legacy path used; it tells the user how to fix it.
       if (!(await checkTtsHealth(config)))
-        throw new Error(
-          'Audio generation is unavailable. Existing audio and manual practice remain available.'
-        )
+        throw new Error('TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.')
       const directory = this.audioDirectory(payload['id'])
       const segments = [
         ...(view.transcript ? [{ key: 'shared', transcript: view.transcript }] : []),
@@ -199,13 +127,11 @@ export class TtsService {
   }
 
   async deleteListeningAudio(exerciseIds: string[]): Promise<AiResponse<DeleteListeningAudioData>> {
-    const pack = getLivePack(packContext.getStore()?.packId)
     const ids = [
       ...new Set(
         exerciseIds.filter(
           id =>
-            typeof id === 'string' &&
-            (pack.compatibility ? isSafeGeneratedExerciseId(id) : id.length > 0)
+            typeof id === 'string' && id.length > 0
         )
       ),
     ]

@@ -300,6 +300,9 @@ import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exe
 import {
   resolveItemListeningAudioSrc,
   resolveSharedListeningAudioSrc,
+  usesItemAudio,
+  isSharedMatchingListening,
+  isStatementListening,
 } from '~/utils/listening/audioUrls'
 import { useProgress } from '~/composables/useProgress'
 import { useListeningAudioAvailability } from '~/composables/useListeningAudioAvailability'
@@ -365,6 +368,12 @@ const generateError = ref<string | null>(null)
 
 /** Local working copy so audio map updates remount players without leaving the page. */
 const currentExercise = ref<ListeningA2Exercise>({ ...props.exercise })
+const { pack } = useActivePack()
+const listeningPart = computed(() =>
+  pack.value.structure
+    .find(module => module.id === 'listening')
+    ?.parts.find(part => part.n === currentExercise.value.testingPart)
+)
 
 watch(
   () => props.exercise,
@@ -420,22 +429,14 @@ const instructions = computed(() => {
   if (props.examMode) {
     return `Use the permitted ${replayLimit.value === 1 ? 'single play' : `${replayLimit.value} plays`} and answer every question before submitting.`
   }
-  switch (currentExercise.value.testingPart) {
-    case 1:
-      return 'Listen to each short message and choose the correct answer. Replay the audio as often as you need.'
-    case 2:
-      return 'Listen to the conversation and match each person to the correct option. Replay the audio as often as you need.'
-    case 3:
-      return 'Listen to each short dialogue and choose the correct answer. Replay the audio as often as you need.'
-    case 4:
-      return 'Listen to the interview and decide whether each statement is correct (Ja) or not (Nein). Replay the audio as often as you need.'
-    default:
-      return 'Listen and answer the questions. Replay the audio as often as you need.'
-  }
+  return (
+    listeningPart.value?.instruction ??
+    'Listen and answer the questions. Replay the audio as often as you need.'
+  )
 })
 
-const replayLimit = computed(() =>
-  props.configuredReplays ?? (currentExercise.value.testingPart === 1 || currentExercise.value.testingPart === 4 ? 2 : 1)
+const replayLimit = computed(
+  () => props.configuredReplays ?? listeningPart.value?.runtime?.replays ?? 1
 )
 
 const partTimeSec: Record<number, number> = { 1: 600, 2: 480, 3: 600, 4: 480 }
@@ -672,7 +673,7 @@ function restart() {
 }
 
 function normalize(ex: ListeningA2Exercise): NormalizedModel {
-  if (ex.testingPart === 1 || ex.testingPart === 3) {
+  if (usesItemAudio(ex)) {
     return {
       mode: 'peritem',
       optionStyle: 'buttons',
@@ -687,7 +688,7 @@ function normalize(ex: ListeningA2Exercise): NormalizedModel {
     }
   }
 
-  if (ex.testingPart === 2) {
+  if (isSharedMatchingListening(ex)) {
     return {
       mode: 'shared',
       optionStyle: 'select',
@@ -702,17 +703,26 @@ function normalize(ex: ListeningA2Exercise): NormalizedModel {
     }
   }
 
+  if (isStatementListening(ex)) {
+    return {
+      mode: 'shared',
+      optionStyle: 'buttons',
+      sharedTranscript: ex.transcript,
+      questions: ex.questions.map((q, i) => ({
+        id: q.id ?? `${ex.id}-q${i}`,
+        prompt: q.statement,
+        options: ['Ja, das ist richtig.', 'Nein, das ist falsch.'],
+        correctIndex: q.correctAnswer ? 0 : 1,
+        explanation: q.explanation,
+      })),
+    }
+  }
+
   return {
     mode: 'shared',
     optionStyle: 'buttons',
-    sharedTranscript: ex.transcript,
-    questions: ex.questions.map((q, i) => ({
-      id: q.id ?? `${ex.id}-q${i}`,
-      prompt: q.statement,
-      options: ['Ja, das ist richtig.', 'Nein, das ist falsch.'],
-      correctIndex: q.correctAnswer ? 0 : 1,
-      explanation: q.explanation,
-    })),
+    sharedTranscript: '',
+    questions: [],
   }
 }
 </script>

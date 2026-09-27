@@ -1,8 +1,17 @@
-<template><PackExerciseSession :key="`${pack.packId}:${skill}:${exerciseId}`" :pack-id="pack.packId" :skill="skill" :exercise-id="exerciseId" /></template>
 <script setup lang="ts">
-import type { SkillId } from '@exam-one/exam-packs'
 const route = useRoute()
-const { pack } = useActivePack()
-const skill = computed(() => String(route.params['skill']) as SkillId)
-const exerciseId = computed(() => String(route.params['exerciseId']))
+const skill = String(route.params['skill'] || '')
+const exerciseId = String(route.params['exerciseId'] || '')
+const target =
+  skill === 'writing'
+    ? `/writing/${exerciseId}/exam`
+    : skill === 'reading'
+      ? `/reading/${exerciseId}`
+      : `/${skill}/${exerciseId}`
+
+await navigateTo(target, { replace: true })
 </script>
+
+<template>
+  <div />
+</template>

@@ -9,7 +9,8 @@
  * Storage: NestJS attempts (`Result.review.writingReview`)
  */
 
-import type { WritingExercise, AiReviewData } from '~/utils/types'
+import type { CriterionReview } from '@exam-one/exam-packs'
+import type { WritingExercise } from '~/utils/types'
 import { onPackReset, packEpoch } from '~/utils/packScope'
 import { ref } from 'vue'
 import type { AttemptDto } from '@exam-one/contracts'
@@ -26,7 +27,7 @@ interface WritingReviewRecord {
   requestedAt: string
   completedAt?: string
   responseText?: string
-  responseData?: AiReviewData
+  responseData?: CriterionReview
   error?: string
 }
 
@@ -157,7 +158,7 @@ export function useWritingReview() {
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = await aiFetch<AiReviewData>('/llm/review', {
+      const response = await aiFetch<CriterionReview>('/llm/review', {
         packId: requestPackId,
         method: 'POST',
         body: { topic, userContent, prompt },

@@ -23,4 +23,4 @@ export type {
   ReadingQuestionA2Teil4,
   ReadingExerciseA2Teil4,
   ReadingA2Exercise,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'

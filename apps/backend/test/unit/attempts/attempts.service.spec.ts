@@ -107,8 +107,18 @@ describe('AttemptsService', () => {
     await service.create(user, {
       skill: 'READING',
       exerciseExternalId: exercise.externalId,
-      answers: { q1: 'b' },
-      result: { score: 3, maxScore: 5, percentage: 60, review: { note: 'ok' } },
+      // Three of five correct against the fixture's `correctAnswer: 1`. The server recomputes
+      // the score from the answers rather than trusting the client's numbers.
+      answers: {
+        responses: {
+          'reading-a2-teil1-001-q1': 1,
+          'reading-a2-teil1-001-q2': 1,
+          'reading-a2-teil1-001-q3': 1,
+          'reading-a2-teil1-001-q4': 0,
+          'reading-a2-teil1-001-q5': 0,
+        },
+      },
+      result: { score: 99, maxScore: 99, percentage: 99, review: { note: 'ok' } },
     })
 
     expect(exercises.findForUser).toHaveBeenCalledWith(user, 'READING', exercise.externalId)
@@ -205,65 +215,6 @@ describe('AttemptsService', () => {
     )
   })
 
-  it('upsertLatestResult patches the latest matching attempt', async () => {
-    const exercise = makeExercise({ externalId: 'reading-a2-teil1-001' })
-    const older = {
-      ...makeAttempt({ id: 'old', submittedAt: new Date('2026-01-01') }),
-      result: null,
-      exercise,
-    }
-    const newer = {
-      ...makeAttempt({ id: 'new', submittedAt: new Date('2026-01-02') }),
-      result: null,
-      exercise,
-    }
-    prisma.attempt.findMany.mockResolvedValue([older, newer])
-    prisma.attempt.findFirst.mockResolvedValue(newer)
-    prisma.attempt.update.mockResolvedValue({
-      ...newer,
-      result: makeResult({ score: 5, maxScore: 5, percentage: 100 }),
-    })
 
-    const result = await service.upsertLatestResult(
-      user,
-      'READING',
-      'reading-a2-teil1-001',
-      { score: 5, maxScore: 5, percentage: 100 },
-      { q1: 'final' }
-    )
 
-    expect(prisma.attempt.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'new' } })
-    )
-    expect(prisma.attempt.create).not.toHaveBeenCalled()
-    expect(result.id).toBe('new')
-  })
-
-  it('upsertLatestResult creates with artifact answers when none exist', async () => {
-    prisma.attempt.findMany.mockResolvedValue([])
-    const exercise = makeExercise({ id: 'ex-2', externalId: 'reading-a2-teil1-001' })
-    exercises.findForUser.mockResolvedValue(exercise)
-    prisma.attempt.create.mockResolvedValue({
-      ...makeAttempt({ exerciseId: exercise.id }),
-      result: makeResult(),
-      exercise,
-    })
-
-    await service.upsertLatestResult(user, 'READING', 'reading-a2-teil1-001', {
-      score: 1,
-      maxScore: 1,
-      percentage: 100,
-    })
-
-    expect(prisma.attempt.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          answers: { kind: 'artifact' },
-          result: expect.objectContaining({
-            create: expect.objectContaining({ score: 1, maxScore: 1, percentage: 100 }),
-          }),
-        }),
-      })
-    )
-  })
 })

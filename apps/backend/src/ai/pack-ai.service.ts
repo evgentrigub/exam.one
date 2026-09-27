@@ -7,13 +7,28 @@ import {
   record,
   validateView,
   validateReview,
+  withQuestionIds,
+  coerceAnswerIndices,
+  type LlmComplete,
   type SkillId,
   type PromptVars,
 } from '@exam-one/exam-packs'
 import type { AiResponse } from '@exam-one/contracts'
 import { packContext } from '../core/interceptors/pack-context.interceptor'
 import { LlmService } from './llm.service'
-import { extractJsonArray } from './json'
+import { extractJsonArray, extractJsonObject } from './json'
+
+/** How many exercises to generate in one call. The writing screen asks for several. */
+function count(body: Record<string, unknown>): number {
+  const value = body['count']
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? Math.floor(value) : 1
+}
+
+/** Feedback language from the request, defaulting to English when the client omits it. */
+function language(body: Record<string, unknown>): string {
+  const value = body['outputLanguage']
+  return typeof value === 'string' && value.trim() ? value : 'en'
+}
 
 @Injectable()
 export class PackAiService {
@@ -22,8 +37,91 @@ export class PackAiService {
   pack() {
     return getPack(packContext.getStore()?.packId ?? DEFAULT_PACK_ID)!
   }
-  isGeneric(): boolean {
-    return !this.pack().compatibility
+
+  private configured(): boolean {
+    return this.llm.getConfig() !== null
+  }
+
+  private missingKey(): AiResponse<unknown> {
+    return { data: null, error: this.llm.missingKeyError() }
+  }
+
+  private complete: LlmComplete = (messages, options) => this.llm.complete(messages, options)
+
+  async generateForSkill(
+    skill: SkillId,
+    body: Record<string, unknown>,
+    parts: number[]
+  ): Promise<AiResponse<unknown>> {
+    return this.generate(skill, parts, count(body))
+  }
+
+  async answerFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const topic = (body['topic'] ?? {}) as Record<string, unknown>
+    return this.respond(
+      'writing',
+      Number(topic['testingPart']),
+      'answer',
+      topic,
+      {},
+      language(body)
+    )
+  }
+
+  async reviewWritingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const topic = (body['topic'] ?? {}) as Record<string, unknown>
+    return this.respond(
+      'writing',
+      Number(topic['testingPart']),
+      'review',
+      topic,
+      body['answers'] ?? { answer: body['userContent'] },
+      language(body)
+    )
+  }
+
+  async reviewSpeakingFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const topic = body['topic'] as Record<string, unknown> | undefined
+    return this.respond(
+      'speaking',
+      Number(topic?.['testingPart']),
+      'review',
+      topic,
+      body['answers'] ?? {},
+      language(body)
+    )
+  }
+
+  async reviewMockFor(body: Record<string, unknown>): Promise<AiResponse<unknown>> {
+    const pack = this.pack()
+    if (!pack.createMockSet) {
+      return { data: null, error: 'Mock exams are unavailable for this pack' }
+    }
+    // Checked before dispatch: an unconfigured provider has always reported the missing key
+    // rather than the pack's own unavailability.
+    if (!this.configured()) {
+      return {
+        data: null,
+        error: 'AI overview is unavailable because no LLM API key is configured.',
+      }
+    }
+    const overview = pack.mockOverview
+    if (!overview) return { data: null, error: 'Mock overview is unavailable for this pack' }
+    try {
+      const raw = await this.llm.complete(
+        [
+          { role: 'system', content: overview.system },
+          { role: 'user', content: overview.assemble(language(body), body['result']) },
+        ],
+        overview.llm
+      )
+      const parsed = overview.parse(extractJsonObject(raw ?? ''))
+      return parsed
+        ? { data: parsed, error: null }
+        : { data: null, error: 'The AI overview response could not be read. Please try again.' }
+    } catch {
+      return { data: null, error: 'AI overview generation failed. Please try again.' }
+    }
   }
 
   partError(skill: SkillId, parts: number[]): string | null {
@@ -67,7 +165,7 @@ export class PackAiService {
     }
   }
 
-  async generate(skill: SkillId, parts: number[]): Promise<AiResponse<unknown[]>> {
+  async generate(skill: SkillId, parts: number[], count = 1): Promise<AiResponse<unknown[]>> {
     try {
       const pack = this.pack()
       if (!pack.live) throw new Error('This pack is unavailable for new practice')
@@ -80,22 +178,32 @@ export class PackAiService {
         const spec = findPrompt(pack, skill, n, 'generator')
         if (!part?.adapter || !part.runtime || !spec)
           throw new Error(`Unsupported ${skill} part ${n}`)
-        const raw = await this.llm.complete([
-          { role: 'user', content: spec.assemble({ count: 1 }) },
-        ])
-        const parsed = extractJsonArray(raw)
-        if (!parsed?.length) throw new Error('The provider did not return an exercise array')
-        for (const value of parsed) {
-          const payload = {
-            ...record(value),
-            id: `${skill}-${pack.packId}-${randomUUID()}`,
-            testingPart: n,
-            difficulty: pack.cefr,
-            createdAt: new Date().toISOString(),
-          }
-          validateView(part.adapter.project(payload), part.runtime)
-          output.push(payload)
+        const content = spec.assemble({ count })
+        // A model that returns unparseable output, or output that misses a field the pack
+        // requires, usually succeeds on a second attempt; one retry is what the exercise
+        // generators have always done. The retry covers validation too, because a prompt
+        // that asks for a fixed field is occasionally ignored and one bad draft should not
+        // fail the whole request.
+        const attempt = async (): Promise<Record<string, unknown>[]> => {
+          const parsed = extractJsonArray(
+            await this.llm.complete([{ role: 'user', content }], spec.llm)
+          )
+          if (!parsed?.length) throw new Error('The provider did not return an exercise array')
+          return parsed.map(value => {
+            const id = `${skill}-${pack.packId}-${randomUUID()}`
+            const payload = withQuestionIds({
+              ...coerceAnswerIndices(record(value)),
+              id,
+              testingPart: n,
+              difficulty: pack.cefr,
+              createdAt: new Date().toISOString(),
+            })
+            part.validate?.(payload, part.runtime!)
+            validateView(part.adapter!.project(payload), part.runtime!)
+            return payload
+          })
         }
+        output.push(...(await attempt().catch(() => attempt())))
       }
       return { data: output, error: null }
     } catch (error) {
@@ -108,7 +216,8 @@ export class PackAiService {
     n: number,
     kind: 'answer' | 'review',
     payload: unknown,
-    answers: unknown
+    answers: unknown,
+    outputLanguage = 'en'
   ): Promise<AiResponse<unknown>> {
     try {
       const pack = this.pack()
@@ -121,15 +230,32 @@ export class PackAiService {
       const prompt = findPrompt(pack, skill, n, kind)
       if (!prompt) throw new Error('This prompt is unavailable')
       if (!this.llm.getConfig()) return { data: null, error: this.llm.missingKeyError() }
-      const vars: PromptVars = {
-        task: JSON.stringify(payload),
-        userContent: JSON.stringify(answers),
-        outputLanguage: 'en',
-      }
-      const raw = await this.llm.complete([{ role: 'user', content: prompt.assemble(vars) }])
-      if (kind === 'answer') return { data: { text: raw }, error: null }
-      const cleaned = raw.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '')
-      const review = validateReview(JSON.parse(cleaned), part.runtime)
+      // A pack may need more than the three generic variables; anything it does not
+      // supply would otherwise reach the model as a literal "{placeholder}".
+      const vars: PromptVars = pack.buildReviewVars
+        ? pack.buildReviewVars({
+            skill,
+            part: n,
+            kind,
+            payload: record(payload),
+            answers: record(answers),
+            outputLanguage,
+          })
+        : {
+            task: JSON.stringify(payload),
+            userContent: JSON.stringify(answers),
+            outputLanguage,
+          }
+      const raw = await this.llm.complete(
+        [{ role: 'user', content: prompt.assemble(vars) }],
+        prompt.llm
+      )
+      const parsed = extractJsonObject(raw)
+      if (!parsed) throw new Error('The provider did not return a JSON object')
+      // A model answer is handed to the client as-is: the prompt's contract already matches
+      // the `{ content, wordCount, highlights }` shape the writing screen renders.
+      if (kind === 'answer') return { data: parsed, error: null }
+      const review = validateReview(parsed, part.runtime)
       const responses = record(answers)
       if (
         part.runtime.fields?.some(

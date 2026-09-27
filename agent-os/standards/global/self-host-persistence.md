@@ -13,7 +13,7 @@ Accounts, session, profile, exam settings, skill catalogs, attempts, drafts, gen
 
 Exam and user data live in PostgreSQL and are accessed only through the NestJS API. localStorage must not remain the source of truth for those domains.
 
-Shared Goethe A2 seeds (and mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-content`. User-generated exercises overlay seeds by `externalId` and are scoped by `userId`.
+Shared Goethe A2 seeds (and mock Set 1) are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`data/src/packs/goethe-de-a2/content/`). User-generated exercises overlay seeds by `externalId` and are scoped by `userId`.
 
 ## Named Docker volume
 

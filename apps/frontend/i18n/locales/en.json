@@ -637,7 +637,11 @@
     "strengths": "Strengths",
     "improvements": "Areas to improve",
     "noStrengths": "No specific strengths were returned.",
-    "noImprovements": "No specific improvements were returned."
+    "noImprovements": "No specific improvements were returned.",
+    "answers": "Answers",
+    "questions": "Questions",
+    "taskCompletion": "Task completion",
+    "language": "Language"
   },
   "mockExam": {
     "title": "Mock exams",
@@ -754,5 +758,19 @@
     "yourAnswer": "Your answer",
     "true": "True",
     "false": "False"
+  },
+  "pastExams": {
+    "back": "Back to progress",
+    "title": "Past exams",
+    "intro": "Saved attempts across your exams. Historical attempts are read-only.",
+    "empty": "No saved attempts yet.",
+    "ungraded": "Ungraded",
+    "yourAnswer": "Your answer",
+    "correctAnswer": "Correct answer",
+    "notAnswered": "Not answered",
+    "transcript": "Transcript",
+    "exercise": "Exercise",
+    "yourAnswers": "Your answers",
+    "savedFeedback": "Saved feedback"
   }
 }

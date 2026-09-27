@@ -22,21 +22,20 @@ Root README + `.env.example` document first-user setup, optional LLM keys, speec
 
 ## Exam-specific behavior
 
-Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules in `@exam-one/exam-content` and `@exam-one/exam-packs` (`data/src/packs/`).
+Keep the shared data model and UI flow exam-agnostic, then express exam-specific behavior through typed metadata, task definitions, prompt templates, and review rules in `@exam-one/exam-packs` (`data/src/packs/`).
 
 ## Static seed data
 
-Exercise payloads and mock Set 1 live in `@exam-one/exam-content` (`libraries/exam-content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null, `packId` set). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** live as `PromptSpec` modules under `data/src/packs/{packId}/`.
+Exercise payloads and mock Set 1 live in the owning pack under `@exam-one/exam-packs` (`data/src/packs/{packId}/content/`). Prisma `db:seed` upserts shared rows (`source=seed`, `userId` null, `packId` set). Frontend `apps/frontend/data/{skill}/` re-exports those seeds; **prompt templates** live as `PromptSpec` modules under `data/src/packs/{packId}/`.
 
 ```
-libraries/exam-content/src/
-  seeds/reading.ts
-  seeds/writing.ts
-  seeds/listening.ts
-  seeds/speaking.ts
-  seeds/mock-exam.ts
 data/src/packs/goethe-de-a2/
   pack.ts
+  content/seeds/reading.ts
+  content/seeds/writing.ts
+  content/seeds/listening.ts
+  content/seeds/speaking.ts
+  content/seeds/mock-exam.ts
   prompts/reading.ts
   prompts/writing.ts
   ...
@@ -63,4 +62,4 @@ Why: app updates can ship new seed content via `db:seed` without wiping user-gen
 - Turning off AI must still let the user read, write, listen, speak, run a mock exam, and track progress
 - Do not import a provider SDK (e.g. `openai`) or call AI endpoints from core flows directly — route through a composable that degrades gracefully (see `server/ai-response-envelope.md`)
 - AI is **bring-your-own-key**; supported providers today are **OpenAI** and **OpenRouter**. Core UI must render fine when every AI endpoint returns `{ data: null, error: ... }`
-- New exam skills add typed seed modules in `@exam-one/exam-content` and a `db:seed` upsert; do not ship unseeded empty states
+- New exam skills add typed seed modules under that pack's `content/` folder and a `db:seed` upsert; do not ship unseeded empty states

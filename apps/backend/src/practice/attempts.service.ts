@@ -1,6 +1,7 @@
 import {
   getPack,
   objectiveScore,
+  resolveAnswers,
   validateReview,
   type RuntimeSnapshot,
   type SkillId,
@@ -14,6 +15,17 @@ import { asJson } from '../common/json'
 import { toAttemptDto } from '../common/mappers/practice.mapper'
 import { ExercisesService } from './exercises.service'
 import type { AttemptResultDto, CreateAttemptDto, PatchAttemptDto } from './dto/attempts.dto'
+
+/** A bare rubric, as opposed to one of the wrappers the AI screens persist around it. */
+function isCriterionReview(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false
+  const review = value as Record<string, unknown>
+  return (
+    Array.isArray(review['criteria']) &&
+    typeof review['totalPoints'] === 'number' &&
+    typeof review['maxPoints'] === 'number'
+  )
+}
 
 @Injectable()
 export class AttemptsService {
@@ -63,34 +75,16 @@ export class AttemptsService {
       ?.structure.find(m => m.id === skill)
       ?.parts.find(p => p.n === payload?.['testingPart'])
     const view = part?.adapter && payload ? part.adapter.project(payload) : undefined
-    const compatibility = getPack(packId)?.compatibility
     const snapshot =
       view && part?.runtime
-        ? {
-            version: 1,
-            packId,
-            skill,
-            part: part.n,
-            view,
-            rules: part.runtime,
-            ...(compatibility ? { compatibility, payload } : {}),
-          }
+        ? { version: 1, packId, skill, part: part.n, view, rules: part.runtime }
         : { version: 0, packId, payload: payload ?? null }
-    if (!getPack(packId)?.compatibility && snapshot.version === 1)
-      dto.result = this.checkedResult(snapshot as RuntimeSnapshot, dto.answers, dto.result)
-    if (snapshot.version === 1) this.validateStoredReview(snapshot as RuntimeSnapshot, dto.result)
-    if (
-      compatibility &&
-      view?.questions &&
-      part?.runtime &&
-      dto.answers['responses'] &&
-      typeof dto.answers['responses'] === 'object'
-    ) {
-      dto.result = {
-        ...dto.result,
-        ...objectiveScore(view, part.runtime, dto.answers['responses'] as Record<string, unknown>),
-      }
+    if (snapshot.version === 1) {
+      const scored = this.checkedResult(snapshot as RuntimeSnapshot, dto.answers, dto.result)
+      if (scored) dto.result = scored
+      else delete dto.result
     }
+    if (snapshot.version === 1) this.validateStoredReview(snapshot as RuntimeSnapshot, dto.result)
     const created = await this.prisma.attempt.create({
       data: {
         userId: user.id,
@@ -138,24 +132,16 @@ export class AttemptsService {
       })
     const snapshot = existing.snapshot as unknown as RuntimeSnapshot | null
     if (snapshot?.version === 1) this.validateStoredReview(snapshot, dto.result)
-    if (snapshot?.version === 1 && !snapshot.compatibility) {
-      dto.result = this.checkedResult(
+    // Old rows carry `compatibility` in their snapshot; `resolveAnswers` reads their nested
+    // answer shape, so they score identically through the one remaining path.
+    if (snapshot?.version === 1) {
+      const scored = this.checkedResult(
         snapshot,
         dto.answers ?? (existing.answers as Record<string, unknown>),
         dto.result
       )
-    }
-    if (snapshot?.version === 1 && snapshot.compatibility && snapshot.view.questions) {
-      const answers = dto.answers ?? (existing.answers as Record<string, unknown>)
-      if (answers['responses'] && typeof answers['responses'] === 'object')
-        dto.result = {
-          ...dto.result,
-          ...objectiveScore(
-            snapshot.view,
-            snapshot.rules,
-            answers['responses'] as Record<string, unknown>
-          ),
-        }
+      if (scored) dto.result = scored
+      else delete dto.result
     }
     const updated = await this.prisma.attempt.update({
       where: { id },
@@ -196,24 +182,32 @@ export class AttemptsService {
     snapshot: RuntimeSnapshot,
     answers: Record<string, unknown>,
     result?: AttemptResultDto
-  ): AttemptResultDto {
+  ): AttemptResultDto | undefined {
+    // The client stores a submission record, not a flat answer map, so both scoring and the
+    // word-count rule below read through the resolver rather than the raw object.
+    const resolved = resolveAnswers(snapshot.view, answers)
     if (snapshot.view.questions)
-      return { ...result, ...objectiveScore(snapshot.view, snapshot.rules, answers) }
+      return { ...result, ...objectiveScore(snapshot.view, snapshot.rules, resolved) }
     if (result?.review === undefined) {
       if (result?.score != null || result?.maxScore != null)
         throw new BadRequestException({
           code: 'INVALID_REVIEW',
           message: 'A validated criterion review is required for this score',
         })
-      return result ?? {}
+      // `{}` would be truthy and create an empty Result row for every ungraded submission.
+      return result
     }
+    // Only a bare rubric carries a score. The AI screens persist their own wrappers — a
+    // writing review record, a speaking attempt, a model answer — which `validateStoredReview`
+    // already checks through the pack adapter; re-validating them here would reject them all.
+    if (!isCriterionReview(result.review)) return result
     try {
       const review = validateReview(result.review, snapshot.rules)
       if (
         snapshot.rules.fields?.some(
           field =>
             field.zeroBelowWords !== undefined &&
-            String(answers[field.id] ?? '')
+            String(resolved[field.id] ?? '')
               .trim()
               .split(/\s+/)
               .filter(Boolean).length < field.zeroBelowWords
@@ -252,28 +246,5 @@ export class AttemptsService {
         message: error instanceof Error ? error.message : 'Invalid saved review',
       })
     }
-  }
-
-  async upsertLatestResult(
-    user: User,
-    skill: Skill,
-    exerciseExternalId: string,
-    result: AttemptResultDto,
-    answers?: Record<string, unknown>
-  ): Promise<AttemptDto> {
-    const listed = await this.list(user, skill)
-    const latest = [...listed].reverse().find(row => row.exerciseExternalId === exerciseExternalId)
-    if (latest) {
-      return this.patch(user, latest.id, {
-        result,
-        ...(answers !== undefined ? { answers } : {}),
-      })
-    }
-    return this.create(user, {
-      skill,
-      exerciseExternalId,
-      answers: answers ?? { kind: 'artifact' },
-      result,
-    })
   }
 }

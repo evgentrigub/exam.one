@@ -19,12 +19,7 @@ import {
   ReviewSpeakingDto,
   ReviewWritingDto,
 } from './dto/ai.dto'
-import { GenerateListeningService } from './generate-listening.service'
-import { GenerateReadingService } from './generate-reading.service'
-import { GenerateSpeakingService } from './generate-speaking.service'
-import { GenerateWritingService } from './generate-writing.service'
 import { PackAiService } from './pack-ai.service'
-import { ReviewService } from './review.service'
 
 @ApiTags('llm')
 @ApiCookieAuth('exam_one_access')
@@ -36,14 +31,11 @@ import { ReviewService } from './review.service'
 @Throttle({ default: { limit: 20, ttl: 60_000 } })
 @Controller('llm')
 export class AiController {
-  constructor(
-    private readonly packs: PackAiService,
-    private readonly reading: GenerateReadingService,
-    private readonly listening: GenerateListeningService,
-    private readonly speaking: GenerateSpeakingService,
-    private readonly writing: GenerateWritingService,
-    private readonly reviews: ReviewService
-  ) {}
+  constructor(private readonly packs: PackAiService) {}
+
+  private payload(body: object): Record<string, unknown> {
+    return { ...body, difficulty: this.packs.pack().cefr }
+  }
 
   @Post('generate-reading')
   @HttpCode(200)
@@ -57,11 +49,10 @@ export class AiController {
   generateReading(@Body() body: GenerateReadingDto): Promise<AiResponse<unknown>> {
     const error = this.packs.partError('reading', body.prompts?.map(part => part.part) ?? [1])
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric())
-      return this.packs.generate('reading', body.prompts?.map(p => p.part) ?? [1])
-    return this.packs.validateGenerated(
+    return this.packs.generateForSkill(
       'reading',
-      this.reading.generate({ ...body, difficulty: this.packs.pack().cefr })
+      this.payload(body),
+      body.prompts?.map(part => part.part) ?? [1]
     )
   }
 
@@ -80,14 +71,10 @@ export class AiController {
       body.prompts.map(part => part.part)
     )
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric())
-      return this.packs.generate(
-        'listening',
-        body.prompts.map(p => p.part)
-      )
-    return this.packs.validateGenerated(
+    return this.packs.generateForSkill(
       'listening',
-      this.listening.generate({ ...body, difficulty: this.packs.pack().cefr })
+      this.payload(body),
+      body.prompts.map(part => part.part)
     )
   }
 
@@ -106,14 +93,10 @@ export class AiController {
       body.prompts.map(part => part.part)
     )
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric())
-      return this.packs.generate(
-        'speaking',
-        body.prompts.map(p => p.part)
-      )
-    return this.packs.validateGenerated(
+    return this.packs.generateForSkill(
       'speaking',
-      this.speaking.generate({ ...body, difficulty: this.packs.pack().cefr })
+      this.payload(body),
+      body.prompts.map(part => part.part)
     )
   }
 
@@ -129,11 +112,7 @@ export class AiController {
   generateTopics(@Body() body: GenerateTopicsDto): Promise<AiResponse<unknown>> {
     const error = this.packs.partError('writing', [body.part])
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric()) return this.packs.generate('writing', [body.part])
-    return this.packs.validateGenerated(
-      'writing',
-      this.writing.generateTopics({ ...body, difficulty: this.packs.pack().cefr })
-    )
+    return this.packs.generateForSkill('writing', this.payload(body), [body.part])
   }
 
   @Post('generate-model-answer')
@@ -148,15 +127,7 @@ export class AiController {
   generateModelAnswer(@Body() body: GenerateModelAnswerDto): Promise<AiResponse<unknown>> {
     const error = this.packs.payloadError('writing', body.topic)
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric())
-      return this.packs.respond(
-        'writing',
-        Number(body.topic['testingPart']),
-        'answer',
-        body.topic,
-        {}
-      )
-    return this.writing.generateModelAnswer(body)
+    return this.packs.answerFor(body as unknown as Record<string, unknown>)
   }
 
   @Post('review')
@@ -171,15 +142,7 @@ export class AiController {
   reviewWriting(@Body() body: ReviewWritingDto): Promise<AiResponse<unknown>> {
     const error = this.packs.payloadError('writing', body.topic)
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric())
-      return this.packs.respond(
-        'writing',
-        Number(body.topic['testingPart']),
-        'review',
-        body.topic,
-        body.answers ?? { answer: body.userContent }
-      )
-    return this.reviews.reviewWriting(body)
+    return this.packs.reviewWritingFor(body as unknown as Record<string, unknown>)
   }
 
   @Post('review-speaking')
@@ -194,15 +157,7 @@ export class AiController {
   reviewSpeaking(@Body() body: ReviewSpeakingDto): Promise<AiResponse<unknown>> {
     const error = body.topic ? this.packs.payloadError('speaking', body.topic) : null
     if (error) return Promise.resolve({ data: null, error })
-    if (this.packs.isGeneric())
-      return this.packs.respond(
-        'speaking',
-        Number(body.topic?.['testingPart']),
-        'review',
-        body.topic,
-        body.answers ?? {}
-      )
-    return this.reviews.reviewSpeaking(body)
+    return this.packs.reviewSpeakingFor(body as unknown as Record<string, unknown>)
   }
 
   @Post('review-mock-exam')
@@ -215,8 +170,6 @@ export class AiController {
   @ApiResponseDoc({ status: 400, description: 'Invalid request body', type: ApiErrorDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   reviewMockExam(@Body() body: ReviewMockExamDto): Promise<AiResponse<unknown>> {
-    if (!this.packs.pack().createMockSet)
-      return Promise.resolve({ data: null, error: 'Mock exams are unavailable for this pack' })
-    return this.reviews.reviewMockExam(body)
+    return this.packs.reviewMockFor(body as unknown as Record<string, unknown>)
   }
 }

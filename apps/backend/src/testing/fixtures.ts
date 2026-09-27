@@ -40,7 +40,21 @@ export function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
     source: 'seed',
     visibility: 'PRACTICE',
     externalId: 'reading-a2-teil1-001',
-    payload: { id: 'reading-a2-teil1-001', title: 'Seed' },
+    // A payload the pack can actually project: without `testingPart` no part resolves, the
+    // snapshot falls back to `version: 0`, and every v1 branch under test is skipped.
+    payload: {
+      id: 'reading-a2-teil1-001',
+      title: 'Seed',
+      content: 'Seed text',
+      testingPart: 1,
+      questions: Array.from({ length: 5 }, (_, index) => ({
+        id: `reading-a2-teil1-001-q${index + 1}`,
+        question: `Frage ${index + 1}`,
+        options: ['a', 'b', 'c'],
+        correctAnswer: 1,
+        explanation: 'Steht im Text.',
+      })),
+    },
     createdAt: NOW,
     ...overrides,
   }

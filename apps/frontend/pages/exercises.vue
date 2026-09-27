@@ -1,6 +1,5 @@
 <template>
-  <PackExerciseHub v-if="!pack.compatibility" :key="pack.packId" :pack-id="pack.packId" />
-  <div v-else class="max-w-[1240px] mx-auto p-6 space-y-5">
+  <div class="max-w-[1240px] mx-auto p-6 space-y-5">
     <!-- Filter panel -->
     <div
       class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3 overflow-visible"
@@ -415,7 +414,7 @@ const route = useRoute()
 const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
-const { partsFor, pack } = useActivePack()
+const { partsFor } = useActivePack()
 
 const { getTexts, addTexts } = useReadingTexts()
 const { getTopics, addTopics, deleteTopic } = useWritingTopics()

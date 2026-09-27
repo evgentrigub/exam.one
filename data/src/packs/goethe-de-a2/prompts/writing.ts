@@ -1,19 +1,14 @@
 import { definePrompt } from '../../../assemble'
 import type { PromptSpec } from '../../../types'
+import { AUTHOR_ROLE, JSON_ONLY, RULES_HEADER, WRITING_EXAMINER_ROLE } from './common'
 
-const ROLE =
-  'Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату A2.'
-
-const WRITING_INTERFACE = `export interface WritingTopic {
-  id: string
+const WRITING_INTERFACE = `export interface WritingExercise {
   title: string
-  topicType: 'report' | 'review' | 'proposal' | 'article' | 'note' | 'form' | 'email' | 'letter' | 'essay' | 'postcard' | 'post'
-  difficulty: 'A2'
-  testingPart: number
+  topicType: 'note' | 'email'
+  testingPart: 1 | 2
   estimatedTime: number
   wordCount: { min: number; max: number }
   category: string[]
-  createdAt: string
   description: string
   task: string
   requirements: string[]
@@ -21,78 +16,75 @@ const WRITING_INTERFACE = `export interface WritingTopic {
 
 const ANSWER_CONTRACT = `{
     "topicId": "{topicId}",
-    "content": "сгенерированный ответ",
+    "content": "the generated response",
     "wordCount": number,
     "highlights": {
-        "greeting": "приветствие в начале ответа",
-        "mainPoints": ["основные моменты в ответе"],
-        "closing": "закрытие в конце ответа",
-        "keyPhrases": ["ключевые фразы в ответе"]
+        "greeting": "the greeting that opens the response",
+        "mainPoints": ["the main points made in the response"],
+        "closing": "the closing that ends the response",
+        "keyPhrases": ["the key phrases used in the response"]
     }
 }
-Поля JSON: topicId не меняй; content — идеальный ответ; wordCount — целое число; highlights — почему ответ идеален.
-Важное: ответы должны быть реалистичными и современными. Выводи ТОЛЬКО JSON, без пояснений до или после.`
+JSON fields: do not change topicId; content is the model response; wordCount is an integer; highlights explains why the response is exemplary.
+Important: responses must be realistic and contemporary. ${JSON_ONLY}`
 
-const REVIEW_JSON_TEIL1 = `Формат вывода JSON (строго):
+/**
+ * Rubric output in the generic `CriterionReview` shape.
+ *
+ * `validateReview` checks the criterion ids, each `maxPoints` and that `totalPoints` is the
+ * exact sum, so those are spelled out here rather than left to the model. `label` is echoed
+ * back for readability only - the card resolves its labels from i18n keyed by criterion id,
+ * so a label the model invents is never displayed. Result Points are derived from the part's
+ * multiplier at render time and are deliberately not asked for.
+ */
+function reviewContract(teil: 1 | 2): string {
+  const words = teil === 1 ? { min: 20, max: 30 } : { min: 30, max: 40 }
+  const register = teil === 1 ? 'du' : 'sie'
+  return `Output JSON format (strict):
 {
-  "teil": 1,
-  "word_count": <число>,
-  "required_word_count": { "min": 20, "max": 30 },
-  "criteria": {
-    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" },
-    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" }
-  },
-  "teil_points_mess": <0–10>,
-  "teil_points_result": <teil_points_mess * 1.25>,
-  "teil_rule_applied": "none | E_zero_rule | wordcount_lt_50 | off_topic",
-  "register_check": { "expected": "du", "detected": "<du|sie|mixed|unknown>", "ok": true },
-  "content_points_covered": { "required": 3, "covered": <0–3> },
-  "priority_fixes": [ "<исправление 1>", "<исправление 2>", "<исправление 3>" ],
-  "examples": [
-    { "error": "<цитата из ответа>", "correction": "<исправленный немецкий текст>", "rule": "<краткое объяснение>" }
+  "criteria": [
+    { "id": "aufgabenerfuellung", "label": "Task completion", "maxPoints": 5, "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" },
+    { "id": "sprache", "label": "Language", "maxPoints": 5, "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<short comment in the feedback language>" }
   ],
-  "report": "<короткий итоговый отчёт>"
-}`
-
-const REVIEW_JSON_TEIL2 = `Формат вывода JSON (строго):
-{
-  "teil": 2,
-  "word_count": <число>,
-  "required_word_count": { "min": 30, "max": 40 },
-  "criteria": {
-    "aufgabenerfuellung": { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" },
-    "sprache":            { "grade": "A|B|C|D|E", "points": <5|3.5|2|0.5|0>, "comment": "<краткий комментарий на языке обратной связи>" }
-  },
-  "teil_points_mess": <0–10>,
-  "teil_points_result": <teil_points_mess * 1.25>,
-  "teil_rule_applied": "none | E_zero_rule | wordcount_lt_50 | off_topic",
-  "register_check": { "expected": "sie", "detected": "<du|sie|mixed|unknown>", "ok": true },
-  "content_points_covered": { "required": 3, "covered": <0–3> },
-  "priority_fixes": [ "<исправление 1>", "<исправление 2>", "<исправление 3>" ],
-  "examples": [
-    { "error": "<цитата из ответа>", "correction": "<исправленный немецкий текст>", "rule": "<краткое объяснение>" }
+  "totalPoints": <the exact sum of the two points values, 0-10>,
+  "maxPoints": 10,
+  "summary": "<one sentence in the feedback language>",
+  "strengths": [ "<what the learner did well>" ],
+  "improvements": [ "<what to work on next>" ],
+  "wordCount": { "actual": <number>, "min": ${words.min}, "max": ${words.max} },
+  "ruleApplied": "none | E_zero_rule | wordcount_below_minimum | off_topic",
+  "checks": [
+    { "id": "register", "expected": "${register}", "detected": "<du|sie|mixed|unknown>", "ok": <true|false> },
+    { "id": "contentPoints", "required": 3, "covered": <0-3> }
   ],
-  "report": "<короткий итоговый отчёт>"
+  "priorityFixes": [ "<fix 1>", "<fix 2>", "<fix 3>" ],
+  "examples": [
+    { "error": "<quotation from the learner response>", "correction": "<corrected German text>", "rule": "<short explanation>" }
+  ],
+  "report": "<short closing report>"
 }`
+}
 
 export const writingPrompts: PromptSpec[] = [
   definePrompt({
     skill: 'writing',
     part: 1,
     kind: 'generator',
-    role: ROLE,
-    task: 'Задача: сгенерируй {count} самостоятельных задания для части Schreiben A2: Teil 1 (Kurznachricht / SMS). ВСЕ инструкции к заданиям выдай на НЕМЕЦКОМ. Никаких ответов-образцов — только условия задач.',
+    llm: { temperature: 0.8, maxTokens: 2500 },
+    role: AUTHOR_ROLE,
+    task: 'Task: generate {count} independent exercises for the Schreiben A2 part: Teil 1 (Kurznachricht / SMS). Write ALL exercise instructions in GERMAN. No model answers — only the task prompts themselves.',
     rules: [
-      'ОБЩИЕ ТРЕБОВАНИЯ:',
-      '• Формат и стиль соответствуют A2 Schreiben, Teil 1.',
-      '• Каждое задание — личная SMS в du-Form для друзей/знакомых/родных.',
-      '• Для каждого задания дай ровно 3 Inhaltspunkte, которые надо раскрыть.',
-      '• В конце каждого задания явно укажи: „Schreiben Sie 20–30 Wörter. Schreiben Sie zu allen drei Punkten.”',
-      '• Ситуации — типичные повседневные: опоздание, встреча, приглашение, просьба, предложение, информация/вопрос.',
-      '• Лексика и грамматика — строго уровень A2, простые формулировки.',
-      '• Не добавляй языковых подсказок, клише, шаблонов и примеров ответов.',
-      '• Темы выбирай случайно: Alltag; Familie & Freunde; Freizeit & Termine; Einkaufen & Preise; Schule/Kurs; Arbeit; Wohnen & Nachbarn; Gesundheit; Verkehr & Treffpunkte; Essen & Einladungen.',
-      '• id: уникальный строковый идентификатор. title: короткий заголовок на немецком. estimatedTime: 15. wordCount: { min: 20, max: 30 }. topicType: note. testingPart: 1.',
+      RULES_HEADER,
+      '• Format and style follow A2 Schreiben, Teil 1.',
+      '• Each exercise is a personal SMS in du-Form to friends, acquaintances or family.',
+      '• Give each exercise exactly 3 Inhaltspunkte to be covered.',
+      '• End every exercise explicitly with: „Schreiben Sie 20–30 Wörter. Schreiben Sie zu allen drei Punkten.“',
+      '• Situations are typical everyday ones: running late, a meeting, an invitation, a request, a suggestion, information or a question.',
+      '• Vocabulary and grammar: strictly CEFR A2, simple formulations.',
+      '• Do not add language hints, set phrases, templates or sample answers.',
+      '• Choose topics at random from: Alltag; Familie & Freunde; Freizeit & Termine; Einkaufen & Preise; Schule/Kurs; Arbeit; Wohnen & Nachbarn; Gesundheit; Verkehr & Treffpunkte; Essen & Einladungen.',
+      '• title: a short German heading. estimatedTime: 15. wordCount: { min: 20, max: 30 }. topicType: note. testingPart: 1. Do not emit id or createdAt; the application supplies them.',
+      '• description: one short German sentence naming the situation and the addressee. category: an array of 1–3 short German topic tags, for example ["Alltag", "Freizeit"]. Both fields are required.',
       '• requirements: Du-Form (informell); 3 Inhaltspunkte; 20–30 Wörter; ohne Vorlagen/Beispiele.',
     ],
     examples: [
@@ -111,27 +103,30 @@ Nennen Sie eine Uhrzeit und einen Ort für das Treffen.
 Schreiben Sie 20–30 Wörter.
 Schreiben Sie zu allen drei Punkten.`,
     ],
-    outputPrelude: `ФОРМАТ ВЫВОДА (строго, массив из {count} объектов). Для Teil 1 используй topicType: 'note'.\n${WRITING_INTERFACE}`,
-    outputContract: 'СГЕНЕРИРУЙ РЕЗУЛЬТАТ ТОЛЬКО В ВИДЕ МАССИВА ИЗ {count} ОБЪЕКТОВ WritingTopic. Без пояснений, без Markdown-комментариев.',
+    outputPrelude: `OUTPUT FORMAT (strict, an array of {count} objects). For Teil 1 use topicType: 'note'.\n${WRITING_INTERFACE}`,
+    outputContract:
+      'RETURN THE RESULT ONLY AS AN ARRAY OF {count} WritingExercise OBJECTS. No explanation, no Markdown commentary.',
   }),
   definePrompt({
     skill: 'writing',
     part: 2,
     kind: 'generator',
-    role: ROLE,
-    task: 'Задача: сгенерируй {count} самостоятельных задания для части Schreiben A2: Teil 2 (E-Mail). ВСЕ инструкции к заданиям выдай на НЕМЕЦКОМ. Никаких ответов-образцов — только условия задач.',
+    llm: { temperature: 0.8, maxTokens: 2500 },
+    role: AUTHOR_ROLE,
+    task: 'Task: generate {count} independent exercises for the Schreiben A2 part: Teil 2 (E-Mail). Write ALL exercise instructions in GERMAN. No model answers — only the task prompts themselves.',
     rules: [
-      'ОБЩИЕ ТРЕБОВАНИЯ:',
-      '• Формат и стиль соответствуют A2 Schreiben, Teil 2.',
-      '• Каждое задание — (полу)формальная E-Mail в Sie-Form адресату: Kollegin/Kollege, Vorgesetzte(r), Kursleitung/Lehrer(in), Verwaltung/Service, Nachbar(in) (вежливо).',
-      '• Для каждого задания дай ровно 3 Inhaltspunkte.',
-      '• В конце каждого задания явно укажи: „Schreiben Sie 30–40 Wörter. Schreiben Sie zu allen drei Punkten.”',
-      '• Требуй Anrede и Grußformel, нейтрально-вежливый регистр.',
-      '• Ситуации — типичные повседневно-деловые: благодарность, просьба, извинение, предложение помощи, уточнение даты/места.',
-      '• Лексика и грамматика — строго A2.',
-      '• Не добавляй языковых подсказок и примеров ответов.',
-      '• Темы: Arbeit & Büroalltag; Kurs/Prüfung/Termin; Veranstaltungen; Wohnen & Hausverwaltung; Nachbarschaft; Verein; Service; Gesundheitstermin; Wegbeschreibung; Einkäufe/Bestellungen.',
-      '• topicType: email. testingPart: 2. estimatedTime: 15. wordCount: { min: 30, max: 40 }.',
+      RULES_HEADER,
+      '• Format and style follow A2 Schreiben, Teil 2.',
+      '• Each exercise is a (semi-)formal E-Mail in Sie-Form to a recipient such as Kollegin/Kollege, Vorgesetzte(r), Kursleitung/Lehrer(in), Verwaltung/Service or Nachbar(in) (politely).',
+      '• Give each exercise exactly 3 Inhaltspunkte.',
+      '• End every exercise explicitly with: „Schreiben Sie 30–40 Wörter. Schreiben Sie zu allen drei Punkten.“',
+      '• Require Anrede and Grußformel, in a neutral-polite register.',
+      '• Situations are typical everyday-professional ones: thanks, a request, an apology, offering help, confirming a date or place.',
+      '• Vocabulary and grammar: strictly A2.',
+      '• Do not add language hints or sample answers.',
+      '• Topics: Arbeit & Büroalltag; Kurs/Prüfung/Termin; Veranstaltungen; Wohnen & Hausverwaltung; Nachbarschaft; Verein; Service; Gesundheitstermin; Wegbeschreibung; Einkäufe/Bestellungen.',
+      '• topicType: email. testingPart: 2. estimatedTime: 15. wordCount: { min: 30, max: 40 }. Do not emit id or createdAt; the application supplies them.',
+      '• description: one short German sentence naming the situation and the addressee. category: an array of 1–3 short German topic tags, for example ["Arbeit", "Service"]. Both fields are required.',
       '• requirements: Sie-Form; Anrede und Grußformel; 3 Inhaltspunkte; 30–40 Wörter; ohne Vorlagen/Beispiele.',
     ],
     examples: [
@@ -144,21 +139,22 @@ Schlagen Sie etwas vor, wie Sie helfen können.
 Schreiben Sie 30–40 Wörter.
 Schreiben Sie zu allen drei Punkten.`,
     ],
-    outputPrelude: `ФОРМАТ ВЫВОДА (строго, массив из {count} объектов). Для Teil 2 используй topicType: 'email'.\n${WRITING_INTERFACE}`,
-    outputContract: 'СГЕНЕРИРУЙ РЕЗУЛЬТАТ ТОЛЬКО В ВИДЕ МАССИВА ИЗ {count} ОБЪЕКТОВ WritingTopic. Без пояснений, без Markdown-комментариев.',
+    outputPrelude: `OUTPUT FORMAT (strict, an array of {count} objects). For Teil 2 use topicType: 'email'.\n${WRITING_INTERFACE}`,
+    outputContract:
+      'RETURN THE RESULT ONLY AS AN ARRAY OF {count} WritingExercise OBJECTS. No explanation, no Markdown commentary.',
   }),
   definePrompt({
     skill: 'writing',
     part: 1,
     kind: 'answer',
-    role: 'Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату 2024.',
-    task: 'Ранее ты сгенерировал следующее задание: {task}\nТВОЯ ЗАДАЧА: Сгенерируй пример идеального ответа на задание выше.',
+    role: AUTHOR_ROLE,
+    task: 'You previously generated the following exercise: {task}\nYOUR TASK: generate one exemplary model answer to the exercise above.',
     rules: [
       'Eine Kurznachricht (SMS) schreiben. Du-Form, 20–30 Wörter, 3 Inhaltspunkte.',
-      'Используйте неформальное приветствие (Hallo, Hi) и формулу прощания (Bis bald, LG). Имя в конце необязательно.',
-      'В SMS нормально опускать подлежащее в начале предложения ("Bin auf dem Weg").',
-      'Можно использовать 1–2 эмодзи.',
-      'Обязательно раскройте все 3 содержательных пункта.',
+      'Use an informal greeting (Hallo, Hi) and a closing formula (Bis bald, LG). A name at the end is optional.',
+      'In an SMS it is normal to drop the subject at the start of a sentence ("Bin auf dem Weg").',
+      'One or two emoji are acceptable.',
+      'Cover all 3 content points.',
     ],
     outputContract: ANSWER_CONTRACT,
   }),
@@ -166,14 +162,14 @@ Schreiben Sie zu allen drei Punkten.`,
     skill: 'writing',
     part: 2,
     kind: 'answer',
-    role: 'Ты — опытный составитель экзаменов Goethe-Institut (уровень A2), работаешь строго по модульному формату 2024.',
-    task: 'Ранее ты сгенерировал следующее задание: {task}\nТВОЯ ЗАДАЧА: Сгенерируй пример идеального ответа на задание выше.',
+    role: AUTHOR_ROLE,
+    task: 'You previously generated the following exercise: {task}\nYOUR TASK: generate one exemplary model answer to the exercise above.',
     rules: [
       'Eine E-Mail schreiben. Sie-Form, 30–40 Wörter, 3 Inhaltspunkte.',
-      'Письмо ОБЯЗАТЕЛЬНО начинается с (полу)формального приветствия и заканчивается Grußformel и полным именем.',
-      'Пишите грамматически правильными полными предложениями.',
-      'ОБЯЗАТЕЛЬНО используйте коннекторы (und, oder, aber, denn, weil).',
-      'Обязательно раскройте все 3 содержательных пункта.',
+      'The email MUST open with a (semi-)formal greeting and end with a Grußformel and the full name.',
+      'Write grammatically correct, complete sentences.',
+      'You MUST use connectors (und, oder, aber, denn, weil).',
+      'Cover all 3 content points.',
     ],
     outputContract: ANSWER_CONTRACT,
   }),
@@ -181,46 +177,46 @@ Schreiben Sie zu allen drei Punkten.`,
     skill: 'writing',
     part: 1,
     kind: 'review',
-    role: 'Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben. Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.',
-    task: `Язык обратной связи: {outputLanguage}.
-Пиши на этом языке все комментарии (criteria.*.comment), правила (examples[].rule), priority_fixes и итоговый отчёт (report).
-В examples.error оставляй цитату ученика как есть. В examples.correction дай исправленный немецкий текст.
+    role: WRITING_EXAMINER_ROLE,
+    task: `Feedback language: {outputLanguage}.
+Write every comment (criteria[].comment), rule (examples[].rule), priorityFixes entry, summary, strengths, improvements and the closing report in that language.
+In examples.error keep the learner's wording exactly as written. In examples.correction give the corrected German text.
 
-Входные данные
-Текст задания: {task}
-Требования: {requirements}
-Ответ ученика: {userContent}`,
+Input
+Exercise text: {task}
+Requirements: {requirements}
+Learner response: {userContent}`,
     rules: [
-      'Проверить тип задания: Teil 1 (Kurznachricht / SMS, du-Form).',
-      'Проверь объём: 20–30 слов. Если объём <50 % (то есть <10 слов) или ответ не по теме, по критерию Aufgabenerfüllung ставь E (0) и обнуляй весь Teil 1 («E_zero_rule»).',
-      'Оцени по 2 критериям (A–E): 1. Aufgabenerfüllung: покрытие всех 3 пунктов, уместный адресат и du-Form. 2. Sprache: понятность, простая связность, базовая лексика A2.',
-      'Пропуск подлежащего в начале SMS не наказывается. Эмодзи разрешены. Нужны неформальное приветствие и прощание.',
-      'Шкала Messpunkte: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. Сумма за Teil 1: 0–10; Result Points = Messpunkte × 1.25.',
-      'Дай конкретную обратную связь. Приведи 3–6 типичных ошибок с точными исправлениями. Не переписывай весь текст.',
+      'Confirm the exercise type: Teil 1 (Kurznachricht / SMS, du-Form).',
+      'Check the length: 20–30 words. If the response is under 50% of that (fewer than 10 words) or off topic, award E (0) for Aufgabenerfüllung and zero the whole Teil 1 (ruleApplied "E_zero_rule").',
+      'Mark against 2 criteria (A–E): 1. Aufgabenerfüllung: all 3 content points covered, an appropriate addressee and du-Form. 2. Sprache: intelligibility, simple cohesion, basic A2 vocabulary.',
+      'Dropping the subject at the start of an SMS is not penalised. Emoji are allowed. An informal greeting and closing are required.',
+      'Messpunkte scale: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. totalPoints for Teil 1 is the sum of the two criteria, 0–10.',
+      'Give specific feedback. List 3–6 typical errors with exact corrections. Do not rewrite the whole text.',
     ],
-    outputContract: REVIEW_JSON_TEIL1,
+    outputContract: reviewContract(1),
   }),
   definePrompt({
     skill: 'writing',
     part: 2,
     kind: 'review',
-    role: 'Ты — опытный экзаменатор Goethe-Institut по модулю A2 Schreiben. Проверяешь строго по официальным критериям и шкале A–E. Работа на немецком языке.',
-    task: `Язык обратной связи: {outputLanguage}.
-Пиши на этом языке все комментарии (criteria.*.comment), правила (examples[].rule), priority_fixes и итоговый отчёт (report).
-В examples.error оставляй цитату ученика как есть. В examples.correction дай исправленный немецкий текст.
+    role: WRITING_EXAMINER_ROLE,
+    task: `Feedback language: {outputLanguage}.
+Write every comment (criteria[].comment), rule (examples[].rule), priorityFixes entry, summary, strengths, improvements and the closing report in that language.
+In examples.error keep the learner's wording exactly as written. In examples.correction give the corrected German text.
 
-Входные данные
-Текст задания: {task}
-Требования: {requirements}
-Ответ ученика: {userContent}`,
+Input
+Exercise text: {task}
+Requirements: {requirements}
+Learner response: {userContent}`,
     rules: [
-      'Проверить тип задания: Teil 2 ((halb-)formelle E-Mail, Sie-Form).',
-      'Проверь объём: 30–40 слов. Если объём <50 % (то есть <15 слов) или ответ не по теме, ставь E (0) и обнуляй Teil 2 («E_zero_rule»).',
-      'Оцени по 2 критериям: 1. Aufgabenerfüllung: все 3 пункта, Anrede/Grußformel, Sie-Form. 2. Sprache: понятность, базовые связки, лексика A2.',
-      'Обязательные коннекторы. Письмо должно начинаться с (полу)формального обращения и заканчиваться прощанием и ПОЛНЫМ ИМЕНЕМ.',
-      'Шкала Messpunkte: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. Сумма за Teil 2: 0–10; Result Points = Messpunkte × 1.25.',
-      'Дай конкретную обратную связь и 3–6 типичных ошибок с исправлениями.',
+      'Confirm the exercise type: Teil 2 ((halb-)formelle E-Mail, Sie-Form).',
+      'Check the length: 30–40 words. If the response is under 50% of that (fewer than 15 words) or off topic, award E (0) and zero Teil 2 (ruleApplied "E_zero_rule").',
+      'Mark against 2 criteria: 1. Aufgabenerfüllung: all 3 content points, Anrede/Grußformel, Sie-Form. 2. Sprache: intelligibility, basic connectors, A2 vocabulary.',
+      'Connectors are required. The email must open with a (semi-)formal salutation and end with a closing formula and the FULL NAME.',
+      'Messpunkte scale: A = 5, B = 3.5, C = 2, D = 0.5, E = 0. totalPoints for Teil 2 is the sum of the two criteria, 0–10.',
+      'Give specific feedback and 3–6 typical errors with corrections.',
     ],
-    outputContract: REVIEW_JSON_TEIL2,
+    outputContract: reviewContract(2),
   }),
 ]

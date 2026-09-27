@@ -17,4 +17,4 @@ export type {
   ListeningQuestionA2Teil4,
   ListeningExerciseA2Teil4,
   ListeningA2Exercise,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'

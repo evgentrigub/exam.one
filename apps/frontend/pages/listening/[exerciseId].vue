@@ -3,7 +3,7 @@
     <ExerciseHeader
       v-if="isClient && exercise"
       skill="listening"
-      :type="`Teil ${exercise.testingPart}`"
+      :type="labelFor('listening', exercise.testingPart)"
       :title="exercise.title"
       :subtitle="subtitle"
       :level="exercise.difficulty"
@@ -30,6 +30,7 @@ usePageMeta('Listening Exercise', 'Listening')
 const route = useRoute()
 const router = useRouter()
 const { getExerciseById } = useListeningExercises()
+const { labelFor } = useActivePack()
 
 const isClient = ref(false)
 onMounted(() => {

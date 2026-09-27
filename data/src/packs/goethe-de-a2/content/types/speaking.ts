@@ -43,21 +43,3 @@ export interface SpeakingTranscripts {
   questions?: string
   monologue?: string
 }
-
-export interface SpeakingReviewCriterion {
-  id: 'answers' | 'questions' | 'taskCompletion' | 'language'
-  label: string
-  points: number
-  maxPoints: number
-  comment: string
-}
-
-export interface SpeakingReviewData {
-  teil: SpeakingA2Part
-  totalPoints: number
-  maxPoints: 4 | 8
-  criteria: readonly SpeakingReviewCriterion[]
-  strengths: readonly string[]
-  improvements: readonly string[]
-  summary: string
-}

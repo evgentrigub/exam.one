@@ -15,7 +15,7 @@ import {
   type ReadingExercise,
   type SpeakingA2Topic,
   type WritingExercise,
-} from '@exam-one/exam-content'
+} from '@exam-one/exam-packs'
 
 export interface SeedCatalogSummary {
   reading: number

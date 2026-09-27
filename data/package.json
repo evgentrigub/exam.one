@@ -20,9 +20,6 @@
     "lint:fix": "eslint . --fix",
     "test": "echo 'No exam pack tests configured'"
   },
-  "dependencies": {
-    "@exam-one/exam-content": "workspace:*"
-  },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "eslint": "^9.29.0",

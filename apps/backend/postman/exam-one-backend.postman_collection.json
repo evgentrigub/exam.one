@@ -774,7 +774,7 @@
             "description": "Provide the registered topic/part and transcript answers.",
             "body": {
               "mode": "raw",
-              "raw": "{\"topic\":{{speakingTopic}},\"answers\":{{answers}},\"prompt\":{{reviewPromptJson}}}",
+              "raw": "{\n  \"topic\": {\n    \"testingPart\": 2,\n    \"id\": \"speaking-a2-part2-demo\",\n    \"theme\": \"Freizeit\",\n    \"keywords\": [\n      \"Sport?\",\n      \"Mit wem?\",\n      \"Wann?\",\n      \"Wo?\"\n    ]\n  },\n  \"answers\": {\n    \"monologue\": \"Ich spiele am Wochenende Fussball mit Freunden.\"\n  },\n  \"outputLanguage\": \"de\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -804,7 +804,7 @@
             "description": "Optional overview. Unavailable for packs without a mock factory.",
             "body": {
               "mode": "raw",
-              "raw": "{\"prompt\":{{mockReviewPromptJson}}}",
+              "raw": "{\n  \"result\": {\n    \"overallPoints\": 0,\n    \"modules\": []\n  },\n  \"outputLanguage\": \"en\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

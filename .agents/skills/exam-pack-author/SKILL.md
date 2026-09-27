@@ -38,7 +38,7 @@ Create:
 - `samples.ts`, containing original example payloads for each available module/part, plus example reviews for rubric-scored parts. These are validation inputs, not database seeds or an official question bank.
 - `brief.md`, with normalized requirements, source references, and agreed limitations.
 
-Use `formatAdapter` and `definePrompt`; consult [the contract reference](references/pack-contract.md) for payload and prompt conventions. Do not copy the synthetic fixture's demonstration wording or Goethe's compatibility flag and mock factory into a new exam. Start unregistered with `live: false` while authoring.
+Use `formatAdapter` and `definePrompt`; consult [the contract reference](references/pack-contract.md) for payload and prompt conventions. Do not copy the synthetic fixture's demonstration wording or Goethe's mock factory into a new exam. Start unregistered with `live: false` while authoring.
 
 ## Validate and activate
 

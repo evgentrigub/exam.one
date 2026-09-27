@@ -4,8 +4,7 @@ exam.one is a multi-exam framework. Goethe A2 is the first live pack, not the pl
 
 Allowed to name Goethe / Teile / scoring rules:
 
-- `@exam-one/exam-content` types and seeds
-- `@exam-one/exam-packs` under `data/src/packs/` (structure + `PromptSpec`s)
+- `@exam-one/exam-packs` under `data/src/packs/` (structure, `PromptSpec`s, and optional bundled seeds)
 
 Must stay generic:
 

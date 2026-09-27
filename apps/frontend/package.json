@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@exam-one/contracts": "workspace:*",
-    "@exam-one/exam-content": "workspace:*",
     "@exam-one/exam-packs": "workspace:*",
     "@nuxtjs/i18n": "^10.6.0",
     "@vueuse/core": "^14.4.0",

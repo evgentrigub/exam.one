@@ -23,11 +23,18 @@ export function useActivePack() {
     return getAvailableExamParts(pack.value, skill)
   }
 
+  function labelFor(skill: SkillId, partNumber: number | undefined): string {
+    const part = partsFor(skill).find(item => item.n === partNumber) ??
+      pack.value.structure.find(module => module.id === skill)?.parts.find(item => item.n === partNumber)
+    return part?.practiceLabel ?? (partNumber ? `Teil ${partNumber}` : '')
+  }
+
   return {
     pack,
     packId,
     examLevel,
     livePacks,
     partsFor,
+    labelFor,
   }
 }

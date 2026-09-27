@@ -297,13 +297,15 @@ onUnmounted(() => {
   if (autoSavedTimer) clearTimeout(autoSavedTimer)
 })
 
+const { pack } = useActivePack()
+
 function updateWordCount() {
   const words = content.value
     .trim()
     .split(/\s+/)
     .filter(word => word.length > 0)
   wordCount.value = content.value.trim() === '' ? 0 : words.length
-  if (content.value.trim().length > 20) {
+  if (pack.value.language === 'de' && content.value.trim().length > 20) {
     try {
       realtimeAnalysis.value = analyzeGermanText(content.value, props.topic)
     } catch (error) {

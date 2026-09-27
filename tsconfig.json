@@ -6,7 +6,6 @@
     { "path": "./data" },
     { "path": "./libraries/contracts" },
     { "path": "./libraries/database" },
-    { "path": "./libraries/exam-content" },
     { "path": "./libraries/nestjs-libraries" }
   ]
 }

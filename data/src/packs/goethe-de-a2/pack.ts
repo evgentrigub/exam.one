@@ -1,10 +1,13 @@
 import { attachGoetheRuntime } from './runtime'
-import { createGoetheA2MockExamSet } from '@exam-one/exam-content'
+import { createGoetheA2MockExamSet, goetheA2MockExamSet1 } from './content'
+import { goetheA2MockOverview } from './prompts/mock-exam'
 import type { ExamPack } from '../../types'
+import { goetheA2ReviewVars } from './review-vars'
 import { listeningPrompts } from './prompts/listening'
 import { readingPrompts } from './prompts/reading'
 import { speakingPrompts } from './prompts/speaking'
 import { writingPrompts } from './prompts/writing'
+import { withPracticeCopy } from './practice-copy'
 import { goetheDeA2Structure } from './structure'
 
 export const GOETHE_DE_A2_PACK_ID = 'goethe-de-a2'
@@ -16,9 +19,8 @@ export const goetheDeA2: ExamPack = {
   cefr: 'A2',
   title: 'Goethe A2',
   live: true,
-  compatibility: 'goethe-a2-v1',
   examIds: ['goethe-de-a2', 'goethe-a2'],
-  structure: attachGoetheRuntime(goetheDeA2Structure),
+  structure: attachGoetheRuntime(withPracticeCopy(goetheDeA2Structure)),
   prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts, ...speakingPrompts],
   speech: {
     ttsLang: 'de',
@@ -32,4 +34,7 @@ export const goetheDeA2: ExamPack = {
     audioPathPrefix: '/audio/listening/a2',
   },
   createMockSet: createGoetheA2MockExamSet,
+  bundledMockSet: goetheA2MockExamSet1,
+  buildReviewVars: goetheA2ReviewVars,
+  mockOverview: goetheA2MockOverview,
 }

@@ -2,10 +2,6 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-export function nonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0
-}
-
 export function extractJsonArray(rawText: string): unknown[] | null {
   const blockStart = rawText.indexOf('```json')
   const fenceStart = blockStart >= 0 ? blockStart + 7 : -1
@@ -40,47 +36,41 @@ export function extractJsonArray(rawText: string): unknown[] | null {
   return null
 }
 
-export function extractJsonObject(rawText: string): unknown | null {
+/**
+ * Pull a single JSON object out of a model response.
+ *
+ * Models wrap JSON in prose or a ``` fence often enough that a bare `JSON.parse` is not
+ * safe. Mirrors `extractJsonArray`: prefer a fenced block, then scan inward from the first
+ * `{` for the longest tail that parses.
+ */
+export function extractJsonObject(rawText: string): Record<string, unknown> | null {
   const blockStart = rawText.indexOf('```json')
   const fenceStart = blockStart >= 0 ? blockStart + 7 : -1
+
   if (fenceStart >= 0) {
     const fenceEnd = rawText.indexOf('```', fenceStart)
     if (fenceEnd > fenceStart) {
-      const candidate = rawText.slice(fenceStart, fenceEnd).trim()
       try {
-        return JSON.parse(candidate) as unknown
+        const parsed: unknown = JSON.parse(rawText.slice(fenceStart, fenceEnd).trim())
+        if (isRecord(parsed)) return parsed
       } catch {
-        // fall through
+        // fall through to brace scan
       }
     }
   }
 
   const firstBrace = rawText.indexOf('{')
   if (firstBrace < 0) return null
+
   for (let j = rawText.length - 1; j > firstBrace; j--) {
     if (rawText[j] !== '}') continue
     try {
-      return JSON.parse(rawText.slice(firstBrace, j + 1)) as unknown
+      const parsed: unknown = JSON.parse(rawText.slice(firstBrace, j + 1))
+      if (isRecord(parsed)) return parsed
     } catch {
-      // try a shorter candidate
+      // continue trying shorter tails
     }
   }
-  return null
-}
 
-export function tryParseJsonCandidates(rawText: string): unknown[] {
-  const candidates: unknown[] = []
-  const fenced = rawText.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]
-  if (fenced) {
-    try {
-      candidates.push(JSON.parse(fenced.trim()) as unknown)
-    } catch {
-      // ignore
-    }
-  }
-  const object = extractJsonObject(rawText)
-  if (object !== null) candidates.push(object)
-  const array = extractJsonArray(rawText)
-  if (array !== null) candidates.push(array)
-  return candidates
+  return null
 }

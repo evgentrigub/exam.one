@@ -1,6 +1,17 @@
-import { defineAdapter, record, type ExerciseView, type PartRuntime } from '../../runtime'
+import {
+  defineAdapter,
+  record,
+  validateReview,
+  type ExerciseView,
+  type PartRuntime,
+} from '../../runtime'
 import type { ExamModule } from '../../types'
-import { isValidA2Review, isSpeakingReviewData } from './compatibility/review'
+import {
+  validateListening,
+  validateReading,
+  validateSpeaking,
+  validateWriting,
+} from './validate'
 
 /** Compatibility projection: the original seed JSON and session components remain valid. */
 export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
@@ -113,20 +124,37 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
         const writing = review['writingReview']
         if (module.id === 'writing' && writing && typeof writing === 'object') {
           const response = record(writing)['responseData']
-          if (
-            response !== undefined &&
-            (!isValidA2Review(response, savedRules) || response.teil !== n)
-          )
-            throw new Error('Invalid saved writing rubric or total')
+          // Writing rubrics are stored as a `CriterionReview`; the part is implied by the
+          // attempt's own snapshot, so the rubric no longer carries a `teil` to cross-check.
+          if (response !== undefined) {
+            try {
+              validateReview(response, savedRules)
+            } catch {
+              throw new Error('Invalid saved writing rubric or total')
+            }
+          }
         }
-        if (
-          module.id === 'speaking' &&
-          review['review'] !== undefined &&
-          (!isSpeakingReviewData(review['review'], savedRules) || review['review'].teil !== n)
-        )
-          throw new Error('Invalid saved speaking rubric or total')
+        // Speaking rubrics are `CriterionReview` too. An older rubric still carrying `teil`
+        // validates unchanged: the extra key is ignored, and the numbers it used to be
+        // checked against are the ones `validateReview` checks.
+        if (module.id === 'speaking' && review['review'] !== undefined) {
+          try {
+            validateReview(review['review'], savedRules)
+          } catch {
+            throw new Error('Invalid saved speaking rubric or total')
+          }
+        }
       }
-      return { ...part, runtime: rules, adapter }
+      // Every module now carries a payload guard; `validateView` only sees the projection.
+      const validate =
+        module.id === 'reading'
+          ? validateReading
+          : module.id === 'listening'
+            ? validateListening
+            : module.id === 'writing'
+              ? validateWriting
+              : validateSpeaking
+      return { ...part, runtime: rules, adapter, validate }
     }),
   }))
 }

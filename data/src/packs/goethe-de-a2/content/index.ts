@@ -1,4 +1,4 @@
-export * from './types/common'
+export type { Difficulty } from './types/common'
 export * from './types/reading'
 export * from './types/writing'
 export * from './types/listening'

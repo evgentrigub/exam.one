@@ -26,7 +26,7 @@
         skill="writing"
         :type="topic.topicType"
         :title="topic.title"
-        :subtitle="`Goethe ${topic.difficulty} · Teil ${topic.testingPart || 2} · ${topic.wordCount.min}–${topic.wordCount.max} words`"
+        :subtitle="`${pack.title} · ${labelFor('writing', topic.testingPart || 2)} · ${topic.wordCount.min}–${topic.wordCount.max} words`"
         :level="topic.difficulty"
         to="/exercises?skill=writing"
         :back-label="$t('exercisesUi.skillPractice', { skill: $t('skill.writing') })"
@@ -46,6 +46,7 @@ const route = useRoute()
 const { getTopicById, isInitialized } = useWritingTopics()
 const topicId = computed(() => String(route.params['topicId'] || ''))
 const topic = computed<WritingExercise | undefined>(() => getTopicById(topicId.value))
+const { pack, labelFor } = useActivePack()
 
 usePageMeta('Writing Exercise', 'Writing')
 watchEffect(() => {

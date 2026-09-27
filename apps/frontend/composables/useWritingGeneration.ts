@@ -138,7 +138,10 @@ export const useWritingGeneration = () => {
     saveState()
   }
 
-  const getPromptForPart = (part: 1 | 2, numberOfTopics = 3): string => {
+  /** The writing screen has always offered a choice of three topics per part. */
+  const TOPICS_PER_PART = 3
+
+  const getPromptForPart = (part: 1 | 2, numberOfTopics = TOPICS_PER_PART): string => {
     const prompt = assemble('writing', part, 'generator', { count: numberOfTopics })
     if (!prompt) {
       throw new Error(`No writing generator prompt is configured for part ${part}`)
@@ -175,6 +178,7 @@ export const useWritingGeneration = () => {
             prompt,
             part,
             difficulty,
+            count: TOPICS_PER_PART,
           },
         })
 

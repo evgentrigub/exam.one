@@ -66,7 +66,7 @@
 
         <!-- Review View -->
         <div v-if="selectedView === 'review' && reviewData">
-          <WritingReviewDetails :review="reviewData" />
+          <WritingReviewDetails :review="reviewData" :teil="currentTopic?.testingPart ?? 1" />
         </div>
 
         <pre
@@ -117,7 +117,7 @@ import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
 import { useWritingTopics } from '~/composables/useWritingTopics'
-import type { AiReviewData } from '~/utils/types'
+import type { CriterionReview } from '@exam-one/exam-packs'
 
 interface Props {
   topicId: string
@@ -152,7 +152,7 @@ const reviewText = computed(() => {
   return rec?.responseText || ''
 })
 
-const reviewData = computed<AiReviewData | null>(() => {
+const reviewData = computed<CriterionReview | null>(() => {
   void reviewVersion.value
   const rec = getReview(props.topicId)
   return rec?.responseData || null
