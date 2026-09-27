@@ -510,6 +510,7 @@ import type {
 } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import type { WritingExercise } from '~/utils/types'
+import { UNAVAILABLE_MOCK_SET } from '~/utils/mockExam/unavailableSet'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
@@ -527,18 +528,7 @@ const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const { pack } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
 const bundledSet = computed(() => pack.value.bundledMockSet as MockExamSet | undefined)
-const unavailableSet: MockExamSet = {
-  id: 'unavailable',
-  examId: '',
-  level: '',
-  title: 'Mock exam',
-  generated: false,
-  createdAt: '',
-  modules: [],
-  content: { reading: [], listening: [], writing: [], speaking: [] },
-  rules: { maximumPoints: 100, passPoints: 60 },
-}
-const set = computed(() => foundSet.value ?? bundledSet.value ?? unavailableSet)
+const set = computed(() => foundSet.value ?? bundledSet.value ?? UNAVAILABLE_MOCK_SET)
 const validSet = computed(() => Boolean(foundSet.value) || !setsInitialized.value)
 
 usePageMeta('Mock exam', pack.value.title)

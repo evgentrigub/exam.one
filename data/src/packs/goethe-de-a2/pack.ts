@@ -1,5 +1,12 @@
 import { attachGoetheRuntime } from './runtime'
-import { createGoetheA2MockExamSet, goetheA2MockExamSet1 } from './content'
+import {
+  allDefaultListeningTopics,
+  allDefaultReadingTopics,
+  allDefaultSpeakingTopics,
+  allDefaultWritingTopics,
+  createGoetheA2MockExamSet,
+  goetheA2MockExamSet1,
+} from './content'
 import { goetheA2MockOverview } from './prompts/mock-exam'
 import type { ExamPack } from '../../types'
 import { goetheA2ReviewVars } from './review-vars'
@@ -32,6 +39,14 @@ export const goetheDeA2: ExamPack = {
     ],
     sttLang: 'de',
     audioPathPrefix: '/audio/listening/a2',
+  },
+  // Practice and mock-exam payloads alike: the mock ones are flagged `examOnly` and stored as
+  // `EXAM_ONLY`, which keeps them out of the practice catalogs.
+  seedExercises: {
+    reading: allDefaultReadingTopics as unknown as Record<string, unknown>[],
+    listening: allDefaultListeningTopics as unknown as Record<string, unknown>[],
+    writing: allDefaultWritingTopics as unknown as Record<string, unknown>[],
+    speaking: allDefaultSpeakingTopics as unknown as Record<string, unknown>[],
   },
   createMockSet: createGoetheA2MockExamSet,
   bundledMockSet: goetheA2MockExamSet1,

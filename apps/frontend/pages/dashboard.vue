@@ -217,8 +217,11 @@
         </div>
       </section>
 
-      <!-- Live mock sets -->
-      <section class="bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden">
+      <!-- Live mock sets; hidden for a pack that ships no mock exams -->
+      <section
+        v-if="pack.createMockSet"
+        class="bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden"
+      >
         <div class="p-5 flex items-center justify-between gap-3">
           <div>
             <h2 class="font-display text-lg font-bold">

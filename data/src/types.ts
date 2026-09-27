@@ -7,6 +7,21 @@ export type PromptKind = 'generator' | 'answer' | 'review'
 
 export type ItemFormat = 'selection' | 'matching' | 'true-false' | 'freeform' | 'recording'
 
+/**
+ * A dedicated practice screen for a part whose interaction the default screen for its format
+ * cannot express. Absent, the part uses its skill's default screen.
+ * - `form-fill` (freeform): a scenario text and a form whose blank rows are the fields.
+ * - `word-cards` (recording): ask a question from a topic + word card, answer a partner question.
+ * - `request-cards` (recording): make a request from a cue, respond to a partner request.
+ */
+export type PartLayout = 'form-fill' | 'word-cards' | 'request-cards'
+
+export const LAYOUT_FORMATS: Record<PartLayout, ItemFormat> = {
+  'form-fill': 'freeform',
+  'word-cards': 'recording',
+  'request-cards': 'recording',
+}
+
 export type PromptVars = Record<string, string | number | undefined>
 
 export interface ExamPart {
@@ -17,6 +32,7 @@ export interface ExamPart {
   goal: string
   skill: string
   itemFormat: ItemFormat
+  layout?: PartLayout
   runtime?: PartRuntime
   adapter?: ExerciseAdapter
   /**
@@ -34,6 +50,16 @@ export interface ExamPart {
   phrases?: readonly string[]
   /** Instruction line for this part. Shown above the speaking prompts. */
   instruction?: string
+  /** Short description of the part in the session header, such as "Short messages". */
+  practiceSubtitle?: string
+  /** Estimated minutes shown on the exercise card in the catalog. */
+  practiceMinutes?: number
+  /** Countdown for a practice session, in seconds. */
+  practiceTimerSec?: number
+  /** Catalog type key for the exercise card; resolved through `exerciseType.*` i18n. */
+  practiceType?: string
+  /** Badge naming the task in the speaking session, such as "Interview". */
+  sessionTitle?: string
 }
 
 export interface ExamModule {
@@ -91,6 +117,11 @@ export interface ExamPack {
   structure: ExamModule[]
   prompts: readonly PromptSpec[]
   speech: SpeechConfig
+  /**
+   * Bundled exercises installed by `db:seed`, per module. Each payload needs a string `id`
+   * (its external id) and is stored under this pack's `packId` and `cefr`.
+   */
+  seedExercises?: Partial<Record<SkillId, readonly Record<string, unknown>[]>>
   createMockSet?: (setNumber: number, content: MockExamContent) => MockExamSet
   bundledMockSet?: MockExamSet
   /**

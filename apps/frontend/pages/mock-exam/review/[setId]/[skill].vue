@@ -250,6 +250,7 @@ import ReviewQuestionList from '~/components/mockExam/ReviewQuestionList.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
 import type { MockExamSet } from '@exam-one/exam-packs'
+import { UNAVAILABLE_MOCK_SET } from '~/utils/mockExam/unavailableSet'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import { isSharedMatchingListening, isStatementListening, usesItemAudio } from '~/utils/listening/audioUrls'
 import type { ReadingExercise } from '~/utils/exercises/reading'
@@ -271,7 +272,7 @@ const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const { pack, labelFor } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
 const set = computed(
-  () => (foundSet.value ?? pack.value.bundledMockSet) as MockExamSet
+  (): MockExamSet => foundSet.value ?? pack.value.bundledMockSet ?? UNAVAILABLE_MOCK_SET
 )
 const { state, isInitialized: examInitialized } = useMockExam(set)
 

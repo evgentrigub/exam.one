@@ -1,6 +1,6 @@
-// Prompt-quality eval for the Goethe A2 generator prompts (roadmap 2.13).
+// Prompt-quality eval for a pack's generator prompts (roadmap 2.13, packs since 2.15).
 //
-// Drives the 12 generator prompts through the real LLM and scores the output against the
+// Drives every generator prompt of one pack through the real LLM and scores the output against the
 // same validators production uses, so a prompt rewrite can be compared before/after.
 // Needs no Nest, no database and no HTTP server: it mirrors PackAiService.generate() and
 // talks to the LLM adapter directly.
@@ -8,6 +8,7 @@
 //   node scripts/eval-prompts.mjs --control          # free: score the bundled seeds only
 //   node scripts/eval-prompts.mjs --n 3 --out FILE   # real run, 3 samples per prompt
 //   node scripts/eval-prompts.mjs --n 1 --skill reading
+//   node scripts/eval-prompts.mjs --pack goethe-de-a1 --control   # default pack: goethe-de-a2
 //
 // Requires a built workspace (`pnpm build`) and LLM env vars, which it reads from .env.
 import assert from 'node:assert/strict'
@@ -33,6 +34,7 @@ const CONTROL_ONLY = argv.includes('--control')
 const N = Number(flag('n', '3'))
 const ONLY_SKILL = flag('skill', null)
 const OUT = flag('out', null)
+const PACK_ID = flag('pack', 'goethe-de-a2')
 
 // ---------------------------------------------------------------- env
 
@@ -68,15 +70,19 @@ function extractArray(raw) {
   return null
 }
 
-const pack = packs.getPack('goethe-de-a2')
-assert(pack, 'goethe-de-a2 is not registered')
+const pack = packs.getPack(PACK_ID)
+assert(pack, `${PACK_ID} is not registered`)
+const IS_A2 = pack.packId === 'goethe-de-a2'
 
-const GENERATORS = [
-  ...[1, 2, 3, 4].map(n => ({ skill: 'reading', part: n })),
-  ...[1, 2, 3, 4].map(n => ({ skill: 'listening', part: n })),
-  ...[1, 2].map(n => ({ skill: 'writing', part: n })),
-  ...[1, 2].map(n => ({ skill: 'speaking', part: n })),
-].filter(g => !ONLY_SKILL || g.skill === ONLY_SKILL)
+/** Every available part that has a generator prompt, in module order. */
+const GENERATORS = pack.structure
+  .flatMap(module =>
+    module.parts
+      .filter(part => part.available !== false)
+      .map(part => ({ skill: module.id, part: part.n }))
+  )
+  .filter(g => packs.findPrompt(pack, g.skill, g.part, 'generator'))
+  .filter(g => !ONLY_SKILL || g.skill === ONLY_SKILL)
 
 const CYRILLIC = /[а-яА-ЯёЁ]/
 
@@ -109,6 +115,11 @@ function scorePayload(skill, payload) {
   } catch (error) {
     problems.push(`validateView: ${error.message}`)
   }
+  try {
+    part.validate?.(data, part.runtime)
+  } catch (error) {
+    problems.push(`validate: ${error.message}`)
+  }
   problems.push(...extraChecks(skill, data, part))
   return problems
 }
@@ -120,6 +131,9 @@ function extraChecks(skill, data, part) {
   // The whole point of the pack: generated content must be German.
   const cyrillic = all.filter(s => CYRILLIC.test(s))
   if (cyrillic.length) problems.push(`cyrillic in output: ${JSON.stringify(cyrillic[0].slice(0, 60))}`)
+
+  // The rest pins A2's documented rules; another pack states its own in `part.validate`.
+  if (!IS_A2) return problems
 
   if (skill === 'writing') {
     const wc = data.wordCount
@@ -161,12 +175,13 @@ function extraChecks(skill, data, part) {
 // ---------------------------------------------------------------- control
 
 function runControl() {
-  const seeds = {
-    reading: packs.defaultReadingTopics,
-    listening: packs.defaultListeningTopics,
-    writing: packs.defaultWritingTopics,
-    speaking: packs.defaultSpeakingTopics,
-  }
+  // Practice seeds only: mock-exam copies are the same content under another id.
+  const seeds = Object.fromEntries(
+    Object.entries(pack.seedExercises ?? {}).map(([skill, items]) => [
+      skill,
+      items.filter(item => item.examOnly !== true),
+    ])
+  )
   let failures = 0
   console.log('control: scoring the human-authored seeds (expect 0 problems)\n')
   for (const [skill, arr] of Object.entries(seeds)) {
@@ -228,7 +243,7 @@ async function runEval() {
     for (const payload of data) definition?.validate?.(payload, definition.runtime)
     return { data, error: null }
   }
-  console.log(`provider=${config.provider} model=${config.model} effort=${config.reasoningEffort ?? 'n/a'} n=${N}\n`)
+  console.log(`pack=${pack.packId} provider=${config.provider} model=${config.model} effort=${config.reasoningEffort ?? 'n/a'} n=${N}\n`)
 
   for (const { skill, part } of GENERATORS) {
     const spec = packs.findPrompt(pack, skill, part, 'generator')

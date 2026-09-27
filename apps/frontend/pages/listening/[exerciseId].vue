@@ -30,7 +30,7 @@ usePageMeta('Listening Exercise', 'Listening')
 const route = useRoute()
 const router = useRouter()
 const { getExerciseById } = useListeningExercises()
-const { labelFor } = useActivePack()
+const { labelFor, partsFor } = useActivePack()
 
 const isClient = ref(false)
 onMounted(() => {
@@ -45,15 +45,9 @@ const exercise = computed<ListeningA2Exercise | null>(
 const subtitle = computed(() => {
   if (!exercise.value) return ''
   const e = exercise.value
-  const qCount =
-    e.testingPart === 1 || e.testingPart === 3 ? (e.items?.length ?? 0) : (e.questions?.length ?? 0)
-  const partType: Record<number, string> = {
-    1: 'Short messages',
-    2: 'Matching conversation',
-    3: 'Short dialogues',
-    4: 'Interview · Ja/Nein',
-  }
-  return `${partType[e.testingPart] ?? 'Listening'} · ${qCount} questions`
+  const qCount = 'items' in e ? (e.items?.length ?? 0) : 'questions' in e ? (e.questions?.length ?? 0) : 0
+  const part = partsFor('listening').find(item => item.n === e.testingPart)
+  return `${part?.practiceSubtitle ?? 'Listening'} · ${qCount} questions`
 })
 
 watchEffect(() => {

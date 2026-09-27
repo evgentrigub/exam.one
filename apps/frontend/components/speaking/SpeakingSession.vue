@@ -7,7 +7,7 @@
             class="inline-flex items-center gap-1.5 rounded-selector bg-warning/15 px-2 py-1 text-xs font-semibold text-warning"
           >
             <Mic :size="12" />
-            {{ topic.topicType === 'interview' ? 'Interview' : 'Monologue' }}
+            {{ sessionTitle }}
           </span>
           <span class="level-pip">Teil {{ topic.testingPart }}</span>
         </div>
@@ -298,6 +298,11 @@ const submitted = ref(false)
 const recordingEpoch = ref(0)
 
 const { pack } = useActivePack()
+const sessionTitle = computed(
+  () =>
+    speakingPart.value?.sessionTitle ??
+    (props.topic.topicType === 'interview' ? 'Interview' : 'Monologue')
+)
 const speakingPart = computed(() =>
   pack.value.structure
     .find(module => module.id === 'speaking')

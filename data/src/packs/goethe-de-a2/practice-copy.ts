@@ -39,6 +39,22 @@ const speakingInstructions = {
   2: 'Talk about the topic using all four keywords. Aim for a few connected sentences.',
 } as const
 
+/**
+ * Session and catalog chrome the screens used to hardcode for A2. The values are the literals
+ * those screens carried, moved here verbatim so another pack can supply its own.
+ */
+const listeningChrome = {
+  1: { practiceSubtitle: 'Short messages', practiceType: 'announcement', practiceMinutes: 6, practiceTimerSec: 600 },
+  2: { practiceSubtitle: 'Matching conversation', practiceType: 'matching', practiceMinutes: 7, practiceTimerSec: 480 },
+  3: { practiceSubtitle: 'Short dialogues', practiceType: 'dialog', practiceMinutes: 5, practiceTimerSec: 600 },
+  4: { practiceSubtitle: 'Interview · Ja/Nein', practiceType: 'interview', practiceMinutes: 8, practiceTimerSec: 480 },
+} as const
+
+const speakingChrome = {
+  1: { practiceMinutes: 6, sessionTitle: 'Interview' },
+  2: { practiceMinutes: 7, sessionTitle: 'Monologue' },
+} as const
+
 /** Attach the labels and coach copy the existing screens already show. */
 export function withPracticeCopy(modules: ExamModule[]): ExamModule[] {
   return modules.map(module => ({
@@ -49,11 +65,17 @@ export function withPracticeCopy(modules: ExamModule[]): ExamModule[] {
       ...(module.id === 'writing'
         ? { tips: writingTips[part.n as 1 | 2] }
         : {}),
-      ...(module.id === 'listening' ? { instruction: listeningInstructions[part.n as 1 | 2 | 3 | 4] } : {}),
+      ...(module.id === 'listening'
+        ? {
+            instruction: listeningInstructions[part.n as 1 | 2 | 3 | 4],
+            ...listeningChrome[part.n as 1 | 2 | 3 | 4],
+          }
+        : {}),
       ...(module.id === 'speaking'
         ? {
             phrases: speakingPhrases[part.n as 1 | 2],
             instruction: speakingInstructions[part.n as 1 | 2],
+            ...speakingChrome[part.n as 1 | 2],
           }
         : {}),
     })),

@@ -15,7 +15,7 @@ export type {
   MockExamOverviewInput,
   MockExamOverviewItem,
 } from './packs/goethe-de-a2/prompts/mock-exam'
-export { DEFAULT_PACK_ID } from './types'
+export { DEFAULT_PACK_ID, LAYOUT_FORMATS } from './types'
 export type {
   ExamModule,
   ExamPack,
@@ -23,6 +23,7 @@ export type {
   ItemFormat,
   LlmComplete,
   LlmMessage,
+  PartLayout,
   PromptKind,
   PromptSpec,
   PromptSpecFields,
