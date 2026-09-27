@@ -9,33 +9,44 @@ import {
 const topics = ref<WritingExercise[]>([])
 const isInitialized = ref(false)
 let hydratePromise: Promise<void> | null = null
-onPackReset(() => { topics.value = []; isInitialized.value = false; hydratePromise = null })
+/** Set once a screen on the client has asked for this catalog, so a pack switch refills it. */
+let requested = false
+
+const hydrate = async (): Promise<void> => {
+  if (import.meta.server) return
+  if (isInitialized.value) return
+  if (hydratePromise) return hydratePromise
+  const epoch = packEpoch()
+  hydratePromise = (async () => {
+    try {
+      const loaded = await fetchSkillExercises<WritingExercise>('WRITING')
+      if (epoch !== packEpoch()) return
+      topics.value = loaded
+      isInitialized.value = true
+    } catch (error) {
+      if (epoch !== packEpoch()) return
+      console.error('Failed to load writing topics from API:', error)
+      topics.value = []
+      isInitialized.value = true
+    } finally {
+      if (epoch === packEpoch()) hydratePromise = null
+    }
+  })()
+  return hydratePromise
+}
+
+// Settings hydrate after the first screens mount, so a user whose pack is not the default
+// switches packs on every page load. Refetch for the screens already showing this catalog.
+onPackReset(() => {
+  topics.value = []
+  isInitialized.value = false
+  hydratePromise = null
+  if (import.meta.client && requested) void hydrate()
+})
 
 export const useWritingTopics = () => {
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
-  const hydrate = async (): Promise<void> => {
-    if (import.meta.server) return
-    if (isInitialized.value) return
-    if (hydratePromise) return hydratePromise
-    const epoch = packEpoch()
-    hydratePromise = (async () => {
-      try {
-        const loaded = await fetchSkillExercises<WritingExercise>('WRITING')
-        if (epoch !== packEpoch()) return
-        topics.value = loaded
-        isInitialized.value = true
-      } catch (error) {
-        if (epoch !== packEpoch()) return
-        console.error('Failed to load writing topics from API:', error)
-        topics.value = []
-        isInitialized.value = true
-      } finally {
-        if (epoch === packEpoch()) hydratePromise = null
-      }
-    })()
-    return hydratePromise
-  }
 
   const getTopics = (): WritingExercise[] => topics.value.filter(topic => !topic.examOnly)
 
@@ -74,6 +85,7 @@ export const useWritingTopics = () => {
 
   const getTopicsCount = (): number => getTopics().length
 
+  if (import.meta.client) requested = true
   if (import.meta.client && !isInitialized.value) {
     onMounted(() => {
       void hydrate()

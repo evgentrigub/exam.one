@@ -36,6 +36,23 @@ export function getTtsConfigFromEnv(env: NodeJS.ProcessEnv = process.env): TtsCo
   }
 }
 
+/**
+ * POST once, and once more if the request failed before any response arrived.
+ *
+ * The TTS server closes idle keep-alive sockets, and Node can reuse one at the moment it
+ * closes. That surfaces as a bare `TypeError: fetch failed`, and since a dialogue is several
+ * requests, one of them regularly lost the race and failed the whole exercise. An HTTP error
+ * response is a real answer and is not retried.
+ */
+async function postOnceRetried(url: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init)
+  } catch (error) {
+    if (!(error instanceof TypeError)) throw error
+    return fetch(url, init)
+  }
+}
+
 export async function synthesizeSpeech(
   options: TtsSynthesizeOptions,
   config: TtsConfig = getTtsConfigFromEnv()
@@ -47,7 +64,7 @@ export async function synthesizeSpeech(
 
   const voice = options.voice ?? config.voice
   const url = `${config.baseUrl}/v1/audio/speech`
-  const response = await fetch(url, {
+  const response = await postOnceRetried(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

@@ -90,7 +90,21 @@ const speakingProgress = ref<Record<string, SpeakingProgress>>({})
 const progressSources = { readingProgress, readingSession, writingProgress, writingDrafts, listeningProgress, speakingProgress }
 const hydrated = ref(false)
 let hydratePromise: Promise<void> | null = null
-onPackReset(() => { readingProgress.value = {}; writingProgress.value = {}; listeningProgress.value = {}; speakingProgress.value = {}; readingSession.value = null; writingDrafts.value = {}; hydrated.value = false; hydratePromise = null })
+/** Set once a screen on the client has asked for progress, so a pack switch refills it. */
+let requested = false
+// Settings hydrate after the first screens mount, so a user whose pack is not the default
+// switches packs on every page load. Refetch for the screens already showing progress.
+onPackReset(() => {
+  readingProgress.value = {}
+  writingProgress.value = {}
+  listeningProgress.value = {}
+  speakingProgress.value = {}
+  readingSession.value = null
+  writingDrafts.value = {}
+  hydrated.value = false
+  hydratePromise = null
+  if (import.meta.client && requested) void hydrate()
+})
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -646,6 +660,7 @@ export const useProgress = () => {
   const isSpeakingCompleted = (topicId: string): boolean =>
     Boolean(getSpeakingProgress(topicId)?.completed)
 
+  if (import.meta.client) requested = true
   if (import.meta.client && !hydrated.value) {
     void hydrate()
   }

@@ -7,33 +7,44 @@ import { createSkillExercise, fetchSkillExercises } from '~/composables/usePract
 const exercises = ref<ListeningA2Exercise[]>([])
 const isInitialized = ref(false)
 let hydratePromise: Promise<void> | null = null
-onPackReset(() => { exercises.value = []; isInitialized.value = false; hydratePromise = null })
+/** Set once a screen on the client has asked for this catalog, so a pack switch refills it. */
+let requested = false
+
+const hydrate = async (): Promise<void> => {
+  if (import.meta.server) return
+  if (isInitialized.value) return
+  if (hydratePromise) return hydratePromise
+  const epoch = packEpoch()
+  hydratePromise = (async () => {
+    try {
+      const loaded = await fetchSkillExercises<ListeningA2Exercise>('LISTENING')
+      if (epoch !== packEpoch()) return
+      exercises.value = loaded
+      isInitialized.value = true
+    } catch (error) {
+      if (epoch !== packEpoch()) return
+      console.error('Failed to load listening exercises from API:', error)
+      exercises.value = []
+      isInitialized.value = true
+    } finally {
+      if (epoch === packEpoch()) hydratePromise = null
+    }
+  })()
+  return hydratePromise
+}
+
+// Settings hydrate after the first screens mount, so a user whose pack is not the default
+// switches packs on every page load. Refetch for the screens already showing this catalog.
+onPackReset(() => {
+  exercises.value = []
+  isInitialized.value = false
+  hydratePromise = null
+  if (import.meta.client && requested) void hydrate()
+})
 
 export const useListeningExercises = () => {
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
-  const hydrate = async (): Promise<void> => {
-    if (import.meta.server) return
-    if (isInitialized.value) return
-    if (hydratePromise) return hydratePromise
-    const epoch = packEpoch()
-    hydratePromise = (async () => {
-      try {
-        const loaded = await fetchSkillExercises<ListeningA2Exercise>('LISTENING')
-        if (epoch !== packEpoch()) return
-        exercises.value = loaded
-        isInitialized.value = true
-      } catch (error) {
-        if (epoch !== packEpoch()) return
-        console.error('Failed to load listening exercises from API:', error)
-        exercises.value = []
-        isInitialized.value = true
-      } finally {
-        if (epoch === packEpoch()) hydratePromise = null
-      }
-    })()
-    return hydratePromise
-  }
 
   const getExercises = (): ListeningA2Exercise[] => exercises.value.filter(item => !item.examOnly)
 
@@ -71,6 +82,7 @@ export const useListeningExercises = () => {
     }
   }
 
+  if (import.meta.client) requested = true
   if (import.meta.client && !isInitialized.value) {
     void hydrate()
   }

@@ -9,33 +9,44 @@ import {
 const texts = ref<ReadingExercise[]>([])
 const isInitialized = ref(false)
 let hydratePromise: Promise<void> | null = null
-onPackReset(() => { texts.value = []; isInitialized.value = false; hydratePromise = null })
+/** Set once a screen on the client has asked for this catalog, so a pack switch refills it. */
+let requested = false
+
+const hydrate = async (): Promise<void> => {
+  if (import.meta.server) return
+  if (isInitialized.value) return
+  if (hydratePromise) return hydratePromise
+  const epoch = packEpoch()
+  hydratePromise = (async () => {
+    try {
+      const loaded = await fetchSkillExercises<ReadingExercise>('READING')
+      if (epoch !== packEpoch()) return
+      texts.value = loaded
+      isInitialized.value = true
+    } catch (error) {
+      if (epoch !== packEpoch()) return
+      console.error('Failed to load reading texts from API:', error)
+      texts.value = []
+      isInitialized.value = true
+    } finally {
+      if (epoch === packEpoch()) hydratePromise = null
+    }
+  })()
+  return hydratePromise
+}
+
+// Settings hydrate after the first screens mount, so a user whose pack is not the default
+// switches packs on every page load. Refetch for the screens already showing this catalog.
+onPackReset(() => {
+  texts.value = []
+  isInitialized.value = false
+  hydratePromise = null
+  if (import.meta.client && requested) void hydrate()
+})
 
 export const useReadingTexts = () => {
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
-  const hydrate = async (): Promise<void> => {
-    if (import.meta.server) return
-    if (isInitialized.value) return
-    if (hydratePromise) return hydratePromise
-    const epoch = packEpoch()
-    hydratePromise = (async () => {
-      try {
-        const loaded = await fetchSkillExercises<ReadingExercise>('READING')
-        if (epoch !== packEpoch()) return
-        texts.value = loaded
-        isInitialized.value = true
-      } catch (error) {
-        if (epoch !== packEpoch()) return
-        console.error('Failed to load reading texts from API:', error)
-        texts.value = []
-        isInitialized.value = true
-      } finally {
-        if (epoch === packEpoch()) hydratePromise = null
-      }
-    })()
-    return hydratePromise
-  }
 
   const getTexts = (): ReadingExercise[] => texts.value.filter(text => !text.examOnly)
 
@@ -75,6 +86,7 @@ export const useReadingTexts = () => {
 
   const getTextsCount = (): number => getTexts().length
 
+  if (import.meta.client) requested = true
   if (import.meta.client && !isInitialized.value) {
     void hydrate()
   }

@@ -39,7 +39,8 @@
     "letter": "Letter",
     "post": "Post",
     "advertisement": "Advertisement",
-    "instructions": "Instructions"
+    "instructions": "Instructions",
+    "voicemail": "Voicemail"
   },
   "home": {
     "title": "Exam.one",
