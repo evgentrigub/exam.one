@@ -1,7 +1,10 @@
 import type { PartRuntime } from '../../runtime'
 import type { ExamModule, ExamPart, SkillId } from '../../types'
 import { goetheRawAdapter } from '../goethe-shared/raw-adapter'
-import { validateListening, validateReading } from './validate'
+import { validateListening, validateReading, validateWriting } from './validate'
+
+/** The five blank entries of the Teil 1 form, each worth one point. */
+export const FORM_FIELDS = [1, 2, 3, 4, 5].map(n => ({ id: `field${n}`, label: `Entry ${n}` }))
 
 /**
  * Per-part rules. Points are raw (1 per objective item); practice shows them without the
@@ -18,11 +21,34 @@ const RULES: Partial<Record<SkillId, Record<number, PartRuntime>>> = {
     2: { minutes: 5, maxPoints: 4, questionCount: 4, optionCount: 2, multiplier: 1, replays: 1 },
     3: { minutes: 7, maxPoints: 5, questionCount: 5, optionCount: 3, multiplier: 1, replays: 2 },
   },
+  writing: {
+    1: {
+      minutes: 5,
+      maxPoints: 5,
+      multiplier: 1,
+      fields: FORM_FIELDS,
+      criteria: FORM_FIELDS.map(field => ({ ...field, maxPoints: 1 })),
+    },
+    // No official word minimum and no zero rule: the range is guidance only.
+    2: {
+      minutes: 15,
+      maxPoints: 10,
+      multiplier: 1,
+      fields: [{ id: 'answer', label: 'Your answer', minWords: 20, maxWords: 50 }],
+      criteria: [
+        { id: 'content1', label: 'Content point 1', maxPoints: 3 },
+        { id: 'content2', label: 'Content point 2', maxPoints: 3 },
+        { id: 'content3', label: 'Content point 3', maxPoints: 3 },
+        { id: 'communication', label: 'Greeting and closing', maxPoints: 1 },
+      ],
+    },
+  },
 }
 
 const VALIDATORS: Partial<Record<SkillId, NonNullable<ExamPart['validate']>>> = {
   reading: validateReading,
   listening: validateListening,
+  writing: validateWriting,
 }
 
 /** Attach rules, the shared Goethe projection and the payload guard to every available part. */

@@ -100,7 +100,6 @@ export const goetheDeA1Structure: ExamModule[] = [
         skill: 'Filling in forms.',
         itemFormat: 'freeform',
         layout: 'form-fill',
-        available: false,
       },
       {
         n: 2,
@@ -110,7 +109,6 @@ export const goetheDeA1Structure: ExamModule[] = [
         goal: 'Write a short personal or semi-formal message.',
         skill: 'Short everyday writing.',
         itemFormat: 'freeform',
-        available: false,
       },
     ],
   },

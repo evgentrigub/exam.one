@@ -26,3 +26,15 @@ Do not emit id or createdAt fields, at any level — the application fills them 
 /** How every true/false item is stored: fixed options, numeric index. */
 export const TRUE_FALSE_RULE =
   'True/false format: "options" is ALWAYS exactly ["Richtig", "Falsch"]. "correctAnswer" is the NUMBER 0 when the statement is richtig and 1 when it is falsch — never a boolean or a string. Make about half of the statements richtig.'
+
+/** Examiner voice for the Schreiben review prompts. */
+export const WRITING_EXAMINER_ROLE =
+  'You are an experienced Goethe-Institut examiner for Start Deutsch 1 Schreiben (level A1). You mark strictly against the official criteria. The learner response is written in German.'
+
+/** The feedback-language preamble every review prompt opens with. */
+export const FEEDBACK_LANGUAGE = `Feedback language: {outputLanguage}.
+Write every comment, summary, strength, improvement and report in that language. Quote the learner's German exactly where you quote it.`
+
+/** The single "return only JSON" instruction. */
+export const JSON_ONLY =
+  'Return ONLY valid JSON. No prose, explanation or Markdown before or after the JSON.'

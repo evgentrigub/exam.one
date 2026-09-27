@@ -1,8 +1,10 @@
 import type { ExamPack } from '../../types'
-import { listeningA1Seeds, readingA1Seeds } from './content'
+import { listeningA1Seeds, readingA1Seeds, writingA1Seeds } from './content'
 import { withPracticeCopy } from './practice-copy'
 import { listeningPrompts } from './prompts/listening'
 import { readingPrompts } from './prompts/reading'
+import { writingPrompts } from './prompts/writing'
+import { goetheA1ReviewVars } from './review-vars'
 import { attachGoetheA1Runtime } from './runtime'
 import { goetheDeA1Structure } from './structure'
 
@@ -21,7 +23,7 @@ export const goetheDeA1: ExamPack = {
   live: true,
   examIds: ['goethe-de-a1', 'goethe-a1'],
   structure: attachGoetheA1Runtime(withPracticeCopy(goetheDeA1Structure)),
-  prompts: [...readingPrompts, ...listeningPrompts],
+  prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts],
   speech: {
     ttsLang: 'de',
     voices: [
@@ -36,5 +38,7 @@ export const goetheDeA1: ExamPack = {
   seedExercises: {
     reading: readingA1Seeds as unknown as Record<string, unknown>[],
     listening: listeningA1Seeds as unknown as Record<string, unknown>[],
+    writing: writingA1Seeds as unknown as Record<string, unknown>[],
   },
+  buildReviewVars: goetheA1ReviewVars,
 }

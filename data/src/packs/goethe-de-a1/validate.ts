@@ -95,3 +95,70 @@ export function validateListening(payload: Record<string, unknown>): void {
       fail(`${at}.transcript must be a dialogue with labelled turns ("Mann: …", "Frau: …")`)
   })
 }
+
+/** Schreiben: both parts keep the writing-screen metadata the A2 topics carry. */
+function requireWritingTopic(payload: Record<string, unknown>, topicTypes: readonly string[]): void {
+  requireString(payload['title'], 'title')
+  requireString(payload['description'], 'description')
+  requireString(payload['task'], 'task')
+  if (!topicTypes.includes(String(payload['topicType'])))
+    fail(`topicType must be one of ${topicTypes.join(', ')}`)
+  if (typeof payload['estimatedTime'] !== 'number') fail('estimatedTime must be a number')
+  if (!Array.isArray(payload['category']) || payload['category'].some(c => typeof c !== 'string'))
+    fail('category must be an array of strings')
+  const requirements = payload['requirements']
+  if (!Array.isArray(requirements) || !requirements.length || requirements.some(r => typeof r !== 'string'))
+    fail('requirements must be a non-empty array of strings')
+  const wordCount = payload['wordCount']
+  if (!isRecord(wordCount) || typeof wordCount['min'] !== 'number' || typeof wordCount['max'] !== 'number')
+    fail('wordCount must have numeric min and max')
+}
+
+/**
+ * Teil 1 is a form: the blank rows must be exactly the part's fields, in order, and every
+ * blank needs an expected entry — the reviewer grades against it, and without one a correct
+ * answer could be marked wrong.
+ */
+function validateForm(payload: Record<string, unknown>, rules: PartRuntime): void {
+  const form = payload['form']
+  if (!isRecord(form)) fail('form must be an object')
+  requireString(form['title'], 'form.title')
+  const rows = form['rows']
+  if (!Array.isArray(rows) || rows.some(row => !isRecord(row))) fail('form.rows must be an array of objects')
+  const blanks: string[] = []
+  ;(rows as Record<string, unknown>[]).forEach((row, index) => {
+    const at = `form.rows[${index}]`
+    requireString(row['label'], `${at}.label`)
+    if (row['field'] === undefined) return requireString(row['value'], `${at}.value`)
+    blanks.push(String(row['field']))
+    if (row['options'] !== undefined) {
+      const options = row['options']
+      if (!Array.isArray(options) || options.length < 2) fail(`${at}.options must list at least 2 choices`)
+      options.forEach((option, i) => requireString(option, `${at}.options[${i}]`))
+    }
+  })
+  const fieldIds = (rules.fields ?? []).map(field => field.id)
+  if (blanks.join('|') !== fieldIds.join('|')) fail(`the blank rows must be ${fieldIds.join(', ')}, in order`)
+  if (blanks.length === rows.length) fail('form must also print some rows already filled in')
+
+  const expected = payload['expected']
+  if (!isRecord(expected)) fail('expected must be an object')
+  ;(rows as Record<string, unknown>[]).forEach(row => {
+    if (row['field'] === undefined) return
+    const id = String(row['field'])
+    requireString(expected[id], `expected.${id}`)
+    const options = row['options']
+    if (Array.isArray(options) && !options.includes(expected[id]))
+      fail(`expected.${id} must be one of its options`)
+  })
+}
+
+/** Schreiben: Teil 1 is a form-fill, Teil 2 a short message. */
+export function validateWriting(payload: Record<string, unknown>, rules: PartRuntime): void {
+  if (Number(payload['testingPart']) === 1) {
+    requireWritingTopic(payload, ['form'])
+    validateForm(payload, rules)
+    return
+  }
+  requireWritingTopic(payload, ['email', 'note'])
+}
