@@ -8,7 +8,7 @@
         {{ $t('mockExam.fullSimulation') }}
       </div>
       <h1 class="mt-2 font-display text-3xl font-bold">{{ $t('mockExam.title') }}</h1>
-      <p v-if="pack.createMockSet" class="mt-1 text-sm text-base-content/60">{{ $t('mockExam.listDescription') }}</p>
+      <p v-if="pack.createMockSet" class="mt-1 text-sm text-base-content/60">{{ $t('mockExam.listDescription', { exam: pack.title }) }}</p>
     </div>
 
     <p v-if="!pack.createMockSet" class="alert">Mock exams are not available for this exam pack.</p>
@@ -25,7 +25,7 @@
               {{ $t('mockExam.generateSetNumber', { number: nextSetNumber }) }}
             </h2>
             <p class="max-w-sm text-sm text-base-content/60">
-              {{ $t('mockExam.generateSetDescription') }}
+              {{ $t('mockExam.generateSetDescription', { exam: pack.title }) }}
             </p>
             <button
               class="btn btn-primary btn-sm mt-2"

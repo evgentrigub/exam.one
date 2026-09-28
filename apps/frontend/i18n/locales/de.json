@@ -39,7 +39,11 @@
     "letter": "Brief",
     "post": "Beitrag",
     "advertisement": "Anzeige",
-    "instructions": "Anleitung"
+    "instructions": "Anleitung",
+    "voicemail": "Anrufbeantworter",
+    "introduction": "Vorstellung",
+    "requests": "Bitten",
+    "form": "Formular"
   },
   "home": {
     "title": "Exam.one",
@@ -606,7 +610,11 @@
       "examples": "Korrekturbeispiele",
       "error": "Original",
       "correction": "Korrektur",
-      "report": "Bewertungsbericht"
+      "report": "Bewertungsbericht",
+      "contentPoint1": "Inhaltspunkt 1",
+      "contentPoint2": "Inhaltspunkt 2",
+      "contentPoint3": "Inhaltspunkt 3",
+      "communication": "Anrede und Gruß"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -629,6 +637,23 @@
       "generating": "Musterantwort wird generiert...",
       "canGenerate": "Eine Musterantwort kann für dieses Thema generiert werden",
       "generateButton": "Musterantwort generieren"
+    },
+    "formFill": {
+      "title": "Formular",
+      "filled": "ausgefüllt",
+      "progress": "Ausgefüllte Angaben",
+      "saveDraft": "Entwurf speichern",
+      "submit": "Abgeben",
+      "saveAndExit": "Speichern & beenden",
+      "submitted": "Abgegeben",
+      "autoSaved": "Entwurf gerade automatisch gespeichert",
+      "entryCount": "{count} Angaben",
+      "correctEntries": "Richtige Angaben",
+      "entries": "Deine Angaben",
+      "correct": "Richtig",
+      "wrong": "Nicht richtig",
+      "strengths": "Das war gut",
+      "improvements": "Nächstes Mal prüfen"
     }
   },
   "speakingReview": {
@@ -641,12 +666,23 @@
     "answers": "Antworten",
     "questions": "Fragen stellen",
     "taskCompletion": "Aufgabenerfüllung",
-    "language": "Sprachliche Realisierung"
+    "language": "Sprachliche Realisierung",
+    "introduction": "Vorstellung",
+    "spelling": "Buchstabieren",
+    "number": "Zahl",
+    "ask1": "Frage 1",
+    "answer1": "Antwort 1",
+    "ask2": "Frage 2",
+    "answer2": "Antwort 2",
+    "request1": "Bitte 1",
+    "response1": "Reaktion 1",
+    "request2": "Bitte 2",
+    "response2": "Reaktion 2"
   },
   "mockExam": {
     "title": "Modellprüfungen",
     "fullSimulation": "Vollständige Modellprüfung",
-    "listDescription": "Bearbeite eine zeitbegrenzte Goethe-A2-Simulation. Abgegebene Aufgaben und Module werden für den Versuch gesperrt.",
+    "listDescription": "Bearbeite eine zeitbegrenzte Prüfungssimulation ({exam}). Abgegebene Aufgaben und Module werden für den Versuch gesperrt.",
     "minutes": "Min.",
     "progress": "Prüfungsfortschritt",
     "new": "Neu",
@@ -657,10 +693,11 @@
     "notFound": "Modellprüfung nicht gefunden",
     "backToList": "Modellprüfungen",
     "provisionalResult": "Vorläufiges Ergebnis",
-    "passMessage": "Du hast die Bestehensgrenze von 60 Punkten erreicht.",
+    "passMessage": "Du hast die Bestehensgrenze von {points} Punkten erreicht.",
     "almostMessage": "Übe weiter und versuche es erneut, wenn du bereit bist.",
     "passMark": "60 Punkte zum Bestehen",
     "provisionalSpeakingNote": "Sprechen enthält nur Teil 1–2 (maximal 12 Punkte). Teil 3 und Aussprache werden noch nicht bewertet; das Gesamtergebnis ist daher vorläufig.",
+    "provisionalSpeakingNoteTranscript": "Sprechen wird von der KI nur anhand deiner Transkripte bewertet. Aussprache und Interaktion werden nicht beurteilt; das Gesamtergebnis ist daher vorläufig.",
     "automaticScoring": "Automatische Bewertung",
     "aiGraded": "Von KI bewertet",
     "aiProvisional": "KI · vorläufig",
@@ -691,7 +728,7 @@
     "deleteSetConfirm": "{title}, den gespeicherten Versuch und die lokal generierten Inhalte löschen?",
     "generateMockSet": "Modellprüfung generieren",
     "generateSetNumber": "Satz {number} generieren",
-    "generateSetDescription": "Erstelle einen neuen Goethe-A2-Satz mit KI-generierten Aufgaben und Hördateien aus Docker-TTS.",
+    "generateSetDescription": "Erstelle einen neuen Satz ({exam}) mit KI-generierten Aufgaben und Hördateien aus Docker-TTS.",
     "preflightTitle": "Werkzeuge prüfen",
     "preflightDescription": "Alle drei Dienste müssen bereit sein, bevor der Prüfungssatz generiert werden kann.",
     "llmKeyCheck": "LLM-Schlüssel ist konfiguriert",
@@ -772,5 +809,30 @@
     "exercise": "Übung",
     "yourAnswers": "Deine Antworten",
     "savedFeedback": "Gespeichertes Feedback"
+  },
+  "speaking": {
+    "cards": {
+      "wordCard": "Wortkarte",
+      "requestCard": "Deine Karte",
+      "topic": "Thema",
+      "partnerSays": "Dein Partner",
+      "placeholder": "Transkript dieses Beitrags eingeben oder bearbeiten…",
+      "ask": {
+        "title": "Runde {round} · Eine Frage stellen",
+        "description": "Stelle eine Frage mit dem Wort auf deiner Karte."
+      },
+      "answer": {
+        "title": "Runde {round} · Dem Partner antworten",
+        "description": "Beantworte die Frage in einem kurzen Satz."
+      },
+      "request": {
+        "title": "Runde {round} · Um etwas bitten",
+        "description": "Bitte höflich um das, was auf deiner Karte steht."
+      },
+      "respond": {
+        "title": "Runde {round} · Auf die Bitte reagieren",
+        "description": "Sag höflich ja oder nein, mit einem kurzen Grund."
+      }
+    }
   }
 }

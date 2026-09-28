@@ -1,0 +1,1773 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Goethe A2 projection parity projects every bundled listening payload unchanged 1`] = `
+[
+  {
+    "n": 1,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+      "replays": 2,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i1.wav",
+          "correctAnswer": 1,
+          "explanation": "Die Sonne scheint nur am Vormittag, der Regen kommt erst am Abend. Am Nachmittag ziehen dunkle Wolken auf, also ist es bewölkt.",
+          "id": "listening-a2-teil1-001-i1",
+          "options": [
+            "Sonnig",
+            "Bewölkt",
+            "Regnerisch",
+          ],
+          "text": "Wie wird das Wetter am Samstagnachmittag?",
+          "transcript": "Und nun das Wetter für morgen, Samstag. Am Vormittag scheint zuerst noch die Sonne, doch am Nachmittag ziehen dunkle Wolken auf und es bleibt grau. Erst gegen Abend beginnt es zu regnen, und in der Nacht wird es mit fünf Grad ziemlich kalt. Am Sonntag bleibt es dann trocken.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i2.wav",
+          "correctAnswer": 1,
+          "explanation": "Die Linie fünf fährt normal, der Ring ist die Umleitung für Autos. Nur die Linie acht fällt den ganzen Tag aus.",
+          "id": "listening-a2-teil1-001-i2",
+          "options": [
+            "Die Linie fünf",
+            "Die Linie acht",
+            "Der Ring",
+          ],
+          "text": "Welcher Bus fährt heute nicht?",
+          "transcript": "Hier eine wichtige Meldung für Bremen. Die Hauptstraße in der Innenstadt bleibt wegen Bauarbeiten noch bis Freitag gesperrt. Autofahrer nehmen bitte die Umleitung über den Ring. Die Buslinie fünf fährt heute ganz normal, aber die Linie acht fällt den ganzen Tag aus. Planen Sie bitte mehr Zeit ein.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i3.wav",
+          "correctAnswer": 2,
+          "explanation": "Der Zug nach München hat nur Verspätung, der Zug nach Hamburg fährt von einem anderen Gleis. Nur der Zug nach Köln fällt aus.",
+          "id": "listening-a2-teil1-001-i3",
+          "options": [
+            "Der Zug nach München",
+            "Der Zug nach Hamburg",
+            "Der Zug nach Köln",
+          ],
+          "text": "Welcher Zug fällt heute aus?",
+          "transcript": "Achtung, eine Information für die Reisenden auf Gleis drei. Der Intercity nach München, Abfahrt vierzehn Uhr zwanzig, hat heute etwa zwanzig Minuten Verspätung. Reisende nach Hamburg fahren heute bitte von Gleis sieben. Der Zug nach Köln fällt leider aus. Wir bitten um Ihr Verständnis und wünschen eine gute Reise.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i4.wav",
+          "correctAnswer": 1,
+          "explanation": "Der Flug nach Rom hat Verspätung, einen Reisepass brauchen alle. Zuerst einsteigen dürfen aber nur Passagiere mit kleinen Kindern.",
+          "id": "listening-a2-teil1-001-i4",
+          "options": [
+            "Passagiere nach Rom",
+            "Passagiere mit kleinen Kindern",
+            "Passagiere mit einem Reisepass",
+          ],
+          "text": "Wer darf zuerst in das Flugzeug einsteigen?",
+          "transcript": "Sehr geehrte Fluggäste des Fluges nach Wien. Das Boarding beginnt jetzt am Ausgang B zwölf. Bitte halten Sie Ihre Bordkarte und Ihren Reisepass bereit. Passagiere mit kleinen Kindern dürfen zuerst einsteigen. Der Flug nach Rom verspätet sich leider um eine Stunde. Wir danken für Ihre Geduld.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i5.wav",
+          "correctAnswer": 1,
+          "explanation": "Um acht Uhr öffnet die Praxis, bis sechzehn Uhr ist sie von Montag bis Donnerstag offen. Am Freitag ist sie nur bis zwölf Uhr geöffnet.",
+          "id": "listening-a2-teil1-001-i5",
+          "options": [
+            "Bis acht Uhr",
+            "Bis zwölf Uhr",
+            "Bis sechzehn Uhr",
+          ],
+          "text": "Bis wann ist die Praxis am Freitag geöffnet?",
+          "transcript": "Guten Tag, Sie haben die Praxis Doktor Schmidt erreicht. Unsere Praxis ist von Montag bis Donnerstag von acht bis sechzehn Uhr für Sie geöffnet. Am Freitag sind wir nur bis zwölf Uhr da. In dringenden Notfällen wählen Sie bitte die einhundertzwölf. Wir wünschen Ihnen einen schönen Tag.",
+        },
+      ],
+      "text": "",
+      "title": "Teil 1: Durchsagen und Ansagen verstehen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 9,
+      "questionCount": 5,
+      "replays": 1,
+    },
+    "view": {
+      "audio": "/audio/listening/a2/listening-a2-teil2-001/shared.wav",
+      "format": "matching",
+      "questions": [
+        {
+          "correctAnswer": 3,
+          "explanation": "Anna wohnt gleich um die Ecke und kommt deshalb zu Fuß; der Weg dauert nur zehn Minuten.",
+          "id": "listening-a2-teil2-001-q1",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Anna",
+        },
+        {
+          "correctAnswer": 5,
+          "explanation": "Bernd ist früher mit dem Auto gefahren, aber das war zu teuer. Jetzt nimmt er jeden Morgen den Zug.",
+          "id": "listening-a2-teil2-001-q2",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Bernd",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Clara fährt nur bei gutem Wetter mit dem Fahrrad. Weil es heute stark regnet, kommt sie mit dem Bus.",
+          "id": "listening-a2-teil2-001-q3",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Clara",
+        },
+        {
+          "correctAnswer": 4,
+          "explanation": "David hat sein Motorrad schon verkauft und fährt jetzt mit der U-Bahn, weil das schneller ist.",
+          "id": "listening-a2-teil2-001-q4",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "David",
+        },
+        {
+          "correctAnswer": 7,
+          "explanation": "Eva nimmt normalerweise die Straßenbahn, aber ihr Auto ist in der Werkstatt. Heute hat sie ein Taxi gebracht.",
+          "id": "listening-a2-teil2-001-q5",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Eva",
+        },
+      ],
+      "text": "Wie kommen die Personen heute zur Arbeit?",
+      "title": "Teil 2: Ein Gespräch über den Arbeitsweg verstehen",
+      "transcript": "Mann: Sag mal, wie kommt ihr eigentlich morgens alle ins Büro? Frau: Na ja, das ist ganz unterschiedlich. Anna wohnt ja gleich um die Ecke, die kommt einfach zu Fuß. Das dauert nur zehn Minuten. Mann: Ach so. Und Bernd? Der wohnt doch außerhalb der Stadt, oder? Frau: Genau. Bernd ist früher immer mit dem Auto gefahren, aber das wurde ihm zu teuer. Jetzt nimmt er jeden Morgen den Zug. Mann: Wirklich? Praktisch. Und Clara? Frau: Clara hat sich letztes Jahr ein tolles Fahrrad gekauft. Bei gutem Wetter fährt sie immer damit. Aber wenn es regnet, steigt sie in den Bus. Und heute regnet es ja stark. Mann: Stimmt, dann kommt Clara heute bestimmt mit dem Bus. Und David, fährt der immer noch Motorrad? Frau: Nein, das Motorrad hat er schon verkauft. Er fährt jetzt mit der U-Bahn, das geht viel schneller. Mann: Und du, Eva, wie kommst du? Frau: Ich nehme normalerweise die Straßenbahn. Aber mein Auto ist gerade in der Werkstatt, äh, nein, die Straßenbahn meine ich nicht. Heute hat mich ein Taxi gebracht. Mann: Oh je, das ist aber teuer! Frau: Ja, aber wirklich nur für heute.",
+      "version": 1,
+    },
+  },
+  {
+    "n": 3,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+      "replays": 1,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i1.wav",
+          "correctAnswer": 2,
+          "explanation": "Der Mantel ist der Frau zu dick und zu warm, einen Pullover hat sie schon genug. Sie nimmt am Ende die blaue Jacke.",
+          "id": "listening-a2-teil3-001-i1",
+          "options": [
+            "Einen Mantel",
+            "Einen Pullover",
+            "Eine Jacke",
+          ],
+          "text": "Was kauft die Frau?",
+          "transcript": "Verkäuferin: Suchen Sie etwas Bestimmtes? Frau: Ja, ich brauche etwas Warmes für den Winter. Verkäuferin: Wie wäre es mit diesem roten Mantel? Frau: Der ist schön, aber zu dick und zu warm. Und einen Pullover habe ich schon genug zu Hause. Ich nehme lieber die blaue Jacke dort. Verkäuferin: Eine gute Wahl!",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i2.wav",
+          "correctAnswer": 1,
+          "explanation": "Pizza gibt es heute nicht mehr, Pommes will der Mann ausdrücklich nicht. Er bestellt den Fisch mit Salat.",
+          "id": "listening-a2-teil3-001-i2",
+          "options": [
+            "Pizza",
+            "Fisch",
+            "Pommes",
+          ],
+          "text": "Was bestellt der Mann?",
+          "transcript": "Kellner: Was möchten Sie essen? Mann: Ich hätte gern die Pizza. Kellner: Tut mir leid, Pizza haben wir heute leider nicht mehr. Mann: Oh, schade. Dann nehme ich den Fisch. Kellner: Möchten Sie Salat oder Pommes dazu? Mann: Salat bitte, keine Pommes. Kellner: Gern, kommt sofort.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i3.wav",
+          "correctAnswer": 1,
+          "explanation": "Das Handy funktioniert und der Drucker macht keine Probleme. Nur der Laptop geht nicht mehr an und muss repariert werden.",
+          "id": "listening-a2-teil3-001-i3",
+          "options": [
+            "Das Handy",
+            "Der Laptop",
+            "Der Drucker",
+          ],
+          "text": "Was ist kaputt und muss repariert werden?",
+          "transcript": "Techniker: Guten Tag, was kann ich für Sie tun? Mann: Mein Laptop ist kaputt, er geht gar nicht mehr an. Techniker: Und Ihr Handy, funktioniert das? Mann: Ja, das Handy ist in Ordnung. Auch der Drucker macht keine Probleme. Nur der Laptop streikt. Techniker: Gut, ich sehe ihn mir an.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i4.wav",
+          "correctAnswer": 2,
+          "explanation": "Die Frau mag keine Actionfilme, und die Komödie hat sie schon gestern gesehen. Sie einigen sich auf den neuen Krimi.",
+          "id": "listening-a2-teil3-001-i4",
+          "options": [
+            "Den Actionfilm",
+            "Die Komödie",
+            "Den Krimi",
+          ],
+          "text": "Welchen Film wollen sie zusammen sehen?",
+          "transcript": "Mann: Wollen wir heute den Actionfilm um acht sehen? Frau: Ach nein, Actionfilme mag ich überhaupt nicht. Mann: Und die Komödie? Frau: Die habe ich leider schon gestern gesehen. Lass uns lieber den neuen Krimi anschauen. Mann: Okay, der Krimi klingt wirklich gut.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i5.wav",
+          "correctAnswer": 2,
+          "explanation": "Das Auto lehnt die Frau ab, und der Bus fährt um diese Zeit nicht mehr. Bei schönem Wetter geht sie zu Fuß.",
+          "id": "listening-a2-teil3-001-i5",
+          "options": [
+            "Mit dem Auto",
+            "Mit dem Bus",
+            "Zu Fuß",
+          ],
+          "text": "Wie fährt die Frau nach Hause?",
+          "transcript": "Mann: Soll ich dich mit dem Auto nach Hause bringen? Frau: Danke, das ist wirklich nicht nötig. Mann: Nimmst du dann den Bus? Frau: Nein, der fährt um diese Zeit nicht mehr. Ich gehe heute zu Fuß, das Wetter ist so schön. Mann: Na gut, dann bis morgen!",
+        },
+      ],
+      "text": "",
+      "title": "Teil 3: Kurze Alltagsgespräche verstehen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 4,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 2,
+      "questionCount": 5,
+      "replays": 2,
+    },
+    "view": {
+      "audio": "/audio/listening/a2/listening-a2-teil4-001/shared.wav",
+      "format": "true-false",
+      "questions": [
+        {
+          "correctAnswer": 1,
+          "explanation": "Frau Müller sagt, dieser Glaube stimme nicht. Schon dreißig Minuten Spazierengehen pro Tag seien genug.",
+          "id": "listening-a2-teil4-001-q1",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Wer gesund bleiben will, muss laut Frau Müller jeden Tag ins Fitnessstudio gehen.",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Das ist eine Umschreibung ihrer Aussage: 'Schon dreißig Minuten Spazierengehen pro Tag sind völlig genug.'",
+          "id": "listening-a2-teil4-001-q2",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Ein halbstündiger Spaziergang am Tag reicht schon aus.",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Das Gegenteil ist gemeint: Frau Müller sagt 'Leider nein' und betont, dass sich viele viel zu wenig bewegen.",
+          "id": "listening-a2-teil4-001-q3",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Die meisten Deutschen bewegen sich ausreichend.",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Frau Müller erklärt, Laufen und Spazierengehen kosteten nichts und man brauche keine teure Ausrüstung.",
+          "id": "listening-a2-teil4-001-q4",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Für mehr Bewegung braucht man keine teure Ausrüstung.",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Das ist das Gegenteil ihrer Aussage. Sie sagt, gerade ältere Menschen sollten aktiv bleiben; es sei nie zu spät anzufangen.",
+          "id": "listening-a2-teil4-001-q5",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Ältere Menschen sollten besser keinen Sport mehr treiben.",
+        },
+      ],
+      "text": "Sie hören ein Interview im Radio. Eine Moderatorin spricht mit der Sportwissenschaftlerin Frau Müller über Bewegung und Gesundheit.",
+      "title": "Teil 4: Ein Radiointerview über Bewegung verstehen",
+      "transcript": "Moderatorin: Herzlich willkommen zu unserer Sendung. Heute spreche ich mit Frau Müller, einer Sportwissenschaftlerin. Frau Müller, wie wichtig ist Bewegung für unsere Gesundheit? Frau Müller: Bewegung ist sehr wichtig. Viele Menschen glauben, man muss jeden Tag ins Fitnessstudio gehen. Das stimmt aber nicht. Schon dreißig Minuten Spazierengehen pro Tag sind völlig genug. Moderatorin: Das klingt ja einfach. Bewegen sich die Deutschen denn genug? Frau Müller: Leider nein. Viele sitzen den ganzen Tag im Büro und bewegen sich viel zu wenig. Besonders junge Leute verbringen zu viel Zeit am Computer. Moderatorin: Was empfehlen Sie diesen Menschen? Frau Müller: Am besten fährt man mit dem Fahrrad zur Arbeit oder nimmt die Treppe statt den Aufzug. Schon kleine Veränderungen helfen sehr. Moderatorin: Und muss man dafür viel Geld ausgeben? Frau Müller: Überhaupt nicht. Laufen und Spazierengehen kosten nichts. Man braucht keine teure Ausrüstung. Moderatorin: Und das Alter? Ist Sport nur etwas für junge Menschen? Frau Müller: Nein, im Gegenteil. Gerade ältere Menschen sollten aktiv bleiben. Es ist nie zu spät, mit Sport anzufangen. Moderatorin: Vielen Dank für das interessante Gespräch, Frau Müller. Frau Müller: Sehr gern.",
+      "version": 1,
+    },
+  },
+  {
+    "n": 1,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+      "replays": 2,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i1.wav",
+          "correctAnswer": 1,
+          "explanation": "Die Sonne scheint nur am Vormittag, der Regen kommt erst am Abend. Am Nachmittag ziehen dunkle Wolken auf, also ist es bewölkt.",
+          "id": "listening-a2-teil1-001-i1",
+          "options": [
+            "Sonnig",
+            "Bewölkt",
+            "Regnerisch",
+          ],
+          "text": "Wie wird das Wetter am Samstagnachmittag?",
+          "transcript": "Und nun das Wetter für morgen, Samstag. Am Vormittag scheint zuerst noch die Sonne, doch am Nachmittag ziehen dunkle Wolken auf und es bleibt grau. Erst gegen Abend beginnt es zu regnen, und in der Nacht wird es mit fünf Grad ziemlich kalt. Am Sonntag bleibt es dann trocken.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i2.wav",
+          "correctAnswer": 1,
+          "explanation": "Die Linie fünf fährt normal, der Ring ist die Umleitung für Autos. Nur die Linie acht fällt den ganzen Tag aus.",
+          "id": "listening-a2-teil1-001-i2",
+          "options": [
+            "Die Linie fünf",
+            "Die Linie acht",
+            "Der Ring",
+          ],
+          "text": "Welcher Bus fährt heute nicht?",
+          "transcript": "Hier eine wichtige Meldung für Bremen. Die Hauptstraße in der Innenstadt bleibt wegen Bauarbeiten noch bis Freitag gesperrt. Autofahrer nehmen bitte die Umleitung über den Ring. Die Buslinie fünf fährt heute ganz normal, aber die Linie acht fällt den ganzen Tag aus. Planen Sie bitte mehr Zeit ein.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i3.wav",
+          "correctAnswer": 2,
+          "explanation": "Der Zug nach München hat nur Verspätung, der Zug nach Hamburg fährt von einem anderen Gleis. Nur der Zug nach Köln fällt aus.",
+          "id": "listening-a2-teil1-001-i3",
+          "options": [
+            "Der Zug nach München",
+            "Der Zug nach Hamburg",
+            "Der Zug nach Köln",
+          ],
+          "text": "Welcher Zug fällt heute aus?",
+          "transcript": "Achtung, eine Information für die Reisenden auf Gleis drei. Der Intercity nach München, Abfahrt vierzehn Uhr zwanzig, hat heute etwa zwanzig Minuten Verspätung. Reisende nach Hamburg fahren heute bitte von Gleis sieben. Der Zug nach Köln fällt leider aus. Wir bitten um Ihr Verständnis und wünschen eine gute Reise.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i4.wav",
+          "correctAnswer": 1,
+          "explanation": "Der Flug nach Rom hat Verspätung, einen Reisepass brauchen alle. Zuerst einsteigen dürfen aber nur Passagiere mit kleinen Kindern.",
+          "id": "listening-a2-teil1-001-i4",
+          "options": [
+            "Passagiere nach Rom",
+            "Passagiere mit kleinen Kindern",
+            "Passagiere mit einem Reisepass",
+          ],
+          "text": "Wer darf zuerst in das Flugzeug einsteigen?",
+          "transcript": "Sehr geehrte Fluggäste des Fluges nach Wien. Das Boarding beginnt jetzt am Ausgang B zwölf. Bitte halten Sie Ihre Bordkarte und Ihren Reisepass bereit. Passagiere mit kleinen Kindern dürfen zuerst einsteigen. Der Flug nach Rom verspätet sich leider um eine Stunde. Wir danken für Ihre Geduld.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil1-001/listening-a2-teil1-001-i5.wav",
+          "correctAnswer": 1,
+          "explanation": "Um acht Uhr öffnet die Praxis, bis sechzehn Uhr ist sie von Montag bis Donnerstag offen. Am Freitag ist sie nur bis zwölf Uhr geöffnet.",
+          "id": "listening-a2-teil1-001-i5",
+          "options": [
+            "Bis acht Uhr",
+            "Bis zwölf Uhr",
+            "Bis sechzehn Uhr",
+          ],
+          "text": "Bis wann ist die Praxis am Freitag geöffnet?",
+          "transcript": "Guten Tag, Sie haben die Praxis Doktor Schmidt erreicht. Unsere Praxis ist von Montag bis Donnerstag von acht bis sechzehn Uhr für Sie geöffnet. Am Freitag sind wir nur bis zwölf Uhr da. In dringenden Notfällen wählen Sie bitte die einhundertzwölf. Wir wünschen Ihnen einen schönen Tag.",
+        },
+      ],
+      "text": "",
+      "title": "Modellprüfung Set 1 · Teil 1: Durchsagen und Ansagen verstehen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 9,
+      "questionCount": 5,
+      "replays": 1,
+    },
+    "view": {
+      "audio": "/audio/listening/a2/listening-a2-teil2-001/shared.wav",
+      "format": "matching",
+      "questions": [
+        {
+          "correctAnswer": 3,
+          "explanation": "Anna wohnt gleich um die Ecke und kommt deshalb zu Fuß; der Weg dauert nur zehn Minuten.",
+          "id": "listening-a2-teil2-001-q1",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Anna",
+        },
+        {
+          "correctAnswer": 5,
+          "explanation": "Bernd ist früher mit dem Auto gefahren, aber das war zu teuer. Jetzt nimmt er jeden Morgen den Zug.",
+          "id": "listening-a2-teil2-001-q2",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Bernd",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Clara fährt nur bei gutem Wetter mit dem Fahrrad. Weil es heute stark regnet, kommt sie mit dem Bus.",
+          "id": "listening-a2-teil2-001-q3",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Clara",
+        },
+        {
+          "correctAnswer": 4,
+          "explanation": "David hat sein Motorrad schon verkauft und fährt jetzt mit der U-Bahn, weil das schneller ist.",
+          "id": "listening-a2-teil2-001-q4",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "David",
+        },
+        {
+          "correctAnswer": 7,
+          "explanation": "Eva nimmt normalerweise die Straßenbahn, aber ihr Auto ist in der Werkstatt. Heute hat sie ein Taxi gebracht.",
+          "id": "listening-a2-teil2-001-q5",
+          "options": [
+            "das Auto",
+            "der Bus",
+            "das Fahrrad",
+            "zu Fuß",
+            "die U-Bahn",
+            "der Zug",
+            "das Motorrad",
+            "das Taxi",
+            "die Straßenbahn",
+          ],
+          "text": "Eva",
+        },
+      ],
+      "text": "Wie kommen die Personen heute zur Arbeit?",
+      "title": "Modellprüfung Set 1 · Teil 2: Ein Gespräch über den Arbeitsweg verstehen",
+      "transcript": "Mann: Sag mal, wie kommt ihr eigentlich morgens alle ins Büro? Frau: Na ja, das ist ganz unterschiedlich. Anna wohnt ja gleich um die Ecke, die kommt einfach zu Fuß. Das dauert nur zehn Minuten. Mann: Ach so. Und Bernd? Der wohnt doch außerhalb der Stadt, oder? Frau: Genau. Bernd ist früher immer mit dem Auto gefahren, aber das wurde ihm zu teuer. Jetzt nimmt er jeden Morgen den Zug. Mann: Wirklich? Praktisch. Und Clara? Frau: Clara hat sich letztes Jahr ein tolles Fahrrad gekauft. Bei gutem Wetter fährt sie immer damit. Aber wenn es regnet, steigt sie in den Bus. Und heute regnet es ja stark. Mann: Stimmt, dann kommt Clara heute bestimmt mit dem Bus. Und David, fährt der immer noch Motorrad? Frau: Nein, das Motorrad hat er schon verkauft. Er fährt jetzt mit der U-Bahn, das geht viel schneller. Mann: Und du, Eva, wie kommst du? Frau: Ich nehme normalerweise die Straßenbahn. Aber mein Auto ist gerade in der Werkstatt, äh, nein, die Straßenbahn meine ich nicht. Heute hat mich ein Taxi gebracht. Mann: Oh je, das ist aber teuer! Frau: Ja, aber wirklich nur für heute.",
+      "version": 1,
+    },
+  },
+  {
+    "n": 3,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+      "replays": 1,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i1.wav",
+          "correctAnswer": 2,
+          "explanation": "Der Mantel ist der Frau zu dick und zu warm, einen Pullover hat sie schon genug. Sie nimmt am Ende die blaue Jacke.",
+          "id": "listening-a2-teil3-001-i1",
+          "options": [
+            "Einen Mantel",
+            "Einen Pullover",
+            "Eine Jacke",
+          ],
+          "text": "Was kauft die Frau?",
+          "transcript": "Verkäuferin: Suchen Sie etwas Bestimmtes? Frau: Ja, ich brauche etwas Warmes für den Winter. Verkäuferin: Wie wäre es mit diesem roten Mantel? Frau: Der ist schön, aber zu dick und zu warm. Und einen Pullover habe ich schon genug zu Hause. Ich nehme lieber die blaue Jacke dort. Verkäuferin: Eine gute Wahl!",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i2.wav",
+          "correctAnswer": 1,
+          "explanation": "Pizza gibt es heute nicht mehr, Pommes will der Mann ausdrücklich nicht. Er bestellt den Fisch mit Salat.",
+          "id": "listening-a2-teil3-001-i2",
+          "options": [
+            "Pizza",
+            "Fisch",
+            "Pommes",
+          ],
+          "text": "Was bestellt der Mann?",
+          "transcript": "Kellner: Was möchten Sie essen? Mann: Ich hätte gern die Pizza. Kellner: Tut mir leid, Pizza haben wir heute leider nicht mehr. Mann: Oh, schade. Dann nehme ich den Fisch. Kellner: Möchten Sie Salat oder Pommes dazu? Mann: Salat bitte, keine Pommes. Kellner: Gern, kommt sofort.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i3.wav",
+          "correctAnswer": 1,
+          "explanation": "Das Handy funktioniert und der Drucker macht keine Probleme. Nur der Laptop geht nicht mehr an und muss repariert werden.",
+          "id": "listening-a2-teil3-001-i3",
+          "options": [
+            "Das Handy",
+            "Der Laptop",
+            "Der Drucker",
+          ],
+          "text": "Was ist kaputt und muss repariert werden?",
+          "transcript": "Techniker: Guten Tag, was kann ich für Sie tun? Mann: Mein Laptop ist kaputt, er geht gar nicht mehr an. Techniker: Und Ihr Handy, funktioniert das? Mann: Ja, das Handy ist in Ordnung. Auch der Drucker macht keine Probleme. Nur der Laptop streikt. Techniker: Gut, ich sehe ihn mir an.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i4.wav",
+          "correctAnswer": 2,
+          "explanation": "Die Frau mag keine Actionfilme, und die Komödie hat sie schon gestern gesehen. Sie einigen sich auf den neuen Krimi.",
+          "id": "listening-a2-teil3-001-i4",
+          "options": [
+            "Den Actionfilm",
+            "Die Komödie",
+            "Den Krimi",
+          ],
+          "text": "Welchen Film wollen sie zusammen sehen?",
+          "transcript": "Mann: Wollen wir heute den Actionfilm um acht sehen? Frau: Ach nein, Actionfilme mag ich überhaupt nicht. Mann: Und die Komödie? Frau: Die habe ich leider schon gestern gesehen. Lass uns lieber den neuen Krimi anschauen. Mann: Okay, der Krimi klingt wirklich gut.",
+        },
+        {
+          "audio": "/audio/listening/a2/listening-a2-teil3-001/listening-a2-teil3-001-i5.wav",
+          "correctAnswer": 2,
+          "explanation": "Das Auto lehnt die Frau ab, und der Bus fährt um diese Zeit nicht mehr. Bei schönem Wetter geht sie zu Fuß.",
+          "id": "listening-a2-teil3-001-i5",
+          "options": [
+            "Mit dem Auto",
+            "Mit dem Bus",
+            "Zu Fuß",
+          ],
+          "text": "Wie fährt die Frau nach Hause?",
+          "transcript": "Mann: Soll ich dich mit dem Auto nach Hause bringen? Frau: Danke, das ist wirklich nicht nötig. Mann: Nimmst du dann den Bus? Frau: Nein, der fährt um diese Zeit nicht mehr. Ich gehe heute zu Fuß, das Wetter ist so schön. Mann: Na gut, dann bis morgen!",
+        },
+      ],
+      "text": "",
+      "title": "Modellprüfung Set 1 · Teil 3: Kurze Alltagsgespräche verstehen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 4,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 2,
+      "questionCount": 5,
+      "replays": 2,
+    },
+    "view": {
+      "audio": "/audio/listening/a2/listening-a2-teil4-001/shared.wav",
+      "format": "true-false",
+      "questions": [
+        {
+          "correctAnswer": 1,
+          "explanation": "Frau Müller sagt, dieser Glaube stimme nicht. Schon dreißig Minuten Spazierengehen pro Tag seien genug.",
+          "id": "listening-a2-teil4-001-q1",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Wer gesund bleiben will, muss laut Frau Müller jeden Tag ins Fitnessstudio gehen.",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Das ist eine Umschreibung ihrer Aussage: 'Schon dreißig Minuten Spazierengehen pro Tag sind völlig genug.'",
+          "id": "listening-a2-teil4-001-q2",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Ein halbstündiger Spaziergang am Tag reicht schon aus.",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Das Gegenteil ist gemeint: Frau Müller sagt 'Leider nein' und betont, dass sich viele viel zu wenig bewegen.",
+          "id": "listening-a2-teil4-001-q3",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Die meisten Deutschen bewegen sich ausreichend.",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Frau Müller erklärt, Laufen und Spazierengehen kosteten nichts und man brauche keine teure Ausrüstung.",
+          "id": "listening-a2-teil4-001-q4",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Für mehr Bewegung braucht man keine teure Ausrüstung.",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Das ist das Gegenteil ihrer Aussage. Sie sagt, gerade ältere Menschen sollten aktiv bleiben; es sei nie zu spät anzufangen.",
+          "id": "listening-a2-teil4-001-q5",
+          "options": [
+            "Ja",
+            "Nein",
+          ],
+          "text": "Ältere Menschen sollten besser keinen Sport mehr treiben.",
+        },
+      ],
+      "text": "Sie hören ein Interview im Radio. Eine Moderatorin spricht mit der Sportwissenschaftlerin Frau Müller über Bewegung und Gesundheit.",
+      "title": "Modellprüfung Set 1 · Teil 4: Ein Radiointerview über Bewegung verstehen",
+      "transcript": "Moderatorin: Herzlich willkommen zu unserer Sendung. Heute spreche ich mit Frau Müller, einer Sportwissenschaftlerin. Frau Müller, wie wichtig ist Bewegung für unsere Gesundheit? Frau Müller: Bewegung ist sehr wichtig. Viele Menschen glauben, man muss jeden Tag ins Fitnessstudio gehen. Das stimmt aber nicht. Schon dreißig Minuten Spazierengehen pro Tag sind völlig genug. Moderatorin: Das klingt ja einfach. Bewegen sich die Deutschen denn genug? Frau Müller: Leider nein. Viele sitzen den ganzen Tag im Büro und bewegen sich viel zu wenig. Besonders junge Leute verbringen zu viel Zeit am Computer. Moderatorin: Was empfehlen Sie diesen Menschen? Frau Müller: Am besten fährt man mit dem Fahrrad zur Arbeit oder nimmt die Treppe statt den Aufzug. Schon kleine Veränderungen helfen sehr. Moderatorin: Und muss man dafür viel Geld ausgeben? Frau Müller: Überhaupt nicht. Laufen und Spazierengehen kosten nichts. Man braucht keine teure Ausrüstung. Moderatorin: Und das Alter? Ist Sport nur etwas für junge Menschen? Frau Müller: Nein, im Gegenteil. Gerade ältere Menschen sollten aktiv bleiben. Es ist nie zu spät, mit Sport anzufangen. Moderatorin: Vielen Dank für das interessante Gespräch, Frau Müller. Frau Müller: Sehr gern.",
+      "version": 1,
+    },
+  },
+]
+`;
+
+exports[`Goethe A2 projection parity projects every bundled reading payload unchanged 1`] = `
+[
+  {
+    "n": 1,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "correctAnswer": 0,
+          "explanation": "Im Text steht: „Seit dem ersten März gibt es in Freiburg ein neues Angebot." Der Sommer wird nur für spätere Pläne genannt.",
+          "id": "reading-a2-teil1-001-q1",
+          "options": [
+            "Seit März.",
+            "Seit dem Sommer.",
+            "Seit der Universität.",
+          ],
+          "text": "Seit wann gibt es das neue Angebot in Freiburg?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Der Text sagt: „Die erste halbe Stunde kostet nichts." Einen Euro zahlt man erst danach pro Stunde, 50 Cent zahlen nur Studenten und Kinder.",
+          "id": "reading-a2-teil1-001-q2",
+          "options": [
+            "Einen Euro.",
+            "Nichts.",
+            "50 Cent.",
+          ],
+          "text": "Wie viel kostet die erste halbe Stunde?",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Im Text steht: „Studenten und Kinder unter 14 Jahren ... bezahlen nur 50 Cent pro Stunde." Einen Euro zahlen die anderen Personen.",
+          "id": "reading-a2-teil1-001-q3",
+          "options": [
+            "Einen Euro.",
+            "Nichts.",
+            "50 Cent.",
+          ],
+          "text": "Wie viel bezahlen Studenten pro Stunde?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Der Text sagt klar: „Die Stadt möchte, dass weniger Autos fahren." Touristen und das Büro werden zwar genannt, sind aber nicht das Ziel.",
+          "id": "reading-a2-teil1-001-q4",
+          "options": [
+            "Dass mehr Touristen kommen.",
+            "Dass weniger Autos fahren.",
+            "Dass mehr Büros öffnen.",
+          ],
+          "text": "Was möchte die Stadt erreichen?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Im Text steht: „Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet."",
+          "id": "reading-a2-teil1-001-q5",
+          "options": [
+            "Jeden Tag von 9 bis 18 Uhr.",
+            "Nur am Morgen.",
+            "Von 14 bis 18 Uhr.",
+          ],
+          "text": "Wann ist das Büro am Marktplatz geöffnet?",
+        },
+      ],
+      "text": "Seit dem ersten März gibt es in Freiburg ein neues Angebot für alle Bürger. Die Stadt hat 200 grüne Fahrräder gekauft. Die Fahrräder stehen an 30 Stationen in der ganzen Stadt. Besonders viele Stationen findet man am Bahnhof und in der Nähe der Universität.
+
+Das Mieten ist sehr einfach. Man braucht nur ein Handy und eine App. Die erste halbe Stunde kostet nichts. Danach zahlt man einen Euro pro Stunde. Studenten und Kinder unter 14 Jahren fahren noch günstiger. Sie bezahlen nur 50 Cent pro Stunde.
+
+Viele Menschen sind sehr zufrieden mit den neuen Fahrrädern. „Ich fahre jetzt jeden Morgen mit dem Rad zur Arbeit", sagt Frau Meier. „Das ist gesund und ich spare Geld." Auch Touristen nutzen das Angebot gern, denn so können sie die Stadt schnell sehen.
+
+Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer noch mehr Stationen. Auch neue Wege nur für Fahrräder sollen bald kommen. Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet.",
+      "title": "Neue Fahrräder in der Stadt",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "correctAnswer": 0,
+          "explanation": "Bücher gibt es im 3. Stock. Im 1. Stock sind nur Damenmode und Schuhe.",
+          "id": "reading-a2-teil2-001-q1",
+          "options": [
+            "In den 3. Stock.",
+            "In den 1. Stock.",
+            "In einen anderen Stock.",
+          ],
+          "text": "Sie möchten ein Buch für Ihre Tochter kaufen. Wohin gehen Sie?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Das Café ist im 5. Stock. Im 4. Stock gibt es nur Möbel, Küchengeräte und Lampen.",
+          "id": "reading-a2-teil2-001-q2",
+          "options": [
+            "In den 4. Stock.",
+            "In den 5. Stock.",
+            "In einen anderen Stock.",
+          ],
+          "text": "Sie möchten einen Kaffee trinken. Wohin gehen Sie?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Sportkleidung gibt es im 2. Stock. Im 1. Stock sind Damenmode und Schuhe.",
+          "id": "reading-a2-teil2-001-q3",
+          "options": [
+            "In den 2. Stock.",
+            "In den 1. Stock.",
+            "In einen anderen Stock.",
+          ],
+          "text": "Sie möchten Sportkleidung kaufen. Wohin gehen Sie?",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Am Sonntag ist das Kaufhaus geschlossen. Die Öffnungszeiten 9–20 Uhr gelten nur von Montag bis Samstag.",
+          "id": "reading-a2-teil2-001-q4",
+          "options": [
+            "Sie kommen von 9 bis 20 Uhr.",
+            "Sie kommen erst um 12 Uhr.",
+            "Sie kommen an einem anderen Tag.",
+          ],
+          "text": "Sie möchten am Sonntag einkaufen. Was tun Sie?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Das Parkhaus ist im Untergeschoss, und die erste Stunde ist frei.",
+          "id": "reading-a2-teil2-001-q5",
+          "options": [
+            "Ins Untergeschoss.",
+            "In den 5. Stock.",
+            "An einen anderen Ort.",
+          ],
+          "text": "Sie möchten Ihr Auto parken. Wohin fahren Sie?",
+        },
+      ],
+      "text": "Kaufhaus Stern – Wegweiser
+Erdgeschoss: Parfüm, Schmuck, Information, Kundenservice und Umtausch
+1. Stock: Damenmode, Schuhe
+2. Stock: Herrenmode, Sportkleidung
+3. Stock: Bücher, Spielzeug, Schreibwaren, Geschenke einpacken
+4. Stock: Möbel, Küchengeräte, Lampen
+5. Stock: Restaurant, Café, Toiletten
+Untergeschoss: Parkhaus (die erste Stunde ist frei)
+Öffnungszeiten: Montag bis Samstag, 9–20 Uhr
+Am Sonntag geschlossen.
+Der Aufzug befindet sich neben dem Eingang.",
+      "title": "Kaufhaus Stern – Wegweiser",
+      "version": 1,
+    },
+  },
+  {
+    "n": 3,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "correctAnswer": 0,
+          "explanation": "Lena schreibt: „Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer."",
+          "id": "reading-a2-teil3-001-q1",
+          "options": [
+            "Ans Meer nach Italien.",
+            "In die Berge.",
+            "Nach Spanien.",
+          ],
+          "text": "Wohin ist Lena gefahren?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Im Text steht: „Die Reise war lang, weil wir mit dem Auto gefahren sind."",
+          "id": "reading-a2-teil3-001-q2",
+          "options": [
+            "Mit dem Flugzeug.",
+            "Mit dem Auto.",
+            "Mit dem Zug.",
+          ],
+          "text": "Wie ist die Familie gereist?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Lena schreibt: „Mein Bruder hat die ganze Zeit geschlafen." Gebadet wurde erst im Urlaub, krank wurde später die Mutter.",
+          "id": "reading-a2-teil3-001-q3",
+          "options": [
+            "Er hat geschlafen.",
+            "Er hat gebadet.",
+            "Er war krank.",
+          ],
+          "text": "Was hat Lenas Bruder während der Fahrt gemacht?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Im Text steht: „Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren."",
+          "id": "reading-a2-teil3-001-q4",
+          "options": [
+            "Das Boot hatte einen Unfall.",
+            "Lenas Mutter wurde krank.",
+            "Lena hat ein Eis gegessen.",
+          ],
+          "text": "Was ist beim Bootsausflug passiert?",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Am Ende schreibt Lena: „Aber im nächsten Jahr möchte ich gern wieder dorthin fahren."",
+          "id": "reading-a2-teil3-001-q5",
+          "options": [
+            "Ein Geschenk kaufen.",
+            "Zu Hause bleiben.",
+            "Wieder dorthin fahren.",
+          ],
+          "text": "Was möchte Lena im nächsten Jahr machen?",
+        },
+      ],
+      "text": "Liebe Sandra,
+
+wie geht es dir? Ich muss dir unbedingt von meinem Urlaub erzählen. Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer.
+
+Die Reise war lang, weil wir mit dem Auto gefahren sind. Am ersten Tag sind wir zwölf Stunden unterwegs gewesen. Mein Bruder hat die ganze Zeit geschlafen, aber ich konnte nicht schlafen, weil es zu heiß war.
+
+Unser Hotel war direkt am Strand. Jeden Morgen sind wir früh aufgestanden und haben im Meer gebadet. Das Wasser war wunderbar warm. Am Nachmittag haben wir oft ein Eis gegessen oder sind in die kleine Stadt gegangen.
+
+Ein Tag war besonders schön. Wir haben einen Ausflug mit dem Boot gemacht. Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren. Am Abend ging es ihr aber wieder gut.
+
+Am letzten Tag habe ich noch ein kleines Geschenk für dich gekauft. Ich glaube, du wirst es lieben! Ich gebe es dir, wenn wir uns nächste Woche treffen.
+
+Schade, dass der Urlaub schon vorbei ist. Aber im nächsten Jahr möchte ich gern wieder dorthin fahren. Vielleicht hast du ja Lust, mitzukommen?
+
+Schreib mir bald und erzähl mir von deinen Plänen!
+
+Liebe Grüße
+Lena",
+      "title": "Lenas Urlaub am Meer",
+      "version": 1,
+    },
+  },
+  {
+    "n": 4,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 7,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "matching",
+      "questions": [
+        {
+          "correctAnswer": 4,
+          "explanation": "Anzeige e bietet einen Computerkurs für ältere Menschen, in dem man E-Mails schreiben und im Internet surfen lernt.",
+          "id": "reading-a2-teil4-001-q1",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Herr Klein (70) möchte lernen, wie man am Computer E-Mails schreibt.",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Anzeige b bietet einen Gitarrenkurs für Anfänger am Samstag und Sonntag, also genau am Wochenende.",
+          "id": "reading-a2-teil4-001-q2",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Marta möchte am Wochenende ein Instrument lernen.",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Anzeige c bietet einen Schwimmkurs für Kinder von 4 bis 7 Jahren am Mittwochnachmittag.",
+          "id": "reading-a2-teil4-001-q3",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Frau Sommer möchte ihre kleine Tochter zum Schwimmen anmelden.",
+        },
+        {
+          "correctAnswer": 6,
+          "explanation": "Es gibt keine Anzeige für einen Tanzkurs. Deshalb passt hier keine Anzeige, die Antwort ist x.",
+          "id": "reading-a2-teil4-001-q4",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Tom sucht einen Tanzkurs für Salsa.",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Anzeige a bietet einen Kochkurs für italienische Küche jeden Dienstagabend um 19 Uhr.",
+          "id": "reading-a2-teil4-001-q5",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Sabine möchte abends lernen, italienisch zu kochen.",
+        },
+      ],
+      "text": "a: Italienisch kochen! Jeden Dienstagabend um 19 Uhr lernen Sie Pasta und Pizza selbst zu machen. Kleine Gruppen, nur 15 Euro pro Abend. Anmeldung unter 0761/12345.
+b: Gitarre für Anfänger – am Samstag und Sonntag. Sie brauchen keine Vorkenntnisse. Eine Gitarre können Sie bei uns leihen. Infos in der Musikschule Ton & Klang.
+c: Schwimmkurs für Kinder von 4 bis 7 Jahren. Mittwochnachmittag im Hallenbad. Erfahrene Lehrer und kleine Gruppen. Die erste Stunde ist kostenlos!
+d: Sanftes Yoga am Morgen, besonders für Senioren. Jeden Montag und Donnerstag von 9 bis 10 Uhr. Bitte bequeme Kleidung mitbringen.
+e: Computer für ältere Menschen. Lernen Sie E-Mails schreiben und im Internet surfen. Der Kurs ist jeden Freitagvormittag, ganz ohne Stress.
+f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Park. Farben und Papier sind vorhanden. Auch für Anfänger geeignet.",
+      "title": "Freizeitkurse in der Volkshochschule",
+      "version": 1,
+    },
+  },
+  {
+    "n": 1,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "correctAnswer": 0,
+          "explanation": "Im Text steht: „Seit dem ersten März gibt es in Freiburg ein neues Angebot." Der Sommer wird nur für spätere Pläne genannt.",
+          "id": "mock-a2-set1-reading-teil1-q1",
+          "options": [
+            "Seit März.",
+            "Seit dem Sommer.",
+            "Seit der Universität.",
+          ],
+          "text": "Seit wann gibt es das neue Angebot in Freiburg?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Der Text sagt: „Die erste halbe Stunde kostet nichts." Einen Euro zahlt man erst danach pro Stunde, 50 Cent zahlen nur Studenten und Kinder.",
+          "id": "mock-a2-set1-reading-teil1-q2",
+          "options": [
+            "Einen Euro.",
+            "Nichts.",
+            "50 Cent.",
+          ],
+          "text": "Wie viel kostet die erste halbe Stunde?",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Im Text steht: „Studenten und Kinder unter 14 Jahren ... bezahlen nur 50 Cent pro Stunde." Einen Euro zahlen die anderen Personen.",
+          "id": "mock-a2-set1-reading-teil1-q3",
+          "options": [
+            "Einen Euro.",
+            "Nichts.",
+            "50 Cent.",
+          ],
+          "text": "Wie viel bezahlen Studenten pro Stunde?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Der Text sagt klar: „Die Stadt möchte, dass weniger Autos fahren." Touristen und das Büro werden zwar genannt, sind aber nicht das Ziel.",
+          "id": "mock-a2-set1-reading-teil1-q4",
+          "options": [
+            "Dass mehr Touristen kommen.",
+            "Dass weniger Autos fahren.",
+            "Dass mehr Büros öffnen.",
+          ],
+          "text": "Was möchte die Stadt erreichen?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Im Text steht: „Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet."",
+          "id": "mock-a2-set1-reading-teil1-q5",
+          "options": [
+            "Jeden Tag von 9 bis 18 Uhr.",
+            "Nur am Morgen.",
+            "Von 14 bis 18 Uhr.",
+          ],
+          "text": "Wann ist das Büro am Marktplatz geöffnet?",
+        },
+      ],
+      "text": "Seit dem ersten März gibt es in Freiburg ein neues Angebot für alle Bürger. Die Stadt hat 200 grüne Fahrräder gekauft. Die Fahrräder stehen an 30 Stationen in der ganzen Stadt. Besonders viele Stationen findet man am Bahnhof und in der Nähe der Universität.
+
+Das Mieten ist sehr einfach. Man braucht nur ein Handy und eine App. Die erste halbe Stunde kostet nichts. Danach zahlt man einen Euro pro Stunde. Studenten und Kinder unter 14 Jahren fahren noch günstiger. Sie bezahlen nur 50 Cent pro Stunde.
+
+Viele Menschen sind sehr zufrieden mit den neuen Fahrrädern. „Ich fahre jetzt jeden Morgen mit dem Rad zur Arbeit", sagt Frau Meier. „Das ist gesund und ich spare Geld." Auch Touristen nutzen das Angebot gern, denn so können sie die Stadt schnell sehen.
+
+Die Stadt möchte, dass weniger Autos fahren. Deshalb plant sie für den Sommer noch mehr Stationen. Auch neue Wege nur für Fahrräder sollen bald kommen. Wer Fragen hat, kann jeden Tag das Büro am Marktplatz besuchen. Es ist von neun bis achtzehn Uhr geöffnet.",
+      "title": "Modellprüfung Set 1 · Neue Fahrräder in der Stadt",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "correctAnswer": 0,
+          "explanation": "Bücher gibt es im 3. Stock. Im 1. Stock sind nur Damenmode und Schuhe.",
+          "id": "mock-a2-set1-reading-teil2-q1",
+          "options": [
+            "In den 3. Stock.",
+            "In den 1. Stock.",
+            "In einen anderen Stock.",
+          ],
+          "text": "Sie möchten ein Buch für Ihre Tochter kaufen. Wohin gehen Sie?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Das Café ist im 5. Stock. Im 4. Stock gibt es nur Möbel, Küchengeräte und Lampen.",
+          "id": "mock-a2-set1-reading-teil2-q2",
+          "options": [
+            "In den 4. Stock.",
+            "In den 5. Stock.",
+            "In einen anderen Stock.",
+          ],
+          "text": "Sie möchten einen Kaffee trinken. Wohin gehen Sie?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Sportkleidung gibt es im 2. Stock. Im 1. Stock sind Damenmode und Schuhe.",
+          "id": "mock-a2-set1-reading-teil2-q3",
+          "options": [
+            "In den 2. Stock.",
+            "In den 1. Stock.",
+            "In einen anderen Stock.",
+          ],
+          "text": "Sie möchten Sportkleidung kaufen. Wohin gehen Sie?",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Am Sonntag ist das Kaufhaus geschlossen. Die Öffnungszeiten 9–20 Uhr gelten nur von Montag bis Samstag.",
+          "id": "mock-a2-set1-reading-teil2-q4",
+          "options": [
+            "Sie kommen von 9 bis 20 Uhr.",
+            "Sie kommen erst um 12 Uhr.",
+            "Sie kommen an einem anderen Tag.",
+          ],
+          "text": "Sie möchten am Sonntag einkaufen. Was tun Sie?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Das Parkhaus ist im Untergeschoss, und die erste Stunde ist frei.",
+          "id": "mock-a2-set1-reading-teil2-q5",
+          "options": [
+            "Ins Untergeschoss.",
+            "In den 5. Stock.",
+            "An einen anderen Ort.",
+          ],
+          "text": "Sie möchten Ihr Auto parken. Wohin fahren Sie?",
+        },
+      ],
+      "text": "Kaufhaus Stern – Wegweiser
+Erdgeschoss: Parfüm, Schmuck, Information, Kundenservice und Umtausch
+1. Stock: Damenmode, Schuhe
+2. Stock: Herrenmode, Sportkleidung
+3. Stock: Bücher, Spielzeug, Schreibwaren, Geschenke einpacken
+4. Stock: Möbel, Küchengeräte, Lampen
+5. Stock: Restaurant, Café, Toiletten
+Untergeschoss: Parkhaus (die erste Stunde ist frei)
+Öffnungszeiten: Montag bis Samstag, 9–20 Uhr
+Am Sonntag geschlossen.
+Der Aufzug befindet sich neben dem Eingang.",
+      "title": "Modellprüfung Set 1 · Kaufhaus Stern – Wegweiser",
+      "version": 1,
+    },
+  },
+  {
+    "n": 3,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 3,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "selection",
+      "questions": [
+        {
+          "correctAnswer": 0,
+          "explanation": "Lena schreibt: „Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer."",
+          "id": "mock-a2-set1-reading-teil3-q1",
+          "options": [
+            "Ans Meer nach Italien.",
+            "In die Berge.",
+            "Nach Spanien.",
+          ],
+          "text": "Wohin ist Lena gefahren?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Im Text steht: „Die Reise war lang, weil wir mit dem Auto gefahren sind."",
+          "id": "mock-a2-set1-reading-teil3-q2",
+          "options": [
+            "Mit dem Flugzeug.",
+            "Mit dem Auto.",
+            "Mit dem Zug.",
+          ],
+          "text": "Wie ist die Familie gereist?",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Lena schreibt: „Mein Bruder hat die ganze Zeit geschlafen." Gebadet wurde erst im Urlaub, krank wurde später die Mutter.",
+          "id": "mock-a2-set1-reading-teil3-q3",
+          "options": [
+            "Er hat geschlafen.",
+            "Er hat gebadet.",
+            "Er war krank.",
+          ],
+          "text": "Was hat Lenas Bruder während der Fahrt gemacht?",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Im Text steht: „Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren."",
+          "id": "mock-a2-set1-reading-teil3-q4",
+          "options": [
+            "Das Boot hatte einen Unfall.",
+            "Lenas Mutter wurde krank.",
+            "Lena hat ein Eis gegessen.",
+          ],
+          "text": "Was ist beim Bootsausflug passiert?",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Am Ende schreibt Lena: „Aber im nächsten Jahr möchte ich gern wieder dorthin fahren."",
+          "id": "mock-a2-set1-reading-teil3-q5",
+          "options": [
+            "Ein Geschenk kaufen.",
+            "Zu Hause bleiben.",
+            "Wieder dorthin fahren.",
+          ],
+          "text": "Was möchte Lena im nächsten Jahr machen?",
+        },
+      ],
+      "text": "Liebe Sandra,
+
+wie geht es dir? Ich muss dir unbedingt von meinem Urlaub erzählen. Letzte Woche bin ich mit meiner Familie nach Italien gefahren. Wir waren zehn Tage am Meer.
+
+Die Reise war lang, weil wir mit dem Auto gefahren sind. Am ersten Tag sind wir zwölf Stunden unterwegs gewesen. Mein Bruder hat die ganze Zeit geschlafen, aber ich konnte nicht schlafen, weil es zu heiß war.
+
+Unser Hotel war direkt am Strand. Jeden Morgen sind wir früh aufgestanden und haben im Meer gebadet. Das Wasser war wunderbar warm. Am Nachmittag haben wir oft ein Eis gegessen oder sind in die kleine Stadt gegangen.
+
+Ein Tag war besonders schön. Wir haben einen Ausflug mit dem Boot gemacht. Leider wurde meine Mutter auf dem Boot krank, deshalb sind wir früher zurückgefahren. Am Abend ging es ihr aber wieder gut.
+
+Am letzten Tag habe ich noch ein kleines Geschenk für dich gekauft. Ich glaube, du wirst es lieben! Ich gebe es dir, wenn wir uns nächste Woche treffen.
+
+Schade, dass der Urlaub schon vorbei ist. Aber im nächsten Jahr möchte ich gern wieder dorthin fahren. Vielleicht hast du ja Lust, mitzukommen?
+
+Schreib mir bald und erzähl mir von deinen Plänen!
+
+Liebe Grüße
+Lena",
+      "title": "Modellprüfung Set 1 · Lenas Urlaub am Meer",
+      "version": 1,
+    },
+  },
+  {
+    "n": 4,
+    "runtime": {
+      "maxPoints": 5,
+      "minutes": 7.5,
+      "multiplier": 1,
+      "optionCount": 7,
+      "questionCount": 5,
+    },
+    "view": {
+      "format": "matching",
+      "questions": [
+        {
+          "correctAnswer": 4,
+          "explanation": "Anzeige e bietet einen Computerkurs für ältere Menschen, in dem man E-Mails schreiben und im Internet surfen lernt.",
+          "id": "mock-a2-set1-reading-teil4-q1",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Herr Klein (70) möchte lernen, wie man am Computer E-Mails schreibt.",
+        },
+        {
+          "correctAnswer": 1,
+          "explanation": "Anzeige b bietet einen Gitarrenkurs für Anfänger am Samstag und Sonntag, also genau am Wochenende.",
+          "id": "mock-a2-set1-reading-teil4-q2",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Marta möchte am Wochenende ein Instrument lernen.",
+        },
+        {
+          "correctAnswer": 2,
+          "explanation": "Anzeige c bietet einen Schwimmkurs für Kinder von 4 bis 7 Jahren am Mittwochnachmittag.",
+          "id": "mock-a2-set1-reading-teil4-q3",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Frau Sommer möchte ihre kleine Tochter zum Schwimmen anmelden.",
+        },
+        {
+          "correctAnswer": 6,
+          "explanation": "Es gibt keine Anzeige für einen Tanzkurs. Deshalb passt hier keine Anzeige, die Antwort ist x.",
+          "id": "mock-a2-set1-reading-teil4-q4",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Tom sucht einen Tanzkurs für Salsa.",
+        },
+        {
+          "correctAnswer": 0,
+          "explanation": "Anzeige a bietet einen Kochkurs für italienische Küche jeden Dienstagabend um 19 Uhr.",
+          "id": "mock-a2-set1-reading-teil4-q5",
+          "options": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "x",
+          ],
+          "text": "Sabine möchte abends lernen, italienisch zu kochen.",
+        },
+      ],
+      "text": "a: Italienisch kochen! Jeden Dienstagabend um 19 Uhr lernen Sie Pasta und Pizza selbst zu machen. Kleine Gruppen, nur 15 Euro pro Abend. Anmeldung unter 0761/12345.
+b: Gitarre für Anfänger – am Samstag und Sonntag. Sie brauchen keine Vorkenntnisse. Eine Gitarre können Sie bei uns leihen. Infos in der Musikschule Ton & Klang.
+c: Schwimmkurs für Kinder von 4 bis 7 Jahren. Mittwochnachmittag im Hallenbad. Erfahrene Lehrer und kleine Gruppen. Die erste Stunde ist kostenlos!
+d: Sanftes Yoga am Morgen, besonders für Senioren. Jeden Montag und Donnerstag von 9 bis 10 Uhr. Bitte bequeme Kleidung mitbringen.
+e: Computer für ältere Menschen. Lernen Sie E-Mails schreiben und im Internet surfen. Der Kurs ist jeden Freitagvormittag, ganz ohne Stress.
+f: Malen und Zeichnen für alle. Am Wochenende treffen wir uns im Atelier am Park. Farben und Papier sind vorhanden. Auch für Anfänger geeignet.",
+      "title": "Modellprüfung Set 1 · Freizeitkurse in der Volkshochschule",
+      "version": 1,
+    },
+  },
+]
+`;
+
+exports[`Goethe A2 projection parity projects every bundled speaking payload unchanged 1`] = `
+[
+  {
+    "n": 1,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "answers",
+          "label": "Answers",
+          "maxPoints": 2,
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+          "maxPoints": 2,
+        },
+      ],
+      "maxPoints": 4,
+      "minutes": 7.5,
+      "segments": [
+        {
+          "id": "answers",
+          "label": "Answers",
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+        },
+      ],
+    },
+    "view": {
+      "format": "recording",
+      "segments": [
+        {
+          "id": "answers",
+          "label": "Answers",
+          "prompt": "Wo kaufst du normalerweise Lebensmittel ein?,Wie oft gehst du einkaufen?,Was kaufst du gern auf dem Markt?,Kaufst du Kleidung lieber im Geschäft oder online?",
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+          "prompt": "Gehst du gern in den Supermarkt?,Wie viel Geld gibst du pro Woche für Essen aus?,Wann kaufst du neue Kleidung?,Gibt es in deiner Nähe einen Wochenmarkt?",
+        },
+      ],
+      "text": "",
+      "title": "Einkaufen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "taskCompletion",
+          "label": "Task completion",
+          "maxPoints": 4,
+        },
+        {
+          "id": "language",
+          "label": "Language",
+          "maxPoints": 4,
+        },
+      ],
+      "maxPoints": 8,
+      "minutes": 7.5,
+      "segments": [
+        {
+          "id": "monologue",
+          "label": "Monologue",
+        },
+      ],
+    },
+    "view": {
+      "format": "recording",
+      "segments": [
+        {
+          "id": "monologue",
+          "label": "Monologue",
+          "prompt": "Wohnung oder Haus?,Wie viele Zimmer?,Mit wem?,In welcher Stadt?",
+        },
+      ],
+      "text": "",
+      "title": "Wie wohnen Sie?",
+      "version": 1,
+    },
+  },
+  {
+    "n": 1,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "answers",
+          "label": "Answers",
+          "maxPoints": 2,
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+          "maxPoints": 2,
+        },
+      ],
+      "maxPoints": 4,
+      "minutes": 7.5,
+      "segments": [
+        {
+          "id": "answers",
+          "label": "Answers",
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+        },
+      ],
+    },
+    "view": {
+      "format": "recording",
+      "segments": [
+        {
+          "id": "answers",
+          "label": "Answers",
+          "prompt": "Was machst du am Wochenende?,Mit wem verbringst du deine Freizeit?,Welches Hobby hast du?,Wie oft machst du Sport?",
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+          "prompt": "Gehst du gern ins Kino?,Was machst du am Sonntag?,Triffst du oft Freunde?,Welche Musik hörst du gern?",
+        },
+      ],
+      "text": "",
+      "title": "Freizeit und Wochenende",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "taskCompletion",
+          "label": "Task completion",
+          "maxPoints": 4,
+        },
+        {
+          "id": "language",
+          "label": "Language",
+          "maxPoints": 4,
+        },
+      ],
+      "maxPoints": 8,
+      "minutes": 7.5,
+      "segments": [
+        {
+          "id": "monologue",
+          "label": "Monologue",
+        },
+      ],
+    },
+    "view": {
+      "format": "recording",
+      "segments": [
+        {
+          "id": "monologue",
+          "label": "Monologue",
+          "prompt": "Seit wann?,Wo und wie?,Was ist leicht?,Was ist schwierig?",
+        },
+      ],
+      "text": "",
+      "title": "Wie lernen Sie Deutsch?",
+      "version": 1,
+    },
+  },
+]
+`;
+
+exports[`Goethe A2 projection parity projects every bundled writing payload unchanged 1`] = `
+[
+  {
+    "n": 1,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "aufgabenerfuellung",
+          "label": "Task completion",
+          "maxPoints": 5,
+        },
+        {
+          "id": "sprache",
+          "label": "Language",
+          "maxPoints": 5,
+        },
+      ],
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 30,
+          "minWords": 20,
+          "zeroBelowWords": 10,
+        },
+      ],
+      "maxPoints": 10,
+      "minutes": 15,
+      "multiplier": 1.25,
+    },
+    "view": {
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 30,
+          "minWords": 20,
+          "zeroBelowWords": 10,
+        },
+      ],
+      "format": "freeform",
+      "text": "Sie wollten heute Abend mit Ihrer Freundin Lena ins Schwimmbad gehen. Jetzt sind Sie krank. Schreiben Sie Lena eine SMS.
+- Sagen Sie, dass Sie nicht kommen können.
+- Erklären Sie, warum.
+- Schlagen Sie einen neuen Tag vor.
+Schreiben Sie 20–30 Wörter. Schreiben Sie zu allen drei Punkten.",
+      "title": "SMS an eine Freundin wegen einer Verabredung",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "aufgabenerfuellung",
+          "label": "Task completion",
+          "maxPoints": 5,
+        },
+        {
+          "id": "sprache",
+          "label": "Language",
+          "maxPoints": 5,
+        },
+      ],
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 40,
+          "minWords": 30,
+          "zeroBelowWords": 15,
+        },
+      ],
+      "maxPoints": 10,
+      "minutes": 15,
+      "multiplier": 1.25,
+    },
+    "view": {
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 40,
+          "minWords": 30,
+          "zeroBelowWords": 15,
+        },
+      ],
+      "format": "freeform",
+      "text": "Ihre Nachbarin Frau Berger hat ein Paket für Sie angenommen. Schreiben Sie Frau Berger eine E-Mail.
+- Bedanken Sie sich für ihre Hilfe.
+- Fragen Sie, wann Sie das Paket abholen können.
+- Sagen Sie, dass Sie ihr etwas mitbringen.
+Verwenden Sie eine passende Anrede und Grußformel. Schreiben Sie 30–40 Wörter. Schreiben Sie zu allen drei Punkten.",
+      "title": "E-Mail an die Nachbarin: Paket abholen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 1,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "aufgabenerfuellung",
+          "label": "Task completion",
+          "maxPoints": 5,
+        },
+        {
+          "id": "sprache",
+          "label": "Language",
+          "maxPoints": 5,
+        },
+      ],
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 30,
+          "minWords": 20,
+          "zeroBelowWords": 10,
+        },
+      ],
+      "maxPoints": 10,
+      "minutes": 15,
+      "multiplier": 1.25,
+    },
+    "view": {
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 30,
+          "minWords": 20,
+          "zeroBelowWords": 10,
+        },
+      ],
+      "format": "freeform",
+      "text": "Sie treffen heute Ihren Freund Amir im Café. Ihr Bus hat Verspätung. Schreiben Sie Amir eine SMS.
+- Entschuldigen Sie sich.
+- Erklären Sie die Verspätung.
+- Sagen Sie, wann Sie kommen.
+Schreiben Sie 20–30 Wörter.",
+      "title": "SMS: Verspätung beim Treffen",
+      "version": 1,
+    },
+  },
+  {
+    "n": 2,
+    "runtime": {
+      "criteria": [
+        {
+          "id": "aufgabenerfuellung",
+          "label": "Task completion",
+          "maxPoints": 5,
+        },
+        {
+          "id": "sprache",
+          "label": "Language",
+          "maxPoints": 5,
+        },
+      ],
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 40,
+          "minWords": 30,
+          "zeroBelowWords": 15,
+        },
+      ],
+      "maxPoints": 10,
+      "minutes": 15,
+      "multiplier": 1.25,
+    },
+    "view": {
+      "fields": [
+        {
+          "id": "answer",
+          "label": "Your answer",
+          "maxWords": 40,
+          "minWords": 30,
+          "zeroBelowWords": 15,
+        },
+      ],
+      "format": "freeform",
+      "text": "Ihre Sprachschule lädt Sie am Dienstag zu einem Beratungstermin ein. Sie können an diesem Tag nicht. Schreiben Sie Frau König eine E-Mail.
+- Bedanken Sie sich für die Einladung.
+- Erklären Sie, warum Sie nicht kommen können.
+- Bitten Sie um einen neuen Termin.
+Schreiben Sie 30–40 Wörter.",
+      "title": "E-Mail: Termin in der Sprachschule",
+      "version": 1,
+    },
+  },
+]
+`;

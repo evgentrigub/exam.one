@@ -1,4 +1,4 @@
-import type { ExamPack } from './types'
+import { LAYOUT_FORMATS, type ExamPack } from './types'
 
 export function validatePacks(packs: readonly ExamPack[]): void {
   const identities = new Set<string>()
@@ -18,6 +18,15 @@ export function validatePacks(packs: readonly ExamPack[]): void {
       slots.add(slot)
       if (!pack.structure.find(m => m.id === prompt.skill)?.parts.some(p => p.n === prompt.part)) fail(`unknown prompt part ${slot}`)
     }
+    for (const [skill, seeds] of Object.entries(pack.seedExercises ?? {})) {
+      const ids = new Set<string>()
+      for (const seed of seeds ?? []) {
+        const id = seed['id']
+        if (typeof id !== 'string' || !id) fail(`${skill} seed without an id`)
+        if (ids.has(String(id))) fail(`duplicate ${skill} seed ${String(id)}`)
+        ids.add(String(id))
+      }
+    }
     for (const module of pack.structure) {
       if (new Set(module.parts.map(p => p.n)).size !== module.parts.length) fail(`duplicate ${module.id} parts`)
       for (const part of module.parts) {
@@ -28,6 +37,7 @@ export function validatePacks(packs: readonly ExamPack[]): void {
         if (!rules) continue
         if (!Number.isFinite(rules.minutes) || rules.minutes <= 0 || !Number.isFinite(rules.maxPoints) || rules.maxPoints <= 0) fail('invalid timing or maximum score')
         if (!['selection', 'matching', 'true-false', 'freeform', 'recording'].includes(part.itemFormat)) fail('unsupported format')
+        if (part.layout !== undefined && LAYOUT_FORMATS[part.layout] !== part.itemFormat) fail(`layout ${part.layout} does not fit ${part.itemFormat} in ${module.id}:${part.n}`)
         const kinds = part.itemFormat === 'freeform' || part.itemFormat === 'recording' ? ['generator', 'answer', 'review'] : ['generator']
         for (const kind of kinds) if (!slots.has(`${module.id}:${part.n}:${kind}`)) fail(`missing ${module.id}:${part.n}:${kind}`)
         if (part.itemFormat === 'freeform' && !rules.fields?.length) fail('missing writing fields')

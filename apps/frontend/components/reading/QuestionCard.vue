@@ -30,7 +30,7 @@
             "
             :size="10"
           />
-          <span v-else class="opacity-70">{{ String.fromCharCode(65 + i) }}</span>
+          <span v-else-if="!trueFalse" class="opacity-70">{{ String.fromCharCode(65 + i) }}</span>
         </span>
         <span class="text-sm flex-1 leading-snug">{{ option }}</span>
       </button>
@@ -42,7 +42,7 @@
         {{
           isCorrect
             ? 'Correct!'
-            : `Correct answer: ${String.fromCharCode(65 + question.correctAnswer)}`
+            : `Correct answer: ${optionLabel(question.correctAnswer)}`
         }}
       </span>
       <span v-if="question.explanation" class="text-base-content/50">{{
@@ -62,9 +62,17 @@ interface Props {
   selectedAnswer: number | null
   submitted: boolean
   showFeedback?: boolean
+  /** Richtig / Falsch items: the options are the answer, so no a/b letter is shown. */
+  trueFalse?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), { showFeedback: true })
+const props = withDefaults(defineProps<Props>(), { showFeedback: true, trueFalse: false })
+
+function optionLabel(index: number): string {
+  return props.trueFalse
+    ? (props.question.options[index] ?? '')
+    : String.fromCharCode(65 + index)
+}
 
 const emit = defineEmits<{
   answerSelected: [questionId: string, selectedAnswer: number]

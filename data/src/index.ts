@@ -8,6 +8,7 @@ export {
 } from './lookup'
 export { getLivePack, getPack, listLivePacks, listPacks } from './registry'
 export { GOETHE_DE_A2_PACK_ID, goetheDeA2 } from './packs/goethe-de-a2/pack'
+export { GOETHE_DE_A1_PACK_ID, goetheDeA1 } from './packs/goethe-de-a1/pack'
 export { goetheDeC1 } from './packs/goethe-de-c1/pack'
 export { buildMockExamOverviewPrompt } from './packs/goethe-de-a2/prompts/mock-exam'
 export type {
@@ -15,7 +16,7 @@ export type {
   MockExamOverviewInput,
   MockExamOverviewItem,
 } from './packs/goethe-de-a2/prompts/mock-exam'
-export { DEFAULT_PACK_ID } from './types'
+export { DEFAULT_PACK_ID, LAYOUT_FORMATS } from './types'
 export type {
   ExamModule,
   ExamPack,
@@ -23,6 +24,7 @@ export type {
   ItemFormat,
   LlmComplete,
   LlmMessage,
+  PartLayout,
   PromptKind,
   PromptSpec,
   PromptSpecFields,

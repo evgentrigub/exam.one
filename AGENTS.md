@@ -13,7 +13,8 @@ This file is the working guide for coding agents in this repository. It should b
 ## What Ships Today
 
 - German / Goethe A2 core practice across Reading, Writing, Listening, and Speaking
-- Mock exam bundled Set 1, generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
+- Goethe A1 / Start Deutsch 1 practice across all four modules, with the same mock exam flow as A2
+- Mock exam bundled Set 1 (per pack), generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
 - Auth and account UI — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
 - Skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
 - OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
@@ -113,7 +114,7 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 - Exercise seed payloads live in the owning pack under `data/src/packs/{packId}/content/` (`@exam-one/exam-packs`) and are upserted by Prisma `db:seed`. Prompt templates live in the same pack folder
 - Exam-specific seeds, scoring, and mock payloads live with that pack under `data/src/packs/`. Keep shared models and UI flows exam-agnostic
 - Skill catalogs, attempts, drafts, reviews, generation jobs, and mock exams are owned by NestJS/PostgreSQL after login. Do not add new authoritative practice keys to localStorage
-- Bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in)
+- Every pack's bundled mock-exam Set 1 must remain usable without an LLM key or speech service (after the user is signed in); its listening WAVs come from `pnpm stack:seed-audio`
 
 ## AI Integration Rules
 

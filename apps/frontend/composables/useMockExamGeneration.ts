@@ -90,14 +90,16 @@ function createJobs(skill: SkillId, parts: number[]): MockGenerationJob[] {
 }
 
 function createDraft(pack: ExamPack, setNumber: number): MockGenerationDraft {
-  const alias = pack.examIds.find(id => id === 'goethe-a2') ?? pack.packId
+  // The pack's factory owns the set id format, e.g. `goethe-a1-set-2`.
+  const setId =
+    pack.createMockSet?.(setNumber, blankContent()).id ?? `${pack.packId}-set-${setNumber}`
   const readingParts = getAvailableExamParts(pack, 'reading').map(part => part.n)
   const listeningParts = getAvailableExamParts(pack, 'listening').map(part => part.n)
   const writingParts = getAvailableExamParts(pack, 'writing').map(part => part.n)
   const speakingParts = getAvailableExamParts(pack, 'speaking').map(part => part.n)
   return {
     setNumber,
-    setId: `${alias}-set-${setNumber}`,
+    setId,
     status: 'queued',
     startedAt: new Date().toISOString(),
     completedAt: null,

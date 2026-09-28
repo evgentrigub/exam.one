@@ -1,10 +1,5 @@
-import {
-  defineAdapter,
-  record,
-  validateReview,
-  type ExerciseView,
-  type PartRuntime,
-} from '../../runtime'
+import type { PartRuntime } from '../../runtime'
+import { goetheRawAdapter } from '../goethe-shared/raw-adapter'
 import type { ExamModule } from '../../types'
 import {
   validateListening,
@@ -67,84 +62,7 @@ export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {
                 { id: 'language', label: 'Language', maxPoints: 4 },
               ]
       }
-      const adapter = defineAdapter(payload => {
-        const d = record(payload)
-        const view: ExerciseView = {
-          version: 1,
-          format: part.itemFormat,
-          title: String(d['title'] ?? d['theme'] ?? part.title),
-          text: String(d['content'] ?? d['task'] ?? d['context'] ?? ''),
-        }
-        if (module.id === 'writing') view.fields = rules.fields ?? []
-        else if (module.id === 'speaking')
-          view.segments = (rules.segments ?? []).map(s => ({
-            ...s,
-            prompt: String(
-              d[
-                s.id === 'answers'
-                  ? 'answerQuestions'
-                  : s.id === 'questions'
-                    ? 'askQuestions'
-                    : 'keywords'
-              ] ?? ''
-            ),
-          }))
-        else {
-          const rows = (d['questions'] ?? d['items'] ?? []) as Record<string, unknown>[]
-          const audio =
-            typeof d['audio'] === 'object' && d['audio']
-              ? (d['audio'] as { shared?: string; items?: Record<string, string> })
-              : {}
-          if (audio.shared) view.audio = audio.shared
-          if (typeof d['transcript'] === 'string') view.transcript = d['transcript']
-          view.questions = rows.map((q, i) => ({
-            id: String(
-              q['id'] ??
-                (module.id === 'listening'
-                  ? `${d['id']}-${d['items'] ? 'i' : 'q'}${i}`
-                  : `q${i + 1}`)
-            ),
-            text: String(q['question'] ?? q['person'] ?? q['statement'] ?? ''),
-            options: (q['options'] ?? d['options'] ?? ['Ja', 'Nein']) as string[],
-            correctAnswer:
-              typeof q['correctAnswer'] === 'boolean'
-                ? q['correctAnswer']
-                  ? 0
-                  : 1
-                : Number(q['correctAnswer']),
-            explanation: String(q['explanation'] ?? ''),
-            ...(typeof q['transcript'] === 'string' ? { transcript: q['transcript'] } : {}),
-            ...(audio.items?.[String(q['id'])] ? { audio: audio.items[String(q['id'])] } : {}),
-          }))
-        }
-        return view
-      })
-      adapter.validateStoredReview = (value, savedRules) => {
-        const review = record(value)
-        const writing = review['writingReview']
-        if (module.id === 'writing' && writing && typeof writing === 'object') {
-          const response = record(writing)['responseData']
-          // Writing rubrics are stored as a `CriterionReview`; the part is implied by the
-          // attempt's own snapshot, so the rubric no longer carries a `teil` to cross-check.
-          if (response !== undefined) {
-            try {
-              validateReview(response, savedRules)
-            } catch {
-              throw new Error('Invalid saved writing rubric or total')
-            }
-          }
-        }
-        // Speaking rubrics are `CriterionReview` too. An older rubric still carrying `teil`
-        // validates unchanged: the extra key is ignored, and the numbers it used to be
-        // checked against are the ones `validateReview` checks.
-        if (module.id === 'speaking' && review['review'] !== undefined) {
-          try {
-            validateReview(review['review'], savedRules)
-          } catch {
-            throw new Error('Invalid saved speaking rubric or total')
-          }
-        }
-      }
+      const adapter = goetheRawAdapter(module.id, part, rules)
       // Every module now carries a payload guard; `validateView` only sees the projection.
       const validate =
         module.id === 'reading'

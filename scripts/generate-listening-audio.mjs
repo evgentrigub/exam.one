@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 /**
- * Pre-generate Kokoro WAV files for bundled A2 listening seeds.
+ * Pre-generate Kokoro WAV files for the bundled listening seeds of every exam pack.
+ *
+ * A seed is bundled when it carries an explicit `audio` map whose URLs sit under its pack's
+ * `speech.audioPathPrefix` (Goethe A2: every seed; Goethe A1: the mock Set 1). Each URL is
+ * written to `apps/frontend/public<url>`. Seeds without a map generate on demand instead.
  *
  * Prerequisites:
  *   1. bash scripts/tts/victoria/download-models.sh  (or ./scripts/tts/setup-kokoro.sh)
@@ -30,22 +34,12 @@ import { createJiti } from 'jiti'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
-const frontendRoot = path.join(repoRoot, 'apps/frontend')
+const publicRoot = path.join(repoRoot, 'apps/frontend/public')
 const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/speech/tts')
-const audioRoot = path.join(frontendRoot, 'public/audio/listening/a2')
 
-const jiti = createJiti(import.meta.url, {
-  alias: {
-    '~': frontendRoot,
-    '~~': frontendRoot,
-    '@': frontendRoot,
-  },
-})
+const jiti = createJiti(import.meta.url)
 
-const listeningModule = await jiti.import(
-  path.join(frontendRoot, 'data/listening/exerciseListening.ts')
-)
-const { defaultListeningTopics } = listeningModule
+const { listPacks } = await jiti.import(path.join(repoRoot, 'data/src/index.ts'))
 
 const ttsModule = await jiti.import(path.join(backendTtsRoot, 'tts.adapter.ts'))
 const {
@@ -62,33 +56,39 @@ function hashTranscript(text) {
   return createHash('sha256').update(listeningTranscriptHashKey(text)).digest('hex')
 }
 
-function collectSegments(exercises) {
-  const segments = []
+/** Every bundled seed WAV of every pack, one segment per URL, deduplicated by URL. */
+export function collectSegments(packs = listPacks()) {
+  const segments = new Map()
 
-  for (const exercise of exercises) {
-    const id = exercise.id
-    if (!id) continue
-
-    if (exercise.testingPart === 1 || exercise.testingPart === 3) {
-      for (const item of exercise.items ?? []) {
-        const itemId = item.id
-        if (!itemId || !item.transcript?.trim()) continue
-        segments.push({
-          relativePath: path.join(id, `${itemId}.wav`),
-          transcript: item.transcript,
-        })
+  for (const pack of packs) {
+    const prefix = pack.speech.audioPathPrefix.replace(/\/$/, '') + '/'
+    for (const exercise of pack.seedExercises?.listening ?? []) {
+      const audio = exercise.audio
+      if (!audio || typeof audio !== 'object') continue
+      const add = (url, transcript) => {
+        if (typeof url !== 'string' || !url.startsWith(prefix) || !transcript?.trim()) return
+        if (!segments.has(url)) segments.set(url, { url, transcript })
       }
-      continue
+      if (audio.shared) add(audio.shared, exercise.transcript)
+      for (const [itemId, url] of Object.entries(audio.items ?? {})) {
+        add(url, (exercise.items ?? []).find(item => item.id === itemId)?.transcript)
+      }
     }
-
-    if (!exercise.transcript?.trim()) continue
-    segments.push({
-      relativePath: path.join(id, 'shared.wav'),
-      transcript: exercise.transcript,
-    })
   }
 
-  return segments
+  return [...segments.values()].map(segment => ({
+    relativePath: segment.url.replace(/^\//, ''),
+    transcript: segment.transcript,
+  }))
+}
+
+/** The public directory of every pack that ships bundled seed WAVs. */
+export function bundledAudioDirs(packs = listPacks()) {
+  const dirs = new Set()
+  for (const segment of collectSegments(packs)) {
+    dirs.add(path.join(publicRoot, path.dirname(path.dirname(segment.relativePath))))
+  }
+  return [...dirs]
 }
 
 async function fileExists(filePath) {
@@ -129,14 +129,14 @@ async function main() {
     process.exit(1)
   }
 
-  const segments = collectSegments(defaultListeningTopics)
+  const segments = collectSegments()
   console.log(`[generate-listening-audio] ${segments.length} segment(s) to consider`)
 
   const work = []
   let skipped = 0
 
   for (const segment of segments) {
-    const outPath = path.join(audioRoot, segment.relativePath)
+    const outPath = path.join(publicRoot, segment.relativePath)
     const hashPath = `${outPath}.hash`
     const nextHash = hashTranscript(segment.transcript)
 
@@ -198,7 +198,9 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  console.error('[generate-listening-audio] failed', error)
-  process.exit(1)
-})
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch(error => {
+    console.error('[generate-listening-audio] failed', error)
+    process.exit(1)
+  })
+}

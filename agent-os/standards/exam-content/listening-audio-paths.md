@@ -9,7 +9,7 @@ Build seed audio maps with `buildSeedListeningAudioMap` in the owning pack's `co
 /audio/listening/generated/{sha256}/item-{n}.wav     # TTS output, per item
 ```
 
-- Seed WAVs live under `public/audio/listening/a2/`. Mock Set 1 reuses those files (new id, same paths).
-- Generated files go to `GENERATED_LISTENING_AUDIO_DIR` (Compose volume or `public/audio/listening/generated/`). Never write TTS into the seed `a2/` tree.
+- Seed WAVs live under the pack's `speech.audioPathPrefix` in `public/` (`a2/` for Goethe A2, `a1/` for Goethe A1). A2 mock Set 1 reuses the A2 seed files (new id, same paths); A1 mock Set 1 has its own, mapped by `withSeedAudio` in `goethe-de-a1/content/`. `pnpm generate:listening-audio` writes every explicit seed `audio` map under its pack's prefix.
+- Generated files go to `GENERATED_LISTENING_AUDIO_DIR` (Compose volume or `public/audio/listening/generated/`). Never write TTS into a seed tree (`a2/`, `a1/`).
 - Generated audio is keyed by a SHA-256 of `(packId, userId, exerciseId)`, so **the exercise id is deliberately not a path segment** and no id format is required or enforced. Files are positional (`item-{n}`) and the stored `audio` map — keyed by projected question id — is the only way back to a URL; never derive a generated path on the client. Still resolve write and delete paths through `containedAudioPath` and require they stay under the audio root.
 - Postgres stores paths only, not bytes.

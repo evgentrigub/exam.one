@@ -39,7 +39,11 @@
     "letter": "Letter",
     "post": "Post",
     "advertisement": "Advertisement",
-    "instructions": "Instructions"
+    "instructions": "Instructions",
+    "voicemail": "Voicemail",
+    "introduction": "Introduction",
+    "requests": "Requests",
+    "form": "Form"
   },
   "home": {
     "title": "Exam.one",
@@ -606,7 +610,11 @@
       "examples": "Correction examples",
       "error": "Original",
       "correction": "Correction",
-      "report": "Review report"
+      "report": "Review report",
+      "contentPoint1": "Content point 1",
+      "contentPoint2": "Content point 2",
+      "contentPoint3": "Content point 3",
+      "communication": "Greeting and closing"
     },
     "modelAnswer": {
       "title": "Model Answer",
@@ -629,6 +637,23 @@
       "generating": "Generating model answer...",
       "canGenerate": "A model answer can be generated for this topic",
       "generateButton": "Generate Model Answer"
+    },
+    "formFill": {
+      "title": "Form",
+      "filled": "filled",
+      "progress": "Entries filled in",
+      "saveDraft": "Save Draft",
+      "submit": "Submit",
+      "saveAndExit": "Save & Exit",
+      "submitted": "Submitted",
+      "autoSaved": "Draft auto-saved just now",
+      "entryCount": "{count} entries",
+      "correctEntries": "Correct entries",
+      "entries": "Your entries",
+      "correct": "Correct",
+      "wrong": "Not correct",
+      "strengths": "What went well",
+      "improvements": "Check next time"
     }
   },
   "speakingReview": {
@@ -641,12 +666,23 @@
     "answers": "Answers",
     "questions": "Questions",
     "taskCompletion": "Task completion",
-    "language": "Language"
+    "language": "Language",
+    "introduction": "Introduction",
+    "spelling": "Spelling",
+    "number": "Number",
+    "ask1": "Question 1",
+    "answer1": "Answer 1",
+    "ask2": "Question 2",
+    "answer2": "Answer 2",
+    "request1": "Request 1",
+    "response1": "Reaction 1",
+    "request2": "Request 2",
+    "response2": "Reaction 2"
   },
   "mockExam": {
     "title": "Mock exams",
     "fullSimulation": "Full mock exam",
-    "listDescription": "Complete a timed Goethe A2 simulation. Finished tasks and modules lock permanently for the attempt.",
+    "listDescription": "Complete a timed {exam} simulation. Finished tasks and modules lock permanently for the attempt.",
     "minutes": "min",
     "progress": "Exam progress",
     "new": "New",
@@ -657,10 +693,11 @@
     "notFound": "Mock exam not found",
     "backToList": "Mock exams",
     "provisionalResult": "Provisional result",
-    "passMessage": "You reached the 60-point pass mark.",
+    "passMessage": "You reached the {points}-point pass mark.",
     "almostMessage": "Keep practising and retry when you are ready.",
     "passMark": "60 points to pass",
     "provisionalSpeakingNote": "Speaking includes Teil 1–2 only (maximum 12 points). Teil 3 and pronunciation are not yet scored, so the overall result is provisional.",
+    "provisionalSpeakingNoteTranscript": "Speaking is graded by AI from your transcripts only. Pronunciation and live interaction are not assessed, so the overall result is provisional.",
     "automaticScoring": "Automatic scoring",
     "aiGraded": "AI graded",
     "aiProvisional": "AI · provisional",
@@ -691,7 +728,7 @@
     "deleteSetConfirm": "Delete {title}, its saved attempt, and locally generated content?",
     "generateMockSet": "Generate mock exam set",
     "generateSetNumber": "Generate Set {number}",
-    "generateSetDescription": "Create a new Goethe A2 set with AI-generated tasks and Docker-based listening audio.",
+    "generateSetDescription": "Create a new {exam} set with AI-generated tasks and Docker-based listening audio.",
     "preflightTitle": "Check generation tools",
     "preflightDescription": "All three services must be ready before the mock exam set can be generated.",
     "llmKeyCheck": "LLM key is configured",
@@ -772,5 +809,30 @@
     "exercise": "Exercise",
     "yourAnswers": "Your answers",
     "savedFeedback": "Saved feedback"
+  },
+  "speaking": {
+    "cards": {
+      "wordCard": "Word card",
+      "requestCard": "Your card",
+      "topic": "Topic",
+      "partnerSays": "Your partner",
+      "placeholder": "Type or edit the transcript of this turn…",
+      "ask": {
+        "title": "Round {round} · Ask a question",
+        "description": "Make a question with the word on your card."
+      },
+      "answer": {
+        "title": "Round {round} · Answer your partner",
+        "description": "Answer the question in one short sentence."
+      },
+      "request": {
+        "title": "Round {round} · Make a request",
+        "description": "Ask politely for what is on your card."
+      },
+      "respond": {
+        "title": "Round {round} · React to the request",
+        "description": "Say yes or no politely, with a short reason."
+      }
+    }
   }
 }

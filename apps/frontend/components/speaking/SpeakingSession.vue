@@ -7,7 +7,7 @@
             class="inline-flex items-center gap-1.5 rounded-selector bg-warning/15 px-2 py-1 text-xs font-semibold text-warning"
           >
             <Mic :size="12" />
-            {{ topic.topicType === 'interview' ? 'Interview' : 'Monologue' }}
+            {{ sessionTitle }}
           </span>
           <span class="level-pip">Teil {{ topic.testingPart }}</span>
         </div>
@@ -102,6 +102,7 @@
         </div>
 
         <div class="space-y-4 p-5">
+          <SpeakingCard v-if="segment.card" :card="segment.card" />
           <SpeakingRecorder
             :max-seconds="segment.maxSeconds"
             :disabled="recorderDisabled(segment.key)"
@@ -223,12 +224,15 @@ import {
 } from 'lucide-vue-next'
 import SpeakingRecorder from '~/components/speaking/SpeakingRecorder.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
+import SpeakingCard from '~/components/speaking/SpeakingCard.vue'
 import { useProgress } from '~/composables/useProgress'
 import { useSpeakingReview } from '~/composables/useSpeakingReview'
 import { useSpeechTranscription } from '~/composables/useSpeechTranscription'
+import type { SpeakingCard as Card } from '@exam-one/exam-packs'
 import type { SpeakingA2Topic, SpeakingTranscripts } from '~/utils/exercises/speaking'
 
-type SegmentKey = 'answers' | 'questions' | 'monologue'
+/** `answers` / `questions` / `monologue` for the A2 layouts; a card exchange uses its own ids. */
+type SegmentKey = string
 
 interface RecordingPayload {
   durationSec: number
@@ -242,7 +246,12 @@ interface SessionSegment {
   description: string
   placeholder: string
   maxSeconds: number
+  /** Card exchanges only: the card this recording answers. */
+  card?: Card
 }
+
+/** A card turn is one short utterance, so it gets a shorter recording than a monologue. */
+const CARD_TURN_SECONDS = 45
 
 const props = withDefaults(
   defineProps<{
@@ -277,32 +286,52 @@ const {
   clearReview,
 } = useSpeakingReview()
 
-const transcripts = reactive<Record<SegmentKey, string>>({
-  answers: props.initialTranscripts.answers ?? '',
-  questions: props.initialTranscripts.questions ?? '',
-  monologue: props.initialTranscripts.monologue ?? '',
-})
-const durations = reactive<Record<SegmentKey, number>>({
-  answers: 0,
-  questions: 0,
-  monologue: 0,
-})
-const transcriptionErrors = reactive<Record<SegmentKey, string | null>>({
-  answers: null,
-  questions: null,
-  monologue: null,
-})
-const transcribingPhase = ref<SegmentKey | null>(null)
-const activeRecording = ref<SegmentKey | null>(null)
-const submitted = ref(false)
-const recordingEpoch = ref(0)
-
 const { pack } = useActivePack()
+const { t } = useI18n()
 const speakingPart = computed(() =>
   pack.value.structure
     .find(module => module.id === 'speaking')
     ?.parts.find(part => part.n === props.topic.testingPart)
 )
+
+/** Every segment this session can record: the A2 keys plus the part's own configured ids. */
+const segmentIds = [
+  ...new Set([
+    'answers',
+    'questions',
+    'monologue',
+    ...(speakingPart.value?.runtime?.segments ?? []).map(segment => segment.id),
+  ]),
+]
+const transcripts = reactive<Record<SegmentKey, string>>(
+  Object.fromEntries(segmentIds.map(id => [id, props.initialTranscripts[id] ?? '']))
+)
+const durations = reactive<Record<SegmentKey, number>>(
+  Object.fromEntries(segmentIds.map(id => [id, 0]))
+)
+const transcriptionErrors = reactive<Record<SegmentKey, string | null>>(
+  Object.fromEntries(segmentIds.map(id => [id, null]))
+)
+/** A segment's transcript, trimmed; empty for a segment this session never recorded. */
+function text(key: SegmentKey): string {
+  return (transcripts[key] ?? '').trim()
+}
+
+const transcribingPhase = ref<SegmentKey | null>(null)
+const activeRecording = ref<SegmentKey | null>(null)
+const submitted = ref(false)
+const recordingEpoch = ref(0)
+
+const sessionTitle = computed(
+  () =>
+    speakingPart.value?.sessionTitle ??
+    (props.topic.topicType === 'interview' ? 'Interview' : 'Monologue')
+)
+/** A word-card or request-card exchange: one recording per card, cards shown inline. */
+const isCardExchange = computed(() => {
+  const layout = speakingPart.value?.layout
+  return layout === 'word-cards' || layout === 'request-cards'
+})
 const isInterview = computed(
   () => speakingPart.value?.runtime?.segments?.some(segment => segment.id === 'answers') ?? false
 )
@@ -317,6 +346,8 @@ const instruction = computed(
 
 const promptGroups = computed(() => {
   const topic = props.topic
+  // Cards are drawn beside the recording they belong to, not listed here.
+  if (isCardExchange.value || 'cards' in topic) return []
   if ('answerQuestions' in topic) {
     return [
       { label: 'Phase A · Questions to answer', items: [...topic.answerQuestions] },
@@ -326,7 +357,29 @@ const promptGroups = computed(() => {
   return [{ label: 'Keywords', items: [...topic.keywords] }]
 })
 
+/** One recording per configured segment, each with its card and a round number per kind. */
+function cardSegments(): SessionSegment[] {
+  const cards = 'cards' in props.topic ? props.topic.cards : []
+  const rounds: Record<string, number> = {}
+  return (speakingPart.value?.runtime?.segments ?? []).flatMap(segment => {
+    const card = cards.find(item => item.segment === segment.id)
+    if (!card) return []
+    const round = (rounds[card.kind] = (rounds[card.kind] ?? 0) + 1)
+    return [
+      {
+        key: segment.id,
+        title: t(`speaking.cards.${card.kind}.title`, { round }),
+        description: t(`speaking.cards.${card.kind}.description`),
+        placeholder: t('speaking.cards.placeholder'),
+        maxSeconds: CARD_TURN_SECONDS,
+        card,
+      },
+    ]
+  })
+}
+
 const segments = computed<SessionSegment[]>(() => {
+  if (isCardExchange.value) return cardSegments()
   if (isInterview.value) {
     return [
       {
@@ -349,18 +402,22 @@ const segments = computed<SessionSegment[]>(() => {
     {
       key: 'monologue',
       title: 'Record your monologue',
-      description: 'Cover all four keywords in connected sentences.',
+      description: `Cover all ${keywordCountLabel.value} keywords in connected sentences.`,
       placeholder: 'Type or edit the transcript of your monologue…',
       maxSeconds: 90,
     },
   ]
 })
 
+/** A2 always shows four keywords and says so in words; other counts are shown as digits. */
+const keywordCountLabel = computed(() => {
+  const count = 'keywords' in props.topic ? props.topic.keywords.length : 4
+  return count === 4 ? 'four' : String(count)
+})
+
 const usefulPhrases = computed(() => [...(speakingPart.value?.phrases ?? [])])
 
-const requiredSegmentKeys = computed<SegmentKey[]>(() =>
-  isInterview.value ? ['answers', 'questions'] : ['monologue']
-)
+const requiredSegmentKeys = computed<SegmentKey[]>(() => segments.value.map(segment => segment.key))
 
 watch(
   transcripts,
@@ -368,22 +425,23 @@ watch(
     if (!props.examMode) return
     emit('progress', {
       transcripts: attemptTranscripts(),
-      durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
+      durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + (durations[key] ?? 0), 0),
     })
   },
   { deep: true }
 )
 const canSubmit = computed(() =>
-  requiredSegmentKeys.value.every(key => transcripts[key].trim().length > 0)
+  requiredSegmentKeys.value.every(key => (transcripts[key] ?? '').trim().length > 0)
 )
 const missingTranscriptLabel = computed(() => {
-  const missing = requiredSegmentKeys.value.filter(key => !transcripts[key].trim())
+  const missing = requiredSegmentKeys.value.filter(key => !transcripts[key]?.trim())
   const labels: Record<SegmentKey, string> = {
     answers: 'the answers',
     questions: 'the questions',
     monologue: 'the monologue',
   }
-  return missing.map(key => labels[key]).join(' and ')
+  const titles = Object.fromEntries(segments.value.map(segment => [segment.key, segment.title]))
+  return missing.map(key => labels[key] ?? titles[key] ?? key).join(' and ')
 })
 const healthStatusLabel = computed(() => {
   if (checkingHealth.value) return 'Checking'
@@ -432,7 +490,7 @@ async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<v
   transcribingPhase.value = null
 
   if (result) {
-    if (!transcripts[key].trim() || transcripts[key] === transcriptBeforeRequest) {
+    if (!text(key) || transcripts[key] === transcriptBeforeRequest) {
       transcripts[key] = result
     }
   } else {
@@ -442,20 +500,28 @@ async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<v
 }
 
 function attemptTranscripts(): SpeakingTranscripts {
+  if (isCardExchange.value) {
+    return Object.fromEntries(requiredSegmentKeys.value.map(key => [key, (transcripts[key] ?? '').trim()]))
+  }
   if (isInterview.value) {
     return {
-      answers: transcripts.answers.trim(),
-      questions: transcripts.questions.trim(),
+      answers: text('answers'),
+      questions: text('questions'),
     }
   }
-  return { monologue: transcripts.monologue.trim() }
+  return { monologue: text('monologue') }
 }
 
 function combinedTranscript(): string {
-  if (isInterview.value) {
-    return `Antworten:\n${transcripts.answers.trim()}\n\nFragen:\n${transcripts.questions.trim()}`
+  if (isCardExchange.value) {
+    return segments.value
+      .map(segment => `${segment.title}:\n${(transcripts[segment.key] ?? '').trim()}`)
+      .join('\n\n')
   }
-  return transcripts.monologue.trim()
+  if (isInterview.value) {
+    return `Antworten:\n${text('answers')}\n\nFragen:\n${text('questions')}`
+  }
+  return text('monologue')
 }
 
 function saveAttempt(withReview = false): void {
@@ -463,12 +529,12 @@ function saveAttempt(withReview = false): void {
     submitted.value = true
     emit('examComplete', {
       transcripts: attemptTranscripts(),
-      durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
+      durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + (durations[key] ?? 0), 0),
     })
     return
   }
   saveSpeakingAttempt(props.topic.id, {
-    durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + durations[key], 0),
+    durationSec: requiredSegmentKeys.value.reduce((sum, key) => sum + (durations[key] ?? 0), 0),
     transcript: combinedTranscript(),
     transcripts: attemptTranscripts(),
     ...(withReview && reviewData.value ? { review: reviewData.value } : {}),

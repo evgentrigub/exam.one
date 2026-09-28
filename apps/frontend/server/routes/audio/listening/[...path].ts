@@ -9,6 +9,7 @@ import {
   sendStream,
   setResponseHeader,
   setResponseStatus,
+  type H3Event,
 } from 'h3'
 
 /**
@@ -24,6 +25,10 @@ import {
  * Range requests are handled here rather than through h3's `serveStatic`, which has no
  * range support: `AudioPlayer.vue` seeks by assigning `currentTime`, and a browser will
  * not seek into a response that did not advertise `Accept-Ranges`.
+ *
+ * HEAD is answered here too. `useListeningAudioAvailability` probes every expected file with
+ * HEAD; a GET-only route let HEAD fall through to the SSR handler, which answers 200 with the
+ * SPA shell, so a missing file looked present and the Generate audio notice never appeared.
  */
 const ROOT = resolve(process.cwd(), 'public/audio/listening')
 
@@ -53,7 +58,17 @@ function parseRange(header: string | undefined, size: number): { start: number; 
   return start > end || start >= size ? null : { start, end }
 }
 
+/** End a HEAD response with the status the equivalent GET would have, and no body. */
+function headResponse(event: H3Event, status: number): void {
+  setResponseStatus(event, status)
+  event.node.res.end()
+}
+
 export default defineEventHandler(async event => {
+  if (event.method !== 'GET' && event.method !== 'HEAD') {
+    setResponseHeader(event, 'allow', 'GET, HEAD')
+    throw createError({ statusCode: 405, statusMessage: 'Method Not Allowed' })
+  }
   const relative = getRouterParam(event, 'path', { decode: true })
   const absolute = relative ? containedPath(relative) : null
   const match = Object.entries(CONTENT_TYPES).find(([extension]) => absolute?.endsWith(extension))
@@ -75,11 +90,14 @@ export default defineEventHandler(async event => {
 
   if (!range) {
     setResponseHeader(event, 'content-length', stats.size)
+    // h3 turns a null body into 204; a HEAD must mirror the GET status and headers.
+    if (event.method === 'HEAD') return headResponse(event, 200)
     return sendStream(event, createReadStream(absolute))
   }
 
   setResponseStatus(event, 206)
   setResponseHeader(event, 'content-range', `bytes ${range.start}-${range.end}/${stats.size}`)
   setResponseHeader(event, 'content-length', range.end - range.start + 1)
+  if (event.method === 'HEAD') return headResponse(event, 206)
   return sendStream(event, createReadStream(absolute, { start: range.start, end: range.end }))
 })

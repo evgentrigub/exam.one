@@ -28,6 +28,7 @@ Fill in what is known. Mark missing information as **Unknown** rather than guess
 - Task description, learning goal, and displayed instructions:
 - Source reference:
 - Proposed interaction: selection / matching / true-false / freeform / recording / unsupported:
+- Screen: the skill's default, or a layout (form-fill / word-cards / request-cards):
 - Question count, option count, and whether options may be reused:
 - Text or listening input; shared or per-question audio/transcripts:
 - Writing fields: stable ID, label, expected prompt, minimum/maximum words:

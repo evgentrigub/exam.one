@@ -21,6 +21,7 @@
           :selected-answer="answeredQuestions[q.id] ?? null"
           :submitted="isFinished"
           :show-feedback="!examMode"
+          :true-false="isTrueFalse"
           @answer-selected="handleAnswerSelected"
         />
       </div>
@@ -102,9 +103,12 @@
             <p class="text-xs font-medium text-base-content/60 mb-0.5">Question {{ index + 1 }}</p>
             <p class="text-sm">{{ questions[index]?.question }}</p>
             <p v-if="!result.isCorrect" class="text-xs text-base-content/50 mt-1">
-              Your answer: <strong>{{ formatAnswerLabel(result.selectedAnswer) }}</strong> ·
-              Correct:
-              <strong>{{ formatAnswerLabel(questions[index]?.correctAnswer ?? 0) }}</strong>
+              Your answer:
+              <strong>{{ formatAnswerLabel(result.selectedAnswer, questions[index]?.options) }}</strong>
+              · Correct:
+              <strong>{{
+                formatAnswerLabel(questions[index]?.correctAnswer ?? 0, questions[index]?.options)
+              }}</strong>
             </p>
           </div>
         </div>
@@ -156,6 +160,10 @@ const isFinished = ref(false)
 const answeredQuestions = ref<Record<string, number>>({})
 
 const questions = computed(() => props.text.questions || [])
+const { partsFor } = useActivePack()
+const isTrueFalse = computed(
+  () => partsFor('reading').find(part => part.n === props.text.testingPart)?.itemFormat === 'true-false'
+)
 const answeredCount = computed(() => Object.keys(answeredQuestions.value).length)
 const allAnswered = computed(() => questions.value.every(q => q.id in answeredQuestions.value))
 const results = computed<QuizResult[]>(() =>
@@ -232,8 +240,9 @@ function restartQuiz() {
   clearSession()
 }
 
-function formatAnswerLabel(index: number) {
-  return String.fromCharCode(65 + index)
+/** A letter for lettered options; the option itself for Richtig / Falsch, which has none. */
+function formatAnswerLabel(index: number, options?: readonly string[]) {
+  return isTrueFalse.value ? (options?.[index] ?? '') : String.fromCharCode(65 + index)
 }
 
 function getScoreColor() {

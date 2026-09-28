@@ -17,7 +17,9 @@ Use existing repository functions through an ephemeral invocation or scratch har
    pnpm --filter @exam-one/exam-packs type-check
    ```
 
-The data package's current `test` script only reports that no pack tests are configured. Do not report it as runtime coverage. Checks requiring provider credentials, a running application, or a database are separate from offline contract checks; report their status independently.
+6. Once registered, `node scripts/eval-prompts.mjs --pack <packId> --control` scores the pack's seeds against the production projection and `validate` guards, offline and free. With provider credentials and the user's agreement, `--n 3 --skill <module>` runs each generator through the real LLM and scores its output the same way; it makes paid calls.
+
+The data package's current `test` script only reports that no pack tests are configured. Do not report it as runtime coverage. Backend unit specs under `apps/backend/test/unit/ai/` show how existing packs are tested, but adding one is application work. Checks requiring provider credentials, a running application, or a database are separate from offline contract checks; report their status independently.
 
 ## Registration and integration
 
@@ -27,7 +29,7 @@ Use existing workspace lint/type-check/build scripts for integration as appropri
 
 Explain any checks not performed. Structural checks alone cannot establish provider output quality or browser behavior. Offer the following manual evaluation steps without claiming to have completed them:
 
-- Select the pack in Learning plan and generate an exercise for each available part with the user's configured AI provider.
+- Run `pnpm db:seed` if the pack ships seeds, select the pack in Learning plan, open each seed, and generate an exercise for each available part with the user's configured AI provider.
 - Submit objective answers; request model answers and rubric reviews for writing/recording. Check scores and detailed feedback against the brief.
 - Save a draft, switch packs, switch back, and resume. Review the completed attempt.
 - Confirm unavailable mock support and unavailable speech capabilities are clearly reported, with manual transcripts usable where applicable.

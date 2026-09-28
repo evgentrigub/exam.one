@@ -23,6 +23,7 @@ services:
     volumes:
       - generated_listening_audio:/app/public/audio/listening/generated
       - ./apps/frontend/public/audio/listening/a2:/app/public/audio/listening/a2:ro
+      - ./apps/frontend/public/audio/listening/a1:/app/public/audio/listening/a1:ro
     healthcheck:
       test:
         - CMD

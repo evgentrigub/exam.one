@@ -30,7 +30,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 **exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The app is **login-gated**. After sign-in, practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
 
-German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
+German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview. Goethe A1 (Start Deutsch 1) is a second live pack covering all four modules and the same mock exam flow (bundled Set 1 with seed WAVs, generated sets, automatic grading, reviews, AI overview).
 
 ### Key directories
 
@@ -48,7 +48,7 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 ### Frontend data lifecycle
 
 1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
-2. Shared Goethe A2 seeds are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`source=seed`, `userId` null, `packId` set). User-generated rows overlay seeds by `(packId, externalId)`
+2. Every registered pack's `seedExercises` are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`source=seed`, `userId` null, `packId` and level from the pack). User-generated rows overlay seeds by `(packId, externalId)`
 
 Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
 

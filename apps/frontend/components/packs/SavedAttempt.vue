@@ -33,8 +33,8 @@
         </details>
       </section>
       <section v-for="field in view.fields ?? []" :key="field.id" class="space-y-2">
-        <h4 class="font-semibold">{{ field.label }}</h4>
-        <p>{{ field.prompt }}</p>
+        <!-- A form field's prompt is its row label, which names it better than the rubric id. -->
+        <h4 class="font-semibold">{{ field.prompt || field.label }}</h4>
         <p class="whitespace-pre-wrap">{{ answers[field.id] ?? $t('pastExams.notAnswered') }}</p>
       </section>
       <section v-for="segment in view.segments ?? []" :key="segment.id" class="space-y-2">
@@ -55,8 +55,14 @@
     </template>
     <section v-if="attempt.result?.review">
       <h3 class="text-lg font-semibold mb-3">{{ $t('pastExams.savedFeedback') }}</h3>
+      <FormFillReviewDetails
+        v-if="review && formEntries"
+        :review="review"
+        :entries="formEntries"
+        :teil="snapshot?.part ?? 1"
+      />
       <WritingReviewDetails
-        v-if="review && attempt.skill === 'WRITING'"
+        v-else-if="review && attempt.skill === 'WRITING'"
         :review="review"
         :teil="snapshot?.part ?? 1"
       />
@@ -75,6 +81,7 @@ import {
 } from '@exam-one/exam-packs'
 import SavedFeedback from '~/components/packs/SavedFeedback.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
+import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 
 const props = defineProps<{ attempt: AttemptDto }>()
@@ -107,6 +114,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 const answers = computed(() => {
   const stored = isRecord(props.attempt.answers) ? props.attempt.answers : {}
   return view.value ? resolveAnswers(view.value, stored) : stored
+})
+
+/**
+ * A form-fill attempt, as its entries beside the form labels. The view's fields already carry
+ * those labels as prompts, and the entries resolve by field id; null for anything else.
+ */
+const formEntries = computed(() => {
+  if (props.attempt.skill !== 'WRITING' || !view.value?.fields) return null
+  const part = getPack(props.attempt.packId)
+    ?.structure.find(module => module.id === 'writing')
+    ?.parts.find(item => item.n === snapshot.value?.part)
+  if (part?.layout !== 'form-fill') return null
+  return view.value.fields.map(field => ({
+    id: field.id,
+    label: field.prompt || field.label,
+    answer: typeof answers.value[field.id] === 'string' ? (answers.value[field.id] as string) : '',
+  }))
 })
 
 function answerLabel(id: string, options: string[]) {

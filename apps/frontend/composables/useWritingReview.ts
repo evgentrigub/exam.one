@@ -12,6 +12,7 @@
 import type { CriterionReview } from '@exam-one/exam-packs'
 import type { WritingExercise } from '~/utils/types'
 import { onPackReset, packEpoch } from '~/utils/packScope'
+import { writingReviewPayload } from '~/utils/writing/formFill'
 import { ref } from 'vue'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
@@ -158,10 +159,12 @@ export function useWritingReview() {
     // Call internal server endpoint to keep API key private (server mocks response offline)
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
+      // The server re-assembles the prompt from `topic` and the answers, so the feedback
+      // language has to travel in the body; the client-assembled `prompt` is not used for it.
       const response = await aiFetch<CriterionReview>('/llm/review', {
         packId: requestPackId,
         method: 'POST',
-        body: { topic, userContent, prompt },
+        body: { topic, ...writingReviewPayload(topic, userContent), prompt, outputLanguage: outputLanguage.value },
       })
       if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)

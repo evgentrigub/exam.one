@@ -439,8 +439,7 @@ const replayLimit = computed(
   () => props.configuredReplays ?? listeningPart.value?.runtime?.replays ?? 1
 )
 
-const partTimeSec: Record<number, number> = { 1: 600, 2: 480, 3: 600, 4: 480 }
-const timerRemaining = ref(partTimeSec[props.exercise.testingPart] ?? 600)
+const timerRemaining = ref(listeningPart.value?.practiceTimerSec ?? 600)
 /** Timer starts only after the user presses play on any audio track. */
 const timerStarted = ref(false)
 let timerHandle: ReturnType<typeof setInterval> | null = null
@@ -470,7 +469,7 @@ function stopTimer() {
 function resetTimer() {
   stopTimer()
   timerStarted.value = false
-  timerRemaining.value = partTimeSec[currentExercise.value.testingPart] ?? 600
+  timerRemaining.value = listeningPart.value?.practiceTimerSec ?? 600
 }
 
 function readPersistedNumber(key: string): number | undefined {

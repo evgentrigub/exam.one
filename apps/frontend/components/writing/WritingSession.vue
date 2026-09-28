@@ -15,6 +15,7 @@
             {{ topic.estimatedTime }} minutes
           </span>
           <span
+            v-if="!isFormFill"
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
           >
             <Type :size="11" aria-hidden="true" />
@@ -164,7 +165,17 @@
     </div>
 
     <div class="col-span-12 lg:col-span-6">
+      <FormFillCard
+        v-if="isFormFill"
+        :topic="topic"
+        :initial-content="currentDraft"
+        :submitted="isSubmitted"
+        @submit="handleSubmit"
+        @save-draft="handleSaveDraft"
+        @finish="handleFinish"
+      />
       <TextEditorCard
+        v-else
         :topic="topic"
         :initial-content="currentDraft"
         :submitted="isSubmitted"
@@ -194,6 +205,8 @@ import { useProgress } from '~/composables/useProgress'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { getWritingTips } from '~/data/writing/exerciseTips'
 import TextEditorCard from '~/components/writing/TextEditorCard.vue'
+import FormFillCard from '~/components/writing/FormFillCard.vue'
+import { parseFormValues } from '~/utils/writing/formFill'
 import ModelAnswerCard from '~/components/writing/ModelAnswerCard.vue'
 
 interface Props {
@@ -239,6 +252,12 @@ const isSubmitted = ref(false)
 const submittedContent = ref('')
 const submittedWordCount = ref(0)
 const submittedTimeSpent = ref(0)
+
+const { partsFor } = useActivePack()
+/** The pack decides the screen: a `form-fill` part gets the form instead of the editor. */
+const isFormFill = computed(
+  () => partsFor('writing').find(part => part.n === props.topic.testingPart)?.layout === 'form-fill'
+)
 
 const writingTips = computed(() => getWritingTips(props.topic.difficulty, props.topic.testingPart))
 
@@ -293,7 +312,14 @@ async function handleSubmit(content: string, wordCount: number, timeSpent: numbe
     emit('examComplete', { content, wordCount, timeSpent })
     return
   }
-  saveWritingSubmission(props.topic.id, content, wordCount, timeSpent)
+  saveWritingSubmission(
+    props.topic.id,
+    content,
+    wordCount,
+    timeSpent,
+    undefined,
+    isFormFill.value ? parseFormValues(content) : undefined
+  )
   emit('complete', props.topic.id, content, wordCount, timeSpent)
   activeTab.value = 'ai-review'
 

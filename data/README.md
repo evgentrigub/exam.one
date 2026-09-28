@@ -1,20 +1,24 @@
 # Exam packs
 
-Forkers add an exam by creating a folder under `src/packs/` and registering it in `src/registry.ts`. Do not edit `apps/` or `libraries/` to add a pack.
+Forkers add an exam by creating a folder under `src/packs/` and registering it in `src/registry.ts`. A pack that uses the existing exercise types needs no edits to `apps/` or `libraries/`. A new *type* of exercise — a screen the app does not have yet — is application work, and is added once for every pack (see [Layouts](#layouts)).
 
 | Path | What lives here |
 | --- | --- |
 | `src/types.ts` | Generic pack, module, and `PromptSpec` contracts |
-| `src/packs/goethe-de-a2/` | Live Goethe A2 template (structure, prompts, bundled seeds) |
+| `src/packs/goethe-de-a2/` | Live Goethe A2 (structure, prompts, bundled seeds, mock factory) |
+| `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (all four modules, one seed per part, mock factory and bundled Set 1) |
+| `src/packs/goethe-shared/` | The raw-payload projection both Goethe packs use |
 | `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
 
 Each prompt slot is a `PromptSpec` with `role`, `task`, `rules`, optional `examples`, and `outputContract`. Runtime values (`{count}`, `{task}`, `{userContent}`, …) are interpolated by `assemble()`.
 
-Optional bundled seeds, payload types, and mock Set 1 live in that pack's `content/` folder. New packs stay seed-free unless they ship bundled exercises. After the pack-author skill ships (roadmap 2.11b), new packs can be generated from an exam brief into this tree.
+Optional bundled seeds, payload types, and mock Set 1 live in that pack's `content/` folder. A pack lists its seeds in `seedExercises`, per module; `pnpm db:seed` upserts every registered pack's seeds under that pack's `packId` and `cefr`, so a new pack needs no seed-script edit. Each seed needs a unique string `id`, and `examOnly: true` stores it as mock-exam-only content. New packs can be authored from an exam brief with the `exam-pack-author` skill (`.agents/skills/exam-pack-author/`).
 
 ## Runtime contract
 
-Every available part declares `itemFormat`, `runtime`, and an `adapter`. Use `formatAdapter(format, runtime)` from `src/runtime.ts` for ordinary packs; use `defineAdapter()` to project an existing private payload schema into `ExerciseView`. The database keeps the original payload. Shared Vue components consume the projected view, so a new pack needs no application or database edits.
+Every available part declares `itemFormat`, `runtime`, and an `adapter`. The database keeps the original payload; the adapter projects it into an `ExerciseView`, which the backend scores and validates against, TTS reads transcripts from, and Past exams renders.
+
+**The practice screens read the raw payload, not the view.** Each skill has its own screen and recognises exercises by field names (`content`, `questions[].question`, `items[]`, `answerQuestions`, `keywords`, …). A pack whose exercises must run on those screens stores that raw shape and projects it with a pack-owned adapter; the Goethe packs share one in `src/packs/goethe-shared/raw-adapter.ts`, parametrised by each pack's rules. `formatAdapter(format, runtime)` projects the generic shape below, which the backend and Past exams understand but the practice screens do not render — use it for fixtures and headless tests, not for a live pack.
 
 | Format | Default payload | Runtime configuration |
 | --- | --- | --- |
@@ -28,14 +32,31 @@ All payloads have a title and optional `text`. Objective formats support a share
 
 Rubrics use `criteria: [{id, label, maxPoints}]`, `maxPoints`, and optional `multiplier`. Objective weights must sum to the raw maximum. Rubric criteria must sum to their declared maximum. Scores may be fractional; percentages retain integer display rounding. A generated review returns `criteria` with points/comments, `totalPoints`, `maxPoints`, `summary`, `strengths`, and `improvements`. The API validates totals and derives scores, including configured zero-word rules. The synthetic fixture demonstrates a 3.5-point rubric.
 
-Registry startup rejects duplicate identities, unsupported formats, missing runtime/adapters/prompts, invalid part references, impossible counts/word bounds and inconsistent rubric totals. Error messages identify the pack and part. Existing Goethe JSON is projected and its reviews validated by the adapter under `src/packs/goethe-de-a2/`; its practice raw scores and mock conversion remain distinct.
+A part can also carry a per-part `validate(payload, rules)` guard for anything the projection cannot express (exact item counts, fixed option labels, required metadata). It runs on every generated exercise, and a generation that fails it is retried once. `buildReviewVars` supplies the variables an `answer` or `review` prompt needs beyond `{task}`, `{userContent}` and `{outputLanguage}`.
+
+Registry startup rejects duplicate identities, unsupported formats, missing runtime/adapters/prompts, invalid part references, impossible counts/word bounds, inconsistent rubric totals, a layout on the wrong format, and seeds without a unique id. Error messages identify the pack and part. Goethe JSON is projected, and its stored reviews validated, by the shared adapter in `src/packs/goethe-shared/`; A2 practice raw scores and its mock conversion remain distinct.
+
+## Layouts
+
+`itemFormat` picks the default screen for a part's skill. A part whose interaction that screen cannot express names a `layout` instead; registry validation only accepts a layout on its own format.
+
+| `layout` | Format | Screen | Payload |
+| --- | --- | --- | --- |
+| `form-fill` | `freeform` | A scenario and a form; blank rows are the part's `fields` | Writing topic plus `form: { title, rows: [{ label, value? , field?, options? }] }` and `expected: { [fieldId]: entry }` |
+| `word-cards` | `recording` | One recording per card: ask from a topic + word card, answer a partner question | Speaking topic plus `cards: [{ segment, kind: 'ask' \| 'answer', topic, cue }]` |
+| `request-cards` | `recording` | One recording per card: make a request, react to a partner request | Speaking topic plus `cards: [{ segment, kind: 'request' \| 'respond', cue }]` |
+
+Cards map one-to-one onto the part's `segments`, in order. Answers are stored per field or segment id, which `resolveAnswers` reads for scoring and Past exams. Goethe A1 uses all three. Another pack can use them as data; a genuinely new interaction is a new layout, which is application work.
+
+Screen chrome that used to be hardcoded for A2 is now per part in the pack's practice copy: `practiceSubtitle`, `practiceMinutes`, `practiceTimerSec`, `practiceType` and `sessionTitle`, alongside the existing `practiceLabel`, `tips`, `phrases` and `instruction`.
 
 ## Contributor workflow
 
 1. Create `src/packs/{packId}/pack.ts` with a unique identity, language/CEFR, modules and arbitrary positive part numbers.
-2. Configure each available part and attach `formatAdapter`; add the required generator, answer and review PromptSpecs as indicated by its format.
+2. Configure each available part: runtime rules, an adapter that projects the payload shape its screen reads, a `validate` guard, and a `layout` where the part needs one. Add the generator, answer and review PromptSpecs its format requires, and `buildReviewVars` if a prompt names more than the three generic variables.
 3. Specify speech language and voice IDs supported by the intended installation. Omit `createMockSet` when no mock is supplied.
-4. Import the pack in `src/registry.ts`. Run validation, generate against deterministic provider fixtures, and test all configured interactions before making it live.
+4. Add `seedExercises` if the pack ships bundled exercises, and import the pack in `src/registry.ts`.
+5. Check it: `node scripts/eval-prompts.mjs --pack {packId} --control` scores the seeds against the production validators offline; `--n 3` runs every generator through the configured LLM and scores the output. Then run `pnpm db:seed`, select the pack in Learning plan and try every part. `src/packs/goethe-de-a1/` is the worked example.
 
 See `src/testing/english-a1.ts` for a deliberately synthetic, unofficial English A1 example covering all five formats, parts 7/9/11/13/15, a different rubric and no mock. It is a test fixture and is not production-registered. Do not copy its example prompts as official exam content. A fundamentally new interaction, such as a live conversation partner, requires framework work beyond this contract.
 

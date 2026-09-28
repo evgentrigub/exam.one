@@ -42,7 +42,7 @@
           <thead>
             <tr>
               <th>{{ $t('writing.reviewDetails.criterion') }}</th>
-              <th>{{ $t('writing.reviewDetails.grade') }}</th>
+              <th v-if="hasGrades">{{ $t('writing.reviewDetails.grade') }}</th>
               <th>{{ $t('writing.reviewDetails.points') }}</th>
               <th>{{ $t('writing.reviewDetails.comment') }}</th>
             </tr>
@@ -50,7 +50,7 @@
           <tbody>
             <tr v-for="criterion in criteria" :key="criterion.id">
               <td class="font-medium">{{ criterion.label }}</td>
-              <td>{{ criterion.grade }}</td>
+              <td v-if="hasGrades">{{ criterion.grade }}</td>
               <td class="font-mono">{{ criterion.points }}</td>
               <td class="min-w-64">{{ criterion.comment }}</td>
             </tr>
@@ -69,7 +69,7 @@
               <div class="mt-1 text-xs text-base-content/55">{{ criterion.comment }}</div>
             </div>
             <span class="badge badge-primary badge-outline shrink-0"
-              >{{ criterion.points }} · {{ criterion.grade }}</span
+              >{{ criterion.points }}{{ criterion.grade ? ` · ${criterion.grade}` : '' }}</span
             >
           </div>
         </article>
@@ -144,6 +144,10 @@ const { t } = useI18n()
 const CRITERION_LABELS: Record<string, string> = {
   aufgabenerfuellung: 'writing.reviewDetails.taskFulfillment',
   sprache: 'writing.reviewDetails.language',
+  content1: 'writing.reviewDetails.contentPoint1',
+  content2: 'writing.reviewDetails.contentPoint2',
+  content3: 'writing.reviewDetails.contentPoint3',
+  communication: 'writing.reviewDetails.communication',
 }
 
 const { pack } = useActivePack()
@@ -176,6 +180,9 @@ const registerLabel = computed(() =>
 const contentPointsLabel = computed(() =>
   contentPoints.value ? `${contentPoints.value.covered} / ${contentPoints.value.required}` : '—'
 )
+
+/** A2 grades every criterion A–E; a rubric without grades (A1) drops the empty column. */
+const hasGrades = computed(() => props.review.criteria.some(criterion => criterion.grade))
 
 const criteria = computed(() =>
   props.review.criteria.map(criterion => ({

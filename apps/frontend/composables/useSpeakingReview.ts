@@ -11,6 +11,26 @@ export function useSpeakingReview() {
   const review = ref<CriterionReview | null>(null)
   const error = ref<string | null>(null)
   const outputLanguage = useReviewOutputLanguage()
+  const { partsFor } = useActivePack()
+
+  /**
+   * Every configured segment must have a transcript before the server is asked to grade it,
+   * or the model scores a blank answer with confidence. The two A2 layouts keep their
+   * original messages.
+   */
+  function assertTranscripts(topic: SpeakingA2Topic, transcripts: SpeakingTranscripts): void {
+    const fallback = topic.testingPart === 1 ? ['answers', 'questions'] : ['monologue']
+    const segments =
+      partsFor('speaking').find(part => part.n === topic.testingPart)?.runtime?.segments ??
+      fallback.map(id => ({ id, label: id }))
+    const values = transcripts as Record<string, string | undefined>
+    const missing = segments.some(segment => !values[segment.id]?.trim())
+    if (!missing) return
+    const ids = segments.map(segment => segment.id).join(',')
+    if (ids === 'answers,questions') throw new Error('Both Teil 1 transcripts are required for AI review.')
+    if (ids === 'monologue') throw new Error('A monologue transcript is required for AI review.')
+    throw new Error('Every transcript is required for AI review.')
+  }
 
   async function requestReview(
     topic: SpeakingA2Topic,
@@ -21,18 +41,7 @@ export function useSpeakingReview() {
     error.value = null
 
     try {
-      if (topic.testingPart === 1) {
-        const answers = transcripts.answers?.trim() ?? ''
-        const questions = transcripts.questions?.trim() ?? ''
-        if (!answers || !questions) {
-          throw new Error('Both Teil 1 transcripts are required for AI review.')
-        }
-      } else {
-        const monologue = transcripts.monologue?.trim() ?? ''
-        if (!monologue) {
-          throw new Error('A monologue transcript is required for AI review.')
-        }
-      }
+      assertTranscripts(topic, transcripts)
 
       const response = await aiFetch<CriterionReview>('/llm/review-speaking', {
         method: 'POST',

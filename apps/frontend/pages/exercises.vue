@@ -431,14 +431,10 @@ const {
   isSpeakingCompleted,
 } = useProgress()
 
-const LISTENING_TYPE_BY_PART: Record<number, string> = {
-  1: 'announcement',
-  2: 'matching',
-  3: 'dialog',
-  4: 'interview',
+/** Catalog chrome for a part, supplied by the active pack. */
+function packPart(skill: PackSkillId, n: number) {
+  return partsFor(skill).find(part => part.n === n)
 }
-const LISTENING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7, 3: 5, 4: 8 }
-const SPEAKING_MINUTES_BY_PART: Record<number, number> = { 1: 6, 2: 7 }
 
 // Generation composables — one per skill module
 const {
@@ -702,9 +698,9 @@ const allExercises = computed<UnifiedExercise[]>(() => {
         skill: 'listening' as const,
         title: item.title,
         subtitle: `${t('exercisesUi.part')} ${item.testingPart}`,
-        type: LISTENING_TYPE_BY_PART[item.testingPart] ?? 'listening',
+        type: packPart('listening', item.testingPart)?.practiceType ?? 'listening',
         difficulty: item.difficulty,
-        minutes: LISTENING_MINUTES_BY_PART[item.testingPart] ?? 6,
+        minutes: packPart('listening', item.testingPart)?.practiceMinutes ?? 6,
         pct,
         status: completed ? 'mastered' : pct > 0 ? 'inprogress' : 'new',
         part: item.testingPart,
@@ -722,7 +718,7 @@ const allExercises = computed<UnifiedExercise[]>(() => {
         subtitle: getTypeLabel(item.topicType, t),
         type: item.topicType,
         difficulty: item.difficulty,
-        minutes: SPEAKING_MINUTES_BY_PART[item.testingPart] ?? 7,
+        minutes: packPart('speaking', item.testingPart)?.practiceMinutes ?? 7,
         pct: completed ? 100 : 0,
         status: completed ? 'mastered' : 'new',
         part: item.testingPart,
