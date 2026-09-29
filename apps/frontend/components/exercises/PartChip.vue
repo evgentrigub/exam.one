@@ -38,7 +38,7 @@
             >{{ n }}</span
           >
           <span class="text-[11px] font-semibold uppercase tracking-wider" :class="`text-${skill}`">
-            {{ skillLabel }} · Part {{ n }}
+            {{ skillLabel }} · {{ $t('exercisesUi.partN', { n }) }}
           </span>
         </div>
         <div class="p-3">

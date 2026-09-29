@@ -6,10 +6,10 @@
       :disabled="!playing && !resumable && limit !== undefined && used >= limit"
       @click="toggle"
     >
-      {{ playing ? 'Pause audio' : 'Play audio' }}
+      {{ playing ? $t('pastExams.pauseAudio') : $t('pastExams.playAudio') }}
     </button>
     <span v-if="limit !== undefined" class="text-sm text-base-content/60"
-      >{{ Math.max(0, limit - used) }} plays remaining</span
+      >{{ $t('pastExams.playsRemaining', { count: remaining }, remaining) }}</span
     >
   </div>
 </template>
@@ -19,6 +19,7 @@ const emit = defineEmits<{ played: [] }>()
 const player = ref<HTMLAudioElement>()
 const playing = ref(false)
 const resumable = ref(false)
+const remaining = computed(() => Math.max(0, (props.limit ?? 0) - props.used))
 async function toggle() {
   const audio = player.value
   if (!audio) return

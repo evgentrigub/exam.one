@@ -39,7 +39,7 @@
           class="text-[11px] font-mono font-semibold px-2 py-1 rounded-full bg-base-200"
           >{{ level }}</span
         >
-        <span v-if="part" class="level-pip">Teil {{ part }}</span>
+        <span v-if="part" class="level-pip">{{ $t('exercisesUi.partN', { n: part }) }}</span>
       </slot>
     </div>
   </div>

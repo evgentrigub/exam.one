@@ -24,6 +24,7 @@ export interface SpeakingGenerationOptions {
 }
 
 export const useSpeakingGeneration = () => {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const { pack, assemble, generators } = usePackPrompt(requestPackId)
   const state = ref<PartGenerationState>({
@@ -121,8 +122,9 @@ export const useSpeakingGeneration = () => {
       const part = job.part
       const prompt = assemble('speaking', part, 'generator', { count: 1 })
       if (!prompt) {
-        updateJobStatus(part, 'failed', `No prompt configured for part ${part}`)
-        loopError = `No prompt configured for part ${part}`
+        const message = t('generation.noPromptForPart', { part })
+        updateJobStatus(part, 'failed', message)
+        loopError = message
         continue
       }
 
@@ -136,7 +138,9 @@ export const useSpeakingGeneration = () => {
         })
 
         if (response.error || !response.data || response.data.length === 0) {
-          throw new Error(response.error || `No speaking topic generated for part ${part}`)
+          throw new Error(
+            response.error || t('generation.noExerciseForPart', { skill: t('skill.speaking'), part })
+          )
         }
 
         generatedTopics.push(...response.data)
@@ -151,7 +155,7 @@ export const useSpeakingGeneration = () => {
         }
       } catch (error: unknown) {
         const errorMessage =
-          error instanceof Error ? error.message : `Failed to generate part ${part}`
+          error instanceof Error ? error.message : t('generation.partFailed', { part })
         console.error(`Speaking generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -180,7 +184,7 @@ export const useSpeakingGeneration = () => {
   ): Promise<SpeakingA2Topic[]> => {
     const allParts = generators('speaking', 1)
     if (allParts.length === 0) {
-      throw new Error('No speaking generator prompts are configured for the active exam pack')
+      throw new Error(t('generation.noGeneratorPrompts', { skill: t('skill.speaking') }))
     }
     const selectedParts = filterJobsByParts(allParts, options.parts)
     const partsToGenerate = selectedParts.length > 0 ? selectedParts : allParts
@@ -202,7 +206,7 @@ export const useSpeakingGeneration = () => {
   ): Promise<SpeakingA2Topic[]> => {
     const difficulty = state.value.difficulty
     if (!difficulty) {
-      throw new Error('No generation state to resume')
+      throw new Error(t('generation.noStateToResume'))
     }
 
     state.value = {
@@ -219,7 +223,7 @@ export const useSpeakingGeneration = () => {
     onPartComplete?: (items: SpeakingA2Topic[]) => void
   ): Promise<SpeakingA2Topic[]> => {
     if (!state.value.difficulty) {
-      throw new Error('No failed generation to retry')
+      throw new Error(t('generation.noFailedToRetry'))
     }
 
     const difficulty = state.value.difficulty

@@ -1,11 +1,11 @@
 <template>
   <div class="max-w-[1100px] mx-auto p-6 space-y-6">
-    <NuxtLink to="/past-exams" class="btn btn-ghost btn-sm">Past exams</NuxtLink>
+    <NuxtLink to="/past-exams" class="btn btn-ghost btn-sm">{{ $t('pastExams.title') }}</NuxtLink>
     <!-- Header -->
     <div>
-      <h1 class="text-2xl font-display font-semibold">Your progress</h1>
+      <h1 class="text-2xl font-display font-semibold">{{ $t('progress.heading') }}</h1>
       <p class="text-sm text-base-content/60">
-        Readiness across all four skills, from your local practice history.
+        {{ $t('progress.intro') }}
       </p>
     </div>
 
@@ -22,21 +22,21 @@
             <span class="font-mono">{{ overallReadiness }}%</span>
           </div>
           <div>
-            <p class="text-xs text-base-content/50">Overall readiness</p>
+            <p class="text-xs text-base-content/50">{{ $t('dashboard.overallReadiness') }}</p>
             <p class="text-sm font-semibold">{{ readinessLabel }}</p>
           </div>
         </div>
         <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
           <div class="text-3xl font-bold font-mono text-primary">{{ totalCompleted }}</div>
-          <p class="text-xs text-base-content/50 mt-1">Exercises completed</p>
+          <p class="text-xs text-base-content/50 mt-1">{{ $t('progress.exercisesCompleted') }}</p>
         </div>
         <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
           <div class="text-3xl font-bold font-mono text-success">{{ totalSessions }}</div>
-          <p class="text-xs text-base-content/50 mt-1">Total attempts</p>
+          <p class="text-xs text-base-content/50 mt-1">{{ $t('progress.totalAttempts') }}</p>
         </div>
         <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
           <div class="text-3xl font-bold font-mono">{{ daysLeft }}</div>
-          <p class="text-xs text-base-content/50 mt-1">Days until exam</p>
+          <p class="text-xs text-base-content/50 mt-1">{{ $t('progress.daysUntilExam') }}</p>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
       <div class="grid lg:grid-cols-3 gap-5">
         <!-- Skill cards -->
         <div class="lg:col-span-2 space-y-3">
-          <h2 class="text-sm font-semibold">Per-skill readiness</h2>
+          <h2 class="text-sm font-semibold">{{ $t('progress.perSkillReadiness') }}</h2>
           <div
             v-for="stat in skillStats"
             :key="stat.id"
@@ -70,7 +70,13 @@
                 max="100"
               />
               <p class="text-[11px] text-base-content/50 mt-1">
-                {{ stat.completed }}/{{ stat.total }} completed · {{ stat.sessions }} attempts
+                {{
+                  $t(
+                    'progress.skillSummary',
+                    { completed: stat.completed, total: stat.total, sessions: stat.sessions },
+                    stat.sessions
+                  )
+                }}
               </p>
             </div>
           </div>
@@ -78,7 +84,7 @@
 
         <!-- Readiness chart -->
         <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
-          <h2 class="text-sm font-semibold mb-4">Readiness by skill</h2>
+          <h2 class="text-sm font-semibold mb-4">{{ $t('progress.readinessBySkill') }}</h2>
           <div class="flex items-end justify-around gap-2 h-44">
             <div
               v-for="stat in skillStats"
@@ -109,13 +115,13 @@
           class="lg:col-span-2 bg-base-100 border border-base-300 ring-soft rounded-box overflow-hidden"
         >
           <div class="p-4 border-b border-base-300">
-            <h2 class="text-sm font-semibold">Recent activity</h2>
+            <h2 class="text-sm font-semibold">{{ $t('progress.recentActivity') }}</h2>
           </div>
           <div
             v-if="recentActivity.length === 0"
             class="p-8 text-center text-sm text-base-content/50"
           >
-            No activity yet. Complete an exercise to start tracking.
+            {{ $t('progress.noActivity') }}
           </div>
           <div v-else class="divide-y divide-base-200">
             <div
@@ -151,7 +157,7 @@
           <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
             <div class="flex items-center gap-2 mb-3">
               <TrendingUp :size="15" class="text-success" />
-              <h2 class="text-sm font-semibold">Strengths</h2>
+              <h2 class="text-sm font-semibold">{{ $t('progress.strengths') }}</h2>
             </div>
             <div v-if="strongest" class="flex items-center gap-2 text-sm">
               <component
@@ -162,14 +168,14 @@
               <span>{{ label(strongest.id) }} — {{ strongest.readiness }}%</span>
             </div>
             <p v-else class="text-xs text-base-content/50">
-              Practice more to reveal your strengths.
+              {{ $t('progress.strengthsEmpty') }}
             </p>
           </div>
 
           <div class="bg-base-100 border border-base-300 ring-soft rounded-box p-5">
             <div class="flex items-center gap-2 mb-3">
               <Target :size="15" class="text-warning" />
-              <h2 class="text-sm font-semibold">Focus areas</h2>
+              <h2 class="text-sm font-semibold">{{ $t('progress.focusAreas') }}</h2>
             </div>
             <div class="space-y-2">
               <NuxtLink
@@ -199,10 +205,10 @@ import { useSkillStats } from '~/composables/useSkillStats'
 import { useAccountProfile } from '~/composables/useAccountProfile'
 import { getSkillMeta, getSkillLabel, getScoreTextClass, type SkillId } from '~/utils/labels'
 
-usePageMeta('pageMeta.progressTitle', 'pageMeta.progressSubtitle')
-useHead({ title: 'Progress — Exam.one' })
-
 const { t } = useI18n()
+
+usePageMeta('pageMeta.progressTitle', 'pageMeta.progressSubtitle')
+useHead({ title: () => `${t('pageMeta.progressTitle')} — Exam.one` })
 const { skillStats, overallReadiness, totalCompleted, weakestSkills, recentActivity } =
   useSkillStats()
 const { daysUntilExam } = useAccountProfile()
@@ -237,9 +243,9 @@ const strongest = computed(() => {
 
 const readinessLabel = computed(() => {
   const r = overallReadiness.value
-  if (r >= 80) return 'Exam-ready'
-  if (r >= 50) return 'On track'
-  if (r > 0) return 'Getting started'
-  return 'Not started'
+  if (r >= 80) return t('progress.status.examReady')
+  if (r >= 50) return t('progress.status.onTrack')
+  if (r > 0) return t('progress.status.gettingStarted')
+  return t('progress.status.notStarted')
 })
 </script>

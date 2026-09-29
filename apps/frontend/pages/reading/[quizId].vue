@@ -20,12 +20,12 @@
       >
         <div class="flex items-center gap-2 text-base-content/70">
           <component :is="textTypeIcon" :size="14" />
-          <div class="text-sm font-semibold">Text</div>
+          <div class="text-sm font-semibold">{{ $t('pages.reading.text') }}</div>
           <div class="ml-auto join">
             <button
               class="join-item btn btn-xs btn-ghost"
               :class="{ 'btn-active': isSpeaking }"
-              :aria-label="isSpeaking ? 'Stop read aloud' : 'Read text aloud'"
+              :aria-label="isSpeaking ? $t('pages.reading.stopReadAloud') : $t('pages.reading.readAloud')"
               @click="toggleReadAloud"
             >
               <Volume2 :size="12" />
@@ -33,7 +33,7 @@
             <button
               class="join-item btn btn-xs btn-ghost"
               :class="{ 'btn-active': fontSize === 'lg' }"
-              aria-label="Toggle larger text"
+              :aria-label="$t('pages.reading.toggleLargerText')"
               @click="toggleFontSize"
             >
               <Type :size="12" />
@@ -41,7 +41,7 @@
             <button
               class="join-item btn btn-xs btn-ghost"
               :class="{ 'btn-active': selectedWord }"
-              aria-label="Show selected word helper"
+              :aria-label="$t('pages.reading.showWordHelper')"
               @click="clearSelectedWord"
             >
               <Languages :size="12" />
@@ -54,19 +54,19 @@
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
           >
             <Clock :size="11" />
-            {{ text.estimatedReadingTime }} min read
+            {{ $t('pages.reading.minRead', { minutes: text.estimatedReadingTime }) }}
           </span>
           <span
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
           >
             <AlignLeft :size="11" />
-            {{ text.wordCount }} words
+            {{ $t('mockExam.wordCountResult', { count: text.wordCount }) }}
           </span>
           <span
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
           >
             <Sparkles :size="11" />
-            {{ text.questions?.length || 0 }} questions
+            {{ $t('pages.common.questionCount', text.questions?.length || 0) }}
           </span>
         </div>
         <article
@@ -88,7 +88,7 @@
                     ? 'bg-primary/15 text-base-content'
                     : ''
                 "
-                :aria-label="`Show helper for ${token.value}`"
+                :aria-label="$t('pages.reading.wordHelperFor', { word: token.value })"
                 @click="selectWord(token.value)"
               >
                 {{ token.value }}
@@ -106,7 +106,7 @@
         <div
           class="mt-6 pt-4 border-t border-base-300/70 text-xs text-base-content/50 flex items-center justify-between gap-3 flex-wrap"
         >
-          <span>Tap a word to see its offline helper</span>
+          <span>{{ $t('pages.reading.tapWordHint') }}</span>
           <button
             type="button"
             class="inline-flex items-center gap-1 hover:text-primary transition-colors"
@@ -115,7 +115,7 @@
           >
             <BookmarkCheck v-if="isSaved" :size="11" />
             <Bookmark v-else :size="11" />
-            {{ isSaved ? 'Saved text' : 'Save text' }}
+            {{ isSaved ? $t('pages.reading.savedText') : $t('pages.reading.saveText') }}
           </button>
         </div>
       </section>
@@ -126,11 +126,11 @@
 
     <div v-else class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center">
       <BookOpen :size="32" class="mx-auto text-base-content/20 mb-3" />
-      <h1 class="font-display text-2xl font-bold">Reading exercise not found</h1>
+      <h1 class="font-display text-2xl font-bold">{{ $t('pages.reading.notFoundTitle') }}</h1>
       <p class="text-sm text-base-content/60 mt-2">
-        Go back to the exercise list and choose another text.
+        {{ $t('pages.reading.notFoundDescription') }}
       </p>
-      <button class="btn btn-primary btn-sm mt-5" @click="goBack">Back to exercises</button>
+      <button class="btn btn-primary btn-sm mt-5" @click="goBack">{{ $t('pages.common.backToExercises') }}</button>
     </div>
   </div>
 </template>
@@ -166,6 +166,7 @@ const SAVED_TEXTS_KEY = 'exam-one:reading:saved-texts'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const { getTexts } = useReadingTexts()
 
 const fontSize = ref<'base' | 'lg'>('base')
@@ -175,7 +176,7 @@ const isSaved = ref(false)
 
 const quizId = computed(() => String(route.params['quizId'] || ''))
 const text = computed<ReadingExercise | null>(
-  () => getTexts().find(t => t.id === quizId.value) || null
+  () => getTexts().find(item => item.id === quizId.value) || null
 )
 const contentSizeClass = computed(() =>
   fontSize.value === 'lg' ? 'text-base sm:text-lg' : 'text-[15px]'
@@ -183,7 +184,11 @@ const contentSizeClass = computed(() =>
 const textTypeLabel = computed(() => getTextTypeLabel(text.value?.textType || 'text'))
 const subtitle = computed(() => {
   if (!text.value) return ''
-  return `${textTypeLabel.value} · ${text.value.wordCount} words · ~${text.value.estimatedReadingTime} min read`
+  return t('pages.reading.subtitle', {
+    type: textTypeLabel.value,
+    words: text.value.wordCount,
+    minutes: text.value.estimatedReadingTime,
+  })
 })
 const textTypeIcon = computed<Component>(() => getTextTypeIcon(text.value?.textType || 'text'))
 const tokenizedContent = computed<TextToken[][]>(() => {
@@ -223,10 +228,7 @@ const selectedWordHelper = computed(() => {
     viele: 'many',
     grüße: 'greetings',
   }
-  return (
-    dictionary[word] ||
-    'No bundled translation yet. Mark it and check it in your own vocabulary list.'
-  )
+  return dictionary[word] || t('pages.reading.noTranslation')
 })
 
 function toggleFontSize() {
@@ -290,12 +292,12 @@ function toggleSaved() {
 
 function getTextTypeLabel(type: string) {
   const labels: Record<string, string> = {
-    email: 'Personal email',
-    notice: 'Information notice',
-    article: 'Article',
-    advertisement: 'Advertisement',
-    instructions: 'Instructions',
-    announcement: 'Announcement',
+    email: t('pages.reading.textType.email'),
+    notice: t('pages.reading.textType.notice'),
+    article: t('exerciseType.article'),
+    advertisement: t('exerciseType.advertisement'),
+    instructions: t('exerciseType.instructions'),
+    announcement: t('exerciseType.announcement'),
   }
   return labels[type] || type
 }
@@ -312,11 +314,11 @@ function getTextTypeIcon(type: string): Component {
   return icons[type] || BookOpen
 }
 
-usePageMeta('Reading Exercise', 'Reading')
+usePageMeta('pageMeta.readingExerciseTitle', 'skill.reading')
 
 watchEffect(() => {
   if (text.value) {
-    usePageMeta(text.value.title, 'Reading')
+    usePageMeta(text.value.title, 'skill.reading')
   }
 })
 
@@ -340,7 +342,12 @@ function goBack() {
   router.push('/exercises?skill=reading')
 }
 
-useHead({ title: computed(() => (text.value ? `${text.value.title} – Quiz` : 'Reading Quiz')) })
+useHead({
+  title: () =>
+    text.value
+      ? t('pages.reading.quizTabTitle', { title: text.value.title })
+      : t('pages.reading.quizFallbackTitle'),
+})
 
 definePageMeta({ preload: false })
 </script>

@@ -45,7 +45,7 @@
     <details v-if="analysisResult" class="rounded-box bg-base-200/60 border border-base-300/70 p-3">
       <summary class="cursor-pointer text-sm font-semibold flex items-center gap-2">
         <ListChecks :size="14" aria-hidden="true" />
-        Detailed analysis
+        {{ t('writing.feedback.detailedAnalysis') }}
       </summary>
       <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
         <div
@@ -74,6 +74,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { t } = useI18n()
 
 const overallScoreClass = computed(() => {
   const score = props.feedback.overallScore
@@ -85,28 +86,28 @@ const overallScoreClass = computed(() => {
 
 const scores = computed(() => [
   {
-    label: 'Length',
-    value: props.feedback.wordCountValid ? 'OK' : 'Check',
+    label: t('writing.common.length'),
+    value: props.feedback.wordCountValid ? t('writing.feedback.ok') : t('writing.feedback.check'),
     raw: props.feedback.wordCountValid ? 5 : 2,
     className: props.feedback.wordCountValid ? 'text-success' : 'text-warning',
     progressClass: props.feedback.wordCountValid ? 'progress-success' : 'progress-warning',
   },
   {
-    label: 'Structure',
+    label: t('writing.common.structure'),
     value: `${props.feedback.structureScore}/5`,
     raw: props.feedback.structureScore,
     className: 'text-info',
     progressClass: 'progress-info',
   },
   {
-    label: 'Task',
+    label: t('writing.feedback.task'),
     value: `${props.feedback.completenessScore}/5`,
     raw: props.feedback.completenessScore,
     className: 'text-primary',
     progressClass: 'progress-primary',
   },
   {
-    label: 'Overall',
+    label: t('writing.feedback.overall'),
     value: `${props.feedback.overallScore}/5`,
     raw: props.feedback.overallScore,
     className: overallScoreClass.value,
@@ -122,10 +123,16 @@ const scores = computed(() => [
 const analysisItems = computed(() => {
   if (!props.analysisResult) return []
   return [
-    { label: 'Words', value: props.analysisResult.wordCount },
-    { label: 'Sentences', value: props.analysisResult.sentenceCount },
-    { label: 'Avg length', value: Math.round(props.analysisResult.averageSentenceLength) },
-    { label: 'Paragraphs', value: props.analysisResult.structureElements.paragraphCount },
+    { label: t('writing.reviewDetails.words'), value: props.analysisResult.wordCount },
+    { label: t('writing.common.sentences'), value: props.analysisResult.sentenceCount },
+    {
+      label: t('writing.feedback.avgLength'),
+      value: Math.round(props.analysisResult.averageSentenceLength),
+    },
+    {
+      label: t('writing.common.paragraphs'),
+      value: props.analysisResult.structureElements.paragraphCount,
+    },
   ]
 })
 </script>

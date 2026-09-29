@@ -23,7 +23,10 @@
   "status": {
     "new": "Neu",
     "inprogress": "In Bearbeitung",
-    "mastered": "Gemeistert"
+    "mastered": "Gemeistert",
+    "untitledReading": "Leseübung",
+    "untitledListening": "Hörübung",
+    "correctCount": "{score}/{total} richtig"
   },
   "exerciseType": {
     "article": "Artikel",
@@ -182,7 +185,17 @@
     "backToPractice": "Zurück zur Übung",
     "selectAnswer": "Wählen Sie eine Antwort aus",
     "finish": "Fertig",
-    "total": "gesamt"
+    "total": "gesamt",
+    "back": "Zurück",
+    "percentCorrect": "{percent} % richtig · {message}",
+    "yourAnswer": "Deine Antwort:",
+    "correctLabel": "Richtig:",
+    "correctAnswer": "Richtige Antwort: {answer}",
+    "backToExercises": "Zurück zu den Übungen",
+    "excellent": "Ausgezeichnet!",
+    "wellDone": "Gut gemacht!",
+    "keepPracticing": "Übe weiter!",
+    "dontGiveUp": "Gib nicht auf!"
   },
   "settings": {
     "title": "Einstellungen",
@@ -340,7 +353,18 @@
     "accountTitle": "Konto",
     "accountSubtitle": "Profil und Abonnement",
     "settingsTitle": "Einstellungen",
-    "settingsSubtitle": "Konto, Lernen und Arbeitsbereich"
+    "settingsSubtitle": "Konto, Lernen und Arbeitsbereich",
+    "mockExamTitle": "Modellprüfung",
+    "mockExamsSubtitle": "Prüfungssimulationen und Verfügbarkeit",
+    "mockExamReviewTitle": "Auswertung der Modellprüfung",
+    "mockExamReviewSubtitle": "Sieh dir die Aufgaben deiner abgeschlossenen Modellprüfung an",
+    "readingExerciseTitle": "Leseübung",
+    "writingExerciseTitle": "Schreibübung",
+    "listeningExerciseTitle": "Hörübung",
+    "speakingExerciseTitle": "Sprechübung",
+    "registerTitle": "Konto erstellen",
+    "forgotPasswordTitle": "Passwort vergessen",
+    "resetPasswordTitle": "Passwort zurücksetzen"
   },
   "shell": {
     "practiceBySkill": "Üben nach Fertigkeit",
@@ -357,7 +381,13 @@
     "myProgress": "Mein Fortschritt",
     "signOut": "Abmelden",
     "freePlan": "Kostenloser Tarif",
-    "proPlan": "Pro-Tarif"
+    "proPlan": "Pro-Tarif",
+    "openLanding": "Landingpage von Exam.one öffnen",
+    "languageSettings": "Spracheinstellungen",
+    "availableThemes": "Verfügbare Designs",
+    "targetGerman": "Deutsch",
+    "targetEnglish": "Englisch",
+    "targetSpanish": "Spanisch"
   },
   "account": {
     "editProfile": "Profil bearbeiten",
@@ -472,7 +502,15 @@
     "changePasswordTitle": "Passwort",
     "changePasswordDesc": "Mindestens 8 Zeichen. Eine längere Phrase ist besser als ein kompliziertes Wort.",
     "currentPassword": "Aktuelles Passwort",
-    "passwordUpdated": "Passwort aktualisiert"
+    "passwordUpdated": "Passwort aktualisiert",
+    "validation": {
+      "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein",
+      "passwordRequired": "Passwort ist erforderlich",
+      "passwordTooShort": "Das Passwort muss mindestens {min} Zeichen lang sein",
+      "passwordTooLong": "Das Passwort darf höchstens {max} Zeichen lang sein",
+      "fieldRequired": "{field} ist erforderlich",
+      "required": "Dieses Feld ist erforderlich"
+    }
   },
   "exercisesUi": {
     "module": "Modul",
@@ -516,7 +554,8 @@
     "deleteWritingTopic": "Schreibthema löschen",
     "deleteWritingConfirm": "\"{title}\" löschen?\n\nDieses Schreibthema wird aus dem lokalen Speicher entfernt.",
     "skillPractice": "{skill}-Übung",
-    "draftSaved": "Entwurf gespeichert"
+    "draftSaved": "Entwurf gespeichert",
+    "partN": "Teil {n}"
   },
   "examFormatUi": {
     "tagline": "So ist die Prüfung aufgebaut",
@@ -568,7 +607,22 @@
     "trayProgress": "{done}/{total} fertig · {running} laufen",
     "trayKeepWorking": "Arbeite weiter — wir benachrichtigen dich hier.",
     "trayViewExercises": "Übungen ansehen",
-    "trayClearDone": "Fertige entfernen"
+    "trayClearDone": "Fertige entfernen",
+    "noStateToResume": "Keine Generierung zum Fortsetzen vorhanden",
+    "noFailedToRetry": "Keine fehlgeschlagene Generierung zum Wiederholen vorhanden",
+    "noGeneratorPrompts": "Im aktiven Prüfungspaket sind keine Generator-Prompts für {skill} konfiguriert",
+    "noPromptForPart": "Für Teil {part} ist kein Prompt konfiguriert",
+    "noExerciseForPart": "Für {skill} Teil {part} wurde keine Übung generiert",
+    "partFailed": "Teil {part} konnte nicht generiert werden",
+    "noValidParts": "Keine gültigen Teile zum Generieren",
+    "mockInterrupted": "Die Generierung wurde unterbrochen. Prüfe die Dienste und setze die Pipeline fort.",
+    "mockJobInterrupted": "Vor dem Abschluss unterbrochen.",
+    "mockListeningContentMissing": "Der Hörinhalt für Teil {part} fehlt.",
+    "mockAudioFailed": "Die Audio-Generierung für Teil {part} ist fehlgeschlagen.",
+    "mockPackUnsupported": "Mit dem aktiven Prüfungspaket kann kein Modellsatz erstellt werden.",
+    "modelAnswerUnavailable": "Die Generierung der Musterantwort ist nicht verfügbar.",
+    "modelAnswerParseFailed": "Die Musterantwort konnte nicht aus der Antwort gelesen werden.",
+    "noModelAnswerPrompt": "Für Schreiben Teil {part} ist kein Musterantwort-Prompt konfiguriert"
   },
   "writing": {
     "checkReview": "Bewertung ansehen",
@@ -636,7 +690,16 @@
       "noExample": "Kein Beispiel für dieses Thema verfügbar",
       "generating": "Musterantwort wird generiert...",
       "canGenerate": "Eine Musterantwort kann für dieses Thema generiert werden",
-      "generateButton": "Musterantwort generieren"
+      "generateButton": "Musterantwort generieren",
+      "generatingIdeal": "Musterantwort wird erstellt...",
+      "idealAnswer": "Musterantwort",
+      "whatWorksWell": "Was gut funktioniert",
+      "pointN": "Punkt {n}",
+      "unavailable": "Musterantwort nicht verfügbar",
+      "continueWithout": "Du kannst weiterschreiben und auch ohne KI-Beispiel einreichen.",
+      "generatePrompt": "Erstelle eine optionale Musterantwort für diese Aufgabe.",
+      "generateIdeal": "Musterantwort erstellen",
+      "optionalHint": "KI ist optional. Du kannst auch ohne dieses Beispiel weiterschreiben."
     },
     "formFill": {
       "title": "Formular",
@@ -654,6 +717,106 @@
       "wrong": "Nicht richtig",
       "strengths": "Das war gut",
       "improvements": "Nächstes Mal prüfen"
+    },
+    "analysis": {
+      "wordsNeeded": "Schreibe noch {count} Wort, um die Mindestlänge zu erreichen. | Schreibe noch {count} Wörter, um die Mindestlänge zu erreichen.",
+      "wordsExcess": "Kürze deinen Text um {count} Wort. | Kürze deinen Text um {count} Wörter.",
+      "missingGreeting": "Vergiss nicht eine passende Anrede am Anfang (z.B. \"{informal}\" oder \"{formal}\").",
+      "missingClosing": "Füge einen passenden Gruß am Ende hinzu (z.B. \"{informal}\" oder \"{formal}\").",
+      "moreParagraphs": "Teile deinen Text in mehrere Absätze auf für bessere Struktur.",
+      "moreVariety": "Versuche abwechslungsreichere Wörter zu verwenden, um Wiederholungen zu vermeiden.",
+      "moreConnectors": "Verwende mehr Verbindungswörter wie {examples}.",
+      "informalForPersonal": "Du kannst bei persönlichen E-Mails eine informellere Sprache verwenden.",
+      "formalForForms": "Verwende eine formellere Sprache für Bewerbungen und offizielle Formulare.",
+      "essayStructure": "Ein Aufsatz sollte eine Einleitung, einen Hauptteil und einen Schluss haben.",
+      "allRequirementsMet": "Sehr gut! Dein Text erfüllt alle wichtigen Anforderungen.",
+      "goodStructure": "Die Struktur deines Textes ist sehr gut!",
+      "ratingExcellent": "Ausgezeichnet!",
+      "ratingGood": "Gut gemacht!",
+      "ratingStart": "Guter Anfang!",
+      "ratingKeepPracticing": "Weiter üben!"
+    },
+    "common": {
+      "minutes": "{count} Minute | {count} Minuten",
+      "wordRange": "{min}–{max} Wörter",
+      "words": "{count} Wort | {count} Wörter",
+      "partN": "Teil {n}",
+      "description": "Beschreibung",
+      "writingTips": "Schreibtipps",
+      "reviewUnavailable": "KI-Bewertung nicht verfügbar",
+      "structure": "Struktur",
+      "vocabulary": "Wortschatz",
+      "length": "Länge",
+      "sentences": "Sätze",
+      "paragraphs": "Absätze"
+    },
+    "editor": {
+      "yourAnswer": "Deine Antwort",
+      "placeholder": "Schreib hier deine Antwort...",
+      "ariaLabel": "Deine schriftliche Antwort",
+      "progressLabel": "Fortschritt der Wortanzahl",
+      "quality": "Textqualität",
+      "details": "Details",
+      "hideDetails": "Details ausblenden",
+      "variety": "Vielfalt",
+      "connectors": "Konnektoren",
+      "clearText": "Text löschen",
+      "clearConfirm": "Möchtest du wirklich deinen gesamten Text löschen?",
+      "statusEmpty": "Fang an zu schreiben...",
+      "wordsNeeded": "Noch {count} Wort nötig | Noch {count} Wörter nötig",
+      "wordsOver": "{count} Wort über dem Limit | {count} Wörter über dem Limit",
+      "goodLength": "Passende Länge für diese Aufgabe"
+    },
+    "session": {
+      "supportTabs": "Schreibhilfe-Tabs",
+      "tabPrompt": "KI-Aufgabe",
+      "tabIdealAnswer": "Musterantwort",
+      "submitToSeeReview": "Reiche deine Antwort ein, um hier die KI-Bewertung zu sehen.",
+      "reviewInProgress": "KI-Bewertung läuft…",
+      "regenerateReview": "KI-Bewertung neu erstellen",
+      "reviewReady": "KI-Bewertung fertig",
+      "viewDetailedReview": "Ausführliche KI-Bewertung ansehen",
+      "preparingReview": "Deine Bewertung wird vorbereitet…"
+    },
+    "topicGenerator": {
+      "generating": "Themen werden erstellt...",
+      "creating": "Schreibübungen für {part} ({level}) werden erstellt.",
+      "title": "Neue Schreibthemen erstellen",
+      "description": "Die KI kann neue {level}-Aufgaben erstellen. Das Schreibtraining funktioniert auch offline."
+    },
+    "instructions": {
+      "title": "Anleitung",
+      "subtitle": "Deine Schreibaufgabe",
+      "yourTask": "Deine Aufgabe",
+      "whatToWrite": "Was du schreiben sollst",
+      "modeQuick": "Schnell",
+      "modeChallenge": "Challenge",
+      "modeModelHelp": "Mit Musterhilfe"
+    },
+    "topicCard": {
+      "startWriting": "Schreiben starten",
+      "attempts": "{count} Versuch | {count} Versuche"
+    },
+    "topicType": {
+      "email": "E-Mail",
+      "letter": "Brief",
+      "essay": "Aufsatz",
+      "form": "Formular",
+      "postcard": "Postkarte",
+      "note": "Notiz",
+      "post": "Beitrag",
+      "article": "Artikel",
+      "report": "Bericht",
+      "review": "Rezension",
+      "proposal": "Vorschlag"
+    },
+    "feedback": {
+      "task": "Aufgabe",
+      "overall": "Gesamt",
+      "ok": "OK",
+      "check": "Prüfen",
+      "detailedAnalysis": "Detaillierte Analyse",
+      "avgLength": "Ø Länge"
     }
   },
   "speakingReview": {
@@ -794,7 +957,11 @@
     "correct": "Richtig",
     "yourAnswer": "Deine Antwort",
     "true": "Richtig",
-    "false": "Falsch"
+    "false": "Falsch",
+    "notAvailableForPack": "Für dieses Prüfungspaket sind keine Modellprüfungen verfügbar.",
+    "aiOverviewUnavailable": "Die KI-Übersicht ist nicht verfügbar.",
+    "writingGradeUnavailable": "Bewertung für Schreiben nicht verfügbar.",
+    "speakingGradeUnavailable": "Bewertung für Sprechen nicht verfügbar."
   },
   "pastExams": {
     "back": "Zurück zum Fortschritt",
@@ -808,7 +975,12 @@
     "transcript": "Transkript",
     "exercise": "Übung",
     "yourAnswers": "Deine Antworten",
-    "savedFeedback": "Gespeichertes Feedback"
+    "savedFeedback": "Gespeichertes Feedback",
+    "earlierExam": "Frühere Prüfung",
+    "notRecorded": "Nicht erfasst",
+    "playAudio": "Audio abspielen",
+    "pauseAudio": "Audio pausieren",
+    "playsRemaining": "Noch {count} Wiedergabe | Noch {count} Wiedergaben"
   },
   "speaking": {
     "cards": {
@@ -833,6 +1005,211 @@
         "title": "Runde {round} · Auf die Bitte reagieren",
         "description": "Sag höflich ja oder nein, mit einem kurzen Grund."
       }
+    },
+    "recorder": {
+      "unavailable": "Aufnahme nicht verfügbar",
+      "start": "Aufnahme starten",
+      "requestingMic": "Mikrofonzugriff wird angefragt…",
+      "tapToStart": "Tippe, um die Aufnahme zu starten",
+      "maxDuration": "Nimm bis zu {seconds} Sekunden auf",
+      "errorWithHint": "{error} Du kannst das Transkript unten trotzdem manuell eingeben.",
+      "stop": "Aufnahme beenden",
+      "complete": "Aufnahme fertig · {time}",
+      "playBack": "Abspielen",
+      "playbackUnavailable": "Wiedergabe nicht verfügbar",
+      "pause": "Pause",
+      "reRecord": "Neu aufnehmen",
+      "errors": {
+        "unsupported": "Audioaufnahmen werden in diesem Browser nicht unterstützt.",
+        "recordingFailed": "Der Browser konnte die Audioaufnahme nicht abschließen.",
+        "noAudio": "Es wurde kein Ton aufgenommen.",
+        "stoppedEarly": "Der Browser hat die Aufnahme beendet, bevor Ton aufgenommen wurde.",
+        "playbackFailed": "Der Browser konnte diese Aufnahme nicht abspielen.",
+        "micDenied": "Der Mikrofonzugriff wurde verweigert.",
+        "micNotFound": "Es wurde kein Mikrofon gefunden.",
+        "micFailed": "Das Mikrofon konnte nicht gestartet werden."
+      }
+    },
+    "session": {
+      "usefulPhrases": "Nützliche Redemittel",
+      "stt": "Spracherkennung",
+      "checkingProvider": "Der konfigurierte STT-Anbieter wird geprüft…",
+      "sttHint": "Das interne Tool ist optional. Du kannst jederzeit ein beliebiges Whisper-Tool verwenden. Tippe deine Antwort aber nicht einfach wie eine Schreibübung ein — dein Ziel ist Sprechpraxis.",
+      "checkAgain": "STT erneut prüfen",
+      "transcribing": "Deine Aufnahme wird transkribiert…",
+      "editableTranscript": "Bearbeitbares Transkript",
+      "missingTranscript": "Füge vor dem Speichern ein Transkript für {items} hinzu.",
+      "saveWithoutAi": "Ohne KI speichern",
+      "reviewing": "Wird bewertet…",
+      "submitForGrading": "Zur Bewertung abgeben",
+      "reviewAndSave": "Bewerten & speichern",
+      "saved": "Übung gespeichert",
+      "aiReviewResult": "KI-Bewertung: {points}/{max} Messpunkte.",
+      "savedLocally": "Lokal ohne KI-Bewertung gespeichert.",
+      "practiceAgain": "Nochmal üben",
+      "instructionInterview": "Beantworte zuerst alle vier Fragen deines Partners. Mach dann eine zweite Aufnahme, in der du alle vier Fragen stellst.",
+      "instructionMonologue": "Sprich über das Thema und verwende alle vier Stichwörter. Versuche, ein paar zusammenhängende Sätze zu bilden.",
+      "phaseA": "Phase A · Fragen beantworten",
+      "phaseB": "Phase B · Fragen stellen",
+      "keywords": "Stichwörter",
+      "answers": {
+        "title": "Beantworte die vier Fragen",
+        "description": "Gib in einer Aufnahme kurze, vollständige Antworten.",
+        "placeholder": "Transkript deiner Antworten eingeben oder bearbeiten…"
+      },
+      "questions": {
+        "title": "Stelle die vier Fragen",
+        "description": "Lies die Fragen in einer zweiten Aufnahme natürlich vor.",
+        "placeholder": "Transkript deiner Fragen eingeben oder bearbeiten…"
+      },
+      "monologue": {
+        "title": "Nimm deinen Monolog auf",
+        "descriptionFour": "Behandle alle vier Stichwörter in zusammenhängenden Sätzen.",
+        "description": "Behandle alle {count} Stichwörter in zusammenhängenden Sätzen.",
+        "placeholder": "Transkript deines Monologs eingeben oder bearbeiten…"
+      },
+      "missing": {
+        "answers": "die Antworten",
+        "questions": "die Fragen",
+        "monologue": "den Monolog",
+        "and": " und "
+      },
+      "offline": "Offline",
+      "checkingAvailability": "Verfügbarkeit der Spracherkennung wird geprüft…",
+      "requiresStt": "Für die Aufnahme wird ein verfügbares Spracherkennungs-Tool benötigt.",
+      "noAudio": "Es wurde kein Ton aufgenommen. Gib das Transkript manuell ein oder nimm erneut auf.",
+      "transcriptionFailed": "Die Transkription ist fehlgeschlagen. Gib das Transkript manuell ein."
     }
+  },
+  "listening": {
+    "audioNotGenerated": "Audio nicht erstellt",
+    "filesMissing": "Audiodateien für das Hören fehlen",
+    "filesNotFound": "{missing} von {total} Audiodatei nicht gefunden. | {missing} von {total} Audiodateien nicht gefunden.",
+    "ttsOffline": "Audio erstellen ist deaktiviert, solange TTS offline ist.",
+    "missingDetailReady": "Audiodateien fehlen. Nutze unten „Audio erstellen“ oder führe für Seed-Pakete pnpm generate:listening-audio aus.",
+    "missingDetailOffline": "Audiodateien fehlen. Starte TTS mit pnpm tts:up und nutze dann „Audio erstellen“ – oder führe für Seed-Pakete pnpm generate:listening-audio aus.",
+    "generateAudio": "Audio erstellen",
+    "generating": "Wird erstellt…",
+    "generatingProgress": "Wird erstellt {done}/{total}…",
+    "generationFailed": "Audio konnte nicht erstellt werden.",
+    "timeRemaining": "Verbleibende Zeit",
+    "minutes": "Minuten",
+    "seconds": "Sekunden",
+    "playback": "Wiedergabe",
+    "playbackLocked": "Die Wiedergabe wird freigeschaltet, sobald die Audiodateien verfügbar sind.",
+    "instructions": "Anleitung",
+    "transcriptUnlocks": "Das Transkript wird nach dem Abgeben freigeschaltet.",
+    "examInstructions": "Du darfst das Audio nur einmal abspielen. Beantworte alle Fragen, bevor du abgibst. | Du darfst das Audio {count}-mal abspielen. Beantworte alle Fragen, bevor du abgibst.",
+    "practiceInstructions": "Hör zu und beantworte die Fragen. Du kannst das Audio so oft abspielen, wie du möchtest.",
+    "youScored": "Dein Ergebnis: {score}",
+    "questions": "Fragen",
+    "answeredCount": "{answered} von {total} beantwortet",
+    "questionsIntro": "Hör dir das Audio an und beantworte die Fragen unten.",
+    "audioNumber": "Audio {n}",
+    "choose": "Auswählen…",
+    "correct": "Richtig",
+    "wrongCorrect": "Falsch – richtig:",
+    "backToModule": "Zurück zum Modul",
+    "submitAnswers": "Antworten abgeben",
+    "scoreExcellent": "Hervorragend zugehört!",
+    "scoreGood": "Gut gemacht!",
+    "scoreOkay": "Übe weiter!",
+    "scoreLow": "Hör noch einmal zu und versuch es erneut.",
+    "audioUnavailable": "Audio nicht verfügbar",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "plays": "Wiedergaben: {count}/{max}"
+  },
+  "progress": {
+    "heading": "Dein Fortschritt",
+    "intro": "Dein Stand in allen vier Fertigkeiten, basierend auf deinem lokalen Übungsverlauf.",
+    "exercisesCompleted": "Abgeschlossene Übungen",
+    "totalAttempts": "Versuche insgesamt",
+    "daysUntilExam": "Tage bis zur Prüfung",
+    "perSkillReadiness": "Stand pro Fertigkeit",
+    "skillSummary": "{completed}/{total} abgeschlossen · {sessions} Versuch | {completed}/{total} abgeschlossen · {sessions} Versuche",
+    "readinessBySkill": "Stand nach Fertigkeit",
+    "recentActivity": "Letzte Aktivitäten",
+    "noActivity": "Noch keine Aktivität. Schließe eine Übung ab, um deinen Fortschritt zu verfolgen.",
+    "strengths": "Stärken",
+    "strengthsEmpty": "Übe weiter, um deine Stärken zu entdecken.",
+    "focusAreas": "Schwerpunkte",
+    "status": {
+      "examReady": "Prüfungsbereit",
+      "onTrack": "Auf gutem Weg",
+      "gettingStarted": "Am Anfang",
+      "notStarted": "Noch nicht begonnen"
+    }
+  },
+  "pages": {
+    "common": {
+      "questionCount": "{count} Frage | {count} Fragen",
+      "backToExercises": "Zurück zu den Übungen"
+    },
+    "reading": {
+      "text": "Text",
+      "readAloud": "Text vorlesen",
+      "stopReadAloud": "Vorlesen stoppen",
+      "toggleLargerText": "Größere Schrift umschalten",
+      "showWordHelper": "Worthilfe für das ausgewählte Wort anzeigen",
+      "wordHelperFor": "Worthilfe für {word} anzeigen",
+      "minRead": "{minutes} Min. Lesezeit",
+      "subtitle": "{type} · {words} Wörter · ~{minutes} Min. Lesezeit",
+      "tapWordHint": "Tippe auf ein Wort, um die Offline-Worthilfe zu sehen",
+      "saveText": "Text speichern",
+      "savedText": "Text gespeichert",
+      "noTranslation": "Noch keine mitgelieferte Übersetzung. Markiere das Wort und schlag es in deiner eigenen Vokabelliste nach.",
+      "notFoundTitle": "Leseübung nicht gefunden",
+      "notFoundDescription": "Geh zurück zur Übungsliste und wähle einen anderen Text.",
+      "quizTabTitle": "{title} – Quiz",
+      "quizFallbackTitle": "Lese-Quiz",
+      "textType": {
+        "email": "Persönliche E-Mail",
+        "notice": "Informationsaushang"
+      }
+    },
+    "writing": {
+      "loadingTopic": "Schreibaufgabe wird geladen …",
+      "loadingReview": "Schreibauswertung wird geladen …",
+      "topicNotFound": "Thema nicht gefunden.",
+      "wordRange": "{min}–{max} Wörter",
+      "reviewTitle": "Schreibauswertung",
+      "reviewSubtitle": "Auswertung, eingereichte Antwort und Aufgabenstellung"
+    }
+  },
+  "reading": {
+    "questions": "Fragen",
+    "answeredCount": "{answered} von {total} beantwortet",
+    "quizInstructions": "Lies den Text und wähle für jede Frage die beste Antwort.",
+    "backToModule": "Zurück zum Modul",
+    "submitAnswers": "Antworten abgeben",
+    "preview": "Lesevorschau",
+    "wordsAndTime": "{words} Wörter · ca. {minutes} Min. Lesezeit",
+    "text": "Text",
+    "readyTitle": "Bereit für die Fragen?",
+    "readyDescription": "Beantworte nach dem Lesen {count} Multiple-Choice-Frage. | Beantworte nach dem Lesen {count} Multiple-Choice-Fragen.",
+    "deleteText": "Text löschen",
+    "deleteTextAria": "Lesetext löschen",
+    "questionCount": "{count} Frage | {count} Fragen",
+    "bestScore": "Bestes Ergebnis {percent} %",
+    "attempts": "{count} Versuch | {count} Versuche",
+    "level": "Niveau {level}",
+    "closeText": "Text schließen",
+    "minutesRead": "{minutes} Min. Lesezeit",
+    "backToOverview": "Zurück zur Übersicht",
+    "answerQuestions": "Fragen beantworten",
+    "noQuestions": "Keine Fragen verfügbar"
+  },
+  "errors": {
+    "requestFailed": "Anfrage fehlgeschlagen",
+    "signInAgain": "Bitte melde dich erneut an.",
+    "examSelectionChanged": "Die Prüfungsauswahl hat sich geändert",
+    "aiReviewUnavailable": "Die KI-Bewertung ist nicht verfügbar.",
+    "reviewPromptMissing": "Für Teil {part} ist kein Bewertungs-Prompt für Schreiben konfiguriert",
+    "teil1TranscriptsRequired": "Für die KI-Bewertung werden beide Transkripte von Teil 1 benötigt.",
+    "monologueTranscriptRequired": "Für die KI-Bewertung wird ein Transkript des Monologs benötigt.",
+    "allTranscriptsRequired": "Für die KI-Bewertung werden alle Transkripte benötigt.",
+    "sttStatusFailed": "Der Status der Spracherkennung konnte nicht geprüft werden.",
+    "transcriptionFailed": "Die Transkription ist fehlgeschlagen."
   }
 }

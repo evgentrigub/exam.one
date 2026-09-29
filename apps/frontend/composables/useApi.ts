@@ -16,6 +16,23 @@ export class ApiClientError extends Error {
   }
 }
 
+/**
+ * Translate a user-facing API fallback message. These helpers run outside component setup
+ * (after awaits), so the i18n instance is read from the Nuxt app when one is reachable;
+ * otherwise the English fallback is returned.
+ */
+export function apiMessage(key: string, fallback: string): string {
+  const i18n = tryUseNuxtApp()?.$i18n
+  return i18n ? i18n.t(key) : fallback
+}
+
+function packChangedError(): ApiClientError {
+  return new ApiClientError(409, {
+    code: 'PACK_CHANGED',
+    message: apiMessage('errors.examSelectionChanged', 'Exam selection changed'),
+  })
+}
+
 function apiBaseUrl(): string {
   const config = useRuntimeConfig()
   return String(config.public.apiUrl || 'http://localhost:3001').replace(/\/$/, '')
@@ -142,7 +159,7 @@ async function requestOnce<T>(path: string, options: ApiFetchOptions = {}): Prom
       ? nestMsg.join(', ')
       : typeof nestMsg === 'string'
         ? nestMsg
-        : fetchError.message || 'Request failed'
+        : fetchError.message || apiMessage('errors.requestFailed', 'Request failed')
 
     throw new ApiClientError(status, {
       code: status === 401 ? 'UNAUTHORIZED' : 'REQUEST_FAILED',
@@ -156,7 +173,7 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
   const epoch = packEpoch()
   try {
     const result = await requestOnce<T>(path, options)
-    if (epoch !== packEpoch() && (options.method ?? 'GET') === 'GET') throw new ApiClientError(409, { code: 'PACK_CHANGED', message: 'Exam selection changed' })
+    if (epoch !== packEpoch() && (options.method ?? 'GET') === 'GET') throw packChangedError()
     return result
   } catch (error: unknown) {
     if (
@@ -167,7 +184,7 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
       (await refreshAccessCookie())
     ) {
       const result = await requestOnce<T>(path, options)
-      if (epoch !== packEpoch() && (options.method ?? 'GET') === 'GET') throw new ApiClientError(409, { code: 'PACK_CHANGED', message: 'Exam selection changed' })
+      if (epoch !== packEpoch() && (options.method ?? 'GET') === 'GET') throw packChangedError()
       return result
     }
     throw error

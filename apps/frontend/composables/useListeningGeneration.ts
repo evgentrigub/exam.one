@@ -24,6 +24,7 @@ export interface ListeningGenerationOptions {
 }
 
 export const useListeningGeneration = () => {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const { pack, assemble, generators } = usePackPrompt(requestPackId)
   const state = ref<PartGenerationState>({
@@ -121,8 +122,9 @@ export const useListeningGeneration = () => {
       const part = job.part
       const prompt = assemble('listening', part, 'generator', { count: 1 })
       if (!prompt) {
-        updateJobStatus(part, 'failed', `No prompt configured for part ${part}`)
-        loopError = `No prompt configured for part ${part}`
+        const message = t('generation.noPromptForPart', { part })
+        updateJobStatus(part, 'failed', message)
+        loopError = message
         continue
       }
 
@@ -136,7 +138,9 @@ export const useListeningGeneration = () => {
         })
 
         if (response.error || !response.data || response.data.length === 0) {
-          throw new Error(response.error || `No listening exercise generated for part ${part}`)
+          throw new Error(
+            response.error || t('generation.noExerciseForPart', { skill: t('skill.listening'), part })
+          )
         }
 
         generatedExercises.push(...response.data)
@@ -151,7 +155,7 @@ export const useListeningGeneration = () => {
         }
       } catch (error: unknown) {
         const errorMessage =
-          error instanceof Error ? error.message : `Failed to generate part ${part}`
+          error instanceof Error ? error.message : t('generation.partFailed', { part })
         console.error(`Listening generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -180,7 +184,7 @@ export const useListeningGeneration = () => {
   ): Promise<ListeningA2Exercise[]> => {
     const allParts = generators('listening', 1)
     if (allParts.length === 0) {
-      throw new Error('No listening generator prompts are configured for the active exam pack')
+      throw new Error(t('generation.noGeneratorPrompts', { skill: t('skill.listening') }))
     }
     const selectedParts = filterJobsByParts(allParts, options.parts)
     const partsToGenerate = selectedParts.length > 0 ? selectedParts : allParts
@@ -202,7 +206,7 @@ export const useListeningGeneration = () => {
   ): Promise<ListeningA2Exercise[]> => {
     const difficulty = state.value.difficulty
     if (!difficulty) {
-      throw new Error('No generation state to resume')
+      throw new Error(t('generation.noStateToResume'))
     }
 
     state.value = {
@@ -219,7 +223,7 @@ export const useListeningGeneration = () => {
     onPartComplete?: (items: ListeningA2Exercise[]) => void
   ): Promise<ListeningA2Exercise[]> => {
     if (!state.value.difficulty) {
-      throw new Error('No failed generation to retry')
+      throw new Error(t('generation.noFailedToRetry'))
     }
 
     const difficulty = state.value.difficulty

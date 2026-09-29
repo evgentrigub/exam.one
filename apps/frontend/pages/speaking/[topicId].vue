@@ -26,8 +26,9 @@ import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 
-usePageMeta('Speaking Exercise', 'Speaking')
+usePageMeta('pageMeta.speakingExerciseTitle', 'skill.speaking')
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { getTopicById } = useSpeakingExercises()
@@ -42,13 +43,18 @@ const speakingSubtitle = computed(() => {
 })
 
 watchEffect(() => {
-  if (topic.value) usePageMeta(topic.value.theme, 'Speaking')
+  if (topic.value) usePageMeta(topic.value.theme, 'skill.speaking')
 })
 
 function goBack() {
   router.push('/exercises?skill=speaking')
 }
 
-useHead({ title: computed(() => (topic.value ? `${topic.value.theme} – Speaking` : 'Speaking')) })
+useHead({
+  title: () =>
+    topic.value
+      ? `${topic.value.theme} – ${t('skill.speaking')}`
+      : t('pageMeta.speakingExerciseTitle'),
+})
 definePageMeta({ preload: false })
 </script>

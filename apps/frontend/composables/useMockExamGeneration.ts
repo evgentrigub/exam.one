@@ -115,6 +115,7 @@ function createDraft(pack: ExamPack, setNumber: number): MockGenerationDraft {
 }
 
 export const useMockExamGeneration = () => {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const { pack, assemble } = usePackPrompt(requestPackId)
   const draft = useState<MockGenerationDraft | null>(
@@ -177,13 +178,13 @@ export const useMockExamGeneration = () => {
         const stored = raw as MockGenerationDraft
         if (stored.status === 'running') {
           stored.status = 'failed'
-          stored.error = 'Generation was interrupted. Check the services and resume the pipeline.'
+          stored.error = t('generation.mockInterrupted')
           for (const module of stored.modules) {
             if (module.status === 'running') module.status = 'failed'
             for (const job of module.jobs) {
               if (job.status === 'running') {
                 job.status = 'failed'
-                job.error = 'Interrupted before completion.'
+                job.error = t('generation.mockJobInterrupted')
               }
             }
           }
@@ -258,7 +259,9 @@ export const useMockExamGeneration = () => {
         body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
       })
       if (response.error || !response.data?.[0])
-        throw new Error(response.error || `No reading exercise generated for Teil ${part}.`)
+        throw new Error(
+          response.error || t('generation.noExerciseForPart', { skill: t('skill.reading'), part })
+        )
       draft.value.content.reading = replacePart(draft.value.content.reading, {
         ...response.data[0],
         examOnly: true,
@@ -273,7 +276,9 @@ export const useMockExamGeneration = () => {
         body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
       })
       if (response.error || !response.data?.[0])
-        throw new Error(response.error || `No listening exercise generated for Teil ${part}.`)
+        throw new Error(
+          response.error || t('generation.noExerciseForPart', { skill: t('skill.listening'), part })
+        )
       draft.value.content.listening = replacePart(draft.value.content.listening, {
         ...response.data[0],
         examOnly: true,
@@ -289,7 +294,9 @@ export const useMockExamGeneration = () => {
       })
       const topic = response.data?.[0]
       if (response.error || !topic)
-        throw new Error(response.error || `No writing exercise generated for Teil ${part}.`)
+        throw new Error(
+          response.error || t('generation.noExerciseForPart', { skill: t('skill.writing'), part })
+        )
       draft.value.content.writing = replacePart(draft.value.content.writing, {
         ...topic,
         examOnly: true,
@@ -303,7 +310,9 @@ export const useMockExamGeneration = () => {
       body: { difficulty, prompts: prompt ? [{ part, prompt }] : [] },
     })
     if (response.error || !response.data?.[0])
-      throw new Error(response.error || `No speaking exercise generated for Teil ${part}.`)
+      throw new Error(
+        response.error || t('generation.noExerciseForPart', { skill: t('skill.speaking'), part })
+      )
     draft.value.content.speaking = replacePart(draft.value.content.speaking, {
       ...response.data[0],
       examOnly: true,
@@ -313,7 +322,7 @@ export const useMockExamGeneration = () => {
   const generateAudioJob = async (part: number): Promise<void> => {
     if (!draft.value) return
     const exercise = draft.value.content.listening.find(candidate => candidate.testingPart === part)
-    if (!exercise) throw new Error(`Listening content for Teil ${part} is missing.`)
+    if (!exercise) throw new Error(t('generation.mockListeningContentMissing', { part }))
     const response = await aiFetch<{ audio: ListeningExerciseAudioMap; written: number }>(
       '/tts/generate-listening-audio',
       {
@@ -323,7 +332,7 @@ export const useMockExamGeneration = () => {
       }
     )
     if (response.error || !response.data)
-      throw new Error(response.error || `Audio generation failed for Teil ${part}.`)
+      throw new Error(response.error || t('generation.mockAudioFailed', { part }))
     draft.value.content.listening = replacePart(draft.value.content.listening, {
       ...exercise,
       audio: response.data.audio,
@@ -353,7 +362,7 @@ export const useMockExamGeneration = () => {
           updateJob(module.skill, job.id, 'done')
         } catch (error: unknown) {
           const message =
-            error instanceof Error ? error.message : `Generation failed for Teil ${job.part}.`
+            error instanceof Error ? error.message : t('generation.partFailed', { part: job.part })
           updateJob(module.skill, job.id, 'failed', message)
           draft.value.status = 'failed'
           draft.value.error = message
@@ -368,7 +377,7 @@ export const useMockExamGeneration = () => {
 
     const completedSet = pack.value.createMockSet?.(draft.value.setNumber, draft.value.content)
     if (!completedSet) {
-      throw new Error('The active exam pack cannot create a mock set.')
+      throw new Error(t('generation.mockPackUnsupported'))
     }
     await addSet(completedSet, requestPackId)
     draft.value.status = 'done'

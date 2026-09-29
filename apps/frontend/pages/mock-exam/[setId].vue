@@ -514,7 +514,7 @@ import type {
 } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import type { WritingExercise } from '~/utils/types'
-import { UNAVAILABLE_MOCK_SET } from '~/utils/mockExam/unavailableSet'
+import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
 import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
 import { writingReviewPayload } from '~/utils/writing/formFill'
 import { useReviewOutputLanguage } from '~/utils/reviewLocale'
@@ -534,11 +534,11 @@ const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const { pack } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
 const bundledSet = computed(() => pack.value.bundledMockSet as MockExamSet | undefined)
-const set = computed(() => foundSet.value ?? bundledSet.value ?? UNAVAILABLE_MOCK_SET)
+const set = computed(() => foundSet.value ?? bundledSet.value ?? createUnavailableMockSet(t))
 const validSet = computed(() => Boolean(foundSet.value) || !setsInitialized.value)
 
-usePageMeta('Mock exam', pack.value.title)
-useHead({ title: computed(() => `${set.value.title} – Mock exam`) })
+usePageMeta('pageMeta.mockExamTitle', pack.value.title)
+useHead({ title: () => `${set.value.title} – ${t('pageMeta.mockExamTitle')}` })
 
 const {
   state,
@@ -768,10 +768,10 @@ async function generateOverview(): Promise<void> {
       body: { result: overviewInput(), outputLanguage: reviewOutputLanguage.value },
     })
     if (response.error || !response.data)
-      throw new Error(response.error || 'AI overview is unavailable.')
+      throw new Error(response.error || t('mockExam.aiOverviewUnavailable'))
     completeOverview(response.data)
   } catch (error: unknown) {
-    failOverview(error instanceof Error ? error.message : 'AI overview is unavailable.')
+    failOverview(error instanceof Error ? error.message : t('mockExam.aiOverviewUnavailable'))
   }
 }
 
@@ -914,7 +914,8 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
           outputLanguage: reviewOutputLanguage.value,
         },
       })
-      if (review.error || !review.data) throw new Error(review.error || 'Writing grade unavailable.')
+      if (review.error || !review.data)
+        throw new Error(review.error || t('mockExam.writingGradeUnavailable'))
       // `totalPoints` is the same number `teil_points_mess` was: the criteria sum to
       // `maxPoints: 10`, so the score the page shows is unchanged.
       updateExerciseGrade('writing', exerciseId, review.data.totalPoints, null, review.data)
@@ -931,7 +932,8 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         outputLanguage: reviewOutputLanguage.value,
       },
     })
-    if (review.error || !review.data) throw new Error(review.error || 'Speaking grade unavailable.')
+    if (review.error || !review.data)
+      throw new Error(review.error || t('mockExam.speakingGradeUnavailable'))
     updateExerciseGrade('speaking', exerciseId, review.data.totalPoints, null, review.data)
   } catch (error: unknown) {
     if (skill === 'writing') {
@@ -939,14 +941,14 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         'writing',
         exerciseId,
         null,
-        error instanceof Error ? error.message : 'Writing grade unavailable.'
+        error instanceof Error ? error.message : t('mockExam.writingGradeUnavailable')
       )
     } else {
       updateExerciseGrade(
         'speaking',
         exerciseId,
         null,
-        error instanceof Error ? error.message : 'Speaking grade unavailable.'
+        error instanceof Error ? error.message : t('mockExam.speakingGradeUnavailable')
       )
     }
   } finally {

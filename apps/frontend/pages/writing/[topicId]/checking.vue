@@ -6,21 +6,21 @@
     >
       <span
         class="loading loading-spinner loading-md text-primary"
-        aria-label="Loading writing review"
+        :aria-label="$t('pages.writing.loadingReview')"
       />
-      <p class="text-sm text-base-content/60 mt-3">Loading writing review...</p>
+      <p class="text-sm text-base-content/60 mt-3">{{ $t('pages.writing.loadingReview') }}</p>
     </div>
 
     <template v-else>
       <ExerciseHeader
         skill="writing"
-        :type="topic?.topicType || 'Topic'"
-        :title="topic?.title || 'Writing Review'"
-        subtitle="Review, submitted answer, and task reference"
+        :type="topic?.topicType || $t('practice.topic')"
+        :title="topic?.title || $t('pages.writing.reviewTitle')"
+        :subtitle="$t('pages.writing.reviewSubtitle')"
         @back="goBack"
       >
         <template #aside>
-          <div class="badge badge-success shrink-0">Review</div>
+          <div class="badge badge-success shrink-0">{{ $t('exercisesUi.review') }}</div>
         </template>
       </ExerciseHeader>
 
@@ -34,8 +34,10 @@ import { useWritingTopics } from '~/composables/useWritingTopics'
 import type { WritingExercise } from '~/utils/types'
 import WritingReview from '~/components/writing/WritingReview.vue'
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Writing Review',
+  title: () => t('pages.writing.reviewTitle'),
 })
 
 const route = useRoute()

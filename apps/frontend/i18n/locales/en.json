@@ -23,7 +23,10 @@
   "status": {
     "new": "New",
     "inprogress": "In progress",
-    "mastered": "Mastered"
+    "mastered": "Mastered",
+    "untitledReading": "Reading exercise",
+    "untitledListening": "Listening exercise",
+    "correctCount": "{score}/{total} correct"
   },
   "exerciseType": {
     "article": "Article",
@@ -182,7 +185,17 @@
     "backToPractice": "Back to Practice",
     "selectAnswer": "Select an answer",
     "finish": "Finish",
-    "total": "total"
+    "total": "total",
+    "back": "Back",
+    "percentCorrect": "{percent}% correct · {message}",
+    "yourAnswer": "Your answer:",
+    "correctLabel": "Correct:",
+    "correctAnswer": "Correct answer: {answer}",
+    "backToExercises": "Back to exercises",
+    "excellent": "Excellent!",
+    "wellDone": "Well done!",
+    "keepPracticing": "Keep practicing!",
+    "dontGiveUp": "Don't give up!"
   },
   "settings": {
     "title": "Settings",
@@ -340,7 +353,18 @@
     "accountTitle": "Account",
     "accountSubtitle": "Profile and subscription",
     "settingsTitle": "Settings",
-    "settingsSubtitle": "Account, studying, and workspace"
+    "settingsSubtitle": "Account, studying, and workspace",
+    "mockExamTitle": "Mock exam",
+    "mockExamsSubtitle": "Exam simulations and availability",
+    "mockExamReviewTitle": "Mock exam review",
+    "mockExamReviewSubtitle": "Review completed mock exam exercises",
+    "readingExerciseTitle": "Reading exercise",
+    "writingExerciseTitle": "Writing exercise",
+    "listeningExerciseTitle": "Listening exercise",
+    "speakingExerciseTitle": "Speaking exercise",
+    "registerTitle": "Create account",
+    "forgotPasswordTitle": "Forgot password",
+    "resetPasswordTitle": "Reset password"
   },
   "shell": {
     "practiceBySkill": "Practice by skill",
@@ -357,7 +381,13 @@
     "myProgress": "My progress",
     "signOut": "Sign out",
     "freePlan": "Free plan",
-    "proPlan": "Pro plan"
+    "proPlan": "Pro plan",
+    "openLanding": "Open the Exam.one landing page",
+    "languageSettings": "Language settings",
+    "availableThemes": "Available Themes",
+    "targetGerman": "German",
+    "targetEnglish": "English",
+    "targetSpanish": "Spanish"
   },
   "account": {
     "editProfile": "Edit profile",
@@ -472,7 +502,15 @@
     "changePasswordTitle": "Password",
     "changePasswordDesc": "Use at least 8 characters. A longer phrase beats a complicated word.",
     "currentPassword": "Current password",
-    "passwordUpdated": "Password updated"
+    "passwordUpdated": "Password updated",
+    "validation": {
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordTooShort": "Password must be at least {min} characters",
+      "passwordTooLong": "Password must be at most {max} characters",
+      "fieldRequired": "{field} is required",
+      "required": "This field is required"
+    }
   },
   "exercisesUi": {
     "module": "Module",
@@ -516,7 +554,8 @@
     "deleteWritingTopic": "Delete writing topic",
     "deleteWritingConfirm": "Delete \"{title}\"?\n\nThis removes the writing topic from local storage.",
     "skillPractice": "{skill} practice",
-    "draftSaved": "Draft saved"
+    "draftSaved": "Draft saved",
+    "partN": "Part {n}"
   },
   "examFormatUi": {
     "tagline": "How the exam is built",
@@ -568,7 +607,22 @@
     "trayProgress": "{done}/{total} done · {running} generating",
     "trayKeepWorking": "Keep working — we'll notify you here.",
     "trayViewExercises": "View exercises",
-    "trayClearDone": "Clear done"
+    "trayClearDone": "Clear done",
+    "noStateToResume": "No generation state to resume",
+    "noFailedToRetry": "No failed generation to retry",
+    "noGeneratorPrompts": "The active exam pack has no generator prompts configured for {skill}",
+    "noPromptForPart": "No prompt is configured for part {part}",
+    "noExerciseForPart": "No exercise was generated for {skill} part {part}",
+    "partFailed": "Failed to generate part {part}",
+    "noValidParts": "No valid parts to generate",
+    "mockInterrupted": "Generation was interrupted. Check the services and resume the pipeline.",
+    "mockJobInterrupted": "Interrupted before completion.",
+    "mockListeningContentMissing": "Listening content for part {part} is missing.",
+    "mockAudioFailed": "Audio generation failed for part {part}.",
+    "mockPackUnsupported": "The active exam pack cannot create a mock set.",
+    "modelAnswerUnavailable": "Model answer generation is unavailable.",
+    "modelAnswerParseFailed": "Could not read the model answer from the response.",
+    "noModelAnswerPrompt": "No model-answer prompt is configured for writing part {part}"
   },
   "writing": {
     "checkReview": "Check the review",
@@ -636,7 +690,16 @@
       "noExample": "No example available for this topic",
       "generating": "Generating model answer...",
       "canGenerate": "A model answer can be generated for this topic",
-      "generateButton": "Generate Model Answer"
+      "generateButton": "Generate Model Answer",
+      "generatingIdeal": "Generating an ideal answer...",
+      "idealAnswer": "Ideal answer",
+      "whatWorksWell": "What works well",
+      "pointN": "Point {n}",
+      "unavailable": "Ideal answer unavailable",
+      "continueWithout": "You can continue writing and submit without an AI example.",
+      "generatePrompt": "Generate an optional model answer for this task.",
+      "generateIdeal": "Generate ideal answer",
+      "optionalHint": "AI is optional. You can continue writing without this example."
     },
     "formFill": {
       "title": "Form",
@@ -654,6 +717,106 @@
       "wrong": "Not correct",
       "strengths": "What went well",
       "improvements": "Check next time"
+    },
+    "analysis": {
+      "wordsNeeded": "Write {count} more word to reach the minimum length. | Write {count} more words to reach the minimum length.",
+      "wordsExcess": "Shorten your text by {count} word. | Shorten your text by {count} words.",
+      "missingGreeting": "Don't forget a suitable greeting at the start (e.g. \"{informal}\" or \"{formal}\").",
+      "missingClosing": "Add a suitable closing at the end (e.g. \"{informal}\" or \"{formal}\").",
+      "moreParagraphs": "Split your text into several paragraphs for a clearer structure.",
+      "moreVariety": "Try to use more varied words to avoid repetition.",
+      "moreConnectors": "Use more linking words such as {examples}.",
+      "informalForPersonal": "You can use more informal language in personal emails.",
+      "formalForForms": "Use more formal language for applications and official forms.",
+      "essayStructure": "An essay should have an introduction, a main part and a conclusion.",
+      "allRequirementsMet": "Very good! Your text meets all the important requirements.",
+      "goodStructure": "Your text is very well structured!",
+      "ratingExcellent": "Excellent!",
+      "ratingGood": "Well done!",
+      "ratingStart": "Good start!",
+      "ratingKeepPracticing": "Keep practising!"
+    },
+    "common": {
+      "minutes": "{count} minute | {count} minutes",
+      "wordRange": "{min}–{max} words",
+      "words": "{count} word | {count} words",
+      "partN": "Part {n}",
+      "description": "Description",
+      "writingTips": "Writing tips",
+      "reviewUnavailable": "AI review unavailable",
+      "structure": "Structure",
+      "vocabulary": "Vocabulary",
+      "length": "Length",
+      "sentences": "Sentences",
+      "paragraphs": "Paragraphs"
+    },
+    "editor": {
+      "yourAnswer": "Your Answer",
+      "placeholder": "Start writing your response here...",
+      "ariaLabel": "Your writing answer",
+      "progressLabel": "Word count progress",
+      "quality": "Writing quality",
+      "details": "Details",
+      "hideDetails": "Hide details",
+      "variety": "Variety",
+      "connectors": "Connectors",
+      "clearText": "Clear text",
+      "clearConfirm": "Are you sure you want to clear all your text?",
+      "statusEmpty": "Start writing...",
+      "wordsNeeded": "{count} more word needed | {count} more words needed",
+      "wordsOver": "{count} word over limit | {count} words over limit",
+      "goodLength": "Good length for this task"
+    },
+    "session": {
+      "supportTabs": "Writing support tabs",
+      "tabPrompt": "AI Prompt",
+      "tabIdealAnswer": "Ideal Answer",
+      "submitToSeeReview": "Submit your answer to see AI review here.",
+      "reviewInProgress": "AI review in progress…",
+      "regenerateReview": "Regenerate AI review",
+      "reviewReady": "AI review ready",
+      "viewDetailedReview": "View detailed AI review",
+      "preparingReview": "Preparing your review…"
+    },
+    "topicGenerator": {
+      "generating": "Generating topics...",
+      "creating": "Creating {part} {level} writing exercises.",
+      "title": "Generate new writing topics",
+      "description": "AI can create fresh {level} prompts. Core writing practice still works offline."
+    },
+    "instructions": {
+      "title": "Instructions",
+      "subtitle": "Your writing assignment",
+      "yourTask": "Your Task",
+      "whatToWrite": "What you should write",
+      "modeQuick": "Quick",
+      "modeChallenge": "Challenge",
+      "modeModelHelp": "Model Help"
+    },
+    "topicCard": {
+      "startWriting": "Start Writing",
+      "attempts": "{count} attempt | {count} attempts"
+    },
+    "topicType": {
+      "email": "Email",
+      "letter": "Letter",
+      "essay": "Essay",
+      "form": "Form",
+      "postcard": "Postcard",
+      "note": "Note",
+      "post": "Post",
+      "article": "Article",
+      "report": "Report",
+      "review": "Review",
+      "proposal": "Proposal"
+    },
+    "feedback": {
+      "task": "Task",
+      "overall": "Overall",
+      "ok": "OK",
+      "check": "Check",
+      "detailedAnalysis": "Detailed analysis",
+      "avgLength": "Avg length"
     }
   },
   "speakingReview": {
@@ -794,7 +957,11 @@
     "correct": "Correct",
     "yourAnswer": "Your answer",
     "true": "True",
-    "false": "False"
+    "false": "False",
+    "notAvailableForPack": "Mock exams are not available for this exam pack.",
+    "aiOverviewUnavailable": "AI overview is unavailable.",
+    "writingGradeUnavailable": "Writing grade unavailable.",
+    "speakingGradeUnavailable": "Speaking grade unavailable."
   },
   "pastExams": {
     "back": "Back to progress",
@@ -808,7 +975,12 @@
     "transcript": "Transcript",
     "exercise": "Exercise",
     "yourAnswers": "Your answers",
-    "savedFeedback": "Saved feedback"
+    "savedFeedback": "Saved feedback",
+    "earlierExam": "Earlier exam",
+    "notRecorded": "Not recorded",
+    "playAudio": "Play audio",
+    "pauseAudio": "Pause audio",
+    "playsRemaining": "{count} play remaining | {count} plays remaining"
   },
   "speaking": {
     "cards": {
@@ -833,6 +1005,211 @@
         "title": "Round {round} · React to the request",
         "description": "Say yes or no politely, with a short reason."
       }
+    },
+    "recorder": {
+      "unavailable": "Recording unavailable",
+      "start": "Start recording",
+      "requestingMic": "Requesting microphone access…",
+      "tapToStart": "Tap to start recording",
+      "maxDuration": "Record for up to {seconds} seconds",
+      "errorWithHint": "{error} You can still enter the transcript manually below.",
+      "stop": "Stop recording",
+      "complete": "Recording complete · {time}",
+      "playBack": "Play back",
+      "playbackUnavailable": "Playback unavailable",
+      "pause": "Pause",
+      "reRecord": "Re-record",
+      "errors": {
+        "unsupported": "Audio recording is not supported in this browser.",
+        "recordingFailed": "The browser could not finish the audio recording.",
+        "noAudio": "No audio was captured.",
+        "stoppedEarly": "The browser stopped the recording before audio was captured.",
+        "playbackFailed": "The browser could not play this recording.",
+        "micDenied": "Microphone access was denied.",
+        "micNotFound": "No microphone was found.",
+        "micFailed": "The microphone could not be started."
+      }
+    },
+    "session": {
+      "usefulPhrases": "Useful phrases",
+      "stt": "Speech-to-text",
+      "checkingProvider": "Checking the configured STT provider…",
+      "sttHint": "Using the internal tool is optional. You can always use any Whisper tool you like. Just don't type your answer as a simple writing exercise — your goal is speaking practice.",
+      "checkAgain": "Check STT again",
+      "transcribing": "Transcribing your recording…",
+      "editableTranscript": "Editable transcript",
+      "missingTranscript": "Add a transcript for {items} before saving.",
+      "saveWithoutAi": "Save without AI",
+      "reviewing": "Reviewing…",
+      "submitForGrading": "Submit for grading",
+      "reviewAndSave": "Review & save",
+      "saved": "Practice saved",
+      "aiReviewResult": "AI review: {points}/{max} direct points.",
+      "savedLocally": "Saved locally without AI review.",
+      "practiceAgain": "Practice again",
+      "instructionInterview": "First answer all four partner questions. Then make a second recording in which you ask all four questions.",
+      "instructionMonologue": "Talk about the topic using all four keywords. Aim for a few connected sentences.",
+      "phaseA": "Phase A · Questions to answer",
+      "phaseB": "Phase B · Questions to ask",
+      "keywords": "Keywords",
+      "answers": {
+        "title": "Answer the four questions",
+        "description": "Give short, complete answers in one recording.",
+        "placeholder": "Type or edit the transcript of your answers…"
+      },
+      "questions": {
+        "title": "Ask the four questions",
+        "description": "Read the questions naturally in a second recording.",
+        "placeholder": "Type or edit the transcript of your questions…"
+      },
+      "monologue": {
+        "title": "Record your monologue",
+        "descriptionFour": "Cover all four keywords in connected sentences.",
+        "description": "Cover all {count} keywords in connected sentences.",
+        "placeholder": "Type or edit the transcript of your monologue…"
+      },
+      "missing": {
+        "answers": "the answers",
+        "questions": "the questions",
+        "monologue": "the monologue",
+        "and": " and "
+      },
+      "offline": "Offline",
+      "checkingAvailability": "Checking speech-to-text availability…",
+      "requiresStt": "Recording requires an available speech-to-text tool.",
+      "noAudio": "No audio was captured. Enter the transcript manually or re-record.",
+      "transcriptionFailed": "Transcription failed. Enter the transcript manually."
     }
+  },
+  "listening": {
+    "audioNotGenerated": "Audio not generated",
+    "filesMissing": "Listening audio files are missing",
+    "filesNotFound": "{missing} of {total} audio file not found. | {missing} of {total} audio files not found.",
+    "ttsOffline": "Generate audio is disabled while TTS is offline.",
+    "missingDetailReady": "Audio files are missing. Use Generate audio below, or run pnpm generate:listening-audio for seed packs.",
+    "missingDetailOffline": "Audio files are missing. Run pnpm tts:up to start TTS, then Generate audio — or pnpm generate:listening-audio for seed packs.",
+    "generateAudio": "Generate audio",
+    "generating": "Generating…",
+    "generatingProgress": "Generating {done}/{total}…",
+    "generationFailed": "Audio generation failed.",
+    "timeRemaining": "Time Remaining",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "playback": "Playback",
+    "playbackLocked": "Playback unlocks when audio files are available.",
+    "instructions": "Instructions",
+    "transcriptUnlocks": "Transcript unlocks after submit.",
+    "examInstructions": "Use the permitted single play and answer every question before submitting. | Use the permitted {count} plays and answer every question before submitting.",
+    "practiceInstructions": "Listen and answer the questions. Replay the audio as often as you need.",
+    "youScored": "You scored {score}",
+    "questions": "Questions",
+    "answeredCount": "{answered} of {total} answered",
+    "questionsIntro": "Listen to the audio and answer the questions below.",
+    "audioNumber": "Audio {n}",
+    "choose": "Choose…",
+    "correct": "Correct",
+    "wrongCorrect": "Wrong — correct:",
+    "backToModule": "Back to module",
+    "submitAnswers": "Submit Answers",
+    "scoreExcellent": "Excellent listening!",
+    "scoreGood": "Well done!",
+    "scoreOkay": "Keep practicing!",
+    "scoreLow": "Listen again and retry.",
+    "audioUnavailable": "Audio unavailable",
+    "play": "Play",
+    "pause": "Pause",
+    "plays": "Plays: {count}/{max}"
+  },
+  "progress": {
+    "heading": "Your progress",
+    "intro": "Readiness across all four skills, from your local practice history.",
+    "exercisesCompleted": "Exercises completed",
+    "totalAttempts": "Total attempts",
+    "daysUntilExam": "Days until exam",
+    "perSkillReadiness": "Per-skill readiness",
+    "skillSummary": "{completed}/{total} completed · {sessions} attempt | {completed}/{total} completed · {sessions} attempts",
+    "readinessBySkill": "Readiness by skill",
+    "recentActivity": "Recent activity",
+    "noActivity": "No activity yet. Complete an exercise to start tracking.",
+    "strengths": "Strengths",
+    "strengthsEmpty": "Practice more to reveal your strengths.",
+    "focusAreas": "Focus areas",
+    "status": {
+      "examReady": "Exam-ready",
+      "onTrack": "On track",
+      "gettingStarted": "Getting started",
+      "notStarted": "Not started"
+    }
+  },
+  "pages": {
+    "common": {
+      "questionCount": "{count} question | {count} questions",
+      "backToExercises": "Back to exercises"
+    },
+    "reading": {
+      "text": "Text",
+      "readAloud": "Read text aloud",
+      "stopReadAloud": "Stop read aloud",
+      "toggleLargerText": "Toggle larger text",
+      "showWordHelper": "Show selected word helper",
+      "wordHelperFor": "Show helper for {word}",
+      "minRead": "{minutes} min read",
+      "subtitle": "{type} · {words} words · ~{minutes} min read",
+      "tapWordHint": "Tap a word to see its offline helper",
+      "saveText": "Save text",
+      "savedText": "Saved text",
+      "noTranslation": "No bundled translation yet. Mark it and check it in your own vocabulary list.",
+      "notFoundTitle": "Reading exercise not found",
+      "notFoundDescription": "Go back to the exercise list and choose another text.",
+      "quizTabTitle": "{title} – Quiz",
+      "quizFallbackTitle": "Reading quiz",
+      "textType": {
+        "email": "Personal email",
+        "notice": "Information notice"
+      }
+    },
+    "writing": {
+      "loadingTopic": "Loading writing topic…",
+      "loadingReview": "Loading writing review…",
+      "topicNotFound": "Topic not found.",
+      "wordRange": "{min}–{max} words",
+      "reviewTitle": "Writing review",
+      "reviewSubtitle": "Review, submitted answer, and task reference"
+    }
+  },
+  "reading": {
+    "questions": "Questions",
+    "answeredCount": "{answered} of {total} answered",
+    "quizInstructions": "Read the text and choose the best answer for each question.",
+    "backToModule": "Back to module",
+    "submitAnswers": "Submit answers",
+    "preview": "Reading preview",
+    "wordsAndTime": "{words} words · ~{minutes} min read",
+    "text": "Text",
+    "readyTitle": "Ready for the questions?",
+    "readyDescription": "Answer {count} multiple-choice question after reading. | Answer {count} multiple-choice questions after reading.",
+    "deleteText": "Delete text",
+    "deleteTextAria": "Delete reading text",
+    "questionCount": "{count} question | {count} questions",
+    "bestScore": "Best score {percent}%",
+    "attempts": "{count} attempt | {count} attempts",
+    "level": "{level} level",
+    "closeText": "Close text",
+    "minutesRead": "{minutes} min read",
+    "backToOverview": "Back to overview",
+    "answerQuestions": "Answer questions",
+    "noQuestions": "No questions available"
+  },
+  "errors": {
+    "requestFailed": "Request failed",
+    "signInAgain": "Please sign in again.",
+    "examSelectionChanged": "Exam selection changed",
+    "aiReviewUnavailable": "AI review is unavailable.",
+    "reviewPromptMissing": "No writing review prompt is configured for part {part}",
+    "teil1TranscriptsRequired": "Both part 1 transcripts are required for AI review.",
+    "monologueTranscriptRequired": "A monologue transcript is required for AI review.",
+    "allTranscriptsRequired": "Every transcript is required for AI review.",
+    "sttStatusFailed": "Could not check speech recognition status.",
+    "transcriptionFailed": "Transcription failed."
   }
 }

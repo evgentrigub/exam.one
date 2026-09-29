@@ -40,7 +40,7 @@
         autocomplete="email"
         :placeholder="$t('auth.emailPlaceholder')"
         :error="error"
-        @blur="error = validateEmail(email)"
+        @blur="error = validateEmail(email, t)"
       />
 
       <AuthSubmit :loading="loading">{{ $t('auth.sendReset') }}</AuthSubmit>
@@ -53,9 +53,9 @@ import { Mail, MailCheck } from 'lucide-vue-next'
 import { validateEmail } from '~/utils/authValidation'
 
 definePageMeta({ layout: 'auth', auth: false })
-useHead({ title: 'Forgot password — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.forgotPasswordTitle')} — Exam.one` })
 const { forgotPassword, loadConfig, authConfig } = useAuth()
 
 const email = ref('')
@@ -86,7 +86,7 @@ onMounted(() => {
 })
 
 async function submit() {
-  error.value = validateEmail(email.value)
+  error.value = validateEmail(email.value, t)
   if (error.value) return
   loading.value = true
   try {

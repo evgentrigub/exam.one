@@ -13,7 +13,7 @@
         type="button"
         class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="(!canPlay && !playing) || !!disabled"
-        :title="disabled ? 'Audio unavailable' : playing ? 'Pause' : 'Play'"
+        :title="disabled ? $t('listening.audioUnavailable') : playing ? $t('listening.pause') : $t('listening.play')"
         @click="toggle"
       >
         <Pause v-if="playing" :size="14" />
@@ -38,7 +38,7 @@
     </div>
 
     <p v-if="maxPlays" class="mt-2 text-[11px] text-base-content/50">
-      Plays: {{ playCount }}/{{ maxPlays }}
+      {{ $t('listening.plays', { count: playCount, max: maxPlays }) }}
     </p>
 
     <!-- Controls row -->
@@ -78,7 +78,7 @@
       class="mt-4 p-3 rounded-field bg-base-200/60 border border-base-300/70"
     >
       <p class="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1">
-        Transcript
+        {{ $t('pastExams.transcript') }}
       </p>
       <p class="text-sm leading-relaxed whitespace-pre-line">{{ transcript }}</p>
     </div>

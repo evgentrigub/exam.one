@@ -12,11 +12,13 @@ const auth = useAuth()
 const settings = useSettingsStore()
 // Initialize theme system
 const { theme, initTheme } = useTheme()
+const { localeProperties } = useI18n()
 
-// Apply theme to HTML element
+// Apply theme and active locale to HTML element
 useHead({
   htmlAttrs: {
     'data-theme': theme,
+    lang: () => localeProperties.value.language,
   },
 })
 

@@ -10,7 +10,7 @@
         <div class="alert alert-warning items-start">
           <AlertTriangle :size="20" class="shrink-0 mt-0.5" aria-hidden="true" />
           <div>
-            <h3 class="font-bold">AI review unavailable</h3>
+            <h3 class="font-bold">{{ $t('writing.common.reviewUnavailable') }}</h3>
             <p class="text-sm">{{ reviewError }}</p>
           </div>
         </div>

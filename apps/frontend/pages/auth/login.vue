@@ -20,7 +20,7 @@
           autocomplete="email"
           :placeholder="$t('auth.emailPlaceholder')"
           :error="errors.email"
-          @blur="errors.email = validateEmail(email)"
+          @blur="errors.email = validateEmail(email, t)"
         />
 
         <div>
@@ -31,7 +31,7 @@
             autocomplete="current-password"
             :placeholder="$t('auth.passwordPlaceholder')"
             :error="errors.password"
-            @blur="errors.password = validatePassword(password)"
+            @blur="errors.password = validatePassword(password, t)"
           />
           <div class="flex items-center justify-between mt-2.5">
             <label class="flex items-center gap-2 cursor-pointer">
@@ -65,9 +65,9 @@ import { ApiClientError } from '~/composables/useApi'
 import { validateEmail, validatePassword } from '~/utils/authValidation'
 
 definePageMeta({ layout: false, auth: false })
-useHead({ title: 'Sign in — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('auth.signIn')} — Exam.one` })
 const { login } = useAuth()
 
 const email = ref('')
@@ -79,8 +79,8 @@ const locked = ref(false)
 const errors = reactive({ email: '', password: '' })
 
 async function submit() {
-  errors.email = validateEmail(email.value)
-  errors.password = validatePassword(password.value)
+  errors.email = validateEmail(email.value, t)
+  errors.password = validatePassword(password.value, t)
   if (errors.email || errors.password) return
 
   loading.value = true

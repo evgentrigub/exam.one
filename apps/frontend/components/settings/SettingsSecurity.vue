@@ -25,7 +25,7 @@
           autocomplete="new-password"
           :placeholder="$t('auth.passwordMin')"
           :error="errors.next"
-          @blur="errors.next = next ? validatePassword(next) : ''"
+          @blur="errors.next = next ? validatePassword(next, t) : ''"
         />
         <AuthStrength v-if="next && !errors.next" :score="strength" />
       </div>
@@ -73,7 +73,7 @@ async function onChange() {
   error.value = ''
   saved.value = false
   errors.current = current.value ? '' : t('auth.currentPassword')
-  errors.next = validatePassword(next.value)
+  errors.next = validatePassword(next.value, t)
   errors.confirm = !confirm.value
     ? t('auth.confirmRequired')
     : confirm.value !== next.value

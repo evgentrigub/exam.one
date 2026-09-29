@@ -5,6 +5,8 @@
 
 import type { WritingExercise, WritingFeedbackModel } from '~/utils/types'
 
+type TranslateFn = (key: string, ...args: unknown[]) => string
+
 export interface TextAnalysisResult {
   wordCount: number
   sentenceCount: number
@@ -30,9 +32,14 @@ export interface VocabularyMetrics {
 }
 
 /**
- * Analyzes German text for A2-level writing evaluation
+ * Analyzes German text for A2-level writing evaluation.
+ * `t` localizes the learner-facing suggestions; German example phrases stay German.
  */
-export function analyzeGermanText(content: string, topic: WritingExercise): TextAnalysisResult {
+export function analyzeGermanText(
+  content: string,
+  topic: WritingExercise,
+  t: TranslateFn
+): TextAnalysisResult {
   const cleanContent = content.trim()
 
   // Basic metrics
@@ -53,7 +60,8 @@ export function analyzeGermanText(content: string, topic: WritingExercise): Text
     topic,
     structureElements,
     vocabularyMetrics,
-    wordCount
+    wordCount,
+    t
   )
 
   return {
@@ -305,77 +313,80 @@ function generateSuggestions(
   topic: WritingExercise,
   structure: StructureAnalysis,
   vocabulary: VocabularyMetrics,
-  wordCount: number
+  wordCount: number,
+  t: TranslateFn
 ): string[] {
   const suggestions: string[] = []
 
   // Word count suggestions
   if (wordCount < topic.wordCount.min) {
     const needed = topic.wordCount.min - wordCount
-    suggestions.push(`Schreibe noch ${needed} Wörter, um die Mindestlänge zu erreichen.`)
+    suggestions.push(t('writing.analysis.wordsNeeded', { count: needed }, needed))
   } else if (wordCount > topic.wordCount.max) {
     const excess = wordCount - topic.wordCount.max
-    suggestions.push(`Kürze deinen Text um ${excess} Wörter.`)
+    suggestions.push(t('writing.analysis.wordsExcess', { count: excess }, excess))
   }
 
   // Structure suggestions
   if (!structure.hasGreeting && ['email', 'letter', 'form'].includes(topic.topicType)) {
     suggestions.push(
-      'Vergiss nicht eine passende Anrede am Anfang (z.B. "Hallo" oder "Sehr geehrte Damen und Herren").'
+      t('writing.analysis.missingGreeting', {
+        informal: 'Hallo',
+        formal: 'Sehr geehrte Damen und Herren',
+      })
     )
   }
 
   if (!structure.hasClosing && ['email', 'letter', 'form'].includes(topic.topicType)) {
     suggestions.push(
-      'Füge einen passenden Gruß am Ende hinzu (z.B. "Viele Grüße" oder "Mit freundlichen Grüßen").'
+      t('writing.analysis.missingClosing', {
+        informal: 'Viele Grüße',
+        formal: 'Mit freundlichen Grüßen',
+      })
     )
   }
 
   if (structure.paragraphCount < 2 && ['essay', 'letter', 'email'].includes(topic.topicType)) {
-    suggestions.push('Teile deinen Text in mehrere Absätze auf für bessere Struktur.')
+    suggestions.push(t('writing.analysis.moreParagraphs'))
   }
 
   // Vocabulary suggestions
   if (vocabulary.vocabularyDiversity < 0.6) {
-    suggestions.push(
-      'Versuche abwechslungsreichere Wörter zu verwenden, um Wiederholungen zu vermeiden.'
-    )
+    suggestions.push(t('writing.analysis.moreVariety'))
   }
 
   if (vocabulary.commonConnectors.length < 2) {
-    suggestions.push('Verwende mehr Verbindungswörter wie "und", "aber", "weil" oder "außerdem".')
+    suggestions.push(
+      t('writing.analysis.moreConnectors', { examples: '"und", "aber", "weil", "außerdem"' })
+    )
   }
 
   // Topic-specific suggestions
   switch (topic.topicType) {
     case 'email':
       if (vocabulary.formalityLevel === 'formal' && topic.category.includes('Persönlich')) {
-        suggestions.push('Du kannst bei persönlichen E-Mails eine informellere Sprache verwenden.')
+        suggestions.push(t('writing.analysis.informalForPersonal'))
       }
       break
 
     case 'form':
       if (vocabulary.formalityLevel === 'informal') {
-        suggestions.push(
-          'Verwende eine formellere Sprache für Bewerbungen und offizielle Formulare.'
-        )
+        suggestions.push(t('writing.analysis.formalForForms'))
       }
       break
 
     case 'essay':
       if (structure.paragraphCount < 3) {
-        suggestions.push(
-          'Ein Aufsatz sollte eine Einleitung, einen Hauptteil und einen Schluss haben.'
-        )
+        suggestions.push(t('writing.analysis.essayStructure'))
       }
       break
   }
 
   // Positive feedback
   if (suggestions.length === 0) {
-    suggestions.push('Sehr gut! Dein Text erfüllt alle wichtigen Anforderungen.')
+    suggestions.push(t('writing.analysis.allRequirementsMet'))
   } else if (structure.structureScore >= 4) {
-    suggestions.push('Die Struktur deines Textes ist sehr gut!')
+    suggestions.push(t('writing.analysis.goodStructure'))
   }
 
   return suggestions
@@ -384,7 +395,10 @@ function generateSuggestions(
 /**
  * Format feedback for display
  */
-export function formatFeedbackDisplay(feedback: WritingFeedbackModel): {
+export function formatFeedbackDisplay(
+  feedback: WritingFeedbackModel,
+  t: TranslateFn
+): {
   title: string
   color: string
   icon: string
@@ -393,25 +407,25 @@ export function formatFeedbackDisplay(feedback: WritingFeedbackModel): {
 
   if (score >= 4) {
     return {
-      title: 'Ausgezeichnet!',
+      title: t('writing.analysis.ratingExcellent'),
       color: 'green',
       icon: '🌟',
     }
   } else if (score >= 3) {
     return {
-      title: 'Gut gemacht!',
+      title: t('writing.analysis.ratingGood'),
       color: 'blue',
       icon: '👍',
     }
   } else if (score >= 2) {
     return {
-      title: 'Guter Anfang!',
+      title: t('writing.analysis.ratingStart'),
       color: 'yellow',
       icon: '📝',
     }
   } else {
     return {
-      title: 'Weiter üben!',
+      title: t('writing.analysis.ratingKeepPracticing'),
       color: 'red',
       icon: '💪',
     }

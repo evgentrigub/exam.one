@@ -1,5 +1,5 @@
 <template>
-  <p v-if="value == null" class="text-base-content/60">Not recorded</p>
+  <p v-if="value == null" class="text-base-content/60">{{ $t('pastExams.notRecorded') }}</p>
   <p v-else-if="typeof value !== 'object'" class="whitespace-pre-wrap">{{ value }}</p>
   <ul v-else-if="Array.isArray(value)" class="space-y-3">
     <li v-for="(item, index) in value" :key="index"><SavedFeedback :value="item" /></li>

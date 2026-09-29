@@ -63,9 +63,9 @@ import { AlertCircle, Check } from 'lucide-vue-next'
 import { ApiClientError } from '~/composables/useApi'
 
 definePageMeta({ layout: 'auth', auth: false })
-useHead({ title: 'Confirm email — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('auth.confirmEmail')} — Exam.one` })
 const route = useRoute()
 const { verifyEmail, resendVerification } = useAuth()
 

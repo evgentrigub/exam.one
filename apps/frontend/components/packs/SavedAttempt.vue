@@ -1,7 +1,7 @@
 <template>
   <article class="space-y-5">
     <header>
-      <h2 class="font-display text-2xl">{{ packTitle }} · {{ attempt.skill.toLowerCase() }}</h2>
+      <h2 class="font-display text-2xl">{{ packTitle }} · {{ skillLabel }}</h2>
       <p>{{ new Date(attempt.submittedAt).toLocaleString() }}</p>
       <p class="text-lg font-semibold">
         {{
@@ -83,6 +83,7 @@ import SavedFeedback from '~/components/packs/SavedFeedback.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
 import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
+import { getSkillLabel } from '~/utils/labels'
 
 const props = defineProps<{ attempt: AttemptDto }>()
 const { t } = useI18n()
@@ -90,8 +91,9 @@ const { t } = useI18n()
 const packTitle = computed(
   () =>
     getPack(props.attempt.packId)?.title ??
-    (props.attempt.packId === 'legacy-history' ? 'Earlier exam' : props.attempt.packId)
+    (props.attempt.packId === 'legacy-history' ? t('pastExams.earlierExam') : props.attempt.packId)
 )
+const skillLabel = computed(() => getSkillLabel(props.attempt.skill.toLowerCase(), t))
 const snapshot = computed(() => props.attempt.snapshot as RuntimeSnapshot | undefined)
 
 /**

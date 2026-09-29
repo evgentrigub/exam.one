@@ -22,7 +22,7 @@
         <button
           type="button"
           class="btn btn-ghost btn-circle"
-          aria-label="Language settings"
+          :aria-label="$t('shell.languageSettings')"
           @click="openLanguageModal"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +107,7 @@
               <!-- Available Themes Column -->
               <div>
                 <div class="text-xs font-semibold uppercase opacity-60 mb-2 px-2">
-                  Available Themes
+                  {{ $t('shell.availableThemes') }}
                 </div>
                 <ul class="menu p-0">
                   <li v-for="themeOption in availableThemes" :key="themeOption.value">
@@ -172,8 +172,9 @@
             v-model="tempInterfaceLanguage"
             class="select select-bordered select-primary w-full shadow"
           >
-            <option value="en">🇺🇸 English (United States)</option>
-            <option value="de">🇩🇪 Deutsch (Deutschland)</option>
+            <option v-for="option in localeOptions" :key="option.code" :value="option.code">
+              {{ option.name }}
+            </option>
           </select>
         </fieldset>
 
@@ -198,10 +199,12 @@
             disabled
             class="select select-bordered select-primary w-full shadow"
           >
-            <option value="de">🇩🇪 Deutsch (German)</option>
-            <option value="en" disabled>🇺🇸 English - {{ $t('settings.availableSoon') }}</option>
+            <option value="de">{{ $t('shell.targetGerman') }}</option>
+            <option value="en" disabled>
+              {{ $t('shell.targetEnglish') }} - {{ $t('settings.availableSoon') }}
+            </option>
             <option value="es" disabled>
-              🇪🇸 Español (Spanish) - {{ $t('settings.availableSoon') }}
+              {{ $t('shell.targetSpanish') }} - {{ $t('settings.availableSoon') }}
             </option>
           </select>
         </fieldset>
@@ -219,7 +222,7 @@
     </div>
 
     <!-- Modal backdrop -->
-    <label class="modal-backdrop" @click="closeLanguageModal">Close</label>
+    <label class="modal-backdrop" @click="closeLanguageModal">{{ $t('mockExam.close') }}</label>
   </div>
 </template>
 
@@ -230,7 +233,13 @@ import { toLanguageOption, type LanguageOptions } from '~/utils/types'
 
 const settingsStore = useSettingsStore()
 const { targetLanguage } = storeToRefs(settingsStore)
-const { locale, setLocale } = useI18n()
+const { locale, locales, setLocale } = useI18n()
+
+const localeOptions = computed(() =>
+  locales.value.map(item =>
+    typeof item === 'string' ? { code: item, name: item } : { code: item.code, name: item.name ?? item.code }
+  )
+)
 
 // Theme management
 const { theme, setTheme, currentThemeIcon, availableThemes } = useTheme()

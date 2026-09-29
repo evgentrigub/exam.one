@@ -114,6 +114,7 @@ function getRecord(topicId: string): ModelAnswerRecord | null {
 }
 
 export function useModelAnswer() {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
   if (import.meta.client) void hydrateModelAnswers()
@@ -134,7 +135,7 @@ export function useModelAnswer() {
 
   function getModelAnswerError(topicId: string): string | null {
     const rec = getRecord(topicId)
-    return rec?.status === 'error' ? rec.error || 'Model answer generation is unavailable.' : null
+    return rec?.status === 'error' ? rec.error || t('generation.modelAnswerUnavailable') : null
   }
 
   function clearModelAnswer(topicId: string): void {
@@ -150,7 +151,7 @@ export function useModelAnswer() {
       topicId: topic.id,
     })
     if (!prompt) {
-      throw new Error(`No model-answer prompt is configured for writing part ${part}`)
+      throw new Error(t('generation.noModelAnswerPrompt', { part }))
     }
     return prompt
   }
@@ -210,7 +211,7 @@ export function useModelAnswer() {
             ...current,
             status: 'error',
             completedAt: new Date().toISOString(),
-            error: 'Failed to parse model answer from response',
+            error: t('generation.modelAnswerParseFailed'),
           })
         }
       }
@@ -222,7 +223,7 @@ export function useModelAnswer() {
           ...current,
           status: 'error',
           completedAt: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'Model answer generation is unavailable.',
+          error: error instanceof Error ? error.message : t('generation.modelAnswerUnavailable'),
         })
       }
     }

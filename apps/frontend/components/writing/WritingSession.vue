@@ -4,7 +4,7 @@
       <section class="bg-base-100 rounded-box border border-base-300/70 p-5 sm:p-7">
         <div class="flex items-center gap-2 text-base-content/70">
           <FileText :size="14" aria-hidden="true" />
-          <div class="text-sm font-semibold">Description</div>
+          <div class="text-sm font-semibold">{{ t('writing.common.description') }}</div>
         </div>
         <h2 class="font-display text-xl font-bold mt-3">{{ topic.title }}</h2>
         <div class="flex flex-wrap gap-2 mt-3">
@@ -12,19 +12,21 @@
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
           >
             <Clock :size="11" aria-hidden="true" />
-            {{ topic.estimatedTime }} minutes
+            {{ t('writing.common.minutes', { count: topic.estimatedTime }, topic.estimatedTime) }}
           </span>
           <span
             v-if="!isFormFill"
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
           >
             <Type :size="11" aria-hidden="true" />
-            {{ topic.wordCount.min }}–{{ topic.wordCount.max }} words
+            {{
+              t('writing.common.wordRange', { min: topic.wordCount.min, max: topic.wordCount.max })
+            }}
           </span>
           <span
             class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70 capitalize"
           >
-            Teil {{ topic.testingPart || 2 }} · {{ topic.topicType }}
+            {{ t('writing.common.partN', { n: topic.testingPart || 2 }) }} · {{ topic.topicType }}
           </span>
         </div>
         <p class="mt-4 text-[15px] text-base-content/80 leading-relaxed">{{ topic.description }}</p>
@@ -35,7 +37,7 @@
           v-if="!examMode"
           class="flex border-b border-base-300/70 px-3 overflow-x-auto"
           role="tablist"
-          aria-label="Writing support tabs"
+          :aria-label="t('writing.session.supportTabs')"
         >
           <button
             v-for="tab in tabs"
@@ -68,7 +70,7 @@
               {{ topic.task }}
             </div>
             <div>
-              <div class="text-sm font-semibold mb-2">Requirements</div>
+              <div class="text-sm font-semibold mb-2">{{ t('writing.requirements') }}</div>
               <ul class="space-y-1.5 text-[14px] text-base-content/80">
                 <li
                   v-for="requirement in topic.requirements"
@@ -85,7 +87,7 @@
               </ul>
             </div>
             <div v-if="writingTips.length && !examMode" class="pt-4 border-t border-base-300/70">
-              <div class="text-sm font-semibold mb-2">Writing tips</div>
+              <div class="text-sm font-semibold mb-2">{{ t('writing.common.writingTips') }}</div>
               <ul class="space-y-1.5 text-[13px] text-base-content/70">
                 <li v-for="tip in writingTips" :key="tip" class="flex items-start gap-2">
                   <Lightbulb :size="13" class="text-warning mt-0.5 shrink-0" aria-hidden="true" />
@@ -100,7 +102,7 @@
           <div v-else-if="activeTab === 'ai-review'" class="space-y-4">
             <div v-if="!isSubmitted" class="text-center py-8 text-sm text-base-content/60">
               <MessageSquare :size="22" class="mx-auto opacity-40 mb-2" aria-hidden="true" />
-              Submit your answer to see AI review here.
+              {{ t('writing.session.submitToSeeReview') }}
             </div>
 
             <div
@@ -108,14 +110,14 @@
               class="flex items-center gap-3 py-2 text-sm text-base-content/70"
             >
               <span class="loading loading-spinner loading-sm text-primary" aria-hidden="true" />
-              <span>AI review in progress…</span>
+              <span>{{ t('writing.session.reviewInProgress') }}</span>
             </div>
 
             <div v-else-if="reviewError" class="space-y-3">
               <div class="alert alert-warning items-start text-sm">
                 <AlertTriangle :size="16" class="shrink-0 mt-0.5" aria-hidden="true" />
                 <div class="min-w-0">
-                  <p class="font-medium">AI review unavailable</p>
+                  <p class="font-medium">{{ t('writing.common.reviewUnavailable') }}</p>
                   <p class="text-xs opacity-80">{{ reviewError }}</p>
                 </div>
               </div>
@@ -126,7 +128,7 @@
                 @click="handleRegenerate"
               >
                 <Sparkles :size="14" aria-hidden="true" />
-                Regenerate AI review
+                {{ t('writing.session.regenerateReview') }}
               </button>
             </div>
 
@@ -135,7 +137,9 @@
                 class="flex items-center gap-2 p-3 rounded-box bg-success/10 border border-success/20"
               >
                 <CheckCircle2 :size="14" class="text-success shrink-0" aria-hidden="true" />
-                <p class="text-sm font-medium text-success">AI review ready</p>
+                <p class="text-sm font-medium text-success">
+                  {{ t('writing.session.reviewReady') }}
+                </p>
               </div>
               <button
                 type="button"
@@ -143,12 +147,14 @@
                 @click="handleViewDetailedReview"
               >
                 <Sparkles :size="14" aria-hidden="true" />
-                View detailed AI review
+                {{ t('writing.session.viewDetailedReview') }}
               </button>
             </div>
 
             <div v-else class="space-y-3">
-              <p class="text-sm text-base-content/60 py-2">Preparing your review…</p>
+              <p class="text-sm text-base-content/60 py-2">
+                {{ t('writing.session.preparingReview') }}
+              </p>
               <button
                 type="button"
                 class="btn btn-outline btn-sm w-full gap-1.5 rounded-full"
@@ -156,7 +162,7 @@
                 @click="handleRegenerate"
               >
                 <Sparkles :size="14" aria-hidden="true" />
-                Regenerate AI review
+                {{ t('writing.session.regenerateReview') }}
               </button>
             </div>
           </div>
@@ -220,6 +226,8 @@ const props = withDefaults(defineProps<Props>(), {
   initialContent: '',
 })
 
+const { t } = useI18n()
+
 const emit = defineEmits<{
   complete: [topicId: string, content: string, wordCount: number, timeSpent: number]
   progress: [payload: { content: string; wordCount: number }]
@@ -241,11 +249,11 @@ const {
 type TabKey = 'prompt' | 'answer' | 'ai-review'
 
 const activeTab = ref<TabKey>('prompt')
-const tabs: { key: TabKey; label: string; icon: Component }[] = [
-  { key: 'prompt', label: 'AI Prompt', icon: Sparkles },
-  { key: 'answer', label: 'Ideal Answer', icon: Lightbulb },
-  { key: 'ai-review', label: 'AI Review', icon: MessageSquare },
-]
+const tabs = computed<{ key: TabKey; label: string; icon: Component }[]>(() => [
+  { key: 'prompt', label: t('writing.session.tabPrompt'), icon: Sparkles },
+  { key: 'answer', label: t('writing.session.tabIdealAnswer'), icon: Lightbulb },
+  { key: 'ai-review', label: t('writing.aiReview'), icon: MessageSquare },
+])
 
 const currentDraft = ref(props.initialContent)
 const isSubmitted = ref(false)

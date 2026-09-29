@@ -276,9 +276,8 @@ import { useSkillStats } from '~/composables/useSkillStats'
 import { useAccountProfile } from '~/composables/useAccountProfile'
 import { getSkillMeta, getSkillLabel, getTypeLabel, type SkillId } from '~/utils/labels'
 
-useHead({ title: 'Dashboard — Exam.one' })
-
 const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.dashboardTitle')} — Exam.one` })
 const router = useRouter()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)

@@ -52,7 +52,8 @@ import {
 import { resolveSettingsSection, type SettingsSectionId } from '~/data/account/settingsNav'
 
 usePageMeta('pageMeta.settingsTitle', 'pageMeta.settingsSubtitle')
-useHead({ title: 'Settings — Exam.one' })
+const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.settingsTitle')} — Exam.one` })
 
 const route = useRoute()
 const section = computed(() => resolveSettingsSection(route.query['section']))

@@ -9,7 +9,7 @@
             <Mic :size="12" />
             {{ sessionTitle }}
           </span>
-          <span class="level-pip">Teil {{ topic.testingPart }}</span>
+          <span class="level-pip">{{ t('exercisesUi.part') }} {{ topic.testingPart }}</span>
         </div>
         <h2 class="mb-2 text-lg font-semibold">{{ topic.theme }}</h2>
         <p class="text-sm text-base-content/60">{{ instruction }}</p>
@@ -37,7 +37,7 @@
 
       <div v-if="!examMode" class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft">
         <p class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
-          Useful phrases
+          {{ t('speaking.session.usefulPhrases') }}
         </p>
         <ul class="space-y-1.5">
           <li v-for="phrase in usefulPhrases" :key="phrase" class="flex items-start gap-2 text-sm">
@@ -57,23 +57,22 @@
           </span>
           <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
-              <p class="text-sm font-semibold">Speech-to-text</p>
+              <p class="text-sm font-semibold">{{ t('speaking.session.stt') }}</p>
               <span class="badge badge-sm" :class="healthStatusClass">
                 {{ healthStatusLabel }}
               </span>
             </div>
             <p class="mt-1 text-xs text-base-content/55">
-              {{ health?.detail || sttError || 'Checking the configured STT provider…' }}
+              {{ health?.detail || sttError || t('speaking.session.checkingProvider') }}
             </p>
             <p class="mt-1 text-[11px] text-base-content/45">
-              Using internal tool is optional. You can always use any whisper tools you would like.
-              Just don't type as a simple writing exercise. Your goal is speaking practice.
+              {{ t('speaking.session.sttHint') }}
             </p>
           </div>
           <button
             type="button"
             class="btn btn-ghost btn-xs btn-circle"
-            title="Check STT again"
+            :title="t('speaking.session.checkAgain')"
             :disabled="checkingHealth"
             @click="refreshHealth"
           >
@@ -116,7 +115,7 @@
             class="alert border border-info/30 bg-info/10 text-info"
           >
             <span class="loading loading-spinner loading-sm" />
-            <span class="text-sm">Transcribing your recording…</span>
+            <span class="text-sm">{{ t('speaking.session.transcribing') }}</span>
           </div>
 
           <div
@@ -128,7 +127,9 @@
           </div>
 
           <label class="form-control">
-            <span class="label-text mb-2 text-xs font-semibold">Editable transcript</span>
+            <span class="label-text mb-2 text-xs font-semibold">{{
+              t('speaking.session.editableTranscript')
+            }}</span>
             <textarea
               v-model="transcripts[segment.key]"
               class="textarea textarea-bordered min-h-32 w-full leading-relaxed"
@@ -148,7 +149,7 @@
 
       <div v-if="!submitted" class="rounded-box border border-base-300 bg-base-100 p-4 ring-soft">
         <p v-if="!canSubmit" class="mb-3 text-xs text-base-content/50">
-          Add a transcript for {{ missingTranscriptLabel }} before saving.
+          {{ t('speaking.session.missingTranscript', { items: missingTranscriptLabel }) }}
         </p>
         <div class="flex flex-col gap-2 sm:flex-row">
           <button
@@ -161,7 +162,7 @@
             @click="saveWithoutReview"
           >
             <Save :size="15" />
-            Save without AI
+            {{ t('speaking.session.saveWithoutAi') }}
           </button>
           <button
             type="button"
@@ -173,7 +174,13 @@
           >
             <span v-if="isReviewing" class="loading loading-spinner loading-sm" />
             <Sparkles v-else :size="15" />
-            {{ isReviewing ? 'Reviewing…' : examMode ? 'Submit for grading' : 'Review & save' }}
+            {{
+              isReviewing
+                ? t('speaking.session.reviewing')
+                : examMode
+                  ? t('speaking.session.submitForGrading')
+                  : t('speaking.session.reviewAndSave')
+            }}
           </button>
         </div>
       </div>
@@ -182,13 +189,16 @@
         <div class="border-b border-base-300 p-5">
           <div class="flex items-center gap-2">
             <CircleCheck :size="18" class="text-success" />
-            <h3 class="text-sm font-semibold">Practice saved</h3>
+            <h3 class="text-sm font-semibold">{{ t('speaking.session.saved') }}</h3>
           </div>
           <p class="mt-1 text-xs text-base-content/50">
             {{
               reviewData
-                ? `AI review: ${reviewData.totalPoints}/${reviewData.maxPoints} direct points.`
-                : 'Saved locally without AI review.'
+                ? t('speaking.session.aiReviewResult', {
+                    points: reviewData.totalPoints,
+                    max: reviewData.maxPoints,
+                  })
+                : t('speaking.session.savedLocally')
             }}
           </p>
         </div>
@@ -201,9 +211,11 @@
 
         <div class="flex gap-3 border-t border-base-300 p-4">
           <button class="btn btn-warning flex-1 text-warning-content" @click="retry">
-            Practice again
+            {{ t('speaking.session.practiceAgain') }}
           </button>
-          <button class="btn btn-ghost flex-1" @click="emit('finish')">Back to exercises</button>
+          <button class="btn btn-ghost flex-1" @click="emit('finish')">
+            {{ t('quiz.backToExercises') }}
+          </button>
         </div>
       </div>
     </div>
@@ -325,7 +337,9 @@ const recordingEpoch = ref(0)
 const sessionTitle = computed(
   () =>
     speakingPart.value?.sessionTitle ??
-    (props.topic.topicType === 'interview' ? 'Interview' : 'Monologue')
+    (props.topic.topicType === 'interview'
+      ? t('exerciseType.interview')
+      : t('exerciseType.monologue'))
 )
 /** A word-card or request-card exchange: one recording per card, cards shown inline. */
 const isCardExchange = computed(() => {
@@ -340,8 +354,8 @@ const instruction = computed(
   () =>
     speakingPart.value?.instruction ??
     (isInterview.value
-      ? 'First answer all four partner questions. Then make a second recording in which you ask all four questions.'
-      : 'Talk about the topic using all four keywords. Aim for a few connected sentences.')
+      ? t('speaking.session.instructionInterview')
+      : t('speaking.session.instructionMonologue'))
 )
 
 const promptGroups = computed(() => {
@@ -350,11 +364,11 @@ const promptGroups = computed(() => {
   if (isCardExchange.value || 'cards' in topic) return []
   if ('answerQuestions' in topic) {
     return [
-      { label: 'Phase A · Questions to answer', items: [...topic.answerQuestions] },
-      { label: 'Phase B · Questions to ask', items: [...topic.askQuestions] },
+      { label: t('speaking.session.phaseA'), items: [...topic.answerQuestions] },
+      { label: t('speaking.session.phaseB'), items: [...topic.askQuestions] },
     ]
   }
-  return [{ label: 'Keywords', items: [...topic.keywords] }]
+  return [{ label: t('speaking.session.keywords'), items: [...topic.keywords] }]
 })
 
 /** One recording per configured segment, each with its card and a round number per kind. */
@@ -384,16 +398,16 @@ const segments = computed<SessionSegment[]>(() => {
     return [
       {
         key: 'answers',
-        title: 'Answer the four questions',
-        description: 'Give short, complete answers in one recording.',
-        placeholder: 'Type or edit the transcript of your answers…',
+        title: t('speaking.session.answers.title'),
+        description: t('speaking.session.answers.description'),
+        placeholder: t('speaking.session.answers.placeholder'),
         maxSeconds: 90,
       },
       {
         key: 'questions',
-        title: 'Ask the four questions',
-        description: 'Read the questions naturally in a second recording.',
-        placeholder: 'Type or edit the transcript of your questions…',
+        title: t('speaking.session.questions.title'),
+        description: t('speaking.session.questions.description'),
+        placeholder: t('speaking.session.questions.placeholder'),
         maxSeconds: 90,
       },
     ]
@@ -401,18 +415,20 @@ const segments = computed<SessionSegment[]>(() => {
   return [
     {
       key: 'monologue',
-      title: 'Record your monologue',
-      description: `Cover all ${keywordCountLabel.value} keywords in connected sentences.`,
-      placeholder: 'Type or edit the transcript of your monologue…',
+      title: t('speaking.session.monologue.title'),
+      description: monologueDescription.value,
+      placeholder: t('speaking.session.monologue.placeholder'),
       maxSeconds: 90,
     },
   ]
 })
 
 /** A2 always shows four keywords and says so in words; other counts are shown as digits. */
-const keywordCountLabel = computed(() => {
+const monologueDescription = computed(() => {
   const count = 'keywords' in props.topic ? props.topic.keywords.length : 4
-  return count === 4 ? 'four' : String(count)
+  return count === 4
+    ? t('speaking.session.monologue.descriptionFour')
+    : t('speaking.session.monologue.description', { count })
 })
 
 const usefulPhrases = computed(() => [...(speakingPart.value?.phrases ?? [])])
@@ -436,25 +452,25 @@ const canSubmit = computed(() =>
 const missingTranscriptLabel = computed(() => {
   const missing = requiredSegmentKeys.value.filter(key => !transcripts[key]?.trim())
   const labels: Record<SegmentKey, string> = {
-    answers: 'the answers',
-    questions: 'the questions',
-    monologue: 'the monologue',
+    answers: t('speaking.session.missing.answers'),
+    questions: t('speaking.session.missing.questions'),
+    monologue: t('speaking.session.missing.monologue'),
   }
   const titles = Object.fromEntries(segments.value.map(segment => [segment.key, segment.title]))
-  return missing.map(key => labels[key] ?? titles[key] ?? key).join(' and ')
+  return missing.map(key => labels[key] ?? titles[key] ?? key).join(t('speaking.session.missing.and'))
 })
 const healthStatusLabel = computed(() => {
-  if (checkingHealth.value) return 'Checking'
-  if (!health.value) return 'Unavailable'
-  return health.value.ready ? 'Ready' : 'Offline'
+  if (checkingHealth.value) return t('mockExam.checking')
+  if (!health.value) return t('mockExam.unavailable')
+  return health.value.ready ? t('mockExam.ready') : t('speaking.session.offline')
 })
 const healthStatusClass = computed(() => {
   if (checkingHealth.value) return 'badge-ghost'
   return health.value?.ready ? 'badge-success' : 'badge-warning'
 })
 const recordingDisabledReason = computed(() => {
-  if (checkingHealth.value) return 'Checking speech-to-text availability…'
-  if (!health.value?.ready) return 'Recording requires an available speech-to-text tool.'
+  if (checkingHealth.value) return t('speaking.session.checkingAvailability')
+  if (!health.value?.ready) return t('speaking.session.requiresStt')
   return ''
 })
 
@@ -480,7 +496,7 @@ async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<v
   durations[key] = payload.durationSec
   transcriptionErrors[key] = null
   if (!payload.blob) {
-    transcriptionErrors[key] = 'No audio was captured. Enter the transcript manually or re-record.'
+    transcriptionErrors[key] = t('speaking.session.noAudio')
     return
   }
 
@@ -495,7 +511,7 @@ async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<v
     }
   } else {
     transcriptionErrors[key] =
-      sttError.value || 'Transcription failed. Enter the transcript manually.'
+      sttError.value || t('speaking.session.transcriptionFailed')
   }
 }
 

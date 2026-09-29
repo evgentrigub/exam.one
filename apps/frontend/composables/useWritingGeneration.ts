@@ -25,6 +25,7 @@ export interface WritingGenerationOptions {
 }
 
 export const useWritingGeneration = () => {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const { pack, assemble, generators } = usePackPrompt(requestPackId)
   const state = ref<GenerationState>({
@@ -144,7 +145,7 @@ export const useWritingGeneration = () => {
   const getPromptForPart = (part: 1 | 2, numberOfTopics = TOPICS_PER_PART): string => {
     const prompt = assemble('writing', part, 'generator', { count: numberOfTopics })
     if (!prompt) {
-      throw new Error(`No writing generator prompt is configured for part ${part}`)
+      throw new Error(t('generation.noPromptForPart', { part }))
     }
     return prompt
   }
@@ -185,7 +186,9 @@ export const useWritingGeneration = () => {
         const topics = response.data ?? []
 
         if (response.error || topics.length === 0) {
-          throw new Error(response.error || `No exercises generated for part ${part}`)
+          throw new Error(
+            response.error || t('generation.noExerciseForPart', { skill: t('skill.writing'), part })
+          )
         }
 
         generatedExercises.push(...topics)
@@ -200,7 +203,7 @@ export const useWritingGeneration = () => {
         }
       } catch (error: unknown) {
         const errorMessage =
-          error instanceof Error ? error.message : `Failed to generate part ${part}`
+          error instanceof Error ? error.message : t('generation.partFailed', { part })
         console.error(`Writing generation failed for part ${part}:`, error)
         updateJobStatus(part, 'failed', errorMessage)
         loopError = errorMessage
@@ -242,7 +245,7 @@ export const useWritingGeneration = () => {
     )
 
     if (partsToGenerate.length === 0) {
-      throw new Error('No valid writing parts to generate')
+      throw new Error(t('generation.noValidParts'))
     }
 
     state.value = {
@@ -265,7 +268,7 @@ export const useWritingGeneration = () => {
   ): Promise<WritingExercise[]> => {
     const difficulty = state.value.difficulty
     if (!difficulty) {
-      throw new Error('No generation state to resume')
+      throw new Error(t('generation.noStateToResume'))
     }
 
     state.value = {
@@ -285,7 +288,7 @@ export const useWritingGeneration = () => {
     onPartComplete?: (items: WritingExercise[]) => void
   ): Promise<WritingExercise[]> => {
     if (!state.value.difficulty) {
-      throw new Error('No failed generation to retry')
+      throw new Error(t('generation.noFailedToRetry'))
     }
 
     const difficulty = state.value.difficulty

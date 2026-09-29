@@ -1,6 +1,6 @@
 import { useSettingsStore } from '~/stores/settings'
 import type { AiResponse } from '@exam-one/contracts'
-import { refreshAccessCookie } from '~/composables/useApi'
+import { apiMessage, refreshAccessCookie } from '~/composables/useApi'
 
 function apiBaseUrl(): string {
   const config = useRuntimeConfig()
@@ -73,7 +73,10 @@ function envelopeFromCatch(error: unknown): AiResponse<never> {
     message?: string
   }
   const status = fetchError.statusCode ?? fetchError.status ?? 500
-  const fallback = status === 401 ? 'Please sign in again.' : fetchError.message || 'Request failed'
+  const fallback =
+    status === 401
+      ? apiMessage('errors.signInAgain', 'Please sign in again.')
+      : fetchError.message || apiMessage('errors.requestFailed', 'Request failed')
   return envelopeFromUnknown(fetchError.data, fallback)
 }
 

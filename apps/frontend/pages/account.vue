@@ -157,9 +157,9 @@ import {
 import { plans } from '~/data/account/plans'
 
 usePageMeta('pageMeta.accountTitle', 'pageMeta.accountSubtitle')
-useHead({ title: 'Account — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.accountTitle')} — Exam.one` })
 const { pack } = useActivePack()
 const { profile, initials, effectivePlan, memberSince, formatDate, setDemoPlan } =
   useAccountProfile()

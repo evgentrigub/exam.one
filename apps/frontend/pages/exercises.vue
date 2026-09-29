@@ -407,9 +407,9 @@ import { getSkillMeta, getSkillLabel, getTypeLabel } from '~/utils/labels'
 import GenerateExercisesModal from '~/components/exercises/GenerateExercisesModal.vue'
 
 usePageMeta('pageMeta.exercisesTitle', 'pageMeta.exercisesSubtitle')
-useHead({ title: 'Exercises — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.exercisesTitle')} — Exam.one` })
 const route = useRoute()
 const router = useRouter()
 const settingsStore = useSettingsStore()

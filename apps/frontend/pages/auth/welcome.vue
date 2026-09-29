@@ -6,5 +6,6 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'auth', auth: false })
-useHead({ title: 'You’re all set — Exam.one' })
+const { t } = useI18n()
+useHead({ title: () => `${t('auth.welcomeTitle')} — Exam.one` })
 </script>

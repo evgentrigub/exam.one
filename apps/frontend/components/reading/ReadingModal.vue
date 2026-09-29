@@ -17,7 +17,7 @@
         <div class="flex items-start gap-3 min-w-0">
           <button
             class="mt-1 w-9 h-9 rounded-full border border-base-300 hover:bg-base-200 grid place-items-center text-base-content/70 shrink-0"
-            aria-label="Back to reading selection"
+            :aria-label="t('practice.reading.backToSelection')"
             @click="$emit('close')"
           >
             <ArrowLeft :size="14" />
@@ -27,19 +27,26 @@
               class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-base-content/50 flex-wrap"
             >
               <BookOpen :size="11" />
-              Reading preview · {{ getTextTypeLabel(text.textType) }}
+              {{ t('reading.preview') }} · {{ getTypeLabel(text.textType, t) }}
             </div>
             <h2 class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content">
               {{ text.title }}
             </h2>
             <p class="text-sm text-base-content/60 mt-1">
-              {{ text.wordCount }} words · ~{{ text.estimatedReadingTime }} min read
+              {{
+                t('reading.wordsAndTime', {
+                  words: text.wordCount,
+                  minutes: text.estimatedReadingTime,
+                })
+              }}
             </p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end">
           <span class="level-pip">{{ text.difficulty }}</span>
-          <span v-if="text.testingPart" class="level-pip">Teil {{ text.testingPart }}</span>
+          <span v-if="text.testingPart" class="level-pip"
+            >{{ t('exercisesUi.part') }} {{ text.testingPart }}</span
+          >
         </div>
       </div>
 
@@ -48,7 +55,7 @@
         <div class="bg-base-100 border border-base-300/70 rounded-box p-5 sm:p-6">
           <div class="flex items-center gap-2 text-base-content/70 mb-4">
             <component :is="textTypeIcon" :size="14" />
-            <div class="text-sm font-semibold">Text</div>
+            <div class="text-sm font-semibold">{{ t('reading.text') }}</div>
           </div>
           <div
             class="h-[52vh] overflow-y-auto pr-1 leading-[1.75] text-[15px] text-base-content/85 whitespace-pre-line"
@@ -69,9 +76,11 @@
                 <HelpCircle :size="20" />
               </div>
               <div>
-                <h3 class="text-base font-semibold text-base-content">Ready for the questions?</h3>
+                <h3 class="text-base font-semibold text-base-content">
+                  {{ t('reading.readyTitle') }}
+                </h3>
                 <p class="text-sm text-base-content/70">
-                  Answer {{ text.questions?.length || 0 }} multiple-choice questions after reading.
+                  {{ t('reading.readyDescription', text.questions?.length || 0) }}
                 </p>
               </div>
             </div>
@@ -79,7 +88,7 @@
               class="btn btn-primary btn-sm gap-1.5 shrink-0"
               @click="$emit('start-quiz', text.id)"
             >
-              Start questions
+              {{ t('practice.reading.startQuestions') }}
               <ArrowRight :size="13" />
             </button>
           </div>
@@ -103,6 +112,7 @@ import {
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import type { ReadingExercise } from '~/utils/exercises/reading'
+import { getTypeLabel } from '~/utils/labels'
 
 interface Props {
   text: ReadingExercise
@@ -115,19 +125,9 @@ defineEmits<{
   'start-quiz': [textId: string]
 }>()
 
-const textTypeIcon = computed<Component>(() => getTextTypeIcon(props.text.textType))
+const { t } = useI18n()
 
-function getTextTypeLabel(type: string) {
-  const labels: Record<string, string> = {
-    email: 'Personal email',
-    notice: 'Information notice',
-    article: 'Article',
-    advertisement: 'Advertisement',
-    instructions: 'Instructions',
-    announcement: 'Announcement',
-  }
-  return labels[type] || type
-}
+const textTypeIcon = computed<Component>(() => getTextTypeIcon(props.text.textType))
 
 function getTextTypeIcon(type: string): Component {
   const icons: Record<string, Component> = {

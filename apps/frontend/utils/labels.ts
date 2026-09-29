@@ -85,13 +85,7 @@ export function getTypeLabel(type: string, t: TranslateFn): string {
 export function getStatusLabel(status: ExerciseStatus, t: TranslateFn): string {
   const key = `status.${status}`
   const label = t(key)
-  if (label !== key) return label
-  const fallback: Record<ExerciseStatus, string> = {
-    new: 'New',
-    inprogress: 'In progress',
-    mastered: 'Mastered',
-  }
-  return fallback[status]
+  return label === key ? t('status.new') : label
 }
 
 export function getStatusClass(status: ExerciseStatus): string {

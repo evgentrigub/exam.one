@@ -25,8 +25,9 @@ import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import { useListeningExercises } from '~/composables/useListeningExercises'
 import ListeningSession from '~/components/listening/ListeningSession.vue'
 
-usePageMeta('Listening Exercise', 'Listening')
+usePageMeta('pageMeta.listeningExerciseTitle', 'skill.listening')
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { getExerciseById } = useListeningExercises()
@@ -47,11 +48,11 @@ const subtitle = computed(() => {
   const e = exercise.value
   const qCount = 'items' in e ? (e.items?.length ?? 0) : 'questions' in e ? (e.questions?.length ?? 0) : 0
   const part = partsFor('listening').find(item => item.n === e.testingPart)
-  return `${part?.practiceSubtitle ?? 'Listening'} · ${qCount} questions`
+  return `${part?.practiceSubtitle ?? t('skill.listening')} · ${t('pages.common.questionCount', qCount)}`
 })
 
 watchEffect(() => {
-  if (exercise.value) usePageMeta(exercise.value.title, 'Listening')
+  if (exercise.value) usePageMeta(exercise.value.title, 'skill.listening')
 })
 
 function goBack() {
@@ -59,7 +60,10 @@ function goBack() {
 }
 
 useHead({
-  title: computed(() => (exercise.value ? `${exercise.value.title} – Listening` : 'Listening')),
+  title: () =>
+    exercise.value
+      ? `${exercise.value.title} – ${t('skill.listening')}`
+      : t('pageMeta.listeningExerciseTitle'),
 })
 definePageMeta({ preload: false })
 </script>

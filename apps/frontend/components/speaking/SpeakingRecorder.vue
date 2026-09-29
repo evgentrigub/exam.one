@@ -5,7 +5,11 @@
       <button
         type="button"
         class="w-20 h-20 mx-auto rounded-full bg-warning text-warning-content flex items-center justify-center shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warning disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-        :title="disabled ? disabledReason || 'Recording unavailable' : 'Start recording'"
+        :title="
+          disabled
+            ? disabledReason || t('speaking.recorder.unavailable')
+            : t('speaking.recorder.start')
+        "
         :disabled="starting || !!disabled"
         @click="start"
       >
@@ -15,19 +19,21 @@
       <p class="text-sm font-medium mt-4">
         {{
           starting
-            ? 'Requesting microphone access…'
+            ? t('speaking.recorder.requestingMic')
             : disabled
-              ? disabledReason || 'Recording unavailable'
-              : 'Tap to start recording'
+              ? disabledReason || t('speaking.recorder.unavailable')
+              : t('speaking.recorder.tapToStart')
         }}
       </p>
-      <p class="text-xs text-base-content/50 mt-1">Record for up to {{ maxSeconds }} seconds</p>
+      <p class="text-xs text-base-content/50 mt-1">
+        {{ t('speaking.recorder.maxDuration', { seconds: maxSeconds }) }}
+      </p>
       <div
         v-if="recorderError"
         class="alert mt-4 border border-warning/30 bg-warning/10 text-left text-sm"
       >
         <TriangleAlert :size="16" class="shrink-0 text-warning" />
-        <span>{{ recorderError }} You can still enter the transcript manually below.</span>
+        <span>{{ t('speaking.recorder.errorWithHint', { error: recorderError }) }}</span>
       </div>
     </template>
 
@@ -38,7 +44,7 @@
         <button
           type="button"
           class="relative w-20 h-20 rounded-full bg-error text-error-content flex items-center justify-center shadow-lg"
-          title="Stop recording"
+          :title="t('speaking.recorder.stop')"
           @click="stop"
         >
           <Square :size="26" />
@@ -58,7 +64,9 @@
       >
         <Check :size="28" />
       </div>
-      <p class="text-sm font-medium mt-3">Recording complete · {{ fmt(seconds) }}</p>
+      <p class="text-sm font-medium mt-3">
+        {{ t('speaking.recorder.complete', { time: fmt(seconds) }) }}
+      </p>
       <audio
         ref="audioPlayer"
         :src="audioUrl || ''"
@@ -73,12 +81,12 @@
           type="button"
           class="btn btn-sm btn-outline gap-1.5"
           :disabled="!audioUrl"
-          :title="audioUrl ? 'Play back' : 'Playback unavailable'"
+          :title="audioUrl ? t('speaking.recorder.playBack') : t('speaking.recorder.playbackUnavailable')"
           @click="togglePlayback"
         >
           <Pause v-if="isPlaying" :size="14" />
           <Play v-else :size="14" />
-          {{ isPlaying ? 'Pause' : 'Play back' }}
+          {{ isPlaying ? t('speaking.recorder.pause') : t('speaking.recorder.playBack') }}
         </button>
         <button
           type="button"
@@ -87,7 +95,7 @@
           @click="reset"
         >
           <RotateCcw :size="14" />
-          Re-record
+          {{ t('speaking.recorder.reRecord') }}
         </button>
       </div>
       <p v-if="playbackError" class="mt-3 text-xs text-error">{{ playbackError }}</p>
@@ -110,6 +118,8 @@ const emit = defineEmits<{
   done: [payload: { durationSec: number; audioUrl: string | null; blob: Blob | null }]
   recordingChange: [isRecording: boolean]
 }>()
+
+const { t } = useI18n()
 
 type Phase = 'ready' | 'recording' | 'done'
 const phase = ref<Phase>('ready')
@@ -167,7 +177,7 @@ async function start() {
     !navigator.mediaDevices?.getUserMedia ||
     !('MediaRecorder' in window)
   ) {
-    recorderError.value = 'Audio recording is not supported in this browser.'
+    recorderError.value = t('speaking.recorder.errors.unsupported')
     return
   }
 
@@ -191,7 +201,7 @@ async function start() {
       stopTimer()
       releaseStream()
       phase.value = 'ready'
-      recorderError.value = 'The browser could not finish the audio recording.'
+      recorderError.value = t('speaking.recorder.errors.recordingFailed')
       emit('recordingChange', false)
     }
     recorder.onstop = () => {
@@ -200,7 +210,7 @@ async function start() {
       if (!chunks.length) {
         releaseStream()
         phase.value = 'ready'
-        recorderError.value = 'No audio was captured.'
+        recorderError.value = t('speaking.recorder.errors.noAudio')
         emit('recordingChange', false)
         return
       }
@@ -237,7 +247,7 @@ function stop() {
   } else {
     releaseStream()
     phase.value = 'ready'
-    recorderError.value = 'The browser stopped the recording before audio was captured.'
+    recorderError.value = t('speaking.recorder.errors.stoppedEarly')
     emit('recordingChange', false)
   }
 }
@@ -270,7 +280,7 @@ async function togglePlayback(): Promise<void> {
     await player.play()
   } catch {
     isPlaying.value = false
-    playbackError.value = 'The browser could not play this recording.'
+    playbackError.value = t('speaking.recorder.errors.playbackFailed')
   }
 }
 
@@ -285,11 +295,11 @@ function stopPlayback(): void {
 
 function onPlaybackError(): void {
   isPlaying.value = false
-  playbackError.value = 'The browser could not play this recording.'
+  playbackError.value = t('speaking.recorder.errors.playbackFailed')
 }
 
 function releaseStream() {
-  stream?.getTracks().forEach(t => t.stop())
+  stream?.getTracks().forEach(track => track.stop())
   stream = null
   mediaRecorder = null
 }
@@ -297,13 +307,13 @@ function releaseStream() {
 function microphoneErrorMessage(error: unknown): string {
   if (error instanceof DOMException) {
     if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
-      return 'Microphone access was denied.'
+      return t('speaking.recorder.errors.micDenied')
     }
     if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-      return 'No microphone was found.'
+      return t('speaking.recorder.errors.micNotFound')
     }
   }
-  return 'The microphone could not be started.'
+  return t('speaking.recorder.errors.micFailed')
 }
 
 onUnmounted(() => {

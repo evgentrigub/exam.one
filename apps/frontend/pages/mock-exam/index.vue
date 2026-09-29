@@ -11,7 +11,7 @@
       <p v-if="pack.createMockSet" class="mt-1 text-sm text-base-content/60">{{ $t('mockExam.listDescription', { exam: pack.title }) }}</p>
     </div>
 
-    <p v-if="!pack.createMockSet" class="alert">Mock exams are not available for this exam pack.</p>
+    <p v-if="!pack.createMockSet" class="alert">{{ $t('mockExam.notAvailableForPack') }}</p>
     <ClientOnly v-else>
       <div class="grid gap-5 lg:grid-cols-2">
         <MockExamSetCard v-for="set in sets" :key="set.id" :set="set" @delete="deleteSet" />
@@ -61,8 +61,10 @@
 <script setup lang="ts">
 import { FileCheck2, Plus, Sparkles } from 'lucide-vue-next'
 
-usePageMeta('Mock exams', 'Exam simulations and availability')
-useHead({ title: 'Mock exams' })
+const { t } = useI18n()
+
+usePageMeta('mockExam.title', 'pageMeta.mockExamsSubtitle')
+useHead({ title: () => t('mockExam.title') })
 
 const { pack } = useActivePack()
 const preflightOpen = ref(false)

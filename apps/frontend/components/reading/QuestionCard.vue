@@ -41,8 +41,8 @@
       <span :class="isCorrect ? 'text-success' : 'text-error'">
         {{
           isCorrect
-            ? 'Correct!'
-            : `Correct answer: ${optionLabel(question.correctAnswer)}`
+            ? t('quiz.correct')
+            : t('quiz.correctAnswer', { answer: optionLabel(question.correctAnswer) })
         }}
       </span>
       <span v-if="question.explanation" class="text-base-content/50">{{
@@ -67,6 +67,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { showFeedback: true, trueFalse: false })
+
+const { t } = useI18n()
 
 function optionLabel(index: number): string {
   return props.trueFalse

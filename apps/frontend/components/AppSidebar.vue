@@ -7,7 +7,7 @@
       :href="landingUrl"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Open the Exam.one landing page"
+      :aria-label="$t('shell.openLanding')"
       class="flex items-center gap-2.5 px-4 h-14 shrink-0 border-b border-base-300 transition-colors hover:bg-base-200"
     >
       <div class="w-7 h-7 rounded-field bg-primary text-primary-content grid place-items-center shrink-0">

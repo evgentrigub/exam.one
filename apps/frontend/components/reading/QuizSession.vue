@@ -3,13 +3,13 @@
     <!-- Questions list -->
     <div class="bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 sm:p-7">
       <div class="flex items-center gap-2">
-        <h2 class="font-display text-xl font-bold text-base-content">Questions</h2>
+        <h2 class="font-display text-xl font-bold text-base-content">{{ t('reading.questions') }}</h2>
         <span class="ml-auto text-xs text-base-content/60">
-          {{ answeredCount }} of {{ questions.length }} answered
+          {{ t('reading.answeredCount', { answered: answeredCount, total: questions.length }) }}
         </span>
       </div>
       <p class="text-sm text-base-content/60 mt-1">
-        Read the text and choose the best answer for each question.
+        {{ t('reading.quizInstructions') }}
       </p>
 
       <div class="mt-5 space-y-6">
@@ -31,7 +31,7 @@
         class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap"
       >
         <button class="btn btn-ghost btn-sm" @click="saveAndExit">
-          {{ examMode ? 'Back to module' : 'Save & Exit' }}
+          {{ examMode ? t('reading.backToModule') : t('writing.formFill.saveAndExit') }}
         </button>
         <button
           v-if="!isFinished"
@@ -39,12 +39,12 @@
           :disabled="!allAnswered"
           @click="finishQuiz"
         >
-          Submit Answers
+          {{ t('reading.submitAnswers') }}
           <ArrowRight :size="12" />
         </button>
         <div v-else-if="!examMode" class="flex-1 flex items-center gap-3 flex-wrap">
           <div class="text-sm">
-            Score:
+            {{ t('quiz.scoreLabel') }}
             <b class="font-mono" :class="getScoreTextColor()"
               >{{ score }} / {{ questions.length }}</b
             >
@@ -52,10 +52,10 @@
           </div>
           <button class="btn btn-outline btn-sm gap-1 sm:ml-auto" @click="restartQuiz">
             <RotateCcw :size="12" />
-            Retry
+            {{ t('generation.retry') }}
           </button>
           <button class="btn btn-primary btn-sm gap-1" @click="$emit('finish')">
-            Back
+            {{ t('quiz.back') }}
             <ArrowRight :size="12" />
           </button>
         </div>
@@ -81,7 +81,7 @@
           {{ score }}/{{ questions.length }}
         </div>
         <div class="text-sm text-base-content/60">
-          {{ scorePercentage }}% correct · {{ getScoreMessage() }}
+          {{ t('quiz.percentCorrect', { percent: scorePercentage, message: getScoreMessage() }) }}
         </div>
       </div>
 
@@ -100,12 +100,14 @@
             <X v-else :size="14" />
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-base-content/60 mb-0.5">Question {{ index + 1 }}</p>
+            <p class="text-xs font-medium text-base-content/60 mb-0.5">
+              {{ t('quiz.question') }} {{ index + 1 }}
+            </p>
             <p class="text-sm">{{ questions[index]?.question }}</p>
             <p v-if="!result.isCorrect" class="text-xs text-base-content/50 mt-1">
-              Your answer:
+              {{ t('quiz.yourAnswer') }}
               <strong>{{ formatAnswerLabel(result.selectedAnswer, questions[index]?.options) }}</strong>
-              · Correct:
+              · {{ t('quiz.correctLabel') }}
               <strong>{{
                 formatAnswerLabel(questions[index]?.correctAnswer ?? 0, questions[index]?.options)
               }}</strong>
@@ -116,8 +118,12 @@
 
       <!-- Actions -->
       <div class="p-4 border-t border-base-300 flex gap-3 flex-wrap sm:flex-nowrap">
-        <button class="btn btn-primary flex-1" @click="restartQuiz">Try again</button>
-        <button class="btn btn-ghost flex-1" @click="$emit('finish')">Back to exercises</button>
+        <button class="btn btn-primary flex-1" @click="restartQuiz">
+          {{ t('quiz.tryAgain') }}
+        </button>
+        <button class="btn btn-ghost flex-1" @click="$emit('finish')">
+          {{ t('quiz.backToExercises') }}
+        </button>
       </div>
     </div>
   </div>
@@ -154,6 +160,7 @@ const emit = defineEmits<{
   ]
 }>()
 
+const { t } = useI18n()
 const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
 
 const isFinished = ref(false)
@@ -258,9 +265,9 @@ function getScoreTextColor() {
 }
 
 function getScoreMessage() {
-  if (scorePercentage.value >= 90) return 'Excellent!'
-  if (scorePercentage.value >= 75) return 'Well done!'
-  if (scorePercentage.value >= 50) return 'Keep practicing!'
-  return "Don't give up!"
+  if (scorePercentage.value >= 90) return t('quiz.excellent')
+  if (scorePercentage.value >= 75) return t('quiz.wellDone')
+  if (scorePercentage.value >= 50) return t('quiz.keepPracticing')
+  return t('quiz.dontGiveUp')
 }
 </script>

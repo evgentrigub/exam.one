@@ -90,6 +90,7 @@ function getRecord(topicId: string): WritingReviewRecord | null {
 }
 
 export function useWritingReview() {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
   if (import.meta.client) void hydrateReviews()
@@ -111,7 +112,7 @@ export function useWritingReview() {
 
   function getReviewError(topicId: string): string | null {
     const rec = getRecord(topicId)
-    return rec?.status === 'error' ? rec.error || 'AI review is unavailable.' : null
+    return rec?.status === 'error' ? rec.error || t('errors.aiReviewUnavailable') : null
   }
 
   function clearReview(topicId: string): void {
@@ -135,7 +136,7 @@ export function useWritingReview() {
       topicId: topic.id,
     })
     if (!prompt) {
-      throw new Error(`No writing review prompt is configured for part ${part}`)
+      throw new Error(t('errors.reviewPromptMissing', { part }))
     }
     return prompt
   }
@@ -201,7 +202,7 @@ export function useWritingReview() {
           ...current,
           status: 'error',
           completedAt: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'AI review is unavailable.',
+          error: error instanceof Error ? error.message : t('errors.aiReviewUnavailable'),
         })
       }
     }

@@ -15,7 +15,7 @@
           autocomplete="name"
           :placeholder="$t('auth.namePlaceholder')"
           :error="errors.name"
-          @blur="errors.name = validateRequired(name, $t('auth.name'))"
+          @blur="errors.name = validateRequired(name, t, t('auth.name'))"
         />
 
         <AuthField
@@ -27,7 +27,7 @@
           autocomplete="email"
           :placeholder="$t('auth.emailPlaceholder')"
           :error="errors.email"
-          @blur="errors.email = validateEmail(email)"
+          @blur="errors.email = validateEmail(email, t)"
         />
 
         <div>
@@ -38,7 +38,7 @@
             autocomplete="new-password"
             :placeholder="$t('auth.passwordMin')"
             :error="errors.password"
-            @blur="errors.password = validatePassword(password)"
+            @blur="errors.password = validatePassword(password, t)"
           />
           <AuthStrength v-if="password && !errors.password" :score="strength" />
         </div>
@@ -80,9 +80,9 @@ import {
 } from '~/utils/authValidation'
 
 definePageMeta({ layout: false, auth: false })
-useHead({ title: 'Create account — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.registerTitle')} — Exam.one` })
 const { register, loadConfig } = useAuth()
 
 const name = ref('')
@@ -110,9 +110,9 @@ onMounted(() => {
 })
 
 async function submit() {
-  errors.name = validateRequired(name.value, t('auth.name'))
-  errors.email = validateEmail(email.value)
-  errors.password = validatePassword(password.value)
+  errors.name = validateRequired(name.value, t, t('auth.name'))
+  errors.email = validateEmail(email.value, t)
+  errors.password = validatePassword(password.value, t)
   if (errors.name || errors.email || errors.password || !agree.value) return
 
   loading.value = true

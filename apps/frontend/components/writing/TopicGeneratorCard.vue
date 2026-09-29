@@ -4,24 +4,32 @@
       <div class="alert alert-error items-start">
         <AlertCircle :size="18" class="shrink-0 mt-0.5" aria-hidden="true" />
         <div>
-          <h3 class="font-bold">Generation failed</h3>
+          <h3 class="font-bold">{{ t('generation.failed') }}</h3>
           <div class="text-sm">{{ generationError }}</div>
         </div>
       </div>
       <div class="flex gap-2">
-        <button class="btn btn-primary btn-sm" type="button" @click="$emit('retry')">Retry</button>
+        <button class="btn btn-primary btn-sm" type="button" @click="$emit('retry')">
+          {{ t('generation.retry') }}
+        </button>
         <button class="btn btn-ghost btn-sm" type="button" @click="$emit('dismiss')">
-          Dismiss
+          {{ t('generation.dismiss') }}
         </button>
       </div>
     </div>
 
     <div v-else-if="isGenerating" class="py-7 text-center">
       <span class="loading loading-spinner loading-md text-primary mb-4" />
-      <h3 class="text-lg font-bold text-base-content mb-2">Generating topics...</h3>
+      <h3 class="text-lg font-bold text-base-content mb-2">
+        {{ t('writing.topicGenerator.generating') }}
+      </h3>
       <p class="text-sm text-base-content/70">
-        Creating {{ generatingPart === 1 ? 'Teil 1' : 'Teil 2' }} {{ currentDifficulty }} writing
-        exercises.
+        {{
+          t('writing.topicGenerator.creating', {
+            part: t('writing.common.partN', { n: generatingPart === 1 ? 1 : 2 }),
+            level: currentDifficulty,
+          })
+        }}
       </p>
     </div>
 
@@ -32,10 +40,11 @@
         <Sparkles :size="22" aria-hidden="true" />
       </div>
       <div class="flex-1 min-w-0">
-        <h3 class="font-display text-lg font-bold">Generate new writing topics</h3>
+        <h3 class="font-display text-lg font-bold">
+          {{ t('writing.topicGenerator.title') }}
+        </h3>
         <p class="text-sm text-base-content/60 mt-1">
-          AI can create fresh {{ currentDifficulty }} prompts. Core writing practice still works
-          offline.
+          {{ t('writing.topicGenerator.description', { level: currentDifficulty }) }}
         </p>
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
@@ -45,7 +54,7 @@
           @click="$emit('generate', 1)"
         >
           <Plus :size="14" aria-hidden="true" />
-          Teil 1
+          {{ t('writing.common.partN', { n: 1 }) }}
         </button>
         <button
           class="btn btn-outline btn-sm rounded-full gap-2"
@@ -53,7 +62,7 @@
           @click="$emit('generate', 2)"
         >
           <Plus :size="14" aria-hidden="true" />
-          Teil 2
+          {{ t('writing.common.partN', { n: 2 }) }}
         </button>
       </div>
     </div>
@@ -71,6 +80,7 @@ interface Props {
 }
 
 defineProps<Props>()
+const { t } = useI18n()
 
 defineEmits<{
   generate: [part: 1 | 2]

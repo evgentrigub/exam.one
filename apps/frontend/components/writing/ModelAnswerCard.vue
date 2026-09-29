@@ -2,15 +2,15 @@
   <div class="space-y-4 text-sm">
     <div v-if="isLoading" class="text-center py-8 text-base-content/60">
       <span class="loading loading-spinner loading-md text-primary mb-3" />
-      <p>Generating an ideal answer...</p>
+      <p>{{ t('writing.modelAnswer.generatingIdeal') }}</p>
     </div>
 
     <div v-else-if="modelAnswer" class="space-y-4">
       <div class="flex items-center gap-2">
         <Lightbulb :size="15" class="text-warning" aria-hidden="true" />
-        <div class="font-semibold">Ideal answer</div>
+        <div class="font-semibold">{{ t('writing.modelAnswer.idealAnswer') }}</div>
         <span class="ml-auto text-xs px-2 py-1 rounded-full bg-base-200 text-base-content/70">
-          {{ modelAnswer.wordCount }} words
+          {{ t('writing.common.words', { count: modelAnswer.wordCount }, modelAnswer.wordCount) }}
         </span>
       </div>
 
@@ -22,7 +22,7 @@
 
       <div v-if="highlights.length" class="space-y-2">
         <div class="text-xs font-semibold uppercase tracking-wider text-base-content/50">
-          What works well
+          {{ t('writing.modelAnswer.whatWorksWell') }}
         </div>
         <div
           v-for="highlight in highlights"
@@ -50,7 +50,9 @@
 
     <div v-else-if="errorMessage" class="text-center py-8">
       <Lightbulb :size="24" class="mx-auto text-base-content/30 mb-3" aria-hidden="true" />
-      <p class="text-sm font-semibold text-base-content/75">Ideal answer unavailable</p>
+      <p class="text-sm font-semibold text-base-content/75">
+        {{ t('writing.modelAnswer.unavailable') }}
+      </p>
       <p class="text-sm text-base-content/60 mt-1">{{ errorMessage }}</p>
       <button
         type="button"
@@ -58,17 +60,17 @@
         @click="handleGenerateModelAnswer"
       >
         <Sparkles :size="14" aria-hidden="true" />
-        Try again
+        {{ t('quiz.tryAgain') }}
       </button>
       <p class="text-[11px] text-base-content/50 mt-3">
-        You can continue writing and submit without an AI example.
+        {{ t('writing.modelAnswer.continueWithout') }}
       </p>
     </div>
 
     <div v-else class="text-center py-8">
       <Lightbulb :size="24" class="mx-auto text-base-content/30 mb-3" aria-hidden="true" />
       <p class="text-sm text-base-content/60 mb-4">
-        Generate an optional model answer for this task.
+        {{ t('writing.modelAnswer.generatePrompt') }}
       </p>
       <button
         type="button"
@@ -76,10 +78,10 @@
         @click="handleGenerateModelAnswer"
       >
         <Sparkles :size="14" aria-hidden="true" />
-        Generate ideal answer
+        {{ t('writing.modelAnswer.generateIdeal') }}
       </button>
       <p class="text-[11px] text-base-content/50 mt-3">
-        AI is optional. You can continue writing without this example.
+        {{ t('writing.modelAnswer.optionalHint') }}
       </p>
     </div>
   </div>
@@ -95,6 +97,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { t } = useI18n()
 
 const {
   getModelAnswer,
@@ -123,10 +126,10 @@ const highlights = computed(() => {
   const data = modelAnswer.value?.highlights
   if (!data) return []
   return [
-    data.greeting ? { label: 'Greeting', value: data.greeting } : null,
-    data.closing ? { label: 'Closing', value: data.closing } : null,
+    data.greeting ? { label: t('writing.modelAnswer.greeting'), value: data.greeting } : null,
+    data.closing ? { label: t('writing.modelAnswer.closing'), value: data.closing } : null,
     ...(data.mainPoints || []).map((point, index) => ({
-      label: `Point ${index + 1}`,
+      label: t('writing.modelAnswer.pointN', { n: index + 1 }),
       value: point,
     })),
   ].filter((item): item is { label: string; value: string } => item !== null)

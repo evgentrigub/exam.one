@@ -16,7 +16,7 @@
           autocomplete="new-password"
           :placeholder="$t('auth.passwordMin')"
           :error="errors.password"
-          @blur="errors.password = validatePassword(password)"
+          @blur="errors.password = validatePassword(password, t)"
         />
         <AuthStrength v-if="password && !errors.password" :score="strength" />
       </div>
@@ -47,9 +47,9 @@ import { ApiClientError } from '~/composables/useApi'
 import { passwordStrength, validatePassword } from '~/utils/authValidation'
 
 definePageMeta({ layout: 'auth', auth: false })
-useHead({ title: 'Reset password — Exam.one' })
 
 const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.resetPasswordTitle')} — Exam.one` })
 const route = useRoute()
 const { resetPassword } = useAuth()
 
@@ -74,7 +74,7 @@ function confirmError(value: string): string {
 }
 
 async function submit() {
-  errors.password = validatePassword(password.value)
+  errors.password = validatePassword(password.value, t)
   errors.confirm = confirmError(confirm.value)
   if (errors.password || errors.confirm || !token.value) {
     if (!token.value) formError.value = t('auth.invalidResetLink')

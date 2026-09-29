@@ -5,6 +5,7 @@ import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 type SpeakingReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
 export function useSpeakingReview() {
+  const { t } = useI18n()
   const requestPackId = useSettingsStore().packId
   const { aiFetch } = usePackRequest(requestPackId)
   const status = ref<SpeakingReviewStatus>('idle')
@@ -27,9 +28,9 @@ export function useSpeakingReview() {
     const missing = segments.some(segment => !values[segment.id]?.trim())
     if (!missing) return
     const ids = segments.map(segment => segment.id).join(',')
-    if (ids === 'answers,questions') throw new Error('Both Teil 1 transcripts are required for AI review.')
-    if (ids === 'monologue') throw new Error('A monologue transcript is required for AI review.')
-    throw new Error('Every transcript is required for AI review.')
+    if (ids === 'answers,questions') throw new Error(t('errors.teil1TranscriptsRequired'))
+    if (ids === 'monologue') throw new Error(t('errors.monologueTranscriptRequired'))
+    throw new Error(t('errors.allTranscriptsRequired'))
   }
 
   async function requestReview(
@@ -49,7 +50,7 @@ export function useSpeakingReview() {
       })
 
       if (response.error || !response.data) {
-        throw new Error(response.error || 'AI review is unavailable.')
+        throw new Error(response.error || t('errors.aiReviewUnavailable'))
       }
 
       review.value = response.data
@@ -57,7 +58,7 @@ export function useSpeakingReview() {
       return response.data
     } catch (requestError: unknown) {
       error.value =
-        requestError instanceof Error ? requestError.message : 'AI review is unavailable.'
+        requestError instanceof Error ? requestError.message : t('errors.aiReviewUnavailable')
       status.value = 'error'
       return null
     }

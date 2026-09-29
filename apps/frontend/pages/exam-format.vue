@@ -217,7 +217,8 @@ import type { SkillId } from '~/utils/labels'
 import StructureStat from '~/components/examFormat/StructureStat.vue'
 
 usePageMeta('pageMeta.examFormatTitle', 'pageMeta.examFormatSubtitle')
-useHead({ title: 'Exam format — Exam.one' })
+const { t } = useI18n()
+useHead({ title: () => `${t('pageMeta.examFormatTitle')} — Exam.one` })
 
 const router = useRouter()
 

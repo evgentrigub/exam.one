@@ -19,6 +19,7 @@
     "lint:fix": "pnpm --recursive lint:fix",
     "format": "prettier --write . \"!graphify-out/**\" \"!scripts/**\"",
     "type-check": "pnpm --recursive type-check",
+    "i18n:check": "node scripts/check-locale-parity.mjs",
     "test": "pnpm --recursive test",
     "test:full": "pnpm test:frontend && pnpm test:backend && pnpm test:e2e",
     "test:all": "pnpm test:frontend && pnpm test:backend",

@@ -257,7 +257,7 @@ import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.v
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
 import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
 import type { MockExamSet } from '@exam-one/exam-packs'
-import { UNAVAILABLE_MOCK_SET } from '~/utils/mockExam/unavailableSet'
+import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
 import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
 import type { WritingExercise } from '~/utils/types'
 import {
@@ -287,7 +287,7 @@ const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const { pack, labelFor } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
 const set = computed(
-  (): MockExamSet => foundSet.value ?? pack.value.bundledMockSet ?? UNAVAILABLE_MOCK_SET
+  (): MockExamSet => foundSet.value ?? pack.value.bundledMockSet ?? createUnavailableMockSet(t)
 )
 const { state, isInitialized: examInitialized } = useMockExam(set)
 
@@ -300,8 +300,8 @@ const scoreLabel = computed(() => {
   return `${score === null || score === undefined ? '—' : Number(score.toFixed(2))}/${moduleDefinition.value?.maxFinalPoints ?? 0}`
 })
 
-usePageMeta('Mock exam review', 'Review completed mock exam exercises')
-useHead({ title: computed(() => `${t(`skill.${skill}`)} – ${t('mockExam.review')}`) })
+usePageMeta('pageMeta.mockExamReviewTitle', 'pageMeta.mockExamReviewSubtitle')
+useHead({ title: () => `${t(`skill.${skill}`)} – ${t('mockExam.review')}` })
 
 function response(exerciseId: string) {
   return moduleState.value?.responses[exerciseId]

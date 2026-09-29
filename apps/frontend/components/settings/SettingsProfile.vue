@@ -15,7 +15,7 @@
           :icon="User"
           autocomplete="name"
           :error="errors.name"
-          @blur="errors.name = validateRequired(name, $t('settings.fullName'))"
+          @blur="errors.name = validateRequired(name, t, t('settings.fullName'))"
         />
         <AuthField
           id="set_email"
@@ -25,7 +25,7 @@
           type="email"
           autocomplete="email"
           :error="errors.email"
-          @blur="errors.email = validateEmail(email)"
+          @blur="errors.email = validateEmail(email, t)"
         >
           <template #labelSuffix>
             <BadgeCheck
@@ -69,8 +69,8 @@ watch(
 
 async function onSave() {
   error.value = ''
-  errors.name = validateRequired(name.value, t('settings.fullName'))
-  errors.email = validateEmail(email.value)
+  errors.name = validateRequired(name.value, t, t('settings.fullName'))
+  errors.email = validateEmail(email.value, t)
   if (errors.name || errors.email) throw new Error('invalid')
 
   try {
