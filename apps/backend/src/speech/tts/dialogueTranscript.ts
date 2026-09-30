@@ -4,10 +4,21 @@
  *
  * Expected label shape (Goethe-style seeds / generator prompts):
  *   "Mann: … Frau: …" | "Verkäuferin: …" | "Frau Müller: …" | "Moderatorin: …"
+ * English packs label turns with one word: "Man: …", "Assistant: …", "Katie: …".
+ *
+ * German keeps its fixed four-voice roster and rules, so its voice plan — and every cached
+ * German WAV keyed by it — never changes. Other languages draw their pools from the pack's
+ * own voices.
  */
 
 export type DialogueVoiceId = 'martin' | 'bernd' | 'victoria' | 'eva'
 export type SpeakerGender = 'male' | 'female' | 'unknown'
+
+/** The pack's language and voices, for any language other than the German default. */
+export interface DialogueVoiceOptions {
+  lang: string
+  voices: ReadonlyArray<{ id: string; gender: 'male' | 'female' }>
+}
 
 export interface DialogueTurn {
   speaker: string
@@ -15,7 +26,7 @@ export interface DialogueTurn {
 }
 
 export interface VoicedDialogueTurn extends DialogueTurn {
-  voice: DialogueVoiceId
+  voice: string
   gender: SpeakerGender
 }
 
@@ -85,6 +96,133 @@ const MALE_NAMES = new Set([
   'martin',
 ])
 
+const ENGLISH_FEMALE_ROLES = new Set([
+  'woman',
+  'girl',
+  'mum',
+  'mother',
+  'grandma',
+  'grandmother',
+  'aunt',
+  'sister',
+  'daughter',
+  'wife',
+  'lady',
+  'waitress',
+])
+
+const ENGLISH_MALE_ROLES = new Set([
+  'man',
+  'boy',
+  'dad',
+  'father',
+  'grandad',
+  'grandfather',
+  'uncle',
+  'brother',
+  'son',
+  'husband',
+  'waiter',
+])
+
+const ENGLISH_FEMALE_NAMES = new Set([
+  'alice',
+  'amy',
+  'anna',
+  'chloe',
+  'claire',
+  'ella',
+  'emma',
+  'grace',
+  'hana',
+  'hannah',
+  'helen',
+  'holly',
+  'isabella',
+  'jane',
+  'jenny',
+  'jessica',
+  'julia',
+  'kate',
+  'katie',
+  'laura',
+  'lily',
+  'lisa',
+  'lucia',
+  'lucy',
+  'maria',
+  'mary',
+  'megan',
+  'mia',
+  'nina',
+  'olivia',
+  'rachel',
+  'sarah',
+  'sofia',
+  'sophie',
+  'susan',
+  'zoe',
+])
+
+const ENGLISH_MALE_NAMES = new Set([
+  'adam',
+  'andy',
+  'ben',
+  'dan',
+  'daniel',
+  'david',
+  'george',
+  'harry',
+  'jack',
+  'james',
+  'joe',
+  'john',
+  'leo',
+  'luke',
+  'marco',
+  'mark',
+  'martin',
+  'matt',
+  'max',
+  'michael',
+  'mike',
+  'nick',
+  'oliver',
+  'paul',
+  'peter',
+  'rob',
+  'ryan',
+  'sam',
+  'simon',
+  'steve',
+  'tim',
+  'tom',
+  'tony',
+])
+
+function isGerman(options?: DialogueVoiceOptions): boolean {
+  return !options || options.lang === 'de'
+}
+
+/** An English label is a role or a first name; a name is looked up before anything else. */
+function inferEnglishGender(speaker: string): SpeakerGender {
+  const parts = speaker.trim().toLowerCase().split(/\s+/)
+  const first = parts[0] ?? ''
+  const last = parts[parts.length - 1] ?? first
+  if (first === 'mrs' || first === 'ms' || first === 'miss') return 'female'
+  if (first === 'mr') return 'male'
+  if (ENGLISH_FEMALE_NAMES.has(first) || ENGLISH_FEMALE_ROLES.has(last)) return 'female'
+  if (ENGLISH_MALE_NAMES.has(first) || ENGLISH_MALE_ROLES.has(last)) return 'male'
+  return 'unknown'
+}
+
+/** Per-gender pools in the pack's voice order, and every voice in that order. */
+function packPools(options: DialogueVoiceOptions): Record<SpeakerGender, string[]> {
+  const ids = (gender?: 'male' | 'female') =>
+    options.voices.filter(voice => !gender || voice.gender === gender).map(voice => voice.id)
+  return { male: ids('male'), female: ids('female'), unknown: ids() }
+}
+
 /**
  * Split a labeled dialogue transcript into turns.
  * Returns null when fewer than two speaker turns are found (treat as monologue).
@@ -117,7 +255,8 @@ export function parseDialogueTurns(transcript: string): DialogueTurn[] | null {
   return turns.length >= 2 ? turns : null
 }
 
-export function inferSpeakerGender(speaker: string): SpeakerGender {
+export function inferSpeakerGender(speaker: string, options?: DialogueVoiceOptions): SpeakerGender {
+  if (!isGerman(options)) return inferEnglishGender(speaker)
   const normalized = speaker.trim().replace(/\s+/g, ' ')
   if (!normalized) return 'unknown'
 
@@ -165,15 +304,23 @@ export function resolveDialogueVoice(speaker: string, genderIndex: number): Dial
  * e.g. eva → victoria → martin; bernd → martin
  */
 export function fallbackVoiceFor(
-  preferred: DialogueVoiceId,
-  available: ReadonlySet<string>
-): DialogueVoiceId {
+  preferred: string,
+  available: ReadonlySet<string>,
+  options?: DialogueVoiceOptions
+): string {
   if (available.has(preferred)) return preferred
+  if (!isGerman(options)) {
+    // Another voice of the pack, same gender first; never a voice of another language.
+    const pools = packPools(options!)
+    const gender = options!.voices.find(voice => voice.id === preferred)?.gender ?? 'unknown'
+    const candidate = [...pools[gender], ...pools.unknown].find(id => available.has(id))
+    return candidate ?? preferred
+  }
 
   const maleFallbacks: DialogueVoiceId[] = ['martin', 'bernd']
   const femaleFallbacks: DialogueVoiceId[] = ['victoria', 'eva', 'martin']
 
-  const pool = MALE_VOICE_POOL.includes(preferred) ? maleFallbacks : femaleFallbacks
+  const pool = MALE_VOICE_POOL.includes(preferred as DialogueVoiceId) ? maleFallbacks : femaleFallbacks
   for (const candidate of pool) {
     if (available.has(candidate)) return candidate
   }
@@ -183,7 +330,11 @@ export function fallbackVoiceFor(
 /**
  * Parse transcript and attach voices. Returns null for monologues / unlabeled text.
  */
-export function planDialogueVoices(transcript: string): VoicedDialogueTurn[] | null {
+export function planDialogueVoices(
+  transcript: string,
+  options?: DialogueVoiceOptions
+): VoicedDialogueTurn[] | null {
+  if (!isGerman(options)) return planPackVoices(transcript, options!)
   const turns = parseDialogueTurns(transcript)
   if (!turns) return null
 
@@ -221,9 +372,51 @@ export function planDialogueVoices(transcript: string): VoicedDialogueTurn[] | n
   return voiced
 }
 
+/** Speakers take the next voice of their gender, in order of first appearance. */
+function planPackVoices(transcript: string, options: DialogueVoiceOptions): VoicedDialogueTurn[] | null {
+  const turns = parseDialogueTurns(transcript)
+  if (!turns) return null
+  const pools = packPools(options)
+  const next: Record<SpeakerGender, number> = { male: 0, female: 0, unknown: 0 }
+  const speakerVoice = new Map<string, string>()
+  return turns.map(turn => {
+    const gender = inferEnglishGender(turn.speaker)
+    const key = turn.speaker.toLowerCase()
+    let voice = speakerVoice.get(key)
+    if (!voice) {
+      const pool = pools[gender].length ? pools[gender] : pools.unknown
+      voice = pool[next[gender] % Math.max(pool.length, 1)] ?? options.voices[0]?.id ?? ''
+      next[gender] += 1
+      speakerVoice.set(key, voice)
+    }
+    return { ...turn, voice, gender }
+  })
+}
+
+/**
+ * The voice and text of a monologue. German keeps its fixed narrator and speaks the text as
+ * written. Elsewhere a single leading label ("Paul: …") picks a voice of that speaker's
+ * gender and is not read aloud; unlabeled text takes the pack's first voice.
+ */
+export function planMonologue(
+  transcript: string,
+  options?: DialogueVoiceOptions
+): { voice: string; text: string } {
+  if (isGerman(options)) return { voice: 'martin', text: transcript }
+  const match = /^([A-Z][A-Za-z']{1,20}):\s*/.exec(transcript.trim())
+  const pools = packPools(options!)
+  const gender = match ? inferEnglishGender(match[1]!) : 'unknown'
+  const voice = (pools[gender].length ? pools[gender] : pools.unknown)[0] ?? ''
+  return { voice, text: match ? transcript.trim().slice(match[0].length) : transcript }
+}
+
 /** Stable string for transcript hash sidecars (includes voice assignment). */
-export function dialogueAudioPlanKey(transcript: string): string {
-  const plan = planDialogueVoices(transcript)
-  if (!plan) return `mono:${transcript.trim()}`
+export function dialogueAudioPlanKey(transcript: string, options?: DialogueVoiceOptions): string {
+  const plan = planDialogueVoices(transcript, options)
+  if (!plan) {
+    if (isGerman(options)) return `mono:${transcript.trim()}`
+    const monologue = planMonologue(transcript, options)
+    return `mono:${monologue.voice}|${monologue.text.trim()}`
+  }
   return plan.map(turn => `${turn.voice}|${turn.speaker}|${turn.text}`).join('\n')
 }

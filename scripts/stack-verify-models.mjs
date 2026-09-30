@@ -9,14 +9,34 @@ import { fileURLToPath } from 'node:url'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
+/** The TTS languages to check, as the download script and the TTS service read them. */
+const languages = new Set(
+  (process.env.KOKORO_LANGS ?? 'de,en')
+    .split(',')
+    .map(lang => lang.trim())
+    .filter(Boolean)
+)
+
 const required = [
-  'scripts/tts/victoria/models/kikiri_german_martin_ep10.pth',
-  'scripts/tts/victoria/models/kikiri_german_victoria_ep10.pth',
-  'scripts/tts/victoria/models/kikiri_german_base_51spk_ep4.pth',
-  'scripts/tts/victoria/models/voices/martin.pt',
-  'scripts/tts/victoria/models/voices/victoria.pt',
-  'scripts/tts/victoria/models/voices/bernd.pt',
-  'scripts/tts/victoria/models/voices/eva.pt',
+  ...(languages.has('de')
+    ? [
+        'scripts/tts/victoria/models/kikiri_german_martin_ep10.pth',
+        'scripts/tts/victoria/models/kikiri_german_victoria_ep10.pth',
+        'scripts/tts/victoria/models/kikiri_german_base_51spk_ep4.pth',
+        'scripts/tts/victoria/models/voices/martin.pt',
+        'scripts/tts/victoria/models/voices/victoria.pt',
+        'scripts/tts/victoria/models/voices/bernd.pt',
+        'scripts/tts/victoria/models/voices/eva.pt',
+      ]
+    : []),
+  ...(languages.has('en')
+    ? [
+        'scripts/tts/victoria/models/kokoro-v1_0.pth',
+        ...['bf_emma', 'bf_isabella', 'bm_george', 'bm_fable'].map(
+          voice => `scripts/tts/victoria/models/voices/${voice}.pt`
+        ),
+      ]
+    : []),
   'scripts/tts/victoria/models/config.json',
   'scripts/stt/parakeet/models/parakeet-tdt-0.6b-v3-Q8_0.gguf',
 ]

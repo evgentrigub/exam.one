@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
-# Download Kikiri Stage-2 (martin + victoria), multi-speaker base, and bernd/eva packs.
+# Download the Kokoro models for each language in KOKORO_LANGS (default: de,en).
+#   de: Kikiri Stage-2 (martin + victoria), multi-speaker base, and bernd/eva packs.
+#   en: base Kokoro-82M v1.0 and the British voices bf_emma, bf_isabella, bm_george, bm_fable.
 set -euo pipefail
+
+KOKORO_LANGS="${KOKORO_LANGS:-de,en}"
+wants() { [[ ",${KOKORO_LANGS// /}," == *",$1,"* ]]; }
 
 ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
 TARGET_DIR="${ROOT_DIR}/scripts/tts/victoria/models"
 HF_MARTIN="https://huggingface.co/kikiri-tts/kikiri-german-martin/resolve/main"
 HF_VICTORIA="https://huggingface.co/kikiri-tts/kikiri-german-victoria/resolve/main"
 HF_BASE="https://huggingface.co/kikiri-tts/kikiri-german-base-51speakers-synthetic/resolve/main"
-HF_KOKORO_CFG="https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/config.json"
+HF_KOKORO="https://huggingface.co/hexgrad/Kokoro-82M/resolve/main"
+HF_KOKORO_CFG="${HF_KOKORO}/config.json"
 R1DI_VOICES="https://raw.githubusercontent.com/r1di/kokoro-fastapi-german/master/api/src/voices/v1_0"
 
 mkdir -p "${TARGET_DIR}/voices"
@@ -40,6 +46,7 @@ download_if_missing() {
   fi
 }
 
+if wants de; then
 # Martin Stage-2 (primary male) — ~312 MiB
 download_if_missing \
   "${HF_MARTIN}/kikiri_german_martin_ep10.pth" \
@@ -75,8 +82,25 @@ download_if_missing \
   "${R1DI_VOICES}/df_eva.pt" \
   "${TARGET_DIR}/voices/eva.pt" \
   400000
+fi
+
+if wants en; then
+# Base Kokoro-82M v1.0 (Apache-2.0), one model for every British voice — ~312 MiB
+download_if_missing \
+  "${HF_KOKORO}/kokoro-v1_0.pth" \
+  "${TARGET_DIR}/kokoro-v1_0.pth" \
+  300000000
+for voice in bf_emma bf_isabella bm_george bm_fable; do
+  download_if_missing \
+    "${HF_KOKORO}/voices/${voice}.pt" \
+    "${TARGET_DIR}/voices/${voice}.pt" \
+    400000
+done
+fi
 
 download_if_missing "${HF_KOKORO_CFG}" "${TARGET_DIR}/config.json" 1000
 
-echo "[setup-voices] Ready at ${TARGET_DIR}"
-echo "[setup-voices] Voices: martin, bernd (male) · victoria, eva (female)"
+echo "[setup-voices] Ready at ${TARGET_DIR} for ${KOKORO_LANGS}"
+wants de && echo "[setup-voices] German: martin, bernd (male) · victoria, eva (female)"
+wants en && echo "[setup-voices] English: bm_george, bm_fable (male) · bf_emma, bf_isabella (female)"
+exit 0

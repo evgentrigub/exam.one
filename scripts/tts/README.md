@@ -1,19 +1,32 @@
-# Listening audio generation (four-voice PyTorch Kokoro)
+# Listening audio generation (PyTorch Kokoro: German and British English)
 
 Listening practice plays **stable WAV files** (identical on every replay). Kokoro is only
 needed when generating or regenerating those files.
 
 `pnpm tts:up` selects and starts the **single** `kokoro-voices` service from the
-root `compose.yaml` on `:8881`, with four German voices:
+root `compose.yaml` on `:8881`. It loads the languages in `KOKORO_LANGS` (default `de,en`):
 
-| Voice      | Gender   | Backbone                |
-| ---------- | -------- | ----------------------- |
-| `martin`   | male 1   | Kikiri Stage-2          |
-| `bernd`    | male 2   | Kikiri base + voicepack |
-| `victoria` | female 1 | Kikiri Stage-2          |
-| `eva`      | female 2 | Kikiri base + voicepack |
+| Voice         | Language | Gender   | Backbone                   |
+| ------------- | -------- | -------- | -------------------------- |
+| `martin`      | German   | male 1   | Kikiri Stage-2             |
+| `bernd`       | German   | male 2   | Kikiri base + voicepack    |
+| `victoria`    | German   | female 1 | Kikiri Stage-2             |
+| `eva`         | German   | female 2 | Kikiri base + voicepack    |
+| `bf_emma`     | English  | female 1 | Kokoro-82M v1.0 (grade B-) |
+| `bm_george`   | English  | male 1   | Kokoro-82M v1.0 (grade C)  |
+| `bf_isabella` | English  | female 2 | Kokoro-82M v1.0 (grade C)  |
+| `bm_fable`    | English  | male 2   | Kokoro-82M v1.0 (grade C)  |
 
 German text→phonemes uses `phonemizer` + espeak-ng `de` (same path as the former Martin ONNX stack).
+British English uses misaki's British G2P with the espeak `en-gb` fallback, as kokoro's own
+`KPipeline(lang_code="b")` does; one base model serves all four English voices and adds
+about 0.5 GiB of memory. Grades are upstream's own voice ratings. `KOKORO_LANGS=de` skips the
+English download and model.
+
+Every request names a voice and a language. An unknown voice, or a voice of another language,
+is refused with HTTP 400 instead of being spoken by a German voice. `/v1/audio/voices` and
+`/health` list the loaded voices per language; the backend reports a pack whose voices are
+missing as `unsupported`, not offline.
 
 Dialogue transcripts that use `Role:` labels (Teil 2–4) are synthesized **turn-by-turn**
 with up to **two male + two female** voices (assigned by gender and order of appearance),
@@ -21,10 +34,16 @@ then concatenated. Unlabeled monologues (Teil 1) stay Martin.
 
 Example: `Mann` → martin, `Frau` → victoria, `Verkäuferin` → eva.
 
+English packs label turns with one word: roles (`Man`, `Woman`, `Boy`, `Girl`, `Mum`, `Dad`,
+`Assistant`, …) or first names (`Tom`, `Katie`). Their voices come from the pack's own
+`speech.voices`, by gender and order of appearance, so `Man` → bm_george, `Woman` → bf_emma.
+A monologue opening with one label (`Paul: Hi Jenny, …`) takes that speaker's voice and the
+label is not read aloud; an unlabeled one takes the pack's first voice.
+
 ## Seed audio (maintainer)
 
 ```bash
-# One-time: download martin / victoria / bernd / eva weights
+# One-time: download the German and English weights (KOKORO_LANGS=de for German only)
 bash scripts/tts/victoria/download-models.sh
 # or: ./scripts/tts/setup-kokoro.sh
 
@@ -69,12 +88,18 @@ Env overrides:
 | `TTS_BASE_URL`      | `http://127.0.0.1:8881` | Four-voice PyTorch service        |
 | `TTS_CONCURRENCY`   | `3`                     | Parallel segment + turn synthesis |
 | `TTS_SPEED`         | `1.0`                   | Speaking rate                     |
-| `TTS_LANG`          | `de`                    | Language hint                     |
+| `TTS_LANGUAGES`     | `de` (Compose `de,en`)  | Languages packs may use           |
+| `TTS_LANG`          | `de`                    | Single-language form of the above |
+| `TTS_VOICES`        | German + British ids    | Voices packs may use              |
+| `KOKORO_LANGS`      | `de,en`                 | Languages the service downloads and loads |
 | `TTS_TURN_PAUSE_MS` | `350`                   | Silence between dialogue turns    |
 
 Upstream Martin: [kikiri-german-martin](https://huggingface.co/kikiri-tts/kikiri-german-martin).
 Upstream Victoria: [kikiri-german-victoria](https://huggingface.co/kikiri-tts/kikiri-german-victoria).
 Bernd / Eva voicepacks: recovered via [r1di/kokoro-fastapi-german](https://github.com/r1di/kokoro-fastapi-german) (Apache-2.0).
 Multi-speaker base: [kikiri-german-base-51speakers-synthetic](https://huggingface.co/kikiri-tts/kikiri-german-base-51speakers-synthetic).
+English model and voices: [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0), with
+[misaki](https://github.com/hexgrad/misaki) G2P (Apache-2.0) and spaCy `en_core_web_sm` (MIT) baked into the image.
+The Kikiri models are Apache-2.0; the multi-speaker base was trained on synthetic audio.
 
 Legacy Martin ONNX scripts remain under `scripts/tts/kokoro-german/` but are not used by `pnpm tts:up`.

@@ -28,6 +28,8 @@ export interface AppConfig {
   TTS_VOICE: string
   TTS_SPEED: number
   TTS_LANG: string
+  /** Comma-separated TTS languages this instance serves; falls back to `TTS_LANG`. */
+  TTS_LANGUAGES: string
   TTS_TURN_PAUSE_MS: number
   TTS_CONCURRENCY: number
   STT_PROVIDER: SttProviderName
@@ -110,6 +112,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   TTS_VOICE: process.env['TTS_VOICE'] ?? 'martin',
   TTS_SPEED: Number(process.env['TTS_SPEED'] ?? '1.0') || 1.0,
   TTS_LANG: process.env['TTS_LANG'] ?? 'de',
+  TTS_LANGUAGES: process.env['TTS_LANGUAGES'] ?? process.env['TTS_LANG'] ?? 'de',
   TTS_TURN_PAUSE_MS: Number(process.env['TTS_TURN_PAUSE_MS'] ?? '350') || 350,
   TTS_CONCURRENCY: Number(process.env['TTS_CONCURRENCY'] ?? '3') || 3,
   STT_PROVIDER: sttProvider(),

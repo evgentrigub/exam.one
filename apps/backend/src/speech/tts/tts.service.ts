@@ -14,7 +14,23 @@ import type {
 import type { AppConfig } from '../../config/app.config'
 import { mapPool } from './mapPool'
 import { containedAudioPath } from './listening-audio'
-import { checkTtsHealth, synthesizeListeningTranscript, type TtsConfig } from './tts.adapter'
+import {
+  synthesizeListeningTranscript,
+  ttsHealthStatus,
+  type TtsConfig,
+} from './tts.adapter'
+
+/** Thrown when the instance does not list the pack's language or voices. */
+class TtsUnsupportedError extends Error {}
+
+function list(value: string | undefined): Set<string> {
+  return new Set(
+    (value ?? '')
+      .split(',')
+      .map(item => item.trim().toLowerCase())
+      .filter(Boolean)
+  )
+}
 
 @Injectable()
 export class TtsService {
@@ -24,18 +40,17 @@ export class TtsService {
 
   private ttsConfig(): TtsConfig {
     const pack = getLivePack(packContext.getStore()?.packId)
-    const installedLanguage = this.config.get<string>('app.TTS_LANG') ?? 'de'
-    const voices = new Set(
-      (this.config.get<string>('app.TTS_VOICES') ?? 'martin,bernd,victoria,eva')
-        .split(',')
-        .map(value => value.trim())
+    // `TTS_LANGUAGES` lists every installed language; `TTS_LANG` is the single-language form.
+    const languages = list(
+      this.config.get<string>('app.TTS_LANGUAGES') ?? this.config.get<string>('app.TTS_LANG') ?? 'de'
     )
+    const voices = list(this.config.get<string>('app.TTS_VOICES') ?? 'martin,bernd,victoria,eva')
     if (
-      pack.speech.ttsLang !== installedLanguage ||
+      !languages.has(pack.speech.ttsLang.toLowerCase()) ||
       !pack.speech.voices.length ||
-      pack.speech.voices.some(v => !voices.has(v.id))
+      pack.speech.voices.some(v => !voices.has(v.id.toLowerCase()))
     )
-      throw new Error('TTS language or voices are not available on this instance')
+      throw new TtsUnsupportedError('TTS language or voices are not available on this instance')
     return {
       baseUrl: this.config.getOrThrow<string>('app.TTS_BASE_URL'),
       voice: pack.speech.voices[0]?.id ?? this.config.get<string>('app.TTS_VOICE') ?? 'martin',
@@ -43,6 +58,7 @@ export class TtsService {
       lang: pack.speech.ttsLang,
       turnPauseMs: this.config.get<number>('app.TTS_TURN_PAUSE_MS') ?? 350,
       concurrency: this.config.get<number>('app.TTS_CONCURRENCY') ?? 3,
+      voices: pack.speech.voices,
     }
   }
 
@@ -61,12 +77,19 @@ export class TtsService {
 
   async health(): Promise<AiResponse<TtsHealthData>> {
     try {
-      const ok = await checkTtsHealth(this.ttsConfig())
-      return { data: { ok }, error: null }
+      const status = await ttsHealthStatus(this.ttsConfig())
+      if (status === 'ok') return { data: { ok: true }, error: null }
+      if (status === 'offline') return { data: { ok: false, reason: 'offline' }, error: null }
+      return {
+        data: { ok: false, reason: 'unsupported' },
+        error: 'The TTS service does not serve the voices this exam pack needs',
+      }
     } catch (error: unknown) {
+      if (error instanceof TtsUnsupportedError)
+        return { data: { ok: false, reason: 'unsupported' }, error: error.message }
       this.logger.error('TTS health check failed', error)
       return {
-        data: { ok: false },
+        data: { ok: false, reason: 'offline' },
         error: error instanceof Error ? error.message : 'TTS unavailable',
       }
     }
@@ -93,7 +116,12 @@ export class TtsService {
       validateView(view, part.runtime)
       const config = this.ttsConfig()
       // Keep the actionable wording the legacy path used; it tells the user how to fix it.
-      if (!(await checkTtsHealth(config)))
+      const status = await ttsHealthStatus(config)
+      if (status === 'unsupported')
+        throw new Error(
+          'The TTS service does not serve the voices this exam pack needs. Download them with `pnpm tts:setup` and restart TTS (see scripts/tts/README.md).'
+        )
+      if (status !== 'ok')
         throw new Error('TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.')
       const directory = this.audioDirectory(payload['id'])
       const segments = [

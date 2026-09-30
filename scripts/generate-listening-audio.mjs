@@ -18,12 +18,12 @@
  *   TTS_BASE_URL           (default http://127.0.0.1:8881) — four-voice PyTorch
  *   TTS_CONCURRENCY        (default 3) — parallel segment synthesis
  *   TTS_SPEED              (default 1.0)
- *   TTS_LANG               (default de)
  *   TTS_TURN_PAUSE_MS      (default 350)
  *   FORCE=1                regenerate even when transcript hash matches
  *
- * Dialogue transcripts with Role: labels are synthesized turn-by-turn with up to
- * four voices (2 male / 2 female) and concatenated. Monologues stay Martin.
+ * Each pack is synthesised in its own `speech.ttsLang` with its own voices; a pack whose
+ * voices the server does not serve is skipped with a warning. Dialogue transcripts with
+ * Role: labels are synthesized turn-by-turn and concatenated. German monologues stay Martin.
  */
 
 import { createHash } from 'node:crypto'
@@ -44,7 +44,7 @@ const { listPacks } = await jiti.import(path.join(repoRoot, 'data/src/index.ts')
 const ttsModule = await jiti.import(path.join(backendTtsRoot, 'tts.adapter.ts'))
 const {
   synthesizeListeningTranscript,
-  checkTtsHealth,
+  ttsHealthStatus,
   getTtsConfigFromEnv,
   listeningTranscriptHashKey,
 } = ttsModule
@@ -52,8 +52,18 @@ const {
 const mapPoolModule = await jiti.import(path.join(backendTtsRoot, 'mapPool.ts'))
 const { mapPool, getTtsConcurrency } = mapPoolModule
 
-function hashTranscript(text) {
-  return createHash('sha256').update(listeningTranscriptHashKey(text)).digest('hex')
+function hashTranscript(text, config) {
+  return createHash('sha256').update(listeningTranscriptHashKey(text, config)).digest('hex')
+}
+
+/** The env TTS settings in a pack's own language and voices. */
+function packTtsConfig(base, pack) {
+  return {
+    ...base,
+    lang: pack.speech.ttsLang,
+    voice: pack.speech.voices[0]?.id ?? base.voice,
+    voices: pack.speech.voices,
+  }
 }
 
 /** Every bundled seed WAV of every pack, one segment per URL, deduplicated by URL. */
@@ -67,7 +77,7 @@ export function collectSegments(packs = listPacks()) {
       if (!audio || typeof audio !== 'object') continue
       const add = (url, transcript) => {
         if (typeof url !== 'string' || !url.startsWith(prefix) || !transcript?.trim()) return
-        if (!segments.has(url)) segments.set(url, { url, transcript })
+        if (!segments.has(url)) segments.set(url, { url, transcript, pack })
       }
       if (audio.shared) add(audio.shared, exercise.transcript)
       for (const [itemId, url] of Object.entries(audio.items ?? {})) {
@@ -79,6 +89,7 @@ export function collectSegments(packs = listPacks()) {
   return [...segments.values()].map(segment => ({
     relativePath: segment.url.replace(/^\//, ''),
     transcript: segment.transcript,
+    pack: segment.pack,
   }))
 }
 
@@ -118,7 +129,7 @@ async function main() {
   console.log(`[generate-listening-audio] TTS: ${config.baseUrl}`)
   console.log(`[generate-listening-audio] concurrency: ${concurrency}`)
 
-  const healthy = await checkTtsHealth(config)
+  const healthy = (await ttsHealthStatus(config)) !== 'offline'
   if (!healthy) {
     console.error(
       '[generate-listening-audio] Kokoro TTS is not reachable.\n' +
@@ -134,11 +145,24 @@ async function main() {
 
   const work = []
   let skipped = 0
+  const packConfigs = new Map()
 
   for (const segment of segments) {
+    if (!packConfigs.has(segment.pack.packId)) {
+      const packConfig = packTtsConfig(config, segment.pack)
+      const status = await ttsHealthStatus(packConfig)
+      if (status !== 'ok')
+        console.warn(
+          `[generate-listening-audio] skipping ${segment.pack.packId}: the server does not serve its ${packConfig.lang} voices`
+        )
+      packConfigs.set(segment.pack.packId, status === 'ok' ? packConfig : null)
+    }
+    const packConfig = packConfigs.get(segment.pack.packId)
+    if (!packConfig) continue
+
     const outPath = path.join(publicRoot, segment.relativePath)
     const hashPath = `${outPath}.hash`
-    const nextHash = hashTranscript(segment.transcript)
+    const nextHash = hashTranscript(segment.transcript, packConfig)
 
     await mkdir(path.dirname(outPath), { recursive: true })
 
@@ -151,7 +175,7 @@ async function main() {
       }
     }
 
-    work.push({ segment, outPath, hashPath, nextHash })
+    work.push({ segment, outPath, hashPath, nextHash, packConfig })
   }
 
   console.log(`[generate-listening-audio] ${work.length} segment(s) to synthesize`)
@@ -164,11 +188,11 @@ async function main() {
   let written = 0
 
   await mapPool(work, concurrency, async job => {
-    const { segment, outPath, hashPath, nextHash } = job
+    const { segment, outPath, hashPath, nextHash, packConfig } = job
     const fileStartedAt = Date.now()
     console.log(`  start ${segment.relativePath}`)
     try {
-      const audio = await synthesizeListeningTranscript(segment.transcript, config)
+      const audio = await synthesizeListeningTranscript(segment.transcript, packConfig)
       await writeFile(outPath, audio)
       await writeFile(hashPath, `${nextHash}\n`, 'utf8')
       written += 1

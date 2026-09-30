@@ -4,19 +4,20 @@ import { TtsService } from '../../../src/speech/tts/tts.service'
 import * as adapter from '../../../src/speech/tts/tts.adapter'
 import { createHash } from 'node:crypto'
 import { containedAudioPath } from '../../../src/speech/tts/listening-audio'
+import { packContext } from '../../../src/core/interceptors/pack-context.interceptor'
 
 jest.mock('../../../src/speech/tts/tts.adapter', () => ({
-  checkTtsHealth: jest.fn(),
+  ttsHealthStatus: jest.fn(),
   synthesizeListeningTranscript: jest.fn(),
 }))
 
-const checkTtsHealth = adapter.checkTtsHealth as jest.MockedFunction<typeof adapter.checkTtsHealth>
+const ttsHealthStatus = adapter.ttsHealthStatus as jest.MockedFunction<typeof adapter.ttsHealthStatus>
 const synthesizeListeningTranscript = adapter.synthesizeListeningTranscript as jest.MockedFunction<
   typeof adapter.synthesizeListeningTranscript
 >
 
 describe('TtsService', () => {
-  async function createService() {
+  async function createService(env: Record<string, string> = {}) {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TtsService,
@@ -24,6 +25,7 @@ describe('TtsService', () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
+              if (key.slice(4) in env) return env[key.slice(4)]
               if (key === 'app.TTS_VOICE') return 'martin'
               if (key === 'app.TTS_SPEED') return 1
               if (key === 'app.TTS_LANG') return 'de'
@@ -44,14 +46,46 @@ describe('TtsService', () => {
   }
 
   beforeEach(() => {
-    checkTtsHealth.mockReset()
+    ttsHealthStatus.mockReset()
     synthesizeListeningTranscript.mockReset()
   })
 
   it('reports offline health without throwing', async () => {
-    checkTtsHealth.mockResolvedValue(false)
+    ttsHealthStatus.mockResolvedValue('offline')
     const service = await createService()
-    await expect(service.health()).resolves.toEqual({ data: { ok: false }, error: null })
+    await expect(service.health()).resolves.toEqual({
+      data: { ok: false, reason: 'offline' },
+      error: null,
+    })
+  })
+
+  it('reports an English pack as unsupported on a German-only instance', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    const service = await createService()
+    const health = await packContext.run({ packId: 'cambridge-en-a2' }, () => service.health())
+    expect(health.data).toEqual({ ok: false, reason: 'unsupported' })
+    expect(ttsHealthStatus).not.toHaveBeenCalled()
+  })
+
+  it('serves an English pack when the instance lists English and its voices', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en',
+      TTS_VOICES: 'martin,bernd,victoria,eva,bf_emma,bm_george,bf_isabella,bm_fable',
+    })
+    const health = await packContext.run({ packId: 'cambridge-en-a2' }, () => service.health())
+    expect(health).toEqual({ data: { ok: true }, error: null })
+    const config = ttsHealthStatus.mock.calls[0]![0]
+    expect(config).toMatchObject({ lang: 'en', voice: 'bf_emma' })
+    expect(config.voices?.map(voice => voice.id)).toEqual(['bf_emma', 'bm_george', 'bf_isabella', 'bm_fable'])
+  })
+
+  it('reports a server without the pack voices as unsupported', async () => {
+    ttsHealthStatus.mockResolvedValue('unsupported')
+    const service = await createService({ TTS_LANGUAGES: 'de,en', TTS_VOICES: 'bf_emma,bm_george,bf_isabella,bm_fable' })
+    const health = await packContext.run({ packId: 'cambridge-en-a2' }, () => service.health())
+    expect(health.data).toEqual({ ok: false, reason: 'unsupported' })
+    expect(health.error).toContain('voices')
   })
 
   it('skips empty ids and cannot delete outside the audio root', async () => {
@@ -69,7 +103,7 @@ describe('TtsService', () => {
   })
 
   it('returns a business error when TTS is offline', async () => {
-    checkTtsHealth.mockResolvedValue(false)
+    ttsHealthStatus.mockResolvedValue('offline')
     const service = await createService()
     await expect(
       service.generateListeningAudio({
@@ -94,7 +128,7 @@ describe('TtsService', () => {
   })
 
   it('never lets an exercise id reach the audio path', async () => {
-    checkTtsHealth.mockResolvedValue(true)
+    ttsHealthStatus.mockResolvedValue('ok')
     synthesizeListeningTranscript.mockResolvedValue(Buffer.from('RIFF'))
     const service = await createService()
     const response = await service.generateListeningAudio({

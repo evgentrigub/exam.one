@@ -1,5 +1,6 @@
-# Four-voice German Kokoro sidecar (martin / bernd / victoria / eva)
-# OpenAI-compatible /v1/audio/speech — PyTorch + phonemizer(de)
+# Kokoro sidecar: German (martin / bernd / victoria / eva) and British English
+# (bf_emma / bf_isabella / bm_george / bm_fable), chosen by KOKORO_LANGS.
+# OpenAI-compatible /v1/audio/speech — PyTorch + phonemizer(de) + misaki(en-GB)
 FROM python:3.11-slim-bookworm
 
 RUN apt-get update \
@@ -19,6 +20,9 @@ COPY main.py .
 ENV KOKORO_VICTORIA_MODEL_DIR=/app/models
 ENV KOKORO_MULTI_SPEED=1.0
 ENV KOKORO_PAUSE_DURATION=0.25
+ENV KOKORO_LANGS=de,en
+# Every model and the spaCy English model ship with the image or the mount; never fetch at runtime.
+ENV HF_HUB_OFFLINE=1
 
 EXPOSE 8881
 
