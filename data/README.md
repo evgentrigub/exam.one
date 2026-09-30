@@ -8,7 +8,8 @@ Forkers add an exam by creating a folder under `src/packs/` and registering it i
 | `src/packs/goethe-de-a2/` | Live Goethe A2 (structure, prompts, bundled seeds, mock factory) |
 | `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (all four modules, one seed per part, mock factory and bundled Set 1) |
 | `src/packs/cambridge-en-a2/` | Live Cambridge English A2 Key (all four skills, fourteen parts, one seed per part, gap-fill parts, solo speaking cards, no mocks) |
-| `src/packs/goethe-shared/` | The raw-payload projection the Goethe packs and Cambridge A2 Key use |
+| `src/packs/certpol-pl-a2/` | Live Certyfikat Polski A2 (all four skills, sixteen tasks, one seed per task, gap-fill numbers and form, solo speaking cards and photo monologue, Polish Piper voices, no mocks) |
+| `src/packs/goethe-shared/` | The raw-payload projection the Goethe packs, Cambridge A2 Key and Certyfikat Polski A2 use |
 | `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
 
 Each prompt slot is a `PromptSpec` with `role`, `task`, `rules`, optional `examples`, and `outputContract`. Runtime values (`{count}`, `{task}`, `{userContent}`, …) are interpolated by `assemble()`.
@@ -72,6 +73,6 @@ New attempts store a version-1 rendering/rubric snapshot. Historical review uses
 
 Mock definitions persist their own timing, replay, scoring and pass rules. A pack without a factory has an explicit unavailable mock state. Goethe's provisional speaking arithmetic is preserved. Prompt overrides remain unmounted; their unused database table is retained.
 
-TTS checks pack language/voices against `TTS_LANGUAGES` (or the single `TTS_LANG`) and `TTS_VOICES`, and against the voices the TTS service actually reports; a pack whose voices are missing is reported as `unsupported`, not offline. German uses its fixed four-voice roster; other languages assign dialogue voices from the pack's own `speech.voices` by speaker gender. STT checks `STT_LANGUAGES` (Compose default `de,en`). Unsupported capabilities return an unavailable response, preserving manual transcription and playback. No model installation is implied by registering a pack. New generated files use a user/pack/exercise namespace; historical shared paths remain readable and are retained during cleanup.
+TTS checks pack language/voices against `TTS_LANGUAGES` (or the single `TTS_LANG`) and `TTS_VOICES`, and against the voices the TTS service actually reports; a pack whose voices are missing is reported as `unsupported`, not offline. German uses its fixed four-voice roster; other languages assign dialogue voices from the pack's own `speech.voices` by speaker gender, read from English or Polish role and name labels. STT checks `STT_LANGUAGES` (Compose default `de,en,pl`). Unsupported capabilities return an unavailable response, preserving manual transcription and playback. No model installation is implied by registering a pack. New generated files use a user/pack/exercise namespace; historical shared paths remain readable and are retained during cleanup.
 
 Verification and migration rollout: [VERIFICATION.md](VERIFICATION.md).

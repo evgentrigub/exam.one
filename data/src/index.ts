@@ -10,6 +10,7 @@ export { getLivePack, getPack, listLivePacks, listPacks } from './registry'
 export { GOETHE_DE_A2_PACK_ID, goetheDeA2 } from './packs/goethe-de-a2/pack'
 export { GOETHE_DE_A1_PACK_ID, goetheDeA1 } from './packs/goethe-de-a1/pack'
 export { CAMBRIDGE_EN_A2_PACK_ID, cambridgeEnA2 } from './packs/cambridge-en-a2/pack'
+export { CERTPOL_PL_A2_PACK_ID, certpolPlA2 } from './packs/certpol-pl-a2/pack'
 export { goetheDeC1 } from './packs/goethe-de-c1/pack'
 export { buildMockExamOverviewPrompt } from './packs/goethe-de-a2/prompts/mock-exam'
 export type {
