@@ -52,7 +52,11 @@
     "notes": "Notes",
     "conversation": "Conversation",
     "recordings": "Short recordings",
-    "discussion": "Discussion"
+    "discussion": "Discussion",
+    "greeting": "Greeting",
+    "description": "Description",
+    "photo": "Photo description",
+    "roleplay": "Role-play"
   },
   "home": {
     "title": "Exam.one",
@@ -676,7 +680,9 @@
       "contentPoint3": "Content point 3",
       "communication": "Greeting and closing",
       "content": "Content",
-      "organisation": "Organisation"
+      "organisation": "Organisation",
+      "range": "Range of language",
+      "accuracy": "Accuracy"
     },
     "modelAnswer": {
       "title": "Model Answer",
@@ -851,7 +857,9 @@
     "response2": "Reaction 2",
     "grammarVocabulary": "Grammar and Vocabulary",
     "interactiveCommunication": "Interactive Communication",
-    "globalAchievement": "Global Achievement"
+    "globalAchievement": "Global Achievement",
+    "vocabulary": "Vocabulary",
+    "grammar": "Grammar"
   },
   "mockExam": {
     "title": "Mock exams",

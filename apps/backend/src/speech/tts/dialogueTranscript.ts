@@ -30,9 +30,13 @@ export interface VoicedDialogueTurn extends DialogueTurn {
   gender: SpeakerGender
 }
 
-/** Speaker label: 1–3 capitalized words ending with a colon. */
+/**
+ * Speaker label: 1–3 capitalized words ending with a colon. The letter classes list German
+ * and Polish letters explicitly, so German and English plans (and their audio keys) are
+ * unchanged.
+ */
 const SPEAKER_LABEL_RE =
-  /(?:^|(?<=\s))([A-ZÄÖÜ][A-Za-zÄÖÜäöüß]*(?:\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß]*){0,2}):\s*/g
+  /(?:^|(?<=\s))([A-ZÄÖÜĄĆĘŁŃÓŚŹŻ][A-Za-zÄÖÜäöüßĄĆĘŁŃÓŚŹŻąćęłńóśźż]*(?:\s+[A-ZÄÖÜĄĆĘŁŃÓŚŹŻ][A-Za-zÄÖÜäöüßĄĆĘŁŃÓŚŹŻąćęłńóśźż]*){0,2}):\s*/g
 
 export const MALE_VOICE_POOL: readonly DialogueVoiceId[] = ['martin', 'bernd']
 export const FEMALE_VOICE_POOL: readonly DialogueVoiceId[] = ['victoria', 'eva']
@@ -200,6 +204,175 @@ const ENGLISH_MALE_NAMES = new Set([
   'tony',
 ])
 
+const POLISH_FEMALE_ROLES = new Set([
+  'kobieta',
+  'dziewczyna',
+  'dziewczynka',
+  'mama',
+  'matka',
+  'babcia',
+  'ciocia',
+  'siostra',
+  'córka',
+  'żona',
+  'narzeczona',
+  'koleżanka',
+  'przyjaciółka',
+  'sąsiadka',
+  'sprzedawczyni',
+  'kelnerka',
+  'lekarka',
+  'nauczycielka',
+  'recepcjonistka',
+  'klientka',
+  'pasażerka',
+  'studentka',
+  'dziennikarka',
+  'prezenterka',
+  'spikerka',
+  'pielęgniarka',
+  'kasjerka',
+  'urzędniczka',
+  'farmaceutka',
+  'turystka',
+])
+
+/** Masculine roles, several ending in -a (kolega, sprzedawca), looked up before the -a rule. */
+const POLISH_MALE_ROLES = new Set([
+  'mężczyzna',
+  'chłopak',
+  'chłopiec',
+  'tata',
+  'ojciec',
+  'dziadek',
+  'wujek',
+  'brat',
+  'syn',
+  'mąż',
+  'narzeczony',
+  'kolega',
+  'przyjaciel',
+  'sąsiad',
+  'sprzedawca',
+  'kelner',
+  'lekarz',
+  'nauczyciel',
+  'recepcjonista',
+  'klient',
+  'pasażer',
+  'student',
+  'dziennikarz',
+  'prezenter',
+  'spiker',
+  'kasjer',
+  'urzędnik',
+  'farmaceuta',
+  'turysta',
+  'kierowca',
+  'policjant',
+  'konduktor',
+])
+
+const POLISH_FEMALE_NAMES = new Set([
+  'anna',
+  'ania',
+  'maria',
+  'katarzyna',
+  'kasia',
+  'agnieszka',
+  'magda',
+  'magdalena',
+  'ewa',
+  'joanna',
+  'asia',
+  'małgorzata',
+  'małgosia',
+  'zofia',
+  'zosia',
+  'aleksandra',
+  'ola',
+  'monika',
+  'marta',
+  'barbara',
+  'basia',
+  'łucja',
+  'julia',
+  'natalia',
+  'karolina',
+  'justyna',
+  'beata',
+  'dorota',
+  'iwona',
+  'elżbieta',
+  'ela',
+  'krystyna',
+  'hanna',
+  'hania',
+  'weronika',
+  'paulina',
+  'żaneta',
+])
+
+/** Masculine first names, including the few that end in -a. */
+const POLISH_MALE_NAMES = new Set([
+  'piotr',
+  'paweł',
+  'tomasz',
+  'tomek',
+  'marek',
+  'jan',
+  'janek',
+  'krzysztof',
+  'michał',
+  'adam',
+  'andrzej',
+  'jakub',
+  'kuba',
+  'bartek',
+  'bartosz',
+  'łukasz',
+  'maciej',
+  'wojtek',
+  'wojciech',
+  'kamil',
+  'marcin',
+  'mateusz',
+  'grzegorz',
+  'jerzy',
+  'józef',
+  'stanisław',
+  'rafał',
+  'darek',
+  'szymon',
+  'filip',
+  'barnaba',
+  'kosma',
+])
+
+/**
+ * A Polish label is Pani/Pan with a name, a role or a first name. Unlisted feminine roles
+ * end in -ka or -yni, and unlisted feminine first names in -a.
+ */
+function inferPolishGender(speaker: string): SpeakerGender {
+  const parts = speaker.trim().toLowerCase().split(/\s+/)
+  const first = parts[0] ?? ''
+  const last = parts[parts.length - 1] ?? first
+  if (first === 'pani') return 'female'
+  if (first === 'pan') return 'male'
+  if (POLISH_FEMALE_ROLES.has(first) || POLISH_FEMALE_NAMES.has(first)) return 'female'
+  if (POLISH_MALE_ROLES.has(first) || POLISH_MALE_NAMES.has(first)) return 'male'
+  if (POLISH_FEMALE_NAMES.has(last)) return 'female'
+  if (POLISH_MALE_NAMES.has(last)) return 'male'
+  if (first.length > 3 && (first.endsWith('ka') || first.endsWith('yni'))) return 'female'
+  if (parts.length === 1 && first.length > 2 && first.endsWith('a')) return 'female'
+  return 'unknown'
+}
+
+/** The gender of a speaker in a pack language other than German. */
+function inferPackGender(speaker: string, options: DialogueVoiceOptions): SpeakerGender {
+  return options.lang === 'pl' ? inferPolishGender(speaker) : inferEnglishGender(speaker)
+}
+
 function isGerman(options?: DialogueVoiceOptions): boolean {
   return !options || options.lang === 'de'
 }
@@ -256,7 +429,7 @@ export function parseDialogueTurns(transcript: string): DialogueTurn[] | null {
 }
 
 export function inferSpeakerGender(speaker: string, options?: DialogueVoiceOptions): SpeakerGender {
-  if (!isGerman(options)) return inferEnglishGender(speaker)
+  if (!isGerman(options)) return inferPackGender(speaker, options!)
   const normalized = speaker.trim().replace(/\s+/g, ' ')
   if (!normalized) return 'unknown'
 
@@ -380,7 +553,7 @@ function planPackVoices(transcript: string, options: DialogueVoiceOptions): Voic
   const next: Record<SpeakerGender, number> = { male: 0, female: 0, unknown: 0 }
   const speakerVoice = new Map<string, string>()
   return turns.map(turn => {
-    const gender = inferEnglishGender(turn.speaker)
+    const gender = inferPackGender(turn.speaker, options)
     const key = turn.speaker.toLowerCase()
     let voice = speakerVoice.get(key)
     if (!voice) {
@@ -403,9 +576,9 @@ export function planMonologue(
   options?: DialogueVoiceOptions
 ): { voice: string; text: string } {
   if (isGerman(options)) return { voice: 'martin', text: transcript }
-  const match = /^([A-Z][A-Za-z']{1,20}):\s*/.exec(transcript.trim())
+  const match = /^([A-ZĄĆĘŁŃÓŚŹŻ][A-Za-z'ĄĆĘŁŃÓŚŹŻąćęłńóśźż]{1,20}):\s*/.exec(transcript.trim())
   const pools = packPools(options!)
-  const gender = match ? inferEnglishGender(match[1]!) : 'unknown'
+  const gender = match ? inferPackGender(match[1]!, options!) : 'unknown'
   const voice = (pools[gender].length ? pools[gender] : pools.unknown)[0] ?? ''
   return { voice, text: match ? transcript.trim().slice(match[0].length) : transcript }
 }

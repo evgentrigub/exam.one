@@ -67,6 +67,28 @@ describe('TtsService', () => {
     expect(ttsHealthStatus).not.toHaveBeenCalled()
   })
 
+  it('reports the Polish pack as unsupported without the Polish voices', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en,pl',
+      TTS_VOICES: 'martin,bernd,victoria,eva,bf_emma,bm_george,bf_isabella,bm_fable',
+    })
+    const health = await packContext.run({ packId: 'certpol-pl-a2' }, () => service.health())
+    expect(health.data).toEqual({ ok: false, reason: 'unsupported' })
+    expect(ttsHealthStatus).not.toHaveBeenCalled()
+  })
+
+  it('serves the Polish pack with its Piper voices', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en,pl',
+      TTS_VOICES: 'martin,bernd,victoria,eva,pl_gosia,pl_darkman,pl_bass',
+    })
+    const health = await packContext.run({ packId: 'certpol-pl-a2' }, () => service.health())
+    expect(health).toEqual({ data: { ok: true }, error: null })
+    expect(ttsHealthStatus.mock.calls[0]![0]).toMatchObject({ lang: 'pl', voice: 'pl_gosia' })
+  })
+
   it('serves an English pack when the instance lists English and its voices', async () => {
     ttsHealthStatus.mockResolvedValue('ok')
     const service = await createService({

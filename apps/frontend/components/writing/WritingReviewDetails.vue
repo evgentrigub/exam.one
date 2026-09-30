@@ -151,6 +151,9 @@ const CRITERION_LABELS: Record<string, string> = {
   content: 'writing.reviewDetails.content',
   organisation: 'writing.reviewDetails.organisation',
   language: 'writing.reviewDetails.language',
+  taskCompletion: 'writing.reviewDetails.taskFulfillment',
+  range: 'writing.reviewDetails.range',
+  accuracy: 'writing.reviewDetails.accuracy',
 }
 
 const { pack } = useActivePack()

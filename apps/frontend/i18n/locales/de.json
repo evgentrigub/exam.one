@@ -52,7 +52,11 @@
     "notes": "Notizen",
     "conversation": "Gespräch",
     "recordings": "Kurze Aufnahmen",
-    "discussion": "Diskussion"
+    "discussion": "Diskussion",
+    "greeting": "Glückwünsche",
+    "description": "Beschreibung",
+    "photo": "Bildbeschreibung",
+    "roleplay": "Rollenspiel"
   },
   "home": {
     "title": "Exam.one",
@@ -676,7 +680,9 @@
       "contentPoint3": "Inhaltspunkt 3",
       "communication": "Anrede und Gruß",
       "content": "Inhalt",
-      "organisation": "Aufbau"
+      "organisation": "Aufbau",
+      "range": "Sprachlicher Umfang",
+      "accuracy": "Sprachliche Richtigkeit"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -851,7 +857,9 @@
     "response2": "Reaktion 2",
     "grammarVocabulary": "Grammatik und Wortschatz",
     "interactiveCommunication": "Interaktion",
-    "globalAchievement": "Gesamteindruck"
+    "globalAchievement": "Gesamteindruck",
+    "vocabulary": "Wortschatz",
+    "grammar": "Grammatik"
   },
   "mockExam": {
     "title": "Modellprüfungen",
