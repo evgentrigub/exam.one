@@ -12,9 +12,10 @@ Read the current repository sources before authoring. Paths below are relative t
 | `data/src/validation.ts` | Registry configuration validation and its limits |
 | `data/src/registry.ts` | Existing identities, aliases, and registration |
 | `data/src/packs/goethe-de-a1/` | **The worked example of a new pack**: brief, structure, runtime rules, per-part validators, review variables, prompts per module, one seed per part, practice copy, and all three layouts |
+| `data/src/packs/cambridge-en-a2/` | A second worked example in another language: gap-fill parts, shared-recording choice and matching listening, examiner cards on `word-cards`, and British English speech |
 | `data/src/packs/goethe-de-a2/` | The reference for every optional slot, including a mock factory and `mockOverview` |
 | `data/src/packs/goethe-shared/raw-adapter.ts` | The projection from the raw payload shape the practice screens read |
-| `data/src/testing/english-a1.ts` | Original synthetic examples of all five formats in the generic shape; not a production registration |
+| `data/src/testing/english-a1.ts` | Original synthetic examples of all six formats in the generic shape; not a production registration |
 | `apps/backend/src/ai/pack-ai.service.ts` | Read-only reference for generation, prompt variables, and review processing |
 | `scripts/eval-prompts.mjs` | Offline seed check (`--control`) and live generator eval (`--n`), per pack with `--pack` |
 
@@ -46,11 +47,12 @@ Adding a pack does not install speech models or supply a mock factory.
 | Skill | Raw payload the screen reads |
 | --- | --- |
 | Reading | `title`, `content`, `textType` (`email`, `notice`, `article`, `advertisement`, `instructions`, `announcement`, `list`), `estimatedReadingTime`, `wordCount`, `topics`, `questions: [{ id, textId, question, options, correctAnswer, explanation, type }]` |
-| Listening | `title`, and either `items: [{ id, context, transcript, question, options, correctAnswer, explanation }]` (one recording per item) or a shared `transcript` with `questions` |
+| Listening | `title`, and either `items: [{ id, context, transcript, question, options, correctAnswer, explanation }]` (one recording per item), or a shared `transcript` with `questions` that carry their own `options` (choice), or with top-level `options` and `questions[].person` (matching), or with `questions[].statement` (true/false) |
+| Gap-fill (reading or listening) | `content` with gaps marked `(1) ____` … (`(0)` is a worked example), `questions: [{ id, question, accepted, explanation }]` with no `options` or `correctAnswer`; listening adds the shared `transcript` |
 | Writing | `title`, `description`, `task`, `requirements`, `topicType`, `estimatedTime`, `wordCount: { min, max }`, `category` |
 | Speaking | `theme`, `topicType`, and `answerQuestions` + `askQuestions`, `keywords`, or `cards` |
 
-`correctAnswer` is always a zero-based integer. For true/false store `options: ["Richtig", "Falsch"]` (in the exam language) with 0 for true; a boolean renders but always scores as wrong. The practice word-count gate uses the payload's `wordCount`, so set a range the learner can meet.
+`correctAnswer` is always a zero-based integer; a gap-fill question has none and is scored against `accepted`, which must list every acceptable variant (spelling, digits and words, time formats), because comparison only ignores case, spacing, typographic apostrophes and outer punctuation. For true/false store `options: ["Richtig", "Falsch"]` (in the exam language) with 0 for true; a boolean renders but always scores as wrong. The practice word-count gate uses the payload's `wordCount`, so set a range the learner can meet.
 
 Objective questions may include `explanation`, `weight`, `audio`, and `transcript`. Missing weights default to one. Scores normalize earned weight against total weight and scale to `maxPoints * multiplier`.
 
@@ -63,7 +65,7 @@ A part names a `layout` when its skill's default screen cannot express the inter
 | `layout` | Format | Payload additions | Answers stored as |
 | --- | --- | --- | --- |
 | `form-fill` | `freeform` | `form: { title, rows: [{ label, value? , field?, options? }] }`, where blank rows carry `field` ids matching the part's `fields` in order, and `expected: { [fieldId]: entry }` for the reviewer | one entry per field id |
-| `word-cards` | `recording` | `cards: [{ segment, kind: 'ask' \| 'answer', topic, cue }]`, one per segment in order | one transcript per segment id |
+| `word-cards` | `recording` | `cards: [{ segment, kind: 'ask' \| 'answer', topic, cue, speaker? }]`, one per segment in order; `speaker: 'examiner'` shows an `answer` card as an examiner question | one transcript per segment id |
 | `request-cards` | `recording` | `cards: [{ segment, kind: 'request' \| 'respond', cue }]`, one per segment in order | one transcript per segment id |
 
 An interaction none of the screens or layouts support is a new layout: application work outside ordinary pack authoring. Explain the gap rather than forcing the task into an unsuitable screen.
@@ -86,4 +88,4 @@ Criterion labels on the review cards are resolved from frontend i18n by criterio
 
 ## Speech
 
-Configure `ttsLang`, `sttLang`, voices, and a distinct `audioPathPrefix`. Use empty voices when no supported voice has been established instead of borrowing German IDs. Configuration does not install provider models or guarantee that the language is supported. Preserve the expectation of editable/manual transcripts and explain when audio generation is unavailable.
+Configure `ttsLang`, `sttLang`, voices, and a distinct `audioPathPrefix`. Use empty voices when no supported voice has been established instead of borrowing German IDs. The TTS service ships German (`martin`, `bernd`, `victoria`, `eva`) and British English (`bf_emma`, `bf_isabella`, `bm_george`, `bm_fable`); an instance serves the languages in `KOKORO_LANGS` / `TTS_LANGUAGES`. For other languages, dialogue voices come from the pack's voices by speaker gender, so label turns with one-word roles or first names the voice mapping knows. Configuration does not install provider models or guarantee that the language is supported. Preserve the expectation of editable/manual transcripts and explain when audio generation is unavailable.
