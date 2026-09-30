@@ -7,7 +7,8 @@ Forkers add an exam by creating a folder under `src/packs/` and registering it i
 | `src/types.ts` | Generic pack, module, and `PromptSpec` contracts |
 | `src/packs/goethe-de-a2/` | Live Goethe A2 (structure, prompts, bundled seeds, mock factory) |
 | `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (all four modules, one seed per part, mock factory and bundled Set 1) |
-| `src/packs/goethe-shared/` | The raw-payload projection both Goethe packs use |
+| `src/packs/cambridge-en-a2/` | Live Cambridge English A2 Key (all four skills, fourteen parts, one seed per part, gap-fill parts, solo speaking cards, no mocks) |
+| `src/packs/goethe-shared/` | The raw-payload projection the Goethe packs and Cambridge A2 Key use |
 | `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
 
 Each prompt slot is a `PromptSpec` with `role`, `task`, `rules`, optional `examples`, and `outputContract`. Runtime values (`{count}`, `{task}`, `{userContent}`, …) are interpolated by `assemble()`.
@@ -25,8 +26,11 @@ Every available part declares `itemFormat`, `runtime`, and an `adapter`. The dat
 | `selection` | `questions: [{id, text, options, correctAnswer, explanation?, weight?}]` | Question/option counts, maximum and multiplier |
 | `matching` | Same question shape, with the same ordered option list | Counts and `reuseOptions` |
 | `true-false` | Question shape with answer index 0 (true) or 1 (false) | Question count; two options |
+| `gap-fill` | `questions: [{id, text?, accepted: string[], explanation?, weight?}]`; no options | Question (gap) count; no `optionCount` |
 | `freeform` | `fields: { [fieldId]: prompt }` | `fields` with stable IDs, labels, word bounds and optional zero-below threshold |
 | `recording` | `segments: { [segmentId]: prompt }` | Ordered `segments` with stable IDs and labels |
+
+A `gap-fill` question is answered by typing. It projects with `options: []` and `correctAnswer: -1`, and is scored against `accepted` by `isGapAnswerCorrect`, which ignores case, spacing, typographic apostrophes and dashes, and outer punctuation, but not spelling. List every acceptable variant (UK/US spelling, `15`/`fifteen`, `6.30`/`6:30`) in `accepted`; the accepted list is also what the learner sees after submitting. In the raw shape, gaps are `questions[].accepted` and the text marks them `(1) ____`, `(2) ____` …, with `(0)` for a worked example; the reading screen shows that text with the gaps in place, and the listening screen shows it as notes under one shared recording. Keep typed answers out of `correctAnswer`: the generation path coerces numeric strings there for every pack.
 
 All payloads have a title and optional `text`. Objective formats support a shared `transcript` and `audio` URL, per-question transcript/audio, or `audio: {shared?, items?: {[questionId]: url}}`. `replays` limits starts of each audio clip; pause/resume does not consume another replay. `minutes` supplies the practice countdown. Recording segments run sequentially and retain editable transcripts when microphone or STT support is unavailable.
 
@@ -46,7 +50,7 @@ Registry startup rejects duplicate identities, unsupported formats, missing runt
 | `word-cards` | `recording` | One recording per card: ask from a topic + word card, answer a partner question | Speaking topic plus `cards: [{ segment, kind: 'ask' \| 'answer', topic, cue }]` |
 | `request-cards` | `recording` | One recording per card: make a request, react to a partner request | Speaking topic plus `cards: [{ segment, kind: 'request' \| 'respond', cue }]` |
 
-Cards map one-to-one onto the part's `segments`, in order. Answers are stored per field or segment id, which `resolveAnswers` reads for scoring and Past exams. Goethe A1 uses all three. Another pack can use them as data; a genuinely new interaction is a new layout, which is application work.
+Cards map one-to-one onto the part's `segments`, in order. An `answer` or `respond` card may carry `speaker: 'examiner'`, which shows the line as the examiner's question instead of the partner's (Cambridge A2 Key speaking). Answers are stored per field or segment id, which `resolveAnswers` reads for scoring and Past exams. Goethe A1 uses all three. Another pack can use them as data; a genuinely new interaction is a new layout, which is application work.
 
 Screen chrome that used to be hardcoded for A2 is now per part in the pack's practice copy: `practiceSubtitle`, `practiceMinutes`, `practiceTimerSec`, `practiceType` and `sessionTitle`, alongside the existing `practiceLabel`, `tips`, `phrases` and `instruction`.
 
@@ -58,7 +62,7 @@ Screen chrome that used to be hardcoded for A2 is now per part in the pack's pra
 4. Add `seedExercises` if the pack ships bundled exercises, and import the pack in `src/registry.ts`.
 5. Check it: `node scripts/eval-prompts.mjs --pack {packId} --control` scores the seeds against the production validators offline; `--n 3` runs every generator through the configured LLM and scores the output. Then run `pnpm db:seed`, select the pack in Learning plan and try every part. `src/packs/goethe-de-a1/` is the worked example.
 
-See `src/testing/english-a1.ts` for a deliberately synthetic, unofficial English A1 example covering all five formats, parts 7/9/11/13/15, a different rubric and no mock. It is a test fixture and is not production-registered. Do not copy its example prompts as official exam content. A fundamentally new interaction, such as a live conversation partner, requires framework work beyond this contract.
+See `src/testing/english-a1.ts` for a deliberately synthetic, unofficial English A1 example covering all six formats, parts 7/9/11/13/15/17, a different rubric and no mock. It is a test fixture and is not production-registered. Do not copy its example prompts as official exam content. A fundamentally new interaction, such as a live conversation partner, requires framework work beyond this contract.
 
 ## Identity, history and optional services
 
@@ -68,6 +72,6 @@ New attempts store a version-1 rendering/rubric snapshot. Historical review uses
 
 Mock definitions persist their own timing, replay, scoring and pass rules. A pack without a factory has an explicit unavailable mock state. Goethe's provisional speaking arithmetic is preserved. Prompt overrides remain unmounted; their unused database table is retained.
 
-TTS checks pack language/voices against `TTS_LANG` and `TTS_VOICES`; STT checks `STT_LANGUAGES` (default `de`). Unsupported capabilities return an unavailable response, preserving manual transcription and playback. No model installation is implied by registering a pack. New generated files use a user/pack/exercise namespace; historical shared paths remain readable and are retained during cleanup.
+TTS checks pack language/voices against `TTS_LANGUAGES` (or the single `TTS_LANG`) and `TTS_VOICES`, and against the voices the TTS service actually reports; a pack whose voices are missing is reported as `unsupported`, not offline. German uses its fixed four-voice roster; other languages assign dialogue voices from the pack's own `speech.voices` by speaker gender. STT checks `STT_LANGUAGES` (Compose default `de,en`). Unsupported capabilities return an unavailable response, preserving manual transcription and playback. No model installation is implied by registering a pack. New generated files use a user/pack/exercise namespace; historical shared paths remain readable and are retained during cleanup.
 
 Verification and migration rollout: [VERIFICATION.md](VERIFICATION.md).

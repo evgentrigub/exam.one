@@ -5,7 +5,25 @@ export type SkillId = 'reading' | 'writing' | 'listening' | 'speaking'
 
 export type PromptKind = 'generator' | 'answer' | 'review'
 
-export type ItemFormat = 'selection' | 'matching' | 'true-false' | 'freeform' | 'recording'
+/**
+ * `gap-fill` is objective like the choice formats, but the learner types each answer; it is
+ * scored against the question's `accepted` list instead of an option index.
+ */
+export type ItemFormat =
+  | 'selection'
+  | 'matching'
+  | 'true-false'
+  | 'gap-fill'
+  | 'freeform'
+  | 'recording'
+
+/** Formats scored automatically from the learner's answers, without a rubric review. */
+export const OBJECTIVE_FORMATS: readonly ItemFormat[] = [
+  'selection',
+  'matching',
+  'true-false',
+  'gap-fill',
+]
 
 /**
  * A dedicated practice screen for a part whose interaction the default screen for its format

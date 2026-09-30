@@ -1,6 +1,6 @@
 # Exam.one
 
-Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too.
+Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key is a practice pack for all four skills (no mock exams), with typed gap-fill tasks and British English audio.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
@@ -35,7 +35,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 ### Listening Practice
 
 - Goethe A2 Teile 1–4 with shared or per-item audio players
-- Stable WAV playback from pre-generated Kokoro German voices
+- Stable WAV playback from pre-generated Kokoro voices (German, and British English for Cambridge A2 Key)
 - On-demand TTS when Kokoro is up (`pnpm tts:up` + Generate audio)
 - Optional AI transcript generation, separate from audio generation
 
@@ -121,7 +121,7 @@ This is the supported way to run exam.one on a laptop. Copy [`.env.example`](./.
 | **Docker Engine 24+** and Compose v2 | Docker Desktop, or engine + Compose plugin on Linux                                           |
 | **Node.js 24+** and **pnpm 10.12.1+** | Required for `pnpm stack:up` (model download, migrate/seed orchestration, password recovery) |
 | **RAM**                             | 4 GB minimum for the core app; 6–8 GB when building/running Kokoro and Parakeet                |
-| **Disk**                            | ~2 GB for speech weights (about 984 MB Kokoro + 740 MB Parakeet GGUF) plus container images    |
+| **Disk**                            | ~2.4 GB for speech weights (about 1.3 GB Kokoro German + English, 740 MB Parakeet GGUF) plus container images |
 | **OS**                              | macOS (Apple Silicon or Intel), Linux (x86_64 or arm64), Windows 10/11 with WSL2               |
 
 ### Quick start
@@ -210,7 +210,7 @@ Restart the backend after changing keys (`pnpm stack:up` or `docker compose up -
 
 ### Optional: speech sidecars
 
-Kokoro (Listening TTS) exposes four German voices on `:8881`: `martin`, `bernd`, `victoria`, `eva`.
+Kokoro (Listening TTS) serves the languages in `KOKORO_LANGS` (default `de,en`) on `:8881`: German `martin`, `bernd`, `victoria`, `eva` and British English `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable`. The English model adds about 320 MB of download and 0.5 GiB of memory; set `KOKORO_LANGS=de` to skip it. See [scripts/tts/README.md](scripts/tts/README.md).
 
 Parakeet (Speaking STT) serves Handy's Q8 GGUF on `:8882`. To use OpenAI Whisper instead:
 
@@ -312,8 +312,8 @@ Copy [`.env.example`](./.env.example) and edit. Groups:
 | Auth                          | `JWT_SECRET` (required, ≥32 chars, not the placeholder), `AUTH_COOKIE_SECURE`, `SWAGGER_ENABLED` |
 | Email                         | `EMAIL_PROVIDER`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` |
 | LLM                           | `LLM_PROVIDER`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `LLM_REASONING_EFFORT` |
-| STT                           | `STT_PROVIDER`, `STT_BASE_URL`, `STT_PORT`, `STT_CPU_THREADS`, `STT_MODEL`, `STT_OPENAI_MODEL` |
-| TTS                           | `TTS_BASE_URL`, `TTS_PORT`, `TTS_CPU_THREADS`, `TTS_CONCURRENCY`, `TTS_SPEED`, `TTS_LANG`, `TTS_VOICE`, `TTS_TURN_PAUSE_MS`, `TTS_PAUSE_DURATION` |
+| STT                           | `STT_PROVIDER`, `STT_BASE_URL`, `STT_PORT`, `STT_CPU_THREADS`, `STT_MODEL`, `STT_LANGUAGES`, `STT_OPENAI_MODEL` |
+| TTS                           | `TTS_BASE_URL`, `TTS_PORT`, `TTS_CPU_THREADS`, `TTS_CONCURRENCY`, `TTS_SPEED`, `KOKORO_LANGS`, `TTS_LANGUAGES`, `TTS_LANG`, `TTS_VOICES`, `TTS_VOICE`, `TTS_TURN_PAUSE_MS`, `TTS_PAUSE_DURATION` |
 | Optional                      | `GENERATED_LISTENING_AUDIO_DIR`, `STACK_SEED_AUDIO_TIMEOUT_MS`       |
 
 Production notes:

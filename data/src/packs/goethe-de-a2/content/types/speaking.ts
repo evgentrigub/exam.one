@@ -60,6 +60,11 @@ export interface SpeakingCard {
   /** The topic the card belongs to, such as "Essen und Trinken". */
   topic?: string
   cue: string
+  /**
+   * Who says an `answer` or `respond` line. Absent, it is the partner; `examiner` is an
+   * interlocutor question, as in Cambridge speaking tests.
+   */
+  speaker?: 'examiner'
 }
 
 /** A card exchange: one recording per card, in the part's segment order (Goethe A1 Teil 2–3). */

@@ -1,4 +1,4 @@
-import { LAYOUT_FORMATS, type ExamPack } from './types'
+import { LAYOUT_FORMATS, OBJECTIVE_FORMATS, type ExamPack } from './types'
 
 export function validatePacks(packs: readonly ExamPack[]): void {
   const identities = new Set<string>()
@@ -36,7 +36,7 @@ export function validatePacks(packs: readonly ExamPack[]): void {
         if (!rules || !part.adapter) fail(`missing runtime for ${module.id}:${part.n}`)
         if (!rules) continue
         if (!Number.isFinite(rules.minutes) || rules.minutes <= 0 || !Number.isFinite(rules.maxPoints) || rules.maxPoints <= 0) fail('invalid timing or maximum score')
-        if (!['selection', 'matching', 'true-false', 'freeform', 'recording'].includes(part.itemFormat)) fail('unsupported format')
+        if (![...OBJECTIVE_FORMATS, 'freeform', 'recording'].includes(part.itemFormat)) fail('unsupported format')
         if (part.layout !== undefined && LAYOUT_FORMATS[part.layout] !== part.itemFormat) fail(`layout ${part.layout} does not fit ${part.itemFormat} in ${module.id}:${part.n}`)
         const kinds = part.itemFormat === 'freeform' || part.itemFormat === 'recording' ? ['generator', 'answer', 'review'] : ['generator']
         for (const kind of kinds) if (!slots.has(`${module.id}:${part.n}:${kind}`)) fail(`missing ${module.id}:${part.n}:${kind}`)
@@ -49,6 +49,7 @@ export function validatePacks(packs: readonly ExamPack[]): void {
         if (rules.multiplier !== undefined && (!Number.isFinite(rules.multiplier) || rules.multiplier <= 0)) fail('invalid score multiplier')
         if (rules.replays !== undefined && (!Number.isInteger(rules.replays) || rules.replays < 1)) fail('invalid listening replay count')
         if (part.itemFormat === 'true-false' && rules.optionCount !== undefined && rules.optionCount !== 2) fail('true/false requires two options')
+        if (part.itemFormat === 'gap-fill' && (rules.optionCount !== undefined || rules.reuseOptions !== undefined)) fail('gap-fill has no options')
         for (const fields of [rules.fields, rules.segments]) {
           if (fields && (fields.some(field => !field.id || !field.label) || new Set(fields.map(field => field.id)).size !== fields.length)) fail('duplicate or missing response field identity')
         }
