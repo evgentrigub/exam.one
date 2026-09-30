@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Download the Kokoro models for each language in KOKORO_LANGS (default: de,en).
+# Download the TTS models for each language in KOKORO_LANGS (default: de,en,pl).
 #   de: Kikiri Stage-2 (martin + victoria), multi-speaker base, and bernd/eva packs.
 #   en: base Kokoro-82M v1.0 and the British voices bf_emma, bf_isabella, bm_george, bm_fable.
+#   pl: Piper voices gosia, darkman (CC0) and bass (Apache-2.0), ONNX + JSON config.
 set -euo pipefail
 
-KOKORO_LANGS="${KOKORO_LANGS:-de,en}"
+KOKORO_LANGS="${KOKORO_LANGS:-de,en,pl}"
 wants() { [[ ",${KOKORO_LANGS// /}," == *",$1,"* ]]; }
 
 ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
@@ -15,8 +16,9 @@ HF_BASE="https://huggingface.co/kikiri-tts/kikiri-german-base-51speakers-synthet
 HF_KOKORO="https://huggingface.co/hexgrad/Kokoro-82M/resolve/main"
 HF_KOKORO_CFG="${HF_KOKORO}/config.json"
 R1DI_VOICES="https://raw.githubusercontent.com/r1di/kokoro-fastapi-german/master/api/src/voices/v1_0"
+HF_PIPER_PL="https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL"
 
-mkdir -p "${TARGET_DIR}/voices"
+mkdir -p "${TARGET_DIR}/voices" "${TARGET_DIR}/piper"
 
 download_if_missing() {
   local url="$1"
@@ -98,9 +100,24 @@ for voice in bf_emma bf_isabella bm_george bm_fable; do
 done
 fi
 
+if wants pl; then
+# Piper Polish voices: gosia/darkman medium (~63 MB each), bass high (~114 MB)
+for voice in gosia/medium/pl_PL-gosia-medium darkman/medium/pl_PL-darkman-medium bass/high/pl_PL-bass-high; do
+  download_if_missing \
+    "${HF_PIPER_PL}/${voice}.onnx" \
+    "${TARGET_DIR}/piper/$(basename "${voice}").onnx" \
+    50000000
+  download_if_missing \
+    "${HF_PIPER_PL}/${voice}.onnx.json" \
+    "${TARGET_DIR}/piper/$(basename "${voice}").onnx.json" \
+    1000
+done
+fi
+
 download_if_missing "${HF_KOKORO_CFG}" "${TARGET_DIR}/config.json" 1000
 
 echo "[setup-voices] Ready at ${TARGET_DIR} for ${KOKORO_LANGS}"
 wants de && echo "[setup-voices] German: martin, bernd (male) · victoria, eva (female)"
 wants en && echo "[setup-voices] English: bm_george, bm_fable (male) · bf_emma, bf_isabella (female)"
+wants pl && echo "[setup-voices] Polish: pl_darkman, pl_bass (male) · pl_gosia (female)"
 exit 0

@@ -11,7 +11,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 
 /** The TTS languages to check, as the download script and the TTS service read them. */
 const languages = new Set(
-  (process.env.KOKORO_LANGS ?? 'de,en')
+  (process.env.KOKORO_LANGS ?? 'de,en,pl')
     .split(',')
     .map(lang => lang.trim())
     .filter(Boolean)
@@ -36,6 +36,12 @@ const required = [
           voice => `scripts/tts/victoria/models/voices/${voice}.pt`
         ),
       ]
+    : []),
+  ...(languages.has('pl')
+    ? ['pl_PL-gosia-medium', 'pl_PL-darkman-medium', 'pl_PL-bass-high'].flatMap(voice => [
+        `scripts/tts/victoria/models/piper/${voice}.onnx`,
+        `scripts/tts/victoria/models/piper/${voice}.onnx.json`,
+      ])
     : []),
   'scripts/tts/victoria/models/config.json',
   'scripts/stt/parakeet/models/parakeet-tdt-0.6b-v3-Q8_0.gguf',

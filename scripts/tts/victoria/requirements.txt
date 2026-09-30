@@ -7,4 +7,7 @@ phonemizer==3.3.0
 soundfile==0.12.1
 huggingface-hub==0.26.5
 misaki[en]==0.9.4
+# Polish voices (GPL-3.0-or-later; bundles its own espeak-ng) and 22.05 → 24 kHz resampling
+piper-tts==1.8.0
+soxr==0.5.0.post1
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

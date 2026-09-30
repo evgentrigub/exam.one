@@ -1,10 +1,10 @@
-# Listening audio generation (PyTorch Kokoro: German and British English)
+# Listening audio generation (Kokoro: German and British English · Piper: Polish)
 
 Listening practice plays **stable WAV files** (identical on every replay). Kokoro is only
 needed when generating or regenerating those files.
 
 `pnpm tts:up` selects and starts the **single** `kokoro-voices` service from the
-root `compose.yaml` on `:8881`. It loads the languages in `KOKORO_LANGS` (default `de,en`):
+root `compose.yaml` on `:8881`. It loads the languages in `KOKORO_LANGS` (default `de,en,pl`):
 
 | Voice         | Language | Gender   | Backbone                   |
 | ------------- | -------- | -------- | -------------------------- |
@@ -16,12 +16,19 @@ root `compose.yaml` on `:8881`. It loads the languages in `KOKORO_LANGS` (defaul
 | `bm_george`   | English  | male 1   | Kokoro-82M v1.0 (grade C)  |
 | `bf_isabella` | English  | female 2 | Kokoro-82M v1.0 (grade C)  |
 | `bm_fable`    | English  | male 2   | Kokoro-82M v1.0 (grade C)  |
+| `pl_gosia`    | Polish   | female 1 | Piper VITS, medium         |
+| `pl_darkman`  | Polish   | male 1   | Piper VITS, medium         |
+| `pl_bass`     | Polish   | male 2   | Piper VITS, high           |
 
 German text→phonemes uses `phonemizer` + espeak-ng `de` (same path as the former Martin ONNX stack).
 British English uses misaki's British G2P with the espeak `en-gb` fallback, as kokoro's own
 `KPipeline(lang_code="b")` does; one base model serves all four English voices and adds
-about 0.5 GiB of memory. Grades are upstream's own voice ratings. `KOKORO_LANGS=de` skips the
-English download and model.
+about 0.5 GiB of memory. Grades are upstream's own voice ratings. Kokoro has no Polish, so Polish
+runs on [Piper](https://github.com/OHF-Voice/piper1-gpl) (ONNX, with its own bundled espeak-ng) in the
+same service: three voices, about 240 MB of download and 0.3 GiB of memory, many times faster than
+real time on a CPU. Piper speaks at 22.05 kHz; the service resamples to 24 kHz so every WAV matches.
+There is only one Polish female voice, so two women in one dialogue share `pl_gosia`. Drop a
+language from `KOKORO_LANGS` (for example `de,pl` or `de`) to skip its download and model.
 
 Every request names a voice and a language. An unknown voice, or a voice of another language,
 is refused with HTTP 400 instead of being spoken by a German voice. `/v1/audio/voices` and
@@ -40,10 +47,15 @@ English packs label turns with one word: roles (`Man`, `Woman`, `Boy`, `Girl`, `
 A monologue opening with one label (`Paul: Hi Jenny, …`) takes that speaker's voice and the
 label is not read aloud; an unlabeled one takes the pack's first voice.
 
+Polish packs label turns with a role (`Kobieta`, `Mężczyzna`, `Sprzedawczyni`, `Kelner`, …), a first
+name (`Kasia`, `Tomek`, `Łucja`) or `Pan` / `Pani` with a surname (`Pani Nowak`). Feminine roles ending
+in `-ka` / `-yni` and first names ending in `-a` are read as women, except listed male names such as
+`Kuba`. So `Kobieta` → pl_gosia, `Mężczyzna` → pl_darkman, a second man → pl_bass.
+
 ## Seed audio (maintainer)
 
 ```bash
-# One-time: download the German and English weights (KOKORO_LANGS=de for German only)
+# One-time: download the German, English and Polish weights (KOKORO_LANGS=de for German only)
 bash scripts/tts/victoria/download-models.sh
 # or: ./scripts/tts/setup-kokoro.sh
 
@@ -88,10 +100,10 @@ Env overrides:
 | `TTS_BASE_URL`      | `http://127.0.0.1:8881` | Four-voice PyTorch service        |
 | `TTS_CONCURRENCY`   | `3`                     | Parallel segment + turn synthesis |
 | `TTS_SPEED`         | `1.0`                   | Speaking rate                     |
-| `TTS_LANGUAGES`     | `de` (Compose `de,en`)  | Languages packs may use           |
+| `TTS_LANGUAGES`     | `de` (Compose `de,en,pl`) | Languages packs may use         |
 | `TTS_LANG`          | `de`                    | Single-language form of the above |
-| `TTS_VOICES`        | German + British ids    | Voices packs may use              |
-| `KOKORO_LANGS`      | `de,en`                 | Languages the service downloads and loads |
+| `TTS_VOICES`        | German + British + Polish ids | Voices packs may use        |
+| `KOKORO_LANGS`      | `de,en,pl`              | Languages the service downloads and loads |
 | `TTS_TURN_PAUSE_MS` | `350`                   | Silence between dialogue turns    |
 
 Upstream Martin: [kikiri-german-martin](https://huggingface.co/kikiri-tts/kikiri-german-martin).
@@ -101,5 +113,8 @@ Multi-speaker base: [kikiri-german-base-51speakers-synthetic](https://huggingfac
 English model and voices: [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0), with
 [misaki](https://github.com/hexgrad/misaki) G2P (Apache-2.0) and spaCy `en_core_web_sm` (MIT) baked into the image.
 The Kikiri models are Apache-2.0; the multi-speaker base was trained on synthetic audio.
+Polish voices: [rhasspy/piper-voices `pl_PL`](https://huggingface.co/rhasspy/piper-voices/tree/main/pl/pl_PL) —
+`gosia` and `darkman` (CC0 datasets), `bass` (Apache-2.0). The `piper-tts` engine is GPL-3.0-or-later and
+runs only inside this speech container, as espeak-ng (GPL-3.0) already does.
 
 Legacy Martin ONNX scripts remain under `scripts/tts/kokoro-german/` but are not used by `pnpm tts:up`.
