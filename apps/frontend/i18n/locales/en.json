@@ -46,7 +46,13 @@
     "voicemail": "Voicemail",
     "introduction": "Introduction",
     "requests": "Requests",
-    "form": "Form"
+    "form": "Form",
+    "note": "Note",
+    "story": "Story",
+    "notes": "Notes",
+    "conversation": "Conversation",
+    "recordings": "Short recordings",
+    "discussion": "Discussion"
   },
   "home": {
     "title": "Exam.one",
@@ -668,7 +674,9 @@
       "contentPoint1": "Content point 1",
       "contentPoint2": "Content point 2",
       "contentPoint3": "Content point 3",
-      "communication": "Greeting and closing"
+      "communication": "Greeting and closing",
+      "content": "Content",
+      "organisation": "Organisation"
     },
     "modelAnswer": {
       "title": "Model Answer",
@@ -840,7 +848,10 @@
     "request1": "Request 1",
     "response1": "Reaction 1",
     "request2": "Request 2",
-    "response2": "Reaction 2"
+    "response2": "Reaction 2",
+    "grammarVocabulary": "Grammar and Vocabulary",
+    "interactiveCommunication": "Interactive Communication",
+    "globalAchievement": "Global Achievement"
   },
   "mockExam": {
     "title": "Mock exams",
@@ -1004,6 +1015,11 @@
       "respond": {
         "title": "Round {round} · React to the request",
         "description": "Say yes or no politely, with a short reason."
+      },
+      "examinerSays": "Examiner",
+      "examiner": {
+        "title": "Question {round} · Answer the examiner",
+        "description": "Answer in a sentence or two, and give a reason where you can."
       }
     },
     "recorder": {
@@ -1118,7 +1134,10 @@
     "audioUnavailable": "Audio unavailable",
     "play": "Play",
     "pause": "Pause",
-    "plays": "Plays: {count}/{max}"
+    "plays": "Plays: {count}/{max}",
+    "notesIntro": "Listen and complete the notes. Spelling counts; capital letters don't.",
+    "ttsUnsupported": "Text-to-speech on this instance doesn't have voices for this exam's language yet.",
+    "missingDetailUnsupported": "This exam's language needs its own text-to-speech voices. Install them (see scripts/tts/README.md), then generate the audio."
   },
   "progress": {
     "heading": "Your progress",
@@ -1187,7 +1206,7 @@
     "wordsAndTime": "{words} words · ~{minutes} min read",
     "text": "Text",
     "readyTitle": "Ready for the questions?",
-    "readyDescription": "Answer {count} multiple-choice question after reading. | Answer {count} multiple-choice questions after reading.",
+    "readyDescription": "Answer {count} question after reading. | Answer {count} questions after reading.",
     "deleteText": "Delete text",
     "deleteTextAria": "Delete reading text",
     "questionCount": "{count} question | {count} questions",
@@ -1198,7 +1217,8 @@
     "minutesRead": "{minutes} min read",
     "backToOverview": "Back to overview",
     "answerQuestions": "Answer questions",
-    "noQuestions": "No questions available"
+    "noQuestions": "No questions available",
+    "gapInstructions": "Write one word in each gap. Spelling counts; capital letters don't."
   },
   "errors": {
     "requestFailed": "Request failed",
@@ -1211,5 +1231,15 @@
     "allTranscriptsRequired": "Every transcript is required for AI review.",
     "sttStatusFailed": "Could not check speech recognition status.",
     "transcriptionFailed": "Transcription failed."
+  },
+  "gapFill": {
+    "inputLabel": "Gap {n}",
+    "placeholder": "Type your answer",
+    "accepted": "Accepted: {answers}",
+    "notes": "Notes",
+    "gapAria": "Gap {n}: {answer}",
+    "gapEmptyAria": "Gap {n}, not answered yet",
+    "correct": "Correct",
+    "incorrect": "Incorrect"
   }
 }

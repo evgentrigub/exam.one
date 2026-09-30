@@ -86,6 +86,9 @@ const CRITERION_LABELS: Record<string, string> = {
       'response1',
       'request2',
       'response2',
+      'grammarVocabulary',
+      'interactiveCommunication',
+      'globalAchievement',
     ].map(id => [id, `speakingReview.${id}`])
   ),
 }

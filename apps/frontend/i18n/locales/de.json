@@ -46,7 +46,13 @@
     "voicemail": "Anrufbeantworter",
     "introduction": "Vorstellung",
     "requests": "Bitten",
-    "form": "Formular"
+    "form": "Formular",
+    "note": "Notiz",
+    "story": "Geschichte",
+    "notes": "Notizen",
+    "conversation": "Gespräch",
+    "recordings": "Kurze Aufnahmen",
+    "discussion": "Diskussion"
   },
   "home": {
     "title": "Exam.one",
@@ -668,7 +674,9 @@
       "contentPoint1": "Inhaltspunkt 1",
       "contentPoint2": "Inhaltspunkt 2",
       "contentPoint3": "Inhaltspunkt 3",
-      "communication": "Anrede und Gruß"
+      "communication": "Anrede und Gruß",
+      "content": "Inhalt",
+      "organisation": "Aufbau"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -840,7 +848,10 @@
     "request1": "Bitte 1",
     "response1": "Reaktion 1",
     "request2": "Bitte 2",
-    "response2": "Reaktion 2"
+    "response2": "Reaktion 2",
+    "grammarVocabulary": "Grammatik und Wortschatz",
+    "interactiveCommunication": "Interaktion",
+    "globalAchievement": "Gesamteindruck"
   },
   "mockExam": {
     "title": "Modellprüfungen",
@@ -1004,6 +1015,11 @@
       "respond": {
         "title": "Runde {round} · Auf die Bitte reagieren",
         "description": "Sag höflich ja oder nein, mit einem kurzen Grund."
+      },
+      "examinerSays": "Prüfer/in",
+      "examiner": {
+        "title": "Frage {round} · Der Prüferin / dem Prüfer antworten",
+        "description": "Antworte in ein, zwei Sätzen und nenne, wenn möglich, einen Grund."
       }
     },
     "recorder": {
@@ -1118,7 +1134,10 @@
     "audioUnavailable": "Audio nicht verfügbar",
     "play": "Abspielen",
     "pause": "Pause",
-    "plays": "Wiedergaben: {count}/{max}"
+    "plays": "Wiedergaben: {count}/{max}",
+    "notesIntro": "Hör zu und ergänze die Notizen. Die Rechtschreibung zählt, Groß- und Kleinschreibung nicht.",
+    "ttsUnsupported": "Die Sprachausgabe dieser Instanz hat noch keine Stimmen für die Sprache dieser Prüfung.",
+    "missingDetailUnsupported": "Die Sprache dieser Prüfung braucht eigene Stimmen für die Sprachausgabe. Installiere sie (siehe scripts/tts/README.md) und erzeuge dann das Audio."
   },
   "progress": {
     "heading": "Dein Fortschritt",
@@ -1187,7 +1206,7 @@
     "wordsAndTime": "{words} Wörter · ca. {minutes} Min. Lesezeit",
     "text": "Text",
     "readyTitle": "Bereit für die Fragen?",
-    "readyDescription": "Beantworte nach dem Lesen {count} Multiple-Choice-Frage. | Beantworte nach dem Lesen {count} Multiple-Choice-Fragen.",
+    "readyDescription": "Beantworte nach dem Lesen {count} Frage. | Beantworte nach dem Lesen {count} Fragen.",
     "deleteText": "Text löschen",
     "deleteTextAria": "Lesetext löschen",
     "questionCount": "{count} Frage | {count} Fragen",
@@ -1198,7 +1217,8 @@
     "minutesRead": "{minutes} Min. Lesezeit",
     "backToOverview": "Zurück zur Übersicht",
     "answerQuestions": "Fragen beantworten",
-    "noQuestions": "Keine Fragen verfügbar"
+    "noQuestions": "Keine Fragen verfügbar",
+    "gapInstructions": "Schreib in jede Lücke ein Wort. Die Rechtschreibung zählt, Groß- und Kleinschreibung nicht."
   },
   "errors": {
     "requestFailed": "Anfrage fehlgeschlagen",
@@ -1211,5 +1231,15 @@
     "allTranscriptsRequired": "Für die KI-Bewertung werden alle Transkripte benötigt.",
     "sttStatusFailed": "Der Status der Spracherkennung konnte nicht geprüft werden.",
     "transcriptionFailed": "Die Transkription ist fehlgeschlagen."
+  },
+  "gapFill": {
+    "inputLabel": "Lücke {n}",
+    "placeholder": "Antwort eingeben",
+    "accepted": "Richtig wäre: {answers}",
+    "notes": "Notizen",
+    "gapAria": "Lücke {n}: {answer}",
+    "gapEmptyAria": "Lücke {n}, noch nicht beantwortet",
+    "correct": "Richtig",
+    "incorrect": "Falsch"
   }
 }

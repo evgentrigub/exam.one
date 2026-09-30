@@ -148,6 +148,9 @@ const CRITERION_LABELS: Record<string, string> = {
   content2: 'writing.reviewDetails.contentPoint2',
   content3: 'writing.reviewDetails.contentPoint3',
   communication: 'writing.reviewDetails.communication',
+  content: 'writing.reviewDetails.content',
+  organisation: 'writing.reviewDetails.organisation',
+  language: 'writing.reviewDetails.language',
 }
 
 const { pack } = useActivePack()

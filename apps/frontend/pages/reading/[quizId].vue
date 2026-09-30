@@ -39,6 +39,7 @@
               <Type :size="12" />
             </button>
             <button
+              v-if="hasWordHelper"
               class="join-item btn btn-xs btn-ghost"
               :class="{ 'btn-active': selectedWord }"
               :aria-label="$t('pages.reading.showWordHelper')"
@@ -70,6 +71,29 @@
           </span>
         </div>
         <article
+          v-if="isGapFill"
+          class="mt-5 text-base-content/85 overflow-y-auto max-h-[calc(100vh-300px)] pr-1"
+          :class="contentSizeClass"
+        >
+          <GapFillText
+            :content="text.content"
+            :questions="text.questions ?? []"
+            :answers="gapState.answers"
+            :revealed="gapState.revealed"
+          />
+        </article>
+        <article
+          v-else-if="!hasWordHelper"
+          class="mt-5 space-y-3 leading-[1.75] text-base-content/85 overflow-y-auto max-h-[calc(100vh-300px)] pr-1"
+          :class="contentSizeClass"
+          :lang="pack.language"
+        >
+          <p v-for="(paragraph, paragraphIndex) in paragraphs" :key="paragraphIndex">
+            {{ paragraph }}
+          </p>
+        </article>
+        <article
+          v-else
           class="mt-5 space-y-3 leading-[1.75] text-base-content/85 overflow-y-auto max-h-[calc(100vh-300px)] pr-1"
           :class="contentSizeClass"
         >
@@ -97,7 +121,7 @@
           </p>
         </article>
         <div
-          v-if="selectedWord"
+          v-if="hasWordHelper && selectedWord"
           class="mt-4 rounded-box border border-primary/20 bg-primary/10 p-3 text-sm"
         >
           <div class="font-semibold text-base-content">{{ selectedWord }}</div>
@@ -106,7 +130,8 @@
         <div
           class="mt-6 pt-4 border-t border-base-300/70 text-xs text-base-content/50 flex items-center justify-between gap-3 flex-wrap"
         >
-          <span>{{ $t('pages.reading.tapWordHint') }}</span>
+          <span v-if="hasWordHelper">{{ $t('pages.reading.tapWordHint') }}</span>
+          <span v-else />
           <button
             type="button"
             class="inline-flex items-center gap-1 hover:text-primary transition-colors"
@@ -121,7 +146,12 @@
       </section>
 
       <!-- Right: Quiz session -->
-      <QuizSession class="col-span-12 lg:col-span-6" :text="text" @finish="goBack" />
+      <QuizSession
+        class="col-span-12 lg:col-span-6"
+        :text="text"
+        @finish="goBack"
+        @gap-state="gapState = $event"
+      />
     </div>
 
     <div v-else class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center">
@@ -156,6 +186,8 @@ import type { Component } from 'vue'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import QuizSession from '~/components/reading/QuizSession.vue'
+import GapFillText from '~/components/gapFill/GapFillText.vue'
+import { stripGapMarkers, type ObjectiveAnswers } from '~/utils/gapFill'
 
 interface TextToken {
   value: string
@@ -168,6 +200,10 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { getTexts } = useReadingTexts()
+const { pack, partsFor } = useActivePack()
+
+/** Browser read-aloud voices by exam language. */
+const SPEECH_LOCALES: Record<string, string> = { de: 'de-DE', en: 'en-GB' }
 
 const fontSize = ref<'base' | 'lg'>('base')
 const selectedWord = ref('')
@@ -177,6 +213,16 @@ const isSaved = ref(false)
 const quizId = computed(() => String(route.params['quizId'] || ''))
 const text = computed<ReadingExercise | null>(
   () => getTexts().find(item => item.id === quizId.value) || null
+)
+const isGapFill = computed(
+  () =>
+    partsFor('reading').find(part => part.n === text.value?.testingPart)?.itemFormat === 'gap-fill'
+)
+/** The tap-a-word helper only knows German words. */
+const hasWordHelper = computed(() => pack.value.language === 'de' && !isGapFill.value)
+const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({ answers: {}, revealed: false })
+const paragraphs = computed(() =>
+  (text.value?.content ?? '').split(/\n+/).filter(paragraph => paragraph.trim().length > 0)
 )
 const contentSizeClass = computed(() =>
   fontSize.value === 'lg' ? 'text-base sm:text-lg' : 'text-[15px]'
@@ -255,8 +301,8 @@ function toggleReadAloud() {
     isSpeaking.value = false
     return
   }
-  const utterance = new SpeechSynthesisUtterance(text.value.content)
-  utterance.lang = 'de-DE'
+  const utterance = new SpeechSynthesisUtterance(stripGapMarkers(text.value.content))
+  utterance.lang = SPEECH_LOCALES[pack.value.language] ?? pack.value.language
   utterance.onend = () => {
     isSpeaking.value = false
   }

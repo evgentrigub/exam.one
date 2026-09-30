@@ -9,16 +9,27 @@
         </span>
       </div>
       <p class="text-sm text-base-content/60 mt-1">
-        {{ t('reading.quizInstructions') }}
+        {{ isGapFill ? t('reading.gapInstructions') : t('reading.quizInstructions') }}
       </p>
 
-      <div class="mt-5 space-y-6">
+      <GapFillInputs
+        v-if="isGapFill"
+        class="mt-5"
+        :questions="questions"
+        :model-value="answeredQuestions"
+        :disabled="isFinished"
+        :revealed="isFinished"
+        :show-feedback="!examMode"
+        @update:model-value="handleTypedAnswers"
+        @commit="flushDraft"
+      />
+      <div v-else class="mt-5 space-y-6">
         <QuestionCard
           v-for="(q, i) in questions"
           :key="q.id"
           :question="q"
           :question-number="i + 1"
-          :selected-answer="answeredQuestions[q.id] ?? null"
+          :selected-answer="choiceOf(q.id)"
           :submitted="isFinished"
           :show-feedback="!examMode"
           :true-false="isTrueFalse"
@@ -106,11 +117,9 @@
             <p class="text-sm">{{ questions[index]?.question }}</p>
             <p v-if="!result.isCorrect" class="text-xs text-base-content/50 mt-1">
               {{ t('quiz.yourAnswer') }}
-              <strong>{{ formatAnswerLabel(result.selectedAnswer, questions[index]?.options) }}</strong>
+              <strong>{{ answerLabel(result.selectedAnswer, questions[index]) }}</strong>
               · {{ t('quiz.correctLabel') }}
-              <strong>{{
-                formatAnswerLabel(questions[index]?.correctAnswer ?? 0, questions[index]?.options)
-              }}</strong>
+              <strong>{{ correctLabel(questions[index]) }}</strong>
             </p>
           </div>
         </div>
@@ -131,21 +140,27 @@
 
 <script setup lang="ts">
 import { ArrowRight, Check, CircleAlert, CircleCheck, Info, RotateCcw, X } from 'lucide-vue-next'
-import type { ReadingExercise } from '~/utils/exercises/reading'
+import { isGapAnswerCorrect } from '@exam-one/exam-packs'
+import type { ReadingExercise, ReadingQuestion } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
 import QuestionCard from '~/components/reading/QuestionCard.vue'
+import GapFillInputs from '~/components/gapFill/GapFillInputs.vue'
+import type { ObjectiveAnswer, ObjectiveAnswers } from '~/utils/gapFill'
 
 interface Props {
   text: ReadingExercise
   examMode?: boolean
-  initialAnswers?: Record<string, number | undefined>
+  initialAnswers?: ObjectiveAnswers
 }
 
 interface QuizResult {
   questionId: string
-  selectedAnswer: number
+  selectedAnswer: ObjectiveAnswer
   isCorrect: boolean
 }
+
+/** Typing saves the draft after a short pause, not on every keystroke. */
+const DRAFT_DEBOUNCE_MS = 500
 
 const props = withDefaults(defineProps<Props>(), {
   examMode: false,
@@ -154,33 +169,49 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   finish: []
-  progress: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
-  examComplete: [
-    payload: { answers: Record<string, number | undefined>; score: number; total: number },
-  ]
+  progress: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
+  examComplete: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
+  /** Gap-fill parts: the typed answers, for the gapped text beside the questions. */
+  gapState: [payload: { answers: ObjectiveAnswers; revealed: boolean }]
 }>()
 
 const { t } = useI18n()
 const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
 
 const isFinished = ref(false)
-const answeredQuestions = ref<Record<string, number>>({})
+const answeredQuestions = ref<ObjectiveAnswers>({})
 
 const questions = computed(() => props.text.questions || [])
 const { partsFor } = useActivePack()
-const isTrueFalse = computed(
-  () => partsFor('reading').find(part => part.n === props.text.testingPart)?.itemFormat === 'true-false'
+const itemFormat = computed(
+  () => partsFor('reading').find(part => part.n === props.text.testingPart)?.itemFormat
 )
-const answeredCount = computed(() => Object.keys(answeredQuestions.value).length)
-const allAnswered = computed(() => questions.value.every(q => q.id in answeredQuestions.value))
+const isTrueFalse = computed(() => itemFormat.value === 'true-false')
+const isGapFill = computed(() => itemFormat.value === 'gap-fill')
+
+/** A choice is an index; a typed gap counts once it is not blank. */
+function isAnswered(value: ObjectiveAnswer | undefined): value is ObjectiveAnswer {
+  return typeof value === 'number' || (typeof value === 'string' && value.trim() !== '')
+}
+function choiceOf(questionId: string): number | null {
+  const value = answeredQuestions.value[questionId]
+  return typeof value === 'number' ? value : null
+}
+
+const answeredCount = computed(
+  () => questions.value.filter(q => isAnswered(answeredQuestions.value[q.id])).length
+)
+const allAnswered = computed(() => questions.value.every(q => isAnswered(answeredQuestions.value[q.id])))
 const results = computed<QuizResult[]>(() =>
   questions.value.reduce<QuizResult[]>((acc, question) => {
     const selectedAnswer = answeredQuestions.value[question.id]
-    if (typeof selectedAnswer !== 'number') return acc
+    if (!isAnswered(selectedAnswer)) return acc
     acc.push({
       questionId: question.id,
       selectedAnswer,
-      isCorrect: selectedAnswer === question.correctAnswer,
+      isCorrect: question.accepted
+        ? isGapAnswerCorrect(selectedAnswer, question.accepted)
+        : selectedAnswer === question.correctAnswer,
     })
     return acc
   }, [])
@@ -194,7 +225,7 @@ onMounted(() => {
   if (props.examMode) {
     answeredQuestions.value = Object.fromEntries(
       Object.entries(props.initialAnswers).filter(
-        (entry): entry is [string, number] => typeof entry[1] === 'number'
+        (entry): entry is [string, ObjectiveAnswer] => isAnswered(entry[1])
       )
     )
     return
@@ -204,6 +235,39 @@ onMounted(() => {
     answeredQuestions.value = session.answers || {}
   }
 })
+
+let draftTimer: ReturnType<typeof setTimeout> | undefined
+
+function flushDraft() {
+  if (draftTimer === undefined) return
+  clearTimeout(draftTimer)
+  draftTimer = undefined
+  if (!props.examMode && !isFinished.value) saveSession(props.text.id, 0, answeredQuestions.value)
+}
+
+function handleTypedAnswers(value: ObjectiveAnswers) {
+  answeredQuestions.value = value
+  if (props.examMode) {
+    emit('progress', { answers: { ...value }, score: score.value, total: questions.value.length })
+    return
+  }
+  if (draftTimer !== undefined) clearTimeout(draftTimer)
+  draftTimer = setTimeout(() => {
+    draftTimer = undefined
+    saveSession(props.text.id, 0, answeredQuestions.value)
+  }, DRAFT_DEBOUNCE_MS)
+}
+
+watch(
+  [answeredQuestions, isFinished],
+  () => {
+    if (isGapFill.value)
+      emit('gapState', { answers: { ...answeredQuestions.value }, revealed: isFinished.value })
+  },
+  { immediate: true }
+)
+
+onBeforeUnmount(flushDraft)
 
 function handleAnswerSelected(questionId: string, selectedAnswer: number) {
   answeredQuestions.value = {
@@ -223,6 +287,8 @@ function handleAnswerSelected(questionId: string, selectedAnswer: number) {
 
 function finishQuiz() {
   if (!allAnswered.value) return
+  if (draftTimer !== undefined) clearTimeout(draftTimer)
+  draftTimer = undefined
   isFinished.value = true
   if (props.examMode) {
     emit('examComplete', {
@@ -237,6 +303,8 @@ function finishQuiz() {
 }
 
 function saveAndExit() {
+  if (draftTimer !== undefined) clearTimeout(draftTimer)
+  draftTimer = undefined
   if (!props.examMode) saveSession(props.text.id, 0, answeredQuestions.value)
   emit('finish')
 }
@@ -247,9 +315,18 @@ function restartQuiz() {
   clearSession()
 }
 
-/** A letter for lettered options; the option itself for Richtig / Falsch, which has none. */
+/** A letter for lettered options; the option itself for Richtig / Falsch; a gap's own word. */
 function formatAnswerLabel(index: number, options?: readonly string[]) {
   return isTrueFalse.value ? (options?.[index] ?? '') : String.fromCharCode(65 + index)
+}
+
+function answerLabel(answer: ObjectiveAnswer, question?: ReadingQuestion) {
+  return typeof answer === 'string' ? answer.trim() : formatAnswerLabel(answer, question?.options)
+}
+
+function correctLabel(question?: ReadingQuestion) {
+  if (question?.accepted) return question.accepted.join(' / ')
+  return formatAnswerLabel(question?.correctAnswer ?? 0, question?.options)
 }
 
 function getScoreColor() {

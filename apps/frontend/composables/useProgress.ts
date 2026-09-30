@@ -3,6 +3,7 @@ import type { AttemptDto, DraftDto, Skill } from '@exam-one/contracts'
 import type { WritingSubmission, WritingFeedbackModel } from '~/utils/types'
 import type { CriterionReview } from '@exam-one/exam-packs'
 import type { SpeakingTranscripts } from '~/utils/exercises/speaking'
+import type { ObjectiveAnswers } from '~/utils/gapFill'
 import { apiFetch } from '~/composables/useApi'
 
 interface QuizProgress {
@@ -80,7 +81,7 @@ const readingProgress = ref<Record<string, QuizProgress>>({})
 const readingSession = ref<{
   textId: string
   currentQuestionIndex: number
-  answers: Record<string, number>
+  answers: ObjectiveAnswers
   startedAt: string
 } | null>(null)
 const writingProgress = ref<Record<string, WritingProgress>>({})
@@ -276,7 +277,7 @@ async function hydrate(): Promise<void> {
                 ? payload['currentQuestionIndex']
                 : 0,
             answers: isRecord(payload['answers'])
-              ? (payload['answers'] as Record<string, number>)
+              ? (payload['answers'] as ObjectiveAnswers)
               : {},
             startedAt:
               typeof payload['startedAt'] === 'string'
@@ -332,7 +333,7 @@ export const useProgress = () => {
   const speakingProgress = sessionRef(progressSources.speakingProgress)
   const getProgressData = (): Record<string, QuizProgress> => readingProgress.value
 
-  const saveQuizCompletion = (textId: string, score: number, totalQuestions: number, responses: Record<string, number | undefined> = {}) => {
+  const saveQuizCompletion = (textId: string, score: number, totalQuestions: number, responses: ObjectiveAnswers = {}) => {
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
     const current = readingProgress.value[textId]
@@ -364,7 +365,7 @@ export const useProgress = () => {
   const saveSession = (
     textId: string,
     currentQuestionIndex: number,
-    answers: Record<string, number>
+    answers: ObjectiveAnswers
   ) => {
     const session = {
       textId,
@@ -565,7 +566,7 @@ export const useProgress = () => {
 
   const getListeningProgressData = (): Record<string, ListeningProgress> => listeningProgress.value
 
-  const saveListeningCompletion = (exerciseId: string, score: number, totalQuestions: number, responses: Record<string, number | undefined> = {}) => {
+  const saveListeningCompletion = (exerciseId: string, score: number, totalQuestions: number, responses: ObjectiveAnswers = {}) => {
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
     const current = listeningProgress.value[exerciseId]

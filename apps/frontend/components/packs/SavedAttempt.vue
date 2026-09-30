@@ -22,9 +22,21 @@
       >
         <h4 class="font-semibold">{{ question.text }}</h4>
         <audio v-if="question.audio" :src="question.audio" controls />
-        <p>{{ $t('pastExams.yourAnswer') }}: {{ answerLabel(question.id, question.options) }}</p>
         <p>
-          {{ $t('pastExams.correctAnswer') }}: {{ question.options[question.correctAnswer] }}
+          {{ $t('pastExams.yourAnswer') }}: {{ answerLabel(question) }}
+          <template v-if="question.accepted">
+            <Check
+              v-if="isGapAnswerCorrect(answers[question.id], question.accepted)"
+              :size="14"
+              class="inline text-success"
+              :aria-label="$t('gapFill.correct')"
+            />
+            <X v-else :size="14" class="inline text-error" :aria-label="$t('gapFill.incorrect')" />
+          </template>
+        </p>
+        <p>
+          {{ $t('pastExams.correctAnswer') }}:
+          {{ question.accepted ? question.accepted.join(' / ') : question.options[question.correctAnswer] }}
         </p>
         <p>{{ question.explanation }}</p>
         <details v-if="question.transcript">
@@ -72,11 +84,14 @@
   </article>
 </template>
 <script setup lang="ts">
+import { Check, X } from 'lucide-vue-next'
 import type { AttemptDto } from '@exam-one/contracts'
 import {
   getPack,
+  isGapAnswerCorrect,
   resolveAnswers,
   type CriterionReview,
+  type RuntimeQuestion,
   type RuntimeSnapshot,
 } from '@exam-one/exam-packs'
 import SavedFeedback from '~/components/packs/SavedFeedback.vue'
@@ -135,9 +150,14 @@ const formEntries = computed(() => {
   }))
 })
 
-function answerLabel(id: string, options: string[]) {
-  const value = answers.value[id]
-  return typeof value === 'number' ? (options[value] ?? t('pastExams.notAnswered')) : t('pastExams.notAnswered')
+/** The chosen option, or a gap's typed word. */
+function answerLabel(question: RuntimeQuestion) {
+  const value = answers.value[question.id]
+  if (question.accepted)
+    return typeof value === 'string' && value.trim() ? value.trim() : t('pastExams.notAnswered')
+  return typeof value === 'number'
+    ? (question.options[value] ?? t('pastExams.notAnswered'))
+    : t('pastExams.notAnswered')
 }
 
 function isCriterionReview(value: unknown): value is CriterionReview {

@@ -251,6 +251,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ObjectiveAnswers } from '~/utils/gapFill'
 import { ArrowLeft, CircleAlert, Info, Lock, Sparkles } from 'lucide-vue-next'
 import ReviewQuestionList from '~/components/mockExam/ReviewQuestionList.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
@@ -307,7 +308,7 @@ function response(exerciseId: string) {
   return moduleState.value?.responses[exerciseId]
 }
 
-function responseAnswers(exerciseId: string): Record<string, number | undefined> {
+function responseAnswers(exerciseId: string): ObjectiveAnswers {
   return response(exerciseId)?.answers ?? {}
 }
 

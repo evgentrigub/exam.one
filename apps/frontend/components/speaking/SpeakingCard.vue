@@ -15,7 +15,7 @@
     </p>
   </figure>
 
-  <!-- The partner's fixed line, which the learner reacts to. -->
+  <!-- The partner's (or examiner's) fixed line, which the learner reacts to. -->
   <figure v-else class="flex items-start gap-3">
     <span
       class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-base-200 text-base-content/60"
@@ -27,7 +27,7 @@
       class="relative rounded-box rounded-tl-none border border-base-300 bg-base-200/60 px-4 py-3"
     >
       <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
-        {{ $t('speaking.cards.partnerSays') }}
+        {{ card.speaker === 'examiner' ? $t('speaking.cards.examinerSays') : $t('speaking.cards.partnerSays') }}
         <span v-if="card.topic" class="normal-case tracking-normal font-normal">
           · {{ card.topic }}</span
         >

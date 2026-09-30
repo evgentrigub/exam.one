@@ -34,10 +34,11 @@
 
 <script setup lang="ts">
 import type { ReviewQuestion } from '~/utils/mockExam/review'
+import type { ObjectiveAnswers } from '~/utils/gapFill'
 
 const props = defineProps<{
   questions: ReviewQuestion[]
-  answers: Record<string, number | undefined>
+  answers: ObjectiveAnswers
 }>()
 
 function optionClass(question: ReviewQuestion, optionIndex: number): string {

@@ -2,7 +2,10 @@
  * Poll NestJS /api/v1/tts/health while a listening session is mounted.
  */
 
-export type TtsHealthStatus = 'checking' | 'ready' | 'offline'
+import type { TtsHealthData } from '@exam-one/contracts'
+
+/** `unsupported`: the service answers but lacks the active pack's language or voices. */
+export type TtsHealthStatus = 'checking' | 'ready' | 'offline' | 'unsupported'
 
 const POLL_MS = 12_000
 
@@ -17,8 +20,8 @@ export function useTtsHealth() {
     if (!import.meta.client || inFlight) return
     inFlight = true
     try {
-      const res = await aiFetch<{ ok: boolean }>('/tts/health')
-      status.value = res.data?.ok ? 'ready' : 'offline'
+      const res = await aiFetch<TtsHealthData>('/tts/health')
+      status.value = res.data?.ok ? 'ready' : res.data?.reason === 'unsupported' ? 'unsupported' : 'offline'
       lastCheckedAt.value = new Date().toISOString()
     } catch {
       status.value = 'offline'
