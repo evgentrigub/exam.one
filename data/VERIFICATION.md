@@ -1,6 +1,21 @@
 # Pack verification and rollout
 
-Working-tree verification, not a production deployment. Live registrations: `goethe-de-a2` (default) and `goethe-de-a1`. The synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
+Working-tree verification, not a production deployment. Live registrations: `goethe-de-a2` (default), `goethe-de-a1`, `cambridge-en-a2`, `certpol-pl-a2` and `dele-es-a2`. The synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
+
+## Stage 2.16.3 — DELE A2 (2026-09-30)
+
+Branch `stage-2.16`, working tree only (not committed).
+
+- **Sources.** The structure was checked against the Instituto Cervantes *Guía del examen DELE A2* (© 2022), the 2020 *Especificaciones* and *Modelo 0* before any prompt was written. Summary in `src/packs/dele-es-a2/brief.md`; the product reference is `agent-os/product/languages/spanish/spanish-exam-A2.md` in the docs repository.
+- **Offline, before registration.** A scratch harness ran `validatePacks` on the registered packs plus a live copy of the candidate. It projected every seed (14) by module and part through `validateView` and the part guard, checked the objective maximum and zero with `objectiveScore`, ran `validateReview` on a band review for each rubric part, and assembled all 23 prompts with no unresolved placeholder.
+- **Offline, after registration.** `node scripts/eval-prompts.mjs --pack dele-es-a2 --control` passes for all 14 seeds, and the Goethe A2, Goethe A1, Cambridge and Polish controls still pass. `pnpm lint`, `pnpm type-check` and `pnpm build` pass across the workspace, and `pnpm test` passes 424 tests in 40 suites (422 backend, 2 infrastructure). That includes `dele-es-a2-pack.spec.ts` and the Spanish dialogue-voice specs; German, English and Polish plan keys are unchanged. Locale parity passes; no new i18n keys were needed.
+- **Speech, statically only.** `main.py` compiles, and the shell and Node scripts parse. The Spanish Kokoro voices (`ef_dora`, `em_alex`, `em_santa`), the shared v1.0 backbone and the misaki `es` G2P have **not** yet been run in the container.
+- **Live generation (2026-10-02).** `node scripts/eval-prompts.mjs --pack dele-es-a2 --n 3` with OpenAI `gpt-5.5`: 39/39 generations passed the production projection and the `validate` guards, with no problems reported. Every one of the 13 generators scored 3/3. The harness stores scores, not payloads, so the generated Spanish was not read.
+- **Seeding (2026-10-02).** `docker compose up -d --build --wait frontend backend` recreated both services, and the entrypoint seeded the catalog: `dele-es-a2=14` (reading 4, listening 4, writing 3, speaking 3) next to unchanged counts for `goethe-de-a2=24`, `goethe-de-a1=22`, `cambridge-en-a2=14` and `certpol-pl-a2=16`.
+- **Not yet run:**
+  - `pnpm tts:setup` and a rebuild of `kokoro-voices` with the Spanish voices, then synthesis of a Spanish dialogue (until then the running TTS container reports Spanish as unsupported);
+  - browser practice of each part (Generate audio, model answers, reviews, pack switching);
+  - Parakeet STT on Spanish speech.
 
 ## Stage 2.15 — Goethe A1 (2026-09-27)
 
