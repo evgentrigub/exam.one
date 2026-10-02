@@ -5,6 +5,7 @@
  * Expected label shape (Goethe-style seeds / generator prompts):
  *   "Mann: … Frau: …" | "Verkäuferin: …" | "Frau Müller: …" | "Moderatorin: …"
  * English packs label turns with one word: "Man: …", "Assistant: …", "Katie: …".
+ * Spanish packs use roles, names or a title: "Mujer: …", "Álvaro: …", "Señora López: …".
  *
  * German keeps its fixed four-voice roster and rules, so its voice plan — and every cached
  * German WAV keyed by it — never changes. Other languages draw their pools from the pack's
@@ -37,6 +38,22 @@ export interface VoicedDialogueTurn extends DialogueTurn {
  */
 const SPEAKER_LABEL_RE =
   /(?:^|(?<=\s))([A-ZÄÖÜĄĆĘŁŃÓŚŹŻ][A-Za-zÄÖÜäöüßĄĆĘŁŃÓŚŹŻąćęłńóśźż]*(?:\s+[A-ZÄÖÜĄĆĘŁŃÓŚŹŻ][A-Za-zÄÖÜäöüßĄĆĘŁŃÓŚŹŻąćęłńóśźż]*){0,2}):\s*/g
+
+/**
+ * The Spanish label pattern, used only for a Spanish pack so the other languages keep theirs:
+ * the same 1–3 capitalized words, with Spanish accents and ñ ("Señora López", "Álvaro"). A label
+ * starts a line or a sentence, so a word before a colon inside a turn ("Atención: …") is text.
+ */
+const SPANISH_LABEL_RE =
+  /(?:^|(?<=\n)|(?<=[.!?…»"]\s))([A-ZÁÉÍÓÚÑÜ][A-Za-zÁÉÍÓÚÑÜáéíóúñü]*(?:\s+[A-ZÁÉÍÓÚÑÜ][A-Za-zÁÉÍÓÚÑÜáéíóúñü]*){0,2}):\s*/g
+
+/** A single leading monologue label ("Locutora: …"), per the same letter classes. */
+const MONOLOGUE_LABEL_RE = /^([A-ZĄĆĘŁŃÓŚŹŻ][A-Za-z'ĄĆĘŁŃÓŚŹŻąćęłńóśźż]{1,20}):\s*/
+const SPANISH_MONOLOGUE_LABEL_RE = /^([A-ZÁÉÍÓÚÑÜ][A-Za-zÁÉÍÓÚÑÜáéíóúñü]{1,20}):\s*/
+
+function labelPattern(options?: DialogueVoiceOptions): RegExp {
+  return options?.lang === 'es' ? SPANISH_LABEL_RE : SPEAKER_LABEL_RE
+}
 
 export const MALE_VOICE_POOL: readonly DialogueVoiceId[] = ['martin', 'bernd']
 export const FEMALE_VOICE_POOL: readonly DialogueVoiceId[] = ['victoria', 'eva']
@@ -349,6 +366,169 @@ const POLISH_MALE_NAMES = new Set([
   'kosma',
 ])
 
+const SPANISH_FEMALE_ROLES = new Set([
+  'mujer',
+  'chica',
+  'niña',
+  'madre',
+  'mamá',
+  'abuela',
+  'hermana',
+  'hija',
+  'tía',
+  'amiga',
+  'vecina',
+  'novia',
+  'esposa',
+  'señora',
+  'señorita',
+  'doña',
+  'camarera',
+  'dependienta',
+  'clienta',
+  'médica',
+  'doctora',
+  'enfermera',
+  'farmacéutica',
+  'profesora',
+  'maestra',
+  'locutora',
+  'presentadora',
+  'secretaria',
+])
+
+const SPANISH_MALE_ROLES = new Set([
+  'hombre',
+  'chico',
+  'niño',
+  'padre',
+  'papá',
+  'abuelo',
+  'hermano',
+  'hijo',
+  'tío',
+  'amigo',
+  'vecino',
+  'novio',
+  'esposo',
+  'marido',
+  'señor',
+  'don',
+  'camarero',
+  'dependiente',
+  'cliente',
+  'médico',
+  'doctor',
+  'enfermero',
+  'farmacéutico',
+  'profesor',
+  'maestro',
+  'locutor',
+  'presentador',
+  'secretario',
+  'conductor',
+])
+
+/** Roles of either gender that the -a / -o endings would misread. */
+const SPANISH_EITHER_ROLES = new Set(['policía', 'guía', 'turista', 'periodista', 'recepcionista', 'estudiante'])
+
+const SPANISH_FEMALE_NAMES = new Set([
+  'maría',
+  'ana',
+  'lucía',
+  'carmen',
+  'laura',
+  'elena',
+  'isabel',
+  'marta',
+  'sara',
+  'paula',
+  'olga',
+  'pilar',
+  'rosa',
+  'cristina',
+  'raquel',
+  'marina',
+  'irene',
+  'sofía',
+  'julia',
+  'beatriz',
+  'nuria',
+  'teresa',
+  'andrea',
+  'silvia',
+  'inés',
+  'rocío',
+  'mercedes',
+  'dolores',
+  'lola',
+  'belén',
+  'carolina',
+  'alicia',
+  'mónica',
+  'consuelo',
+  'rosario',
+  'amparo',
+])
+
+const SPANISH_MALE_NAMES = new Set([
+  'juan',
+  'carlos',
+  'javier',
+  'pablo',
+  'luis',
+  'miguel',
+  'david',
+  'manuel',
+  'antonio',
+  'jorge',
+  'pedro',
+  'álvaro',
+  'andrés',
+  'josé',
+  'sergio',
+  'daniel',
+  'alberto',
+  'fernando',
+  'rafael',
+  'ramón',
+  'raúl',
+  'óscar',
+  'iván',
+  'rubén',
+  'jesús',
+  'ángel',
+  'nicolás',
+  'tomás',
+  'joaquín',
+  'martín',
+  'borja',
+])
+
+/**
+ * A Spanish label is a title with a name (Señora López, Don Luis), a role or a first name.
+ * Roles and names are looked up first, because several end in -a or -o whatever the gender
+ * (Borja, Consuelo); roles of either gender (policía, turista) take the next voice of any
+ * gender. Unlisted feminine forms end in -a, masculine ones in -o.
+ */
+function inferSpanishGender(speaker: string): SpeakerGender {
+  const parts = speaker.trim().toLowerCase().split(/\s+/)
+  const first = parts[0] ?? ''
+  const last = parts[parts.length - 1] ?? first
+  if (first === 'señora' || first === 'señorita' || first === 'doña') return 'female'
+  if (first === 'señor' || first === 'don') return 'male'
+  if (SPANISH_EITHER_ROLES.has(first)) return 'unknown'
+  if (SPANISH_FEMALE_ROLES.has(first)) return 'female'
+  if (SPANISH_MALE_ROLES.has(first)) return 'male'
+  if (SPANISH_FEMALE_NAMES.has(first)) return 'female'
+  if (SPANISH_MALE_NAMES.has(first)) return 'male'
+  if (SPANISH_FEMALE_NAMES.has(last)) return 'female'
+  if (SPANISH_MALE_NAMES.has(last)) return 'male'
+  if (parts.length === 1 && first.length > 2 && first.endsWith('a')) return 'female'
+  if (parts.length === 1 && first.length > 2 && first.endsWith('o')) return 'male'
+  return 'unknown'
+}
+
 /**
  * A Polish label is Pani/Pan with a name, a role or a first name. Unlisted feminine roles
  * end in -ka or -yni, and unlisted feminine first names in -a.
@@ -370,7 +550,9 @@ function inferPolishGender(speaker: string): SpeakerGender {
 
 /** The gender of a speaker in a pack language other than German. */
 function inferPackGender(speaker: string, options: DialogueVoiceOptions): SpeakerGender {
-  return options.lang === 'pl' ? inferPolishGender(speaker) : inferEnglishGender(speaker)
+  if (options.lang === 'pl') return inferPolishGender(speaker)
+  if (options.lang === 'es') return inferSpanishGender(speaker)
+  return inferEnglishGender(speaker)
 }
 
 function isGerman(options?: DialogueVoiceOptions): boolean {
@@ -400,11 +582,14 @@ function packPools(options: DialogueVoiceOptions): Record<SpeakerGender, string[
  * Split a labeled dialogue transcript into turns.
  * Returns null when fewer than two speaker turns are found (treat as monologue).
  */
-export function parseDialogueTurns(transcript: string): DialogueTurn[] | null {
+export function parseDialogueTurns(
+  transcript: string,
+  pattern: RegExp = SPEAKER_LABEL_RE
+): DialogueTurn[] | null {
   const source = transcript.trim()
   if (!source) return null
 
-  const matches = [...source.matchAll(SPEAKER_LABEL_RE)]
+  const matches = [...source.matchAll(pattern)]
   if (matches.length < 2) return null
 
   const turns: DialogueTurn[] = []
@@ -547,7 +732,7 @@ export function planDialogueVoices(
 
 /** Speakers take the next voice of their gender, in order of first appearance. */
 function planPackVoices(transcript: string, options: DialogueVoiceOptions): VoicedDialogueTurn[] | null {
-  const turns = parseDialogueTurns(transcript)
+  const turns = parseDialogueTurns(transcript, labelPattern(options))
   if (!turns) return null
   const pools = packPools(options)
   const next: Record<SpeakerGender, number> = { male: 0, female: 0, unknown: 0 }
@@ -576,7 +761,8 @@ export function planMonologue(
   options?: DialogueVoiceOptions
 ): { voice: string; text: string } {
   if (isGerman(options)) return { voice: 'martin', text: transcript }
-  const match = /^([A-ZĄĆĘŁŃÓŚŹŻ][A-Za-z'ĄĆĘŁŃÓŚŹŻąćęłńóśźż]{1,20}):\s*/.exec(transcript.trim())
+  const label = options!.lang === 'es' ? SPANISH_MONOLOGUE_LABEL_RE : MONOLOGUE_LABEL_RE
+  const match = label.exec(transcript.trim())
   const pools = packPools(options!)
   const gender = match ? inferPackGender(match[1]!, options!) : 'unknown'
   const voice = (pools[gender].length ? pools[gender] : pools.unknown)[0] ?? ''

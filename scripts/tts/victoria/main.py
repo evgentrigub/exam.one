@@ -1,6 +1,6 @@
 """
-OpenAI-compatible FastAPI multi-voice TTS: German and British English on PyTorch Kokoro,
-Polish on Piper (ONNX).
+OpenAI-compatible FastAPI multi-voice TTS: German, British English and Spanish on PyTorch
+Kokoro, Polish on Piper (ONNX).
 
 German voices (KOKORO_LANGS contains "de", the default):
   - martin   — Kikiri Stage-2 (primary male)
@@ -11,9 +11,13 @@ German voices (KOKORO_LANGS contains "de", the default):
 British English voices (KOKORO_LANGS contains "en"): bf_emma, bf_isabella (female) and
 bm_george, bm_fable (male), all on one base Kokoro-82M v1.0 model.
 
+Spanish voices (KOKORO_LANGS contains "es"): ef_dora (female), em_alex and em_santa (male),
+on the same base v1.0 model as English, which is loaded once for both.
+
 German G2P matches kokoro-onnx: phonemizer + espeak-ng lang=de, filtered to model vocab,
 then KModel.forward with voice_pack[len(ps)-1]. English G2P is misaki's British G2P (as
-kokoro's KPipeline(lang_code="b") builds it), then the same forward pass.
+kokoro's KPipeline(lang_code="b") builds it), then the same forward pass. Spanish G2P is
+misaki's espeak-ng "es" G2P, as KPipeline(lang_code="e") builds it.
 
 Polish voices (KOKORO_LANGS contains "pl"): pl_gosia (female), pl_darkman and pl_bass
 (male), Piper VITS voices with Piper's bundled espeak-ng. Kokoro has no Polish. Piper speaks
@@ -68,10 +72,14 @@ VOICE_SPECS: dict[str, VoiceSpec] = {
     "victoria": VoiceSpec("de", "stage2:victoria", "kikiri_german_victoria_ep10.pth", "voices/victoria.pt"),
     "bernd": VoiceSpec("de", "base", "kikiri_german_base_51spk_ep4.pth", "voices/bernd.pt"),
     "eva": VoiceSpec("de", "base", "kikiri_german_base_51spk_ep4.pth", "voices/eva.pt"),
-    "bf_emma": VoiceSpec("en", "en", "kokoro-v1_0.pth", "voices/bf_emma.pt"),
-    "bf_isabella": VoiceSpec("en", "en", "kokoro-v1_0.pth", "voices/bf_isabella.pt"),
-    "bm_george": VoiceSpec("en", "en", "kokoro-v1_0.pth", "voices/bm_george.pt"),
-    "bm_fable": VoiceSpec("en", "en", "kokoro-v1_0.pth", "voices/bm_fable.pt"),
+    "bf_emma": VoiceSpec("en", "v1", "kokoro-v1_0.pth", "voices/bf_emma.pt"),
+    "bf_isabella": VoiceSpec("en", "v1", "kokoro-v1_0.pth", "voices/bf_isabella.pt"),
+    "bm_george": VoiceSpec("en", "v1", "kokoro-v1_0.pth", "voices/bm_george.pt"),
+    "bm_fable": VoiceSpec("en", "v1", "kokoro-v1_0.pth", "voices/bm_fable.pt"),
+    # Spanish shares the base v1.0 backbone with English.
+    "ef_dora": VoiceSpec("es", "v1", "kokoro-v1_0.pth", "voices/ef_dora.pt"),
+    "em_alex": VoiceSpec("es", "v1", "kokoro-v1_0.pth", "voices/em_alex.pt"),
+    "em_santa": VoiceSpec("es", "v1", "kokoro-v1_0.pth", "voices/em_santa.pt"),
     # Piper: model_file is the ONNX voice, voice_file its JSON config.
     "pl_gosia": VoiceSpec(
         "pl", "piper", "piper/pl_PL-gosia-medium.onnx", "piper/pl_PL-gosia-medium.onnx.json", "piper"
@@ -91,7 +99,12 @@ GERMAN_ALIASES = {
     "df_eva": "eva",
     "male": "martin",
 }
-PROBES = {"de": "Guten Tag.", "en": "Hello, how are you?", "pl": "Dzień dobry, jak się masz?"}
+PROBES = {
+    "de": "Guten Tag.",
+    "en": "Hello, how are you?",
+    "es": "Buenos días, ¿qué tal?",
+    "pl": "Dzień dobry, jak się masz?",
+}
 
 app = FastAPI()
 synth_lock = threading.Lock()
@@ -102,7 +115,7 @@ voice_backbone: dict[str, str] = {}  # voice id -> backbone key
 piper_voices: dict[str, object] = {}  # voice id -> PiperVoice
 models_loaded = False
 phonemizer_backend = None
-english_g2p = None
+misaki_g2p: dict[str, object] = {}  # lang -> misaki G2P callable ("en", "es")
 
 
 class VoiceError(ValueError):
@@ -276,20 +289,25 @@ def init_phonemizer() -> None:
     print("  phonemizer EspeakBackend(language=de) ready", flush=True)
 
 
-def init_english_g2p() -> None:
-    """misaki's British G2P with the espeak fallback, exactly as KPipeline(lang_code="b")."""
-    global english_g2p
+# kokoro's KPipeline language codes: British English and Spanish.
+MISAKI_LANG_CODES = {"en": ("b", "British English"), "es": ("e", "Spanish")}
+
+
+def init_misaki_g2p(lang: str) -> None:
+    """misaki's G2P for a language, exactly as KPipeline(lang_code=…) builds it."""
+    code, name = MISAKI_LANG_CODES[lang]
     patch_espeak_wrapper()
     from kokoro import KPipeline
 
-    english_g2p = KPipeline(lang_code="b", repo_id="hexgrad/Kokoro-82M", model=False).g2p
+    misaki_g2p[lang] = KPipeline(lang_code=code, repo_id="hexgrad/Kokoro-82M", model=False).g2p
     patch_espeak_wrapper()
-    print("  misaki G2P (British English) ready", flush=True)
+    print(f"  misaki G2P ({name}) ready", flush=True)
 
 
-def phonemize_english(text: str, vocab: dict) -> str:
-    assert english_g2p is not None
-    phonemes, _tokens = english_g2p(text)
+def phonemize_misaki(lang: str, text: str, vocab: dict) -> str:
+    g2p = misaki_g2p.get(lang)
+    assert g2p is not None
+    phonemes, _tokens = g2p(text)
     return "".join(ch for ch in (phonemes or "") if ch in vocab).strip()
 
 
@@ -393,7 +411,7 @@ def synthesize_sentence(text: str, voice: str, speed: float) -> np.ndarray:
 
     vocab = model.vocab
     lang = VOICE_SPECS[voice].lang if voice in VOICE_SPECS else "de"
-    phonemes = phonemize_english(text, vocab) if lang == "en" else phonemize_german(text, vocab)
+    phonemes = phonemize_misaki(lang, text, vocab) if lang in MISAKI_LANG_CODES else phonemize_german(text, vocab)
     if not phonemes:
         raise RuntimeError(f"Phonemizer produced empty output for: {text[:80]!r}")
 
@@ -435,16 +453,20 @@ def load_models() -> None:
 
     if any(VOICE_SPECS[v].lang == "de" for v in voice_tensors):
         init_phonemizer()
-    english_voices = [v for v in voice_tensors if VOICE_SPECS[v].lang == "en"]
-    if english_voices:
+    for lang in MISAKI_LANG_CODES:
+        lang_voices = [v for v in voice_tensors if VOICE_SPECS[v].lang == lang]
+        if not lang_voices:
+            continue
         try:
-            init_english_g2p()
-        except Exception as err:  # English stays unavailable; German keeps working.
-            print(f"  WARNING: English G2P unavailable ({err!r}); dropping {english_voices}", flush=True)
-            for voice_id in english_voices:
+            init_misaki_g2p(lang)
+        except Exception as err:  # This language stays unavailable; the others keep working.
+            print(f"  WARNING: {lang} G2P unavailable ({err!r}); dropping {lang_voices}", flush=True)
+            for voice_id in lang_voices:
                 voice_tensors.pop(voice_id, None)
                 voice_backbone.pop(voice_id, None)
-            models.pop("en", None)
+    # A backbone no loaded voice uses any more (e.g. v1 after its G2Ps failed) is released.
+    for backbone in [key for key in models if key not in voice_backbone.values()]:
+        models.pop(backbone, None)
     load_piper_voices()
 
     if not loaded_voices():
@@ -498,6 +520,9 @@ def clean_sentence(sentence: str, lang: str) -> str:
     if lang == "pl":
         # Piper reads digits and punctuation itself; \w keeps ą ć ę ł ń ó ś ź ż.
         return re.sub(r"[^\w\s.,:;!?\"'\-%/]", " ", sentence).strip()
+    if lang == "es":
+        # \w keeps á é í ó ú ü ñ; espeak reads digits, ¿ and ¡ themselves.
+        return re.sub(r"[^\w\s.,:;!?¿¡\"'\-%/€]", " ", sentence).strip()
     if lang != "en":
         return re.sub(r"[^\w\säöüßÄÖÜ.,:;!?\"'\-]", " ", sentence).strip()
     sentence = re.sub(r"[‘’ʼ`´]", "'", sentence)

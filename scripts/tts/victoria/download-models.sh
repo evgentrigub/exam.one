@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Download the TTS models for each language in KOKORO_LANGS (default: de,en,pl).
+# Download the TTS models for each language in KOKORO_LANGS (default: de,en,pl,es).
 #   de: Kikiri Stage-2 (martin + victoria), multi-speaker base, and bernd/eva packs.
 #   en: base Kokoro-82M v1.0 and the British voices bf_emma, bf_isabella, bm_george, bm_fable.
 #   pl: Piper voices gosia, darkman (CC0) and bass (Apache-2.0), ONNX + JSON config.
+#   es: the same base Kokoro-82M v1.0 and the Spanish voices ef_dora, em_alex, em_santa.
 set -euo pipefail
 
-KOKORO_LANGS="${KOKORO_LANGS:-de,en,pl}"
+KOKORO_LANGS="${KOKORO_LANGS:-de,en,pl,es}"
 wants() { [[ ",${KOKORO_LANGS// /}," == *",$1,"* ]]; }
 
 ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
@@ -86,13 +87,26 @@ download_if_missing \
   400000
 fi
 
-if wants en; then
-# Base Kokoro-82M v1.0 (Apache-2.0), one model for every British voice — ~312 MiB
+if wants en || wants es; then
+# Base Kokoro-82M v1.0 (Apache-2.0), one model for every British and Spanish voice — ~312 MiB
 download_if_missing \
   "${HF_KOKORO}/kokoro-v1_0.pth" \
   "${TARGET_DIR}/kokoro-v1_0.pth" \
   300000000
+fi
+
+if wants en; then
 for voice in bf_emma bf_isabella bm_george bm_fable; do
+  download_if_missing \
+    "${HF_KOKORO}/voices/${voice}.pt" \
+    "${TARGET_DIR}/voices/${voice}.pt" \
+    400000
+done
+fi
+
+if wants es; then
+# Spanish voice packs for the base model (Apache-2.0), ~0.5 MiB each
+for voice in ef_dora em_alex em_santa; do
   download_if_missing \
     "${HF_KOKORO}/voices/${voice}.pt" \
     "${TARGET_DIR}/voices/${voice}.pt" \
@@ -120,4 +134,5 @@ echo "[setup-voices] Ready at ${TARGET_DIR} for ${KOKORO_LANGS}"
 wants de && echo "[setup-voices] German: martin, bernd (male) · victoria, eva (female)"
 wants en && echo "[setup-voices] English: bm_george, bm_fable (male) · bf_emma, bf_isabella (female)"
 wants pl && echo "[setup-voices] Polish: pl_darkman, pl_bass (male) · pl_gosia (female)"
+wants es && echo "[setup-voices] Spanish: em_alex, em_santa (male) · ef_dora (female)"
 exit 0

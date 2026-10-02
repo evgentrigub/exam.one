@@ -1,6 +1,6 @@
 # Exam.one
 
-Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key is a practice pack for all four skills (no mock exams), with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, is a practice pack for all four skills too (no mock exams), with Polish audio.
+Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key is a practice pack for all four skills (no mock exams), with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, is a practice pack for all four skills too (no mock exams), with Polish audio. DELE A2, the Instituto Cervantes diploma of Spanish, is a practice pack for all four skills as well (no mock exams), with Spanish audio.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
@@ -35,7 +35,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 ### Listening Practice
 
 - Goethe A2 Teile 1–4 with shared or per-item audio players
-- Stable WAV playback from pre-generated voices (German and British English on Kokoro, Polish on Piper)
+- Stable WAV playback from pre-generated voices (German, British English and Spanish on Kokoro, Polish on Piper)
 - On-demand TTS when Kokoro is up (`pnpm tts:up` + Generate audio)
 - Optional AI transcript generation, separate from audio generation
 
@@ -210,9 +210,9 @@ Restart the backend after changing keys (`pnpm stack:up` or `docker compose up -
 
 ### Optional: speech sidecars
 
-The Listening TTS service serves the languages in `KOKORO_LANGS` (default `de,en,pl`) on `:8881`: German `martin`, `bernd`, `victoria`, `eva` and British English `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable` on Kokoro, and Polish `pl_gosia`, `pl_darkman`, `pl_bass` on Piper. The English model adds about 320 MB of download and 0.5 GiB of memory, the Polish voices about 240 MB and 0.3 GiB; leave a language out of `KOKORO_LANGS` to skip it. See [scripts/tts/README.md](scripts/tts/README.md).
+The Listening TTS service serves the languages in `KOKORO_LANGS` (default `de,en,pl,es`) on `:8881`: German `martin`, `bernd`, `victoria`, `eva`, British English `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable` and Spanish `ef_dora`, `em_alex`, `em_santa` on Kokoro, and Polish `pl_gosia`, `pl_darkman`, `pl_bass` on Piper. The base model English and Spanish share adds about 320 MB of download and 0.5 GiB of memory, the Polish voices about 240 MB and 0.3 GiB; leave a language out of `KOKORO_LANGS` to skip it. See [scripts/tts/README.md](scripts/tts/README.md).
 
-Parakeet (Speaking STT) serves Handy's Q8 GGUF on `:8882` and detects German, English and Polish (`STT_LANGUAGES`, default `de,en,pl`). To use OpenAI Whisper instead:
+Parakeet (Speaking STT) serves Handy's Q8 GGUF on `:8882` and detects German, English, Polish and Spanish (`STT_LANGUAGES`, default `de,en,pl,es`). To use OpenAI Whisper instead:
 
 ```bash
 STT_PROVIDER=openai

@@ -11,7 +11,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 
 /** The TTS languages to check, as the download script and the TTS service read them. */
 const languages = new Set(
-  (process.env.KOKORO_LANGS ?? 'de,en,pl')
+  (process.env.KOKORO_LANGS ?? 'de,en,pl,es')
     .split(',')
     .map(lang => lang.trim())
     .filter(Boolean)
@@ -29,13 +29,15 @@ const required = [
         'scripts/tts/victoria/models/voices/eva.pt',
       ]
     : []),
+  // British English and Spanish share the base v1.0 model.
+  ...(languages.has('en') || languages.has('es') ? ['scripts/tts/victoria/models/kokoro-v1_0.pth'] : []),
   ...(languages.has('en')
-    ? [
-        'scripts/tts/victoria/models/kokoro-v1_0.pth',
-        ...['bf_emma', 'bf_isabella', 'bm_george', 'bm_fable'].map(
-          voice => `scripts/tts/victoria/models/voices/${voice}.pt`
-        ),
-      ]
+    ? ['bf_emma', 'bf_isabella', 'bm_george', 'bm_fable'].map(
+        voice => `scripts/tts/victoria/models/voices/${voice}.pt`
+      )
+    : []),
+  ...(languages.has('es')
+    ? ['ef_dora', 'em_alex', 'em_santa'].map(voice => `scripts/tts/victoria/models/voices/${voice}.pt`)
     : []),
   ...(languages.has('pl')
     ? ['pl_PL-gosia-medium', 'pl_PL-darkman-medium', 'pl_PL-bass-high'].flatMap(voice => [

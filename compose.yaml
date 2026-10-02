@@ -67,13 +67,13 @@ services:
       TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
       TTS_SPEED: '${TTS_SPEED:-1.0}'
       TTS_LANG: '${TTS_LANG:-de}'
-      TTS_LANGUAGES: '${TTS_LANGUAGES:-de,en,pl}'
-      TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva,bf_emma,bf_isabella,bm_george,bm_fable,pl_gosia,pl_darkman,pl_bass}'
+      TTS_LANGUAGES: '${TTS_LANGUAGES:-de,en,pl,es}'
+      TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva,bf_emma,bf_isabella,bm_george,bm_fable,pl_gosia,pl_darkman,pl_bass,ef_dora,em_alex,em_santa}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
       STT_PROVIDER: '${STT_PROVIDER:-local}'
       STT_BASE_URL: 'http://parakeet:8882'
       STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
-      STT_LANGUAGES: '${STT_LANGUAGES:-de,en,pl}'
+      STT_LANGUAGES: '${STT_LANGUAGES:-de,en,pl,es}'
       STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
       GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
     ports:
@@ -120,9 +120,9 @@ services:
       dockerfile: Dockerfile
     environment:
       KOKORO_VICTORIA_MODEL_DIR: /app/models
-      # German and British English on Kokoro (English adds about 0.5 GiB of memory) and
-      # Polish on Piper (about 0.3 GiB).
-      KOKORO_LANGS: '${KOKORO_LANGS:-de,en,pl}'
+      # German, British English and Spanish on Kokoro (English and Spanish share one base
+      # model, about 0.5 GiB of memory) and Polish on Piper (about 0.3 GiB).
+      KOKORO_LANGS: '${KOKORO_LANGS:-de,en,pl,es}'
       KOKORO_MULTI_SPEED: '${TTS_SPEED:-1.0}'
       KOKORO_PAUSE_DURATION: '${TTS_PAUSE_DURATION:-0.25}'
       OMP_NUM_THREADS: '${TTS_CPU_THREADS:-2}'

@@ -203,7 +203,7 @@ const { getTexts } = useReadingTexts()
 const { pack, partsFor } = useActivePack()
 
 /** Browser read-aloud voices by exam language. */
-const SPEECH_LOCALES: Record<string, string> = { de: 'de-DE', en: 'en-GB', pl: 'pl-PL' }
+const SPEECH_LOCALES: Record<string, string> = { de: 'de-DE', en: 'en-GB', pl: 'pl-PL', es: 'es-ES' }
 
 const fontSize = ref<'base' | 'lg'>('base')
 const selectedWord = ref('')

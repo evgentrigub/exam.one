@@ -1,4 +1,4 @@
-import { goetheDeA1, goetheDeA2, cambridgeEnA2 } from '@exam-one/exam-packs'
+import { goetheDeA1, goetheDeA2, cambridgeEnA2, certpolPlA2, deleEsA2 } from '@exam-one/exam-packs'
 import {
   dialogueAudioPlanKey,
   fallbackVoiceFor,
@@ -7,6 +7,7 @@ import {
 } from '../../../src/speech/tts/dialogueTranscript'
 
 const english = { lang: 'en', voices: cambridgeEnA2.speech.voices }
+const spanish = { lang: 'es', voices: deleEsA2.speech.voices }
 const polish = {
   lang: 'pl',
   voices: [
@@ -116,5 +117,63 @@ describe('dialogue voice planning', () => {
 
   it('keys English plans by their voices', () => {
     expect(dialogueAudioPlanKey('Paul: Hi Jenny.', english)).toBe('mono:bm_george|Hi Jenny.')
+  })
+
+  it('parses Spanish labels with accents and ñ only for a Spanish pack', () => {
+    const text = 'Señora López: Buenos días. Álvaro: Hola, señora. José Luis: ¿Qué tal?'
+    const plan = planDialogueVoices(text, spanish)
+    expect(plan?.map(turn => turn.speaker)).toEqual(['Señora López', 'Álvaro', 'José Luis'])
+    // The other languages keep their own letter classes, so their plans cannot change.
+    expect(planDialogueVoices(text, english)?.map(turn => turn.speaker)).not.toContain('Señora López')
+  })
+
+  it('reads a Spanish label only at the start of a line or a sentence', () => {
+    const plan = planDialogueVoices('Hombre: Mira: aquí hay dos. Mujer: Vale.\nLocutora: Atención: el tren sale.', spanish)
+    expect(plan?.map(turn => turn.speaker)).toEqual(['Hombre', 'Mujer', 'Locutora'])
+    expect(plan?.[0]?.text).toBe('Mira: aquí hay dos.')
+  })
+
+  it('infers Spanish genders from titles, roles and names', () => {
+    const genders = (text: string) => planDialogueVoices(text, spanish)?.map(turn => turn.gender)
+    expect(genders('Mujer: ¿Sí? Hombre: No.')).toEqual(['female', 'male'])
+    expect(genders('Dependienta: Dígame. Cliente: Quería pan.')).toEqual(['female', 'male'])
+    expect(genders('Camarero: ¿Qué desean? Clienta: Un café.')).toEqual(['male', 'female'])
+    expect(genders('Señor García: Hola. Doña Pilar: Buenas.')).toEqual(['male', 'female'])
+    expect(genders('Lucía: ¡Hola! Javier: ¿Qué tal? Locutora: Atención.')).toEqual(['female', 'male', 'female'])
+    expect(genders('Médica: Siéntese. Farmacéutico: Aquí tiene.')).toEqual(['female', 'male'])
+    expect(genders('Policía: Buenas. Consuelo: Hola.')).toEqual(['unknown', 'female'])
+  })
+
+  it('shares the one Spanish female voice and alternates the two male voices', () => {
+    const plan = planDialogueVoices('Elena: Hola. Olga: Hola. Pablo: Buenas. Manuel: Adiós.', spanish)
+    expect(plan?.map(turn => turn.voice)).toEqual(['ef_dora', 'ef_dora', 'em_alex', 'em_santa'])
+    expect(fallbackVoiceFor('em_santa', new Set(['em_alex', 'martin']), spanish)).toBe('em_alex')
+  })
+
+  it('voices a labelled Spanish monologue by its speaker and drops the label', () => {
+    expect(planMonologue('Locutor: Información de tráfico.', spanish)).toEqual({
+      voice: 'em_alex',
+      text: 'Información de tráfico.',
+    })
+    expect(planMonologue('Atención, señores pasajeros.', spanish)).toEqual({
+      voice: 'ef_dora',
+      text: 'Atención, señores pasajeros.',
+    })
+  })
+
+  it('gives every DELE seed dialogue two voices from the Spanish pack', () => {
+    const ids = new Set(deleEsA2.speech.voices.map(voice => voice.id))
+    for (const text of transcripts(deleEsA2)) {
+      const plan = planDialogueVoices(text, spanish)
+      if (!plan) continue
+      expect(plan.every(turn => ids.has(turn.voice) && turn.gender !== 'unknown')).toBe(true)
+    }
+  })
+
+  it('keeps the Polish plans of the Polish seeds', () => {
+    const polishPack = { lang: 'pl', voices: certpolPlA2.speech.voices }
+    for (const text of transcripts(certpolPlA2)) {
+      expect(dialogueAudioPlanKey(text, polishPack)).toBe(dialogueAudioPlanKey(text, polish))
+    }
   })
 })

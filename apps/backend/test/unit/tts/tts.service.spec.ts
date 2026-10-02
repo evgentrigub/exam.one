@@ -89,6 +89,28 @@ describe('TtsService', () => {
     expect(ttsHealthStatus.mock.calls[0]![0]).toMatchObject({ lang: 'pl', voice: 'pl_gosia' })
   })
 
+  it('reports the Spanish pack as unsupported on an instance without Spanish', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en,pl',
+      TTS_VOICES: 'martin,bernd,victoria,eva,ef_dora,em_alex,em_santa',
+    })
+    const health = await packContext.run({ packId: 'dele-es-a2' }, () => service.health())
+    expect(health.data).toEqual({ ok: false, reason: 'unsupported' })
+    expect(ttsHealthStatus).not.toHaveBeenCalled()
+  })
+
+  it('serves the Spanish pack with its Kokoro voices', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en,pl,es',
+      TTS_VOICES: 'martin,bernd,victoria,eva,ef_dora,em_alex,em_santa',
+    })
+    const health = await packContext.run({ packId: 'dele-es-a2' }, () => service.health())
+    expect(health).toEqual({ data: { ok: true }, error: null })
+    expect(ttsHealthStatus.mock.calls[0]![0]).toMatchObject({ lang: 'es', voice: 'ef_dora' })
+  })
+
   it('serves an English pack when the instance lists English and its voices', async () => {
     ttsHealthStatus.mockResolvedValue('ok')
     const service = await createService({
