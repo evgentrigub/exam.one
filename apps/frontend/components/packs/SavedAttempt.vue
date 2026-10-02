@@ -2,7 +2,7 @@
   <article class="space-y-5">
     <header>
       <h2 class="font-display text-2xl">{{ packTitle }} · {{ skillLabel }}</h2>
-      <p>{{ new Date(attempt.submittedAt).toLocaleString() }}</p>
+      <p>{{ new Date(attempt.submittedAt).toLocaleString(localeProperties.language) }}</p>
       <p class="text-lg font-semibold">
         {{
           attempt.result?.score == null
@@ -101,7 +101,7 @@ import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.v
 import { getSkillLabel } from '~/utils/labels'
 
 const props = defineProps<{ attempt: AttemptDto }>()
-const { t } = useI18n()
+const { t, localeProperties } = useI18n()
 
 const packTitle = computed(
   () =>

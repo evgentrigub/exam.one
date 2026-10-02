@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { Cake, Languages, Sun } from 'lucide-vue-next'
 import type { Theme } from '~/composables/useTheme'
+import { LANGUAGE_LABELS, LANGUAGE_OPTIONS, isLanguageOption } from '~/utils/types'
 import type { LanguageOptions } from '~/utils/types'
 import type { SetChoiceOption } from '~/components/settings/SetChoice.vue'
 
@@ -54,17 +55,27 @@ const themeOptions = computed<SetChoiceOption[]>(() => [
   },
 ])
 
-const languageOptions = computed<SetChoiceOption[]>(() => [
-  { id: 'en', label: 'English', desc: t('settings.langEnDesc') },
-  { id: 'de', label: 'Deutsch', desc: t('settings.langDeDesc') },
-  { id: 'ru', label: 'Русский', desc: t('settings.langRuDesc'), disabled: true },
-])
+const LANGUAGE_DESC_KEYS: Record<LanguageOptions, string> = {
+  en: 'settings.langEnDesc',
+  de: 'settings.langDeDesc',
+  es: 'settings.langEsDesc',
+  pl: 'settings.langPlDesc',
+  ru: 'settings.langRuDesc',
+}
+
+const languageOptions = computed<SetChoiceOption[]>(() =>
+  LANGUAGE_OPTIONS.map(code => ({
+    id: code,
+    label: LANGUAGE_LABELS[code],
+    desc: t(LANGUAGE_DESC_KEYS[code]),
+  })),
+)
 
 function onTheme(id: string) {
   setTheme(id as Theme)
 }
 
 function onLocale(id: string) {
-  if (id === 'en' || id === 'de') setLocale(id as LanguageOptions)
+  if (isLanguageOption(id)) setLocale(id)
 }
 </script>

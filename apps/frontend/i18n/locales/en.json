@@ -320,6 +320,8 @@
     "languageDesc": "The interface language. Exercises stay in German.",
     "langEnDesc": "Interface language",
     "langDeDesc": "Immersive",
+    "langEsDesc": "Interface language",
+    "langPlDesc": "Interface language",
     "langRuDesc": "Interface language",
     "languageHint": "Task instructions inside exercises always stay in German, the way they appear in the real exam.",
     "planTitle": "Your plan",
