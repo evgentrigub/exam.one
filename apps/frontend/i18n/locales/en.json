@@ -879,6 +879,10 @@
     "provisionalResult": "Provisional result",
     "passMessage": "You reached the {points}-point pass mark.",
     "almostMessage": "Keep practising and retry when you are ready.",
+    "passAllGroups": "You reached the pass mark in every group.",
+    "groupBelow": "Below the pass mark in {groups}.",
+    "groupScore": "{points} / {max} · {pass} to pass",
+    "passEachGroup": "Pass mark in each group",
     "passMark": "60 points to pass",
     "provisionalSpeakingNote": "Speaking includes Teil 1–2 only (maximum 12 points). Teil 3 and pronunciation are not yet scored, so the overall result is provisional.",
     "provisionalSpeakingNoteTranscript": "Speaking is graded by AI from your transcripts only. Pronunciation and live interaction are not assessed, so the overall result is provisional.",
@@ -925,10 +929,10 @@
     "checking": "Checking",
     "generationPipeline": "Generation pipeline",
     "generatingSet": "Mock exam Set {number}",
-    "pipelineRunningDescription": "Modules run one at a time. Listening includes a separate audio job for every Teil.",
+    "pipelineRunningDescription": "Modules run one at a time. Listening includes a separate audio job for every part.",
     "pipelineFailedDescription": "Completed jobs are saved. Retry continues from the failed job.",
     "pipelineDoneDescription": "The generated set is ready and has been added to your local library.",
-    "pipelineJob": "Teil {part} · {kind}",
+    "pipelineJob": "{part} · {kind}",
     "jobKind": {
       "content": "exercise",
       "audio": "audio"

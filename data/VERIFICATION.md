@@ -2,6 +2,25 @@
 
 Working-tree verification, not a production deployment. Live registrations: `goethe-de-a2` (default), `goethe-de-a1`, `cambridge-en-a2`, `certpol-pl-a2` and `dele-es-a2`. The synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
 
+## Stage 2.16.3.1 — DELE A2 mock exams (2026-10-03)
+
+Branch `stage-2.16`, working tree only (not committed).
+
+- **Pass groups.** `evaluateMockPass` (`src/mock-rules.ts`) is covered by `mock-rules.spec.ts`. Goethe's single 60/100 rule passes at the rounded mark and fails below it, and a set without rules defaults to 60/100. With DELE groups the set passes only when both groups reach 30/50; a strong total with one weak group fails; an ungraded module counts as 0. Goethe A2 and A1 overview prompts are asserted unchanged when no `passGroups` are present.
+- **DELE mock spec.** `dele-es-a2-mock-exam.spec.ts` checks:
+  - Set 1 identity, module order, minutes (60/40/45/12), raw/final/multiplier (25/25/12/18 → 25 each) and provisional speaking;
+  - per-part points and two plays per recording from the runtime;
+  - module ids equal content ids, and all 13 exam-only payloads pass `validate` and `validateView`;
+  - the seed WAV paths (items for Tareas 1–2, shared for 3–4) and the exam-only seed registration;
+  - generated sets from blank and full content, the group rules, the overview label and group sentence, and `PackAiService.reviewMockFor`.
+- **Workspace.** `pnpm lint`, `pnpm type-check` and `pnpm build` pass. `pnpm test` passes 453 tests in 43 suites (451 backend, 2 infrastructure). Locale parity passes in all five locales (1117 keys). The seed controls pass for all five packs; the control scores practice seeds, and the exam-only Set 1 payloads are validated by the mock spec.
+- **Not yet run:**
+  - `pnpm stack:seed-audio` for the DELE Set 1 WAVs (needs the Spanish Kokoro voices from `pnpm tts:up`);
+  - the rebuilt frontend and backend with `db:seed` (expected `dele-es-a2=27` and one DELE bundled set);
+  - Set 1 end to end in the browser, including the group banner and the overview;
+  - generating Set 2 (paid LLM calls plus TTS);
+  - re-checking the Goethe mock result screens in the browser.
+
 ## Stage 2.16.3 — DELE A2 (2026-09-30)
 
 Branch `stage-2.16`, working tree only (not committed).

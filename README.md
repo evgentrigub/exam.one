@@ -1,6 +1,6 @@
 # Exam.one
 
-Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key is a practice pack for all four skills (no mock exams), with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, is a practice pack for all four skills too (no mock exams), with Polish audio. DELE A2, the Instituto Cervantes diploma of Spanish, is a practice pack for all four skills as well (no mock exams), with Spanish audio.
+Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key is a practice pack for all four skills (no mock exams), with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, is a practice pack for all four skills too (no mock exams), with Polish audio. DELE A2, the Instituto Cervantes diploma of Spanish, covers all four skills and mock exams, passed per group as in the real exam, with Spanish audio.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
@@ -67,7 +67,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 After you are signed in, core practice runs against the **local** NestJS API and PostgreSQL. No cloud account is required.
 
 - Reading, writing, listening, and speaking practice
-- Goethe A2 and Goethe A1 mock exam Set 1
+- Goethe A2, Goethe A1 and DELE A2 mock exam Set 1
 - Progress tracking, drafts, and resume
 - Full navigation and UI
 
@@ -95,16 +95,19 @@ Durable storage:
 | Named volume `postgres_data`     | Users, settings, catalogs, attempts, drafts, mock exams    |
 | Named volume `generated_listening_audio` | On-demand listening WAVs written by NestJS          |
 | Host dirs `scripts/*/models/`    | TTS and STT model weights (gitignored, reused across runs) |
-| Host dirs `apps/frontend/public/audio/listening/a2/`, `a1/` | Bundled seed listening WAVs (A2 seeds, A1 mock Set 1) |
+| Host dirs `apps/frontend/public/audio/listening/a2/`, `a1/`, `dele-es-a2/` | Bundled seed listening WAVs (A2 seeds, A1 and DELE A2 mock Set 1) |
 
 Theme, locale, listening playback volume/speed, and reading bookmarks stay in the browser.
 
 ### Exam packs
 
 Exam definitions, LLM prompts, runtime rules, grading criteria, payload adapters, and optional bundled seeds live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`; it can use the five exercise formats and the form-fill, word-card and request-card screens. 
-Two packs are live: 
+Five packs are live: 
 **Goethe A1 · Start Deutsch 1** (practice and mock exams). 
 **Goethe A2** (practice and mock exams). 
+**Cambridge English A2 Key** (practice). 
+**Certyfikat Polski A2** (practice). 
+**DELE A2** (practice and mock exams). 
 
 Select one under **Settings → Learning plan**. See the [verification and migration rollout guide](data/VERIFICATION.md).
 
@@ -281,7 +284,7 @@ docker run --rm \
   alpine tar -xzf /backup/listening-audio-YYYYMMDD.tar.gz -C /target
 ```
 
-Seed WAVs under `apps/frontend/public/audio/listening/a2/` and `a1/` live on host bind mounts; copy that directory if you regenerated them. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
+Seed WAVs under `apps/frontend/public/audio/listening/a2/`, `a1/` and `dele-es-a2/` live on host bind mounts; copy that directory if you regenerated them. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
 
 ### Stop, wipe, and upgrade
 

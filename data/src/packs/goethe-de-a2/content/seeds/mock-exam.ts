@@ -33,6 +33,25 @@ export interface MockExamModuleDefinition {
   exercises: MockExamExerciseDefinition[]
 }
 
+/** Modules whose final points count together toward one pass mark (DELE: Grupo 1 and 2). */
+export interface MockPassGroup {
+  id: string
+  label: string
+  skills: SkillId[]
+  maximumPoints: number
+  passPoints: number
+}
+
+/**
+ * How a set is passed: one total against `passPoints` (Goethe: 60 of 100), or every group
+ * against its own mark when `groups` is set, with no overall mark.
+ */
+export interface MockExamRules {
+  maximumPoints: number
+  passPoints?: number
+  groups?: MockPassGroup[]
+}
+
 export interface MockExamSet {
   id: string
   examId: string
@@ -42,7 +61,7 @@ export interface MockExamSet {
   createdAt: string
   modules: MockExamModuleDefinition[]
   content: MockExamContent
-  rules?: { maximumPoints: number; passPoints: number }
+  rules?: MockExamRules
 }
 
 export const goetheA2MockExamSet1: MockExamSet = {

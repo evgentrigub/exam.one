@@ -73,7 +73,7 @@
                   <div>
                     {{
                       $t('mockExam.pipelineJob', {
-                        part: job.part,
+                        part: labelFor(module.skill, job.part),
                         kind: $t(`mockExam.jobKind.${job.kind}`),
                       })
                     }}
@@ -129,6 +129,7 @@ import type { MockGenerationJob, MockGenerationStatus } from '~/composables/useM
 
 const { t } = useI18n()
 const { draft, preflight, retryGeneration, clearGeneration } = useMockExamGeneration()
+const { labelFor } = useActivePack()
 
 const pipelineDescription = computed(() => {
   if (!draft.value) return ''

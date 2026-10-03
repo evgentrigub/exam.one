@@ -1,5 +1,18 @@
 import type { ExamPack } from '../../types'
-import { listeningEsSeeds, readingEsSeeds, speakingEsSeeds, writingEsSeeds } from './content'
+import { createGoetheMockOverview } from '../goethe-shared/mock-overview'
+import {
+  DELE_AUDIO_PATH_PREFIX,
+  createDeleA2MockExamSet,
+  deleA2MockExamSet1,
+  listeningEsSeeds,
+  mockListeningEsSeeds,
+  mockReadingEsSeeds,
+  mockSpeakingEsSeeds,
+  mockWritingEsSeeds,
+  readingEsSeeds,
+  speakingEsSeeds,
+  writingEsSeeds,
+} from './content'
 import { withPracticeCopy } from './practice-copy'
 import { listeningPrompts } from './prompts/listening'
 import { readingPrompts } from './prompts/reading'
@@ -14,7 +27,8 @@ export const DELE_ES_A2_PACK_ID = 'dele-es-a2'
 
 /**
  * DELE A2 — the Instituto Cervantes diploma of Spanish as a foreign language, level A2: all
- * four tests and thirteen tareas as solo practice, with no mock exams. Practice seeds ship
+ * four tests and thirteen tareas as solo practice, and mock exams: a bundled Set 1 with seed
+ * WAVs and generated sets, passed per group (Grupo 1 and 2, 30 of 50 each). Practice seeds ship
  * without audio. Sources and adaptations are in `brief.md`.
  */
 export const deleEsA2: ExamPack = {
@@ -37,13 +51,17 @@ export const deleEsA2: ExamPack = {
       { id: 'em_santa', gender: 'male' },
     ],
     sttLang: 'es',
-    audioPathPrefix: '/audio/listening/dele-es-a2',
+    audioPathPrefix: DELE_AUDIO_PATH_PREFIX,
   },
+  // Practice seeds first, then the exam-only Set 1 payloads (their listening WAVs are seeded).
   seedExercises: {
-    reading: readingEsSeeds as unknown as Record<string, unknown>[],
-    listening: listeningEsSeeds as unknown as Record<string, unknown>[],
-    writing: writingEsSeeds as unknown as Record<string, unknown>[],
-    speaking: speakingEsSeeds as unknown as Record<string, unknown>[],
+    reading: [...readingEsSeeds, ...mockReadingEsSeeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningEsSeeds, ...mockListeningEsSeeds] as unknown as Record<string, unknown>[],
+    writing: [...writingEsSeeds, ...mockWritingEsSeeds] as unknown as Record<string, unknown>[],
+    speaking: [...speakingEsSeeds, ...mockSpeakingEsSeeds] as unknown as Record<string, unknown>[],
   },
+  createMockSet: createDeleA2MockExamSet,
+  bundledMockSet: deleA2MockExamSet1,
   buildReviewVars: deleA2ReviewVars,
+  mockOverview: createGoetheMockOverview('DELE A2'),
 }

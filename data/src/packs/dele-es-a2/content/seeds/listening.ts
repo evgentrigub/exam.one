@@ -1,5 +1,6 @@
 import type { ListeningEsExercise, ListeningEsItem } from '../types'
 import { NEITHER } from '../../validate'
+import { withSeedAudio } from '../listening-audio'
 
 /** Stamp the per-item ids the per-item audio map is keyed by. */
 function items(
@@ -211,3 +212,202 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
     ]),
   },
 ]
+
+const MOCK_MESSAGES = [
+  'Cambian el lugar de una reunión.',
+  'Ofrecen un trabajo para el verano.',
+  'Anuncian que un vuelo sale más tarde.',
+  'Invitan a una cena de cumpleaños.',
+  'Piden ayuda para una mudanza.',
+  'Informan de una tienda que cierra antes.',
+  'Recuerdan que hay que pagar algo.',
+  'Venden entradas para un partido.',
+  'Devuelven un objeto perdido.',
+  'Cancelan un viaje en autobús.',
+]
+
+const mockListeningPayloads: ListeningEsExercise[] = [
+  {
+    id: 'mock-es-a2-set1-listening-tarea1',
+    title: 'Tarea 1: Conversaciones breves',
+    testingPart: 1,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    items: items('mock-es-a2-set1-listening-tarea1', n => `Conversación ${n}`, [
+      {
+        transcript:
+          'Hombre: Perdone, ¿la farmacia más cercana? Mujer: Hay una en la calle Mayor, pero hoy está cerrada. Hombre: ¡Vaya! ¿Y otra? Mujer: Sí, en la plaza, al lado del banco. Está abierta hasta las diez. Hombre: Muchas gracias.',
+        question: '¿Adónde va a ir el hombre?',
+        options: ['a la calle Mayor', 'a la plaza, al lado del banco', 'al banco'],
+        correctAnswer: 1,
+        explanation: 'La farmacia de la calle Mayor está cerrada; la abierta está «en la plaza, al lado del banco».',
+      },
+      {
+        transcript:
+          'Mujer: ¿Qué le regalamos a papá por su cumpleaños? Hombre: Siempre le regalamos libros… Mujer: Ya, y una corbata no le gusta nada. Hombre: ¿Y unas entradas para el fútbol? Le encanta. Mujer: ¡Buena idea! Compramos dos y vas tú con él.',
+        question: '¿Qué van a regalar a su padre?',
+        options: ['un libro', 'una corbata', 'unas entradas'],
+        correctAnswer: 2,
+        explanation: '«¿Y unas entradas para el fútbol?… ¡Buena idea!».',
+      },
+      {
+        transcript:
+          'Hombre: Buenas tardes, quería una mesa para cuatro personas. Mujer: ¿Para esta noche? Hombre: No, para mañana sábado, a las nueve. Mujer: A las nueve está todo lleno. Tengo mesa a las diez. Hombre: Bueno, vale, a las diez.',
+        question: '¿Cuándo va a cenar el hombre en el restaurante?',
+        options: ['hoy por la noche', 'el sábado a las nueve', 'el sábado a las diez'],
+        correctAnswer: 2,
+        explanation: 'A las nueve está lleno y el hombre acepta la mesa «a las diez» del sábado.',
+      },
+      {
+        transcript:
+          'Mujer: ¿Cómo vas al trabajo? ¿En coche? Hombre: No, el coche lo usa mi mujer. Antes iba en autobús, pero ahora voy en bicicleta. Mujer: ¿En bici? ¿No está lejos? Hombre: Solo veinte minutos, y así hago deporte.',
+        question: '¿Cómo va ahora el hombre al trabajo?',
+        options: ['en coche', 'en autobús', 'en bicicleta'],
+        correctAnswer: 2,
+        explanation: '«Antes iba en autobús, pero ahora voy en bicicleta».',
+      },
+      {
+        transcript:
+          'Hombre: ¿Qué tiempo va a hacer este fin de semana? Mujer: El sábado sol y calor, pero el domingo dicen que va a llover. Hombre: Entonces vamos a la playa el sábado. Mujer: Vale, y el domingo nos quedamos en casa.',
+        question: '¿Qué van a hacer el sábado?',
+        options: ['ir a la playa', 'quedarse en casa', 'ir al cine'],
+        correctAnswer: 0,
+        explanation: 'El sábado hace sol: «Entonces vamos a la playa el sábado».',
+      },
+      {
+        transcript:
+          'Mujer: Buenos días, ¿cuánto cuestan estas manzanas? Hombre: Las rojas, dos euros el kilo, y las verdes, dos cincuenta. Mujer: Deme un kilo de las verdes, por favor. Hombre: ¿Algo más? Mujer: No, nada más, gracias.',
+        question: '¿Cuánto paga la mujer?',
+        options: ['dos euros', 'dos euros con cincuenta', 'cinco euros'],
+        correctAnswer: 1,
+        explanation: 'Compra un kilo de manzanas verdes, que cuestan «dos cincuenta» el kilo.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-es-a2-set1-listening-tarea2',
+    title: 'Tarea 2: Radio',
+    testingPart: 2,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    items: items('mock-es-a2-set1-listening-tarea2', n => `Radio ${n}`, [
+      {
+        transcript:
+          'Locutor: El próximo domingo se celebra en Bilbao la carrera popular de primavera. Pueden participar personas de todas las edades. La salida es a las nueve de la mañana desde el puente de la Salve. La inscripción cuesta cinco euros y el dinero es para un hospital infantil.',
+        question: '¿Para qué es el dinero de las inscripciones?',
+        options: ['Para la ciudad de Bilbao.', 'Para un hospital de niños.', 'Para los corredores.'],
+        correctAnswer: 1,
+        explanation: '«El dinero es para un hospital infantil».',
+      },
+      {
+        transcript:
+          'Locutora: Supermercados Frescos abre una nueva tienda en el centro comercial Las Rosas. Para celebrarlo, este viernes todos los clientes recibirán un regalo con su compra. Además, la fruta y la verdura tendrán un descuento del treinta por ciento durante toda la semana.',
+        question: '¿Qué pasa este viernes en la tienda?',
+        options: ['Los clientes reciben un regalo.', 'La tienda cierra antes.', 'La fruta es gratis.'],
+        correctAnswer: 0,
+        explanation: '«Este viernes todos los clientes recibirán un regalo con su compra».',
+      },
+      {
+        transcript:
+          'Locutor: Atención, conductores. Por la nieve, hoy es obligatorio llevar cadenas en las carreteras de la sierra de Madrid. La policía recomienda no viajar por la noche y salir solo si es necesario. Mañana por la tarde el tiempo va a mejorar.',
+        question: '¿Qué recomienda la policía?',
+        options: ['Viajar por la noche.', 'Salir solo si es necesario.', 'Ir a la sierra mañana por la mañana.'],
+        correctAnswer: 1,
+        explanation: '«La policía recomienda… salir solo si es necesario».',
+      },
+      {
+        transcript:
+          'Locutora: Y ahora, una noticia curiosa: en un pueblo de Asturias, los vecinos han abierto una biblioteca en una antigua cabina de teléfono. Cualquier persona puede dejar un libro y llevarse otro. Ya hay más de doscientos libros y la idea ha llegado a otros pueblos.',
+        question: '¿Qué han hecho los vecinos del pueblo?',
+        options: ['Una biblioteca en una cabina de teléfono.', 'Una tienda de libros antiguos.', 'Un concurso de lectura.'],
+        correctAnswer: 0,
+        explanation: '«Los vecinos han abierto una biblioteca en una antigua cabina de teléfono».',
+      },
+      {
+        transcript:
+          'Locutor: ¿Quieres aprender a cocinar platos de todo el mundo? La escuela Sabores ofrece cursos de cocina mexicana, japonesa e italiana. Las clases son los martes por la tarde y, al final, los alumnos comen lo que han preparado. Primera clase gratis.',
+        question: '¿Qué hacen los alumnos al final de la clase?',
+        options: ['Lavan los platos.', 'Comen lo que han cocinado.', 'Compran los ingredientes.'],
+        correctAnswer: 1,
+        explanation: '«Al final, los alumnos comen lo que han preparado».',
+      },
+      {
+        transcript:
+          'Locutora: El museo de la ciudad cambia su horario en verano. A partir del 1 de julio, abrirá de nueve de la mañana a tres de la tarde, de martes a domingo. Los jueves por la noche habrá visitas especiales con música de nueve a once.',
+        question: '¿Qué hay los jueves por la noche en el museo?',
+        options: ['Visitas con música.', 'Clases para niños.', 'Entrada gratis para todos.'],
+        correctAnswer: 0,
+        explanation: '«Los jueves por la noche habrá visitas especiales con música».',
+      },
+    ]),
+  },
+  {
+    id: 'mock-es-a2-set1-listening-tarea3',
+    title: 'Tarea 3: Un nuevo piso',
+    testingPart: 3,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    context: 'Vas a escuchar una conversación entre Pablo y Marta sobre sus pisos.',
+    transcript: [
+      'Marta: ¡Pablo! ¿Qué tal? Me han dicho que te has cambiado de piso.',
+      'Pablo: Sí, hace dos semanas. Ahora vivo en el barrio de Gracia, cerca del trabajo. Voy andando a la oficina.',
+      'Marta: ¡Qué suerte! Yo tardo casi una hora en metro todos los días.',
+      'Pablo: El piso es pequeño, pero tiene una terraza con mucho sol. Allí desayuno todas las mañanas.',
+      'Marta: Pues yo estoy buscando piso. Mi compañera de piso se va a vivir con su novio y yo sola no puedo pagar el alquiler.',
+      'Pablo: Te entiendo, los alquileres están carísimos. Yo comparto el piso con un amigo de la universidad, Jorge.',
+      'Marta: ¿Y os lleváis bien?',
+      'Pablo: Sí, muy bien. Él cocina y yo limpio. Bueno, él dice que yo no limpio mucho…',
+      'Marta: Ja, ja. Oye, ¿y tienes muebles?',
+      'Pablo: Pocos. El sábado voy a ir a una tienda de segunda mano a comprar una mesa y unas sillas.',
+      'Marta: ¿Puedo ir contigo? Yo necesito una estantería para mis libros.',
+      'Pablo: Claro. Después podemos comer algo por el barrio y te lo enseño.',
+      'Marta: ¡Perfecto! Nos vemos el sábado.',
+    ].join('\n'),
+    options: ['Pablo', 'Marta', NEITHER],
+    questions: rows('mock-es-a2-set1-listening-tarea3', [
+      { person: 'Va al trabajo a pie.', correctAnswer: 0, explanation: 'Pablo: «Voy andando a la oficina».' },
+      { person: 'Pasa mucho tiempo en el transporte público.', correctAnswer: 1, explanation: 'Marta: «Yo tardo casi una hora en metro todos los días».' },
+      { person: 'Necesita un piso nuevo.', correctAnswer: 1, explanation: 'Marta: «Yo estoy buscando piso».' },
+      { person: 'Se va a vivir con su pareja.', correctAnswer: 2, explanation: 'Es la compañera de piso de Marta quien se va con su novio, no Pablo ni Marta.' },
+      { person: 'Prepara la comida en su piso.', correctAnswer: 2, explanation: 'En el piso de Pablo cocina Jorge: «Él cocina y yo limpio».' },
+      { person: 'Quiere comprar un mueble para sus libros.', correctAnswer: 1, explanation: 'Marta: «Yo necesito una estantería para mis libros».' },
+    ]),
+  },
+  {
+    id: 'mock-es-a2-set1-listening-tarea4',
+    title: 'Tarea 4: Mensajes y avisos',
+    testingPart: 4,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    context: 'Vas a escuchar siete mensajes y avisos.',
+    transcript: [
+      'Javier: Hola, Elena, soy Javier. Te llamo porque la reunión de mañana no es en la oficina. Es en la cafetería de la esquina, a la misma hora, a las diez. Hasta mañana.',
+      'Locutora: Atención, señores pasajeros. El vuelo 342 con destino a Lisboa saldrá con una hora de retraso. La nueva hora de salida es las cinco y media. Gracias.',
+      'Laura: ¡Hola, Pablo! El viernes cumplo treinta años y voy a hacer una cena en mi casa con amigos. Es a las nueve. ¿Puedes traer el postre? ¡Un beso!',
+      'Carlos: Hola, Manuel, soy Carlos. El sábado me cambio de piso y necesito ayuda con las cajas. ¿Puedes venir por la mañana? Te invito a comer después.',
+      'Locutor: Señores clientes, les recordamos que hoy, por ser día de fiesta, la tienda cierra a las dos de la tarde. Les rogamos que pasen por caja. Gracias.',
+      'Señora Martín: Buenos días, llamo de la academia de idiomas. Le recuerdo que todavía no ha pagado el curso de este mes. Puede pagar en la secretaría hasta el viernes.',
+      'Lucía: Hola, soy Lucía, de la biblioteca. Ayer se dejó usted una bufanda azul en la sala de estudio. La tenemos aquí, en la recepción. Puede venir a buscarla cuando quiera.',
+    ].join('\n'),
+    options: MOCK_MESSAGES,
+    questions: rows('mock-es-a2-set1-listening-tarea4', [
+      { person: 'Mensaje 1', correctAnswer: 0, explanation: '«La reunión de mañana no es en la oficina. Es en la cafetería».' },
+      { person: 'Mensaje 2', correctAnswer: 2, explanation: '«El vuelo… saldrá con una hora de retraso».' },
+      { person: 'Mensaje 3', correctAnswer: 3, explanation: '«El viernes cumplo treinta años y voy a hacer una cena».' },
+      { person: 'Mensaje 4', correctAnswer: 4, explanation: '«Me cambio de piso y necesito ayuda con las cajas».' },
+      { person: 'Mensaje 5', correctAnswer: 5, explanation: '«Hoy… la tienda cierra a las dos de la tarde».' },
+      { person: 'Mensaje 6', correctAnswer: 6, explanation: '«Todavía no ha pagado el curso de este mes».' },
+      { person: 'Mensaje 7', correctAnswer: 8, explanation: '«Ayer se dejó usted una bufanda azul… La tenemos aquí».' },
+    ]),
+  },
+]
+
+/**
+ * The DELE A2 Set 1 listening tareas: exam-only, with bundled seed WAVs under
+ * `/audio/listening/dele-es-a2` (`pnpm stack:seed-audio`), so the bundled mock plays without TTS.
+ */
+export const mockListeningEsSeeds: ListeningEsExercise[] = mockListeningPayloads.map(withSeedAudio)

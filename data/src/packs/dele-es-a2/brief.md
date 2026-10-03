@@ -10,7 +10,7 @@ No official task text, image or recording is bundled; every seed is original.
   any Hispanic norm is accepted if used consistently (G p. 7).
 - Pack: `dele-es-a2`, aliases `dele-a2`, `spanish-a2`.
 - Scope: full supported practice of all 13 tareas (4 reading, 4 listening, 2 writing, 3 speaking), as solo practice
-  with the adaptations below. No mock exams.
+  with the adaptations below, and mock exams (see below).
 - Sources, linked from https://examenes.cervantes.es/es/dele/examenes/a2 and checked 2026-09-29:
   - **[G]** *Guía del examen DELE A2*, © 2022, NIPO 503-14-007-X, 29 pp. (`DELE_A2_v2020_Guía_de_examen_0.pdf`).
     The © 2014 guide describes the old format and was not used.
@@ -80,7 +80,7 @@ No official task text, image or recording is bundled; every seed is original.
   voice, two women in one dialogue share `ef_dora`. Speaker labels are roles, first names or "Señor / Señora" +
   surname, which the Spanish voice mapping reads for gender. STT uses Parakeet v3 (auto-detects Spanish) or Whisper;
   transcripts stay editable.
-- **Seeds** ship without audio; **Generate audio** synthesises it per user. No mock exams, bundled WAVs or mock factory.
+- **Practice seeds** ship without audio; **Generate audio** synthesises it per user. The exam-only mock Set 1 ships seed WAVs.
 
 ## Gaps and assumptions
 
@@ -90,4 +90,24 @@ No official task text, image or recording is bundled; every seed is original.
 - Speaker counts in listening T2 and T4 are not specified; practice uses one speaker per piece or message.
 - Pause lengths between recordings follow the player's defaults, not the exam's reading windows.
 - Not included: images, official recordings, a live examiner, the choice between two cards or photos, pronunciation
-  marking, the entrevistador's global rating, mock exams.
+  marking, the entrevistador's global rating.
+
+## Mock exams
+
+- **Set 1** (`dele-es-a2-set-1`) is bundled and works offline: 13 original exam-only tareas
+  (`mock-es-a2-set1-<skill>-tarea<n>`, `examOnly`), separate from the practice seeds. Its listening WAVs live under
+  `/audio/listening/dele-es-a2/` and are written by `pnpm stack:seed-audio` (Tareas 1–2 one file per item, 3–4 one
+  shared file). Writing Tarea 2 is Opción A; the speaking scene and role-play share one place (a restaurant).
+- **Generated sets** (`dele-es-a2-set-<n>`, from Set 2) use the shared resumable pipeline: one generation per tarea
+  through the pack's generators, plus Spanish TTS for listening. Each set has one writing Tarea 2 option, whichever
+  the generator writes.
+- **Scoring.** Modules follow the exam order and minutes (60 / 40 / 45 / 12). Raw points convert linearly to 25 per
+  prueba: reading 25 → 25 and listening 25 → 25 (× 1), writing 12 → 25 (× 25 / 12), speaking 18 → 25 (× 25 / 18, shown
+  as provisional because it is graded from transcripts). Every recording plays twice. **Practice adaptation:** the
+  two writing and speaking scales count equally; the official 66 / 34 weighting and the entrevistador's global
+  rating are not applied.
+- **Pass rule.** As in the exam, `rules.groups` pass the set only when **Grupo 1** (reading + writing) and **Grupo 2**
+  (listening + speaking) each reach 30 of 50; there is no overall pass mark. The result screen shows each group, and
+  the AI overview comments on each.
+- **Not modelled:** the choice between Opción A and B inside one set, the 12-minute speaking preparation, recordings
+  longer than 90 seconds.

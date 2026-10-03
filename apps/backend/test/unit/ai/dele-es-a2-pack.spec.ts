@@ -45,13 +45,14 @@ const RUBRIC = [
 ] as const
 
 describe('DELE A2 pack', () => {
-  it('is live and selectable by alias, keeps Goethe A2 the default, and has no mocks', () => {
+  it('is live and selectable by alias, keeps Goethe A2 the default, and has mock exams', () => {
     expect(getLivePack('dele-es-a2').packId).toBe('dele-es-a2')
     expect(getPack('spanish-a2')?.packId).toBe('dele-es-a2')
     expect(getPack('dele-a2')?.packId).toBe('dele-es-a2')
     expect(getLivePack(undefined).packId).toBe('goethe-de-a2')
-    expect(deleEsA2.createMockSet).toBeUndefined()
-    expect(deleEsA2.bundledMockSet).toBeUndefined()
+    expect(deleEsA2.createMockSet).toBeDefined()
+    expect(deleEsA2.bundledMockSet?.id).toBe('dele-es-a2-set-1')
+    expect(deleEsA2.mockOverview).toBeDefined()
     expect(deleEsA2.speech).toMatchObject({ ttsLang: 'es', sttLang: 'es' })
   })
 
@@ -125,7 +126,9 @@ describe('DELE A2 pack', () => {
   })
 
   it('ships both writing Tarea 2 options and rejects any other', () => {
-    const options = deleEsA2.seedExercises!.writing!.filter(s => s['testingPart'] === 2).map(s => s['topicType'])
+    const options = deleEsA2.seedExercises!.writing!
+      .filter(s => s['testingPart'] === 2 && s['examOnly'] !== true)
+      .map(s => s['topicType'])
     expect(options).toEqual(['opcion-a', 'opcion-b'])
     const payload = seed('writing', 2)
     payload['topicType'] = 'essay'

@@ -65,3 +65,48 @@ export const writingEsSeeds: WritingEsExercise[] = [
     ],
   },
 ]
+
+/** The DELE A2 Set 1 writing tareas: exam-only. Tarea 2 offers one option (Opción A), as the mock shows one task per part. */
+export const mockWritingEsSeeds: WritingEsExercise[] = [
+  {
+    id: 'mock-es-a2-set1-writing-tarea1',
+    title: 'Respuesta a Irene',
+    topicType: 'email',
+    difficulty: 'A2',
+    testingPart: 1,
+    estimatedTime: 20,
+    wordCount: { min: 60, max: 70 },
+    category: ['Amigos', 'Ciudad'],
+    createdAt: '2026-10-03',
+    examOnly: true,
+    description: 'Una amiga va a visitar tu ciudad y te pide consejos.',
+    task: '«¡Hola! El mes que viene voy a pasar tres días en tu ciudad por trabajo, pero tengo libre todo el domingo. ¿Qué me recomiendas visitar en la ciudad? ¿Podemos vernos ese día? Un beso, Irene.»\n\nEscribe un correo a Irene. En él debes:\n– saludar\n– recomendarle dos lugares de tu ciudad y decir por qué\n– contar qué hiciste la última vez que visitaste uno de ellos\n– proponerle un plan para el domingo\n– despedirte\nNúmero de palabras: entre 60 y 70.',
+    requirements: [
+      'Saludar',
+      'Recomendarle dos lugares de tu ciudad y decir por qué',
+      'Contar qué hiciste la última vez que visitaste uno de ellos',
+      'Proponerle un plan para el domingo',
+      'Despedirte',
+    ],
+  },
+  {
+    id: 'mock-es-a2-set1-writing-tarea2',
+    title: 'Un día especial',
+    topicType: 'opcion-a',
+    difficulty: 'A2',
+    testingPart: 2,
+    estimatedTime: 25,
+    wordCount: { min: 70, max: 80 },
+    category: ['Experiencias', 'Celebraciones'],
+    createdAt: '2026-10-03',
+    examOnly: true,
+    description: 'Opción A: un texto para una revista sobre un día especial.',
+    task: 'Una revista pide a sus lectores textos sobre un día especial de su vida.\nEscribe un texto en el que cuentes:\n– qué día fue y cuándo\n– dónde estabas y con quién\n– qué pasó ese día\n– por qué es importante para ti\nNúmero de palabras: entre 70 y 80.',
+    requirements: [
+      'Qué día fue y cuándo',
+      'Dónde estabas y con quién',
+      'Qué pasó ese día',
+      'Por qué es importante para ti',
+    ],
+  },
+]

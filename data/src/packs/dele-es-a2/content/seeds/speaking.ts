@@ -56,3 +56,59 @@ export const speakingEsSeeds: (SpeakingCardsTopic | SpeakingKeywordTopic)[] = [
     ],
   },
 ]
+
+/**
+ * The DELE A2 Set 1 speaking tareas: exam-only. As in the exam, the role-play of Tarea 3 takes
+ * place where the scene of Tarea 2 does: a restaurant.
+ */
+export const mockSpeakingEsSeeds: (SpeakingCardsTopic | SpeakingKeywordTopic)[] = [
+  {
+    id: 'mock-es-a2-set1-speaking-tarea1',
+    theme: 'Mi trabajo o mis estudios',
+    topicType: 'monologue',
+    testingPart: 1,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    keywords: [
+      'Qué haces: dónde trabajas o qué estudias',
+      'Cómo es un día normal para ti',
+      'Cómo son tus compañeros',
+      'Qué hacías antes o qué estudiaste',
+      'Qué te gusta más y qué te gustaría cambiar',
+    ],
+  },
+  {
+    id: 'mock-es-a2-set1-speaking-tarea2',
+    theme:
+      'Escena: en un restaurante, un camarero joven toma nota a una familia con dos niños pequeños. La madre mira la carta y el padre habla con el camarero mientras los niños dibujan.',
+    topicType: 'photo',
+    testingPart: 2,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    keywords: [
+      '¿Cómo son las personas? ¿Qué ropa llevan?',
+      '¿Dónde están? ¿Cómo es el lugar?',
+      '¿Qué están haciendo?',
+      '¿Qué relación hay entre ellos? ¿Cómo se sienten?',
+      '¿Qué han hecho antes y qué van a hacer después?',
+    ],
+  },
+  {
+    id: 'mock-es-a2-set1-speaking-tarea3',
+    theme:
+      'Estás en un restaurante con un amigo y queréis comer. El examinador es el camarero.',
+    topicType: 'roleplay',
+    testingPart: 3,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    cards: [
+      { segment: 'reply1', kind: 'answer', speaker: 'examiner', topic: 'En el restaurante', cue: 'Buenas tardes. ¿Cuántos son? ¿Prefieren mesa dentro o en la terraza?' },
+      { segment: 'reply2', kind: 'answer', speaker: 'examiner', topic: 'En el restaurante', cue: 'Aquí tienen la carta. ¿Qué van a tomar de primero y de segundo?' },
+      { segment: 'question', kind: 'ask', topic: 'En el restaurante', cue: 'preguntar si hay postre casero' },
+      { segment: 'reply3', kind: 'answer', speaker: 'examiner', topic: 'En el restaurante', cue: 'Muy bien. ¿Y para beber? ¿Agua, vino, un refresco?' },
+    ],
+  },
+]

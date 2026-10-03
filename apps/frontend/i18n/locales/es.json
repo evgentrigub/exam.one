@@ -879,6 +879,10 @@
     "provisionalResult": "Resultado provisional",
     "passMessage": "Has alcanzado los {points} puntos necesarios para aprobar.",
     "almostMessage": "Sigue practicando y vuelve a intentarlo cuando estés listo.",
+    "passAllGroups": "Has alcanzado la nota de aprobado en todos los grupos.",
+    "groupBelow": "Por debajo de la nota de aprobado en: {groups}.",
+    "groupScore": "{points} / {max} · {pass} para aprobar",
+    "passEachGroup": "Aprobado en cada grupo",
     "passMark": "60 puntos para aprobar",
     "provisionalSpeakingNote": "La expresión oral incluye solo Teil 1–2 (máximo 12 puntos). Teil 3 y la pronunciación aún no se puntúan, así que el resultado global es provisional.",
     "provisionalSpeakingNoteTranscript": "La IA evalúa la expresión oral solo a partir de tus transcripciones. La pronunciación y la interacción en directo no se evalúan, así que el resultado global es provisional.",
@@ -925,10 +929,10 @@
     "checking": "Comprobando",
     "generationPipeline": "Proceso de generación",
     "generatingSet": "Examen de prueba, set {number}",
-    "pipelineRunningDescription": "Los módulos se ejecutan de uno en uno. La comprensión auditiva incluye una tarea de audio aparte para cada Teil.",
+    "pipelineRunningDescription": "Los módulos se ejecutan de uno en uno. La comprensión auditiva incluye una tarea de audio aparte para cada parte.",
     "pipelineFailedDescription": "Las tareas completadas se guardan. Al reintentar, se continúa desde la tarea fallida.",
     "pipelineDoneDescription": "El set generado está listo y se ha añadido a tu biblioteca local.",
-    "pipelineJob": "Teil {part} · {kind}",
+    "pipelineJob": "{part} · {kind}",
     "jobKind": {
       "content": "ejercicio",
       "audio": "audio"

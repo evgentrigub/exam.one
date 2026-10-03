@@ -17,19 +17,37 @@
             {{ $t('mockExam.provisionalResult') }}
           </div>
           <h1 class="mt-1 font-display text-3xl font-bold">{{ roundedOverall }} / {{ maximumPoints }}</h1>
-          <p class="mt-1 text-sm opacity-80">
-            {{
-              roundedOverall >= passPoints
-                ? $t('mockExam.passMessage', { points: passPoints })
-                : $t('mockExam.almostMessage')
-            }}
-          </p>
+          <p class="mt-1 text-sm opacity-80">{{ passMessage }}</p>
         </div>
         <div class="sm:ml-auto sm:text-right">
           <div class="font-mono text-3xl font-bold">{{ Math.round(roundedOverall / maximumPoints * 100) }}%</div>
-          <div class="text-xs opacity-70">{{ passPoints }} / {{ maximumPoints }}</div>
+          <div class="text-xs opacity-70">
+            {{ passResult.groups.length ? $t('mockExam.passEachGroup') : `${passPoints} / ${maximumPoints}` }}
+          </div>
         </div>
       </div>
+      <ul v-if="passResult.groups.length" class="mt-5 grid gap-2 sm:grid-cols-2">
+        <li
+          v-for="group in passResult.groups"
+          :key="group.id"
+          class="flex items-center gap-3 rounded-box bg-base-100/70 px-4 py-3 text-base-content"
+        >
+          <CircleCheck v-if="group.passed" :size="18" class="shrink-0 text-success" />
+          <CircleAlert v-else :size="18" class="shrink-0 text-warning" />
+          <div>
+            <div class="text-sm font-semibold">{{ group.label }}</div>
+            <div class="font-mono text-xs opacity-70">
+              {{
+                $t('mockExam.groupScore', {
+                  points: Math.round(group.points),
+                  max: group.maximum,
+                  pass: group.passPoints,
+                })
+              }}
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
 
     <div class="alert border border-warning/30 bg-warning/10 text-sm">
@@ -512,6 +530,7 @@ import type {
   MockExamOverviewInput,
   MockExamSet,
 } from '@exam-one/exam-packs'
+import { evaluateMockPass } from '@exam-one/exam-packs'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import type { WritingExercise } from '~/utils/types'
 import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
@@ -591,8 +610,26 @@ const lockedCount = computed(
   () => set.value.modules.filter(module => state.value.modules[module.skill].locked).length
 )
 const roundedOverall = computed(() => Math.round(overallPoints.value))
-const maximumPoints = computed(() => set.value.rules?.maximumPoints ?? 100)
+/** Pass state: one total against `passPoints`, or every group against its own mark (DELE). */
+const passResult = computed(() =>
+  evaluateMockPass(
+    set.value.rules,
+    Object.fromEntries(
+      set.value.modules.map(module => [module.skill, state.value.modules[module.skill].scoreFinal])
+    )
+  )
+)
+const maximumPoints = computed(() => passResult.value.maximum)
 const passPoints = computed(() => set.value.rules?.passPoints ?? 60)
+const passMessage = computed(() => {
+  const { groups, passed } = passResult.value
+  if (!groups.length) {
+    return passed ? t('mockExam.passMessage', { points: passPoints.value }) : t('mockExam.almostMessage')
+  }
+  if (passed) return t('mockExam.passAllGroups')
+  const below = groups.filter(group => !group.passed).map(group => group.label)
+  return t('mockExam.groupBelow', { groups: below.join(', ') })
+})
 const hasPendingAiGrading = computed(() =>
   (['writing', 'speaking'] as const).some(skill => isAiReviewInProgress(skill))
 )
@@ -609,7 +646,7 @@ const provisionalSpeakingNote = computed(() => {
     : t('mockExam.provisionalSpeakingNoteTranscript')
 })
 const resultBannerClass = computed(() =>
-  roundedOverall.value >= passPoints.value
+  passResult.value.passed
     ? 'border-success/40 bg-success/10 text-success'
     : 'border-warning/40 bg-warning/10 text-warning'
 )
@@ -737,8 +774,20 @@ function handleOverviewToggle(event: Event): void {
 }
 
 function overviewInput(): MockExamOverviewInput {
+  const groups = passResult.value.groups
   return {
     overallPoints: roundedOverall.value,
+    ...(groups.length
+      ? {
+          passGroups: groups.map(group => ({
+            label: group.label,
+            points: Math.round(group.points),
+            maximum: group.maximum,
+            passPoints: group.passPoints,
+            passed: group.passed,
+          })),
+        }
+      : {}),
     modules: set.value.modules.map(definition => ({
       skill: definition.skill,
       score: state.value.modules[definition.skill].scoreFinal,

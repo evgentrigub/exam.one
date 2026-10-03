@@ -879,6 +879,10 @@
     "provisionalResult": "Vorläufiges Ergebnis",
     "passMessage": "Du hast die Bestehensgrenze von {points} Punkten erreicht.",
     "almostMessage": "Übe weiter und versuche es erneut, wenn du bereit bist.",
+    "passAllGroups": "Du hast die Bestehensgrenze in jeder Gruppe erreicht.",
+    "groupBelow": "Unter der Bestehensgrenze in: {groups}.",
+    "groupScore": "{points} / {max} · {pass} zum Bestehen",
+    "passEachGroup": "Bestehensgrenze in jeder Gruppe",
     "passMark": "60 Punkte zum Bestehen",
     "provisionalSpeakingNote": "Sprechen enthält nur Teil 1–2 (maximal 12 Punkte). Teil 3 und Aussprache werden noch nicht bewertet; das Gesamtergebnis ist daher vorläufig.",
     "provisionalSpeakingNoteTranscript": "Sprechen wird von der KI nur anhand deiner Transkripte bewertet. Aussprache und Interaktion werden nicht beurteilt; das Gesamtergebnis ist daher vorläufig.",
@@ -928,7 +932,7 @@
     "pipelineRunningDescription": "Die Module laufen nacheinander. Hören enthält für jeden Teil einen eigenen Audio-Job.",
     "pipelineFailedDescription": "Abgeschlossene Jobs bleiben gespeichert. Der nächste Versuch setzt beim fehlgeschlagenen Job fort.",
     "pipelineDoneDescription": "Der generierte Satz ist bereit und wurde deiner lokalen Bibliothek hinzugefügt.",
-    "pipelineJob": "Teil {part} · {kind}",
+    "pipelineJob": "{part} · {kind}",
     "jobKind": {
       "content": "Aufgabe",
       "audio": "Audio"

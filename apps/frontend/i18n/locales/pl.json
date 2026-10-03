@@ -879,6 +879,10 @@
     "provisionalResult": "Wynik wstępny",
     "passMessage": "Próg zaliczenia ({points} pkt) osiągnięty.",
     "almostMessage": "Ćwicz dalej i spróbuj ponownie, gdy przyjdzie pora.",
+    "passAllGroups": "Próg zaliczenia osiągnięty w każdej grupie.",
+    "groupBelow": "Poniżej progu zaliczenia w: {groups}.",
+    "groupScore": "{points} / {max} · {pass} do zaliczenia",
+    "passEachGroup": "Próg zaliczenia w każdej grupie",
     "passMark": "60 punktów do zaliczenia",
     "provisionalSpeakingNote": "Mówienie obejmuje tylko Teil 1–2 (maksymalnie 12 punktów). Teil 3 i wymowa nie są jeszcze oceniane, więc wynik ogólny jest wstępny.",
     "provisionalSpeakingNoteTranscript": "Mówienie jest oceniane przez AI wyłącznie na podstawie transkrypcji. Wymowa i interakcja na żywo nie są oceniane, więc wynik ogólny jest wstępny.",
@@ -925,10 +929,10 @@
     "checking": "Sprawdzanie",
     "generationPipeline": "Proces generowania",
     "generatingSet": "Egzamin próbny – zestaw {number}",
-    "pipelineRunningDescription": "Moduły są generowane po kolei. Słuchanie obejmuje osobne zadanie audio dla każdej części (Teil).",
+    "pipelineRunningDescription": "Moduły są generowane po kolei. Słuchanie obejmuje osobne zadanie audio dla każdej części.",
     "pipelineFailedDescription": "Ukończone zadania są zapisane. Ponowienie wznawia od nieudanego zadania.",
     "pipelineDoneDescription": "Wygenerowany zestaw jest gotowy i został dodany do twojej lokalnej biblioteki.",
-    "pipelineJob": "Teil {part} · {kind}",
+    "pipelineJob": "{part} · {kind}",
     "jobKind": {
       "content": "ćwiczenie",
       "audio": "audio"

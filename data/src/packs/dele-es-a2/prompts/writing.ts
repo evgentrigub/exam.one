@@ -110,7 +110,7 @@ ${TOPIC_FIELDS('"email" | "note" | "post"', 20, 60, 70)}
     task: 'Task: generate {count} independent exercises for DELE A2 Writing, Tarea 2 (a text of 70–80 words: Opción A, an everyday experience; or Opción B, a biography or story from given information).',
     rules: [
       RULES_HEADER,
-      '1. In the exam the candidate chooses one of two options. Here each exercise is ONE option; alternate the two across the {count} exercises.',
+      '1. In the exam the candidate chooses one of two options. Here each exercise is ONE option; alternate the two across the {count} exercises, and when you write a single exercise choose either option at random, so a mock set may contain either.',
       '2. topicType "opcion-a": a text about the learner\'s own life – a special day, a trip, a celebration, the place where you grew up, a change in your life, your best friend. "task" (in Spanish, addressed to "tú"): one or two sentences setting the scene ("Un blog de viajes pide a sus lectores textos sobre su primer viaje."), then "Escribe un texto en el que cuentes:" and 3–5 content points, each on its own line starting with "– ", then "Número de palabras: entre 70 y 80.".',
       '3. topicType "opcion-b": in the exam the candidate writes from photos. Here the information is given in words: a short list of 4–6 dated facts about an invented person or a story ("1995: nace en Cádiz", "2013: estudia Turismo en Granada", "2018: abre un restaurante con su hermano"), then "Escribe un texto sobre <name> en el que cuentes:" and 3–5 content points with "– ", then "Número de palabras: entre 70 y 80.".',
       '4. The points make the learner narrate in the past (pretérito indefinido and imperfecto) and add an opinion or a feeling.',

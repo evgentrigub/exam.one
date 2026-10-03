@@ -29,6 +29,8 @@ export interface ReadingEsExercise {
   topics: string[]
   createdAt: string
   questions: ReadingEsQuestion[]
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 interface ListeningEsBase {
@@ -38,6 +40,8 @@ interface ListeningEsBase {
   createdAt: string
   /** Absent on practice seeds, which generate their audio on demand. */
   audio?: { shared?: string; items?: Record<string, string> }
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 /** Listening parts 1 and 2: one short recording per item. */
