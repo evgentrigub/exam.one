@@ -22,6 +22,17 @@ export interface MockExamOverviewInput {
     passPoints: number
     passed: boolean
   }>
+  /**
+   * Set only for an exam reported on a scale (Cambridge English Scale): each module's scale
+   * score, the overall average and the band it earns. Module `score` values stay raw marks.
+   */
+  scale?: {
+    name: string
+    overall: number | null
+    band: string | null
+    pass: number
+    skills: Partial<Record<SkillId, number | null>>
+  }
   modules: Array<{
     skill: SkillId
     score: number | null
@@ -79,6 +90,10 @@ export function createGoetheMockOverview(examLabel: string) {
 Identify what went well and what deserves more practice. Treat pending AI grades as provisional.${
       result.passGroups?.length
         ? '\nThe exam is passed only if every group in passGroups reaches its pass mark; there is no overall pass mark. Say which groups are passed and which need work.'
+        : ''
+    }${
+      result.scale
+        ? '\nThe result is reported on the scale in `scale`: module scores are raw marks, and each skill also has a scale score; the overall score is their average and passes at `scale.pass`. Refer to the scale scores and the band, not to raw points.'
         : ''
     }
 Return only JSON with this shape:

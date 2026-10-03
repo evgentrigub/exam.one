@@ -1,4 +1,5 @@
 import type { KeyChoiceQuestion, KeyGap, ListeningKeyExercise, ListeningKeyItem } from '../types'
+import { withSeedAudio } from '../listening-audio'
 
 /** Stamp the per-item ids the per-item audio map is keyed by. */
 function items(exerciseId: string, rows: Omit<ListeningKeyItem, 'id'>[]): ListeningKeyItem[] {
@@ -209,3 +210,208 @@ export const listeningKeySeeds: ListeningKeyExercise[] = [
     ]),
   },
 ]
+
+/**
+ * Dedicated mock-exam Set 1 recordings, one per part. Original, not official; `examOnly`. They
+ * point at bundled seed WAVs (`pnpm stack:seed-audio`), so Set 1 plays without a TTS service.
+ */
+const mockListeningKeyPayloads: ListeningKeyExercise[] = [
+  {
+    id: 'mock-key-set1-listening-part1',
+    title: 'Mock Set 1 · Part 1: Short conversations',
+    testingPart: 1,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    items: items('mock-key-set1-listening-part1', [
+      {
+        context: 'At a café.',
+        transcript:
+          'Woman: Can I have a cheese sandwich, please? Man: Sorry, we haven\'t got any cheese left. We\'ve got chicken or egg. Woman: Hmm, I don\'t eat meat. I\'ll have the egg one, then. Man: Here you are.',
+        question: 'What does the woman have?',
+        options: ['a cheese sandwich', 'a chicken sandwich', 'an egg sandwich'],
+        correctAnswer: 2,
+        explanation: 'There is no cheese and she does not eat meat, so she takes the egg sandwich.',
+      },
+      {
+        context: 'Two friends are talking about a party.',
+        transcript:
+          'Man: When is Tom\'s party? Is it on Friday? Woman: No, Friday is his brother\'s birthday. Tom\'s party is the next day, on Saturday. Man: Oh, and not on Sunday? Woman: No, everyone works on Monday.',
+        question: 'When is Tom\'s party?',
+        options: ['on Friday', 'on Saturday', 'on Sunday'],
+        correctAnswer: 1,
+        explanation: 'Friday is his brother\'s birthday; Tom\'s party is the next day, Saturday.',
+      },
+      {
+        context: 'A girl is talking to her father.',
+        transcript:
+          'Girl: Dad, how much is the bus ticket to the city centre? Father: It used to be two pounds, but it\'s two pounds fifty now. Girl: OK. And a return ticket? Father: Four pounds, but you only need a single today.',
+        question: 'How much does the girl need for her ticket?',
+        options: ['£2.00', '£2.50', '£4.00'],
+        correctAnswer: 1,
+        explanation: 'A single now costs two pounds fifty, and she only needs a single.',
+      },
+      {
+        context: 'A man is asking for directions.',
+        transcript:
+          'Man: Excuse me, where is the post office? Woman: Go straight on and it\'s next to the bank. Man: Next to the bank, not the library? Woman: No, the library is opposite the bank.',
+        question: 'Where is the post office?',
+        options: ['next to the bank', 'next to the library', 'opposite the bank'],
+        correctAnswer: 0,
+        explanation: 'The post office is next to the bank; the library is opposite it.',
+      },
+      {
+        context: 'Two friends are planning a trip.',
+        transcript:
+          'Woman: Shall we go to the beach by bike? Man: It\'s too far. What about the train? Woman: The trains aren\'t running this weekend. Man: Then let\'s take the bus. Woman: Fine, the bus it is.',
+        question: 'How will they travel to the beach?',
+        options: ['by bike', 'by train', 'by bus'],
+        correctAnswer: 2,
+        explanation: 'The beach is too far by bike and there are no trains, so they take the bus.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-key-set1-listening-part2',
+    title: 'Mock Set 1 · Part 2: A summer sports camp',
+    testingPart: 2,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    context: 'You will hear a man talking about a summer sports camp for teenagers.',
+    content: [
+      'Riverside Summer Sports Camp',
+      '',
+      'Camp starts on: (1) ____ July',
+      'Most popular sport: (2) ____',
+      'Price for one week: £(3) ____',
+      'Bring a water bottle and a (4) ____',
+      'Contact: Mr (5) ____',
+    ].join('\n'),
+    transcript:
+      'Good morning, everyone. I\'d like to tell you about the Riverside Summer Sports Camp. This year the camp starts on the twelfth of July – not the tenth, as it said in our old leaflet. You can try lots of sports, like football, tennis and basketball, but the one most students choose is climbing. One week at the camp costs ninety-five pounds, and that includes lunch every day. Please bring a water bottle and a hat, because it can be very hot by the river. If you have any questions, please speak to Mr Pritchard. That\'s P-R-I-T-C-H-A-R-D. He\'s in the sports office every afternoon.',
+    questions: rows<Omit<KeyGap, 'id'>>('mock-key-set1-listening-part2', [
+      { question: 'Camp starts on', accepted: ['12', '12th', 'twelfth', '12 July', '12th July'], explanation: 'The camp starts on the twelfth of July, not the tenth.' },
+      { question: 'Most popular sport', accepted: ['climbing'], explanation: 'The sport most students choose is climbing.' },
+      { question: 'Price for one week', accepted: ['95', 'ninety-five', 'ninety five'], explanation: 'One week costs ninety-five pounds.' },
+      { question: 'Bring', accepted: ['hat'], explanation: 'Bring a water bottle and a hat because it can be hot.' },
+      { question: 'Contact', accepted: ['Pritchard'], explanation: 'The name is spelled out: P-R-I-T-C-H-A-R-D.' },
+    ]),
+  },
+  {
+    id: 'mock-key-set1-listening-part3',
+    title: 'Mock Set 1 · Part 3: A new job',
+    testingPart: 3,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    context: 'You will hear Emma talking to her friend Jack about his new job.',
+    transcript: [
+      'Emma: Hi Jack! How\'s your new job at the bookshop?',
+      'Jack: Really good, thanks. I work there on Saturdays and Sundays. I wanted to work after school, but they only needed someone at the weekend.',
+      'Emma: What do you do there?',
+      'Jack: Mostly I put new books on the shelves. I thought I would work at the till, but my manager says I need more training first.',
+      'Emma: Do you like the people there?',
+      'Jack: Yes, my manager is very kind. The other assistant is quite quiet, but she knows everything about books.',
+      'Emma: How do you get there? It\'s quite far from your house.',
+      'Jack: My mum drove me on the first day, but now I cycle. It takes about twenty minutes.',
+      'Emma: And what are you going to do with the money?',
+      'Jack: I\'m saving for a new laptop. I need one for my school projects next year.',
+    ].join('\n'),
+    questions: rows<Omit<KeyChoiceQuestion, 'id'>>('mock-key-set1-listening-part3', [
+      { question: 'When does Jack work at the bookshop?', options: ['after school', 'at the weekend', 'every day'], correctAnswer: 1, explanation: 'He works on Saturdays and Sundays.' },
+      { question: 'What does Jack do in the shop now?', options: ['He works at the till.', 'He helps customers find books.', 'He puts books on the shelves.'], correctAnswer: 2, explanation: 'He mostly puts new books on the shelves; the till needs more training.' },
+      { question: 'What does Jack say about the other assistant?', options: ['She is very friendly.', 'She knows a lot about books.', 'She is his manager.'], correctAnswer: 1, explanation: 'She is quiet but knows everything about books.' },
+      { question: 'How does Jack travel to work now?', options: ['by bike', 'by car', 'on foot'], correctAnswer: 0, explanation: 'His mum drove him on the first day, but now he cycles.' },
+      { question: 'What is Jack saving his money for?', options: ['a holiday', 'a computer', 'school books'], correctAnswer: 1, explanation: 'He is saving for a new laptop.' },
+    ]),
+  },
+  {
+    id: 'mock-key-set1-listening-part4',
+    title: 'Mock Set 1 · Part 4: Five short recordings',
+    testingPart: 4,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    items: items('mock-key-set1-listening-part4', [
+      {
+        context: 'A boy is talking about a school trip.',
+        transcript:
+          'Boy: The trip to the castle was great. The castle itself was quite small, and the weather wasn\'t very good, but the guide was brilliant. She told us lots of funny stories about the people who lived there.',
+        question: 'You will hear a boy talking about a school trip. What did he enjoy most?',
+        options: ['the castle', 'the weather', 'the guide'],
+        correctAnswer: 2,
+        explanation: 'The castle was small and the weather bad, but the guide was brilliant.',
+      },
+      {
+        context: 'A woman is leaving a message for a friend.',
+        transcript:
+          'Woman: Hi Kate, it\'s Lisa. I\'m afraid I can\'t meet you for lunch tomorrow because I have to go to the dentist. Could we meet on Thursday instead? Call me back.',
+        question: 'You will hear a woman leaving a message. Why is she calling?',
+        options: ['to invite Kate to lunch', 'to change a plan', 'to ask about a dentist'],
+        correctAnswer: 1,
+        explanation: 'She cannot meet tomorrow and wants to meet on Thursday instead.',
+      },
+      {
+        context: 'A man is talking about his new flat.',
+        transcript:
+          'Man: I love my new flat. It\'s a bit expensive and the kitchen is really small, but it\'s so quiet. In my old flat I could hear the traffic all night.',
+        question: 'You will hear a man talking about his new flat. What does he like about it?',
+        options: ['the price', 'the kitchen', 'the quiet'],
+        correctAnswer: 2,
+        explanation: 'It is expensive and the kitchen is small, but it is very quiet.',
+      },
+      {
+        context: 'Two friends are talking about a film.',
+        transcript:
+          'Girl: Did you like the film? Boy: Not really. The actors were good, but the story was too slow. I nearly fell asleep. Girl: Really? I thought it was exciting.',
+        question: 'You will hear two friends talking about a film. How did the boy feel about it?',
+        options: ['bored', 'excited', 'surprised'],
+        correctAnswer: 0,
+        explanation: 'He found the story too slow and nearly fell asleep.',
+      },
+      {
+        context: 'A shop announcement.',
+        transcript:
+          'Woman: Good afternoon, shoppers. The shop will close in fifteen minutes. Please take your shopping to the tills now. We open again tomorrow morning at eight.',
+        question: 'You will hear an announcement in a shop. What should shoppers do?',
+        options: ['come back in fifteen minutes', 'go to pay now', 'wait until eight o\'clock'],
+        correctAnswer: 1,
+        explanation: 'The shop closes soon, so shoppers should take their shopping to the tills.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-key-set1-listening-part5',
+    title: 'Mock Set 1 · Part 5: Weekend jobs',
+    testingPart: 5,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    context: 'You will hear Sophie telling her grandfather which jobs her family did last weekend. What did each person do?',
+    transcript: [
+      'Grandfather: Did your family have a busy weekend, Sophie?',
+      'Sophie: Very busy! Dad wanted to paint the kitchen, but we didn\'t have enough paint, so he washed the car instead.',
+      'Grandfather: And your mum?',
+      'Sophie: She was going to clean the windows, but it rained all day. So she cooked lunch for everyone.',
+      'Grandfather: What about your brother Max?',
+      'Sophie: Max cut the grass in the garden. He hates it, but Dad paid him five pounds.',
+      'Grandfather: And little Amy?',
+      'Sophie: She wanted to help with the shopping, but she was too tired. She tidied her bedroom.',
+      'Grandfather: And you?',
+      'Sophie: I took the dog for a long walk by the river. Then I fed the fish.',
+      'Grandfather: The fish? I thought that was Amy\'s job.',
+      'Sophie: It is, but she forgot!',
+    ].join('\n'),
+    options: ['washed the car', 'painted the kitchen', 'cooked lunch', 'cleaned the windows', 'cut the grass', 'went shopping', 'tidied a bedroom', 'walked the dog'],
+    questions: rows('mock-key-set1-listening-part5', [
+      { person: 'her father', correctAnswer: 0, explanation: 'There was not enough paint, so he washed the car instead.' },
+      { person: 'her mother', correctAnswer: 2, explanation: 'It rained, so instead of the windows she cooked lunch.' },
+      { person: 'her brother', correctAnswer: 4, explanation: 'Max cut the grass for five pounds.' },
+      { person: 'her sister', correctAnswer: 6, explanation: 'Amy was too tired to shop and tidied her bedroom.' },
+      { person: 'Sophie', correctAnswer: 7, explanation: 'Sophie took the dog for a walk; feeding the fish is not an option.' },
+    ]),
+  },
+]
+
+export const mockListeningKeySeeds = mockListeningKeyPayloads.map(withSeedAudio)

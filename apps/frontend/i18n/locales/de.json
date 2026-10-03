@@ -986,7 +986,26 @@
     "notAvailableForPack": "Für dieses Prüfungspaket sind keine Modellprüfungen verfügbar.",
     "aiOverviewUnavailable": "Die KI-Übersicht ist nicht verfügbar.",
     "writingGradeUnavailable": "Bewertung für Schreiben nicht verfügbar.",
-    "speakingGradeUnavailable": "Bewertung für Sprechen nicht verfügbar."
+    "speakingGradeUnavailable": "Bewertung für Sprechen nicht verfügbar.",
+    "scale": {
+      "names": {
+        "cambridgeEnglish": "Cambridge English Scale"
+      },
+      "bands": {
+        "gradeA": "Note A · B1",
+        "gradeB": "Note B · A2",
+        "gradeC": "Note C · A2",
+        "levelA1": "Niveau A1",
+        "none": "Kein Zertifikat"
+      },
+      "passFrom": "bestanden ab {pass}",
+      "pending": "Der Skalenwert erscheint, sobald die KI-Bewertung fertig ist.",
+      "passMessage": "Du hast {pass} auf der Skala erreicht.",
+      "belowMessage": "Unter {pass} auf der Skala. Übe weiter und versuch es noch einmal.",
+      "estimate": "Eine Schätzung nach Cambridges Umrechnung für Übungstests. Sprechen hat hier keine Aussprachewertung, daher werden die 30 Punkte auf die 45 der Prüfung hochgerechnet.",
+      "below": "unter {min}",
+      "raw": "Rohpunkte {score} / {max}"
+    }
   },
   "pastExams": {
     "back": "Zurück zum Fortschritt",

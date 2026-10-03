@@ -42,6 +42,8 @@ export interface ReadingKeyExercise {
   wordCount: number
   topics: string[]
   createdAt: string
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
   questions: (ReadingKeyQuestion | ReadingKeyGap)[]
 }
 
@@ -50,7 +52,9 @@ interface ListeningKeyBase {
   title: string
   difficulty: 'A2'
   createdAt: string
-  /** Absent on practice seeds, which generate their audio on demand. */
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
+  /** Absent on practice seeds, which generate their audio on demand; mock Set 1 uses seed WAVs. */
   audio?: { shared?: string; items?: Record<string, string> }
 }
 

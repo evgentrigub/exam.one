@@ -44,3 +44,45 @@ export const writingKeySeeds: WritingKeyExercise[] = [
     ],
   },
 ]
+
+/**
+ * Dedicated mock-exam Set 1 tasks: Part 6 (writing part 1) and Part 7 (writing part 2).
+ * Original, not official; `examOnly`.
+ */
+export const mockWritingKeySeeds: WritingKeyExercise[] = [
+  {
+    id: 'mock-key-set1-writing-part6',
+    title: 'Mock Set 1 · A note to your neighbour',
+    topicType: 'note',
+    difficulty: 'A2',
+    testingPart: 1,
+    estimatedTime: 10,
+    wordCount: { min: 25, max: 60 },
+    category: ['House and home', 'Social interaction'],
+    createdAt: '2026-10-03',
+    examOnly: true,
+    description: 'You are going away for a week and need your English neighbour, Chris, to help you.',
+    task: 'You are going on holiday next week. Write a note to your English neighbour, Chris.\nIn your note:\n– say where you are going\n– ask Chris to water your plants\n– tell Chris where to find your key\nWrite 25 words or more.',
+    requirements: ['Say where you are going', 'Ask Chris to water your plants', 'Tell Chris where to find your key'],
+  },
+  {
+    id: 'mock-key-set1-writing-part7',
+    title: 'Mock Set 1 · The lost dog',
+    topicType: 'story',
+    difficulty: 'A2',
+    testingPart: 2,
+    estimatedTime: 10,
+    wordCount: { min: 35, max: 80 },
+    category: ['The natural world', 'People'],
+    createdAt: '2026-10-03',
+    examOnly: true,
+    description: 'Look at the three pictures and write the story they show.',
+    task: 'Look at the three pictures. Write the story shown in the pictures.\nPicture 1: A boy is walking in the park and sees a small dog sitting alone under a tree.\nPicture 2: The boy reads the name and phone number on the dog\'s collar and calls the number.\nPicture 3: A happy woman hugs the dog and gives the boy a box of chocolates.\nWrite 35 words or more.',
+    requirements: ['Write about all three pictures', 'Tell the story in order', '35 words or more'],
+    pictures: [
+      'A boy is walking in the park and sees a small dog sitting alone under a tree.',
+      "The boy reads the name and phone number on the dog's collar and calls the number.",
+      'A happy woman hugs the dog and gives the boy a box of chocolates.',
+    ],
+  },
+]

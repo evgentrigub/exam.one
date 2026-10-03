@@ -46,6 +46,6 @@ export type {
 export * from './runtime'
 export { coerceAnswerIndices } from './packs/goethe-de-a2/validate'
 export { validatePacks } from './validation'
-export { evaluateMockPass } from './mock-rules'
-export type { MockGroupResult, MockPassResult } from './mock-rules'
+export { evaluateMockPass, evaluateMockScale, scaleScore } from './mock-rules'
+export type { MockGroupResult, MockPassResult, MockScaleResult } from './mock-rules'
 export * from './packs/goethe-de-a2/content'

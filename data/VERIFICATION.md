@@ -2,6 +2,31 @@
 
 Working-tree verification, not a production deployment. Live registrations: `goethe-de-a2` (default), `goethe-de-a1`, `cambridge-en-a2`, `certpol-pl-a2` and `dele-es-a2`. The synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
 
+## Stage 2.16.1.1 — Cambridge A2 Key mock exams (2026-10-03)
+
+Branch `stage-2.16`, working tree only (not committed).
+
+- **Scope.** Bundled Set 1 (14 original exam-only parts with seed-audio maps), generated sets through the shared
+  pipeline, and a result on the **Cambridge English Scale**: `rules.scale` converts each skill's raw marks through the
+  practice-test anchors (`scaleScore`, `evaluateMockScale`; `evaluateMockPass` delegates to it), averages the four
+  skills and names the grade. Module order and minutes follow the paper (R 40, W 20, L 30, S 10).
+- **App, pack-neutral.** A scale banner and per-skill Scale scores with raw marks on the result screen; inline gaps in
+  exam-mode Reading Part 5; module reviews show typed answers with the accepted list, the Listening Part 2 notes and
+  the Part 3 shared-choice questions; the pipeline draft takes its module order from the pack's factory. Sets without
+  a scale render as before.
+- **Unit coverage.** `cambridge-en-a2-mock-exam.spec.ts`: Set 1 identity, order and minutes, raw maxima, per-part
+  points and replays, content ids, every Set 1 payload through `part.validate` and `validateView`, seed-audio paths
+  (items for Parts 1 and 4, shared for 2, 3, 5), exam-only seed registration, generated sets from blank and full
+  content; the Scale: every published anchor, 150 at the raw maximum, Speaking 30 → 45, below-82 extension, average,
+  bands, pending skills and the pass decision; the overview's scale sentence with the Goethe prompts unchanged, and
+  `reviewMockFor` under the Cambridge pack. The Cambridge pack spec now expects mock slots.
+- **Workspace.** `pnpm lint`, `pnpm type-check`, `pnpm build` pass; `pnpm test` passes 470 backend tests in 43 suites
+  plus 2 infrastructure tests; locale parity passes in all five locales (1130 keys); the seed controls pass for all
+  five packs.
+- **Not yet run:** `pnpm stack:seed-audio` for the 14 Cambridge Set 1 WAV files (needs the English Kokoro voices); the
+  rebuilt frontend and backend with `db:seed`; Set 1 end to end in the browser, including the Scale banner and module
+  reviews; generating Set 2 (paid LLM calls plus TTS).
+
 ## Stage 2.16.3.1 — DELE A2 mock exams (2026-10-03)
 
 Branch `stage-2.16`, working tree only (not committed).
@@ -14,8 +39,11 @@ Branch `stage-2.16`, working tree only (not committed).
   - the seed WAV paths (items for Tareas 1–2, shared for 3–4) and the exam-only seed registration;
   - generated sets from blank and full content, the group rules, the overview label and group sentence, and `PackAiService.reviewMockFor`.
 - **Workspace.** `pnpm lint`, `pnpm type-check` and `pnpm build` pass. `pnpm test` passes 453 tests in 43 suites (451 backend, 2 infrastructure). Locale parity passes in all five locales (1117 keys). The seed controls pass for all five packs; the control scores practice seeds, and the exam-only Set 1 payloads are validated by the mock spec.
+- **Spanish TTS and seed audio (2026-10-03).**
+  - `pnpm tts:up` downloaded the Spanish voice packs and rebuilt `kokoro-voices`. `/v1/audio/voices` lists `es: ef_dora, em_alex, em_santa` next to German, English and Polish. Startup reported "misaki G2P (Spanish) ready" and a Spanish probe of 39000 samples, zcr 0.167, with the other three language probes also passing.
+  - A Spanish sentence synthesised with each Spanish voice (HTTP 200). A Spanish voice requested with `lang: de` is refused with HTTP 400.
+  - `pnpm stack:seed-audio` wrote the 14 Set 1 WAVs (wrote 14, skipped 27, failed 0): 12–17 s per Tarea 1–2 recording, 70 s and 77 s for the shared Tarea 3–4 recordings. They were not listened to.
 - **Not yet run:**
-  - `pnpm stack:seed-audio` for the DELE Set 1 WAVs (needs the Spanish Kokoro voices from `pnpm tts:up`);
   - the rebuilt frontend and backend with `db:seed` (expected `dele-es-a2=27` and one DELE bundled set);
   - Set 1 end to end in the browser, including the group banner and the overview;
   - generating Set 2 (paid LLM calls plus TTS);

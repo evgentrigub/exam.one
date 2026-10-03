@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * Generate bundled listening WAVs when a pack's host seed directory is empty (Goethe A2
- * seeds under /a2, Goethe A1 mock Set 1 under /a1). Skips when every directory already has
- * WAVs. Waits for Kokoro on the host port.
+ * seeds under /a2, and the mock Set 1 of Goethe A1, DELE A2 and Cambridge A2 Key under /a1,
+ * /dele-es-a2 and /cambridge-en-a2). Skips when every directory already has WAVs. Waits for
+ * Kokoro on the host port.
  */
 import { mkdir, readdir } from 'node:fs/promises'
 import path from 'node:path'

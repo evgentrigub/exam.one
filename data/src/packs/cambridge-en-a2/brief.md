@@ -8,7 +8,8 @@ makes. No official task text, image or recording is bundled; every seed is origi
 - Exam: **Cambridge English A2 Key** (2020 format), Cambridge Assessment English. English (`en`), CEFR A2.
 - Pack: `cambridge-en-a2`, aliases `cambridge-a2`, `a2-key`. Variant: A2 Key (general). A2 Key for Schools has the
   same format, marks and certificate; only its topics are school-oriented.
-- Scope: full supported practice of all 14 parts, as solo practice with the adaptations below. No mock exams.
+- Scope: full supported practice of all 14 parts, as solo practice with the adaptations below, and mock exams
+  (see below).
 - Sources, checked 2026-09-29 (cambridgeenglish.org):
   - *A2 Key Handbook for teachers* (2024, ENG/04485-60/V3/MAY24) and the edition for exams from 2020
     (CER/6178/V1/FEB19): paper structure, task types, marking, writing scale, speaking format and scales.
@@ -78,17 +79,36 @@ that each Listening Part 4 recording has one speaker (handbook: monologues or di
   Interactive Communication and Global Achievement (0–5 each, 15 per part). **Pronunciation is not assessed**, and
   there is no live turn-taking.
 
-## Speech and mocks
+## Speech
 
 - TTS `en` with the British Kokoro voices `bf_emma`, `bm_george`, `bf_isabella`, `bm_fable`; STT `en`. Both need an
   instance that lists English (`TTS_LANGUAGES`, `STT_LANGUAGES`) with the English Kokoro model installed. Practice
   seeds ship without audio; **Generate audio** synthesises them. Without English TTS the listening screen reports audio
-  as unavailable; manual transcripts stay available in speaking.
-- Mock exams: unavailable (no `createMockSet`, `bundledMockSet` or `mockOverview`).
+  as unavailable; manual transcripts stay available in speaking. The exam-only mock Set 1 ships seed WAVs.
 
+## Mock exams
+
+- **Set 1** (`cambridge-a2-set-1`) is bundled and works offline: 14 original exam-only parts
+  (`mock-key-set1-<skill>-part<n>`, writing `part6` / `part7`, `examOnly`), separate from the practice seeds. Its
+  listening WAVs live under `/audio/listening/cambridge-en-a2/` and are written by `pnpm stack:seed-audio` (Parts 1
+  and 4 one file per item, Parts 2, 3 and 5 one shared file).
+- **Generated sets** (`cambridge-a2-set-<n>`, from Set 2) use the shared resumable pipeline: one generation per part
+  through the pack's generators, plus British English TTS for listening.
+- **Modules** follow the paper order: Reading 40, Writing 20, Listening 30, Speaking 10 minutes. **Practice
+  adaptation:** the 60-minute Reading & Writing paper is split 40 / 20, the handbook's suggestion, with a timer per
+  module. Every recording plays twice.
+- **Scoring** stays in raw marks per module (30 / 30 / 25 / 30). The result is reported on the **Cambridge English
+  Scale** through `rules.scale`: each skill's raw marks convert through the practice-test anchors of *The Cambridge
+  English Scale explained* (raw for Scale 82 / 100 / 120 / 140 — Reading 7 / 13 / 20 / 28, Writing 8 / 12 / 18 / 26,
+  Listening 6 / 11 / 17 / 23, Speaking 10 / 18 / 27 / 41 of 45 — and the raw maximum at 150), interpolated linearly;
+  the overall score is their rounded average. Grade A 140–150 (B1), B 133–139, C 120–132 (pass), A1 100–119, no
+  certificate below. **Practice adaptation:** practice speaking has no Pronunciation scale, so its 30 marks are
+  scaled to 45 before the conversion and the result is labelled an estimate; speaking is provisional.
+- **Not modelled:** a shared Reading & Writing clock, the answer-transfer time, the paired speaking test.
 ## Decisions and gaps
 
 - Chosen with the user on 2026-09-29: build the gap-fill format and UI rather than drop R5/L2; add British English
   TTS in this stage; solo speaking with three transcript-based scales; minimal A2-neutral app fixes.
-- Not covered: pictures of any kind, a live partner or examiner, pronunciation, timed answer transfer, the Scale
-  conversion in results, and a mock exam product.
+- Chosen with the user on 2026-10-03 for mock exams: report on the Cambridge English Scale with a grade; modules in
+  the paper order with the 40 / 20 split.
+- Not covered: pictures of any kind, a live partner or examiner, pronunciation, timed answer transfer.

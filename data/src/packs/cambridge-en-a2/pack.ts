@@ -1,5 +1,18 @@
 import type { ExamPack } from '../../types'
-import { listeningKeySeeds, readingKeySeeds, speakingKeySeeds, writingKeySeeds } from './content'
+import { createGoetheMockOverview } from '../goethe-shared/mock-overview'
+import {
+  CAMBRIDGE_AUDIO_PATH_PREFIX,
+  cambridgeA2MockExamSet1,
+  createCambridgeA2MockExamSet,
+  listeningKeySeeds,
+  mockListeningKeySeeds,
+  mockReadingKeySeeds,
+  mockSpeakingKeySeeds,
+  mockWritingKeySeeds,
+  readingKeySeeds,
+  speakingKeySeeds,
+  writingKeySeeds,
+} from './content'
 import { withPracticeCopy } from './practice-copy'
 import { listeningPrompts } from './prompts/listening'
 import { readingPrompts } from './prompts/reading'
@@ -14,8 +27,9 @@ export const CAMBRIDGE_EN_A2_PACK_ID = 'cambridge-en-a2'
 
 /**
  * Cambridge English A2 Key (2020 format) — all four skills and fourteen parts as solo
- * practice, with no mock exams. Practice seeds ship without audio. Sources and adaptations
- * are in `brief.md`.
+ * practice, and mock exams: a bundled Set 1 with seed WAVs and generated sets, reported on the
+ * Cambridge English Scale (pass 120). Practice seeds ship without audio. Sources and
+ * adaptations are in `brief.md`.
  */
 export const cambridgeEnA2: ExamPack = {
   packId: CAMBRIDGE_EN_A2_PACK_ID,
@@ -38,13 +52,17 @@ export const cambridgeEnA2: ExamPack = {
       { id: 'bm_fable', gender: 'male' },
     ],
     sttLang: 'en',
-    audioPathPrefix: '/audio/listening/cambridge-en-a2',
+    audioPathPrefix: CAMBRIDGE_AUDIO_PATH_PREFIX,
   },
+  // Practice seeds first, then the exam-only Set 1 payloads (their listening WAVs are seeded).
   seedExercises: {
-    reading: readingKeySeeds as unknown as Record<string, unknown>[],
-    listening: listeningKeySeeds as unknown as Record<string, unknown>[],
-    writing: writingKeySeeds as unknown as Record<string, unknown>[],
-    speaking: speakingKeySeeds as unknown as Record<string, unknown>[],
+    reading: [...readingKeySeeds, ...mockReadingKeySeeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningKeySeeds, ...mockListeningKeySeeds] as unknown as Record<string, unknown>[],
+    writing: [...writingKeySeeds, ...mockWritingKeySeeds] as unknown as Record<string, unknown>[],
+    speaking: [...speakingKeySeeds, ...mockSpeakingKeySeeds] as unknown as Record<string, unknown>[],
   },
+  createMockSet: createCambridgeA2MockExamSet,
+  bundledMockSet: cambridgeA2MockExamSet1,
   buildReviewVars: cambridgeA2ReviewVars,
+  mockOverview: createGoetheMockOverview('Cambridge A2 Key'),
 }

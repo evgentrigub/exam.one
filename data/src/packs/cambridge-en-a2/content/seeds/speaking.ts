@@ -45,3 +45,46 @@ export const speakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[] })[] 
     ],
   },
 ]
+
+/** Dedicated mock-exam Set 1 interview and discussion. Original, not official; `examOnly`. */
+export const mockSpeakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[]; examOnly?: boolean })[] = [
+  {
+    id: 'mock-key-set1-speaking-part1',
+    theme: 'About you · Weekends',
+    topicType: 'interview',
+    testingPart: 1,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    cards: [
+      { segment: 'personal1', kind: 'answer', speaker: 'examiner', topic: 'About you', cue: 'Where are you from?' },
+      { segment: 'personal2', kind: 'answer', speaker: 'examiner', topic: 'About you', cue: 'What do you study or what is your job?' },
+      { segment: 'topic1', kind: 'answer', speaker: 'examiner', topic: 'Weekends', cue: 'What time do you get up on Saturdays?' },
+      { segment: 'topic2', kind: 'answer', speaker: 'examiner', topic: 'Weekends', cue: 'Who do you usually spend your weekends with?' },
+      { segment: 'extended', kind: 'answer', speaker: 'examiner', topic: 'Weekends', cue: 'Please tell me something about what you did last weekend.' },
+    ],
+  },
+  {
+    id: 'mock-key-set1-speaking-part2',
+    theme: 'Holidays',
+    topicType: 'discussion',
+    testingPart: 2,
+    difficulty: 'A2',
+    createdAt: '2026-10-03',
+    examOnly: true,
+    pictures: ['a beach holiday', 'a camping trip', 'a city break', 'a skiing holiday', 'a boat trip'],
+    cards: [
+      {
+        segment: 'opinion',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Holidays',
+        cue: 'Here are some different holidays: a beach holiday, a camping trip, a city break, a skiing holiday and a boat trip. Do you like these different holidays? Say why or why not.',
+      },
+      { segment: 'askPartner', kind: 'ask', topic: 'Holidays', cue: 'best holiday?' },
+      { segment: 'followUp', kind: 'answer', speaker: 'examiner', topic: 'Holidays', cue: 'Do you think a camping trip is fun? Why? Why not?' },
+      { segment: 'favourite', kind: 'answer', speaker: 'examiner', topic: 'Holidays', cue: 'Which of these holidays do you like best?' },
+      { segment: 'preference', kind: 'answer', speaker: 'examiner', topic: 'Holidays', cue: 'Do you prefer going on holiday with your family or with friends? Why?' },
+    ],
+  },
+]

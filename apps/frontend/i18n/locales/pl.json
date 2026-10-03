@@ -986,7 +986,26 @@
     "notAvailableForPack": "Egzaminy próbne nie są dostępne dla tego pakietu egzaminacyjnego.",
     "aiOverviewUnavailable": "Podsumowanie AI jest niedostępne.",
     "writingGradeUnavailable": "Ocena pisania niedostępna.",
-    "speakingGradeUnavailable": "Ocena mówienia niedostępna."
+    "speakingGradeUnavailable": "Ocena mówienia niedostępna.",
+    "scale": {
+      "names": {
+        "cambridgeEnglish": "Cambridge English Scale"
+      },
+      "bands": {
+        "gradeA": "Ocena A · B1",
+        "gradeB": "Ocena B · A2",
+        "gradeC": "Ocena C · A2",
+        "levelA1": "Poziom A1",
+        "none": "Bez certyfikatu"
+      },
+      "passFrom": "zdane od {pass}",
+      "pending": "Wynik na skali pojawi się po zakończeniu oceny AI.",
+      "passMessage": "Osiągnąłeś {pass} na skali.",
+      "belowMessage": "Poniżej {pass} na skali. Ćwicz dalej i spróbuj ponownie.",
+      "estimate": "Szacunek według przeliczenia Cambridge dla testów próbnych. Mówienie nie ma tu oceny wymowy, więc 30 punktów przeliczono na 45 punktów egzaminu.",
+      "below": "poniżej {min}",
+      "raw": "Punkty surowe {score} / {max}"
+    }
   },
   "pastExams": {
     "back": "Wróć do postępów",

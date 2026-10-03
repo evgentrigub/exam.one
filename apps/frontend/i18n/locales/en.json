@@ -986,7 +986,26 @@
     "notAvailableForPack": "Mock exams are not available for this exam pack.",
     "aiOverviewUnavailable": "AI overview is unavailable.",
     "writingGradeUnavailable": "Writing grade unavailable.",
-    "speakingGradeUnavailable": "Speaking grade unavailable."
+    "speakingGradeUnavailable": "Speaking grade unavailable.",
+    "scale": {
+      "names": {
+        "cambridgeEnglish": "Cambridge English Scale"
+      },
+      "bands": {
+        "gradeA": "Grade A · B1",
+        "gradeB": "Grade B · A2",
+        "gradeC": "Grade C · A2",
+        "levelA1": "Level A1",
+        "none": "No certificate"
+      },
+      "passFrom": "{pass} to pass",
+      "pending": "The Scale score appears once AI grading has finished.",
+      "passMessage": "You reached {pass} on the Scale.",
+      "belowMessage": "Below {pass} on the Scale. Keep practising and retry when you are ready.",
+      "estimate": "An estimate from Cambridge's practice-test conversion. Speaking has no pronunciation mark here, so its 30 marks are scaled to the exam's 45.",
+      "below": "below {min}",
+      "raw": "Raw {score} / {max}"
+    }
   },
   "pastExams": {
     "back": "Back to progress",

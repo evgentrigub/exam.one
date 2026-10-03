@@ -8,7 +8,8 @@
 
   <div v-else-if="view === 'result'" class="mx-auto max-w-[940px] space-y-6 px-4 py-8 sm:px-6">
     <div class="rounded-box border p-6" :class="resultBannerClass">
-      <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+      <ScaleResult v-if="set.rules?.scale && passResult.scale" :scale="set.rules.scale" :result="passResult.scale" />
+      <div v-else class="flex flex-col gap-5 sm:flex-row sm:items-center">
         <div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-base-100/70">
           <Trophy :size="30" />
         </div>
@@ -92,9 +93,12 @@
           <progress
             class="progress h-2 w-full"
             :class="moduleProgressClass(definition.skill)"
-            :value="state.modules[definition.skill].scoreFinal ?? 0"
-            :max="definition.maxFinalPoints"
+            :value="progressValue(definition.skill)"
+            :max="progressMax(definition.skill)"
           />
+          <p v-if="set.rules?.scale" class="font-mono text-xs text-base-content/50">
+            {{ rawLabel(definition.skill) }}
+          </p>
         </div>
       </article>
     </div>
@@ -236,7 +240,15 @@
     <div v-if="activeSkill === 'reading' && readingExercise" class="space-y-5">
       <article class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft sm:p-7">
         <h1 class="font-display text-2xl font-bold">{{ readingExercise.title }}</h1>
-        <div class="mt-4 whitespace-pre-line text-[15px] leading-7">
+        <GapFillText
+          v-if="isGapFillReading"
+          class="mt-4 text-[15px]"
+          :content="readingExercise.content"
+          :questions="readingExercise.questions ?? []"
+          :answers="gapState.answers"
+          :revealed="false"
+        />
+        <div v-else class="mt-4 whitespace-pre-line text-[15px] leading-7">
           {{ readingExercise.content }}
         </div>
       </article>
@@ -247,6 +259,7 @@
         @finish="leaveExercise"
         @progress="saveProgress"
         @exam-complete="completeActiveExercise"
+        @gap-state="gapState = $event"
       />
     </div>
 
@@ -522,6 +535,9 @@ import ListeningSession from '~/components/listening/ListeningSession.vue'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
+import ScaleResult from '~/components/mockExam/ScaleResult.vue'
+import GapFillText from '~/components/gapFill/GapFillText.vue'
+import type { ObjectiveAnswers } from '~/utils/gapFill'
 import type {
   CriterionReview,
   MockExamExerciseDefinition,
@@ -610,15 +626,24 @@ const lockedCount = computed(
   () => set.value.modules.filter(module => state.value.modules[module.skill].locked).length
 )
 const roundedOverall = computed(() => Math.round(overallPoints.value))
-/** Pass state: one total against `passPoints`, or every group against its own mark (DELE). */
-const passResult = computed(() =>
-  evaluateMockPass(
+/**
+ * Pass state: one total against `passPoints`, every group against its own mark (DELE), or the
+ * average on a scale (Cambridge). A scale converts raw marks, so a module still waiting for AI
+ * grading counts as unscored there rather than as a partial sum.
+ */
+const passResult = computed(() => {
+  const scaled = Boolean(set.value.rules?.scale)
+  return evaluateMockPass(
     set.value.rules,
     Object.fromEntries(
-      set.value.modules.map(module => [module.skill, state.value.modules[module.skill].scoreFinal])
-    )
+      set.value.modules.map(module => {
+        const moduleState = state.value.modules[module.skill]
+        return [module.skill, scaled && moduleState.grading === 'pending' ? null : moduleState.scoreFinal]
+      })
+    ),
+    Object.fromEntries(set.value.modules.map(module => [module.skill, module.maxRawPoints]))
   )
-)
+})
 const maximumPoints = computed(() => passResult.value.maximum)
 const passPoints = computed(() => set.value.rules?.passPoints ?? 60)
 const passMessage = computed(() => {
@@ -656,6 +681,14 @@ const readingExercise = computed<ReadingExercise | undefined>(() =>
     ? set.value.content.reading.find(exercise => exercise.id === activeExercise.value?.id)
     : undefined
 )
+const isGapFillReading = computed(
+  () =>
+    pack.value.structure
+      .find(module => module.id === 'reading')
+      ?.parts.find(part => part.n === readingExercise.value?.testingPart)?.itemFormat === 'gap-fill'
+)
+/** Typed gap answers, mirrored from the questions into the gapped text. */
+const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({ answers: {}, revealed: false })
 const listeningExercise = computed<ListeningA2Exercise | undefined>(() =>
   activeExercise.value
     ? set.value.content.listening.find(exercise => exercise.id === activeExercise.value?.id)
@@ -757,7 +790,39 @@ function resultModuleCardClass(skill: SkillId): string {
     : 'cursor-not-allowed opacity-60'
 }
 
+/** A skill's scale score, or null while it is unscored or the set has no scale. */
+function scaleScoreOf(skill: SkillId): number | null {
+  return passResult.value.scale?.skills[skill] ?? null
+}
+
+function progressValue(skill: SkillId): number {
+  const scale = set.value.rules?.scale
+  if (!scale) return state.value.modules[skill].scoreFinal ?? 0
+  return Math.max((scaleScoreOf(skill) ?? scale.min) - scale.min, 0)
+}
+
+function progressMax(skill: SkillId): number {
+  const scale = set.value.rules?.scale
+  if (scale) return scale.max - scale.min
+  return set.value.modules.find(module => module.skill === skill)?.maxFinalPoints ?? 0
+}
+
+function rawLabel(skill: SkillId): string {
+  const definition = set.value.modules.find(module => module.skill === skill)
+  const raw = state.value.modules[skill].scoreRaw
+  return t('mockExam.scale.raw', {
+    score: raw === null ? '—' : Number(raw.toFixed(2)),
+    max: definition?.maxRawPoints ?? 0,
+  })
+}
+
 function scoreLabel(skill: SkillId): string {
+  const scale = set.value.rules?.scale
+  if (scale) {
+    const score = scaleScoreOf(skill)
+    if (score === null) return '—'
+    return score < scale.min ? t('mockExam.scale.below', { min: scale.min }) : String(Math.round(score))
+  }
   const definition = set.value.modules.find(module => module.skill === skill)
   const score = state.value.modules[skill].scoreFinal
   if (!definition || score === null) return `—/${definition?.maxFinalPoints ?? 0}`
@@ -775,8 +840,26 @@ function handleOverviewToggle(event: Event): void {
 
 function overviewInput(): MockExamOverviewInput {
   const groups = passResult.value.groups
+  const scale = set.value.rules?.scale
+  const scaled = passResult.value.scale
   return {
     overallPoints: roundedOverall.value,
+    ...(scale && scaled
+      ? {
+          scale: {
+            name: t(`mockExam.scale.names.${scale.id}`),
+            overall: scaled.overall,
+            band: scaled.band,
+            pass: scale.pass,
+            skills: Object.fromEntries(
+              Object.entries(scaled.skills).map(([skill, value]) => [
+                skill,
+                typeof value === 'number' ? Math.round(value) : null,
+              ])
+            ),
+          },
+        }
+      : {}),
     ...(groups.length
       ? {
           passGroups: groups.map(group => ({

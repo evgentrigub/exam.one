@@ -986,7 +986,26 @@
     "notAvailableForPack": "Для этого экзаменационного пакета пробные экзамены недоступны.",
     "aiOverviewUnavailable": "AI-обзор недоступен.",
     "writingGradeUnavailable": "Оценка письма недоступна.",
-    "speakingGradeUnavailable": "Оценка говорения недоступна."
+    "speakingGradeUnavailable": "Оценка говорения недоступна.",
+    "scale": {
+      "names": {
+        "cambridgeEnglish": "Cambridge English Scale"
+      },
+      "bands": {
+        "gradeA": "Оценка A · B1",
+        "gradeB": "Оценка B · A2",
+        "gradeC": "Оценка C · A2",
+        "levelA1": "Уровень A1",
+        "none": "Без сертификата"
+      },
+      "passFrom": "проходной балл {pass}",
+      "pending": "Балл по шкале появится после проверки ИИ.",
+      "passMessage": "Вы набрали {pass} по шкале.",
+      "belowMessage": "Ниже {pass} по шкале. Продолжайте тренироваться и попробуйте снова.",
+      "estimate": "Оценка по таблице пересчёта Cambridge для пробных тестов. Здесь нет оценки произношения, поэтому 30 баллов за говорение пересчитаны в 45 баллов экзамена.",
+      "below": "ниже {min}",
+      "raw": "Сырые баллы {score} / {max}"
+    }
   },
   "pastExams": {
     "back": "Назад к прогрессу",

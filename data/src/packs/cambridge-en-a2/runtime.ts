@@ -85,6 +85,13 @@ const RULES: Partial<Record<SkillId, Record<number, PartRuntime>>> = {
   },
 }
 
+/** The rules of one part, for the mock factory; throws on a part the exam does not have. */
+export function cambridgeA2PartRules(skill: SkillId, n: number): PartRuntime {
+  const rules = RULES[skill]?.[n]
+  if (!rules) throw new Error(`cambridge-en-a2: no runtime rules for ${skill}:${n}`)
+  return rules
+}
+
 const VALIDATORS: Partial<Record<SkillId, NonNullable<ExamPart['validate']>>> = {
   reading: validateReading,
   listening: validateListening,
