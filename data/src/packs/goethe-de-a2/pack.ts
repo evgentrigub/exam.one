@@ -16,6 +16,7 @@ import { speakingPrompts } from './prompts/speaking'
 import { writingPrompts } from './prompts/writing'
 import { withPracticeCopy } from './practice-copy'
 import { goetheDeA2Structure } from './structure'
+import { structureText } from './structure-i18n'
 
 export const GOETHE_DE_A2_PACK_ID = 'goethe-de-a2'
 
@@ -28,6 +29,7 @@ export const goetheDeA2: ExamPack = {
   live: true,
   examIds: ['goethe-de-a2', 'goethe-a2'],
   structure: attachGoetheRuntime(withPracticeCopy(goetheDeA2Structure)),
+  structureText,
   prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts, ...speakingPrompts],
   speech: {
     ttsLang: 'de',

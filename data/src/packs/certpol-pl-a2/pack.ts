@@ -8,6 +8,7 @@ import { writingPrompts } from './prompts/writing'
 import { certpolA2ReviewVars } from './review-vars'
 import { attachCertpolA2Runtime } from './runtime'
 import { certpolPlA2Structure } from './structure'
+import { structureText } from './structure-i18n'
 
 export const CERTPOL_PL_A2_PACK_ID = 'certpol-pl-a2'
 
@@ -25,6 +26,7 @@ export const certpolPlA2: ExamPack = {
   live: true,
   examIds: ['certpol-pl-a2', 'certyfikat-pl-a2', 'polish-a2'],
   structure: attachCertpolA2Runtime(withPracticeCopy(certpolPlA2Structure)),
+  structureText,
   prompts: [...listeningPrompts, ...readingPrompts, ...writingPrompts, ...speakingPrompts],
   // Piper voices on the local TTS service; a monologue without a label uses the first one.
   speech: {

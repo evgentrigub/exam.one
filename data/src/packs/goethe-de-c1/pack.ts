@@ -1,5 +1,6 @@
 import type { ExamPack } from '../../types'
 import { c1WritingTips } from './practice-copy'
+import { structureText } from './structure-i18n'
 
 /** Structural stub only — not a live product. */
 export const goetheDeC1: ExamPack = {
@@ -45,6 +46,7 @@ export const goetheDeC1: ExamPack = {
       ],
     },
   ],
+  structureText,
   prompts: [],
   speech: {
     ttsLang: 'de',

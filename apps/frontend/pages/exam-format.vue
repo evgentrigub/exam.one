@@ -223,7 +223,7 @@ useHead({ title: () => `${t('pageMeta.examFormatTitle')} — Exam.one` })
 const router = useRouter()
 
 const { pack } = useActivePack()
-const modules = computed(() => pack.value.structure)
+const modules = useLocalizedStructure()
 const totalMinutes = computed(() => packTotalMinutes(pack.value))
 const totalPoints = computed(() => packTotalPoints(pack.value))
 const totalParts = computed(() => modules.value.reduce((sum, m) => sum + m.parts.length, 0))

@@ -8,6 +8,7 @@ import { writingPrompts } from './prompts/writing'
 import { deleA2ReviewVars } from './review-vars'
 import { attachDeleA2Runtime } from './runtime'
 import { deleEsA2Structure } from './structure'
+import { structureText } from './structure-i18n'
 
 export const DELE_ES_A2_PACK_ID = 'dele-es-a2'
 
@@ -25,6 +26,7 @@ export const deleEsA2: ExamPack = {
   live: true,
   examIds: ['dele-es-a2', 'dele-a2', 'spanish-a2'],
   structure: attachDeleA2Runtime(withPracticeCopy(deleEsA2Structure)),
+  structureText,
   prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts, ...speakingPrompts],
   // Kokoro v1.0 Spanish voices on the local TTS service; a monologue without a label uses the first one.
   speech: {

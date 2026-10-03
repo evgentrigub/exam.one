@@ -8,6 +8,7 @@ import { writingPrompts } from './prompts/writing'
 import { cambridgeA2ReviewVars } from './review-vars'
 import { attachCambridgeA2Runtime } from './runtime'
 import { cambridgeEnA2Structure } from './structure'
+import { structureText } from './structure-i18n'
 
 export const CAMBRIDGE_EN_A2_PACK_ID = 'cambridge-en-a2'
 
@@ -25,6 +26,7 @@ export const cambridgeEnA2: ExamPack = {
   live: true,
   examIds: ['cambridge-en-a2', 'cambridge-a2', 'a2-key'],
   structure: attachCambridgeA2Runtime(withPracticeCopy(cambridgeEnA2Structure)),
+  structureText,
   prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts, ...speakingPrompts],
   // British Kokoro voices; a monologue uses the first one.
   speech: {

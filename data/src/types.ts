@@ -90,6 +90,23 @@ export interface ExamModule {
   parts: ExamPart[]
 }
 
+/** UI locales with a translated exam structure. English is the source, written in `structure`. */
+export const STRUCTURE_LOCALES = ['de', 'es', 'pl', 'ru'] as const
+export type StructureLocale = (typeof STRUCTURE_LOCALES)[number]
+
+/** The user-facing text of one part, as shown on the exam format page and the part chips. */
+export type PartText = Pick<ExamPart, 'title' | 'format' | 'short' | 'goal' | 'skill'>
+
+/** The user-facing text of one module, with its parts keyed by part number. */
+export type ModuleText = Pick<ExamModule, 'label' | 'summary' | 'scoringNote'> & {
+  parts: Record<number, PartText>
+}
+
+/** One locale's translation of a pack's structure, keyed by module id. */
+export type StructureText = Partial<Record<SkillId, ModuleText>>
+
+export type StructureTranslations = Record<StructureLocale, StructureText>
+
 export interface PromptSpecFields {
   skill: SkillId
   part: number
@@ -133,6 +150,11 @@ export interface ExamPack {
   live: boolean
   examIds: readonly string[]
   structure: ExamModule[]
+  /**
+   * Translations of the structure's user-facing text, applied with `localizeStructure`.
+   * Display only: runtime, prompts and adapters keep reading the English `structure`.
+   */
+  structureText?: StructureTranslations
   prompts: readonly PromptSpec[]
   speech: SpeechConfig
   /**
