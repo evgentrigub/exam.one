@@ -40,3 +40,42 @@ export const writingPlSeeds: WritingPlExercise[] = [
     ],
   },
 ]
+
+/** Original exam-only writing for mock Set 1, one per task. Not official tasks; hidden from practice lists. */
+export const mockWritingPlSeeds: WritingPlExercise[] = [
+  {
+    id: 'mock-pl-a2-set1-writing-zadanie-a',
+    title: 'SMS do Michała',
+    topicType: 'sms',
+    difficulty: 'A2',
+    testingPart: 1,
+    estimatedTime: 10,
+    wordCount: { min: 10, max: 30 },
+    category: ['Przyjaciele', 'Czas wolny'],
+    createdAt: '2026-10-04',
+    examOnly: true,
+    description: 'Umówiłeś się / umówiłaś się z kolegą do kina, ale nie możesz przyjść.',
+    task: 'Umówiłeś się / umówiłaś się z kolegą Michałem na sobotę do kina, ale nie możesz przyjść. Napisz do niego SMS: napisz, że nie możesz przyjść i dlaczego, i zaproponuj inny dzień. Napisz około 10–15 słów.',
+    requirements: ['Napisz, że nie możesz przyjść', 'Wyjaśnij dlaczego', 'Zaproponuj inny dzień'],
+  },
+  {
+    id: 'mock-pl-a2-set1-writing-zadanie-b',
+    title: 'List o pracy albo szkole',
+    topicType: 'letter',
+    difficulty: 'A2',
+    testingPart: 2,
+    estimatedTime: 35,
+    wordCount: { min: 70, max: 100 },
+    category: ['Praca', 'Szkoła'],
+    createdAt: '2026-10-04',
+    examOnly: true,
+    description: 'Napisz list do koleżanki lub kolegi z Polski o swojej pracy albo szkole.',
+    task: 'Napisz list do koleżanki lub kolegi z Polski o swojej pracy albo szkole.\nNapisz:\n– gdzie pracujesz albo się uczysz\n– jak wygląda twój zwykły dzień\n– co lubisz, a czego nie lubisz w swojej pracy lub szkole\n– jakie masz plany na przyszłość\nNapisz około 80–90 słów.',
+    requirements: [
+      'Gdzie pracujesz albo się uczysz',
+      'Jak wygląda twój zwykły dzień',
+      'Co lubisz, a czego nie lubisz w swojej pracy lub szkole',
+      'Jakie masz plany na przyszłość',
+    ],
+  },
+]

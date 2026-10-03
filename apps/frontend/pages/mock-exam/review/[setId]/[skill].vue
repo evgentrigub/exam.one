@@ -282,6 +282,7 @@ import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vu
 import { scaleScore, type MockExamSet } from '@exam-one/exam-packs'
 import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
 import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
+import { objectivePoints } from '~/utils/mockExam/scoring'
 import type { WritingExercise } from '~/utils/types'
 import {
   blankRows,
@@ -351,11 +352,11 @@ function responseAnswers(exerciseId: string): ObjectiveAnswers {
 
 function exerciseScore(exerciseId: string): string {
   const result = response(exerciseId)
-  const score = result?.rawScore ?? result?.score
   const maximum =
-    result?.total ??
     moduleDefinition.value?.exercises.find(item => item.id === exerciseId)?.maxRawPoints ??
+    result?.total ??
     0
+  const score = result?.rawScore ?? objectivePoints(result, maximum)
   return t('mockExam.exerciseScore', { score: score ?? '—', maximum })
 }
 

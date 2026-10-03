@@ -43,6 +43,8 @@ export interface ReadingPlExercise {
   topics: string[]
   createdAt: string
   questions: (ReadingPlQuestion | ReadingPlGap)[]
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 interface ListeningPlBase {
@@ -52,6 +54,8 @@ interface ListeningPlBase {
   createdAt: string
   /** Absent on practice seeds, which generate their audio on demand. */
   audio?: { shared?: string; items?: Record<string, string> }
+  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
+  examOnly?: boolean
 }
 
 /** Listening part 1: one short recording per item. */

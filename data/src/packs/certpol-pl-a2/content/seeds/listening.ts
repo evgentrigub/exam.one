@@ -1,4 +1,5 @@
 import type { ListeningPlExercise, ListeningPlItem } from '../types'
+import { withSeedAudio } from '../listening-audio'
 
 /** Stamp the per-item ids the per-item audio map is keyed by. */
 function items(exerciseId: string, rows: Omit<ListeningPlItem, 'id' | 'context'>[]): ListeningPlItem[] {
@@ -230,3 +231,223 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
     ]),
   },
 ]
+
+const MOCK_JOBS = ['aktor', 'fryzjer', 'kucharz', 'lekarz', 'nauczyciel', 'policjant', 'programista']
+
+const MOCK_PURPOSES = [
+  'Ktoś prosi o telefon.',
+  'Ktoś dziękuje za pomoc.',
+  'Ktoś zaprasza na obiad.',
+  'Ktoś informuje, że coś jest gotowe do odbioru.',
+  'Ktoś przypomina o ważnym terminie.',
+  'Ktoś odwołuje swoją obecność.',
+]
+
+/**
+ * Original exam-only listening for mock Set 1, one per task. Not official tasks; hidden from
+ * practice lists. Unlike the practice seeds they carry an `audio` map: `pnpm stack:seed-audio`
+ * synthesises those WAVs with the Polish voices, so the bundled set plays without TTS.
+ */
+const mockListening: ListeningPlExercise[] = [
+  {
+    id: 'mock-pl-a2-set1-listening-zadanie1',
+    title: 'Zadanie I: Kto mówi? Gdzie?',
+    testingPart: 1,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    items: items('mock-pl-a2-set1-listening-zadanie1', [
+      {
+        transcript: 'Mężczyzna: Proszę usiąść na krześle. Jak krótko mam obciąć? Może trochę z boku?',
+        question: WHO,
+        options: ['fryzjer', 'lekarz', 'kelner'],
+        correctAnswer: 0,
+        explanation: 'Mężczyzna pyta, jak krótko obciąć włosy – to fryzjer.',
+      },
+      {
+        transcript: 'Kobieta: Dzień dobry, mam dla pani paczkę. Proszę tu podpisać.',
+        question: WHO,
+        options: ['sprzedawczyni', 'listonoszka', 'nauczycielka'],
+        correctAnswer: 1,
+        explanation: 'Kobieta przynosi paczkę i prosi o podpis – to listonoszka.',
+      },
+      {
+        transcript: 'Mężczyzna: Proszę pokazać prawo jazdy i dowód rejestracyjny. Jechał pan za szybko.',
+        question: WHO,
+        options: ['mechanik', 'policjant', 'kierowca'],
+        correctAnswer: 1,
+        explanation: 'Mężczyzna sprawdza dokumenty kierowcy, który jechał za szybko – to policjant.',
+      },
+      {
+        transcript: 'Kobieta: Ten pokój ma widok na morze. Śniadanie jest od siódmej do dziesiątej. Tu jest pana klucz.',
+        question: WHO,
+        options: ['sprzedawczyni', 'przewodniczka', 'recepcjonistka'],
+        correctAnswer: 2,
+        explanation: 'Kobieta daje gościowi klucz do pokoju i mówi o śniadaniu – to recepcjonistka w hotelu.',
+      },
+      {
+        transcript: 'Kobieta: Poproszę bilet ulgowy na film o osiemnastej. Czy są jeszcze miejsca w środku sali?',
+        question: WHERE,
+        options: ['w kinie', 'w teatrze', 'na dworcu'],
+        correctAnswer: 0,
+        explanation: 'Kobieta kupuje bilet na film – jest w kinie.',
+      },
+      {
+        transcript: 'Mężczyzna: Chciałbym otworzyć konto i zamówić kartę płatniczą.',
+        question: WHERE,
+        options: ['na poczcie', 'w banku', 'w urzędzie'],
+        correctAnswer: 1,
+        explanation: 'Konto i kartę płatniczą zakładamy w banku.',
+      },
+      {
+        transcript: 'Kobieta: Dwa kilo ziemniaków, kilo marchewki i pęczek pietruszki, proszę.',
+        question: WHERE,
+        options: ['w piekarni', 'w aptece', 'na targu'],
+        correctAnswer: 2,
+        explanation: 'Kobieta kupuje warzywa – jest na targu.',
+      },
+      {
+        transcript: 'Mężczyzna: Proszę państwa, po prawej stronie widzimy Wawel. Za chwilę wejdziemy na dziedziniec zamku.',
+        question: WHERE,
+        options: ['na wycieczce', 'w szkole', 'w szpitalu'],
+        correctAnswer: 0,
+        explanation: 'Przewodnik pokazuje grupie zamek – to wycieczka.',
+      },
+      {
+        transcript: 'Kobieta: Przepraszam, gdzie mogę odebrać bagaż z lotu z Londynu?',
+        question: WHERE,
+        options: ['w hotelu', 'na lotnisku', 'na dworcu kolejowym'],
+        correctAnswer: 1,
+        explanation: 'Bagaż z lotu odbieramy na lotnisku.',
+      },
+      {
+        transcript: 'Mężczyzna: Poproszę dwie kawy z mlekiem i dwa kawałki szarlotki na wynos.',
+        question: WHERE,
+        options: ['w kiosku', 'w kinie', 'w kawiarni'],
+        correctAnswer: 2,
+        explanation: 'Mężczyzna zamawia kawę i ciasto – jest w kawiarni.',
+      },
+    ]),
+  },
+  {
+    id: 'mock-pl-a2-set1-listening-zadanie2',
+    title: 'Zadanie II: Zmiany w komunikacji',
+    testingPart: 2,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    context: 'Usłyszysz komunikat w radiu o zmianach w komunikacji miejskiej w Poznaniu.',
+    transcript:
+      'Spiker: Uwaga, pasażerowie! Od poniedziałku dwunastego października zmienia się rozkład jazdy tramwajów w centrum Poznania. Z powodu remontu ulicy Głogowskiej tramwaje linii pięć i osiem przez trzy tygodnie będą jeździły objazdem przez ulicę Hetmańską. W tym czasie na ulicę Głogowską dojedzie autobus zastępczy, który będzie kursował co dziesięć minut. Bilety na tramwaje są ważne także w autobusach zastępczych. W weekendy tramwaje będą jeździły rzadziej, co dwadzieścia minut. Szczegółowy rozkład jazdy można znaleźć na stronie internetowej miasta i na przystankach. Przepraszamy za utrudnienia.',
+    questions: rows('mock-pl-a2-set1-listening-zadanie2', [
+      { question: 'Zmiany zaczynają się w poniedziałek.', options: TRUE_FALSE, correctAnswer: 0, explanation: '„Od poniedziałku dwunastego października zmienia się rozkład jazdy.”' },
+      { question: 'Remont ulicy potrwa trzy miesiące.', options: TRUE_FALSE, correctAnswer: 1, explanation: 'Tramwaje będą jeździły objazdem „przez trzy tygodnie”.' },
+      { question: 'Autobus zastępczy jeździ co dziesięć minut.', options: TRUE_FALSE, correctAnswer: 0, explanation: '„Autobus zastępczy, który będzie kursował co dziesięć minut.”' },
+      { question: 'Na autobus zastępczy trzeba kupić osobny bilet.', options: TRUE_FALSE, correctAnswer: 1, explanation: '„Bilety na tramwaje są ważne także w autobusach zastępczych.”' },
+      { question: 'W weekendy tramwaje jeżdżą częściej.', options: TRUE_FALSE, correctAnswer: 1, explanation: '„W weekendy tramwaje będą jeździły rzadziej, co dwadzieścia minut.”' },
+    ]),
+  },
+  {
+    id: 'mock-pl-a2-set1-listening-zadanie3',
+    title: 'Zadanie III: Spotkanie klasowe',
+    testingPart: 3,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    context: 'Usłyszysz rozmowę Ewy i Marka o tym, gdzie pracują dziś ich koledzy ze szkoły.',
+    transcript: [
+      'Marek: Ewa, widziałaś zdjęcia ze spotkania naszej klasy? Wszyscy tak się zmienili!',
+      'Ewa: Tak! Wiesz, że Kuba jest teraz kucharzem? Ma własną restaurację w Gdyni.',
+      'Marek: Naprawdę? W szkole chciał być aktorem. A co robi Ola?',
+      'Ewa: Ola skończyła medycynę i pracuje jako lekarz w szpitalu dziecięcym.',
+      'Marek: Super. A Tomek? Pamiętam, że zawsze siedział przy komputerze.',
+      'Ewa: No właśnie, jest programistą w dużej firmie w Krakowie.',
+      'Marek: A pani Kowalczyk, nasza wychowawczyni? Dalej uczy?',
+      'Ewa: Nie, już nie pracuje w szkole. Otworzyła z córką salon fryzjerski!',
+      'Marek: Niesamowite. A Bartek? Mówił, że będzie policjantem jak jego tata.',
+      'Ewa: Zmienił zdanie. Uczy matematyki w naszej starej szkole!',
+      'Marek: To zabawne. Muszę do niego zadzwonić.',
+    ].join('\n'),
+    options: MOCK_JOBS,
+    questions: rows('mock-pl-a2-set1-listening-zadanie3', [
+      { person: 'Kuba', correctAnswer: 2, explanation: '„Kuba jest teraz kucharzem” – aktorem chciał być tylko w szkole.' },
+      { person: 'Ola', correctAnswer: 3, explanation: '„Ola … pracuje jako lekarz w szpitalu dziecięcym.”' },
+      { person: 'Tomek', correctAnswer: 6, explanation: '„Jest programistą w dużej firmie w Krakowie.”' },
+      { person: 'pani Kowalczyk', correctAnswer: 1, explanation: '„Otworzyła z córką salon fryzjerski.”' },
+      { person: 'Bartek', correctAnswer: 4, explanation: '„Zmienił zdanie. Uczy matematyki” – policjantem nie został.' },
+    ]),
+  },
+  {
+    id: 'mock-pl-a2-set1-listening-zadanie4',
+    title: 'Zadanie IV: Wiadomości na sekretarce',
+    testingPart: 4,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    context: 'Usłyszysz pięć wiadomości nagranych na sekretarce.',
+    transcript: [
+      'Ania: Cześć Kasiu, tu Ania. Dziękuję ci bardzo za pomoc przy przeprowadzce! Bez ciebie nie dałabym rady. Jesteś super!',
+      'Pan Lis: Dzień dobry, mówi Robert Lis z warsztatu samochodowego. Pana samochód jest już gotowy. Może go pan odebrać dzisiaj do osiemnastej.',
+      'Magda: Hej, tu Magda. Niestety jestem chora i nie przyjdę jutro na lekcję angielskiego. Przepraszam!',
+      'Pani Wójcik: Dzień dobry, tu Wójcik ze szkoły językowej. Proszę oddzwonić pod numer dwadzieścia dwa, trzysta trzydzieści cztery, pięćdziesiąt pięć, sześćdziesiąt sześć. Mamy pytanie w sprawie pani kursu.',
+      'Kuba: Cześć, tu Kuba. Pamiętaj, że jutro o dziewiątej mamy egzamin z historii. Weź ze sobą dowód osobisty!',
+    ].join('\n'),
+    options: MOCK_PURPOSES,
+    questions: rows('mock-pl-a2-set1-listening-zadanie4', [
+      { person: 'Wiadomość 1', correctAnswer: 1, explanation: 'Ania dziękuje za pomoc przy przeprowadzce.' },
+      { person: 'Wiadomość 2', correctAnswer: 3, explanation: 'Samochód jest gotowy i można go odebrać.' },
+      { person: 'Wiadomość 3', correctAnswer: 5, explanation: 'Magda jest chora i nie przyjdzie na lekcję.' },
+      { person: 'Wiadomość 4', correctAnswer: 0, explanation: 'Pani ze szkoły językowej prosi o telefon.' },
+      { person: 'Wiadomość 5', correctAnswer: 4, explanation: 'Kuba przypomina o jutrzejszym egzaminie.' },
+    ]),
+  },
+  {
+    id: 'mock-pl-a2-set1-listening-zadanie5',
+    title: 'Zadanie V: Wycieczka do Zakopanego',
+    testingPart: 5,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    context: 'Usłyszysz informację o wycieczce autokarowej.',
+    transcript:
+      'Spiker: Zapraszamy na wycieczkę autokarową do Zakopanego! Wyjeżdżamy w sobotę czternastego listopada o szóstej czterdzieści pięć spod Dworca Głównego. Wycieczka kosztuje sto dwadzieścia złotych za osobę, a dzieci do lat dziesięciu płacą połowę. W autokarze są pięćdziesiąt dwa miejsca, więc warto zapisać się szybko. W Zakopanem zwiedzimy między innymi Muzeum Tatrzańskie, założone w tysiąc osiemset osiemdziesiątym ósmym roku. Powrót planujemy około dwudziestej drugiej. Zapisy przyjmujemy pod numerem telefonu biura podróży. Do zobaczenia!',
+    content: [
+      'Wycieczka do Zakopanego',
+      '',
+      'Data wyjazdu: (1) ____',
+      'Godzina wyjazdu: (2) ____',
+      'Cena dla dorosłego: (3) ____ zł',
+      'Liczba miejsc w autokarze: (4) ____',
+      'Rok założenia muzeum: (5) ____',
+    ].join('\n'),
+    questions: rows('mock-pl-a2-set1-listening-zadanie5', [
+      {
+        question: 'Data wyjazdu',
+        accepted: ['14 listopada', 'czternastego listopada', '14.11', '14 XI', 'sobota, 14 listopada', 'w sobotę 14 listopada'],
+        explanation: '„Wyjeżdżamy w sobotę czternastego listopada.”',
+      },
+      {
+        question: 'Godzina wyjazdu',
+        accepted: ['6:45', '6.45', '6 45', '06:45', 'szósta czterdzieści pięć', 'szóstej czterdzieści pięć'],
+        explanation: '„O szóstej czterdzieści pięć spod Dworca Głównego”; powrót jest około dwudziestej drugiej.',
+      },
+      {
+        question: 'Cena dla dorosłego',
+        accepted: ['120', '120 zł', '120 złotych', 'sto dwadzieścia', 'sto dwadzieścia złotych'],
+        explanation: '„Sto dwadzieścia złotych za osobę”; dzieci płacą połowę.',
+      },
+      {
+        question: 'Liczba miejsc w autokarze',
+        accepted: ['52', '52 miejsca', 'pięćdziesiąt dwa', 'pięćdziesiąt dwa miejsca'],
+        explanation: '„W autokarze są pięćdziesiąt dwa miejsca.”',
+      },
+      {
+        question: 'Rok założenia muzeum',
+        accepted: ['1888', '1888 r.', '1888 roku', 'w 1888 roku', 'tysiąc osiemset osiemdziesiąty ósmy', 'tysiąc osiemset osiemdziesiątym ósmym'],
+        explanation: '„Muzeum Tatrzańskie, założone w tysiąc osiemset osiemdziesiątym ósmym roku.”',
+      },
+    ]),
+  },
+]
+
+export const mockListeningPlSeeds: ListeningPlExercise[] = mockListening.map(withSeedAudio)

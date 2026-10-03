@@ -2,6 +2,24 @@
 
 Working-tree verification, not a production deployment. Live registrations: `goethe-de-a2` (default), `goethe-de-a1`, `cambridge-en-a2`, `certpol-pl-a2` and `dele-es-a2`. The synthetic English A1 fixture is retained under `src/testing/` and excluded from `src/registry.ts`.
 
+## Stage 2.16.2.1 — Certyfikat Polski A2 mock exams (2026-10-04)
+
+Branch `stage-2.16`, working tree only (not committed).
+
+- **Points, not counts.** `objectiveExercisePoints` (`src/mock-rules.ts`) is covered by `mock-rules.spec.ts`: 7 of 10 half-point gaps is 3.5 of 5, the count is kept when every question is worth a point or the total is unknown, and every reading and listening exercise of the Goethe A2, Goethe A1, DELE and Cambridge bundled sets has as many questions as raw points, so their mock scores are unchanged.
+- **Polish mock spec.** `certpol-pl-a2-mock-exam.spec.ts` checks:
+  - Set 1 identity, module order (listening, reading, writing, speaking), minutes (25/45/45/15), raw points 30/30/20/36 with multiplier 1, and provisional speaking;
+  - per-task points (10/5/5/5/5, 5 × 6, 6/14, 6/15/15), two plays per recording and Polish task titles;
+  - the written (40/80) and oral (18/36) groups, including a 97-point total that fails on the oral part;
+  - module ids equal content ids, all 16 exam-only payloads pass `validate` and `validateView`, and their texts differ from the practice seeds;
+  - seed WAV paths (items for Zadanie I, shared for II–V), exam-only seed registration, generated sets from blank and full content, the overview label and group sentence, and `PackAiService.reviewMockFor`.
+- **Workspace.** `pnpm lint`, `pnpm type-check` and `pnpm build` pass. `pnpm test` passes 491 tests in 45 suites (489 backend, 2 infrastructure). Locale parity passes in all five locales (1130 keys). The seed controls pass for all five packs.
+- **Seed audio and database.** `pnpm generate:listening-audio` wrote the 14 Set 1 WAVs with the Polish Piper voices (wrote 14, skipped 54, failed 0). `pnpm db:seed` reported `certpol-pl-a2=32` (16 practice + 16 exam-only) and upserted the bundled sets. The WAVs were not listened to.
+- **Not yet run:**
+  - Set 1 end to end in the browser: half-point scoring on the result card, the written / oral group banner, typed-answer reviews, the overview;
+  - generating Set 2 (paid LLM calls plus Polish TTS);
+  - re-checking the Goethe, DELE and Cambridge mock result screens in the browser.
+
 ## Stage 2.16.1.1 — Cambridge A2 Key mock exams (2026-10-03)
 
 Branch `stage-2.16`, working tree only (not committed).

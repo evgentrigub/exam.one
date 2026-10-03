@@ -33,6 +33,21 @@ export interface MockScaleResult {
 }
 
 /**
+ * The raw points an objective exercise earns in a mock: its correct answers out of `total`
+ * questions, scaled to the exercise's `maxRawPoints`. Most parts score one point per question,
+ * so this is the count itself; a part worth half a point per gap (Certyfikat Polski: 10 gaps for
+ * 5 points) earns half of it. Responses keep storing the count, so stored attempts stay valid.
+ */
+export function objectiveExercisePoints(
+  correct: number,
+  total: number | undefined,
+  maxRawPoints: number
+): number {
+  if (!total || total <= 0 || total === maxRawPoints) return correct
+  return (correct / total) * maxRawPoints
+}
+
+/**
  * One module's raw marks on the scale. Raw marks out of `maxRaw` are first rescaled to the
  * official maximum (practice Speaking: 30 → 45), then interpolated between the anchors; below
  * the lowest anchor the first segment is extended, floored at 0. Not rounded.

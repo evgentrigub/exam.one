@@ -10,7 +10,7 @@ makes. No official task text, image or recording is bundled; every seed is origi
   Języka Polskiego jako Obcego (certyfikatpolski.pl). Polish (`pl`), CEFR A2.
 - Pack: `certpol-pl-a2`, aliases `certyfikat-pl-a2`, `polish-a2`.
 - Scope: full supported practice of all 16 tasks of the sample (5 listening, 6 reading, 2 writing, 3 speaking), as solo
-  practice with the adaptations below. No mock exams.
+  practice with the adaptations below, and mock exams (see below).
 - Sources, checked 2026-09-29:
   - *Struktura egzaminu* — https://certyfikatpolski.pl/o-egzaminie/struktura-egzaminu/ (modules, timing, variants).
   - *Przykładowe testy* — https://certyfikatpolski.pl/o-egzaminie/przykladowe-testy-zbiory-zadan/: the only official
@@ -83,7 +83,26 @@ descriptions of people, objects, places and situations, and forms.
   (male). With one female voice, two women in one dialogue share `pl_gosia`. Speaker labels are roles, first names or
   "Pan / Pani" + surname, which the Polish voice mapping reads for gender. STT uses Parakeet v3 (auto-detects Polish)
   or Whisper; transcripts stay editable.
-- **Seeds** ship without audio; **Generate audio** synthesises it per user. No mock exams, bundled WAVs or mock factory.
+- **Seeds** ship without audio; **Generate audio** synthesises it per user.
+
+## Mock exams
+
+- **Set 1** (`certpol-pl-a2-set-1`) is bundled and works offline: 16 original exam-only tasks
+  (`mock-pl-a2-set1-<skill>-zadanie<n>`, writing `zadanie-a` / `zadanie-b`, `examOnly`), separate from the practice
+  seeds. Its listening WAVs live under `/audio/listening/certpol-pl-a2/` and are written by `pnpm stack:seed-audio`
+  with the Polish Piper voices (Zadanie I one file per recording, II–V one shared file).
+- **Generated sets** (`certpol-pl-a2-set-<n>`, from Set 2) use the shared resumable pipeline: one generation per task
+  through the pack's generators, plus Polish TTS for listening.
+- **Scoring.** Modules follow the exam order and the sample's minutes: listening 25, reading 45, writing 45, speaking 15
+  (10 + about 5 preparation). Points stay raw (`multiplier` 1): 30 / 30 / 20 / 36. Objective tasks are scored in points
+  (`objectiveExercisePoints`), so a half-point gap earns half a point: 7 of 10 gaps in Zadanie I is 3.5 of 5. Every
+  recording plays twice. Speaking is shown as provisional because it is graded from transcripts.
+- **Pass rule.** As in the exam (§23), `rules.groups` pass the set only when the **written part** (listening + reading +
+  writing) reaches 40 of 80 and the **oral part** reaches 18 of 36; there is no overall pass mark. **Practice
+  adaptation:** pronunciation (0–4) is not marked, so the oral part is out of 36 instead of 40 and its pass mark is
+  half of that.
+- **Not modelled:** choosing between two writing sets and between three speaking sets; preparation time; a live
+  examiner.
 
 ## Gaps and assumptions
 

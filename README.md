@@ -1,6 +1,6 @@
 # Exam.one
 
-Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key covers all four skills and mock exams, reported on the Cambridge English Scale, with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, is a practice pack for all four skills too (no mock exams), with Polish audio. DELE A2, the Instituto Cervantes diploma of Spanish, covers all four skills and mock exams, passed per group as in the real exam, with Spanish audio.
+Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key covers all four skills and mock exams, reported on the Cambridge English Scale, with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, covers all four skills and mock exams, passed per part (written and oral) as in the real exam, with Polish audio. DELE A2, the Instituto Cervantes diploma of Spanish, covers all four skills and mock exams, passed per group as in the real exam, with Spanish audio.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
@@ -106,7 +106,7 @@ Five packs are live:
 **Goethe A1 · Start Deutsch 1** (practice and mock exams). 
 **Goethe A2** (practice and mock exams). 
 **Cambridge English A2 Key** (practice and mock exams). 
-**Certyfikat Polski A2** (practice). 
+**Certyfikat Polski A2** (practice and mock exams). 
 **DELE A2** (practice and mock exams). 
 
 Select one under **Settings → Learning plan**. See the [verification and migration rollout guide](data/VERIFICATION.md).

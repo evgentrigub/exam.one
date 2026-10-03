@@ -52,3 +52,52 @@ export const speakingPlSeeds: (SpeakingCardsTopic | SpeakingKeywordTopic)[] = [
     ],
   },
 ]
+
+/** Original exam-only speaking for mock Set 1, one per task. Not official tasks; hidden from practice lists. */
+export const mockSpeakingPlSeeds: (SpeakingCardsTopic | SpeakingKeywordTopic)[] = [
+  {
+    id: 'mock-pl-a2-set1-speaking-zadanie1',
+    theme: 'O sobie · Rodzina i dom',
+    topicType: 'interview',
+    testingPart: 1,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    cards: [
+      { segment: 'question1', kind: 'answer', speaker: 'examiner', topic: 'Rodzina i dom', cue: 'Proszę powiedzieć, jak się Pan / Pani nazywa i ile ma lat.' },
+      { segment: 'question2', kind: 'answer', speaker: 'examiner', topic: 'Rodzina i dom', cue: 'Z kim Pan / Pani mieszka?' },
+      { segment: 'question3', kind: 'answer', speaker: 'examiner', topic: 'Rodzina i dom', cue: 'Jak wygląda Pana / Pani mieszkanie albo dom?' },
+      { segment: 'question4', kind: 'answer', speaker: 'examiner', topic: 'Rodzina i dom', cue: 'Proszę opowiedzieć o swojej rodzinie.' },
+    ],
+  },
+  {
+    id: 'mock-pl-a2-set1-speaking-zadanie2',
+    theme: 'Zdjęcie: starszy mężczyzna w okularach i niebieskim swetrze gotuje w kuchni zupę i próbuje ją łyżką.',
+    topicType: 'photo',
+    testingPart: 2,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    keywords: [
+      'Kto to jest? Ile może mieć lat?',
+      'Jak wygląda? Co ma na sobie?',
+      'Co robi i gdzie jest?',
+      'Jak się czuje? Dlaczego tak myślisz?',
+    ],
+  },
+  {
+    id: 'mock-pl-a2-set1-speaking-zadanie3',
+    theme: 'Jesteś w sklepie z ubraniami i chcesz kupić zimową kurtkę. Powiedz, czego szukasz, odpowiedz na pytania o rozmiar i kolor i zdecyduj, czy kupujesz kurtkę.',
+    topicType: 'roleplay',
+    testingPart: 3,
+    difficulty: 'A2',
+    createdAt: '2026-10-04',
+    examOnly: true,
+    cards: [
+      { segment: 'opening', kind: 'ask', topic: 'W sklepie z ubraniami', cue: 'zimowa kurtka' },
+      { segment: 'reply1', kind: 'answer', speaker: 'examiner', topic: 'W sklepie z ubraniami', cue: 'Oczywiście, mamy nowe kurtki. Jaki rozmiar Pan / Pani nosi?' },
+      { segment: 'reply2', kind: 'answer', speaker: 'examiner', topic: 'W sklepie z ubraniami', cue: 'Mamy tę kurtkę w kolorze czarnym i zielonym. Który kolor Pan / Pani woli?' },
+      { segment: 'reply3', kind: 'answer', speaker: 'examiner', topic: 'W sklepie z ubraniami', cue: 'Ta kurtka kosztuje trzysta złotych. Bierze ją Pan / Pani?' },
+    ],
+  },
+]

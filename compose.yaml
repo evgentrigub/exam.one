@@ -26,6 +26,7 @@ services:
       - ./apps/frontend/public/audio/listening/a1:/app/public/audio/listening/a1:ro
       - ./apps/frontend/public/audio/listening/dele-es-a2:/app/public/audio/listening/dele-es-a2:ro
       - ./apps/frontend/public/audio/listening/cambridge-en-a2:/app/public/audio/listening/cambridge-en-a2:ro
+      - ./apps/frontend/public/audio/listening/certpol-pl-a2:/app/public/audio/listening/certpol-pl-a2:ro
     healthcheck:
       test:
         - CMD

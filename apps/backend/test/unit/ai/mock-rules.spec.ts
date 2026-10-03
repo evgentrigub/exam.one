@@ -1,4 +1,12 @@
-import { evaluateMockPass, type MockExamRules } from '@exam-one/exam-packs'
+import {
+  cambridgeEnA2,
+  deleEsA2,
+  evaluateMockPass,
+  goetheDeA1,
+  goetheDeA2,
+  objectiveExercisePoints,
+  type MockExamRules,
+} from '@exam-one/exam-packs'
 
 const GOETHE: MockExamRules = { maximumPoints: 100, passPoints: 60 }
 
@@ -42,5 +50,35 @@ describe('evaluateMockPass', () => {
     const result = evaluateMockPass(DELE, { reading: 25, writing: null, listening: 25, speaking: 25 })
     expect(result.groups.map(group => group.points)).toEqual([25, 50])
     expect(result.passed).toBe(false)
+  })
+})
+
+describe('objectiveExercisePoints', () => {
+  it('scales correct answers to the exercise points, so half-point gaps earn half', () => {
+    expect(objectiveExercisePoints(7, 10, 5)).toBe(3.5)
+    expect(objectiveExercisePoints(10, 10, 5)).toBe(5)
+    expect(objectiveExercisePoints(0, 10, 5)).toBe(0)
+  })
+
+  it('keeps the count when every question is worth one point or the total is unknown', () => {
+    expect(objectiveExercisePoints(4, 5, 5)).toBe(4)
+    expect(objectiveExercisePoints(4, undefined, 5)).toBe(4)
+    expect(objectiveExercisePoints(4, 0, 5)).toBe(4)
+  })
+
+  it('changes no objective score of the other bundled sets: one point per question there', () => {
+    for (const pack of [goetheDeA2, goetheDeA1, deleEsA2, cambridgeEnA2]) {
+      const set = pack.bundledMockSet!
+      for (const module of set.modules.filter(m => m.skill === 'reading' || m.skill === 'listening')) {
+        for (const exercise of module.exercises) {
+          const payload = (set.content[module.skill] as unknown as Record<string, unknown>[]).find(
+            item => item['id'] === exercise.id
+          )!
+          const part = pack.structure.find(m => m.id === module.skill)!.parts.find(p => p.n === exercise.part)!
+          const total = part.adapter!.project(structuredClone(payload)).questions!.length
+          expect([pack.packId, exercise.id, total]).toEqual([pack.packId, exercise.id, exercise.maxRawPoints])
+        }
+      }
+    }
   })
 })

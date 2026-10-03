@@ -1,5 +1,6 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
 import type { MockExamOverview, CriterionReview  } from '@exam-one/exam-packs'
+import { objectiveExercisePoints } from '@exam-one/exam-packs'
 import type { SpeakingTranscripts } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 import type { DeepReadonly } from 'vue'
@@ -132,7 +133,13 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     const responses = Object.values(moduleState.responses)
 
     if (skill === 'reading' || skill === 'listening') {
-      const raw = responses.reduce((sum, response) => sum + (response.score ?? 0), 0)
+      // Correct answers become points per exercise, so half-point parts are not over-credited.
+      const raw = definition.exercises.reduce((sum, exercise) => {
+        const response = moduleState.responses[exercise.id]
+        return response
+          ? sum + objectiveExercisePoints(response.score ?? 0, response.total, exercise.maxRawPoints)
+          : sum
+      }, 0)
       moduleState.scoreRaw = clamp(raw, 0, definition.maxRawPoints)
       moduleState.scoreFinal = clamp(raw * definition.multiplier, 0, definition.maxFinalPoints)
       moduleState.grading = 'auto'

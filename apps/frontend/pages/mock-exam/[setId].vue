@@ -547,6 +547,7 @@ import type {
   MockExamSet,
 } from '@exam-one/exam-packs'
 import { evaluateMockPass } from '@exam-one/exam-packs'
+import { objectivePoints } from '~/utils/mockExam/scoring'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
 import type { WritingExercise } from '~/utils/types'
 import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
@@ -880,8 +881,8 @@ function overviewInput(): MockExamOverviewInput {
         const response = state.value.modules[definition.skill].responses[exercise.id]
         return {
           part: exercise.part,
-          score: response?.rawScore ?? response?.score ?? null,
-          total: response?.total ?? exercise.maxRawPoints,
+          score: response?.rawScore ?? objectivePoints(response, exercise.maxRawPoints),
+          total: exercise.maxRawPoints,
           ...(typeof response?.wordCount === 'number' ? { wordCount: response.wordCount } : {}),
           ...(response?.content ? { content: response.content } : {}),
           ...(response?.transcripts ? { transcripts: { ...response.transcripts } } : {}),

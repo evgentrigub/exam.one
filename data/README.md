@@ -8,7 +8,7 @@ Forkers add an exam by creating a folder under `src/packs/` and registering it i
 | `src/packs/goethe-de-a2/` | Live Goethe A2 (structure, prompts, bundled seeds, mock factory) |
 | `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (all four modules, one seed per part, mock factory and bundled Set 1) |
 | `src/packs/cambridge-en-a2/` | Live Cambridge English A2 Key (all four skills, fourteen parts, one seed per part, gap-fill parts, solo speaking cards; mock Set 1 with seed WAVs and generated sets, reported on the Cambridge English Scale) |
-| `src/packs/certpol-pl-a2/` | Live Certyfikat Polski A2 (all four skills, sixteen tasks, one seed per task, gap-fill numbers and form, solo speaking cards and photo monologue, Polish Piper voices, no mocks) |
+| `src/packs/certpol-pl-a2/` | Live Certyfikat Polski A2 (all four skills, sixteen tasks, one seed per task, gap-fill numbers and form, solo speaking cards and photo monologue, Polish Piper voices, mock exams passed per part: written and oral) |
 | `src/packs/dele-es-a2/` | Live DELE A2 (all four skills, thirteen tareas, one seed per tarea plus both writing options, man / woman / neither and message matching, written-scene monologue and examiner role-play cards, Spanish Kokoro voices; mock Set 1 with seed WAVs and generated sets, passed per group) |
 | `src/packs/goethe-shared/` | The raw-payload projection the Goethe packs, Cambridge A2 Key and Certyfikat Polski A2 use |
 | `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
