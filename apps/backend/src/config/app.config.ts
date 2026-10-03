@@ -103,7 +103,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   SMTP_FROM: process.env['SMTP_FROM'] ?? 'exam.one <noreply@localhost>',
   LLM_PROVIDER: llmProvider(),
   OPENAI_API_KEY: (process.env['OPENAI_API_KEY'] ?? '').trim(),
-  OPENAI_MODEL: (process.env['OPENAI_MODEL'] ?? 'gpt-5.5').trim(),
+  OPENAI_MODEL: (process.env['OPENAI_MODEL'] ?? 'gpt-6-sol').trim(),
   OPENROUTER_API_KEY: (process.env['OPENROUTER_API_KEY'] ?? '').trim(),
   OPENROUTER_MODEL: (process.env['OPENROUTER_MODEL'] ?? 'google/gemma-4-26b-a4b-it:free').trim(),
   LLM_REASONING_EFFORT: (process.env['LLM_REASONING_EFFORT'] ?? 'medium').trim(),

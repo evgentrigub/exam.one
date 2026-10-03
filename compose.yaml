@@ -59,7 +59,7 @@ services:
       SMTP_FROM: '${SMTP_FROM:-exam.one <noreply@localhost>}'
       LLM_PROVIDER: '${LLM_PROVIDER:-openrouter}'
       OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
-      OPENAI_MODEL: '${OPENAI_MODEL:-gpt-5.5}'
+      OPENAI_MODEL: '${OPENAI_MODEL:-gpt-6-sol}'
       OPENROUTER_API_KEY: '${OPENROUTER_API_KEY:-}'
       OPENROUTER_MODEL: '${OPENROUTER_MODEL:-google/gemma-4-26b-a4b-it:free}'
       LLM_REASONING_EFFORT: '${LLM_REASONING_EFFORT:-medium}'

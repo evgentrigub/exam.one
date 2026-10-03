@@ -195,7 +195,7 @@ OpenAI:
 ```bash
 LLM_PROVIDER=openai
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-5.5
+OPENAI_MODEL=gpt-6-sol
 ```
 
 OpenRouter:
