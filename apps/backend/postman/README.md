@@ -29,7 +29,7 @@ JSON-object variables such as `answers`, `exercisePayload`, `review`, `generated
 
 ## Drafts, jobs, mocks and speech
 
-- Drafts and generation jobs are scoped to user and pack. Their JSON payloads are owned by the originating frontend flow; use an actual saved payload when testing resume. `generationKind` also supports `MOCK`. The `/mock-exam/generation` requests address that same MOCK job.
+- Drafts are scoped to user and pack; their JSON payloads are owned by the originating frontend flow. Background jobs (`/jobs`) run on the server through BullMQ and list across all of a user's packs; enqueue requests capture `jobId` for the cancel, retry and dismiss requests. Live updates stream from `GET /jobs/stream` (SSE), which Postman can open but not assert on.
 - `mockSetId` defaults to bundled `goethe-a2-set-1` for reads. To save a generated set, provide its complete factory output in `generatedMockSet`; use that generated ID for deletion. Mock definitions retain timing, replay, scoring, and pass rules. A pack without a mock factory cannot create mock sets.
 - TTS/STT read language and capabilities from the selected pack. Unsupported speech or missing optional services return explicit business errors (`{ data: null, error: "..." }`); do not assume HTTP 200 means `data` is present. **STT → Transcribe recording** requires choosing a local file in the multipart `file` field (maximum 25 MiB). Do not manually set its Content-Type boundary. TTS generation captures `audioMap` for the exercise audio update request.
 

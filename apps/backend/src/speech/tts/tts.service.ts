@@ -1,7 +1,7 @@
 import { getLivePack, record, validateView } from '@exam-one/exam-packs'
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { packContext } from '../../core/interceptors/pack-context.interceptor'
-import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -16,6 +16,7 @@ import { mapPool } from './mapPool'
 import { containedAudioPath } from './listening-audio'
 import {
   synthesizeListeningTranscript,
+  listeningTranscriptHashKey,
   ttsHealthStatus,
   type TtsConfig,
 } from './tts.adapter'
@@ -103,8 +104,13 @@ export class TtsService {
     return this.generatePackAudio(exerciseValue)
   }
 
-  private async generatePackAudio(value: unknown): Promise<AiResponse<GenerateListeningAudioData>> {
+  async generatePackAudio(
+    value: unknown,
+    onProgress?: (done: number, total: number) => Promise<void> | void,
+    signal?: AbortSignal
+  ): Promise<AiResponse<GenerateListeningAudioData>> {
     try {
+      signal?.throwIfAborted()
       const pack = getLivePack(packContext.getStore()?.packId)
       const payload = record(value)
       const part = pack.structure
@@ -134,17 +140,39 @@ export class TtsService {
       ]
       if (!segments.length) throw new Error('No transcripts found for audio generation')
       const audio: GenerateListeningAudioData['audio'] = { items: {} }
+      let done = 0
       await mapPool(segments, config.concurrency, async segment => {
+        signal?.throwIfAborted()
         const relative = `${directory}/${segment.key}.wav`
         const absolute = containedAudioPath(this.audioRoot(), relative)
         if (!absolute) throw new Error('Invalid audio path')
-        const bytes = await synthesizeListeningTranscript(segment.transcript, config)
-        await mkdir(path.dirname(absolute), { recursive: true })
-        await writeFile(absolute, bytes)
+        const fingerprint = createHash('sha256')
+          .update(JSON.stringify([listeningTranscriptHashKey(segment.transcript, config), config.speed, config.turnPauseMs]))
+          .digest('hex')
+        const cached = await Promise.all([
+          readFile(`${absolute}.hash`, 'utf8').catch(() => ''),
+          stat(absolute).catch(() => null),
+        ])
+        if (cached[0] !== fingerprint || !cached[1]?.size) {
+          const bytes = await synthesizeListeningTranscript(segment.transcript, config, signal)
+          signal?.throwIfAborted()
+          await mkdir(path.dirname(absolute), { recursive: true })
+          const temporary = `${absolute}.${randomUUID()}.tmp`
+          try {
+            await writeFile(temporary, bytes)
+            await rename(temporary, absolute)
+            await writeFile(`${absolute}.hash`, fingerprint)
+          } finally {
+            await rm(temporary, { force: true })
+          }
+        }
         const url = `/audio/listening/generated/${relative}`
         if ('id' in segment) audio.items![String(segment.id)] = url
         else audio.shared = url
+        done += 1
+        await onProgress?.(done, segments.length)
       })
+      signal?.throwIfAborted()
       return { data: { audio, written: segments.length }, error: null }
     } catch (error) {
       return {

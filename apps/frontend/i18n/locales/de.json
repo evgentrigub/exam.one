@@ -1,4 +1,51 @@
 {
+  "activity": {
+    "title": "Aktivität",
+    "all": "Alle",
+    "inProgressCount": "{count} in Bearbeitung",
+    "inProgress": "In Bearbeitung",
+    "earlier": "Früher",
+    "clear": "Entfernen",
+    "markRead": "Alle als gelesen markieren",
+    "close": "Schließen",
+    "introTitle": "Alle Hintergrundaufgaben an einem Ort",
+    "intro": "Übungen, Hördateien und Prüfungen werden hier angezeigt. Sie können die Seite verlassen und später zurückkehren.",
+    "empty": "Keine Aufgaben",
+    "emptyDescription": "Erstellte Übungen, Audiodateien und Prüfungen erscheinen hier.",
+    "more": "Mehr anzeigen",
+    "emailMock": "E-Mail erhalten, wenn eine Prüfung bereit ist",
+    "step": "Schritt {current} von {total}",
+    "items": "Aufgaben fertig",
+    "queued": "Wartet in der Warteschlange",
+    "failed": "Erstellung fehlgeschlagen",
+    "eta": "Noch ~{seconds} s",
+    "etaMinutes": "Noch ~{minutes} Min.",
+    "open": "Öffnen",
+    "retry": "Wiederholen",
+    "cancel": "Abbrechen",
+    "dismiss": "Ausblenden",
+    "kinds": {
+      "EXERCISE_GENERATION": "Übungen",
+      "LISTENING_AUDIO": "Audio",
+      "MOCK_EXAM_SET": "Modellprüfung"
+    },
+    "status": {
+      "QUEUED": "Wartet",
+      "RUNNING": "Läuft",
+      "CANCEL_REQUESTED": "Wird abgebrochen",
+      "COMPLETED": "Fertig",
+      "FAILED": "Fehlgeschlagen",
+      "CANCELLED": "Abgebrochen"
+    },
+    "stages": {
+      "prepare": "Vorbereitung",
+      "generate": "Inhalte erstellen",
+      "synthesize": "Stimmen erzeugen",
+      "save": "Übungen speichern",
+      "attach": "Speichern und zuordnen"
+    },
+    "exercisesTitle": "Übungen ({count})"
+  },
   "nav": {
     "home": "Startseite",
     "practice": "Üben",

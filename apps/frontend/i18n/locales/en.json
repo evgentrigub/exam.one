@@ -1,4 +1,51 @@
 {
+  "activity": {
+    "title": "Activity",
+    "all": "All",
+    "inProgressCount": "{count} in progress",
+    "inProgress": "In progress",
+    "earlier": "Earlier",
+    "clear": "Clear",
+    "markRead": "Mark all read",
+    "close": "Close",
+    "introTitle": "All background work in one place",
+    "intro": "Exercise generation, listening audio and mock exam sets appear here. You can leave the page and come back later.",
+    "empty": "Nothing running",
+    "emptyDescription": "Generated exercises, audio and mock exams will show up here.",
+    "more": "Show more",
+    "emailMock": "Email me when a mock exam set is ready",
+    "step": "Step {current} of {total}",
+    "items": "items ready",
+    "queued": "Waiting in line",
+    "failed": "Generation failed",
+    "eta": "~{seconds} s left",
+    "etaMinutes": "~{minutes} min left",
+    "open": "Open",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "dismiss": "Dismiss",
+    "kinds": {
+      "EXERCISE_GENERATION": "Exercises",
+      "LISTENING_AUDIO": "Audio",
+      "MOCK_EXAM_SET": "Mock exam"
+    },
+    "status": {
+      "QUEUED": "Queued",
+      "RUNNING": "Running",
+      "CANCEL_REQUESTED": "Cancelling",
+      "COMPLETED": "Ready",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled"
+    },
+    "stages": {
+      "prepare": "Preparing",
+      "generate": "Generating content",
+      "synthesize": "Synthesising voices",
+      "save": "Saving exercises",
+      "attach": "Saving and attaching"
+    },
+    "exercisesTitle": "Exercises ({count})"
+  },
   "nav": {
     "home": "Home",
     "practice": "Practice",

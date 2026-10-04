@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev:infra    # start persistent PostgreSQL in Docker
+pnpm dev:infra    # start persistent PostgreSQL and Redis in Docker
 pnpm dev          # start Nuxt :3000 and NestJS :3001 with hot reload
 pnpm dev:frontend # start only Nuxt
 pnpm dev:backend  # start only NestJS
@@ -28,7 +28,7 @@ Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The app is **login-gated**. After sign-in, practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, generation jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The app is **login-gated**. After sign-in, practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, background jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet/Whisper STT. Theme, locale, and playback prefs stay in the browser.
 
 German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview. Goethe A1 (Start Deutsch 1) is a second live pack covering all four modules and the same mock exam flow (bundled Set 1 with seed WAVs, generated sets, automatic grading, reviews, AI overview). Cambridge English A2 Key (`cambridge-en-a2`) is a third live pack: fourteen parts including typed `gap-fill` tasks, solo speaking on examiner cards, and British English TTS voices; its mock exams (bundled Set 1 with seed WAVs, generated sets) are reported on the Cambridge English Scale through the pack-neutral `rules.scale` (raw marks per skill → Scale 82–150, overall average, grade, pass at 120). Certyfikat Polski A2 (`certpol-pl-a2`) is a fourth live pack: sixteen tasks, gap-fill numbers and a form, solo speaking on examiner cards and a photo monologue, and Polish Piper TTS voices in the same speech service; its mock exams (bundled Set 1 with seed WAVs, generated sets) score objective tasks in points (half-point gaps via `objectiveExercisePoints`) and are passed per part through `rules.groups` (written 40 of 80, oral 18 of 36, pronunciation not scored). DELE A2 (`dele-es-a2`) is a fifth live pack: thirteen tareas, man / woman / neither and message matching, solo speaking with a written scene and examiner role-play cards, and Spanish Kokoro TTS voices sharing the English base model; its mock exams (bundled Set 1 with seed WAVs, generated sets) are passed per group through the pack-neutral `rules.groups` (Grupo 1 reading + writing and Grupo 2 listening + speaking, 30 of 50 each).
 
@@ -42,13 +42,14 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 | `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
 | `data/`                       | `@exam-one/exam-packs`: exam structure, PromptSpecs, and optional bundled seeds (`src/packs/{packId}/`)       |
 | `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                        |
-| `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
+| `compose.yaml`                | Unified frontend, backend, PostgreSQL, Redis, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
 | `agent-os/standards/`         | Canonical implementation standards                                                                           |
 
 ### Frontend data lifecycle
 
-1. Catalogs, progress, drafts, generation jobs, and mock sets hydrate from NestJS (`GET /api/v1/...`)
-2. Every registered pack's `seedExercises` are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`source=seed`, `userId` null, `packId` and level from the pack). User-generated rows overlay seeds by `(packId, externalId)`
+1. Catalogs, progress, drafts, and mock sets hydrate from NestJS (`GET /api/v1/...`)
+2. Exercise generation, listening audio and mock-set generation run server-side as BullMQ jobs (`apps/backend/src/jobs/`, Redis). Each job is a `BackgroundJob` row; the Activity center (`useJobCenter`) hydrates `GET /jobs` and follows `GET /jobs/stream` (SSE). Never drive generation loops from the browser
+3. Every registered pack's `seedExercises` are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`source=seed`, `userId` null, `packId` and level from the pack). User-generated rows overlay seeds by `(packId, externalId)`
 
 Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
 

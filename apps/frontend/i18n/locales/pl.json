@@ -1,4 +1,51 @@
 {
+  "activity": {
+    "title": "Aktywność",
+    "all": "Wszystkie",
+    "inProgressCount": "W toku: {count}",
+    "inProgress": "W toku",
+    "earlier": "Wcześniej",
+    "clear": "Wyczyść",
+    "markRead": "Oznacz wszystkie jako przeczytane",
+    "close": "Zamknij",
+    "introTitle": "Wszystkie zadania w jednym miejscu",
+    "intro": "Ćwiczenia, nagrania i egzaminy próbne pojawią się tutaj. Możesz wrócić później.",
+    "empty": "Brak zadań",
+    "emptyDescription": "Wygenerowane ćwiczenia, nagrania i egzaminy pojawią się tutaj.",
+    "more": "Pokaż więcej",
+    "emailMock": "Wyślij e-mail, gdy egzamin próbny będzie gotowy",
+    "step": "Krok {current} z {total}",
+    "items": "gotowych zadań",
+    "queued": "Oczekuje w kolejce",
+    "failed": "Generowanie nie powiodło się",
+    "eta": "Pozostało ~{seconds} s",
+    "etaMinutes": "Pozostało ~{minutes} min",
+    "open": "Otwórz",
+    "retry": "Ponów",
+    "cancel": "Anuluj",
+    "dismiss": "Ukryj",
+    "kinds": {
+      "EXERCISE_GENERATION": "Ćwiczenia",
+      "LISTENING_AUDIO": "Audio",
+      "MOCK_EXAM_SET": "Egzamin próbny"
+    },
+    "status": {
+      "QUEUED": "W kolejce",
+      "RUNNING": "W toku",
+      "CANCEL_REQUESTED": "Anulowanie",
+      "COMPLETED": "Gotowe",
+      "FAILED": "Błąd",
+      "CANCELLED": "Anulowano"
+    },
+    "stages": {
+      "prepare": "Przygotowanie",
+      "generate": "Tworzenie treści",
+      "synthesize": "Synteza głosu",
+      "save": "Zapisywanie ćwiczeń",
+      "attach": "Zapisywanie i dołączanie"
+    },
+    "exercisesTitle": "Ćwiczenia ({count})"
+  },
   "nav": {
     "home": "Start",
     "practice": "Ćwiczenia",

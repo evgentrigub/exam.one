@@ -142,6 +142,7 @@ export function useAuth() {
     packId?: string
     examLevel?: 'A2' | 'C1'
     targetLanguage?: string
+    notifyMockReadyEmail?: boolean
   }): Promise<SettingDto> {
     return apiFetch<SettingDto>('/settings/me', { method: 'PATCH', body: input })
   }

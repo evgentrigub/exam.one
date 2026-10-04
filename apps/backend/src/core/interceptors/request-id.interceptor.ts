@@ -10,7 +10,8 @@ export class RequestIdInterceptor implements NestInterceptor {
     request['requestId'] = requestId
 
     const response = context.switchToHttp().getResponse()
-    response.setHeader('x-request-id', requestId)
+    // SSE routes flush their headers before interceptors run.
+    if (!response.headersSent) response.setHeader('x-request-id', requestId)
 
     return next.handle()
   }

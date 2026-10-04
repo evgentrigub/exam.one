@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsIn, IsOptional, IsString, MinLength } from 'class-validator'
+import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from 'class-validator'
 
 export class UpdateSettingDto {
   @ApiPropertyOptional({
@@ -30,4 +30,9 @@ export class UpdateSettingDto {
   @IsString()
   @MinLength(2)
   targetLanguage?: string
+
+  @ApiPropertyOptional({ description: 'Email when a generated mock exam set is ready' })
+  @IsOptional()
+  @IsBoolean()
+  notifyMockReadyEmail?: boolean
 }

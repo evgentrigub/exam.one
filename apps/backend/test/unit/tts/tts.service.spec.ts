@@ -9,6 +9,7 @@ import { packContext } from '../../../src/core/interceptors/pack-context.interce
 jest.mock('../../../src/speech/tts/tts.adapter', () => ({
   ttsHealthStatus: jest.fn(),
   synthesizeListeningTranscript: jest.fn(),
+  listeningTranscriptHashKey: jest.fn(() => 'test-hash'),
 }))
 
 const ttsHealthStatus = adapter.ttsHealthStatus as jest.MockedFunction<typeof adapter.ttsHealthStatus>

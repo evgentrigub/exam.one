@@ -98,11 +98,6 @@ assert.equal(goetheAttempt.body.data.result.maxScore, 5)
 await agent.put('/api/v1/drafts/READING/shared-reading-7').set('x-exam-pack','goethe-de-a2').send({ payload: { text: 'Goethe draft' } }).expect(200)
 const isolated = await agent.get('/api/v1/drafts/READING/shared-reading-7').set(headers).expect(200)
 assert.equal(isolated.body.data.payload.text, undefined)
-for (const packId of ['goethe-de-a2', 'synthetic-en-a1']) {
-  await agent.put('/api/v1/generation-jobs/READING').set('x-exam-pack', packId).send({ status: 'FAILED', payload: { part: packId === 'synthetic-en-a1' ? 7 : 1, marker: packId } }).expect(200)
-}
-const job = await agent.get('/api/v1/generation-jobs/READING').set(headers).expect(200)
-assert.equal(job.body.data.payload.marker, 'synthetic-en-a1')
 const catalog = await agent.get('/api/v1/exercises?skill=READING').set(headers).expect(200)
 assert.equal(catalog.body.data.find(row => row.externalId === 'shared-reading-7').payload.title, 'Synthetic selection')
 const recorded = await agent.get('/api/v1/attempts?skill=READING').set(headers).expect(200)

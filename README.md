@@ -150,14 +150,14 @@ pnpm stack:up
 pnpm stack:ps
 ```
 
-`pnpm stack:up` downloads speech models if they are missing, starts PostgreSQL, waits until NestJS has migrated and seeded the catalog and Nuxt is healthy, then starts Kokoro and Parakeet and generates bundled listening WAVs if the seed directory is empty.
+`pnpm stack:up` downloads speech models if they are missing, starts PostgreSQL and Redis, waits until NestJS has migrated and seeded the catalog and Nuxt is healthy, then starts Kokoro and Parakeet and generates bundled listening WAVs if the seed directory is empty. Redis is required at API startup; its outage also makes the core app unavailable until Redis returns.
 
 The first run downloads about 1.7 GB of weights and builds the TTS image plus the `transcribe.cpp` STT runtime. Later starts reuse `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/`.
 
 Core app only (no speech sidecars — mock Set 1 and practice still work; Generate audio and local STT do not):
 
 ```bash
-docker compose up -d --build --wait postgres backend frontend
+docker compose up -d --build --wait postgres redis backend frontend
 ```
 
 Services:
@@ -169,6 +169,7 @@ Services:
 | API docs       | http://localhost:3001/api/docs (local `pnpm dev`; Compose production needs `SWAGGER_ENABLED=true`) |
 | Health         | http://localhost:3001/api/v1/health/ready |
 | PostgreSQL     | 127.0.0.1:5432                           |
+| Redis          | 127.0.0.1:6379 (host-only)               |
 | Kokoro TTS     | http://127.0.0.1:8881/v1/audio/voices    |
 | Parakeet STT   | http://127.0.0.1:8882/health             |
 
@@ -234,13 +235,14 @@ pnpm stt:down
 
 ### Backup and restore
 
-`pnpm stack:down` and `docker compose down` **keep** named volumes. Do not pass `-v` / `--volumes` unless you intend to delete PostgreSQL data and generated listening audio.
+`pnpm stack:down` and `docker compose down` **keep** named volumes. Do not pass `-v` / `--volumes` unless you intend to delete PostgreSQL data, Redis job state and generated listening audio.
 
 Default volume names:
 
 | Volume                               | Compose key                  | Contents                         |
 | ------------------------------------ | ---------------------------- | -------------------------------- |
 | `exam-one-postgres-dev-data`         | `postgres_data` (`POSTGRES_VOLUME_NAME`) | Database                   |
+| `exam-one-redis-dev-data`            | `redis_data` (`REDIS_VOLUME_NAME`) | Queued work and job state  |
 | `exam-one_generated_listening_audio` | `generated_listening_audio`  | On-demand listening WAVs         |
 
 Confirm with `docker volume ls | grep exam-one`.
@@ -262,6 +264,12 @@ cat backups/exam-one-postgres-YYYYMMDD.sql | docker compose exec -T postgres psq
 ```
 
 If you changed `POSTGRES_USER` / `POSTGRES_DB` in `.env`, use those names instead of `exam_one`.
+
+#### Redis job queue
+
+Back up `redis_data` alongside PostgreSQL and generated audio. Stop enqueueing jobs and use `docker compose stop redis` before archiving its AOF volume; restore PostgreSQL and Redis from matching snapshots so pending queue records and job rows agree. The backend reconciles stale queued and interrupted records after restart.
+
+To inspect queues, set `BULL_BOARD_USER` and `BULL_BOARD_PASSWORD` in `.env` and open http://localhost:3001/api/admin/queues (HTTP basic auth). Without both variables the dashboard answers 404. Each BullMQ job id is `<BackgroundJob.id>-<attempt>`, so a queue entry maps straight to its database row.
 
 #### Generated listening audio
 
@@ -378,10 +386,10 @@ This starts:
 - API documentation at http://localhost:3001/api/docs (`pnpm dev` only; Compose needs `SWAGGER_ENABLED=true`)
 - PostgreSQL in Docker at 127.0.0.1:5432
 
-The root `compose.yaml` is the only Compose file. `pnpm dev:infra` selects just its `postgres` service. Data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down` only stops the service.
+The root `compose.yaml` is the only Compose file. `pnpm dev:infra` selects just its `postgres` and `redis` services. Data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down` only stops the service.
 
 ```bash
-pnpm dev:infra          # Start PostgreSQL and wait until healthy
+pnpm dev:infra          # Start PostgreSQL and Redis and wait until healthy
 pnpm dev:infra:logs     # Follow PostgreSQL logs
 pnpm dev:db:shell       # Open psql in the development database
 pnpm dev:infra:down     # Stop PostgreSQL without deleting its volume
@@ -425,7 +433,7 @@ exam-one/
 │   └── nestjs-libraries/  # PrismaModule/PrismaService for NestJS injection and lifecycle
 ├── agent-os/              # Implementation standards
 ├── scripts/               # Stack/speech utilities and pack migration/acceptance checks
-├── compose.yaml           # App + PostgreSQL + Kokoro TTS + Parakeet STT
+├── compose.yaml           # App + PostgreSQL + Redis + Kokoro TTS + Parakeet STT
 ├── pnpm-workspace.yaml
 └── package.json           # Workspace orchestration scripts
 ```

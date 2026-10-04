@@ -3,7 +3,7 @@ import { createPrismaClient } from './client'
 /**
  * Remove practice data so a verification run starts from a known state.
  *
- * Deletes exercises, attempts, results, drafts, mock exams and generation jobs. Accounts,
+ * Deletes exercises, attempts, results, drafts, mock exams and background jobs. Accounts,
  * sessions and settings are deliberately left alone: the point is to re-verify the exam
  * modules after a significant change, not to start the app over. `db:seed` re-upserts the
  * bundled seeds afterwards, and generated exercises are meant to be regenerated.
@@ -30,7 +30,7 @@ async function main(): Promise<void> {
       mockExamAttempts: await prisma.mockExamAttempt.count(),
       mockExamSets: await prisma.mockExamSet.count(),
       drafts: await prisma.draft.count(),
-      generationJobs: await prisma.generationJob.count(),
+      backgroundJobs: await prisma.backgroundJob.count(),
       promptOverrides: await prisma.promptOverride.count(),
       exercises: await prisma.exercise.count(),
     }
@@ -41,7 +41,7 @@ async function main(): Promise<void> {
     await prisma.mockExamAttempt.deleteMany()
     await prisma.mockExamSet.deleteMany()
     await prisma.draft.deleteMany()
-    await prisma.generationJob.deleteMany()
+    await prisma.backgroundJob.deleteMany()
     await prisma.promptOverride.deleteMany()
     await prisma.exercise.deleteMany()
 
@@ -49,7 +49,7 @@ async function main(): Promise<void> {
     console.info(
       `Deleted: exercises=${counts.exercises} attempts=${counts.attempts} results=${counts.results} ` +
         `drafts=${counts.drafts} mockSets=${counts.mockExamSets} mockAttempts=${counts.mockExamAttempts} ` +
-        `generationJobs=${counts.generationJobs} promptOverrides=${counts.promptOverrides}`
+        `backgroundJobs=${counts.backgroundJobs} promptOverrides=${counts.promptOverrides}`
     )
     console.info(`Kept: users=${kept.users} settings=${kept.settings} (sessions untouched)`)
     console.info(

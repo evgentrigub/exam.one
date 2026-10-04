@@ -74,6 +74,11 @@ export const useMockExamSets = () => {
     return hydratePromise
   }
 
+  const reload = async (): Promise<void> => {
+    isInitialized.value = false
+    await hydrate()
+  }
+
   const getSet = (id: string): MockExamSet | undefined => sets.value.find(set => set.id === id)
 
   const addSet = async (set: MockExamSet, packId = useSettingsStore().packId): Promise<void> => {
@@ -132,6 +137,7 @@ export const useMockExamSets = () => {
     nextSetNumber,
     initialize: hydrate,
     hydrate,
+    reload,
     getSet,
     addSet,
     deleteSet,

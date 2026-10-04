@@ -94,7 +94,7 @@ type CheckState = 'checking' | 'ready' | 'failed'
 defineProps<{ setNumber: number }>()
 const emit = defineEmits<{ close: []; generate: [] }>()
 const { t } = useI18n()
-const { preflight, preflightReady, checkPreflight } = useMockExamGeneration()
+const { preflight, preflightReady, checkPreflight } = useBackgroundMockGeneration()
 
 const checks = computed(() => [
   {

@@ -52,12 +52,14 @@ export class SettingsService {
         packId: pack.packId,
         examLevel,
         targetLanguage,
+        ...(dto.notifyMockReadyEmail !== undefined ? { notifyMockReadyEmail: dto.notifyMockReadyEmail } : {}),
       },
       create: {
         userId: user.id,
         packId: pack.packId,
         examLevel,
         targetLanguage,
+        ...(dto.notifyMockReadyEmail !== undefined ? { notifyMockReadyEmail: dto.notifyMockReadyEmail } : {}),
       },
     })
     return toSettingDto(setting)

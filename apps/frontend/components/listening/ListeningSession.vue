@@ -395,7 +395,9 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { saveListeningCompletion } = useProgress()
-const { updateExerciseAudio, getExerciseById } = useListeningExercises()
+const { updateExerciseAudio, getExerciseById, reload } = useListeningExercises()
+const center = useJobCenter()
+const audioJob = computed(() => center.jobs.value.find(job => job.type === 'LISTENING_AUDIO' && job.targetId === props.exercise.id && job.packId === useSettingsStore().packId) ?? null)
 const { isReady: isTtsReady, status: ttsStatus } = useTtsHealth()
 const { activePlayerId, claim, release } = useListeningExclusivePlayback()
 
@@ -404,7 +406,8 @@ const isFinished = ref(false)
 const sessionKey = ref(0)
 const volume = ref(0.6)
 const speed = ref(1)
-const isGeneratingAudio = ref(false)
+const legacyGeneratingAudio = ref(false)
+const isGeneratingAudio = computed(() => legacyGeneratingAudio.value || (!props.examMode && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(audioJob.value?.status ?? '')))
 const generateProgress = ref<{ done: number; total: number } | null>(null)
 const generateError = ref<string | null>(null)
 
@@ -572,10 +575,26 @@ function onAudioUnavailable() {
   void refreshAvailability()
 }
 
+const lastAppliedJob = ref(-1)
+watch(audioJob, async job => {
+  if (!job || job.status !== 'COMPLETED' || job.revision <= lastAppliedJob.value || props.examMode) return
+  lastAppliedJob.value = job.revision
+  await reload()
+  const current = getExerciseById(props.exercise.id ?? '')
+  if (current) currentExercise.value = { ...current }
+  sessionKey.value += 1
+  await refreshAvailability()
+}, { immediate: true })
+
 async function generateAudioForExercise() {
   if (!isTtsReady.value || isGeneratingAudio.value) return
   generateError.value = null
-  isGeneratingAudio.value = true
+  if (!props.examMode) {
+    try { await center.enqueueListeningAudio(currentExercise.value.id ?? '') }
+    catch (error) { generateError.value = error instanceof Error ? error.message : t('listening.generationFailed') }
+    return
+  }
+  legacyGeneratingAudio.value = true
   generateProgress.value = { done: 0, total: Math.max(1, expectedCount.value) }
 
   try {
@@ -612,7 +631,7 @@ async function generateAudioForExercise() {
   } catch (error: unknown) {
     generateError.value = error instanceof Error ? error.message : t('listening.generationFailed')
   } finally {
-    isGeneratingAudio.value = false
+    legacyGeneratingAudio.value = false
     generateProgress.value = null
   }
 }

@@ -1,4 +1,51 @@
 {
+  "activity": {
+    "title": "Actividad",
+    "all": "Todos",
+    "inProgressCount": "{count} en curso",
+    "inProgress": "En curso",
+    "earlier": "Anteriores",
+    "clear": "Borrar",
+    "markRead": "Marcar todo como leído",
+    "close": "Cerrar",
+    "introTitle": "Todo el trabajo en un solo lugar",
+    "intro": "Los ejercicios, el audio y los simulacros aparecen aquí. Puedes salir y volver más tarde.",
+    "empty": "Nada en curso",
+    "emptyDescription": "Los ejercicios, audios y simulacros generados aparecerán aquí.",
+    "more": "Ver más",
+    "emailMock": "Avisarme por correo cuando esté listo un simulacro",
+    "step": "Paso {current} de {total}",
+    "items": "elementos listos",
+    "queued": "En espera",
+    "failed": "Error de generación",
+    "eta": "Quedan ~{seconds} s",
+    "etaMinutes": "Quedan ~{minutes} min",
+    "open": "Abrir",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "dismiss": "Descartar",
+    "kinds": {
+      "EXERCISE_GENERATION": "Ejercicios",
+      "LISTENING_AUDIO": "Audio",
+      "MOCK_EXAM_SET": "Simulacro"
+    },
+    "status": {
+      "QUEUED": "En espera",
+      "RUNNING": "En curso",
+      "CANCEL_REQUESTED": "Cancelando",
+      "COMPLETED": "Listo",
+      "FAILED": "Error",
+      "CANCELLED": "Cancelado"
+    },
+    "stages": {
+      "prepare": "Preparando",
+      "generate": "Generando contenido",
+      "synthesize": "Sintetizando voces",
+      "save": "Guardando ejercicios",
+      "attach": "Guardando y vinculando"
+    },
+    "exercisesTitle": "Ejercicios ({count})"
+  },
   "nav": {
     "home": "Inicio",
     "practice": "Practicar",

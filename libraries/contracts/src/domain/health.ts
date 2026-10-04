@@ -8,6 +8,7 @@ export interface HealthReadyData {
   status: HealthReadyStatus
   checks: {
     database: HealthCheckState
+    redis?: HealthCheckState
   }
 }
 

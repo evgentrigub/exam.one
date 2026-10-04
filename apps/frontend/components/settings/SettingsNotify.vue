@@ -65,6 +65,12 @@
       />
       <div class="flex flex-col gap-1 divide-y divide-base-300">
         <SetToggle
+          :checked="mockEmailEnabled"
+          :disabled="!emailConfigured"
+          :label="$t('activity.emailMock')"
+          @update:checked="saveMockEmail"
+        />
+        <SetToggle
           :checked="true"
           disabled
           :label="$t('settings.notifyResults')"
@@ -98,4 +104,19 @@
 import { Clock } from 'lucide-vue-next'
 
 const { profile } = useAccountProfile()
+const emailConfigured = ref(false)
+const mockEmailEnabled = ref(true)
+
+onMounted(() => {
+  const auth = useAuth()
+  void Promise.all([auth.loadConfig(), auth.getSettings()]).then(([config, settings]) => {
+    emailConfigured.value = config.emailConfigured
+    mockEmailEnabled.value = settings.notifyMockReadyEmail
+  }).catch(() => undefined)
+})
+
+async function saveMockEmail(value: boolean) {
+  try { mockEmailEnabled.value = (await useAuth().updateSettings({ notifyMockReadyEmail: value })).notifyMockReadyEmail }
+  catch { mockEmailEnabled.value = !value }
+}
 </script>

@@ -7,7 +7,6 @@ import type {
   DraftDto,
   ExerciseDto,
   GenerateListeningAudioData,
-  GenerationJobDto,
   HealthReadyData,
   ListeningExerciseAudioMap,
   LlmHealthData,
@@ -215,6 +214,9 @@ export class SettingDtoModel implements SettingDto {
 
   @ApiProperty({ description: 'Target language ISO code', example: 'de' })
   targetLanguage!: string
+
+  @ApiProperty({ description: 'Email when a mock exam set finishes' })
+  notifyMockReadyEmail!: boolean
 
   @ApiProperty({ description: 'Last update ISO timestamp', example: '2026-01-02T12:00:00.000Z' })
   updatedAt!: string
@@ -472,49 +474,6 @@ export class MockExamAttemptDtoModel implements MockExamAttemptDto {
 export class MockExamAttemptResponseDto {
   @ApiPropertyOptional({ type: MockExamAttemptDtoModel, nullable: true })
   data?: MockExamAttemptDtoModel | null
-
-  @ApiPropertyOptional({ type: ApiErrorDto })
-  error?: ApiErrorDto
-}
-
-// ---------------------------------------------------------------------------
-// Generation Jobs
-// ---------------------------------------------------------------------------
-
-export class GenerationJobDtoModel implements GenerationJobDto {
-  @ApiProperty({ description: 'Job record ID', example: 'job_c1234567890' })
-  id!: string
-
-  @ApiProperty({ description: 'Owner user ID', example: 'usr_c1234567890' })
-  userId!: string
-
-  @ApiProperty({ description: 'Target pack ID', example: 'goethe-de-a2' })
-  packId!: string
-
-  @ApiProperty({ description: 'Job target skill or mock', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING', 'MOCK'], example: 'READING' })
-  kind!: Skill
-
-  @ApiProperty({ description: 'Current job execution status', enum: ['IDLE', 'RUNNING', 'COMPLETED', 'FAILED'], example: 'COMPLETED' })
-  status!: string
-
-  @ApiProperty({ description: 'Resumable pipeline state and generation steps', type: Object })
-  payload!: unknown
-
-  @ApiProperty({ description: 'Last updated ISO timestamp', example: '2026-01-01T12:00:00.000Z' })
-  updatedAt!: string
-}
-
-export class GenerationJobResponseDto {
-  @ApiPropertyOptional({ type: GenerationJobDtoModel, nullable: true })
-  data?: GenerationJobDtoModel | null
-
-  @ApiPropertyOptional({ type: ApiErrorDto })
-  error?: ApiErrorDto
-}
-
-export class GenerationJobsListResponseDto {
-  @ApiPropertyOptional({ type: [GenerationJobDtoModel] })
-  data?: GenerationJobDtoModel[]
 
   @ApiPropertyOptional({ type: ApiErrorDto })
   error?: ApiErrorDto

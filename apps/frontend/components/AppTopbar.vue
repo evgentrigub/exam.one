@@ -12,6 +12,7 @@
 
     <!-- Right controls -->
     <div class="flex items-center gap-2 shrink-0">
+      <ActivityBell />
       <!-- Language selector -->
       <div class="dropdown dropdown-end">
         <button

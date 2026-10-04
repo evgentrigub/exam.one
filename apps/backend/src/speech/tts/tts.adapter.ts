@@ -18,6 +18,7 @@ export interface TtsSynthesizeOptions {
   voice?: string
   speed?: number
   lang?: string
+  signal?: AbortSignal
 }
 
 export interface TtsConfig {
@@ -80,6 +81,7 @@ export async function synthesizeSpeech(
   const url = `${config.baseUrl}/v1/audio/speech`
   const response = await postOnceRetried(url, {
     method: 'POST',
+    signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120_000)]) : AbortSignal.timeout(120_000),
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'kokoro',
@@ -104,19 +106,20 @@ export async function synthesizeSpeech(
 
 export async function synthesizeListeningTranscript(
   transcript: string,
-  config: TtsConfig = getTtsConfigFromEnv()
+  config: TtsConfig = getTtsConfigFromEnv(),
+  signal?: AbortSignal
 ): Promise<Buffer> {
   const options = voiceOptions(config)
   const plan = planDialogueVoices(transcript, options)
   if (!plan) {
     const monologue = planMonologue(transcript, options)
-    return synthesizeSpeech({ text: monologue.text, voice: monologue.voice }, config)
+    return synthesizeSpeech({ text: monologue.text, voice: monologue.voice, ...(signal ? { signal } : {}) }, config)
   }
 
   const available = await listAvailableVoices(config)
   const wavParts = await mapPool(plan, config.concurrency, async turn => {
     const voice = fallbackVoiceFor(turn.voice, available, options)
-    return synthesizeSpeech({ text: turn.text, voice }, config)
+    return synthesizeSpeech({ text: turn.text, voice, ...(signal ? { signal } : {}) }, config)
   })
 
   return concatWavWithPauses(wavParts, config.turnPauseMs)
@@ -136,7 +139,7 @@ async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
   }
 
   try {
-    const response = await fetch(`${baseUrl}/v1/audio/voices`, { method: 'GET' })
+    const response = await fetch(`${baseUrl}/v1/audio/voices`, { method: 'GET', signal: AbortSignal.timeout(10000) })
     if (!response.ok) {
       const empty = new Set<string>()
       voicesCache.set(baseUrl, { checkedAt: Date.now(), voices: empty })
@@ -171,6 +174,7 @@ export async function ttsHealthStatus(config: TtsConfig): Promise<TtsHealthStatu
   try {
     const response = await fetch(`${config.baseUrl}/v1/audio/voices`, {
       method: 'GET',
+      signal: AbortSignal.timeout(10000),
     })
     if (!response.ok) return 'offline'
     const needed = (config.voices ?? []).map(voice => voice.id.toLowerCase())

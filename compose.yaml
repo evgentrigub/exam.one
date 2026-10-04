@@ -51,6 +51,10 @@ services:
       NODE_ENV: production
       FRONTEND_URL: 'http://localhost:${FRONTEND_PORT:-3000}'
       DATABASE_URL: 'postgresql://${POSTGRES_USER:-exam_one}:${POSTGRES_PASSWORD:-exam_one}@postgres:5432/${POSTGRES_DB:-exam_one}?schema=public'
+      REDIS_URL: 'redis://redis:6379'
+      JOBS_WORKER_ENABLED: '${JOBS_WORKER_ENABLED:-true}'
+      BULL_BOARD_USER: '${BULL_BOARD_USER:-}'
+      BULL_BOARD_PASSWORD: '${BULL_BOARD_PASSWORD:-}'
       JWT_SECRET: '${JWT_SECRET}'
       AUTH_COOKIE_SECURE: '${AUTH_COOKIE_SECURE:-false}'
       SWAGGER_ENABLED: '${SWAGGER_ENABLED:-}'
@@ -86,6 +90,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
       test:
         - CMD
@@ -112,6 +118,20 @@ services:
       test:
         - CMD-SHELL
         - 'pg_isready -U ${POSTGRES_USER:-exam_one} -d ${POSTGRES_DB:-exam_one}'
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
+    ports:
+      - '127.0.0.1:${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -172,6 +192,8 @@ services:
     restart: unless-stopped
 
 volumes:
+  redis_data:
+    name: '${REDIS_VOLUME_NAME:-exam-one-redis-dev-data}'
   postgres_data:
     name: '${POSTGRES_VOLUME_NAME:-exam-one-postgres-dev-data}'
   generated_listening_audio:

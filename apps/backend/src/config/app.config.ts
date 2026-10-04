@@ -8,6 +8,10 @@ export interface AppConfig {
   NODE_ENV: string
   BACKEND_PORT: number
   DATABASE_URL: string
+  REDIS_URL: string
+  JOBS_WORKER_ENABLED: boolean
+  BULL_BOARD_USER: string
+  BULL_BOARD_PASSWORD: string
   FRONTEND_URL: string
   JWT_SECRET: string
   AUTH_COOKIE_SECURE: boolean
@@ -92,6 +96,10 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   NODE_ENV: process.env['NODE_ENV'] ?? 'development',
   BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
   DATABASE_URL: requireEnv('DATABASE_URL'),
+  REDIS_URL: requireEnv('REDIS_URL'),
+  JOBS_WORKER_ENABLED: process.env['JOBS_WORKER_ENABLED'] !== 'false',
+  BULL_BOARD_USER: process.env['BULL_BOARD_USER'] ?? '',
+  BULL_BOARD_PASSWORD: process.env['BULL_BOARD_PASSWORD'] ?? '',
   FRONTEND_URL: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
   JWT_SECRET: requireJwtSecret(process.env['JWT_SECRET']),
   AUTH_COOKIE_SECURE: process.env['AUTH_COOKIE_SECURE'] === 'true',

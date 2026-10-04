@@ -1,0 +1,147 @@
+- generic [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - status [ref=f1e95]: Dashboard — Exam.one
+    - generic [ref=f1e110]:
+      - complementary [ref=f1e111]:
+        - link "Open the Exam.one landing page" [ref=f1e112] [cursor=pointer]:
+          - /url: http://localhost:3001
+          - generic [ref=f1e113]: E
+          - generic [ref=f1e115]: Exam.one
+        - navigation [ref=f1e116]:
+          - link "Dashboard" [ref=f1e117] [cursor=pointer]:
+            - /url: /dashboard
+          - link "Exercises" [ref=f1e123] [cursor=pointer]:
+            - /url: /exercises
+          - link "Exam format" [ref=f1e126] [cursor=pointer]:
+            - /url: /exam-format
+          - link "Mock exams" [ref=f1e130] [cursor=pointer]:
+            - /url: /mock-exam
+          - link "Progress" [ref=f1e134] [cursor=pointer]:
+            - /url: /progress
+        - generic [ref=f1e138]:
+          - paragraph [ref=f1e139]: Practice by skill
+          - generic [ref=f1e140]:
+            - link "Reading 0" [ref=f1e141] [cursor=pointer]:
+              - /url: /exercises?skill=reading
+              - generic [ref=f1e142]: Reading
+              - generic [ref=f1e145]: "0"
+            - link "Writing 0" [ref=f1e146] [cursor=pointer]:
+              - /url: /exercises?skill=writing
+              - generic [ref=f1e147]: Writing
+              - generic [ref=f1e150]: "0"
+            - link "Listening 0" [ref=f1e151] [cursor=pointer]:
+              - /url: /exercises?skill=listening
+              - generic [ref=f1e152]: Listening
+              - generic [ref=f1e155]: "0"
+            - link "Speaking 0" [ref=f1e156] [cursor=pointer]:
+              - /url: /exercises?skill=speaking
+              - generic [ref=f1e157]: Speaking
+              - generic [ref=f1e161]: "0"
+        - generic [ref=f1e164]:
+          - generic [ref=f1e165]:
+            - generic [ref=f1e166]: Exam target
+            - link "View exercises" [ref=f1e167] [cursor=pointer]:
+              - /url: /exercises
+          - link "Goethe A2 Set exam date" [ref=f1e168] [cursor=pointer]:
+            - /url: /exercises
+            - generic [ref=f1e172]:
+              - generic [ref=f1e173]: Goethe A2
+              - button "Set exam date" [ref=f1e175]
+      - generic [ref=f1e176]:
+        - banner [ref=f1e177]:
+          - generic [ref=f1e178]:
+            - heading "Welcome back, Activity" [level=1] [ref=f1e179]
+            - paragraph [ref=f1e180]: Set your exam date in settings.
+          - generic [ref=f1e181]:
+            - button "Activity" [expanded] [ref=f1e182]
+            - button "Interface Language" [ref=f1e187] [cursor=pointer]:
+              - generic [ref=f1e191]: en
+            - button "Theme" [ref=f1e195] [cursor=pointer]
+            - button "Account" [ref=f1e203]:
+              - generic [ref=f1e204]: AT
+        - main [ref=f1e207]:
+          - generic [ref=f1e208]:
+            - generic [ref=f1e210]:
+              - generic [ref=f1e211]:
+                - link "Set exam date" [ref=f1e213] [cursor=pointer]:
+                  - /url: /settings?section=learning
+                - generic [ref=f1e216]:
+                  - generic [ref=f1e217]: Goethe A2
+                  - heading "You're 0% exam-ready" [level=2] [ref=f1e220]
+                  - paragraph [ref=f1e221]: Keep practicing to build your readiness
+                  - generic [ref=f1e222]:
+                    - link "Reading 0% 0 0/0 done" [ref=f1e223] [cursor=pointer]:
+                      - /url: /exercises?skill=reading
+                      - generic [ref=f1e224]: Reading
+                      - generic [ref=f1e230]: 0%
+                      - progressbar [ref=f1e231]
+                      - paragraph [ref=f1e232]: 0/0 done
+                    - link "Writing 0% 0 0/0 done" [ref=f1e233] [cursor=pointer]:
+                      - /url: /exercises?skill=writing
+                      - generic [ref=f1e234]: Writing
+                      - generic [ref=f1e240]: 0%
+                      - progressbar [ref=f1e241]
+                      - paragraph [ref=f1e242]: 0/0 done
+                    - link "Listening 0% 0 0/0 done" [ref=f1e243] [cursor=pointer]:
+                      - /url: /exercises?skill=listening
+                      - generic [ref=f1e244]: Listening
+                      - generic [ref=f1e250]: 0%
+                      - progressbar [ref=f1e251]
+                      - paragraph [ref=f1e252]: 0/0 done
+                    - link "Speaking 0% 0 0/0 done" [ref=f1e253] [cursor=pointer]:
+                      - /url: /exercises?skill=speaking
+                      - generic [ref=f1e254]: Speaking
+                      - generic [ref=f1e261]: 0%
+                      - progressbar [ref=f1e262]
+                      - paragraph [ref=f1e263]: 0/0 done
+              - generic [ref=f1e264]:
+                - button "Browse exercises" [ref=f1e265] [cursor=pointer]
+                - link "Take a mock exam" [ref=f1e268] [cursor=pointer]:
+                  - /url: /mock-exam
+            - generic [ref=f1e272]:
+              - generic [ref=f1e273]:
+                - heading "Continue practicing" [level=2] [ref=f1e274]
+                - link "All exercises" [ref=f1e275] [cursor=pointer]:
+                  - /url: /exercises
+              - generic [ref=f1e278]:
+                - paragraph [ref=f1e282]: Nothing in progress
+                - paragraph [ref=f1e283]: Start an exercise to see it here
+                - link "Browse exercises" [ref=f1e284] [cursor=pointer]:
+                  - /url: /exercises
+            - generic [ref=f1e286]:
+              - heading "Weak spots" [level=2] [ref=f1e288]
+              - generic [ref=f1e289]:
+                - heading "Recommended for you" [level=2] [ref=f1e290]
+                - generic [ref=f1e291]: Nothing in progress
+            - generic [ref=f1e293]:
+              - heading "Your mock exams · Goethe A2" [level=2] [ref=f1e295]
+              - link "Go to mock exams" [ref=f1e296] [cursor=pointer]:
+                - /url: /mock-exam
+  - generic [ref=f1e96]:
+    - button "Toggle Nuxt DevTools" [ref=f1e97] [cursor=pointer]
+    - generic "Page load time" [ref=f1e101]:
+      - generic [ref=f1e102]: "746"
+      - generic [ref=f1e103]: ms
+    - button "Toggle Component Inspector" [ref=f1e105] [cursor=pointer]
+  - dialog "Activity" [ref=f1e300]:
+    - generic [ref=f1e301]:
+      - generic [ref=f1e302]:
+        - heading "Activity" [level=2] [ref=f1e303]
+        - generic [ref=f1e304]: 0 in progress
+        - generic [ref=f1e305]:
+          - button "Mark all read" [ref=f1e306] [cursor=pointer]
+          - button "Close" [active] [ref=f1e310] [cursor=pointer]
+      - generic [ref=f1e314]:
+        - button "All" [ref=f1e315]
+        - button "Exercises" [ref=f1e316]
+        - button "Audio" [ref=f1e317]
+        - button "Mock exam" [ref=f1e318]
+    - generic [ref=f1e319]:
+      - generic [ref=f1e320]:
+        - generic [ref=f1e326]:
+          - strong [ref=f1e327]: All background work in one place
+          - paragraph [ref=f1e328]: Exercise generation, listening audio and mock exam sets appear here. You can leave the page and come back later.
+        - button "Dismiss" [ref=f1e329] [cursor=pointer]
+      - generic [ref=f1e333]:
+        - generic [ref=f1e337]: Nothing running
+        - paragraph [ref=f1e338]: Generated exercises, audio and mock exams will show up here.

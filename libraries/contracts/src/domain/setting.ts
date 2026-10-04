@@ -6,5 +6,6 @@ export interface SettingDto {
   packId: string
   examLevel: ExamLevel
   targetLanguage: string
+  notifyMockReadyEmail: boolean
   updatedAt: string
 }

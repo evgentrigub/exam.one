@@ -139,38 +139,8 @@
       />
     </ClientOnly>
 
-    <!-- Generation progress (modal flows close immediately, so surface per-part status here) -->
-    <ClientOnly>
-      <div
-        v-if="unifiedGenerationJobs.length"
-        class="bg-base-100 border border-base-300 ring-soft rounded-box p-4 space-y-3"
-      >
-        <div class="flex items-center gap-2 text-sm font-semibold text-base-content">
-          <span v-if="isAnyGenerating" class="loading loading-spinner loading-sm text-primary" />
-          {{ isAnyGenerating ? $t('generation.generating') : $t('generation.status') }}
-        </div>
-        <div class="space-y-2">
-          <div
-            v-for="job in unifiedGenerationJobs"
-            :key="`${job.skill}-${job.part}`"
-            class="flex items-center justify-between rounded-box border border-base-300 bg-base-200/40 px-3 py-2"
-          >
-            <span class="text-sm font-medium text-base-content capitalize">
-              {{ $t('skill.' + job.skill) }} · {{ $t('exercisesUi.part') }} {{ job.part }}
-            </span>
-            <span
-              class="text-[10px] font-semibold px-2 py-0.5 rounded-selector uppercase"
-              :class="jobStatusClass(job.status)"
-            >
-              {{ $t(statusKey(job.status)) }}
-            </span>
-          </div>
-        </div>
-        <p class="text-xs text-base-content/50">
-          {{ $t('generation.hint') }}
-        </p>
-      </div>
-    </ClientOnly>
+    <!-- Generation progress is shown in the Activity center. -->
+    <p v-if="enqueueError" class="alert alert-error text-sm">{{ enqueueError }}</p>
 
     <!-- Results -->
     <ClientOnly>
@@ -391,16 +361,11 @@ import {
 import type { Component } from 'vue'
 import type { SkillId } from '~/utils/labels'
 import type { SkillId as PackSkillId } from '@exam-one/exam-packs'
-import { parseSkillPartKeys } from '~/utils/generation/partJobs'
 import { storeToRefs } from 'pinia'
 import { useReadingTexts } from '~/composables/useReadingTexts'
-import { useReadingGeneration } from '~/composables/useReadingGeneration'
 import { useWritingTopics } from '~/composables/useWritingTopics'
-import { useWritingGeneration } from '~/composables/useWritingGeneration'
 import { useListeningExercises } from '~/composables/useListeningExercises'
-import { useListeningGeneration } from '~/composables/useListeningGeneration'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
-import { useSpeakingGeneration } from '~/composables/useSpeakingGeneration'
 import { useProgress } from '~/composables/useProgress'
 import { useSettingsStore } from '~/stores/settings'
 import { getSkillMeta, getSkillLabel, getTypeLabel } from '~/utils/labels'
@@ -416,10 +381,10 @@ const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
 const { partsFor } = useActivePack()
 
-const { getTexts, addTexts } = useReadingTexts()
-const { getTopics, addTopics, deleteTopic } = useWritingTopics()
-const { getExercises: getListening, addExercises: addListening } = useListeningExercises()
-const { getTopics: getSpeaking, addTopics: addSpeaking } = useSpeakingExercises()
+const { getTexts, resetToDefaults: reloadReading } = useReadingTexts()
+const { getTopics, deleteTopic, resetToDefaults: reloadWriting } = useWritingTopics()
+const { getExercises: getListening, reload: reloadListening } = useListeningExercises()
+const { getTopics: getSpeaking, reload: reloadSpeaking } = useSpeakingExercises()
 const {
   getProgressStats,
   isTextCompleted,
@@ -436,33 +401,12 @@ function packPart(skill: PackSkillId, n: number) {
   return partsFor(skill).find(part => part.n === n)
 }
 
-// Generation composables — one per skill module
-const {
-  generateReading,
-  isGenerating: isGeneratingReading,
-  generationJobs: readingGenerationJobs,
-  generationError: readingGenerationError,
-} = useReadingGeneration()
-const {
-  generateWriting,
-  isGenerating: isGeneratingWriting,
-  generationJobs: writingGenerationJobs,
-} = useWritingGeneration()
-const {
-  generateListening,
-  isGenerating: isGeneratingListening,
-  generationJobs: listeningGenerationJobs,
-  generationError: listeningGenerationError,
-} = useListeningGeneration()
-const {
-  generateSpeaking,
-  isGenerating: isGeneratingSpeaking,
-  generationJobs: speakingGenerationJobs,
-  generationError: speakingGenerationError,
-} = useSpeakingGeneration()
+// Generation jobs are managed by the Activity center.
+const center = useJobCenter()
 
 // Generate exercises modal
 const genOpen = ref(false)
+const enqueueError = ref<string | null>(null)
 
 type GeneratePayload = {
   level: string
@@ -473,92 +417,24 @@ type GeneratePayload = {
 }
 
 async function handleGenerateFromModal(payload: GeneratePayload) {
-  // Difficulty is a mock control and is intentionally never forwarded to the composables.
-  genOpen.value = false
-
-  for (const skill of payload.skills) {
-    try {
-      if (skill === 'reading') {
-        const parts = parseSkillPartKeys('reading', payload.parts)
-        await generateReading(examLevel.value, {
-          parts: parts.length ? parts : undefined,
-          onPartComplete: items => void addTexts(items),
-        })
-        if (readingGenerationError.value) {
-          alert(readingGenerationError.value)
-        }
-      } else if (skill === 'writing') {
-        const selectedParts = payload.parts
-          .filter(p => p.startsWith('writing:'))
-          .map(p => Number(p.split(':')[1]))
-          .filter((n): n is 1 | 2 => n === 1 || n === 2)
-        const partsToGenerate: (1 | 2)[] = selectedParts.length ? selectedParts : [1, 2]
-        await generateWriting(examLevel.value, {
-          parts: partsToGenerate,
-          onPartComplete: items => void addTopics(items),
-        })
-      } else if (skill === 'listening') {
-        const parts = parseSkillPartKeys('listening', payload.parts)
-        await generateListening(examLevel.value, {
-          parts: parts.length ? parts : undefined,
-          onPartComplete: items => void addListening(items),
-        })
-        if (listeningGenerationError.value) {
-          alert(listeningGenerationError.value)
-        }
-      } else if (skill === 'speaking') {
-        const parts = parseSkillPartKeys('speaking', payload.parts)
-        await generateSpeaking(examLevel.value, {
-          parts: parts.length ? parts : undefined,
-          onPartComplete: items => void addSpeaking(items),
-        })
-        if (speakingGenerationError.value) {
-          alert(speakingGenerationError.value)
-        }
-      }
-    } catch (error: unknown) {
-      console.error(`Failed to generate ${skill} exercises:`, error)
-      alert(
-        error instanceof Error
-          ? error.message
-          : t('generation.skillErrorFallback', { skill: t('skill.' + skill) })
-      )
-    }
+  // Difficulty is a mock control and is intentionally never forwarded to the server.
+  const selections = payload.parts
+    .filter(key => payload.skills.some(skill => key.startsWith(`${skill}:`)))
+    .map(key => {
+      const [skill, part] = key.split(':')
+      return { skill: skill ?? '', part: Number(part) }
+    })
+  try {
+    await center.enqueueExercises(selections)
+    enqueueError.value = null
+    genOpen.value = false
+  } catch (error) {
+    enqueueError.value = error instanceof Error ? error.message : t('generation.noStateToResume')
   }
 }
 
-const isAnyGenerating = computed(
-  () =>
-    isGeneratingReading.value ||
-    isGeneratingListening.value ||
-    isGeneratingSpeaking.value ||
-    isGeneratingWriting.value
-)
-
-type UnifiedJob = {
-  skill: string
-  part: number
-  status: PartStatus
-}
-
-const unifiedGenerationJobs = computed<UnifiedJob[]>(() => {
-  const jobs: UnifiedJob[] = []
-
-  readingGenerationJobs.value.forEach(job =>
-    jobs.push({ skill: 'reading', part: job.part, status: job.status })
-  )
-  listeningGenerationJobs.value.forEach(job =>
-    jobs.push({ skill: 'listening', part: job.part, status: job.status })
-  )
-  speakingGenerationJobs.value.forEach(job =>
-    jobs.push({ skill: 'speaking', part: job.part, status: job.status })
-  )
-
-  writingGenerationJobs.value.forEach(job =>
-    jobs.push({ skill: 'writing', part: job.part, status: job.status })
-  )
-
-  return jobs
+watch(() => center.jobs.value.filter(job => job.type === 'EXERCISE_GENERATION' && job.packId === settingsStore.packId).map(job => `${job.id}:${job.progress.items?.filter(item => item.done).length ?? 0}`).join(','), () => {
+  void Promise.all([reloadReading(), reloadWriting(), reloadListening(), reloadSpeaking()])
 })
 
 // Filter state
@@ -838,25 +714,4 @@ function resetFilters() {
   sortBy.value = 'default'
 }
 
-type PartStatus = 'queued' | 'running' | 'done' | 'failed'
-
-function statusKey(status: PartStatus) {
-  const keys: Record<PartStatus, string> = {
-    queued: 'generation.statusQueued',
-    running: 'generation.statusRunning',
-    done: 'generation.statusDone',
-    failed: 'generation.statusFailed',
-  }
-  return keys[status]
-}
-
-function jobStatusClass(status: PartStatus) {
-  const classes: Record<PartStatus, string> = {
-    queued: 'text-base-content/50',
-    running: 'text-primary font-medium',
-    done: 'text-success',
-    failed: 'text-error',
-  }
-  return classes[status]
-}
 </script>

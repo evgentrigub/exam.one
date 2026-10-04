@@ -135,7 +135,7 @@ export function configureApp(app: INestApplication): void {
     .addTag('tts', 'Kokoro Text-to-Speech synthesis and audio file lifecycle management')
     .addTag('stt', 'Parakeet and Whisper Speech-to-Text audio transcription services')
     .addTag('mock-exam', 'Mock exam sets, full-module attempts, grading states, and drafts')
-    .addTag('generation-jobs', 'Asynchronous resumable generation jobs across practice skills and mock exams')
+    .addTag('jobs', 'Background jobs (exercise generation, listening audio, mock exam sets) with live SSE updates')
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
