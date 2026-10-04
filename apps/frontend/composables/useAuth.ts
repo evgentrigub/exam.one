@@ -140,7 +140,6 @@ export function useAuth() {
 
   async function updateSettings(input: {
     packId?: string
-    examLevel?: 'A2' | 'C1'
     targetLanguage?: string
     notifyMockReadyEmail?: boolean
   }): Promise<SettingDto> {

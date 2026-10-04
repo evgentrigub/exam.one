@@ -49,7 +49,6 @@ export interface UpdateUserRequest {
 
 export interface UpdateSettingRequest {
   packId?: string
-  examLevel?: 'A2' | 'C1'
   targetLanguage?: string
   notifyMockReadyEmail?: boolean
 }

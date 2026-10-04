@@ -206,11 +206,11 @@ export class SettingDtoModel implements SettingDto {
   @ApiProperty({ description: 'Owner user ID', example: 'usr_c1234567890' })
   userId!: string
 
-  @ApiProperty({ description: 'Selected active exam pack identifier', example: 'goethe-de-a2' })
+  @ApiProperty({ description: 'Selected active exam pack identifier', example: 'cambridge-en-a2' })
   packId!: string
 
-  @ApiProperty({ description: 'Target CEFR proficiency level', enum: ['A2', 'C1'], example: 'A2' })
-  examLevel!: 'A2' | 'C1'
+  @ApiProperty({ description: 'CEFR level of the selected pack (e.g. A1, A2)', example: 'A2' })
+  examLevel!: string
 
   @ApiProperty({ description: 'Target language ISO code', example: 'de' })
   targetLanguage!: string
@@ -244,8 +244,8 @@ export class ExerciseDtoModel implements ExerciseDto {
   @ApiProperty({ description: 'Skill area', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], example: 'READING' })
   skill!: Skill
 
-  @ApiProperty({ description: 'CEFR level', example: 'A2' })
-  level!: 'A2' | 'C1'
+  @ApiProperty({ description: 'CEFR level of the owning pack (e.g. A1, A2)', example: 'A2' })
+  level!: string
 
   @ApiProperty({ description: 'Origin source: seed or user-generated', enum: ['seed', 'generated'], example: 'generated' })
   source!: 'seed' | 'generated' | string
