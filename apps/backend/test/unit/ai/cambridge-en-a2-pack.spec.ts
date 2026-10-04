@@ -37,10 +37,10 @@ const OBJECTIVE = [
 ] as const
 
 describe('Cambridge A2 Key pack', () => {
-  it('is live and selectable by alias, keeps Goethe A2 the default, and has mock exams', () => {
+  it('is live and selectable by alias, falls back to the Cambridge A2 Key default, and has mock exams', () => {
     expect(getLivePack('cambridge-en-a2').packId).toBe('cambridge-en-a2')
     expect(getPack('a2-key')?.packId).toBe('cambridge-en-a2')
-    expect(getLivePack(undefined).packId).toBe('goethe-de-a2')
+    expect(getLivePack(undefined).packId).toBe('cambridge-en-a2')
     expect(cambridgeEnA2.createMockSet).toBeDefined()
     expect(cambridgeEnA2.bundledMockSet?.id).toBe('cambridge-a2-set-1')
     expect(cambridgeEnA2.speech).toMatchObject({ ttsLang: 'en', sttLang: 'en' })

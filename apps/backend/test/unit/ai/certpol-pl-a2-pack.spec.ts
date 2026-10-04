@@ -47,10 +47,10 @@ const RUBRIC = [
 ] as const
 
 describe('Certyfikat Polski A2 pack', () => {
-  it('is live and selectable by alias, keeps Goethe A2 the default, and has mocks', () => {
+  it('is live and selectable by alias, falls back to the Cambridge A2 Key default, and has mocks', () => {
     expect(getLivePack('certpol-pl-a2').packId).toBe('certpol-pl-a2')
     expect(getPack('polish-a2')?.packId).toBe('certpol-pl-a2')
-    expect(getLivePack(undefined).packId).toBe('goethe-de-a2')
+    expect(getLivePack(undefined).packId).toBe('cambridge-en-a2')
     expect(certpolPlA2.createMockSet).toBeDefined()
     expect(certpolPlA2.bundledMockSet?.id).toBe('certpol-pl-a2-set-1')
     expect(certpolPlA2.speech).toMatchObject({ ttsLang: 'pl', sttLang: 'pl' })

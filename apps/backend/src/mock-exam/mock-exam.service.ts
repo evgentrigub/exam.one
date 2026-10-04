@@ -11,6 +11,7 @@ import {
   toMockExamSetSummaryDto,
 } from '../common/mappers/practice.mapper'
 import type { MockExamSetBodyDto } from './dto/mock-exam.dto'
+import { mockSetListeningExercises } from './mock-set-listening'
 
 function isUniqueConstraintError(error: unknown): boolean {
   return (
@@ -85,10 +86,7 @@ export class MockExamService {
       throw new NotFoundException({ code: 'SET_NOT_FOUND', message: 'Mock exam set not found' })
     }
 
-    const content = row.content as { listening?: Array<{ id?: string }> }
-    const listeningIds = (content.listening ?? [])
-      .map(item => item.id)
-      .filter((id): id is string => Boolean(id))
+    const listeningIds = mockSetListeningExercises(row.content).map(item => item.id)
 
     await this.prisma.mockExamSet.delete({ where: { id: row.id } })
     return listeningIds

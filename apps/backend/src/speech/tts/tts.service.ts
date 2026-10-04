@@ -5,6 +5,7 @@ import { mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { PrismaService } from '@exam-one/nestjs-libraries'
 import type {
   AiResponse,
   DeleteListeningAudioData,
@@ -24,6 +25,15 @@ import {
 /** Thrown when the instance does not list the pack's language or voices. */
 class TtsUnsupportedError extends Error {}
 
+type PackVoice = { id: string; gender: 'male' | 'female' }
+
+/** The pack's voices with the user's default voice first, when it is one of them. */
+export function preferVoice(voices: readonly PackVoice[], preferred: string | undefined): PackVoice[] {
+  const index = preferred ? voices.findIndex(voice => voice.id === preferred) : -1
+  if (index <= 0) return [...voices]
+  return [voices[index]!, ...voices.slice(0, index), ...voices.slice(index + 1)]
+}
+
 function list(value: string | undefined): Set<string> {
   return new Set(
     (value ?? '')
@@ -37,9 +47,21 @@ function list(value: string | undefined): Set<string> {
 export class TtsService {
   private readonly logger = new Logger(TtsService.name)
 
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly prisma: PrismaService
+  ) {}
 
-  private ttsConfig(): TtsConfig {
+  /** The current user's default voice for a language (Settings → Voice models), if any. */
+  private async defaultVoiceFor(lang: string): Promise<string | undefined> {
+    const userId = packContext.getStore()?.userId
+    if (!userId) return undefined
+    const setting = await this.prisma.setting.findUnique({ where: { userId }, select: { defaultVoices: true } })
+    const value = record(setting?.defaultVoices)[lang]
+    return typeof value === 'string' ? value : undefined
+  }
+
+  private async ttsConfig(): Promise<TtsConfig> {
     const pack = getLivePack(packContext.getStore()?.packId)
     // `TTS_LANGUAGES` lists every installed language; `TTS_LANG` is the single-language form.
     const languages = list(
@@ -52,24 +74,30 @@ export class TtsService {
       pack.speech.voices.some(v => !voices.has(v.id.toLowerCase()))
     )
       throw new TtsUnsupportedError('TTS language or voices are not available on this instance')
+    const preferred = await this.defaultVoiceFor(pack.speech.ttsLang)
+    const packVoices = preferVoice(pack.speech.voices, preferred)
+    const narrator = pack.speech.ttsLang === 'de' && packVoices[0]?.id === preferred ? preferred : undefined
     return {
       baseUrl: this.config.getOrThrow<string>('app.TTS_BASE_URL'),
-      voice: pack.speech.voices[0]?.id ?? this.config.get<string>('app.TTS_VOICE') ?? 'martin',
+      voice: packVoices[0]?.id ?? this.config.get<string>('app.TTS_VOICE') ?? 'martin',
       speed: this.config.get<number>('app.TTS_SPEED') ?? 1.0,
       lang: pack.speech.ttsLang,
       turnPauseMs: this.config.get<number>('app.TTS_TURN_PAUSE_MS') ?? 350,
       concurrency: this.config.get<number>('app.TTS_CONCURRENCY') ?? 3,
-      voices: pack.speech.voices,
+      voices: packVoices,
+      ...(narrator ? { narrator } : {}),
     }
   }
 
-  private audioRoot(): string {
+  /** Where per-user generated listening audio lives (one folder per user, pack and exercise). */
+  audioRoot(): string {
     return this.config.getOrThrow<AppConfig['GENERATED_LISTENING_AUDIO_DIR']>(
       'app.GENERATED_LISTENING_AUDIO_DIR'
     )
   }
 
-  private audioDirectory(exerciseId: string): string {
+  /** The generated-audio folder of an exercise for the current pack and user (`packContext`). */
+  audioDirectoryFor(exerciseId: string): string {
     const context = packContext.getStore()
     return createHash('sha256')
       .update(JSON.stringify([getLivePack(context?.packId).packId, context?.userId, exerciseId]))
@@ -78,12 +106,12 @@ export class TtsService {
 
   async health(): Promise<AiResponse<TtsHealthData>> {
     try {
-      const status = await ttsHealthStatus(this.ttsConfig())
+      const status = await ttsHealthStatus(await this.ttsConfig())
       if (status === 'ok') return { data: { ok: true }, error: null }
       if (status === 'offline') return { data: { ok: false, reason: 'offline' }, error: null }
       return {
         data: { ok: false, reason: 'unsupported' },
-        error: 'The TTS service does not serve the voices this exam pack needs',
+        error: 'No voice for this exam pack is installed (Settings → Generated files → Voice models)',
       }
     } catch (error: unknown) {
       if (error instanceof TtsUnsupportedError)
@@ -120,16 +148,16 @@ export class TtsService {
         throw new Error('Invalid listening part or exercise identity')
       const view = part.adapter.project(payload)
       validateView(view, part.runtime)
-      const config = this.ttsConfig()
+      const config = await this.ttsConfig()
       // Keep the actionable wording the legacy path used; it tells the user how to fix it.
       const status = await ttsHealthStatus(config)
       if (status === 'unsupported')
         throw new Error(
-          'The TTS service does not serve the voices this exam pack needs. Download them with `pnpm tts:setup` and restart TTS (see scripts/tts/README.md).'
+          'No voice for this language is installed. Download one in Settings → Generated files → Voice models, then try Generate audio again.'
         )
       if (status !== 'ok')
         throw new Error('TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.')
-      const directory = this.audioDirectory(payload['id'])
+      const directory = this.audioDirectoryFor(payload['id'])
       const segments = [
         ...(view.transcript ? [{ key: 'shared', transcript: view.transcript }] : []),
         ...(view.questions ?? []).flatMap((question, index) =>
@@ -197,7 +225,7 @@ export class TtsService {
     let deleted = 0
     for (const exerciseId of ids) {
       // Historical unnamespaced files may be referenced by other users; retain them.
-      const absolute = containedAudioPath(root, this.audioDirectory(exerciseId))
+      const absolute = containedAudioPath(root, this.audioDirectoryFor(exerciseId))
       if (!absolute) continue
       try {
         await rm(absolute, { recursive: true, force: true })

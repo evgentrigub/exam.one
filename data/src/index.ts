@@ -7,6 +7,14 @@ export {
   packTotalPoints,
 } from './lookup'
 export { getLivePack, getPack, listLivePacks, listPacks } from './registry'
+export {
+  bundledAudioDir,
+  bundledAudioSegments,
+  listeningDisplayTitle,
+  listeningPartLabel,
+  LISTENING_AUDIO_URL_ROOT,
+} from './bundled-audio'
+export type { BundledAudioSegment } from './bundled-audio'
 export { localizeStructure } from './structure-i18n'
 export { GOETHE_DE_A2_PACK_ID, goetheDeA2 } from './packs/goethe-de-a2/pack'
 export { GOETHE_DE_A1_PACK_ID, goetheDeA1 } from './packs/goethe-de-a1/pack'

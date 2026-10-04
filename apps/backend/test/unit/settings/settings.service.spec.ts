@@ -35,62 +35,58 @@ describe('SettingsService', () => {
     await expect(service.count()).resolves.toBe(0)
   })
 
-  it('upserts the live Goethe A2 pack on getMe', async () => {
-    const setting = makeSetting()
+  it('upserts the default Cambridge A2 Key pack on getMe for a new account', async () => {
+    const setting = makeSetting({ packId: 'cambridge-en-a2', targetLanguage: 'en' })
     prisma.setting.upsert.mockResolvedValue(setting)
 
     const result = await service.getMe(user)
 
     expect(prisma.setting.upsert).toHaveBeenCalledWith({
       where: { userId: user.id },
-      update: { packId: 'goethe-de-a2', examLevel: 'A2', targetLanguage: 'de' },
+      update: { packId: 'cambridge-en-a2', examLevel: 'A2', targetLanguage: 'en' },
       create: {
         userId: user.id,
-        packId: 'goethe-de-a2',
+        packId: 'cambridge-en-a2',
         examLevel: 'A2',
-        targetLanguage: 'de',
+        targetLanguage: 'en',
       },
     })
     expect(result).toEqual(
       expect.objectContaining({
         userId: user.id,
-        packId: 'goethe-de-a2',
+        packId: 'cambridge-en-a2',
         examLevel: 'A2',
-        targetLanguage: 'de',
+        targetLanguage: 'en',
       })
     )
   })
 
-  it('maps a C1 examLevel request onto the live Goethe A2 pack', async () => {
+  it('ignores a requested examLevel and keeps the current pack', async () => {
+    prisma.setting.findUnique.mockResolvedValue(makeSetting({ packId: 'certpol-pl-a2', targetLanguage: 'pl' }))
     prisma.setting.upsert.mockResolvedValue(makeSetting())
 
     await service.updateMe(user, { examLevel: 'C1' })
 
-    expect(prisma.setting.upsert).toHaveBeenCalledWith({
-      where: { userId: user.id },
-      update: { packId: 'goethe-de-a2', examLevel: 'A2', targetLanguage: 'de' },
-      create: {
-        userId: user.id,
-        packId: 'goethe-de-a2',
-        examLevel: 'A2',
-        targetLanguage: 'de',
-      },
-    })
+    expect(prisma.setting.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        update: { packId: 'certpol-pl-a2', examLevel: 'A2', targetLanguage: 'pl' },
+      })
+    )
   })
 
-  it('creates with defaults for omitted fields', async () => {
-    prisma.setting.upsert.mockResolvedValue(makeSetting({ targetLanguage: 'de' }))
+  it('creates with the default pack for omitted fields', async () => {
+    prisma.setting.upsert.mockResolvedValue(makeSetting({ targetLanguage: 'en' }))
 
     await service.updateMe(user, { targetLanguage: 'de' })
 
     expect(prisma.setting.upsert).toHaveBeenCalledWith({
       where: { userId: user.id },
-      update: { packId: 'goethe-de-a2', examLevel: 'A2', targetLanguage: 'de' },
+      update: { packId: 'cambridge-en-a2', examLevel: 'A2', targetLanguage: 'en' },
       create: {
         userId: user.id,
-        packId: 'goethe-de-a2',
+        packId: 'cambridge-en-a2',
         examLevel: 'A2',
-        targetLanguage: 'de',
+        targetLanguage: 'en',
       },
     })
   })

@@ -5,6 +5,8 @@ import * as adapter from '../../../src/speech/tts/tts.adapter'
 import { createHash } from 'node:crypto'
 import { containedAudioPath } from '../../../src/speech/tts/listening-audio'
 import { packContext } from '../../../src/core/interceptors/pack-context.interceptor'
+import { PrismaService } from '@exam-one/nestjs-libraries'
+import { preferVoice } from '../../../src/speech/tts/tts.service'
 
 jest.mock('../../../src/speech/tts/tts.adapter', () => ({
   ttsHealthStatus: jest.fn(),
@@ -18,10 +20,13 @@ const synthesizeListeningTranscript = adapter.synthesizeListeningTranscript as j
 >
 
 describe('TtsService', () => {
+  const prisma = { setting: { findUnique: jest.fn() } }
+
   async function createService(env: Record<string, string> = {}) {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TtsService,
+        { provide: PrismaService, useValue: prisma },
         {
           provide: ConfigService,
           useValue: {
@@ -49,12 +54,16 @@ describe('TtsService', () => {
   beforeEach(() => {
     ttsHealthStatus.mockReset()
     synthesizeListeningTranscript.mockReset()
+    prisma.setting.findUnique.mockReset().mockResolvedValue(null)
   })
+
+  /** German-only instance defaults of these tests run in the Goethe A2 pack. */
+  const goethe = <T>(run: () => Promise<T>): Promise<T> => packContext.run({ packId: 'goethe-de-a2' }, run)
 
   it('reports offline health without throwing', async () => {
     ttsHealthStatus.mockResolvedValue('offline')
     const service = await createService()
-    await expect(service.health()).resolves.toEqual({
+    await expect(goethe(() => service.health())).resolves.toEqual({
       data: { ok: false, reason: 'offline' },
       error: null,
     })
@@ -125,12 +134,38 @@ describe('TtsService', () => {
     expect(config.voices?.map(voice => voice.id)).toEqual(['bf_emma', 'bm_george', 'bf_isabella', 'bm_fable'])
   })
 
+  it('puts the user default voice first and narrates German with it', async () => {
+    ttsHealthStatus.mockResolvedValue('ok')
+    prisma.setting.findUnique.mockResolvedValue({ defaultVoices: { en: 'bm_fable', de: 'victoria' } })
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en',
+      TTS_VOICES: 'martin,bernd,victoria,eva,bf_emma,bm_george,bf_isabella,bm_fable',
+    })
+    await packContext.run({ packId: 'cambridge-en-a2', userId: 'user-1' }, () => service.health())
+    const english = ttsHealthStatus.mock.calls[0]![0]
+    expect(english.voices?.map(voice => voice.id)).toEqual(['bm_fable', 'bf_emma', 'bm_george', 'bf_isabella'])
+    expect(english).toMatchObject({ voice: 'bm_fable' })
+    expect(english.narrator).toBeUndefined()
+    await packContext.run({ packId: 'goethe-de-a2', userId: 'user-1' }, () => service.health())
+    expect(ttsHealthStatus.mock.calls[1]![0]).toMatchObject({ voice: 'victoria', narrator: 'victoria' })
+  })
+
+  it('keeps the pack order when the default is not one of its voices', () => {
+    const voices = [
+      { id: 'a', gender: 'male' as const },
+      { id: 'b', gender: 'female' as const },
+    ]
+    expect(preferVoice(voices, 'zz')).toEqual(voices)
+    expect(preferVoice(voices, undefined)).toEqual(voices)
+    expect(preferVoice(voices, 'b').map(voice => voice.id)).toEqual(['b', 'a'])
+  })
+
   it('reports a server without the pack voices as unsupported', async () => {
     ttsHealthStatus.mockResolvedValue('unsupported')
     const service = await createService({ TTS_LANGUAGES: 'de,en', TTS_VOICES: 'bf_emma,bm_george,bf_isabella,bm_fable' })
     const health = await packContext.run({ packId: 'cambridge-en-a2' }, () => service.health())
     expect(health.data).toEqual({ ok: false, reason: 'unsupported' })
-    expect(health.error).toContain('voices')
+    expect(health.error).toContain('voice')
   })
 
   it('skips empty ids and cannot delete outside the audio root', async () => {
@@ -151,7 +186,7 @@ describe('TtsService', () => {
     ttsHealthStatus.mockResolvedValue('offline')
     const service = await createService()
     await expect(
-      service.generateListeningAudio({
+      goethe(() => service.generateListeningAudio({
         id: 'listening-a2-part1-abc',
         title: 'Teil 1',
         testingPart: 1,
@@ -165,7 +200,7 @@ describe('TtsService', () => {
           correctAnswer: 0,
           explanation: 'e',
         })),
-      })
+      }))
     ).resolves.toEqual({
       data: null,
       error: 'TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.',
@@ -176,7 +211,7 @@ describe('TtsService', () => {
     ttsHealthStatus.mockResolvedValue('ok')
     synthesizeListeningTranscript.mockResolvedValue(Buffer.from('RIFF'))
     const service = await createService()
-    const response = await service.generateListeningAudio({
+    const response = await goethe(() => service.generateListeningAudio({
       id: '../../tmp/x',
       title: 'Teil 1',
       testingPart: 1,
@@ -190,7 +225,7 @@ describe('TtsService', () => {
         correctAnswer: 0,
         explanation: 'e',
       })),
-    })
+    }))
     // The id is hashed into the directory name, so traversal is impossible by construction
     // rather than rejected by pattern: no emitted url may contain the raw id.
     const urls = Object.values(response.data?.audio.items ?? {})

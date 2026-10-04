@@ -42,6 +42,10 @@ export interface AppConfig {
   STT_MODEL: string
   STT_OPENAI_MODEL: string
   GENERATED_LISTENING_AUDIO_DIR: string
+  /** Root of every pack's bundled seed WAVs (`<root>/<pack prefix>/<exercise>/…`). */
+  SEED_LISTENING_AUDIO_DIR: string
+  /** How Settings → Generated files names the audio root on the host; display only. */
+  AUDIO_HOST_DISPLAY_ROOT: string
 }
 
 const MIN_JWT_SECRET_LENGTH = 32
@@ -92,6 +96,10 @@ function defaultGeneratedListeningAudioDir(): string {
   return path.resolve(process.cwd(), '../frontend/public/audio/listening/generated')
 }
 
+function defaultSeedListeningAudioDir(): string {
+  return path.resolve(process.cwd(), '../frontend/public/audio/listening')
+}
+
 export const appConfig = registerAs('app', (): AppConfig => ({
   NODE_ENV: process.env['NODE_ENV'] ?? 'development',
   BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
@@ -130,4 +138,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   STT_OPENAI_MODEL: process.env['STT_OPENAI_MODEL'] ?? 'whisper-1',
   GENERATED_LISTENING_AUDIO_DIR:
     process.env['GENERATED_LISTENING_AUDIO_DIR']?.trim() || defaultGeneratedListeningAudioDir(),
+  SEED_LISTENING_AUDIO_DIR: process.env['SEED_LISTENING_AUDIO_DIR']?.trim() || defaultSeedListeningAudioDir(),
+  AUDIO_HOST_DISPLAY_ROOT:
+    process.env['AUDIO_HOST_DISPLAY_ROOT']?.trim() || 'apps/frontend/public/audio/listening',
 }))

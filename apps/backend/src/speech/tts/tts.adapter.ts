@@ -30,12 +30,14 @@ export interface TtsConfig {
   concurrency: number
   /** The pack's voices; they pick the voice of every turn outside German. */
   voices?: DialogueVoiceOptions['voices']
+  /** The user's default voice for a German pack: it narrates monologues instead of martin. */
+  narrator?: string
 }
 
 export type TtsHealthStatus = 'ok' | 'offline' | 'unsupported'
 
 function voiceOptions(config: TtsConfig): DialogueVoiceOptions {
-  return { lang: config.lang, voices: config.voices ?? [] }
+  return { lang: config.lang, voices: config.voices ?? [], ...(config.narrator ? { narrator: config.narrator } : {}) }
 }
 
 export function getTtsConfigFromEnv(env: NodeJS.ProcessEnv = process.env): TtsConfig {
@@ -111,12 +113,14 @@ export async function synthesizeListeningTranscript(
 ): Promise<Buffer> {
   const options = voiceOptions(config)
   const plan = planDialogueVoices(transcript, options)
+  const available = await listAvailableVoices(config)
   if (!plan) {
     const monologue = planMonologue(transcript, options)
-    return synthesizeSpeech({ text: monologue.text, voice: monologue.voice, ...(signal ? { signal } : {}) }, config)
+    // A language needs only one installed voice: a missing narrator falls back like a turn.
+    const voice = fallbackVoiceFor(monologue.voice, available, options)
+    return synthesizeSpeech({ text: monologue.text, voice, ...(signal ? { signal } : {}) }, config)
   }
 
-  const available = await listAvailableVoices(config)
   const wavParts = await mapPool(plan, config.concurrency, async turn => {
     const voice = fallbackVoiceFor(turn.voice, available, options)
     return synthesizeSpeech({ text: turn.text, voice, ...(signal ? { signal } : {}) }, config)
@@ -131,6 +135,11 @@ export function listeningTranscriptHashKey(transcript: string, config?: TtsConfi
 
 const voicesCache = new Map<string, { checkedAt: number; voices: Set<string> }>()
 const VOICES_CACHE_TTL_MS = 30_000
+
+/** Forget the served-voice list, after a voice was installed or removed. */
+export function clearTtsVoicesCache(): void {
+  voicesCache.clear()
+}
 
 async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
   const cached = voicesCache.get(baseUrl)
@@ -167,8 +176,9 @@ export async function checkTtsHealth(config: TtsConfig): Promise<boolean> {
 }
 
 /**
- * Reachable, and serving every voice the pack needs. A server that answers but lacks the
- * pack's voices (for example a German-only install asked for English) is `unsupported`.
+ * Reachable, and serving at least one of the pack's voices (the others fall back to it). A
+ * server that answers but has none of them, such as an English-only install asked for
+ * Polish, is `unsupported`.
  */
 export async function ttsHealthStatus(config: TtsConfig): Promise<TtsHealthStatus> {
   try {
@@ -183,7 +193,7 @@ export async function ttsHealthStatus(config: TtsConfig): Promise<TtsHealthStatu
     const served = new Set(
       Array.isArray(body?.voices) ? body.voices.map(voice => String(voice).toLowerCase()) : []
     )
-    return needed.every(id => served.has(id)) ? 'ok' : 'unsupported'
+    return needed.some(id => served.has(id)) ? 'ok' : 'unsupported'
   } catch {
     return 'offline'
   }

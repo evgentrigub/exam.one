@@ -64,7 +64,7 @@ describe('Auth + health (e2e)', () => {
     return request(app.getHttpServer())
       .get('/api/v1/health/ready')
       .expect(200)
-      .expect({ data: { status: 'ok', checks: { database: 'up' } } })
+      .expect({ data: { status: 'ok', checks: { database: 'up', redis: 'up' } } })
   })
 
   it('register → me → logout; unauthenticated /users/me is 401', async () => {
@@ -153,5 +153,31 @@ describe('Auth + health (e2e)', () => {
       },
       error: null,
     })
+  })
+
+  it('media endpoints need a session; a new account starts on Cambridge and lists its audio', async () => {
+    await request(app.getHttpServer()).get('/api/v1/media/summary').expect(401)
+    await request(app.getHttpServer()).get('/api/v1/media/audio').expect(401)
+
+    const agent = request.agent(app.getHttpServer())
+    await agent
+      .post('/api/v1/auth/register')
+      .send({ name: 'E2E User', email, password: 'password12' })
+      .expect(201)
+
+    const settings = await agent.get('/api/v1/settings/me').expect(200)
+    expect(settings.body.data).toEqual(expect.objectContaining({ packId: 'cambridge-en-a2', targetLanguage: 'en' }))
+
+    const summary = await agent.get('/api/v1/media/summary').expect(200)
+    expect(summary.body.data).toEqual({ voiceBytes: expect.any(Number), audioBytes: expect.any(Number) })
+
+    const audio = await agent.get('/api/v1/media/audio').expect(200)
+    expect(Array.isArray(audio.body.data.rows)).toBe(true)
+
+    await agent.post('/api/v1/media/audio/delete').send({ ids: 'not-a-list' }).expect(400)
+    const none = await agent.post('/api/v1/media/audio/delete').send({ ids: ['generated:cambridge-en-a2:../../x'] }).expect(200)
+    expect(none.body.data).toEqual({ deletedRows: 0, deletedFiles: 0, freedBytes: 0 })
+
+    await agent.put('/api/v1/media/voices/default').send({ lang: 'xx', voiceId: 'bf_emma' }).expect(400)
   })
 })

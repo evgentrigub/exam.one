@@ -18,7 +18,10 @@ export type SpeakerGender = 'male' | 'female' | 'unknown'
 /** The pack's language and voices, for any language other than the German default. */
 export interface DialogueVoiceOptions {
   lang: string
+  /** In preference order: the user's default voice (Settings → Voice models) comes first. */
   voices: ReadonlyArray<{ id: string; gender: 'male' | 'female' }>
+  /** German monologue voice when the user picked a default; otherwise martin. */
+  narrator?: string
 }
 
 export interface DialogueTurn {
@@ -752,15 +755,15 @@ function planPackVoices(transcript: string, options: DialogueVoiceOptions): Voic
 }
 
 /**
- * The voice and text of a monologue. German keeps its fixed narrator and speaks the text as
- * written. Elsewhere a single leading label ("Paul: …") picks a voice of that speaker's
+ * The voice and text of a monologue. German keeps its narrator (martin, or the user's default
+ * voice) and speaks the text as written. Elsewhere a single leading label ("Paul: …") picks a voice of that speaker's
  * gender and is not read aloud; unlabeled text takes the pack's first voice.
  */
 export function planMonologue(
   transcript: string,
   options?: DialogueVoiceOptions
 ): { voice: string; text: string } {
-  if (isGerman(options)) return { voice: 'martin', text: transcript }
+  if (isGerman(options)) return { voice: options?.narrator ?? 'martin', text: transcript }
   const label = options!.lang === 'es' ? SPANISH_MONOLOGUE_LABEL_RE : MONOLOGUE_LABEL_RE
   const match = label.exec(transcript.trim())
   const pools = packPools(options!)
@@ -773,7 +776,10 @@ export function planMonologue(
 export function dialogueAudioPlanKey(transcript: string, options?: DialogueVoiceOptions): string {
   const plan = planDialogueVoices(transcript, options)
   if (!plan) {
-    if (isGerman(options)) return `mono:${transcript.trim()}`
+    if (isGerman(options)) {
+      const narrator = options?.narrator
+      return narrator && narrator !== 'martin' ? `mono:${narrator}|${transcript.trim()}` : `mono:${transcript.trim()}`
+    }
     const monologue = planMonologue(transcript, options)
     return `mono:${monologue.voice}|${monologue.text.trim()}`
   }

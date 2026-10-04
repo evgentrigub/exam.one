@@ -45,11 +45,11 @@ const RUBRIC = [
 ] as const
 
 describe('DELE A2 pack', () => {
-  it('is live and selectable by alias, keeps Goethe A2 the default, and has mock exams', () => {
+  it('is live and selectable by alias, falls back to the Cambridge A2 Key default, and has mock exams', () => {
     expect(getLivePack('dele-es-a2').packId).toBe('dele-es-a2')
     expect(getPack('spanish-a2')?.packId).toBe('dele-es-a2')
     expect(getPack('dele-a2')?.packId).toBe('dele-es-a2')
-    expect(getLivePack(undefined).packId).toBe('goethe-de-a2')
+    expect(getLivePack(undefined).packId).toBe('cambridge-en-a2')
     expect(deleEsA2.createMockSet).toBeDefined()
     expect(deleEsA2.bundledMockSet?.id).toBe('dele-es-a2-set-1')
     expect(deleEsA2.mockOverview).toBeDefined()

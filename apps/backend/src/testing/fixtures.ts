@@ -138,6 +138,7 @@ export function makeSetting(overrides: Partial<Setting> = {}): Setting {
     packId: 'goethe-de-a2',
     examLevel: 'A2',
     targetLanguage: 'de',
+    defaultVoices: {},
     notifyMockReadyEmail: true,
     updatedAt: NOW,
     ...overrides,

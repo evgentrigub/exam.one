@@ -204,4 +204,5 @@ export type LlmComplete = (
   options?: { temperature?: number; maxTokens?: number }
 ) => Promise<string>
 
-export const DEFAULT_PACK_ID = 'goethe-de-a2'
+/** The pack a new account starts on; its bundled listening audio is the only one seeded at first run. */
+export const DEFAULT_PACK_ID = 'cambridge-en-a2'

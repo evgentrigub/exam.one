@@ -8,6 +8,7 @@ import { AiModule } from './ai/ai.module'
 import { SpeechModule } from './speech/speech.module'
 import { MockExamModule } from './mock-exam/mock-exam.module'
 import { JobsModule } from './jobs/jobs.module'
+import { MediaModule } from './media/media.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { JobsModule } from './jobs/jobs.module'
     SpeechModule,
     MockExamModule,
     JobsModule,
+    MediaModule,
   ],
 })
 export class AppModule {}
