@@ -3,7 +3,9 @@ name: exam-one
 # One Compose project for the application, database, text-to-speech, and
 # speech-to-text services. On the first run, use `pnpm stack:up` so the TTS and
 # STT model snapshots are downloaded to their gitignored host directories
-# before Docker starts the read-only model mounts.
+# before Docker starts the model mounts. Only English TTS voices and the
+# Cambridge A2 Key seed audio are prepared up front; other languages are
+# downloaded and generated on demand from Settings → Generated files.
 #
 # PostgreSQL, Kokoro, and Parakeet publish on 127.0.0.1 (host-only). Change the
 # bind to 0.0.0.0 only if you intentionally share those ports on the LAN.
@@ -21,12 +23,9 @@ services:
     ports:
       - '${FRONTEND_PORT:-3000}:3000'
     volumes:
-      - generated_listening_audio:/app/public/audio/listening/generated
-      - ./apps/frontend/public/audio/listening/a2:/app/public/audio/listening/a2:ro
-      - ./apps/frontend/public/audio/listening/a1:/app/public/audio/listening/a1:ro
-      - ./apps/frontend/public/audio/listening/dele-es-a2:/app/public/audio/listening/dele-es-a2:ro
-      - ./apps/frontend/public/audio/listening/cambridge-en-a2:/app/public/audio/listening/cambridge-en-a2:ro
-      - ./apps/frontend/public/audio/listening/certpol-pl-a2:/app/public/audio/listening/certpol-pl-a2:ro
+      # Every pack's bundled seed WAVs and the per-user generated audio (`generated/`), one host
+      # folder the backend writes and Settings → Generated files lists.
+      - ./apps/frontend/public/audio/listening:/app/public/audio/listening:ro
     healthcheck:
       test:
         - CMD
@@ -73,7 +72,7 @@ services:
       TTS_BASE_URL: 'http://kokoro-voices:8881'
       TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
       TTS_SPEED: '${TTS_SPEED:-1.0}'
-      TTS_LANG: '${TTS_LANG:-de}'
+      TTS_LANG: '${TTS_LANG:-en}'
       TTS_LANGUAGES: '${TTS_LANGUAGES:-de,en,pl,es}'
       TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva,bf_emma,bf_isabella,bm_george,bm_fable,pl_gosia,pl_darkman,pl_bass,ef_dora,em_alex,em_santa}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
@@ -82,11 +81,13 @@ services:
       STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
       STT_LANGUAGES: '${STT_LANGUAGES:-de,en,pl,es}'
       STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
+      SEED_LISTENING_AUDIO_DIR: /app/data/listening
       GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
+      AUDIO_HOST_DISPLAY_ROOT: apps/frontend/public/audio/listening
     ports:
       - '${BACKEND_PORT:-3001}:3001'
     volumes:
-      - generated_listening_audio:/app/data/listening/generated
+      - ./apps/frontend/public/audio/listening:/app/data/listening
     depends_on:
       postgres:
         condition: service_healthy
@@ -143,9 +144,10 @@ services:
       dockerfile: Dockerfile
     environment:
       KOKORO_VICTORIA_MODEL_DIR: /app/models
-      # German, British English and Spanish on Kokoro (English and Spanish share one base
-      # model, about 0.5 GiB of memory) and Polish on Piper (about 0.3 GiB).
-      KOKORO_LANGS: '${KOKORO_LANGS:-de,en,pl,es}'
+      # Voices are loaded from whatever is installed under /app/models; KOKORO_LANGS only picks
+      # what `pnpm tts:setup` downloads up front (English). Other languages are downloaded from
+      # Settings → Generated files → Voice models, which writes to this mount.
+      KOKORO_LANGS: '${KOKORO_LANGS:-en}'
       KOKORO_MULTI_SPEED: '${TTS_SPEED:-1.0}'
       KOKORO_PAUSE_DURATION: '${TTS_PAUSE_DURATION:-0.25}'
       OMP_NUM_THREADS: '${TTS_CPU_THREADS:-2}'
@@ -155,7 +157,7 @@ services:
     ports:
       - '127.0.0.1:${TTS_PORT:-8881}:8881'
     volumes:
-      - ./scripts/tts/victoria/models:/app/models:ro
+      - ./scripts/tts/victoria/models:/app/models
     healthcheck:
       test:
         - CMD-SHELL
@@ -196,4 +198,3 @@ volumes:
     name: '${REDIS_VOLUME_NAME:-exam-one-redis-dev-data}'
   postgres_data:
     name: '${POSTGRES_VOLUME_NAME:-exam-one-postgres-dev-data}'
-  generated_listening_audio:

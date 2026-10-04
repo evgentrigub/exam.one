@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Pre-generate Kokoro WAV files for the bundled listening seeds of every exam pack.
+ * Pre-generate Kokoro WAV files for the bundled listening seeds of the selected exam packs.
  *
  * A seed is bundled when it carries an explicit `audio` map whose URLs sit under its pack's
  * `speech.audioPathPrefix` (Goethe A2: every seed; Goethe A1: the mock Set 1). Each URL is
@@ -11,7 +11,9 @@
  *   2. pnpm tts:up
  *
  * Usage (from repo root):
- *   pnpm generate:listening-audio
+ *   pnpm generate:listening-audio                       # the default pack (cambridge-en-a2)
+ *   pnpm generate:listening-audio --packs certpol-pl-a2 # one or more packs, comma-separated
+ *   pnpm generate:listening-audio --packs all           # every pack with bundled audio
  *   FORCE=1 pnpm generate:listening-audio   # after voice-roster / pipeline changes
  *
  * Env:
@@ -20,6 +22,7 @@
  *   TTS_SPEED              (default 1.0)
  *   TTS_TURN_PAUSE_MS      (default 350)
  *   FORCE=1                regenerate even when transcript hash matches
+ *   STACK_SEED_PACKS       packs to seed when --packs is absent (default: DEFAULT_PACK_ID)
  *
  * Each pack is synthesised in its own `speech.ttsLang` with its own voices; a pack whose
  * voices the server does not serve is skipped with a warning. Dialogue transcripts with
@@ -39,7 +42,8 @@ const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/speech/tts')
 
 const jiti = createJiti(import.meta.url)
 
-const { listPacks } = await jiti.import(path.join(repoRoot, 'data/src/index.ts'))
+const { listPacks, getPack, DEFAULT_PACK_ID, bundledAudioSegments, bundledAudioDir, LISTENING_AUDIO_URL_ROOT } =
+  await jiti.import(path.join(repoRoot, 'data/src/index.ts'))
 
 const ttsModule = await jiti.import(path.join(backendTtsRoot, 'tts.adapter.ts'))
 const {
@@ -66,40 +70,38 @@ function packTtsConfig(base, pack) {
   }
 }
 
-/** Every bundled seed WAV of every pack, one segment per URL, deduplicated by URL. */
-export function collectSegments(packs = listPacks()) {
-  const segments = new Map()
-
-  for (const pack of packs) {
-    const prefix = pack.speech.audioPathPrefix.replace(/\/$/, '') + '/'
-    for (const exercise of pack.seedExercises?.listening ?? []) {
-      const audio = exercise.audio
-      if (!audio || typeof audio !== 'object') continue
-      const add = (url, transcript) => {
-        if (typeof url !== 'string' || !url.startsWith(prefix) || !transcript?.trim()) return
-        if (!segments.has(url)) segments.set(url, { url, transcript, pack })
-      }
-      if (audio.shared) add(audio.shared, exercise.transcript)
-      for (const [itemId, url] of Object.entries(audio.items ?? {})) {
-        add(url, (exercise.items ?? []).find(item => item.id === itemId)?.transcript)
-      }
-    }
-  }
-
-  return [...segments.values()].map(segment => ({
-    relativePath: segment.url.replace(/^\//, ''),
-    transcript: segment.transcript,
-    pack: segment.pack,
-  }))
+/**
+ * The packs to seed: `--packs a,b` or `STACK_SEED_PACKS` (default: the default pack only, so a
+ * first run waits for one language). `all` selects every registered pack with bundled audio.
+ */
+export function selectedPacks(argv = process.argv.slice(2), env = process.env) {
+  const flagIndex = argv.findIndex(arg => arg === '--packs' || arg.startsWith('--packs='))
+  const flag =
+    flagIndex === -1 ? undefined : argv[flagIndex].includes('=') ? argv[flagIndex].split('=')[1] : argv[flagIndex + 1]
+  const raw = (flag ?? env.STACK_SEED_PACKS ?? DEFAULT_PACK_ID).trim()
+  if (raw === 'all') return [...listPacks()]
+  const ids = raw.split(',').map(id => id.trim()).filter(Boolean)
+  const unknown = ids.filter(id => !getPack(id))
+  if (unknown.length > 0) throw new Error(`Unknown pack(s): ${unknown.join(', ')}`)
+  return ids.map(id => getPack(id))
 }
 
-/** The public directory of every pack that ships bundled seed WAVs. */
-export function bundledAudioDirs(packs = listPacks()) {
-  const dirs = new Set()
-  for (const segment of collectSegments(packs)) {
-    dirs.add(path.join(publicRoot, path.dirname(path.dirname(segment.relativePath))))
-  }
-  return [...dirs]
+/** Every bundled seed WAV of the given packs, one segment per URL. */
+export function collectSegments(packs = selectedPacks()) {
+  return packs.flatMap(pack =>
+    bundledAudioSegments(pack).map(segment => ({
+      relativePath: segment.url.replace(/^\//, ''),
+      transcript: segment.transcript,
+      pack,
+    }))
+  )
+}
+
+/** The public directory of every given pack that ships bundled seed WAVs. */
+export function bundledAudioDirs(packs = selectedPacks()) {
+  return packs
+    .filter(pack => bundledAudioSegments(pack).length > 0)
+    .map(pack => path.join(publicRoot, LISTENING_AUDIO_URL_ROOT, bundledAudioDir(pack)))
 }
 
 async function fileExists(filePath) {

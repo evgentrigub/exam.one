@@ -97,9 +97,11 @@ model Setting {
   id             String    @id @default(cuid())
   userId         String    @unique
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packId         String    @default("goethe-de-a2")
+  packId         String    @default("cambridge-en-a2")
   examLevel      String    @default("A2")
-  targetLanguage String    @default("de")
+  targetLanguage String    @default("en")
+  /// Preferred TTS voice per language, `{ [lang]: voiceId }`; set in Settings → Voice models.
+  defaultVoices  Json      @default("{}")
   notifyMockReadyEmail Boolean @default(true)
   updatedAt      DateTime  @updatedAt
 }

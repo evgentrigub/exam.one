@@ -93,9 +93,10 @@ Durable storage:
 | Store                            | What it holds                                              |
 | -------------------------------- | ---------------------------------------------------------- |
 | Named volume `postgres_data`     | Users, settings, catalogs, attempts, drafts, mock exams    |
-| Named volume `generated_listening_audio` | On-demand listening WAVs written by NestJS          |
+| Host dir `apps/frontend/public/audio/listening/` | Listening WAVs: each pack's bundled seed folder (`cambridge-en-a2/`, `a2/`, `a1/`, `certpol-pl-a2/`, `dele-es-a2/`) and per-user on-demand audio in `generated/` |
 | Host dirs `scripts/*/models/`    | TTS and STT model weights (gitignored, reused across runs) |
-| Host dirs `apps/frontend/public/audio/listening/a2/`, `a1/`, `dele-es-a2/`, `cambridge-en-a2/` | Bundled seed listening WAVs (A2 seeds, A1, DELE A2 and Cambridge mock Set 1) |
+
+Settings → **Generated files** shows both: **Listening audio** lists every seed and generated WAV per exercise (size, length, completed/mock) and deletes them; deleted audio is generated again when the exercise is opened. **Voice models** downloads, removes and picks the default voice per language at runtime.
 
 Theme, locale, listening playback volume/speed, and reading bookmarks stay in the browser.
 
@@ -214,7 +215,7 @@ Restart the backend after changing keys (`pnpm stack:up` or `docker compose up -
 
 ### Optional: speech sidecars
 
-The Listening TTS service serves the languages in `KOKORO_LANGS` (default `de,en,pl,es`) on `:8881`: German `martin`, `bernd`, `victoria`, `eva`, British English `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable` and Spanish `ef_dora`, `em_alex`, `em_santa` on Kokoro, and Polish `pl_gosia`, `pl_darkman`, `pl_bass` on Piper. The base model English and Spanish share adds about 320 MB of download and 0.5 GiB of memory, the Polish voices about 240 MB and 0.3 GiB; leave a language out of `KOKORO_LANGS` to skip it. See [scripts/tts/README.md](scripts/tts/README.md).
+The Listening TTS service on `:8881` serves every voice installed under `scripts/tts/victoria/models`: German `martin`, `bernd`, `victoria`, `eva`, British English `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable` and Spanish `ef_dora`, `em_alex`, `em_santa` on Kokoro, and Polish `pl_gosia`, `pl_darkman`, `pl_bass` on Piper. A first `pnpm stack:up` downloads only the English voices (`KOKORO_LANGS=en`, about 330 MB) and seeds only the Cambridge A2 Key audio (`STACK_SEED_PACKS=cambridge-en-a2`); new accounts start on that pack. Download other languages in Settings → Generated files → Voice models (no restart), or up front with `KOKORO_LANGS=en,de,pl,es pnpm tts:setup`. See [scripts/tts/README.md](scripts/tts/README.md).
 
 Parakeet (Speaking STT) serves Handy's Q8 GGUF on `:8882` and detects German, English, Polish and Spanish (`STT_LANGUAGES`, default `de,en,pl,es`). To use OpenAI Whisper instead:
 
@@ -235,7 +236,7 @@ pnpm stt:down
 
 ### Backup and restore
 
-`pnpm stack:down` and `docker compose down` **keep** named volumes. Do not pass `-v` / `--volumes` unless you intend to delete PostgreSQL data, Redis job state and generated listening audio.
+`pnpm stack:down` and `docker compose down` **keep** named volumes. Do not pass `-v` / `--volumes` unless you intend to delete PostgreSQL data and Redis job state.
 
 Default volume names:
 
@@ -243,7 +244,6 @@ Default volume names:
 | ------------------------------------ | ---------------------------- | -------------------------------- |
 | `exam-one-postgres-dev-data`         | `postgres_data` (`POSTGRES_VOLUME_NAME`) | Database                   |
 | `exam-one-redis-dev-data`            | `redis_data` (`REDIS_VOLUME_NAME`) | Queued work and job state  |
-| `exam-one_generated_listening_audio` | `generated_listening_audio`  | On-demand listening WAVs         |
 
 Confirm with `docker volume ls | grep exam-one`.
 
@@ -271,28 +271,16 @@ Back up `redis_data` alongside PostgreSQL and generated audio. Stop enqueueing j
 
 To inspect queues, set `BULL_BOARD_USER` and `BULL_BOARD_PASSWORD` in `.env` and open http://localhost:3001/api/admin/queues (HTTP basic auth). Without both variables the dashboard answers 404. Each BullMQ job id is `<BackgroundJob.id>-<attempt>`, so a queue entry maps straight to its database row.
 
-#### Generated listening audio
+#### Listening audio
 
-Backup:
+Seed and generated WAVs live in one host folder, `apps/frontend/public/audio/listening/` (generated audio under `generated/`); back it up with any file copy:
 
 ```bash
 mkdir -p backups
-docker run --rm \
-  -v exam-one_generated_listening_audio:/source:ro \
-  -v "$(pwd)/backups:/backup" \
-  alpine tar -czf /backup/listening-audio-$(date +%Y%m%d).tar.gz -C /source .
+tar -czf "backups/listening-audio-$(date +%Y%m%d).tar.gz" -C apps/frontend/public/audio listening
 ```
 
-Restore:
-
-```bash
-docker run --rm \
-  -v exam-one_generated_listening_audio:/target \
-  -v "$(pwd)/backups:/backup" \
-  alpine tar -xzf /backup/listening-audio-YYYYMMDD.tar.gz -C /target
-```
-
-Seed WAVs under `apps/frontend/public/audio/listening/a2/`, `a1/`, `dele-es-a2/` and `cambridge-en-a2/` live on host bind mounts; copy that directory if you regenerated them. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
+Older installs kept generated audio in the `exam-one_generated_listening_audio` named volume. Copy it into the host folder once with `pnpm stack:migrate-generated-audio`, check that the app plays your audio, then remove the volume with `docker volume rm exam-one_generated_listening_audio`. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
 
 ### Stop, wipe, and upgrade
 
@@ -464,11 +452,11 @@ pnpm test:e2e            # Run the NestJS health endpoint e2e test
 pnpm stack:setup         # Download and verify all speech models without starting Compose
 pnpm stack:verify-models # Fail if TTS/STT model snapshots are missing
 pnpm stack:up            # Download models, start core app, then speech, then seed WAVs if missing
-pnpm stack:seed-audio    # Generate bundled listening WAVs if they are not already on disk
+pnpm stack:seed-audio    # Generate the default pack's bundled listening WAVs if missing (--packs a,b|all)
 pnpm stack:down          # Stop the complete stack without deleting named volumes
 pnpm stack:logs          # Follow logs for all Compose services
 pnpm stack:ps            # Show service and health status
-pnpm tts:setup           # Download and verify only local Kokoro TTS models
+pnpm tts:setup           # Download the TTS voices of KOKORO_LANGS (default: English)
 pnpm tts:up              # Start only local Kokoro TTS from compose.yaml
 pnpm stt:setup           # Download and verify only the local Parakeet GGUF
 pnpm stt:up              # Start only local Parakeet STT from compose.yaml
@@ -477,7 +465,7 @@ pnpm db:migrate          # Create and apply a development migration
 pnpm db:migrate:deploy   # Apply committed migrations
 pnpm db:seed             # Upsert every pack's bundled exercises and mock Set 1
 pnpm auth:set-password   # Recover a local account password (`--email`)
-pnpm generate:listening-audio  # Synthesize seed WAVs (requires Kokoro)
+pnpm generate:listening-audio  # Synthesize seed WAVs (requires Kokoro; --packs a,b|all)
 ```
 
 ## Contributing

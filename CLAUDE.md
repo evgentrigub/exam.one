@@ -17,9 +17,10 @@ pnpm type-check   # type-check all workspace projects
 pnpm test         # test all workspace projects
 pnpm stack:up     # prepare speech models and start the complete Docker Compose stack
 pnpm stack:verify-models # fail if TTS/STT snapshots are missing
-pnpm stack:seed-audio    # generate bundled listening WAVs if missing
+pnpm stack:seed-audio    # generate the default pack's bundled listening WAVs if missing (--packs a,b|all)
 pnpm stack:down   # stop the complete stack without deleting named volumes
-pnpm tts:up       # prepare and start only Kokoro TTS
+pnpm tts:up       # prepare and start only Kokoro TTS (English voices unless KOKORO_LANGS says more)
+pnpm tts:test     # voice catalog unit tests (Python standard library)
 pnpm stt:up       # prepare and start only Parakeet STT
 pnpm auth:set-password --email you@example.com  # recover a local account password
 ```

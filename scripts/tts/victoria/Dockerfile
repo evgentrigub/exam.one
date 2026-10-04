@@ -1,6 +1,6 @@
 # Speech sidecar: German (martin / bernd / victoria / eva), British English
 # (bf_emma / bf_isabella / bm_george / bm_fable) and Spanish (ef_dora / em_alex / em_santa) on
-# Kokoro, Polish (pl_gosia / pl_darkman / pl_bass) on Piper, chosen by KOKORO_LANGS.
+# Kokoro, Polish (pl_gosia / pl_darkman / pl_bass) on Piper: every voice installed under /app/models (see voice-manifest.json).
 # OpenAI-compatible /v1/audio/speech — PyTorch + phonemizer(de) + misaki(en-GB, es) + Piper(pl)
 FROM python:3.11-slim-bookworm
 
@@ -16,13 +16,15 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY main.py .
+COPY main.py voice_catalog.py voice-manifest.json ./
 
 ENV KOKORO_VICTORIA_MODEL_DIR=/app/models
 ENV KOKORO_MULTI_SPEED=1.0
 ENV KOKORO_PAUSE_DURATION=0.25
-ENV KOKORO_LANGS=de,en,pl,es
-# Every model and the spaCy English model ship with the image or the mount; never fetch at runtime.
+# Only picks what the host setup script downloads; the service loads every installed voice.
+ENV KOKORO_LANGS=en
+# Every model and the spaCy English model ship with the image or the mount; Hugging Face Hub is
+# never queried at runtime. Voice downloads from Settings use plain HTTPS from voice-manifest.json.
 ENV HF_HUB_OFFLINE=1
 
 EXPOSE 8881

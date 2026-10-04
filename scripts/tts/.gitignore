@@ -4,3 +4,6 @@ kokoro-german/
 
 # Kikiri German Victoria PyTorch weights (downloaded by victoria/download-models.sh).
 victoria/models/
+
+# Python bytecode from the voice catalog tests and download script.
+victoria/__pycache__/

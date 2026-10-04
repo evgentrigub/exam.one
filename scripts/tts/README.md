@@ -4,7 +4,12 @@ Listening practice plays **stable WAV files** (identical on every replay). Kokor
 needed when generating or regenerating those files.
 
 `pnpm tts:up` selects and starts the **single** `kokoro-voices` service from the
-root `compose.yaml` on `:8881`. It loads the languages in `KOKORO_LANGS` (default `de,en,pl,es`):
+root `compose.yaml` on `:8881`. It loads every voice whose files are installed under
+`scripts/tts/victoria/models` (listed in `victoria/voice-manifest.json`). `pnpm tts:setup` downloads
+the voices of the languages in `KOKORO_LANGS` (default `en`); Settings → Generated files → Voice
+models downloads or removes single voices while the service runs and loads them without a restart
+(`GET/POST/DELETE /v1/models/voices…`). One installed voice per language is enough; the others fall
+back to it.
 
 | Voice         | Language | Gender   | Backbone                   |
 | ------------- | -------- | -------- | -------------------------- |
@@ -33,9 +38,9 @@ real time on a CPU. Piper speaks at 22.05 kHz; the service resamples to 24 kHz s
 There is only one Polish female voice, so two women in one dialogue share `pl_gosia`. Spanish runs
 on the same base v1.0 model as English, loaded once for both, with misaki's espeak-ng `es` G2P as
 `KPipeline(lang_code="e")` builds it; its three voice packs add about 1.5 MB. Upstream gives the
-Spanish voices no grade, and there is only one female voice, so two women share `ef_dora`. Drop a
-language from `KOKORO_LANGS` (for example `de,pl` or `de`) to skip its download and model; the base
-model is downloaded while `en` or `es` is listed.
+Spanish voices no grade, and there is only one female voice, so two women share `ef_dora`. Shared
+files (a Kokoro backbone, `config.json`) are downloaded once and deleted only with the last voice
+that needs them.
 
 Every request names a voice and a language. An unknown voice, or a voice of another language,
 is refused with HTTP 400 instead of being spoken by a German voice. `/v1/audio/voices` and
@@ -68,15 +73,16 @@ ef_dora, `Hombre` → em_alex, a second man → em_santa.
 ## Seed audio (maintainer)
 
 ```bash
-# One-time: download the German, English, Polish and Spanish weights (KOKORO_LANGS=de for German only)
+# One-time: download the English voices (KOKORO_LANGS=en,de,pl,es for every language)
 bash scripts/tts/victoria/download-models.sh
 # or: ./scripts/tts/setup-kokoro.sh
 
 # Start four-voice TTS (downloads models if missing, then starts the container)
 pnpm tts:up
 
-# Synthesize WAVs for default A2 listening seeds → public/audio/listening/a2/
+# Synthesize the default pack's bundled WAVs (Cambridge A2 Key); --packs a,b or --packs all
 pnpm generate:listening-audio
+pnpm generate:listening-audio --packs all
 
 # After voice-roster or dialogue-pipeline changes, force a full regen:
 FORCE=1 pnpm generate:listening-audio
@@ -85,6 +91,9 @@ FORCE=1 pnpm generate:listening-audio
 TTS_CONCURRENCY=4 FORCE=1 pnpm generate:listening-audio
 
 pnpm tts:down
+
+# Voice catalog tests (standard library only)
+pnpm tts:test
 ```
 
 To start the application, database, TTS, and STT together, use `pnpm stack:up`.
@@ -116,7 +125,8 @@ Env overrides:
 | `TTS_LANGUAGES`     | `de` (Compose `de,en,pl,es`) | Languages packs may use      |
 | `TTS_LANG`          | `de`                    | Single-language form of the above |
 | `TTS_VOICES`        | German + British + Polish + Spanish ids | Voices packs may use |
-| `KOKORO_LANGS`      | `de,en,pl,es`           | Languages the service downloads and loads |
+| `KOKORO_LANGS`      | `en`                    | Languages `pnpm tts:setup` downloads |
+| `STACK_SEED_PACKS`  | `cambridge-en-a2`       | Packs `pnpm stack:seed-audio` seeds (`all` for every pack) |
 | `TTS_TURN_PAUSE_MS` | `350`                   | Silence between dialogue turns    |
 
 Upstream Martin: [kikiri-german-martin](https://huggingface.co/kikiri-tts/kikiri-german-martin).

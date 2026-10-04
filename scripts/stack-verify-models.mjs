@@ -3,53 +3,34 @@
  * Fail fast when Compose speech mounts would be empty.
  * Run after `pnpm stack:setup`.
  */
-import { access, stat } from 'node:fs/promises'
+import { access, readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
-/** The TTS languages to check, as the download script and the TTS service read them. */
+/** The TTS languages `pnpm tts:setup` downloads, as the download script reads them. */
 const languages = new Set(
-  (process.env.KOKORO_LANGS ?? 'de,en,pl,es')
+  (process.env.KOKORO_LANGS ?? 'en')
     .split(',')
-    .map(lang => lang.trim())
+    .map(lang => lang.trim().toLowerCase())
     .filter(Boolean)
 )
 
-const required = [
-  ...(languages.has('de')
-    ? [
-        'scripts/tts/victoria/models/kikiri_german_martin_ep10.pth',
-        'scripts/tts/victoria/models/kikiri_german_victoria_ep10.pth',
-        'scripts/tts/victoria/models/kikiri_german_base_51spk_ep4.pth',
-        'scripts/tts/victoria/models/voices/martin.pt',
-        'scripts/tts/victoria/models/voices/victoria.pt',
-        'scripts/tts/victoria/models/voices/bernd.pt',
-        'scripts/tts/victoria/models/voices/eva.pt',
-      ]
-    : []),
-  // British English and Spanish share the base v1.0 model.
-  ...(languages.has('en') || languages.has('es') ? ['scripts/tts/victoria/models/kokoro-v1_0.pth'] : []),
-  ...(languages.has('en')
-    ? ['bf_emma', 'bf_isabella', 'bm_george', 'bm_fable'].map(
-        voice => `scripts/tts/victoria/models/voices/${voice}.pt`
-      )
-    : []),
-  ...(languages.has('es')
-    ? ['ef_dora', 'em_alex', 'em_santa'].map(voice => `scripts/tts/victoria/models/voices/${voice}.pt`)
-    : []),
-  ...(languages.has('pl')
-    ? ['pl_PL-gosia-medium', 'pl_PL-darkman-medium', 'pl_PL-bass-high'].flatMap(voice => [
-        `scripts/tts/victoria/models/piper/${voice}.onnx`,
-        `scripts/tts/victoria/models/piper/${voice}.onnx.json`,
-      ])
-    : []),
-  'scripts/tts/victoria/models/config.json',
-  'scripts/stt/parakeet/models/parakeet-tdt-0.6b-v3-Q8_0.gguf',
-]
+/** Every file the selected languages' voices need, from the shared voice manifest. */
+async function ttsFiles() {
+  const manifestPath = path.join(repoRoot, 'scripts/tts/victoria/voice-manifest.json')
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'))
+  const keys = new Set(
+    manifest.voices
+      .filter(voice => languages.has(voice.lang))
+      .flatMap(voice => [voice.model, voice.voice, ...(voice.shared ?? [])])
+  )
+  return [...keys].map(key => `scripts/tts/victoria/models/${manifest.files[key].path}`)
+}
 
 async function main() {
+  const required = [...(await ttsFiles()), 'scripts/stt/parakeet/models/parakeet-tdt-0.6b-v3-Q8_0.gguf']
   const missing = []
   for (const relative of required) {
     const absolute = path.join(repoRoot, relative)

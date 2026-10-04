@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Generate bundled listening WAVs when a pack's host seed directory is empty (Goethe A2
- * seeds under /a2, and the mock Set 1 of Goethe A1, DELE A2, Cambridge A2 Key and Certyfikat
- * Polski A2 under /a1, /dele-es-a2, /cambridge-en-a2 and /certpol-pl-a2). Skips when every
- * directory already has WAVs. Waits for Kokoro on the host port.
+ * Generate bundled listening WAVs when a selected pack's host seed directory is empty. Only the
+ * default pack (Cambridge A2 Key) is selected unless `--packs a,b|all` or `STACK_SEED_PACKS`
+ * says otherwise; other packs generate on demand from the app (Settings → Generated files).
+ * Skips when every selected directory already has WAVs. Waits for Kokoro on the host port.
  */
 import { mkdir, readdir } from 'node:fs/promises'
 import path from 'node:path'
@@ -14,8 +14,9 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const ttsBaseUrl = (process.env.TTS_BASE_URL ?? 'http://127.0.0.1:8881').replace(/\/$/, '')
 const timeoutMs = Number(process.env.STACK_SEED_AUDIO_TIMEOUT_MS ?? 480000)
 
-const { bundledAudioDirs } = await import('./generate-listening-audio.mjs')
-const audioRoots = bundledAudioDirs()
+const { bundledAudioDirs, selectedPacks } = await import('./generate-listening-audio.mjs')
+const packs = selectedPacks()
+const audioRoots = bundledAudioDirs(packs)
 
 async function hasSeedWavs(audioRoot) {
   try {
@@ -43,7 +44,8 @@ async function waitForTts() {
 
 function runGenerate() {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [path.join(repoRoot, 'scripts/generate-listening-audio.mjs')], {
+    const packArgs = ['--packs', packs.map(pack => pack.packId).join(',')]
+    const child = spawn(process.execPath, [path.join(repoRoot, 'scripts/generate-listening-audio.mjs'), ...packArgs], {
       cwd: repoRoot,
       stdio: 'inherit',
       env: process.env,
@@ -57,6 +59,7 @@ function runGenerate() {
 }
 
 async function main() {
+  await mkdir(path.join(repoRoot, 'apps/frontend/public/audio/listening/generated'), { recursive: true })
   for (const audioRoot of audioRoots) await mkdir(audioRoot, { recursive: true })
 
   const present = await Promise.all(audioRoots.map(hasSeedWavs))
