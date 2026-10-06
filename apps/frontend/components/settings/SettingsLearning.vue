@@ -12,10 +12,11 @@
           <span class="label pb-1.5 block">
             <span class="label-text text-sm font-medium">{{ $t('settings.examBoard') }}</span>
           </span>
-          <SetChoice
-            :value="examBoard"
+          <SetRadio
+            v-model:value="examBoard"
+            name="exam_board"
+            :label="$t('settings.examBoard')"
             :options="boardOptions"
-            @update:value="examBoard = $event"
           />
         </div>
         <div>
@@ -24,7 +25,7 @@
           </span>
           <SetChoice
             v-model:value="selectedPackId"
-            cols="grid-cols-2 sm:grid-cols-4 max-w-xl"
+            cols="grid-cols-2 sm:grid-cols-5"
             :options="levelOptions"
           />
         </div>
@@ -68,9 +69,10 @@ import { storeToRefs } from 'pinia'
 import { listLivePacks } from '@exam-one/exam-packs'
 import { useSettingsStore } from '~/stores/settings'
 import type { SetChoiceOption } from '~/components/settings/SetChoice.vue'
+import type { SetRadioOption } from '~/components/settings/SetRadio.vue'
 import { ApiClientError } from '~/composables/useApi'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 const { profile, saveProfile } = useAccountProfile()
 const settingsStore = useSettingsStore()
 const { packId } = storeToRefs(settingsStore)
@@ -102,13 +104,20 @@ const remainingLabel = computed(() => {
   return t('settings.daysCount', { n: days })
 })
 
-const boardOptions = computed<SetChoiceOption[]>(() => [...new Set(livePacks.map(pack => pack.board))].map(board => ({ id: board, label: board })))
+const boardOptions = computed<SetRadioOption[]>(() =>
+  [...new Set(livePacks.map(pack => pack.board))].map(board => ({
+    id: board,
+    label: te(`settings.boards.${board}`) ? t(`settings.boards.${board}`) : board,
+  }))
+)
 watch(examBoard, board => {
   if (!livePacks.some(pack => pack.packId === selectedPackId.value && pack.board === board)) selectedPackId.value = livePacks.find(pack => pack.board === board)?.packId ?? packId.value
 })
 
 const levelOptions = computed<SetChoiceOption[]>(() => {
-  const liveForBoard = livePacks.filter(pack => pack.board === examBoard.value)
+  const liveForBoard = livePacks
+    .filter(pack => pack.board === examBoard.value)
+    .sort((a, b) => a.cefr.localeCompare(b.cefr))
   return [
     ...liveForBoard.map(pack => ({
       id: pack.packId,

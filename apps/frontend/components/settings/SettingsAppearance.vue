@@ -39,7 +39,6 @@
 import { Cake, Languages, Sun } from 'lucide-vue-next'
 import type { Theme } from '~/composables/useTheme'
 import { LANGUAGE_LABELS, LANGUAGE_OPTIONS, isLanguageOption } from '~/utils/types'
-import type { LanguageOptions } from '~/utils/types'
 import type { SetChoiceOption } from '~/components/settings/SetChoice.vue'
 
 const { theme, setTheme } = useTheme()
@@ -55,20 +54,8 @@ const themeOptions = computed<SetChoiceOption[]>(() => [
   },
 ])
 
-const LANGUAGE_DESC_KEYS: Record<LanguageOptions, string> = {
-  en: 'settings.langEnDesc',
-  de: 'settings.langDeDesc',
-  es: 'settings.langEsDesc',
-  pl: 'settings.langPlDesc',
-  ru: 'settings.langRuDesc',
-}
-
 const languageOptions = computed<SetChoiceOption[]>(() =>
-  LANGUAGE_OPTIONS.map(code => ({
-    id: code,
-    label: LANGUAGE_LABELS[code],
-    desc: t(LANGUAGE_DESC_KEYS[code]),
-  })),
+  LANGUAGE_OPTIONS.map(code => ({ id: code, label: LANGUAGE_LABELS[code] })),
 )
 
 function onTheme(id: string) {

@@ -140,7 +140,7 @@
             <div class="text-sm font-semibold leading-tight">{{ pack.title }}</div>
             <div class="text-[11px] text-base-content/60">
               <template v-if="hasExamDate">
-                {{ $t('shell.examTargetMeta', { days: daysUntilExam }) }}
+                {{ $t('shell.examTargetMeta', { language: examLanguage, days: daysUntilExam }) }}
               </template>
               <button
                 v-else
@@ -185,6 +185,13 @@ const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
 const { pack } = useActivePack()
 const { daysUntilExam, hasExamDate } = useAccountProfile()
+const { locale } = useI18n()
+
+const examLanguage = computed(() => {
+  const name = new Intl.DisplayNames([String(locale.value)], { type: 'language' }).of(pack.value.language)
+  if (!name) return pack.value.language
+  return name.charAt(0).toLocaleUpperCase(String(locale.value)) + name.slice(1)
+})
 
 const landingUrl = computed(() => {
   const configuredUrl = String(runtimeConfig.public.frontendLandingUrl || '').trim()

@@ -7,7 +7,7 @@ import { goetheDeA2 } from './packs/goethe-de-a2/pack'
 import { goetheDeC1 } from './packs/goethe-de-c1/pack'
 import { DEFAULT_PACK_ID, type ExamPack } from './types'
 
-const PACKS: readonly ExamPack[] = [goetheDeA2, goetheDeA1, cambridgeEnA2, certpolPlA2, deleEsA2, goetheDeC1]
+const PACKS: readonly ExamPack[] = [goetheDeA1, goetheDeA2, cambridgeEnA2, certpolPlA2, deleEsA2, goetheDeC1]
 validatePacks(PACKS)
 
 export function listPacks(): readonly ExamPack[] {
