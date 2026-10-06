@@ -110,7 +110,7 @@ Five packs are live:
 **Certyfikat Polski A2** (practice and mock exams). 
 **DELE A2** (practice and mock exams). 
 
-Select one under **Settings → Learning plan**. See the [verification and migration rollout guide](data/VERIFICATION.md).
+Select one under **Settings → Learning plan**.
 
 ---
 
