@@ -1,10 +1,16 @@
 /**
- * Thin OpenAI-compatible TTS client for the four-voice PyTorch Kokoro service
- * (martin / bernd / victoria / eva on :8881).
+ * Thin OpenAI-compatible TTS client for the PyTorch Kokoro service on :8881: the German
+ * voices (martin / bernd / victoria / eva) and, when installed, the British English ones.
  */
 
 import { concatWavWithPauses } from './concatWav'
-import { fallbackVoiceFor, planDialogueVoices, dialogueAudioPlanKey } from './dialogueTranscript'
+import {
+  dialogueAudioPlanKey,
+  fallbackVoiceFor,
+  planDialogueVoices,
+  planMonologue,
+  type DialogueVoiceOptions,
+} from './dialogueTranscript'
 import { getTtsConcurrency, mapPool } from './mapPool'
 
 export interface TtsSynthesizeOptions {
@@ -12,6 +18,7 @@ export interface TtsSynthesizeOptions {
   voice?: string
   speed?: number
   lang?: string
+  signal?: AbortSignal
 }
 
 export interface TtsConfig {
@@ -21,6 +28,16 @@ export interface TtsConfig {
   lang: string
   turnPauseMs: number
   concurrency: number
+  /** The pack's voices; they pick the voice of every turn outside German. */
+  voices?: DialogueVoiceOptions['voices']
+  /** The user's default voice for a German pack: it narrates monologues instead of martin. */
+  narrator?: string
+}
+
+export type TtsHealthStatus = 'ok' | 'offline' | 'unsupported'
+
+function voiceOptions(config: TtsConfig): DialogueVoiceOptions {
+  return { lang: config.lang, voices: config.voices ?? [], ...(config.narrator ? { narrator: config.narrator } : {}) }
 }
 
 export function getTtsConfigFromEnv(env: NodeJS.ProcessEnv = process.env): TtsConfig {
@@ -66,6 +83,7 @@ export async function synthesizeSpeech(
   const url = `${config.baseUrl}/v1/audio/speech`
   const response = await postOnceRetried(url, {
     method: 'POST',
+    signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120_000)]) : AbortSignal.timeout(120_000),
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'kokoro',
@@ -90,28 +108,38 @@ export async function synthesizeSpeech(
 
 export async function synthesizeListeningTranscript(
   transcript: string,
-  config: TtsConfig = getTtsConfigFromEnv()
+  config: TtsConfig = getTtsConfigFromEnv(),
+  signal?: AbortSignal
 ): Promise<Buffer> {
-  const plan = planDialogueVoices(transcript)
+  const options = voiceOptions(config)
+  const plan = planDialogueVoices(transcript, options)
+  const available = await listAvailableVoices(config)
   if (!plan) {
-    return synthesizeSpeech({ text: transcript, voice: 'martin' }, config)
+    const monologue = planMonologue(transcript, options)
+    // A language needs only one installed voice: a missing narrator falls back like a turn.
+    const voice = fallbackVoiceFor(monologue.voice, available, options)
+    return synthesizeSpeech({ text: monologue.text, voice, ...(signal ? { signal } : {}) }, config)
   }
 
-  const available = await listAvailableVoices(config)
   const wavParts = await mapPool(plan, config.concurrency, async turn => {
-    const voice = fallbackVoiceFor(turn.voice, available)
-    return synthesizeSpeech({ text: turn.text, voice }, config)
+    const voice = fallbackVoiceFor(turn.voice, available, options)
+    return synthesizeSpeech({ text: turn.text, voice, ...(signal ? { signal } : {}) }, config)
   })
 
   return concatWavWithPauses(wavParts, config.turnPauseMs)
 }
 
-export function listeningTranscriptHashKey(transcript: string): string {
-  return dialogueAudioPlanKey(transcript)
+export function listeningTranscriptHashKey(transcript: string, config?: TtsConfig): string {
+  return dialogueAudioPlanKey(transcript, config ? voiceOptions(config) : undefined)
 }
 
 const voicesCache = new Map<string, { checkedAt: number; voices: Set<string> }>()
 const VOICES_CACHE_TTL_MS = 30_000
+
+/** Forget the served-voice list, after a voice was installed or removed. */
+export function clearTtsVoicesCache(): void {
+  voicesCache.clear()
+}
 
 async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
   const cached = voicesCache.get(baseUrl)
@@ -120,7 +148,7 @@ async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
   }
 
   try {
-    const response = await fetch(`${baseUrl}/v1/audio/voices`, { method: 'GET' })
+    const response = await fetch(`${baseUrl}/v1/audio/voices`, { method: 'GET', signal: AbortSignal.timeout(10000) })
     if (!response.ok) {
       const empty = new Set<string>()
       voicesCache.set(baseUrl, { checkedAt: Date.now(), voices: empty })
@@ -144,12 +172,29 @@ async function listAvailableVoices(config: TtsConfig): Promise<Set<string>> {
 }
 
 export async function checkTtsHealth(config: TtsConfig): Promise<boolean> {
+  return (await ttsHealthStatus(config)) === 'ok'
+}
+
+/**
+ * Reachable, and serving at least one of the pack's voices (the others fall back to it). A
+ * server that answers but has none of them, such as an English-only install asked for
+ * Polish, is `unsupported`.
+ */
+export async function ttsHealthStatus(config: TtsConfig): Promise<TtsHealthStatus> {
   try {
     const response = await fetch(`${config.baseUrl}/v1/audio/voices`, {
       method: 'GET',
+      signal: AbortSignal.timeout(10000),
     })
-    return response.ok
+    if (!response.ok) return 'offline'
+    const needed = (config.voices ?? []).map(voice => voice.id.toLowerCase())
+    if (!needed.length) return 'ok'
+    const body = (await response.json().catch(() => null)) as { voices?: unknown } | null
+    const served = new Set(
+      Array.isArray(body?.voices) ? body.voices.map(voice => String(voice).toLowerCase()) : []
+    )
+    return needed.some(id => served.has(id)) ? 'ok' : 'unsupported'
   } catch {
-    return false
+    return 'offline'
   }
 }

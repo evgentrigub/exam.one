@@ -61,8 +61,15 @@
               :key="exercise?.id ?? definition.id"
             >
               <div v-if="exercise" class="space-y-5">
-                <div class="whitespace-pre-line rounded-box bg-base-200/50 p-4 text-sm leading-6">
-                  {{ exercise.content }}
+                <div class="rounded-box bg-base-200/50 p-4 text-sm leading-6">
+                  <GapFillText
+                    v-if="isGapFill('reading', exercise.testingPart)"
+                    :content="exercise.content"
+                    :questions="exercise.questions ?? []"
+                    :answers="responseAnswers(definition.id)"
+                    revealed
+                  />
+                  <div v-else class="whitespace-pre-line">{{ exercise.content }}</div>
                 </div>
                 <ReviewQuestionList
                   :questions="readingQuestions(exercise)"
@@ -85,6 +92,20 @@
                   <div class="mt-2 whitespace-pre-line text-sm leading-6">
                     {{ listeningTranscript(exercise) }}
                   </div>
+                </div>
+                <div
+                  v-if="listeningNotes(exercise)"
+                  class="rounded-box border border-base-300 p-4 text-sm leading-6"
+                >
+                  <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-base-content/45">
+                    {{ $t('gapFill.notes') }}
+                  </div>
+                  <GapFillText
+                    :content="listeningNotes(exercise)"
+                    :questions="notesQuestions(exercise)"
+                    :answers="responseAnswers(definition.id)"
+                    revealed
+                  />
                 </div>
                 <ReviewQuestionList
                   :questions="listeningQuestions(exercise)"
@@ -251,14 +272,17 @@
 </template>
 
 <script setup lang="ts">
+import type { GapQuestion, ObjectiveAnswers } from '~/utils/gapFill'
 import { ArrowLeft, CircleAlert, Info, Lock, Sparkles } from 'lucide-vue-next'
 import ReviewQuestionList from '~/components/mockExam/ReviewQuestionList.vue'
+import GapFillText from '~/components/gapFill/GapFillText.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
 import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
-import type { MockExamSet } from '@exam-one/exam-packs'
+import { scaleScore, type MockExamSet } from '@exam-one/exam-packs'
 import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
 import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
+import { objectivePoints } from '~/utils/mockExam/scoring'
 import type { WritingExercise } from '~/utils/types'
 import {
   blankRows,
@@ -267,7 +291,14 @@ import {
   parseFormValues,
 } from '~/utils/writing/formFill'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
-import { isSharedMatchingListening, isStatementListening, usesItemAudio } from '~/utils/listening/audioUrls'
+import {
+  isSharedChoiceListening,
+  isSharedMatchingListening,
+  isStatementListening,
+  usesItemAudio,
+  type NotesListening,
+  type SharedChoiceListening,
+} from '~/utils/listening/audioUrls'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
@@ -297,6 +328,14 @@ const moduleDefinition = computed(() => set.value.modules.find(module => module.
 const moduleState = computed(() => state.value.modules[skill])
 const scoreLabel = computed(() => {
   const score = moduleState.value?.scoreFinal
+  const scale = set.value.rules?.scale
+  const definition = moduleDefinition.value
+  // A scale converts raw marks: show the skill's scale score with its raw marks.
+  if (scale && definition && typeof score === 'number' && moduleState.value?.grading !== 'pending') {
+    const value = scaleScore(scale, skill, score, definition.maxRawPoints)
+    const shown = value < scale.min ? t('mockExam.scale.below', { min: scale.min }) : Math.round(value)
+    return `${shown} · ${t('mockExam.scale.raw', { score: Number(score.toFixed(2)), max: definition.maxRawPoints })}`
+  }
   return `${score === null || score === undefined ? '—' : Number(score.toFixed(2))}/${moduleDefinition.value?.maxFinalPoints ?? 0}`
 })
 
@@ -307,17 +346,17 @@ function response(exerciseId: string) {
   return moduleState.value?.responses[exerciseId]
 }
 
-function responseAnswers(exerciseId: string): Record<string, number | undefined> {
+function responseAnswers(exerciseId: string): ObjectiveAnswers {
   return response(exerciseId)?.answers ?? {}
 }
 
 function exerciseScore(exerciseId: string): string {
   const result = response(exerciseId)
-  const score = result?.rawScore ?? result?.score
   const maximum =
-    result?.total ??
     moduleDefinition.value?.exercises.find(item => item.id === exerciseId)?.maxRawPoints ??
+    result?.total ??
     0
+  const score = result?.rawScore ?? objectivePoints(result, maximum)
   return t('mockExam.exerciseScore', { score: score ?? '—', maximum })
 }
 
@@ -390,17 +429,63 @@ function speakingExercise(id: string) {
   return set.value.content.speaking.find(exercise => exercise.id === id)
 }
 
+/** Whether a part of this pack is answered by typing into gaps. */
+function isGapFill(module: SkillId, part: number | undefined): boolean {
+  return (
+    pack.value.structure.find(item => item.id === module)?.parts.find(item => item.n === part)
+      ?.itemFormat === 'gap-fill'
+  )
+}
+
 function readingQuestions(exercise: ReadingExercise): ReviewQuestion[] {
   return (exercise.questions ?? []).map(question => ({
     id: question.id,
     prompt: question.question,
-    options: question.options,
-    correctIndex: question.correctAnswer,
+    options: question.options ?? [],
+    correctIndex: question.correctAnswer ?? -1,
+    ...(question.accepted ? { accepted: question.accepted } : {}),
     explanation: question.explanation,
   }))
 }
 
+/** The notes' gaps, in the shape the gapped text reads. */
+function notesQuestions(exercise: ListeningA2Exercise): GapQuestion[] {
+  return listeningQuestions(exercise).map(question => ({
+    id: question.id,
+    question: question.prompt,
+    accepted: question.accepted ?? [],
+  }))
+}
+
+/** The page of notes a gap-fill listening part completes, or an empty string. */
+function listeningNotes(exercise: ListeningA2Exercise): string {
+  if (!isGapFill('listening', exercise.testingPart)) return ''
+  return (exercise as unknown as NotesListening).content ?? ''
+}
+
 function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
+  // The part's format picks the interaction; the payload shape only picks the audio source.
+  if (isGapFill('listening', exercise.testingPart)) {
+    const notes = exercise as unknown as NotesListening
+    return (notes.questions ?? []).map((question, index) => ({
+      id: question.id ?? `${exercise.id}-q${index}`,
+      prompt: question.question,
+      options: [],
+      correctIndex: -1,
+      accepted: question.accepted ?? [],
+      explanation: question.explanation ?? '',
+    }))
+  }
+  if (isSharedChoiceListening(exercise)) {
+    const shared = exercise as unknown as SharedChoiceListening
+    return shared.questions.map((question, index) => ({
+      id: question.id ?? `${shared.id}-q${index}`,
+      prompt: question.question,
+      options: question.options,
+      correctIndex: question.correctAnswer,
+      explanation: question.explanation ?? '',
+    }))
+  }
   if (usesItemAudio(exercise)) {
     return exercise.items.map((item, index) => ({
       id: item.id ?? `${exercise.id}-item-${index}`,

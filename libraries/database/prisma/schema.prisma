@@ -37,11 +37,19 @@ enum ExerciseVisibility {
   EXAM_ONLY
 }
 
-enum GenerationJobStatus {
-  IDLE
+enum BackgroundJobType {
+  LISTENING_AUDIO
+  EXERCISE_GENERATION
+  MOCK_EXAM_SET
+}
+
+enum BackgroundJobStatus {
+  QUEUED
   RUNNING
+  CANCEL_REQUESTED
   COMPLETED
   FAILED
+  CANCELLED
 }
 
 enum PromptKind {
@@ -65,7 +73,7 @@ model User {
   authTokens       AuthToken[]
   mockExamSets     MockExamSet[]
   mockExamAttempts MockExamAttempt[]
-  generationJobs   GenerationJob[]
+  backgroundJobs   BackgroundJob[]
   promptOverrides  PromptOverride[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -89,9 +97,12 @@ model Setting {
   id             String    @id @default(cuid())
   userId         String    @unique
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packId         String    @default("goethe-de-a2")
+  packId         String    @default("cambridge-en-a2")
   examLevel      String    @default("A2")
-  targetLanguage String    @default("de")
+  targetLanguage String    @default("en")
+  /// Preferred TTS voice per language, `{ [lang]: voiceId }`; set in Settings → Voice models.
+  defaultVoices  Json      @default("{}")
+  notifyMockReadyEmail Boolean @default(true)
   updatedAt      DateTime  @updatedAt
 }
 
@@ -188,17 +199,34 @@ model MockExamAttempt {
   @@unique([userId, setId])
 }
 
-model GenerationJob {
-  id        String              @id @default(cuid())
-  userId    String
-  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packId    String              @default("goethe-de-a2")
-  kind      Skill
-  status    GenerationJobStatus @default(IDLE)
-  payload   Json
-  updatedAt DateTime            @updatedAt
+model BackgroundJob {
+  id               String              @id @default(cuid())
+  userId           String
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packId           String
+  level            String
+  type             BackgroundJobType
+  status           BackgroundJobStatus @default(QUEUED)
+  title            String
+  subtitle         String?
+  targetId         String?
+  activeKey        String?             @unique
+  input            Json
+  progress         Json                @default("{}")
+  checkpoint       Json                @default("{}")
+  result           Json?
+  error            String?
+  attempt          Int                 @default(0)
+  revision         Int                 @default(0)
+  seenAt           DateTime?
+  emailAttemptedAt DateTime?
+  createdAt        DateTime            @default(now())
+  startedAt        DateTime?
+  finishedAt       DateTime?
+  updatedAt        DateTime            @updatedAt
 
-  @@unique([userId, packId, kind])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status])
 }
 
 model PromptOverride {

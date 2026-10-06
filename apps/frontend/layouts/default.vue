@@ -7,7 +7,7 @@
         <slot />
       </main>
     </div>
-    <GenerationJobHost :key="`${auth.user.value?.id}:${settingsStore.packId}`" />
+    <ActivityToasts />
   </div>
 </template>
 

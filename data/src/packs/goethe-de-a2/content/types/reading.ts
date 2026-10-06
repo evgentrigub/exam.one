@@ -6,7 +6,14 @@ export type ReadingTextType =
   'email' | 'notice' | 'article' | 'advertisement' | 'instructions' | 'announcement' | 'list'
 
 export type ReadingQuestionType =
-  'comprehension' | 'vocabulary' | 'grammar' | 'inference' | 'selective' | 'matching'
+  | 'comprehension'
+  | 'vocabulary'
+  | 'grammar'
+  | 'inference'
+  | 'selective'
+  | 'matching'
+  | 'cloze'
+  | 'gap'
 
 export type ReadingMcqAnswerIndex = 0 | 1 | 2
 
@@ -33,6 +40,11 @@ export interface ReadingQuestionBase<
   question: string
   options: TOptions
   correctAnswer: TAnswer
+  /**
+   * Gap-fill parts only: the typed answers that earn the mark. Such a question is scored
+   * against this list; its `options` and `correctAnswer` are absent from the payload.
+   */
+  accepted?: string[]
   explanation: string
   type: TType
 }

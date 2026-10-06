@@ -39,7 +39,7 @@
           </button>
           <p v-if="generateError" class="text-xs text-error">{{ generateError }}</p>
           <p v-else-if="!isTtsReady" class="text-xs opacity-70">
-            {{ $t('listening.ttsOffline') }}
+            {{ ttsStatus === 'unsupported' ? $t('listening.ttsUnsupported') : $t('listening.ttsOffline') }}
           </p>
         </div>
       </div>
@@ -161,10 +161,36 @@
           </span>
         </div>
         <p class="text-sm text-base-content/60 mt-1">
-          {{ $t('listening.questionsIntro') }}
+          {{ model.optionStyle === 'gaps' ? $t('listening.notesIntro') : $t('listening.questionsIntro') }}
         </p>
 
-        <div class="mt-6 space-y-7" :class="{ 'opacity-60': interactionLocked && !isFinished }">
+        <div
+          v-if="model.optionStyle === 'gaps'"
+          class="mt-6 space-y-5"
+          :class="{ 'opacity-60': interactionLocked && !isFinished }"
+        >
+          <div class="rounded-box border border-base-300/70 bg-base-200/40 p-5 text-[15px]">
+            <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-base-content/50">
+              {{ $t('gapFill.notes') }}
+            </div>
+            <GapFillText
+              :content="model.notes ?? ''"
+              :questions="gapQuestions"
+              :answers="answers"
+              :revealed="isFinished && !examMode"
+            />
+          </div>
+          <GapFillInputs
+            :questions="gapQuestions"
+            :model-value="answers"
+            :disabled="answersDisabled"
+            :revealed="isFinished"
+            :show-feedback="!examMode"
+            @update:model-value="setTypedAnswers"
+          />
+        </div>
+
+        <div v-else class="mt-6 space-y-7" :class="{ 'opacity-60': interactionLocked && !isFinished }">
           <div v-for="(q, i) in model.questions" :key="q.id">
             <AudioPlayer
               v-if="model.mode === 'peritem' && q.transcript"
@@ -302,14 +328,21 @@ import {
   Volume2,
   AlertCircle,
 } from 'lucide-vue-next'
+import { isGapAnswerCorrect } from '@exam-one/exam-packs'
 import type { ListeningA2Exercise, ListeningExerciseAudioMap } from '~/utils/exercises/listening'
 import {
   resolveItemListeningAudioSrc,
   resolveSharedListeningAudioSrc,
   usesItemAudio,
+  isSharedChoiceListening,
   isSharedMatchingListening,
   isStatementListening,
+  type NotesListening,
+  type SharedChoiceListening,
 } from '~/utils/listening/audioUrls'
+import type { GapQuestion, ObjectiveAnswer, ObjectiveAnswers } from '~/utils/gapFill'
+import GapFillInputs from '~/components/gapFill/GapFillInputs.vue'
+import GapFillText from '~/components/gapFill/GapFillText.vue'
 import { useProgress } from '~/composables/useProgress'
 import { useListeningAudioAvailability } from '~/composables/useListeningAudioAvailability'
 import { useTtsHealth } from '~/composables/useTtsHealth'
@@ -326,14 +359,18 @@ interface NormalizedQuestion {
   prompt: string
   options: string[]
   correctIndex: number
+  /** Gap-fill only: the typed answers that earn the mark. */
+  accepted?: string[]
   explanation: string
   transcript?: string
 }
 
 interface NormalizedModel {
   mode: 'shared' | 'peritem'
-  optionStyle: 'buttons' | 'select'
+  /** `gaps`: a page of notes with a typed answer per gap. */
+  optionStyle: 'buttons' | 'select' | 'gaps'
   sharedTranscript?: string
+  notes?: string
   questions: NormalizedQuestion[]
 }
 
@@ -342,7 +379,7 @@ const props = withDefaults(
     exercise: ListeningA2Exercise
     examMode?: boolean
     configuredReplays?: number | undefined
-    initialAnswers?: Record<string, number | undefined>
+    initialAnswers?: ObjectiveAnswers
   }>(),
   {
     examMode: false,
@@ -352,24 +389,25 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   finish: []
-  progress: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
-  examComplete: [
-    payload: { answers: Record<string, number | undefined>; score: number; total: number },
-  ]
+  progress: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
+  examComplete: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
 }>()
 
 const { t } = useI18n()
 const { saveListeningCompletion } = useProgress()
-const { updateExerciseAudio, getExerciseById } = useListeningExercises()
-const { isReady: isTtsReady } = useTtsHealth()
+const { updateExerciseAudio, getExerciseById, reload } = useListeningExercises()
+const center = useJobCenter()
+const audioJob = computed(() => center.jobs.value.find(job => job.type === 'LISTENING_AUDIO' && job.targetId === props.exercise.id && job.packId === useSettingsStore().packId) ?? null)
+const { isReady: isTtsReady, status: ttsStatus } = useTtsHealth()
 const { activePlayerId, claim, release } = useListeningExclusivePlayback()
 
-const answers = reactive<Record<string, number | undefined>>({})
+const answers = reactive<ObjectiveAnswers>({})
 const isFinished = ref(false)
 const sessionKey = ref(0)
 const volume = ref(0.6)
 const speed = ref(1)
-const isGeneratingAudio = ref(false)
+const legacyGeneratingAudio = ref(false)
+const isGeneratingAudio = computed(() => legacyGeneratingAudio.value || (!props.examMode && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(audioJob.value?.status ?? '')))
 const generateProgress = ref<{ done: number; total: number } | null>(null)
 const generateError = ref<string | null>(null)
 
@@ -399,6 +437,14 @@ const {
 } = useListeningAudioAvailability(exerciseRef)
 
 const model = computed<NormalizedModel>(() => normalize(currentExercise.value))
+const gapQuestions = computed<GapQuestion[]>(() =>
+  model.value.questions.map(q => ({
+    id: q.id,
+    question: q.prompt,
+    accepted: q.accepted ?? [],
+    explanation: q.explanation,
+  }))
+)
 const sharedAudioSrc = computed(() => resolveSharedListeningAudioSrc(currentExercise.value) ?? '')
 
 function itemAudioSrc(itemId: string): string {
@@ -409,6 +455,7 @@ const audioStatusDetail = computed(() => {
   if (isTtsReady.value) {
     return t('listening.missingDetailReady')
   }
+  if (ttsStatus.value === 'unsupported') return t('listening.missingDetailUnsupported')
   return t('listening.missingDetailOffline')
 })
 
@@ -528,10 +575,26 @@ function onAudioUnavailable() {
   void refreshAvailability()
 }
 
+const lastAppliedJob = ref(-1)
+watch(audioJob, async job => {
+  if (!job || job.status !== 'COMPLETED' || job.revision <= lastAppliedJob.value || props.examMode) return
+  lastAppliedJob.value = job.revision
+  await reload()
+  const current = getExerciseById(props.exercise.id ?? '')
+  if (current) currentExercise.value = { ...current }
+  sessionKey.value += 1
+  await refreshAvailability()
+}, { immediate: true })
+
 async function generateAudioForExercise() {
   if (!isTtsReady.value || isGeneratingAudio.value) return
   generateError.value = null
-  isGeneratingAudio.value = true
+  if (!props.examMode) {
+    try { await center.enqueueListeningAudio(currentExercise.value.id ?? '') }
+    catch (error) { generateError.value = error instanceof Error ? error.message : t('listening.generationFailed') }
+    return
+  }
+  legacyGeneratingAudio.value = true
   generateProgress.value = { done: 0, total: Math.max(1, expectedCount.value) }
 
   try {
@@ -568,7 +631,7 @@ async function generateAudioForExercise() {
   } catch (error: unknown) {
     generateError.value = error instanceof Error ? error.message : t('listening.generationFailed')
   } finally {
-    isGeneratingAudio.value = false
+    legacyGeneratingAudio.value = false
     generateProgress.value = null
   }
 }
@@ -602,10 +665,17 @@ watch(
 
 onUnmounted(stopTimer)
 
+/** A choice is an index; a typed gap counts once it is not blank. */
+function isAnswered(value: ObjectiveAnswer | undefined): boolean {
+  return typeof value === 'number' || (typeof value === 'string' && value.trim() !== '')
+}
 const answeredCount = computed(
-  () => model.value.questions.filter(q => answers[q.id] !== undefined).length
+  () => model.value.questions.filter(q => isAnswered(answers[q.id])).length
 )
-const allAnswered = computed(() => answeredCount.value === model.value.questions.length)
+// An exercise the screen cannot read has no questions; it must not submit as 0 / 0.
+const allAnswered = computed(
+  () => model.value.questions.length > 0 && answeredCount.value === model.value.questions.length
+)
 const score = computed(() => model.value.questions.filter(q => isCorrect(q)).length)
 const percentage = computed(() =>
   model.value.questions.length ? Math.round((score.value / model.value.questions.length) * 100) : 0
@@ -626,7 +696,15 @@ function selectAnswer(questionId: string, optionIndex: number) {
   answers[questionId] = optionIndex
 }
 
+function setTypedAnswers(value: ObjectiveAnswers) {
+  if (answersDisabled.value) return
+  model.value.questions.forEach(q => {
+    answers[q.id] = value[q.id]
+  })
+}
+
 function isCorrect(q: NormalizedQuestion): boolean {
+  if (q.accepted) return isGapAnswerCorrect(answers[q.id], q.accepted)
   return answers[q.id] === q.correctIndex
 }
 
@@ -682,6 +760,25 @@ function restart() {
 }
 
 function normalize(ex: ListeningA2Exercise): NormalizedModel {
+  // The part's format picks the interaction; the payload shape only picks the audio source.
+  if (listeningPart.value?.itemFormat === 'gap-fill') {
+    const notes = ex as unknown as NotesListening
+    return {
+      mode: 'shared',
+      optionStyle: 'gaps',
+      sharedTranscript: notes.transcript,
+      notes: notes.content,
+      questions: (notes.questions ?? []).map((q, i) => ({
+        id: q.id ?? `${ex.id}-q${i}`,
+        prompt: q.question,
+        options: [],
+        correctIndex: -1,
+        accepted: [...(q.accepted ?? [])],
+        explanation: q.explanation ?? '',
+      })),
+    }
+  }
+
   if (usesItemAudio(ex)) {
     return {
       mode: 'peritem',
@@ -723,6 +820,22 @@ function normalize(ex: ListeningA2Exercise): NormalizedModel {
         options: ['Ja, das ist richtig.', 'Nein, das ist falsch.'],
         correctIndex: q.correctAnswer ? 0 : 1,
         explanation: q.explanation,
+      })),
+    }
+  }
+
+  if (isSharedChoiceListening(ex)) {
+    const shared = ex as unknown as SharedChoiceListening
+    return {
+      mode: 'shared',
+      optionStyle: 'buttons',
+      sharedTranscript: shared.transcript,
+      questions: shared.questions.map((q, i) => ({
+        id: q.id ?? `${shared.id}-q${i}`,
+        prompt: q.question,
+        options: [...q.options],
+        correctIndex: q.correctAnswer,
+        explanation: q.explanation ?? '',
       })),
     }
   }

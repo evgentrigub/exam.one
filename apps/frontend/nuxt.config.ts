@@ -1,8 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
 
+const apiOrigin = new URL(process.env['NUXT_PUBLIC_API_URL'] || 'http://localhost:3001').origin
 const CONTENT_SECURITY_POLICY =
-  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' http://localhost:3001 http://127.0.0.1:3001; frame-ancestors 'self';"
+  `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' ${apiOrigin} http://127.0.0.1:3001; frame-ancestors 'self';`
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-18',
@@ -36,6 +37,9 @@ export default defineNuxtConfig({
     locales: [
       { code: 'de', language: 'de-DE', name: 'Deutsch', file: 'de.json' },
       { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'es', language: 'es-ES', name: 'Español', file: 'es.json' },
+      { code: 'pl', language: 'pl-PL', name: 'Polski', file: 'pl.json' },
+      { code: 'ru', language: 'ru-RU', name: 'Русский', file: 'ru.json' },
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',

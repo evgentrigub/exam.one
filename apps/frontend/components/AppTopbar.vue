@@ -12,6 +12,7 @@
 
     <!-- Right controls -->
     <div class="flex items-center gap-2 shrink-0">
+      <ActivityBell />
       <!-- Language selector -->
       <div class="dropdown dropdown-end">
         <button
@@ -151,6 +152,7 @@
 
 <script setup lang="ts">
 import { Globe, ChevronDown, Cake, Sun, User, Settings, TrendingUp, LogOut } from 'lucide-vue-next'
+import { LANGUAGE_LABELS, LANGUAGE_OPTIONS } from '~/utils/types'
 import type { LanguageOptions } from '~/utils/types'
 
 defineProps<{
@@ -163,10 +165,7 @@ const { profile, initials } = useAccountProfile()
 const { locale, setLocale } = useI18n()
 const { logout } = useAuth()
 
-const languages: { code: LanguageOptions; label: string }[] = [
-  { code: 'en', label: 'English' },
-  { code: 'de', label: 'Deutsch' },
-]
+const languages = LANGUAGE_OPTIONS.map(code => ({ code, label: LANGUAGE_LABELS[code] }))
 
 function changeLocale(code: LanguageOptions) {
   if (code !== locale.value) setLocale(code)

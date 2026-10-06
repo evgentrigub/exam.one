@@ -62,7 +62,8 @@ async function requestAiOnce<T>(path: string, options: AiFetchOptions = {}): Pro
   if (options.body !== undefined) {
     fetchOptions.body = options.body as BodyInit | Record<string, unknown> | null
   }
-  return (await $fetch(aiUrl(path), fetchOptions)) as AiResponse<T>
+  const request = $fetch as (endpoint: string, opts: typeof fetchOptions) => Promise<AiResponse<T>>
+  return request(aiUrl(path), fetchOptions)
 }
 
 function envelopeFromCatch(error: unknown): AiResponse<never> {

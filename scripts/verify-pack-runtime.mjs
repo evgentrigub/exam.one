@@ -68,12 +68,15 @@ for (const module of syntheticEnglishA1.structure) for (const part of module.par
   assert.equal(payload.difficulty, 'A1')
   payload.id = `shared-${module.id}-${part.n}`
   await agent.post('/api/v1/exercises').set(headers).send({ skill: module.id.toUpperCase(), payload }).expect(201)
-  await agent.put(`/api/v1/drafts/${module.id.toUpperCase()}/${payload.id}`).set(headers).send({ payload: { answers: { a: 0, b: 1, message: 'Please come to lunch', intro: 'Hello I am Alex' } } }).expect(200)
+  const answers = part.itemFormat === 'gap-fill' ? { a: ' In', b: 'by.' } : { a: 0, b: 1, message: 'Please come to lunch', intro: 'Hello I am Alex' }
+  await agent.put(`/api/v1/drafts/${module.id.toUpperCase()}/${payload.id}`).set(headers).send({ payload: { answers } }).expect(200)
   const draft = await agent.get(`/api/v1/drafts/${module.id.toUpperCase()}/${payload.id}`).set(headers).expect(200)
   assert.equal(draft.body.data.packId, 'synthetic-en-a1')
   const attempt = await agent.post('/api/v1/attempts').set(headers).send({ skill: module.id.toUpperCase(), exerciseExternalId: payload.id, answers: draft.body.data.payload.answers }).expect(201)
   assert.equal(attempt.body.data.packId, 'synthetic-en-a1')
   assert.equal(attempt.body.data.snapshot.version, 1)
+  // Typed gap answers are re-scored on the server against the accepted lists.
+  if (part.itemFormat === 'gap-fill') assert.equal(attempt.body.data.result.score, part.runtime.maxPoints)
   if (part.itemFormat === 'freeform' || part.itemFormat === 'recording') {
     const response = await agent.post(module.id === 'writing' ? '/api/v1/llm/review' : '/api/v1/llm/review-speaking').set(headers).send({ topic: payload, answers: draft.body.data.payload.answers, prompt: 'default', ...(module.id === 'writing' ? { userContent: 'Please come to lunch' } : {}) }).expect(200)
     assert.equal(response.body.error, null, response.body.error)
@@ -95,11 +98,6 @@ assert.equal(goetheAttempt.body.data.result.maxScore, 5)
 await agent.put('/api/v1/drafts/READING/shared-reading-7').set('x-exam-pack','goethe-de-a2').send({ payload: { text: 'Goethe draft' } }).expect(200)
 const isolated = await agent.get('/api/v1/drafts/READING/shared-reading-7').set(headers).expect(200)
 assert.equal(isolated.body.data.payload.text, undefined)
-for (const packId of ['goethe-de-a2', 'synthetic-en-a1']) {
-  await agent.put('/api/v1/generation-jobs/READING').set('x-exam-pack', packId).send({ status: 'FAILED', payload: { part: packId === 'synthetic-en-a1' ? 7 : 1, marker: packId } }).expect(200)
-}
-const job = await agent.get('/api/v1/generation-jobs/READING').set(headers).expect(200)
-assert.equal(job.body.data.payload.marker, 'synthetic-en-a1')
 const catalog = await agent.get('/api/v1/exercises?skill=READING').set(headers).expect(200)
 assert.equal(catalog.body.data.find(row => row.externalId === 'shared-reading-7').payload.title, 'Synthetic selection')
 const recorded = await agent.get('/api/v1/attempts?skill=READING').set(headers).expect(200)

@@ -8,6 +8,10 @@ export interface AppConfig {
   NODE_ENV: string
   BACKEND_PORT: number
   DATABASE_URL: string
+  REDIS_URL: string
+  JOBS_WORKER_ENABLED: boolean
+  BULL_BOARD_USER: string
+  BULL_BOARD_PASSWORD: string
   FRONTEND_URL: string
   JWT_SECRET: string
   AUTH_COOKIE_SECURE: boolean
@@ -28,6 +32,8 @@ export interface AppConfig {
   TTS_VOICE: string
   TTS_SPEED: number
   TTS_LANG: string
+  /** Comma-separated TTS languages this instance serves; falls back to `TTS_LANG`. */
+  TTS_LANGUAGES: string
   TTS_TURN_PAUSE_MS: number
   TTS_CONCURRENCY: number
   STT_PROVIDER: SttProviderName
@@ -36,6 +42,10 @@ export interface AppConfig {
   STT_MODEL: string
   STT_OPENAI_MODEL: string
   GENERATED_LISTENING_AUDIO_DIR: string
+  /** Root of every pack's bundled seed WAVs (`<root>/<pack prefix>/<exercise>/…`). */
+  SEED_LISTENING_AUDIO_DIR: string
+  /** How Settings → Generated files names the audio root on the host; display only. */
+  AUDIO_HOST_DISPLAY_ROOT: string
 }
 
 const MIN_JWT_SECRET_LENGTH = 32
@@ -86,10 +96,18 @@ function defaultGeneratedListeningAudioDir(): string {
   return path.resolve(process.cwd(), '../frontend/public/audio/listening/generated')
 }
 
+function defaultSeedListeningAudioDir(): string {
+  return path.resolve(process.cwd(), '../frontend/public/audio/listening')
+}
+
 export const appConfig = registerAs('app', (): AppConfig => ({
   NODE_ENV: process.env['NODE_ENV'] ?? 'development',
   BACKEND_PORT: Number(process.env['BACKEND_PORT'] ?? 3001),
   DATABASE_URL: requireEnv('DATABASE_URL'),
+  REDIS_URL: requireEnv('REDIS_URL'),
+  JOBS_WORKER_ENABLED: process.env['JOBS_WORKER_ENABLED'] !== 'false',
+  BULL_BOARD_USER: process.env['BULL_BOARD_USER'] ?? '',
+  BULL_BOARD_PASSWORD: process.env['BULL_BOARD_PASSWORD'] ?? '',
   FRONTEND_URL: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
   JWT_SECRET: requireJwtSecret(process.env['JWT_SECRET']),
   AUTH_COOKIE_SECURE: process.env['AUTH_COOKIE_SECURE'] === 'true',
@@ -101,7 +119,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   SMTP_FROM: process.env['SMTP_FROM'] ?? 'exam.one <noreply@localhost>',
   LLM_PROVIDER: llmProvider(),
   OPENAI_API_KEY: (process.env['OPENAI_API_KEY'] ?? '').trim(),
-  OPENAI_MODEL: (process.env['OPENAI_MODEL'] ?? 'gpt-5.5').trim(),
+  OPENAI_MODEL: (process.env['OPENAI_MODEL'] ?? 'gpt-6-sol').trim(),
   OPENROUTER_API_KEY: (process.env['OPENROUTER_API_KEY'] ?? '').trim(),
   OPENROUTER_MODEL: (process.env['OPENROUTER_MODEL'] ?? 'google/gemma-4-26b-a4b-it:free').trim(),
   LLM_REASONING_EFFORT: (process.env['LLM_REASONING_EFFORT'] ?? 'medium').trim(),
@@ -110,6 +128,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   TTS_VOICE: process.env['TTS_VOICE'] ?? 'martin',
   TTS_SPEED: Number(process.env['TTS_SPEED'] ?? '1.0') || 1.0,
   TTS_LANG: process.env['TTS_LANG'] ?? 'de',
+  TTS_LANGUAGES: process.env['TTS_LANGUAGES'] ?? process.env['TTS_LANG'] ?? 'de',
   TTS_TURN_PAUSE_MS: Number(process.env['TTS_TURN_PAUSE_MS'] ?? '350') || 350,
   TTS_CONCURRENCY: Number(process.env['TTS_CONCURRENCY'] ?? '3') || 3,
   STT_PROVIDER: sttProvider(),
@@ -119,4 +138,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   STT_OPENAI_MODEL: process.env['STT_OPENAI_MODEL'] ?? 'whisper-1',
   GENERATED_LISTENING_AUDIO_DIR:
     process.env['GENERATED_LISTENING_AUDIO_DIR']?.trim() || defaultGeneratedListeningAudioDir(),
+  SEED_LISTENING_AUDIO_DIR: process.env['SEED_LISTENING_AUDIO_DIR']?.trim() || defaultSeedListeningAudioDir(),
+  AUDIO_HOST_DISPLAY_ROOT:
+    process.env['AUDIO_HOST_DISPLAY_ROOT']?.trim() || 'apps/frontend/public/audio/listening',
 }))

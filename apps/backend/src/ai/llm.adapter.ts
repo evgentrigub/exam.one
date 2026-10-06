@@ -2,7 +2,7 @@ import type { LlmProvider, LlmReasoningEffort } from '@exam-one/contracts'
 
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
 
-const DEFAULT_OPENAI_MODEL = 'gpt-5.5'
+const DEFAULT_OPENAI_MODEL = 'gpt-6-sol'
 const DEFAULT_OPENROUTER_MODEL = 'google/gemma-4-26b-a4b-it:free'
 const DEFAULT_REASONING_EFFORT = 'medium'
 

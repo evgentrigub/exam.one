@@ -1,4 +1,4 @@
-import type { ItemFormat, SkillId } from './types'
+import { OBJECTIVE_FORMATS, type ItemFormat, type SkillId } from './types'
 
 export interface RubricCriterion {
   id: string
@@ -29,10 +29,46 @@ export interface RuntimeQuestion {
   text: string
   options: string[]
   correctAnswer: number
+  /**
+   * Gap-fill only: every typed answer that earns the mark. Such a question has no options and
+   * `correctAnswer` is `GAP_ANSWER_INDEX`, so no numeric answer can ever match it.
+   */
+  accepted?: string[]
   explanation?: string
   weight?: number
   audio?: string
   transcript?: string
+}
+
+/** The `correctAnswer` of a gap-fill question, which is scored against `accepted` instead. */
+export const GAP_ANSWER_INDEX = -1
+
+export function isGapQuestion(question: RuntimeQuestion): boolean {
+  return Array.isArray(question.accepted)
+}
+
+/**
+ * Compare typed answers without forgiving spelling: case, spacing, typographic apostrophes and
+ * dashes, surrounding quotes and trailing punctuation are ignored; everything else must match
+ * an accepted answer. Numbers, times and spelling variants are listed in `accepted`, not
+ * inferred here, so the accepted answers shown to the learner are the whole rule.
+ */
+export function normalizeGapAnswer(value: unknown): string {
+  if (typeof value !== 'string' && typeof value !== 'number') return ''
+  return String(value)
+    .normalize('NFKC')
+    .replace(/[\u2018\u2019\u201B\u02BC`\u00B4]/g, "'")
+    .replace(/[\u2010-\u2015\u2212]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^["\u201C\u201D.,;:!?]+|["\u201C\u201D.,;:!?]+$/g, '')
+    .trim()
+    .toLowerCase()
+}
+
+export function isGapAnswerCorrect(answer: unknown, accepted: readonly string[]): boolean {
+  const given = normalizeGapAnswer(answer)
+  return given !== '' && accepted.some(option => normalizeGapAnswer(option) === given)
 }
 export interface ExerciseView {
   version: 1
@@ -123,7 +159,25 @@ export function formatAdapter(format: ItemFormat, rules: PartRuntime): ExerciseA
     const itemAudio =
       audio['items'] && typeof audio['items'] === 'object' ? record(audio['items']) : {}
     if (typeof data['transcript'] === 'string') view.transcript = data['transcript']
-    if (['selection', 'matching', 'true-false'].includes(format)) {
+    if (format === 'gap-fill') {
+      if (!Array.isArray(data['questions']) || !data['questions'].length)
+        throw new Error('Missing questions')
+      view.questions = data['questions'].map((item, index) => {
+        const q = record(item)
+        const accepted = q['accepted']
+        if (!Array.isArray(accepted) || !accepted.every(x => typeof x === 'string'))
+          throw new Error('Invalid accepted answers')
+        return {
+          id: typeof q['id'] === 'string' ? q['id'] : `q${index + 1}`,
+          text: typeof q['text'] === 'string' ? q['text'] : '',
+          options: [],
+          correctAnswer: GAP_ANSWER_INDEX,
+          accepted: accepted as string[],
+          ...(typeof q['explanation'] === 'string' ? { explanation: q['explanation'] } : {}),
+          ...(typeof q['weight'] === 'number' ? { weight: q['weight'] } : {}),
+        }
+      })
+    } else if (['selection', 'matching', 'true-false'].includes(format)) {
       if (!Array.isArray(data['questions']) || !data['questions'].length)
         throw new Error('Missing questions')
       view.questions = data['questions'].map((item, index) => {
@@ -174,7 +228,7 @@ export function formatAdapter(format: ItemFormat, rules: PartRuntime): ExerciseA
 
 export function validateView(view: ExerciseView, rules: PartRuntime): void {
   if (view.version !== 1 || !view.title) throw new Error('Invalid exercise view')
-  if (['selection', 'matching', 'true-false'].includes(view.format) && !view.questions?.length)
+  if (OBJECTIVE_FORMATS.includes(view.format) && !view.questions?.length)
     throw new Error('Missing objective questions')
   if (
     view.format === 'freeform' &&
@@ -196,14 +250,18 @@ export function validateView(view: ExerciseView, rules: PartRuntime): void {
     if (new Set(view.questions.map(q => q['id'])).size !== view.questions.length)
       throw new Error('Duplicate question ids')
     for (const q of view.questions) {
-      if (rules.optionCount !== undefined && q['options'].length !== rules.optionCount)
-        throw new Error('Unexpected option count')
-      if (
-        !Number.isInteger(q['correctAnswer']) ||
-        q['correctAnswer'] < 0 ||
-        q['correctAnswer'] >= q['options'].length
-      )
-        throw new Error('Invalid answer index')
+      if (view.format === 'gap-fill') validateGap(q)
+      else {
+        if (q.accepted !== undefined) throw new Error('Accepted answers are only for gap-fill')
+        if (rules.optionCount !== undefined && q['options'].length !== rules.optionCount)
+          throw new Error('Unexpected option count')
+        if (
+          !Number.isInteger(q['correctAnswer']) ||
+          q['correctAnswer'] < 0 ||
+          q['correctAnswer'] >= q['options'].length
+        )
+          throw new Error('Invalid answer index')
+      }
       if (q['weight'] !== undefined && (!Number.isFinite(q['weight']) || q['weight'] <= 0))
         throw new Error('Invalid question weight')
     }
@@ -214,6 +272,16 @@ export function validateView(view: ExerciseView, rules: PartRuntime): void {
     )
       throw new Error('Matching answers must be unique')
   }
+}
+
+function validateGap(q: RuntimeQuestion): void {
+  if (
+    !q.accepted?.length ||
+    q.accepted.some(answer => typeof answer !== 'string' || !normalizeGapAnswer(answer))
+  )
+    throw new Error('A gap needs at least one accepted answer')
+  if (q.options.length || q.correctAnswer !== GAP_ANSWER_INDEX)
+    throw new Error('A gap has no options or answer index')
 }
 
 /**
@@ -261,10 +329,9 @@ export function objectiveScore(
 ) {
   const questions = view.questions ?? []
   const totalWeight = questions.reduce((sum, q) => sum + (q['weight'] ?? 1), 0)
-  const earned = questions.reduce(
-    (sum, q) => sum + (answers[q['id']] === q['correctAnswer'] ? (q['weight'] ?? 1) : 0),
-    0
-  )
+  const correct = (q: RuntimeQuestion): boolean =>
+    q.accepted ? isGapAnswerCorrect(answers[q.id], q.accepted) : answers[q.id] === q.correctAnswer
+  const earned = questions.reduce((sum, q) => sum + (correct(q) ? (q['weight'] ?? 1) : 0), 0)
   const maxScore = rules.maxPoints * (rules.multiplier ?? 1)
   const score = totalWeight ? (earned / totalWeight) * maxScore : 0
   return { score, maxScore, percentage: maxScore ? Math.round((score / maxScore) * 100) : 0 }

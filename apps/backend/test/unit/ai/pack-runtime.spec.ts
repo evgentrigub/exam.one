@@ -1,12 +1,16 @@
 import {
   formatAdapter,
+  isGapAnswerCorrect,
+  normalizeGapAnswer,
   objectiveScore,
   validatePacks,
   validateReview,
   validateView,
   goetheDeA2,
+  type ExamPart,
 } from '@exam-one/exam-packs'
 import { goetheA2MockExamSet1 } from '@exam-one/exam-packs'
+import { goetheRawAdapter } from '../../../../../data/src/packs/goethe-shared/raw-adapter'
 import { syntheticEnglishA1, syntheticPayloads } from '../../../../../data/src/testing/english-a1'
 
 describe('Data-only pack runtime', () => {
@@ -18,7 +22,7 @@ describe('Data-only pack runtime', () => {
     expect(() => part.adapter!.validateStoredReview!({ review: { ...review, totalPoints: 999 } }, rules)).toThrow('total')
     expect(() => part.adapter!.validateStoredReview!({ review }, part.runtime!)).toThrow('rubric')
   })
-  it('accepts a different language, CEFR, part numbering and all five formats', () => {
+  it('accepts a different language, CEFR, part numbering and all six formats', () => {
     expect(() => validatePacks([syntheticEnglishA1])).not.toThrow()
     const formats = new Set<string>()
     for (const module of syntheticEnglishA1.structure)
@@ -27,7 +31,7 @@ describe('Data-only pack runtime', () => {
         formats.add(view.format)
         expect(view.title).toContain('Synthetic')
       }
-    expect(formats.size).toBe(5)
+    expect(formats.size).toBe(6)
   })
   it('rejects invalid generated answer indices and counts', () => {
     const adapter = formatAdapter('selection', {
@@ -122,5 +126,104 @@ describe('Data-only pack runtime', () => {
       })),
     }
     expect(() => validatePacks([pack])).toThrow('replay')
+  })
+})
+
+describe('Gap-fill format', () => {
+  const rules = { minutes: 3, maxPoints: 2, questionCount: 2 }
+  const gapPart = (): ExamPart =>
+    syntheticEnglishA1.structure
+      .find(module => module.id === 'reading')!
+      .parts.find(part => part.itemFormat === 'gap-fill')!
+
+  it('normalizes case, spacing, typographic marks and outer punctuation only', () => {
+    expect(normalizeGapAnswer('  In  ')).toBe('in')
+    expect(normalizeGapAnswer('DON\u2019T.')).toBe("don't")
+    expect(normalizeGapAnswer('\u201Cby\u201D')).toBe('by')
+    expect(normalizeGapAnswer('half\u2013past  seven!')).toBe('half-past seven')
+    expect(normalizeGapAnswer('7.30')).toBe('7.30')
+    expect(normalizeGapAnswer(15)).toBe('15')
+    expect(normalizeGapAnswer(undefined)).toBe('')
+  })
+
+  it('keeps spelling strict and treats a blank as wrong', () => {
+    expect(isGapAnswerCorrect('Colour', ['colour', 'color'])).toBe(true)
+    expect(isGapAnswerCorrect('color', ['colour', 'color'])).toBe(true)
+    expect(isGapAnswerCorrect('colur', ['colour', 'color'])).toBe(false)
+    expect(isGapAnswerCorrect('fifteen', ['15'])).toBe(false)
+    expect(isGapAnswerCorrect('   ', ['in'])).toBe(false)
+  })
+
+  it('scores typed answers against the accepted lists', () => {
+    const part = gapPart()
+    const view = part.adapter!.project(syntheticPayloads[17])
+    expect(view.questions!.every(q => q.options.length === 0 && q.correctAnswer === -1)).toBe(true)
+    expect(objectiveScore(view, part.runtime!, { a: 'In', b: 'by.' })).toEqual({
+      score: 2,
+      maxScore: 2,
+      percentage: 100,
+    })
+    expect(objectiveScore(view, part.runtime!, { a: 'on', b: -1 })).toEqual({
+      score: 0,
+      maxScore: 2,
+      percentage: 0,
+    })
+  })
+
+  it('rejects gaps without accepted answers and accepted answers outside gap-fill', () => {
+    const adapter = formatAdapter('gap-fill', rules)
+    expect(() =>
+      adapter.project({ ...syntheticPayloads[17], questions: [{ id: 'a' }, { id: 'b' }] })
+    ).toThrow('accepted')
+    expect(() =>
+      adapter.project({
+        ...syntheticPayloads[17],
+        questions: [
+          { id: 'a', accepted: [' '] },
+          { id: 'b', accepted: ['by'] },
+        ],
+      })
+    ).toThrow('accepted')
+    const selection = syntheticEnglishA1.structure[0]!.parts[0]!
+    const view = selection.adapter!.project(syntheticPayloads[7])
+    expect(() =>
+      validateView(
+        { ...view, questions: view.questions!.map(q => ({ ...q, accepted: ['x'] })) },
+        selection.runtime!
+      )
+    ).toThrow('gap-fill')
+  })
+
+  it('projects raw gap payloads without reading a coerced correctAnswer', () => {
+    const part = { ...gapPart(), runtime: rules }
+    const view = goetheRawAdapter('reading', part, rules).project({
+      id: 'r5',
+      title: 'Open cloze',
+      content: 'I live (1) ____ a town. We meet (2) ____ Monday.',
+      questions: [
+        { id: 'r5-q1', question: 'Gap 1', accepted: ['in'], correctAnswer: 15 },
+        { id: 'r5-q2', question: 'Gap 2', accepted: ['on'], explanation: 'Days take on.' },
+      ],
+    })
+    expect(() => validateView(view, rules)).not.toThrow()
+    expect(view.questions![0]).toEqual(
+      expect.objectContaining({ options: [], correctAnswer: -1, accepted: ['in'] })
+    )
+    expect(objectiveScore(view, rules, { 'r5-q1': 'in', 'r5-q2': 'ON' }).score).toBe(2)
+  })
+
+  it('refuses option settings on a gap-fill part at registry startup', () => {
+    const pack = {
+      ...syntheticEnglishA1,
+      structure: syntheticEnglishA1.structure.map(module => ({
+        ...module,
+        parts: module.parts.map(part =>
+          part.itemFormat === 'gap-fill'
+            ? { ...part, runtime: { ...part.runtime!, optionCount: 3 } }
+            : part
+        ),
+      })),
+    }
+    expect(() => validatePacks([pack])).toThrow('gap-fill')
   })
 })

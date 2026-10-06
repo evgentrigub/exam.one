@@ -110,8 +110,9 @@ const writingModes = computed(() => [
   { id: 'model-help', label: t('writing.instructions.modeModelHelp') },
 ])
 
+const { pack } = useActivePack()
 const writingTips = computed(() => {
-  return getWritingTips(props.topic.difficulty, props.topic.testingPart)
+  return getWritingTips(pack.value, props.topic.testingPart)
 })
 
 function getTopicTypeLabel(type: string) {

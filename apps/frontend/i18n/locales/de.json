@@ -1,4 +1,51 @@
 {
+  "activity": {
+    "title": "Aktivität",
+    "all": "Alle",
+    "inProgressCount": "{count} in Bearbeitung",
+    "inProgress": "In Bearbeitung",
+    "earlier": "Früher",
+    "clear": "Entfernen",
+    "markRead": "Alle als gelesen markieren",
+    "close": "Schließen",
+    "introTitle": "Alle Hintergrundaufgaben an einem Ort",
+    "intro": "Übungen, Hördateien und Prüfungen werden hier angezeigt. Sie können die Seite verlassen und später zurückkehren.",
+    "empty": "Keine Aufgaben",
+    "emptyDescription": "Erstellte Übungen, Audiodateien und Prüfungen erscheinen hier.",
+    "more": "Mehr anzeigen",
+    "emailMock": "E-Mail erhalten, wenn eine Prüfung bereit ist",
+    "step": "Schritt {current} von {total}",
+    "items": "Aufgaben fertig",
+    "queued": "Wartet in der Warteschlange",
+    "failed": "Erstellung fehlgeschlagen",
+    "eta": "Noch ~{seconds} s",
+    "etaMinutes": "Noch ~{minutes} Min.",
+    "open": "Öffnen",
+    "retry": "Wiederholen",
+    "cancel": "Abbrechen",
+    "dismiss": "Ausblenden",
+    "kinds": {
+      "EXERCISE_GENERATION": "Übungen",
+      "LISTENING_AUDIO": "Audio",
+      "MOCK_EXAM_SET": "Modellprüfung"
+    },
+    "status": {
+      "QUEUED": "Wartet",
+      "RUNNING": "Läuft",
+      "CANCEL_REQUESTED": "Wird abgebrochen",
+      "COMPLETED": "Fertig",
+      "FAILED": "Fehlgeschlagen",
+      "CANCELLED": "Abgebrochen"
+    },
+    "stages": {
+      "prepare": "Vorbereitung",
+      "generate": "Inhalte erstellen",
+      "synthesize": "Stimmen erzeugen",
+      "save": "Übungen speichern",
+      "attach": "Speichern und zuordnen"
+    },
+    "exercisesTitle": "Übungen ({count})"
+  },
   "nav": {
     "home": "Startseite",
     "practice": "Üben",
@@ -46,7 +93,17 @@
     "voicemail": "Anrufbeantworter",
     "introduction": "Vorstellung",
     "requests": "Bitten",
-    "form": "Formular"
+    "form": "Formular",
+    "note": "Notiz",
+    "story": "Geschichte",
+    "notes": "Notizen",
+    "conversation": "Gespräch",
+    "recordings": "Kurze Aufnahmen",
+    "discussion": "Diskussion",
+    "greeting": "Glückwünsche",
+    "description": "Beschreibung",
+    "photo": "Bildbeschreibung",
+    "roleplay": "Rollenspiel"
   },
   "home": {
     "title": "Exam.one",
@@ -236,10 +293,12 @@
     "learningTitle": "Deine Prüfung",
     "learningDesc": "Wir richten den Tagesplan danach aus.",
     "examBoard": "Prüfungsanbieter",
-    "goethe": "Goethe-Institut",
-    "goetheDesc": "Am weitesten anerkannt",
-    "cambridge": "Cambridge",
-    "ielts": "IELTS",
+    "boards": {
+      "goethe": "Deutsch Goethe",
+      "cambridge": "Englisch Cambridge",
+      "certyfikat-polski": "Polnisch Certyfikat",
+      "instituto-cervantes": "Spanisch DELE"
+    },
     "targetLevel": "Zielniveau",
     "levelA2Desc": "Elementar",
     "levelC1Desc": "Fortgeschritten",
@@ -307,11 +366,8 @@
     "themeCupcake": "Cupcake",
     "themeCupcakeDesc": "Wärmer, weicher",
     "languageTitle": "Sprache",
-    "languageDesc": "Die Oberflächensprache. Übungen bleiben auf Deutsch.",
-    "langEnDesc": "Oberflächensprache",
-    "langDeDesc": "Eintauchen",
-    "langRuDesc": "Oberflächensprache",
-    "languageHint": "Aufgabenanweisungen in den Übungen bleiben immer auf Deutsch, wie in der echten Prüfung.",
+    "languageDesc": "Die Oberflächensprache. Übungen bleiben in der Sprache deiner Prüfung.",
+    "languageHint": "Aufgabenanweisungen in den Übungen bleiben immer in der Prüfungssprache, wie in der echten Prüfung.",
     "planTitle": "Dein Tarif",
     "planActive": "Aktiv",
     "planMockExams": "Modellprüfungen",
@@ -339,7 +395,55 @@
     "deleteTitle": "Konto löschen",
     "deleteDesc": "Entfernt jeden Versuch, jede Aufnahme und jede Punktzahl. Das kann nicht rückgängig gemacht werden.",
     "delete": "Löschen",
-    "deleteUnavailable": "Pausieren und Löschen des Kontos sind auf dieser Self-Host-Instanz noch nicht verfügbar."
+    "deleteUnavailable": "Pausieren und Löschen des Kontos sind auf dieser Self-Host-Instanz noch nicht verfügbar.",
+    "navMedia": "Erzeugte Dateien",
+    "navMediaAudio": "Hörverstehen-Audio",
+    "navMediaVoices": "Stimmmodelle",
+    "mediaTitle": "Erzeugte Dateien",
+    "mediaDesc": "Auf diesem Gerät gespeicherte Dateien für Hörübungen und Sprachausgabe.",
+    "mediaUsed": "belegt",
+    "mediaVoiceModels": "Stimmmodelle",
+    "mediaListeningAudio": "Hörverstehen-Audio",
+    "mediaAll": "Alle",
+    "mediaLangEn": "Englisch",
+    "mediaLangDe": "Deutsch",
+    "mediaLangPl": "Polnisch",
+    "mediaLangEs": "Spanisch",
+    "mediaCompleted": "Abgeschlossen",
+    "mediaMock": "Modelltest",
+    "audioTitle": "Hörverstehen-Audio",
+    "audioDesc": "Audio, das für Hörübungen erzeugt wurde. Gelöschte Dateien werden beim nächsten Öffnen der Übung neu erzeugt.",
+    "audioEmpty": "Keine Audiodateien.",
+    "audioEmptyFor": "Keine Audiodateien für {lang}.",
+    "audioLoading": "Audiodateien werden geladen…",
+    "audioSelectAll": "Alle auswählen",
+    "audioSelectRow": "{title} auswählen",
+    "audioSelected": "{n} ausgewählt",
+    "audioSummary": "{n} Datei · {size} | {n} Dateien · {size}",
+    "audioDeleteSelected": "Auswahl löschen",
+    "audioDeleteAll": "Alle löschen",
+    "audioDeleteConfirm": "{n} Datei löschen? | {n} Dateien löschen?",
+    "audioDelete": "Löschen",
+    "audioPlay": "Abspielen",
+    "audioPause": "Pause",
+    "audioDeleteRow": "{title} löschen",
+    "voicesTitle": "Stimmmodelle",
+    "voicesDesc": "Sprachausgabe-Stimmen, mit denen Hörtexte erzeugt werden. Jede Sprache braucht mindestens eine installierte Stimme.",
+    "voicesInstalled": "{n} installiert · {size}",
+    "voicesNone": "Keine Stimme installiert",
+    "voicesMissingWarning": "Hörübungen auf {lang} können erst erzeugt werden, wenn du eine Stimme herunterlädst.",
+    "voicesDefault": "Standard",
+    "voicesSetDefault": "Als Standard",
+    "voicesDownload": "Herunterladen",
+    "voicesDelete": "{name} löschen",
+    "voicesQuality": "Qualität: {quality}",
+    "voicesQuality_low": "niedrig",
+    "voicesQuality_medium": "mittel",
+    "voicesQuality_high": "hoch",
+    "voicesFemale": "Weiblich",
+    "voicesMale": "Männlich",
+    "voicesOffline": "Der Sprachausgabe-Dienst läuft nicht, daher können keine Stimmen angezeigt werden. Starte ihn mit pnpm tts:up.",
+    "voicesFailed": "Download fehlgeschlagen: {error}"
   },
   "pageMeta": {
     "dashboardTitle": "Übersicht",
@@ -371,7 +475,7 @@
     "examTarget": "Prüfungsziel",
     "filtersExercises": "Filtert Übungen",
     "viewExercises": "Übungen ansehen",
-    "examTargetMeta": "Deutsch · in {days} Tagen",
+    "examTargetMeta": "{language} · in {days} Tagen",
     "setExamDate": "Prüfungstermin festlegen",
     "tapLevel": "Tippe auf ein Niveau, um Übungen zu filtern",
     "comingSoon": "Demnächst",
@@ -668,7 +772,11 @@
       "contentPoint1": "Inhaltspunkt 1",
       "contentPoint2": "Inhaltspunkt 2",
       "contentPoint3": "Inhaltspunkt 3",
-      "communication": "Anrede und Gruß"
+      "communication": "Anrede und Gruß",
+      "content": "Inhalt",
+      "organisation": "Aufbau",
+      "range": "Sprachlicher Umfang",
+      "accuracy": "Sprachliche Richtigkeit"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -840,7 +948,12 @@
     "request1": "Bitte 1",
     "response1": "Reaktion 1",
     "request2": "Bitte 2",
-    "response2": "Reaktion 2"
+    "response2": "Reaktion 2",
+    "grammarVocabulary": "Grammatik und Wortschatz",
+    "interactiveCommunication": "Interaktion",
+    "globalAchievement": "Gesamteindruck",
+    "vocabulary": "Wortschatz",
+    "grammar": "Grammatik"
   },
   "mockExam": {
     "title": "Modellprüfungen",
@@ -858,6 +971,10 @@
     "provisionalResult": "Vorläufiges Ergebnis",
     "passMessage": "Du hast die Bestehensgrenze von {points} Punkten erreicht.",
     "almostMessage": "Übe weiter und versuche es erneut, wenn du bereit bist.",
+    "passAllGroups": "Du hast die Bestehensgrenze in jeder Gruppe erreicht.",
+    "groupBelow": "Unter der Bestehensgrenze in: {groups}.",
+    "groupScore": "{points} / {max} · {pass} zum Bestehen",
+    "passEachGroup": "Bestehensgrenze in jeder Gruppe",
     "passMark": "60 Punkte zum Bestehen",
     "provisionalSpeakingNote": "Sprechen enthält nur Teil 1–2 (maximal 12 Punkte). Teil 3 und Aussprache werden noch nicht bewertet; das Gesamtergebnis ist daher vorläufig.",
     "provisionalSpeakingNoteTranscript": "Sprechen wird von der KI nur anhand deiner Transkripte bewertet. Aussprache und Interaktion werden nicht beurteilt; das Gesamtergebnis ist daher vorläufig.",
@@ -907,7 +1024,7 @@
     "pipelineRunningDescription": "Die Module laufen nacheinander. Hören enthält für jeden Teil einen eigenen Audio-Job.",
     "pipelineFailedDescription": "Abgeschlossene Jobs bleiben gespeichert. Der nächste Versuch setzt beim fehlgeschlagenen Job fort.",
     "pipelineDoneDescription": "Der generierte Satz ist bereit und wurde deiner lokalen Bibliothek hinzugefügt.",
-    "pipelineJob": "Teil {part} · {kind}",
+    "pipelineJob": "{part} · {kind}",
     "jobKind": {
       "content": "Aufgabe",
       "audio": "Audio"
@@ -961,7 +1078,26 @@
     "notAvailableForPack": "Für dieses Prüfungspaket sind keine Modellprüfungen verfügbar.",
     "aiOverviewUnavailable": "Die KI-Übersicht ist nicht verfügbar.",
     "writingGradeUnavailable": "Bewertung für Schreiben nicht verfügbar.",
-    "speakingGradeUnavailable": "Bewertung für Sprechen nicht verfügbar."
+    "speakingGradeUnavailable": "Bewertung für Sprechen nicht verfügbar.",
+    "scale": {
+      "names": {
+        "cambridgeEnglish": "Cambridge English Scale"
+      },
+      "bands": {
+        "gradeA": "Note A · B1",
+        "gradeB": "Note B · A2",
+        "gradeC": "Note C · A2",
+        "levelA1": "Niveau A1",
+        "none": "Kein Zertifikat"
+      },
+      "passFrom": "bestanden ab {pass}",
+      "pending": "Der Skalenwert erscheint, sobald die KI-Bewertung fertig ist.",
+      "passMessage": "Du hast {pass} auf der Skala erreicht.",
+      "belowMessage": "Unter {pass} auf der Skala. Übe weiter und versuch es noch einmal.",
+      "estimate": "Eine Schätzung nach Cambridges Umrechnung für Übungstests. Sprechen hat hier keine Aussprachewertung, daher werden die 30 Punkte auf die 45 der Prüfung hochgerechnet.",
+      "below": "unter {min}",
+      "raw": "Rohpunkte {score} / {max}"
+    }
   },
   "pastExams": {
     "back": "Zurück zum Fortschritt",
@@ -1004,6 +1140,11 @@
       "respond": {
         "title": "Runde {round} · Auf die Bitte reagieren",
         "description": "Sag höflich ja oder nein, mit einem kurzen Grund."
+      },
+      "examinerSays": "Prüfer/in",
+      "examiner": {
+        "title": "Frage {round} · Der Prüferin / dem Prüfer antworten",
+        "description": "Antworte in ein, zwei Sätzen und nenne, wenn möglich, einen Grund."
       }
     },
     "recorder": {
@@ -1118,7 +1259,10 @@
     "audioUnavailable": "Audio nicht verfügbar",
     "play": "Abspielen",
     "pause": "Pause",
-    "plays": "Wiedergaben: {count}/{max}"
+    "plays": "Wiedergaben: {count}/{max}",
+    "notesIntro": "Hör zu und ergänze die Notizen. Die Rechtschreibung zählt, Groß- und Kleinschreibung nicht.",
+    "ttsUnsupported": "Die Sprachausgabe dieser Instanz hat noch keine Stimmen für die Sprache dieser Prüfung.",
+    "missingDetailUnsupported": "Die Sprache dieser Prüfung braucht eigene Stimmen für die Sprachausgabe. Installiere sie (siehe scripts/tts/README.md) und erzeuge dann das Audio."
   },
   "progress": {
     "heading": "Dein Fortschritt",
@@ -1187,7 +1331,7 @@
     "wordsAndTime": "{words} Wörter · ca. {minutes} Min. Lesezeit",
     "text": "Text",
     "readyTitle": "Bereit für die Fragen?",
-    "readyDescription": "Beantworte nach dem Lesen {count} Multiple-Choice-Frage. | Beantworte nach dem Lesen {count} Multiple-Choice-Fragen.",
+    "readyDescription": "Beantworte nach dem Lesen {count} Frage. | Beantworte nach dem Lesen {count} Fragen.",
     "deleteText": "Text löschen",
     "deleteTextAria": "Lesetext löschen",
     "questionCount": "{count} Frage | {count} Fragen",
@@ -1198,7 +1342,8 @@
     "minutesRead": "{minutes} Min. Lesezeit",
     "backToOverview": "Zurück zur Übersicht",
     "answerQuestions": "Fragen beantworten",
-    "noQuestions": "Keine Fragen verfügbar"
+    "noQuestions": "Keine Fragen verfügbar",
+    "gapInstructions": "Schreib in jede Lücke ein Wort. Die Rechtschreibung zählt, Groß- und Kleinschreibung nicht."
   },
   "errors": {
     "requestFailed": "Anfrage fehlgeschlagen",
@@ -1211,5 +1356,15 @@
     "allTranscriptsRequired": "Für die KI-Bewertung werden alle Transkripte benötigt.",
     "sttStatusFailed": "Der Status der Spracherkennung konnte nicht geprüft werden.",
     "transcriptionFailed": "Die Transkription ist fehlgeschlagen."
+  },
+  "gapFill": {
+    "inputLabel": "Lücke {n}",
+    "placeholder": "Antwort eingeben",
+    "accepted": "Richtig wäre: {answers}",
+    "notes": "Notizen",
+    "gapAria": "Lücke {n}: {answer}",
+    "gapEmptyAria": "Lücke {n}, noch nicht beantwortet",
+    "correct": "Richtig",
+    "incorrect": "Falsch"
   }
 }

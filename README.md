@@ -1,6 +1,6 @@
 # Exam.one
 
-Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too.
+Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode; Goethe A1 · Start Deutsch 1 covers all four skills and mock exams too. Cambridge English A2 Key covers all four skills and mock exams, reported on the Cambridge English Scale, with typed gap-fill tasks and British English audio. Certyfikat Polski A2, the Polish state certificate exam, covers all four skills and mock exams, passed per part (written and oral) as in the real exam, with Polish audio. DELE A2, the Instituto Cervantes diploma of Spanish, covers all four skills and mock exams, passed per group as in the real exam, with Spanish audio.
 
 Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and progress that lives in PostgreSQL after you sign in. The app is **login-gated**: register or sign in on this instance, then practice as before.
 
@@ -35,7 +35,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 ### Listening Practice
 
 - Goethe A2 Teile 1–4 with shared or per-item audio players
-- Stable WAV playback from pre-generated Kokoro German voices
+- Stable WAV playback from pre-generated voices (German, British English and Spanish on Kokoro, Polish on Piper)
 - On-demand TTS when Kokoro is up (`pnpm tts:up` + Generate audio)
 - Optional AI transcript generation, separate from audio generation
 
@@ -67,7 +67,7 @@ Practice Reading, Writing, Listening, and Speaking with authentic exam-style con
 After you are signed in, core practice runs against the **local** NestJS API and PostgreSQL. No cloud account is required.
 
 - Reading, writing, listening, and speaking practice
-- Goethe A2 and Goethe A1 mock exam Set 1
+- Goethe A2, Goethe A1, DELE A2 and Cambridge A2 Key mock exam Set 1
 - Progress tracking, drafts, and resume
 - Full navigation and UI
 
@@ -93,18 +93,22 @@ Durable storage:
 | Store                            | What it holds                                              |
 | -------------------------------- | ---------------------------------------------------------- |
 | Named volume `postgres_data`     | Users, settings, catalogs, attempts, drafts, mock exams    |
-| Named volume `generated_listening_audio` | On-demand listening WAVs written by NestJS          |
+| Host dir `apps/frontend/public/audio/listening/` | Listening WAVs: each pack's bundled seed folder (`cambridge-en-a2/`, `a2/`, `a1/`, `certpol-pl-a2/`, `dele-es-a2/`) and per-user on-demand audio in `generated/` |
 | Host dirs `scripts/*/models/`    | TTS and STT model weights (gitignored, reused across runs) |
-| Host dirs `apps/frontend/public/audio/listening/a2/`, `a1/` | Bundled seed listening WAVs (A2 seeds, A1 mock Set 1) |
+
+Settings → **Generated files** shows both: **Listening audio** lists every seed and generated WAV per exercise (size, length, completed/mock) and deletes them; deleted audio is generated again when the exercise is opened. **Voice models** downloads, removes and picks the default voice per language at runtime.
 
 Theme, locale, listening playback volume/speed, and reading bookmarks stay in the browser.
 
 ### Exam packs
 
 Exam definitions, LLM prompts, runtime rules, grading criteria, payload adapters, and optional bundled seeds live in [`data/`](data/README.md) (`@exam-one/exam-packs`). Add a pack by creating `data/src/packs/{packId}/` and registering it in `data/src/registry.ts`; it can use the five exercise formats and the form-fill, word-card and request-card screens. 
-Two packs are live: 
+Five packs are live: 
 **Goethe A1 · Start Deutsch 1** (practice and mock exams). 
 **Goethe A2** (practice and mock exams). 
+**Cambridge English A2 Key** (practice and mock exams). 
+**Certyfikat Polski A2** (practice and mock exams). 
+**DELE A2** (practice and mock exams). 
 
 Select one under **Settings → Learning plan**. See the [verification and migration rollout guide](data/VERIFICATION.md).
 
@@ -121,7 +125,7 @@ This is the supported way to run exam.one on a laptop. Copy [`.env.example`](./.
 | **Docker Engine 24+** and Compose v2 | Docker Desktop, or engine + Compose plugin on Linux                                           |
 | **Node.js 24+** and **pnpm 10.12.1+** | Required for `pnpm stack:up` (model download, migrate/seed orchestration, password recovery) |
 | **RAM**                             | 4 GB minimum for the core app; 6–8 GB when building/running Kokoro and Parakeet                |
-| **Disk**                            | ~2 GB for speech weights (about 984 MB Kokoro + 740 MB Parakeet GGUF) plus container images    |
+| **Disk**                            | ~2.4 GB for speech weights (about 1.3 GB Kokoro German + English, 740 MB Parakeet GGUF) plus container images |
 | **OS**                              | macOS (Apple Silicon or Intel), Linux (x86_64 or arm64), Windows 10/11 with WSL2               |
 
 ### Quick start
@@ -147,14 +151,14 @@ pnpm stack:up
 pnpm stack:ps
 ```
 
-`pnpm stack:up` downloads speech models if they are missing, starts PostgreSQL, waits until NestJS has migrated and seeded the catalog and Nuxt is healthy, then starts Kokoro and Parakeet and generates bundled listening WAVs if the seed directory is empty.
+`pnpm stack:up` downloads speech models if they are missing, starts PostgreSQL and Redis, waits until NestJS has migrated and seeded the catalog and Nuxt is healthy, then starts Kokoro and Parakeet and generates bundled listening WAVs if the seed directory is empty. Redis is required at API startup; its outage also makes the core app unavailable until Redis returns.
 
 The first run downloads about 1.7 GB of weights and builds the TTS image plus the `transcribe.cpp` STT runtime. Later starts reuse `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/`.
 
 Core app only (no speech sidecars — mock Set 1 and practice still work; Generate audio and local STT do not):
 
 ```bash
-docker compose up -d --build --wait postgres backend frontend
+docker compose up -d --build --wait postgres redis backend frontend
 ```
 
 Services:
@@ -166,6 +170,7 @@ Services:
 | API docs       | http://localhost:3001/api/docs (local `pnpm dev`; Compose production needs `SWAGGER_ENABLED=true`) |
 | Health         | http://localhost:3001/api/v1/health/ready |
 | PostgreSQL     | 127.0.0.1:5432                           |
+| Redis          | 127.0.0.1:6379 (host-only)               |
 | Kokoro TTS     | http://127.0.0.1:8881/v1/audio/voices    |
 | Parakeet STT   | http://127.0.0.1:8882/health             |
 
@@ -195,7 +200,7 @@ OpenAI:
 ```bash
 LLM_PROVIDER=openai
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-5.5
+OPENAI_MODEL=gpt-6-sol
 ```
 
 OpenRouter:
@@ -210,9 +215,9 @@ Restart the backend after changing keys (`pnpm stack:up` or `docker compose up -
 
 ### Optional: speech sidecars
 
-Kokoro (Listening TTS) exposes four German voices on `:8881`: `martin`, `bernd`, `victoria`, `eva`.
+The Listening TTS service on `:8881` serves every voice installed under `scripts/tts/victoria/models`: German `martin`, `bernd`, `victoria`, `eva`, British English `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable` and Spanish `ef_dora`, `em_alex`, `em_santa` on Kokoro, and Polish `pl_gosia`, `pl_darkman`, `pl_bass` on Piper. A first `pnpm stack:up` downloads only the English voices (`KOKORO_LANGS=en`, about 330 MB) and seeds only the Cambridge A2 Key audio (`STACK_SEED_PACKS=cambridge-en-a2`); new accounts start on that pack. Download other languages in Settings → Generated files → Voice models (no restart), or up front with `KOKORO_LANGS=en,de,pl,es pnpm tts:setup`. See [scripts/tts/README.md](scripts/tts/README.md).
 
-Parakeet (Speaking STT) serves Handy's Q8 GGUF on `:8882`. To use OpenAI Whisper instead:
+Parakeet (Speaking STT) serves Handy's Q8 GGUF on `:8882` and detects German, English, Polish and Spanish (`STT_LANGUAGES`, default `de,en,pl,es`). To use OpenAI Whisper instead:
 
 ```bash
 STT_PROVIDER=openai
@@ -231,14 +236,14 @@ pnpm stt:down
 
 ### Backup and restore
 
-`pnpm stack:down` and `docker compose down` **keep** named volumes. Do not pass `-v` / `--volumes` unless you intend to delete PostgreSQL data and generated listening audio.
+`pnpm stack:down` and `docker compose down` **keep** named volumes. Do not pass `-v` / `--volumes` unless you intend to delete PostgreSQL data and Redis job state.
 
 Default volume names:
 
 | Volume                               | Compose key                  | Contents                         |
 | ------------------------------------ | ---------------------------- | -------------------------------- |
 | `exam-one-postgres-dev-data`         | `postgres_data` (`POSTGRES_VOLUME_NAME`) | Database                   |
-| `exam-one_generated_listening_audio` | `generated_listening_audio`  | On-demand listening WAVs         |
+| `exam-one-redis-dev-data`            | `redis_data` (`REDIS_VOLUME_NAME`) | Queued work and job state  |
 
 Confirm with `docker volume ls | grep exam-one`.
 
@@ -260,28 +265,22 @@ cat backups/exam-one-postgres-YYYYMMDD.sql | docker compose exec -T postgres psq
 
 If you changed `POSTGRES_USER` / `POSTGRES_DB` in `.env`, use those names instead of `exam_one`.
 
-#### Generated listening audio
+#### Redis job queue
 
-Backup:
+Back up `redis_data` alongside PostgreSQL and generated audio. Stop enqueueing jobs and use `docker compose stop redis` before archiving its AOF volume; restore PostgreSQL and Redis from matching snapshots so pending queue records and job rows agree. The backend reconciles stale queued and interrupted records after restart.
+
+To inspect queues, set `BULL_BOARD_USER` and `BULL_BOARD_PASSWORD` in `.env` and open http://localhost:3001/api/admin/queues (HTTP basic auth). Without both variables the dashboard answers 404. Each BullMQ job id is `<BackgroundJob.id>-<attempt>`, so a queue entry maps straight to its database row.
+
+#### Listening audio
+
+Seed and generated WAVs live in one host folder, `apps/frontend/public/audio/listening/` (generated audio under `generated/`); back it up with any file copy:
 
 ```bash
 mkdir -p backups
-docker run --rm \
-  -v exam-one_generated_listening_audio:/source:ro \
-  -v "$(pwd)/backups:/backup" \
-  alpine tar -czf /backup/listening-audio-$(date +%Y%m%d).tar.gz -C /source .
+tar -czf "backups/listening-audio-$(date +%Y%m%d).tar.gz" -C apps/frontend/public/audio listening
 ```
 
-Restore:
-
-```bash
-docker run --rm \
-  -v exam-one_generated_listening_audio:/target \
-  -v "$(pwd)/backups:/backup" \
-  alpine tar -xzf /backup/listening-audio-YYYYMMDD.tar.gz -C /target
-```
-
-Seed WAVs under `apps/frontend/public/audio/listening/a2/` and `a1/` live on host bind mounts; copy that directory if you regenerated them. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
+Older installs kept generated audio in the `exam-one_generated_listening_audio` named volume. Copy it into the host folder once with `pnpm stack:migrate-generated-audio`, check that the app plays your audio, then remove the volume with `docker volume rm exam-one_generated_listening_audio`. Speech model weights in `scripts/tts/victoria/models/` and `scripts/stt/parakeet/models/` can be re-downloaded with `pnpm stack:setup`.
 
 ### Stop, wipe, and upgrade
 
@@ -312,8 +311,8 @@ Copy [`.env.example`](./.env.example) and edit. Groups:
 | Auth                          | `JWT_SECRET` (required, ≥32 chars, not the placeholder), `AUTH_COOKIE_SECURE`, `SWAGGER_ENABLED` |
 | Email                         | `EMAIL_PROVIDER`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` |
 | LLM                           | `LLM_PROVIDER`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `LLM_REASONING_EFFORT` |
-| STT                           | `STT_PROVIDER`, `STT_BASE_URL`, `STT_PORT`, `STT_CPU_THREADS`, `STT_MODEL`, `STT_OPENAI_MODEL` |
-| TTS                           | `TTS_BASE_URL`, `TTS_PORT`, `TTS_CPU_THREADS`, `TTS_CONCURRENCY`, `TTS_SPEED`, `TTS_LANG`, `TTS_VOICE`, `TTS_TURN_PAUSE_MS`, `TTS_PAUSE_DURATION` |
+| STT                           | `STT_PROVIDER`, `STT_BASE_URL`, `STT_PORT`, `STT_CPU_THREADS`, `STT_MODEL`, `STT_LANGUAGES`, `STT_OPENAI_MODEL` |
+| TTS                           | `TTS_BASE_URL`, `TTS_PORT`, `TTS_CPU_THREADS`, `TTS_CONCURRENCY`, `TTS_SPEED`, `KOKORO_LANGS`, `TTS_LANGUAGES`, `TTS_LANG`, `TTS_VOICES`, `TTS_VOICE`, `TTS_TURN_PAUSE_MS`, `TTS_PAUSE_DURATION` |
 | Optional                      | `GENERATED_LISTENING_AUDIO_DIR`, `STACK_SEED_AUDIO_TIMEOUT_MS`       |
 
 Production notes:
@@ -375,10 +374,10 @@ This starts:
 - API documentation at http://localhost:3001/api/docs (`pnpm dev` only; Compose needs `SWAGGER_ENABLED=true`)
 - PostgreSQL in Docker at 127.0.0.1:5432
 
-The root `compose.yaml` is the only Compose file. `pnpm dev:infra` selects just its `postgres` service. Data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down` only stops the service.
+The root `compose.yaml` is the only Compose file. `pnpm dev:infra` selects just its `postgres` and `redis` services. Data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down` only stops the service.
 
 ```bash
-pnpm dev:infra          # Start PostgreSQL and wait until healthy
+pnpm dev:infra          # Start PostgreSQL and Redis and wait until healthy
 pnpm dev:infra:logs     # Follow PostgreSQL logs
 pnpm dev:db:shell       # Open psql in the development database
 pnpm dev:infra:down     # Stop PostgreSQL without deleting its volume
@@ -422,7 +421,7 @@ exam-one/
 │   └── nestjs-libraries/  # PrismaModule/PrismaService for NestJS injection and lifecycle
 ├── agent-os/              # Implementation standards
 ├── scripts/               # Stack/speech utilities and pack migration/acceptance checks
-├── compose.yaml           # App + PostgreSQL + Kokoro TTS + Parakeet STT
+├── compose.yaml           # App + PostgreSQL + Redis + Kokoro TTS + Parakeet STT
 ├── pnpm-workspace.yaml
 └── package.json           # Workspace orchestration scripts
 ```
@@ -453,11 +452,11 @@ pnpm test:e2e            # Run the NestJS health endpoint e2e test
 pnpm stack:setup         # Download and verify all speech models without starting Compose
 pnpm stack:verify-models # Fail if TTS/STT model snapshots are missing
 pnpm stack:up            # Download models, start core app, then speech, then seed WAVs if missing
-pnpm stack:seed-audio    # Generate bundled listening WAVs if they are not already on disk
+pnpm stack:seed-audio    # Generate the default pack's bundled listening WAVs if missing (--packs a,b|all)
 pnpm stack:down          # Stop the complete stack without deleting named volumes
 pnpm stack:logs          # Follow logs for all Compose services
 pnpm stack:ps            # Show service and health status
-pnpm tts:setup           # Download and verify only local Kokoro TTS models
+pnpm tts:setup           # Download the TTS voices of KOKORO_LANGS (default: English)
 pnpm tts:up              # Start only local Kokoro TTS from compose.yaml
 pnpm stt:setup           # Download and verify only the local Parakeet GGUF
 pnpm stt:up              # Start only local Parakeet STT from compose.yaml
@@ -466,7 +465,7 @@ pnpm db:migrate          # Create and apply a development migration
 pnpm db:migrate:deploy   # Apply committed migrations
 pnpm db:seed             # Upsert every pack's bundled exercises and mock Set 1
 pnpm auth:set-password   # Recover a local account password (`--email`)
-pnpm generate:listening-audio  # Synthesize seed WAVs (requires Kokoro)
+pnpm generate:listening-audio  # Synthesize seed WAVs (requires Kokoro; --packs a,b|all)
 ```
 
 ## Contributing

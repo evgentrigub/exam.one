@@ -1,10 +1,12 @@
 import {
   defineAdapter,
+  GAP_ANSWER_INDEX,
   record,
   validateReview,
   type ExerciseAdapter,
   type ExerciseView,
   type PartRuntime,
+  type RuntimeQuestion,
 } from '../../runtime'
 import type { ExamPart, SkillId } from '../../types'
 
@@ -37,11 +39,17 @@ export function goetheRawAdapter(skill: SkillId, part: ExamPart, rules: PartRunt
           : {}
       if (audio.shared) view.audio = audio.shared
       if (typeof d['transcript'] === 'string') view.transcript = d['transcript']
-      view.questions = rows.map((q, i) => ({
-        id: String(
+      const rowId = (q: Record<string, unknown>, i: number): string =>
+        String(
           q['id'] ??
             (skill === 'listening' ? `${d['id']}-${d['items'] ? 'i' : 'q'}${i}` : `q${i + 1}`)
-        ),
+        )
+      if (part.itemFormat === 'gap-fill') {
+        view.questions = rows.map((q, i) => gapQuestion(q, rowId(q, i)))
+        return view
+      }
+      view.questions = rows.map((q, i) => ({
+        id: rowId(q, i),
         text: String(q['question'] ?? q['person'] ?? q['statement'] ?? ''),
         options: (q['options'] ?? d['options'] ?? ['Ja', 'Nein']) as string[],
         correctAnswer:
@@ -84,6 +92,24 @@ export function goetheRawAdapter(skill: SkillId, part: ExamPart, rules: PartRunt
     }
   }
   return adapter
+}
+
+/**
+ * A typed-answer gap: its accepted answers, no options. A raw `correctAnswer` is ignored, since
+ * the generation path coerces numeric strings in that key for every pack.
+ */
+function gapQuestion(q: Record<string, unknown>, id: string): RuntimeQuestion {
+  const accepted = Array.isArray(q['accepted'])
+    ? q['accepted'].filter((a): a is string => typeof a === 'string')
+    : []
+  return {
+    id,
+    text: typeof q['question'] === 'string' ? q['question'] : '',
+    options: [],
+    correctAnswer: GAP_ANSWER_INDEX,
+    accepted,
+    explanation: String(q['explanation'] ?? ''),
+  }
 }
 
 function writingFields(

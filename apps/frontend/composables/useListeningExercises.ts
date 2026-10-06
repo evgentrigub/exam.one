@@ -46,6 +46,11 @@ export const useListeningExercises = () => {
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
 
+  const reload = async (): Promise<void> => {
+    isInitialized.value = false
+    await hydrate()
+  }
+
   const getExercises = (): ListeningA2Exercise[] => exercises.value.filter(item => !item.examOnly)
 
   const getExerciseById = (id: string): ListeningA2Exercise | undefined =>
@@ -95,5 +100,6 @@ export const useListeningExercises = () => {
     addExercises,
     updateExerciseAudio,
     hydrate,
+    reload,
   }
 }

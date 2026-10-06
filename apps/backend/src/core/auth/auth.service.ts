@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
 import type { AuthConfigDto, AuthSessionData, MessageResponse } from '@exam-one/contracts'
 import { AuthTokenType, type User } from '@exam-one/database'
+import { DEFAULT_PACK_ID, getLivePack } from '@exam-one/exam-packs'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { toUserDto } from '../../common/mappers/user.mapper'
 import type { AppConfig } from '../../config/app.config'
@@ -76,6 +77,7 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, BCRYPT_ROUNDS)
     const emailConfigured = this.email.isConfigured()
 
+    const defaultPack = getLivePack(DEFAULT_PACK_ID)
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -84,9 +86,9 @@ export class AuthService {
         emailVerified: !emailConfigured,
         settings: {
           create: {
-            packId: 'goethe-de-a2',
-            examLevel: 'A2',
-            targetLanguage: 'de',
+            packId: defaultPack.packId,
+            examLevel: defaultPack.cefr,
+            targetLanguage: defaultPack.language,
           },
         },
       },

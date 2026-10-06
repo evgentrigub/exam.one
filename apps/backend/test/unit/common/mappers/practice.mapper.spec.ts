@@ -2,7 +2,6 @@ import {
   toAttemptDto,
   toDraftDto,
   toExerciseDto,
-  toGenerationJobDto,
   toMockExamAttemptDto,
   toMockExamSetDto,
   toMockExamSetSummaryDto,
@@ -12,7 +11,6 @@ import {
   makeAttempt,
   makeDraft,
   makeExercise,
-  makeGenerationJob,
   makeMockExamAttempt,
   makeMockExamSet,
   makeResult,
@@ -52,12 +50,6 @@ describe('practice mappers', () => {
     const dto = toDraftDto(makeDraft())
     expect(dto.topicId).toBe('topic-1')
     expect(dto.updatedAt).toBe('2026-01-01T00:00:00.000Z')
-  })
-
-  it('maps a generation job', () => {
-    const dto = toGenerationJobDto(makeGenerationJob({ status: 'FAILED' }))
-    expect(dto.status).toBe('FAILED')
-    expect(dto.kind).toBe('READING')
   })
 
   it('maps mock exam set summary and full dto', () => {

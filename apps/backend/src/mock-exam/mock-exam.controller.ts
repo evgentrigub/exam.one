@@ -9,7 +9,6 @@ import {
 } from '@nestjs/swagger'
 import type {
   ApiResponse,
-  GenerationJobDto,
   MockExamAttemptDto,
   MockExamSetDto,
   MockExamSetSummaryDto,
@@ -20,16 +19,13 @@ import {
   ApiErrorDto,
   DeleteMockSetResponseDto,
   DeleteSuccessResponseDto,
-  GenerationJobResponseDto,
   MockExamAttemptResponseDto,
   MockExamSetResponseDto,
   MockExamSetSummaryListResponseDto,
 } from '../core/dto/api-response.dto'
-import { GenerationJobsService } from './generation-jobs.service'
 import {
   CreateMockExamSetDto,
   UpsertMockExamAttemptDto,
-  UpsertMockGenerationDto,
 } from './dto/mock-exam.dto'
 import { MockExamService } from './mock-exam.service'
 
@@ -42,10 +38,7 @@ import { MockExamService } from './mock-exam.service'
 })
 @Controller('mock-exam')
 export class MockExamController {
-  constructor(
-    private readonly mockExam: MockExamService,
-    private readonly generationJobs: GenerationJobsService
-  ) {}
+  constructor(private readonly mockExam: MockExamService) {}
 
   @Get('sets')
   @ApiOperation({
@@ -156,46 +149,6 @@ export class MockExamController {
     @Param('externalId') externalId: string
   ): Promise<ApiResponse<{ deleted: true }>> {
     await this.mockExam.deleteAttempt(user, externalId)
-    return { data: { deleted: true } }
-  }
-
-  @Get('generation')
-  @ApiOperation({
-    summary: 'Get mock exam generation draft',
-    description: 'Retrieves in-progress mock exam generation job state, allowing resumable AI/TTS generation pipelines.',
-  })
-  @ApiResponseDoc({ status: 200, description: 'Mock generation draft state or null', type: GenerationJobResponseDto })
-  @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
-  async getGeneration(@CurrentUser() user: User): Promise<ApiResponse<GenerationJobDto | null>> {
-    const data = await this.generationJobs.get(user, 'MOCK')
-    return { data }
-  }
-
-  @Put('generation')
-  @ApiOperation({
-    summary: 'Save mock exam generation draft',
-    description: 'Updates mock exam generation draft status and payload state.',
-  })
-  @ApiResponseDoc({ status: 200, description: 'Saved generation draft state', type: GenerationJobResponseDto })
-  @ApiResponseDoc({ status: 400, description: 'Invalid generation draft payload', type: ApiErrorDto })
-  @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
-  async upsertGeneration(
-    @CurrentUser() user: User,
-    @Body() dto: UpsertMockGenerationDto
-  ): Promise<ApiResponse<GenerationJobDto>> {
-    const data = await this.generationJobs.upsert(user, 'MOCK', dto.payload, dto.status ?? 'IDLE')
-    return { data }
-  }
-
-  @Delete('generation')
-  @ApiOperation({
-    summary: 'Clear mock exam generation draft',
-    description: 'Deletes mock exam generation draft and resets pipeline state.',
-  })
-  @ApiResponseDoc({ status: 200, description: 'Generation draft cleared result', type: DeleteSuccessResponseDto })
-  @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
-  async deleteGeneration(@CurrentUser() user: User): Promise<ApiResponse<{ deleted: true }>> {
-    await this.generationJobs.remove(user, 'MOCK')
     return { data: { deleted: true } }
   }
 }

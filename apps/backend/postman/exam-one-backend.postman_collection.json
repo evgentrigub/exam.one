@@ -68,11 +68,6 @@
       "type": "string"
     },
     {
-      "key": "generationKind",
-      "value": "READING",
-      "type": "string"
-    },
-    {
       "key": "part",
       "value": "1",
       "type": "string"
@@ -133,11 +128,6 @@
       "type": "string"
     },
     {
-      "key": "generationPayload",
-      "value": "{}",
-      "type": "string"
-    },
-    {
       "key": "userContent",
       "value": "Hallo Lena, ich bin krank und kann heute nicht kommen. Können wir uns am Samstag treffen? Liebe Grüße!",
       "type": "string"
@@ -161,6 +151,10 @@
       "key": "mockReviewPrompt",
       "value": "Replace with the assembled pack mock overview prompt and completed results.",
       "type": "string"
+    },
+    {
+      "key": "jobId",
+      "value": ""
     }
   ],
   "item": [
@@ -1301,10 +1295,10 @@
       ]
     },
     {
-      "name": "Generation jobs",
+      "name": "Background jobs",
       "item": [
         {
-          "name": "List jobs",
+          "name": "List jobs (newest first, unread count)",
           "request": {
             "method": "GET",
             "header": [
@@ -1314,10 +1308,21 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/generation-jobs",
-            "description": ""
+            "url": "{{baseUrl}}/api/v1/jobs?limit=50"
           },
-          "response": []
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test('lists jobs', () => pm.expect(body.data.jobs).to.be.an('array'));",
+                  "if (body.data.jobs[0]) pm.collectionVariables.set('jobId', body.data.jobs[0].id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get job",
@@ -1330,15 +1335,13 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/generation-jobs/{{generationKind}}",
-            "description": ""
-          },
-          "response": []
+            "url": "{{baseUrl}}/api/v1/jobs/{{jobId}}"
+          }
         },
         {
-          "name": "Save job",
+          "name": "Enqueue listening audio",
           "request": {
-            "method": "PUT",
+            "method": "POST",
             "header": [
               {
                 "key": "x-exam-pack",
@@ -1347,15 +1350,13 @@
               },
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
+                "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/generation-jobs/{{generationKind}}",
-            "description": "Use the originating flow's payload shape, including completed artifacts needed for resume. Kinds: READING, WRITING, LISTENING, SPEAKING, MOCK.",
+            "url": "{{baseUrl}}/api/v1/jobs/listening-audio",
             "body": {
               "mode": "raw",
-              "raw": "{\"status\":\"RUNNING\",\"payload\":{{generationPayload}}}",
+              "raw": "{\n  \"exerciseId\": \"{{exerciseExternalId}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1363,10 +1364,141 @@
               }
             }
           },
-          "response": []
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.data && body.data.id) pm.collectionVariables.set('jobId', body.data.id);"
+                ]
+              }
+            }
+          ]
         },
         {
-          "name": "Clear job",
+          "name": "Enqueue exercise generation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/jobs/exercise-generation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selections\": [\n    {\n      \"skill\": \"reading\",\n      \"part\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.data && body.data.id) pm.collectionVariables.set('jobId', body.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enqueue mock exam set",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/jobs/mock-exam-set",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"setNumber\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.data && body.data.id) pm.collectionVariables.set('jobId', body.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancel job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/jobs/{{jobId}}/cancel"
+          }
+        },
+        {
+          "name": "Retry failed job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/jobs/{{jobId}}/retry"
+          }
+        },
+        {
+          "name": "Mark finished jobs read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/jobs/seen"
+          }
+        },
+        {
+          "name": "Dismiss finished job",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1376,10 +1508,22 @@
                 "type": "text"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/generation-jobs/{{generationKind}}",
-            "description": ""
-          },
-          "response": []
+            "url": "{{baseUrl}}/api/v1/jobs/{{jobId}}"
+          }
+        },
+        {
+          "name": "Clear finished jobs",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-exam-pack",
+                "value": "{{packId}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/jobs?finished=true"
+          }
         }
       ]
     },
@@ -1523,68 +1667,6 @@
             ],
             "url": "{{baseUrl}}/api/v1/mock-exam/sets/{{mockSetId}}/attempt",
             "description": "Removes the current user's saved attempt state for this set."
-          },
-          "response": []
-        },
-        {
-          "name": "Get generation draft",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "x-exam-pack",
-                "value": "{{packId}}",
-                "type": "text"
-              }
-            ],
-            "url": "{{baseUrl}}/api/v1/mock-exam/generation",
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Save generation draft",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "x-exam-pack",
-                "value": "{{packId}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": "{{baseUrl}}/api/v1/mock-exam/generation",
-            "description": "Alias for the current pack's MOCK generation job.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"status\":\"RUNNING\",\"payload\":{{generationPayload}}}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Clear generation draft",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "x-exam-pack",
-                "value": "{{packId}}",
-                "type": "text"
-              }
-            ],
-            "url": "{{baseUrl}}/api/v1/mock-exam/generation",
-            "description": ""
           },
           "response": []
         }

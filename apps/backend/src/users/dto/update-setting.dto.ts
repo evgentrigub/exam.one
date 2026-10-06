@@ -1,10 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsIn, IsOptional, IsString, MinLength } from 'class-validator'
+import { IsBoolean, IsOptional, IsString, MinLength } from 'class-validator'
 
 export class UpdateSettingDto {
   @ApiPropertyOptional({
     description: 'Selected exam pack identifier',
-    example: 'goethe-de-a2',
+    example: 'cambridge-en-a2',
     minLength: 2,
   })
   @IsOptional()
@@ -13,13 +13,13 @@ export class UpdateSettingDto {
   packId?: string
 
   @ApiPropertyOptional({
-    description: 'Exam CEFR proficiency level',
-    enum: ['A2', 'C1'],
+    description: 'Deprecated and ignored: the level always follows the selected pack (packId)',
+    deprecated: true,
     example: 'A2',
   })
   @IsOptional()
-  @IsIn(['A2', 'C1'])
-  examLevel?: 'A2' | 'C1'
+  @IsString()
+  examLevel?: string
 
   @ApiPropertyOptional({
     description: 'Target language code',
@@ -30,4 +30,9 @@ export class UpdateSettingDto {
   @IsString()
   @MinLength(2)
   targetLanguage?: string
+
+  @ApiPropertyOptional({ description: 'Email when a generated mock exam set is ready' })
+  @IsOptional()
+  @IsBoolean()
+  notifyMockReadyEmail?: boolean
 }

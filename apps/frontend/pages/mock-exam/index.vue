@@ -13,6 +13,7 @@
 
     <p v-if="!pack.createMockSet" class="alert">{{ $t('mockExam.notAvailableForPack') }}</p>
     <ClientOnly v-else>
+      <p v-if="generationError" class="alert alert-error mb-5 text-sm">{{ generationError }}</p>
       <div class="grid gap-5 lg:grid-cols-2">
         <MockExamSetCard v-for="set in sets" :key="set.id" :set="set" @delete="deleteSet" />
 
@@ -38,8 +39,6 @@
           </div>
         </article>
       </div>
-
-      <MockGenerationPipeline />
 
       <MockGenerationPreflightModal
         v-if="preflightOpen"
@@ -68,12 +67,24 @@ useHead({ title: () => t('mockExam.title') })
 
 const { pack } = useActivePack()
 const preflightOpen = ref(false)
-const { sets, nextSetNumber, deleteSet } = useMockExamSets()
-const { isGenerating, startGeneration } = useMockExamGeneration()
+const { sets, nextSetNumber, deleteSet, reload } = useMockExamSets()
+const { isGenerating, startGeneration } = useBackgroundMockGeneration()
+const center = useJobCenter()
+const settings = useSettingsStore()
+const generationError = ref<string | null>(null)
+watch(() => center.jobs.value.filter(job => job.type === 'MOCK_EXAM_SET' && job.packId === settings.packId && job.status === 'COMPLETED').map(job => job.id).join(','), () => { void reload() })
 
 async function generate(): Promise<void> {
   const setNumber = nextSetNumber.value
-  preflightOpen.value = false
-  await startGeneration(setNumber)
+  try {
+    if (await startGeneration(setNumber)) {
+      preflightOpen.value = false
+      generationError.value = null
+    }
+  } catch (error) {
+    // Close the modal so the server's reason (e.g. set exists, too many jobs) is visible.
+    preflightOpen.value = false
+    generationError.value = error instanceof Error ? error.message : t('generation.mockInterrupted')
+  }
 }
 </script>

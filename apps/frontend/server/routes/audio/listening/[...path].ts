@@ -64,6 +64,16 @@ function headResponse(event: H3Event, status: number): void {
   event.node.res.end()
 }
 
+/**
+ * Answer a missing file with a bare 404 instead of throwing. Missing files are the normal case
+ * before audio is generated, and the page probes every one; a thrown h3 error runs Nitro's dev
+ * error handler, which source-maps its stack per request and floods the log.
+ */
+function notFound(event: H3Event): void {
+  setResponseStatus(event, 404, 'Not found')
+  event.node.res.end()
+}
+
 export default defineEventHandler(async event => {
   if (event.method !== 'GET' && event.method !== 'HEAD') {
     setResponseHeader(event, 'allow', 'GET, HEAD')
@@ -72,10 +82,10 @@ export default defineEventHandler(async event => {
   const relative = getRouterParam(event, 'path', { decode: true })
   const absolute = relative ? containedPath(relative) : null
   const match = Object.entries(CONTENT_TYPES).find(([extension]) => absolute?.endsWith(extension))
-  if (!absolute || !match) throw createError({ statusCode: 404, statusMessage: 'Not found' })
+  if (!absolute || !match) return notFound(event)
 
   const stats = await stat(absolute).catch(() => null)
-  if (!stats?.isFile()) throw createError({ statusCode: 404, statusMessage: 'Not found' })
+  if (!stats?.isFile()) return notFound(event)
 
   setResponseHeader(event, 'content-type', match[1])
   setResponseHeader(event, 'accept-ranges', 'bytes')

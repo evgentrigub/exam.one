@@ -44,6 +44,11 @@ export const useSpeakingExercises = () => {
   const requestPackId = useSettingsStore().packId
   const requestEpoch = packEpoch()
 
+  const reload = async (): Promise<void> => {
+    isInitialized.value = false
+    await hydrate()
+  }
+
   const getTopics = (): SpeakingA2Topic[] => topics.value.filter(topic => !topic.examOnly)
 
   const getTopicById = (id: string): SpeakingA2Topic | undefined =>
@@ -71,5 +76,6 @@ export const useSpeakingExercises = () => {
     getTopicById,
     addTopics,
     hydrate,
+    reload,
   }
 }

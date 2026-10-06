@@ -4,7 +4,6 @@ import type {
   Attempt,
   Draft,
   Exercise,
-  GenerationJob,
   MockExamAttempt,
   MockExamSet,
   PromptOverride,
@@ -132,19 +131,6 @@ export function makePromptOverride(overrides: Partial<PromptOverride> = {}): Pro
   }
 }
 
-export function makeGenerationJob(overrides: Partial<GenerationJob> = {}): GenerationJob {
-  return {
-    id: 'job-1',
-    userId: 'user-1',
-    packId: 'goethe-de-a2',
-    kind: 'READING',
-    status: 'IDLE',
-    payload: { step: 1 },
-    updatedAt: NOW,
-    ...overrides,
-  }
-}
-
 export function makeSetting(overrides: Partial<Setting> = {}): Setting {
   return {
     id: 'setting-1',
@@ -152,6 +138,8 @@ export function makeSetting(overrides: Partial<Setting> = {}): Setting {
     packId: 'goethe-de-a2',
     examLevel: 'A2',
     targetLanguage: 'de',
+    defaultVoices: {},
+    notifyMockReadyEmail: true,
     updatedAt: NOW,
     ...overrides,
   }

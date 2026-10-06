@@ -21,6 +21,7 @@ import { writingPrompts } from './prompts/writing'
 import { goetheA1ReviewVars } from './review-vars'
 import { attachGoetheA1Runtime } from './runtime'
 import { goetheDeA1Structure } from './structure'
+import { structureText } from './structure-i18n'
 
 export const GOETHE_DE_A1_PACK_ID = 'goethe-de-a1'
 
@@ -38,6 +39,7 @@ export const goetheDeA1: ExamPack = {
   live: true,
   examIds: ['goethe-de-a1', 'goethe-a1'],
   structure: attachGoetheA1Runtime(withPracticeCopy(goetheDeA1Structure)),
+  structureText,
   prompts: [...readingPrompts, ...listeningPrompts, ...writingPrompts, ...speakingPrompts],
   speech: {
     ttsLang: 'de',

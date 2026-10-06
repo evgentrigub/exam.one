@@ -2,16 +2,12 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsBoolean,
   IsDefined,
-  IsIn,
   IsObject,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
-import type { GenerationJobStatus } from '@exam-one/contracts'
-
-const STATUSES = ['IDLE', 'RUNNING', 'COMPLETED', 'FAILED'] as const
 
 export class MockExamSetBodyDto {
   @ApiPropertyOptional({
@@ -76,23 +72,4 @@ export class UpsertMockExamAttemptDto {
   })
   @IsObject()
   state!: Record<string, unknown>
-}
-
-export class UpsertMockGenerationDto {
-  @ApiPropertyOptional({
-    description: 'Job execution status',
-    enum: STATUSES,
-    example: 'RUNNING',
-  })
-  @IsOptional()
-  @IsIn(STATUSES)
-  status?: GenerationJobStatus
-
-  @ApiProperty({
-    description: 'Resumable generation pipeline state',
-    type: Object,
-    example: { step: 'reading', progress: 25 },
-  })
-  @IsObject()
-  payload!: Record<string, unknown>
 }

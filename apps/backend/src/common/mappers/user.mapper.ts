@@ -21,6 +21,7 @@ export function toSettingDto(setting: Setting): SettingDto {
     packId: setting.packId,
     examLevel: setting.examLevel,
     targetLanguage: setting.targetLanguage,
+    notifyMockReadyEmail: setting.notifyMockReadyEmail,
     updatedAt: setting.updatedAt.toISOString(),
   }
 }

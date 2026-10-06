@@ -7,6 +7,7 @@ const rubric = [{ id: 'content', label: 'Content', maxPoints: 2.5 }, { id: 'clar
 const config: Array<{ skill: SkillId; n: number; format: ItemFormat; rules: PartRuntime }> = [
   { skill: 'reading', n: 7, format: 'selection', rules: { minutes: 4, maxPoints: 3, questionCount: 2, optionCount: 4 } },
   { skill: 'reading', n: 9, format: 'matching', rules: { minutes: 3, maxPoints: 2, questionCount: 2, optionCount: 3, reuseOptions: false } },
+  { skill: 'reading', n: 17, format: 'gap-fill', rules: { minutes: 3, maxPoints: 2, questionCount: 2 } },
   { skill: 'listening', n: 11, format: 'true-false', rules: { minutes: 2, maxPoints: 2, questionCount: 2, optionCount: 2, replays: 1 } },
   { skill: 'writing', n: 13, format: 'freeform', rules: { minutes: 5, maxPoints: 3.5, fields: [{ id: 'message', label: 'Message', minWords: 5, maxWords: 20, zeroBelowWords: 3 }], criteria: rubric } },
   { skill: 'speaking', n: 15, format: 'recording', rules: { minutes: 2, maxPoints: 3.5, segments: [{ id: 'intro', label: 'Introduction' }], criteria: rubric } },
@@ -14,6 +15,7 @@ const config: Array<{ skill: SkillId; n: number; format: ItemFormat; rules: Part
 export const syntheticPayloads: Record<number, Record<string, unknown>> = {
   7: { title: 'Synthetic selection', text: 'A train leaves at noon.', questions: [{ id: 'a', text: 'When?', options: ['Noon', 'Morning', 'Evening', 'Night'], correctAnswer: 0 }, { id: 'b', text: 'What leaves?', options: ['A bus', 'A train', 'A boat', 'A car'], correctAnswer: 1 }] },
   9: { title: 'Synthetic matching', text: 'Match the destinations.', questions: [{ id: 'a', text: 'Read books', options: ['Library', 'Pool', 'Cafe'], correctAnswer: 0 }, { id: 'b', text: 'Swim', options: ['Library', 'Pool', 'Cafe'], correctAnswer: 1 }] },
+  17: { title: 'Synthetic gap fill', text: 'I live (1) ____ a small town. I go to work (2) ____ bus.', questions: [{ id: 'a', text: 'Gap 1', accepted: ['in'] }, { id: 'b', text: 'Gap 2', accepted: ['by'] }] },
   11: { title: 'Synthetic listening', text: 'Listen to the announcement.', transcript: 'The shop is open today.', questions: [{ id: 'a', text: 'The shop is open.', correctAnswer: 0 }, { id: 'b', text: 'The shop is closed.', correctAnswer: 1 }] },
   13: { title: 'Synthetic writing', text: 'Write a short invitation.', fields: { message: 'Invite a friend to lunch.' } },
   15: { title: 'Synthetic speaking', text: 'Introduce yourself.', segments: { intro: 'Say your name and one thing you enjoy.' } },

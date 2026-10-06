@@ -24,6 +24,7 @@ describe('toSettingDto', () => {
       packId: 'goethe-de-a2',
       examLevel: 'C1',
       targetLanguage: 'de',
+      notifyMockReadyEmail: true,
       updatedAt: '2026-01-01T00:00:00.000Z',
     })
   })

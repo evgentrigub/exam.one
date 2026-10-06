@@ -19,7 +19,7 @@ Ask targeted questions when missing or contradictory requirements affect structu
 
 ## Choose supported scope
 
-Map each part to selection, matching, true/false, freeform, or recording, and to its skill's default screen or an existing `layout` (`form-fill`, `word-cards`, `request-cards`). Preserve the exam's part numbering within each module.
+Map each part to selection, matching, true/false, gap-fill (typed short answers scored against accepted lists), freeform, or recording, and to its skill's default screen or an existing `layout` (`form-fill`, `word-cards`, `request-cards`). Preserve the exam's part numbering within each module where the screens allow it; the writing screens number their parts 1 and 2, so put the official number in the part's `format` line.
 
 Explain unsupported interactions such as a live conversational partner. Do not silently replace them with recordings or label a reduced practice pack as a complete exam. Obtain the user's chosen reduced scope before proceeding with a partial pack, retain excluded parts as `available: false` where representable, and record the gaps in the brief. A resolved, explicitly reduced practice scope can be activated; unresolved requirements cannot.
 

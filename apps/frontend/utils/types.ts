@@ -7,9 +7,18 @@ export type { Difficulty, WritingExercise, WritingTopicTypes }
  * Shared data structures for exercises, reviews, and user progress
  */
 
-export const LANGUAGE_OPTIONS = ['en', 'de'] as const
+export const LANGUAGE_OPTIONS = ['en', 'de', 'es', 'pl', 'ru'] as const
 export type LanguageOptions = (typeof LANGUAGE_OPTIONS)[number]
 export const DEFAULT_LANGUAGE: LanguageOptions = 'en'
+
+/** Each UI language in its own name, so it stays recognisable whatever the current locale. */
+export const LANGUAGE_LABELS: Record<LanguageOptions, string> = {
+  en: 'English',
+  de: 'Deutsch',
+  es: 'Español',
+  pl: 'Polski',
+  ru: 'Русский',
+}
 
 export function isLanguageOption(value: string): value is LanguageOptions {
   return (LANGUAGE_OPTIONS as readonly string[]).includes(value)

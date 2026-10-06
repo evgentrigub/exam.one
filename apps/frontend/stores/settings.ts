@@ -9,7 +9,7 @@ import type { Difficulty } from '~/utils/types'
  */
 export const useSettingsStore = defineStore('settings', () => {
   const packId = ref(DEFAULT_PACK_ID)
-  const targetLanguage = ref<string>('de')
+  const targetLanguage = ref<string>(getLivePack(DEFAULT_PACK_ID).language)
   const hydrated = ref(false)
 
   const examLevel = computed<Difficulty>(() => {

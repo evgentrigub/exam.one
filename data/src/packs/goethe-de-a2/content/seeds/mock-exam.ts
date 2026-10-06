@@ -33,6 +33,47 @@ export interface MockExamModuleDefinition {
   exercises: MockExamExerciseDefinition[]
 }
 
+/** Modules whose final points count together toward one pass mark (DELE: Grupo 1 and 2). */
+export interface MockPassGroup {
+  id: string
+  label: string
+  skills: SkillId[]
+  maximumPoints: number
+  passPoints: number
+}
+
+/**
+ * A reported score scale (Cambridge English Scale): each module's raw marks convert to a scale
+ * score through ascending `[raw, scale]` anchors, interpolated linearly; the overall result is
+ * the rounded average of the module scores. `officialRaw` is the raw maximum the anchors are
+ * written for; a module marked out of fewer points is rescaled to it first.
+ */
+export interface MockScaleRules {
+  /** Names the scale for the UI (`mockExam.scale.<id>`). */
+  id: string
+  /** The lowest reported score; anything below shows as "below {min}". */
+  min: number
+  max: number
+  /** The overall score that passes. */
+  pass: number
+  officialRaw: Partial<Record<SkillId, number>>
+  anchors: Partial<Record<SkillId, ReadonlyArray<readonly [number, number]>>>
+  /** Highest first: an overall score earns the first band whose `min` it reaches. */
+  bands: ReadonlyArray<{ id: string; min: number }>
+}
+
+/**
+ * How a set is passed: one total against `passPoints` (Goethe: 60 of 100), every group
+ * against its own mark when `groups` is set, or the average on a `scale` reaching its pass
+ * score (Cambridge: 120).
+ */
+export interface MockExamRules {
+  maximumPoints: number
+  passPoints?: number
+  groups?: MockPassGroup[]
+  scale?: MockScaleRules
+}
+
 export interface MockExamSet {
   id: string
   examId: string
@@ -42,7 +83,7 @@ export interface MockExamSet {
   createdAt: string
   modules: MockExamModuleDefinition[]
   content: MockExamContent
-  rules?: { maximumPoints: number; passPoints: number }
+  rules?: MockExamRules
 }
 
 export const goetheA2MockExamSet1: MockExamSet = {

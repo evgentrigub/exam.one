@@ -379,11 +379,13 @@ function cardSegments(): SessionSegment[] {
     const card = cards.find(item => item.segment === segment.id)
     if (!card) return []
     const round = (rounds[card.kind] = (rounds[card.kind] ?? 0) + 1)
+    // An examiner question reads as one, not as a partner's line.
+    const copy = card.speaker === 'examiner' ? 'examiner' : card.kind
     return [
       {
         key: segment.id,
-        title: t(`speaking.cards.${card.kind}.title`, { round }),
-        description: t(`speaking.cards.${card.kind}.description`),
+        title: t(`speaking.cards.${copy}.title`, { round }),
+        description: t(`speaking.cards.${copy}.description`),
         placeholder: t('speaking.cards.placeholder'),
         maxSeconds: CARD_TURN_SECONDS,
         card,

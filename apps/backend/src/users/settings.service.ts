@@ -40,9 +40,8 @@ export class SettingsService {
     if (dto.packId && !getPack(dto.packId)?.live) {
       throw new BadRequestException({ code: 'PACK_UNAVAILABLE', message: 'Choose a live pack' })
     }
-    const requestedPackId =
-      dto.packId ?? (dto.examLevel === 'C1' ? DEFAULT_PACK_ID : existing?.packId) ?? DEFAULT_PACK_ID
-    const pack = getLivePack(requestedPackId)
+    // The level always follows the pack; a requested `examLevel` is ignored.
+    const pack = getLivePack(dto.packId ?? existing?.packId ?? DEFAULT_PACK_ID)
     const examLevel = examLevelOf(pack.cefr)
     const targetLanguage = pack.language
 
@@ -52,12 +51,14 @@ export class SettingsService {
         packId: pack.packId,
         examLevel,
         targetLanguage,
+        ...(dto.notifyMockReadyEmail !== undefined ? { notifyMockReadyEmail: dto.notifyMockReadyEmail } : {}),
       },
       create: {
         userId: user.id,
         packId: pack.packId,
         examLevel,
         targetLanguage,
+        ...(dto.notifyMockReadyEmail !== undefined ? { notifyMockReadyEmail: dto.notifyMockReadyEmail } : {}),
       },
     })
     return toSettingDto(setting)

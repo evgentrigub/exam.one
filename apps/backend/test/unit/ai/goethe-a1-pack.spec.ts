@@ -19,9 +19,9 @@ function seed(skill: SkillId, n: number): Record<string, unknown> {
 }
 
 describe('Goethe A1 pack', () => {
-  it('is live, selectable and keeps A2 as the default', () => {
+  it('is live, selectable and falls back to the Cambridge A2 Key default', () => {
     expect(getLivePack('goethe-de-a1').packId).toBe('goethe-de-a1')
-    expect(getLivePack(undefined).packId).toBe('goethe-de-a2')
+    expect(getLivePack(undefined).packId).toBe('cambridge-en-a2')
     expect(goetheDeA1.createMockSet).toBeDefined()
     expect(goetheDeA1.bundledMockSet?.id).toBe('goethe-a1-set-1')
   })

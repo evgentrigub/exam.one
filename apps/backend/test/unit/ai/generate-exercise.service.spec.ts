@@ -55,6 +55,17 @@ describe('pack reading generation', () => {
     expect((payload['questions'] as Array<{ correctAnswer: unknown }>)[0]!.correctAnswer).toBe(2)
   })
 
+  it('never coerces typed gap answers, which live outside correctAnswer', () => {
+    const payload = coerceAnswerIndices({
+      ...exercise(),
+      questions: [{ question: 'Gap 1', accepted: ['15', 'fifteen'] }],
+    })
+    expect((payload['questions'] as Array<{ accepted: unknown }>)[0]!.accepted).toEqual([
+      '15',
+      'fifteen',
+    ])
+  })
+
   it('leaves a non-numeric answer index alone so validation can reject it', () => {
     const payload = coerceAnswerIndices({
       ...exercise(),

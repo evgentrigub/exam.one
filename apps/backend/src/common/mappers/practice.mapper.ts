@@ -1,8 +1,8 @@
 import type {
   AttemptDto,
+  BackgroundJobDto,
   DraftDto,
   ExerciseDto,
-  GenerationJobDto,
   MockExamAttemptDto,
   MockExamSetDto,
   MockExamSetSummaryDto,
@@ -11,14 +11,48 @@ import type {
 } from '@exam-one/contracts'
 import type {
   Attempt,
+  BackgroundJob,
   Draft,
   Exercise,
-  GenerationJob,
   MockExamAttempt,
   MockExamSet,
   PromptOverride,
   Result,
 } from '@exam-one/database'
+
+export function toBackgroundJobDto(row: BackgroundJob): BackgroundJobDto {
+  const progress = row.progress && typeof row.progress === 'object' && !Array.isArray(row.progress)
+    ? row.progress as Record<string, unknown>
+    : {}
+  const result = row.result && typeof row.result === 'object' && !Array.isArray(row.result)
+    ? row.result as Record<string, unknown>
+    : null
+  return {
+    id: row.id,
+    packId: row.packId,
+    level: row.level,
+    type: row.type,
+    status: row.status,
+    title: row.title,
+    subtitle: row.subtitle,
+    targetId: row.targetId,
+    progress: {
+      stage: typeof progress['stage'] === 'number' ? progress['stage'] : 0,
+      stagePercent: typeof progress['stagePercent'] === 'number' ? progress['stagePercent'] : 0,
+      ...(Array.isArray(progress['items']) ? { items: progress['items'] as { label: string; done: boolean }[] } : {}),
+      ...(typeof progress['estimateSec'] === 'number' ? { estimateSec: progress['estimateSec'] } : {}),
+    },
+    result,
+    error: row.error,
+    attempt: row.attempt,
+    revision: row.revision,
+    seenAt: row.seenAt?.toISOString() ?? null,
+    createdAt: row.createdAt.toISOString(),
+    startedAt: row.startedAt?.toISOString() ?? null,
+    finishedAt: row.finishedAt?.toISOString() ?? null,
+    updatedAt: row.updatedAt.toISOString(),
+  }
+}
 
 export function toExerciseDto(row: Exercise): ExerciseDto {
   return {
@@ -84,18 +118,6 @@ export function toPromptOverrideDto(row: PromptOverride): PromptOverrideDto {
     part: row.part,
     kind: row.kind,
     body: row.body,
-    updatedAt: row.updatedAt.toISOString(),
-  }
-}
-
-export function toGenerationJobDto(row: GenerationJob): GenerationJobDto {
-  return {
-    id: row.id,
-    userId: row.userId,
-    packId: row.packId,
-    kind: row.kind,
-    status: row.status,
-    payload: row.payload,
     updatedAt: row.updatedAt.toISOString(),
   }
 }

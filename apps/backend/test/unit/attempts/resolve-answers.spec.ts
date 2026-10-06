@@ -1,4 +1,5 @@
-import { getPack, resolveAnswers, type ExerciseView } from '@exam-one/exam-packs'
+import { getPack, objectiveScore, resolveAnswers, type ExerciseView } from '@exam-one/exam-packs'
+import { syntheticEnglishA1, syntheticPayloads } from '../../../../../data/src/testing/english-a1'
 
 const pack = getPack('goethe-de-a2')!
 const viewFor = (skill: string, part: number, payload: Record<string, unknown>): ExerciseView => {
@@ -33,6 +34,16 @@ describe('resolveAnswers', () => {
       responses: { 'r1-q1': 0, 'r1-q2': 1, 'r1-q3': 2, 'r1-q4': 1, 'r1-q5': 0 },
     })
     expect(resolved).toEqual({ 'r1-q1': 0, 'r1-q2': 1, 'r1-q3': 2, 'r1-q4': 1, 'r1-q5': 0 })
+  })
+
+  it('lifts typed gap answers out of the responses envelope unchanged', () => {
+    const part = syntheticEnglishA1.structure
+      .find(module => module.id === 'reading')!
+      .parts.find(p => p.itemFormat === 'gap-fill')!
+    const view = part.adapter!.project(syntheticPayloads[17])
+    const resolved = resolveAnswers(view, { responses: { a: ' In ', b: 'by' } })
+    expect(resolved).toEqual({ a: ' In ', b: 'by' })
+    expect(objectiveScore(view, part.runtime!, resolved).score).toBe(2)
   })
 
   it('lifts listening choices out of the responses envelope', () => {

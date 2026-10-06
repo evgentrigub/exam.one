@@ -43,7 +43,7 @@ function fromUser(user: UserDto | null): AccountProfile {
 
 export const useAccountProfile = () => {
   const { user, updateProfile } = useAuth()
-  const { locale } = useI18n()
+  const { locale, localeProperties } = useI18n()
 
   const profile = computed(() => fromUser(user.value))
 
@@ -98,7 +98,8 @@ export const useAccountProfile = () => {
     if (!iso) return '—'
     const date = new Date(iso)
     if (Number.isNaN(date.getTime())) return '—'
-    const tag = locale.value === 'de' ? 'de-DE' : 'en-GB'
+    // English keeps the day-month-year order it has always had; other locales use their own tag.
+    const tag = locale.value === 'en' ? 'en-GB' : localeProperties.value.language
     return date.toLocaleDateString(tag, options)
   }
 

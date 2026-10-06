@@ -53,6 +53,8 @@ export interface TranscriptionData {
 
 export interface TtsHealthData {
   ok: boolean
+  /** Why TTS is not ready: the service is unreachable, or it lacks this pack's voices. */
+  reason?: 'offline' | 'unsupported'
 }
 
 export interface ListeningExerciseAudioMap {

@@ -16,7 +16,8 @@ const flatten = (node, prefix = '') =>
       : [[`${prefix}${key}`, String(value)]],
   )
 
-const placeholders = text => [...text.matchAll(PLACEHOLDER_RE)].map(m => m[1]).sort().join(',')
+// A set, not a list: languages with more plural forms repeat the same placeholder more often.
+const placeholders = text => [...new Set([...text.matchAll(PLACEHOLDER_RE)].map(m => m[1]))].sort().join(',')
 
 const locales = readdirSync(localesDir)
   .filter(file => file.endsWith('.json'))

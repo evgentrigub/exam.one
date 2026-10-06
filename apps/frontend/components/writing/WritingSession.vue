@@ -261,13 +261,13 @@ const submittedContent = ref('')
 const submittedWordCount = ref(0)
 const submittedTimeSpent = ref(0)
 
-const { partsFor } = useActivePack()
+const { pack, partsFor } = useActivePack()
 /** The pack decides the screen: a `form-fill` part gets the form instead of the editor. */
 const isFormFill = computed(
   () => partsFor('writing').find(part => part.n === props.topic.testingPart)?.layout === 'form-fill'
 )
 
-const writingTips = computed(() => getWritingTips(props.topic.difficulty, props.topic.testingPart))
+const writingTips = computed(() => getWritingTips(pack.value, props.topic.testingPart))
 
 const reviewPending = computed(() => {
   void reviewVersion.value

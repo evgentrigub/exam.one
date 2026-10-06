@@ -7,6 +7,6 @@ import { LlmService } from './llm.service'
 @Module({
   controllers: [AiController, LlmController],
   providers: [LlmService, PackAiService],
-  exports: [LlmService],
+  exports: [LlmService, PackAiService],
 })
 export class AiModule {}

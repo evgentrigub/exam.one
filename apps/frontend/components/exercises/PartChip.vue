@@ -12,7 +12,7 @@
     @blur="hover = false"
   >
     <span class="w-1.5 h-1.5 rounded-full" :class="`dot-${skill}`" />
-    {{ compact ? n : `Part ${n}` }}
+    {{ compact ? n : $t('exercisesUi.partN', { n }) }}
     <Info :size="11" class="opacity-40" />
   </button>
 
@@ -68,17 +68,17 @@ const props = defineProps<{
 
 const emit = defineEmits<{ toggle: [] }>()
 
-const { pack } = useActivePack()
+const structure = useLocalizedStructure()
 const chipRef = ref<HTMLButtonElement | null>(null)
 const hover = ref(false)
 const pos = ref({ x: 0, y: 0 })
 
 const part = computed(() =>
-  pack.value.structure.find(m => m.id === props.skill)?.parts.find(p => p.n === props.n)
+  structure.value.find(m => m.id === props.skill)?.parts.find(p => p.n === props.n)
 )
 
 const skillLabel = computed(() => {
-  const raw = pack.value.structure.find(m => m.id === props.skill)?.label ?? props.skill
+  const raw = structure.value.find(m => m.id === props.skill)?.label ?? props.skill
   return raw.replace(/\s*\(.*\)\s*/, '')
 })
 

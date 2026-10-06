@@ -14,13 +14,15 @@
       @click="open(attempt.id)"
     >
       {{ attempt.packId }} · {{ attempt.skill }} ·
-      {{ new Date(attempt.submittedAt).toLocaleDateString() }}
+      {{ new Date(attempt.submittedAt).toLocaleDateString(localeProperties.language) }}
     </button>
     <p v-if="!attempts.length">{{ $t('pastExams.empty') }}</p>
   </main>
 </template>
 <script setup lang="ts">
 import type { AttemptDto } from '@exam-one/contracts'
+
+const { localeProperties } = useI18n()
 
 /**
  * Rows the AI screens persist to cache their own output - a model answer, a review request.

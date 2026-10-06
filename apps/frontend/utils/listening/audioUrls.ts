@@ -37,6 +37,45 @@ export function isStatementListening(
   return 'questions' in exercise && exercise.questions.some(question => 'statement' in question)
 }
 
+/** One shared recording whose questions carry their own options (Cambridge A2 Key Part 3). */
+export interface SharedChoiceListening {
+  id?: string
+  transcript: string
+  questions: Array<{
+    id?: string
+    question: string
+    options: string[]
+    correctAnswer: number
+    explanation?: string
+  }>
+}
+
+/** One shared recording and a page of notes with typed gaps (Cambridge A2 Key Part 2). */
+export interface NotesListening {
+  id?: string
+  transcript: string
+  content: string
+  questions: Array<{ id?: string; question: string; accepted: string[]; explanation?: string }>
+}
+
+/**
+ * A shared transcript with ordinary choice questions and no top-level option bank, which
+ * would make it a matching task instead.
+ */
+export function isSharedChoiceListening(exercise: ListeningA2Exercise): boolean {
+  const raw = exercise as unknown as Record<string, unknown>
+  return (
+    !('items' in raw) &&
+    !('options' in raw) &&
+    typeof raw['transcript'] === 'string' &&
+    Array.isArray(raw['questions']) &&
+    raw['questions'].some(
+      question =>
+        typeof question === 'object' && question !== null && Array.isArray((question as { options?: unknown }).options)
+    )
+  )
+}
+
 /** Deterministic public path for a shared-transcript seed exercise. */
 export function sharedListeningAudioPath(exerciseId: string, prefix = seedPrefix()): string {
   return `${prefix}/${exerciseId}/shared.${LISTENING_AUDIO_EXT}`
