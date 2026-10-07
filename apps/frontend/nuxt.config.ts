@@ -1,10 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
 
-const apiOrigin = new URL(process.env['NUXT_PUBLIC_API_URL'] || 'http://localhost:3001').origin
-const CONTENT_SECURITY_POLICY =
-  `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' ${apiOrigin} http://127.0.0.1:3001; frame-ancestors 'self';`
-
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-18',
   devtools: { enabled: true },
@@ -108,15 +104,10 @@ export default defineNuxtConfig({
 
   // Hybrid rendering: auth screens are SSR'd; the login-gated app is client-only.
   // Session cookies live on the API host, so Nuxt cannot know the user during SSR.
+  // The Content-Security-Policy header is set per request in server/middleware/.
   routeRules: {
-    '/auth/**': {
-      ssr: true,
-      headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY },
-    },
-    '/**': {
-      ssr: false,
-      headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY },
-    },
+    '/auth/**': { ssr: true },
+    '/**': { ssr: false },
   },
 
   runtimeConfig: {

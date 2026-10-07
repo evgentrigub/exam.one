@@ -1,36 +1,37 @@
-# Backend API collection (v1.0.0)
+# Backend API exploration
 
-Import `exam-one-backend.postman_collection.json` into Postman. It provides complete coverage for all mounted NestJS `/api/v1` controllers, with full parity to the Swagger OpenAPI specification.
+[Back to the application](../../../README.md#project-structure)
 
-## Interactive Swagger Documentation
+The [Postman collection](exam-one-backend.postman_collection.json) is a manual toolbox for exam.one's NestJS API: accounts, practice, reviews, drafts, jobs, mocks, speech, and media. Shared endpoints operate against a selected exam pack rather than a particular language.
 
-Comprehensive interactive documentation with full schemas, models, security requirements, and execution samples is served at:
-**`http://localhost:3001/api/docs`** (available in local `pnpm dev` and in Compose when `SWAGGER_ENABLED=true`).
+Swagger at `http://localhost:3001/api/docs` describes the running API. It is available in local development and in Compose when `SWAGGER_ENABLED=true`. Check mounted controllers/Swagger when extending the API; collection examples may need updates as contracts evolve.
 
 ## Start here
 
-1. Set `baseUrl`, `email` and `password` in collection variables. Defaults target `http://localhost:3001`; adjust if running on a custom port.
-2. Run **Health → Readiness**, then **Auth → Register** or **Login**. Keep Postman's cookie jar enabled: authentication uses HTTP-only cookies (`exam_one_access`, `exam_one_refresh`), not a bearer token variable.
-3. Leave `packId=goethe-de-a2` for the production pack. **Settings → Update me** selects that pack and derives its language/CEFR. Practice, speech, and mock requests send `x-exam-pack: {{packId}}` explicitly. Disable the header to test resolution from the user's active settings.
-4. Choose `skill` (`READING`, `WRITING`, `LISTENING`, `SPEAKING`) and run **Exercises → List catalog**. It captures the first `exerciseExternalId` and `exercisePayload`, plus a skill-specific topic variable when applicable. Change them to select another exercise.
+1. Set `baseUrl`, `email`, and `password`. The default API origin is `http://localhost:3001`.
+2. Run **Health → Readiness**, then register or sign in. Keep the cookie jar enabled: auth uses httpOnly `exam_one_access` and `exam_one_refresh` cookies.
+3. Choose `packId` from the [registry](../../../data/src/registry.ts). The collection's existing examples default to `goethe-de-a2`; the app's new-account default is `cambridge-en-a2`. Update part, level, exercise, and mock IDs together when selecting another pack.
+4. **Settings → Update me** persists the pack selection. Practice requests send `x-exam-pack: {{packId}}`; disabling it exercises selection from the user's settings.
+5. Choose a skill and list its catalog. Use the captured exercise ID/payload, or select another actual catalog entry.
 
-Use individual requests as a manual API toolbox. Running the whole collection also invokes password changes, logout, writes, resets/deletes, and optional provider calls; it is not intended as an unattended smoke-test sequence.
+There is no HTTP pack-list endpoint; availability comes from the package registry. Part numbers are skill-specific.
 
-## Practice and history
+## Practice and reviews
 
-- Generate an exercise with the selected pack's complete assembled generator prompt in `generationPrompt`. Set `part` and `cefr` consistently with that pack. Generation requests capture the first returned payload, ID, and skill. Save it through **Exercises → Save generated exercise** before submitting an attempt.
-- The prompt examples are explicit placeholders: assemble the actual PromptSpec from `data/`, or copy the prompt shown/sent by the app. Generic packs use server-side pack prompts; legacy Goethe provider paths still accept the assembled prompt body. No live official A1 pack is bundled.
-- Set `answers` to a JSON object matching the exercise. Generic objective tasks use question IDs and zero-based option indices. Goethe objective practice uses `{"responses":{"question-id":0}}`. Generic writing and recording use configured field/segment IDs.
-- **Attempts → Create attempt** captures `attemptId`. The API creates the rendering/grading snapshot; clients do not submit one. **Get attempt detail** returns it with the answers and result.
-- `history=true` lists all packs for the chosen skill. The explicit C1 examples use `historyPackId=goethe-de-c1`; set `skill=WRITING` and copy an ID into `historyAttemptId`. Reads remain owner-scoped. New C1 practice, grading, and settings selection are unavailable.
-- Review endpoints require complete topic/answer context. Use `review` for a full returned criterion review when saving generic feedback; the writing and speaking screens persist their own wrappers around it, which the pack adapter unwraps. Fractional scores are supported, and invalid totals are rejected.
+Generation uses the selected pack's server-assembled PromptSpecs. Older collection bodies retain prompt variables; these do not select a separate legacy generator. Check the current request DTO before changing an example. Save generated content through the exercise API before creating a practice attempt, or use the server-owned generation jobs used by the app.
 
-JSON-object variables such as `answers`, `exercisePayload`, `review`, `generatedMockSet`, and `mockState` are inserted as raw JSON, without quotes. Initial `{}` values are templates to replace with actual data. Collection-level pre-request code JSON-escapes prompt and writing text variables, allowing multiline content safely.
+Provide `answers` matching the exercise's fields/question/segment IDs. Objective choices use zero-based indices; typed gaps use strings. The API creates the rendering/rubric snapshot. Historical detail reads remain owner-scoped and use the saved pack/snapshot. `history=true` lists the selected skill across packs; inactive C1 is available for historical reads, not new practice.
 
-## Drafts, jobs, mocks and speech
+Writing and speaking review requests require complete task/answer context. When persisting feedback, retain the validated review shape expected by that pack's adapter. Fractional scores are supported.
 
-- Drafts are scoped to user and pack; their JSON payloads are owned by the originating frontend flow. Background jobs (`/jobs`) run on the server through BullMQ and list across all of a user's packs; enqueue requests capture `jobId` for the cancel, retry and dismiss requests. Live updates stream from `GET /jobs/stream` (SSE), which Postman can open but not assert on.
-- `mockSetId` defaults to bundled `goethe-a2-set-1` for reads. To save a generated set, provide its complete factory output in `generatedMockSet`; use that generated ID for deletion. Mock definitions retain timing, replay, scoring, and pass rules. A pack without a mock factory cannot create mock sets.
-- TTS/STT read language and capabilities from the selected pack. Unsupported speech or missing optional services return explicit business errors (`{ data: null, error: "..." }`); do not assume HTTP 200 means `data` is present. **STT → Transcribe recording** requires choosing a local file in the multipart `file` field (maximum 25 MiB). Do not manually set its Content-Type boundary. TTS generation captures `audioMap` for the exercise audio update request.
+Raw JSON variables such as `answers`, `exercisePayload`, `review`, `generatedMockSet`, and `mockState` must contain real JSON rather than quoted JSON strings. Empty objects in the collection are placeholders. Its pre-request code escapes multiline prompt/text variables.
 
-There is no HTTP pack-list endpoint: packs are registered in `data/src/registry.ts`. Prompt override routes are unmounted and intentionally excluded from this collection.
+## Jobs, mocks, and media
+
+- `/jobs` lists the user's server-side background jobs across packs. Enqueue captures `jobId` for cancel/retry/dismiss. `GET /jobs/stream` provides SSE updates.
+- Mock IDs must belong to the selected pack. The collection's bundled example is `goethe-a2-set-1`; select the appropriate ID for another pack. Generated sets retain timing, replay, scoring, group, and scale rules.
+- Speech capability checks use the selected pack's language/voices. Business failures can return `{ data: null, error }` with HTTP 200; inspect the envelope.
+- STT multipart requests need a recording in the `file` field, up to 25 MiB. Let Postman set the Content-Type boundary.
+- Media endpoints inspect audio and voice models. Generated files are user-scoped; seed WAVs and installed voices are shared instance resources.
+
+Run requests selectively: the collection includes password changes, logout, deletion, and optional provider calls. It is not an unattended smoke suite. Prompt-override routes are unmounted and excluded. For automated browser/stack tests, see the sibling [E2E repository](../../../../exam-one-e2e/README.md).
