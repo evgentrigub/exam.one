@@ -1,0 +1,117 @@
+/** Task format names in UI locale order: English, German, Spanish, Polish, Russian. */
+export const titles = {
+  reading: [
+    [
+      'Notices and messages',
+      'Mitteilungen und Nachrichten',
+      'Avisos y mensajes',
+      'Ogłoszenia i wiadomości',
+      'Объявления и сообщения',
+    ],
+    [
+      'People and suitable activities',
+      'Personen und passende Aktivitäten',
+      'Personas y actividades adecuadas',
+      'Osoby i odpowiednie zajęcia',
+      'Люди и подходящие занятия',
+    ],
+    [
+      'Article comprehension',
+      'Einen Artikel verstehen',
+      'Comprensión de un artículo',
+      'Rozumienie artykułu',
+      'Понимание статьи',
+    ],
+    [
+      'Restore missing sentences',
+      'Fehlende Sätze ergänzen',
+      'Reconstruir frases omitidas',
+      'Uzupełnianie brakujących zdań',
+      'Восстановление пропущенных предложений',
+    ],
+    [
+      'Vocabulary in context',
+      'Wortschatz im Kontext',
+      'Vocabulario en contexto',
+      'Słownictwo w kontekście',
+      'Лексика в контексте',
+    ],
+    [
+      'Grammar in context',
+      'Grammatik im Kontext',
+      'Gramática en contexto',
+      'Gramatyka w kontekście',
+      'Грамматика в контексте',
+    ],
+  ],
+  writing: [
+    [
+      'Reply to an email',
+      'Auf eine E-Mail antworten',
+      'Responder a un correo',
+      'Odpowiedź na e-mail',
+      'Ответ на письмо',
+    ],
+    [
+      'Article or story',
+      'Artikel oder Geschichte',
+      'Artículo o relato',
+      'Artykuł lub opowiadanie',
+      'Статья или рассказ',
+    ],
+  ],
+  listening: [
+    [
+      'Short conversations',
+      'Kurze Gespräche',
+      'Conversaciones breves',
+      'Krótkie rozmowy',
+      'Короткие разговоры',
+    ],
+    [
+      'Attitudes and opinions',
+      'Haltungen und Meinungen',
+      'Actitudes y opiniones',
+      'Postawy i opinie',
+      'Отношения и мнения',
+    ],
+    [
+      'Complete notes',
+      'Notizen ergänzen',
+      'Completar notas',
+      'Uzupełnianie notatek',
+      'Заполнение заметок',
+    ],
+    ['Interview', 'Interview', 'Entrevista', 'Wywiad', 'Интервью'],
+  ],
+  speaking: [
+    [
+      'Personal questions',
+      'Persönliche Fragen',
+      'Preguntas personales',
+      'Pytania osobiste',
+      'Вопросы о себе',
+    ],
+    [
+      'Describe a scene',
+      'Eine Szene beschreiben',
+      'Describir una escena',
+      'Opis sytuacji',
+      'Описание ситуации',
+    ],
+    [
+      'Discuss a proposal',
+      'Einen Vorschlag besprechen',
+      'Debatir una propuesta',
+      'Omówienie propozycji',
+      'Обсуждение предложения',
+    ],
+    [
+      'General conversation',
+      'Allgemeines Gespräch',
+      'Conversación general',
+      'Rozmowa ogólna',
+      'Беседа на общую тему',
+    ],
+  ],
+}
