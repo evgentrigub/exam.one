@@ -11,6 +11,7 @@ import { ref } from 'vue'
 import { generateUUID } from '~/utils/uuid'
 import type { AttemptDto } from '@exam-one/contracts'
 import { apiFetch } from '~/composables/useApi'
+import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 
 type GenerationStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -27,7 +28,11 @@ interface ModelAnswerRecord {
 const answers = ref<Record<string, ModelAnswerRecord>>({})
 const modelAnswerVersion = ref(0)
 let hydrated = false
-onPackReset(() => { answers.value = {}; hydrated = false; modelAnswerVersion.value++ })
+onPackReset(() => {
+  answers.value = {}
+  hydrated = false
+  modelAnswerVersion.value++
+})
 
 function persistModelAnswer(record: ModelAnswerRecord): void {
   void apiFetch('/attempts', {
@@ -119,6 +124,7 @@ export function useModelAnswer() {
   const requestEpoch = packEpoch()
   if (import.meta.client) void hydrateModelAnswers()
   const { assemble } = usePackPrompt(requestPackId)
+  const outputLanguage = useReviewOutputLanguage()
   function getModelAnswer(topicId: string): ModelAnswer | null {
     const record = getRecord(topicId)
     return record?.modelAnswer || null
@@ -145,10 +151,11 @@ export function useModelAnswer() {
   }
 
   function getGenerationPrompt(topic: WritingExercise): string {
-    const part = topic.testingPart === 2 ? 2 : 1
+    const part = topic.testingPart || 1
     const prompt = assemble('writing', part, 'answer', {
       task: topic.task,
       topicId: topic.id,
+      outputLanguage: outputLanguage.value,
     })
     if (!prompt) {
       throw new Error(t('generation.noModelAnswerPrompt', { part }))
@@ -175,7 +182,7 @@ export function useModelAnswer() {
       const response = await aiFetch<Partial<ModelAnswer>>('/llm/generate-model-answer', {
         packId: requestPackId,
         method: 'POST',
-        body: { topic, prompt },
+        body: { topic, prompt, outputLanguage: outputLanguage.value },
       })
 
       if (requestEpoch !== packEpoch()) return

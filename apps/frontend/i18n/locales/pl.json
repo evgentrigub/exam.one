@@ -776,7 +776,9 @@
       "content": "Treść",
       "organisation": "Organizacja",
       "range": "Zakres językowy",
-      "accuracy": "Poprawność"
+      "accuracy": "Poprawność",
+      "communicativeAchievement": "Skuteczność komunikacyjna",
+      "genreAdequacy": "Gatunek i rejestr"
     },
     "modelAnswer": {
       "title": "Odpowiedź wzorcowa",
@@ -953,7 +955,12 @@
     "interactiveCommunication": "Komunikacja interaktywna",
     "globalAchievement": "Ogólne wykonanie",
     "vocabulary": "Słownictwo",
-    "grammar": "Gramatyka"
+    "grammar": "Gramatyka",
+    "discourseManagement": "Organizacja wypowiedzi",
+    "coherence": "Spójność",
+    "accuracy": "Poprawność",
+    "range": "Bogactwo językowe",
+    "structures": "Struktury"
   },
   "mockExam": {
     "title": "Egzaminy próbne",

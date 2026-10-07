@@ -154,17 +154,25 @@ const CRITERION_LABELS: Record<string, string> = {
   taskCompletion: 'writing.reviewDetails.taskFulfillment',
   range: 'writing.reviewDetails.range',
   accuracy: 'writing.reviewDetails.accuracy',
+  communicativeAchievement: 'writing.reviewDetails.communicativeAchievement',
+  genreAdequacy: 'writing.reviewDetails.genreAdequacy',
+  coherence: 'writing.reviewDetails.coherence',
+  vocabulary: 'writing.reviewDetails.vocabulary',
+  structures: 'writing.reviewDetails.structures',
 }
 
 const { pack } = useActivePack()
-const writingRules = computed(() =>
-  pack.value.structure
-    .find(module => module.id === 'writing')
-    ?.parts.find(part => part.n === (Number(props.teil) || 1))?.runtime
+const writingRules = computed(
+  () =>
+    pack.value.structure
+      .find(module => module.id === 'writing')
+      ?.parts.find(part => part.n === (Number(props.teil) || 1))?.runtime
 )
 const rawMax = computed(() => props.review.maxPoints || (writingRules.value?.maxPoints ?? 10))
 const multiplier = computed(() => writingRules.value?.multiplier ?? 1.25)
-const resultPoints = computed(() => Number((props.review.totalPoints * multiplier.value).toFixed(2)))
+const resultPoints = computed(() =>
+  Number((props.review.totalPoints * multiplier.value).toFixed(2))
+)
 const resultMax = computed(() => String(rawMax.value * multiplier.value))
 
 const formattedWordCount = computed(() => {

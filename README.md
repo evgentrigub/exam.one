@@ -3,15 +3,16 @@
 An open-source and self-hostable platform for language certification exam preparation.
 Prepare for English, German, Spanish, Polish exams.
 
-exam.one brings Reading, Writing, Listening, Speaking, and mock exams into one reusable application. 
+exam.one brings Reading, Writing, Listening, Speaking, and mock exams into one reusable application.
 Each **exam pack** defines
-- a language 
-- exam board 
+
+- a language
+- exam board
 - CEFR level
 - task structure
 - prompts
-- scoring rules 
-- and bundled content. 
+- scoring rules
+- and bundled content.
 
 Learners choose a pack; contributors extend the catalog through the same framework.
 
@@ -39,17 +40,29 @@ Practice adaptations are defined by each pack. Solo speaking and transcript-base
 
 ## Supported exam packs
 
-These packs currently provide all four skills, bundled practice content, and mock exams:
+These packs provide all four skills and bundled practice content. The A1/A2 packs also provide mock exams; all four B1 packs provide individual practice only:
 
 | Exam                     | Language | Level | Pack ID           |
 | ------------------------ | -------- | ----- | ----------------- |
 | Goethe · Start Deutsch 1 | German   | A1    | `goethe-de-a1`    |
 | Goethe-Zertifikat A2     | German   | A2    | `goethe-de-a2`    |
+| Goethe-Zertifikat B1     | German   | B1    | `goethe-de-b1`    |
 | Cambridge A2 Key         | English  | A2    | `cambridge-en-a2` |
+| Cambridge B1 Preliminary | English  | B1    | `cambridge-en-b1` |
 | Certyfikat Polski A2     | Polish   | A2    | `certpol-pl-a2`   |
+| Certyfikat Polski B1     | Polish   | B1    | `certpol-pl-b1`   |
 | DELE A2                  | Spanish  | A2    | `dele-es-a2`      |
+| DELE B1                  | Spanish  | B1    | `dele-es-b1`      |
 
 Select an exam in **Settings → Learning plan**. New accounts start on Cambridge English A2 Key. German, English, Spanish, Polish, and Russian are available as interface languages; interface locale and the language being studied are separate choices.
+
+English B1 includes 16 original tasks with generation prompts and formative writing/speaking feedback. Its practice adaptations use solo speaking cues, written descriptions for visual tasks and an assigned article or story. See the [brief](data/src/packs/cambridge-en-b1/brief.md) and [verification](data/src/packs/cambridge-en-b1/verification.md).
+
+Polish B1 includes 23 original tasks, including a separately labelled grammar paper under Reading, five listening parts, two assigned writing tasks and three solo speaking parts. Official reading and grammar marks remain separate; formative practice scores do not determine certification. See the [brief](data/src/packs/certpol-pl-b1/brief.md) and [verification](data/src/packs/certpol-pl-b1/verification.md).
+
+Spanish B1 includes 16 original tasks: five reading, five listening, two writing and four solo speaking tasks. Writing retains the 100–120 and 130–150-word ranges. Formative scores do not apply official /25 conversions or certification thresholds. See the [brief](data/src/packs/dele-es-b1/brief.md) and [verification](data/src/packs/dele-es-b1/verification.md).
+
+German B1 includes 15 original tasks: five reading, four listening, three writing and three solo speaking tasks. All three writing task numbers and their /40, /40 and /20 rubrics are retained. Speaking feedback assesses transcripts with formative criteria. See the [brief](data/src/packs/goethe-de-b1/brief.md) and [verification](data/src/packs/goethe-de-b1/verification.md).
 
 The [registry](data/src/registry.ts) determines availability. Goethe C1 is an inactive historical stub. Additional levels and boards can be introduced as packs; a new task interaction may also require a shared application component.
 
@@ -71,19 +84,19 @@ See the [exam-pack authoring guide](data/README.md) for contracts, examples, and
 
 ## Architecture
 
-| Component               | Responsibility                                                                          |
-| ----------------------- | --------------------------------------------------------------------------------------- |
-| Nuxt 4 / Vue 3 frontend | Practice screens, account UI, Activity center, and audio serving                        |
-| NestJS API              | Authentication, persistence, pack context, AI/speech integration, and job orchestration |
-| PostgreSQL / Prisma     | Accounts, settings, exercises, attempts, drafts, reviews, mock state, and job records   |
-| Redis / BullMQ          | Work queues and live job-event delivery                                                 |
-| Local TTS (text-to-speech) service       | German, British English, and Spanish on Kokoro; Polish on Piper        |
-| Local STT (speech-to-text) service       | Parakeet transcription; OpenAI Whisper is an alternative               |
+| Component                          | Responsibility                                                                          |
+| ---------------------------------- | --------------------------------------------------------------------------------------- |
+| Nuxt 4 / Vue 3 frontend            | Practice screens, account UI, Activity center, and audio serving                        |
+| NestJS API                         | Authentication, persistence, pack context, AI/speech integration, and job orchestration |
+| PostgreSQL / Prisma                | Accounts, settings, exercises, attempts, drafts, reviews, mock state, and job records   |
+| Redis / BullMQ                     | Work queues and live job-event delivery                                                 |
+| Local TTS (text-to-speech) service | German, British English, and Spanish on Kokoro; Polish on Piper                         |
+| Local STT (speech-to-text) service | Parakeet transcription; OpenAI Whisper is an alternative                                |
 
 The browser loads the Nuxt UI and calls the NestJS API. Requests carry the selected pack identity; practice records are scoped by user and pack. Saved attempt snapshots preserve the content and grading rules used at submission.
 
-PostgreSQL and Redis are required for the core application. 
-LLM, TTS, STT, and SMTP are **optional** integrations. 
+PostgreSQL and Redis are required for the core application.
+LLM, TTS, STT, and SMTP are **optional** integrations.
 The default worker runs inside the backend process; generation continues independently of the browser tab.
 
 ### Storage
