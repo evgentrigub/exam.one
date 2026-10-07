@@ -776,7 +776,9 @@
       "content": "Содержание",
       "organisation": "Организация",
       "range": "Языковой диапазон",
-      "accuracy": "Точность"
+      "accuracy": "Точность",
+      "communicativeAchievement": "Коммуникативная эффективность",
+      "genreAdequacy": "Жанр и регистр"
     },
     "modelAnswer": {
       "title": "Образцовый ответ",
@@ -953,7 +955,12 @@
     "interactiveCommunication": "Интерактивное общение",
     "globalAchievement": "Общее впечатление",
     "vocabulary": "Лексика",
-    "grammar": "Грамматика"
+    "grammar": "Грамматика",
+    "discourseManagement": "Организация речи",
+    "coherence": "Связность",
+    "accuracy": "Точность",
+    "range": "Диапазон языка",
+    "structures": "Структуры"
   },
   "mockExam": {
     "title": "Пробные экзамены",

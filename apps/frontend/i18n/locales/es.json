@@ -776,7 +776,9 @@
       "content": "Contenido",
       "organisation": "Organización",
       "range": "Variedad de lengua",
-      "accuracy": "Corrección"
+      "accuracy": "Corrección",
+      "communicativeAchievement": "Logro comunicativo",
+      "genreAdequacy": "Género y registro"
     },
     "modelAnswer": {
       "title": "Respuesta modelo",
@@ -953,7 +955,12 @@
     "interactiveCommunication": "Comunicación interactiva",
     "globalAchievement": "Desempeño global",
     "vocabulary": "Vocabulario",
-    "grammar": "Gramática"
+    "grammar": "Gramática",
+    "discourseManagement": "Gestión del discurso",
+    "coherence": "Coherencia",
+    "accuracy": "Corrección",
+    "range": "Alcance lingüístico",
+    "structures": "Estructuras"
   },
   "mockExam": {
     "title": "Exámenes de prueba",

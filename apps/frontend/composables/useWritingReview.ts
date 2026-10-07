@@ -35,7 +35,11 @@ interface WritingReviewRecord {
 const reviews = ref<Record<string, WritingReviewRecord>>({})
 const reviewVersion = ref(0)
 let hydrated = false
-onPackReset(() => { reviews.value = {}; hydrated = false; reviewVersion.value++ })
+onPackReset(() => {
+  reviews.value = {}
+  hydrated = false
+  reviewVersion.value++
+})
 
 function persistReview(record: WritingReviewRecord): void {
   void apiFetch('/attempts', {
@@ -127,7 +131,7 @@ export function useWritingReview() {
   }
 
   function getReviewPrompt(topic: WritingExercise, userContent: string) {
-    const part = topic.testingPart === 2 ? 2 : 1
+    const part = topic.testingPart || 1
     const prompt = assemble('writing', part, 'review', {
       task: topic.task,
       requirements: topic.requirements?.join(', ') ?? '',
@@ -165,7 +169,12 @@ export function useWritingReview() {
       const response = await aiFetch<CriterionReview>('/llm/review', {
         packId: requestPackId,
         method: 'POST',
-        body: { topic, ...writingReviewPayload(topic, userContent), prompt, outputLanguage: outputLanguage.value },
+        body: {
+          topic,
+          ...writingReviewPayload(topic, userContent),
+          prompt,
+          outputLanguage: outputLanguage.value,
+        },
       })
       if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)

@@ -1,0 +1,123 @@
+/** Task format names in UI locale order: English, German, Spanish, Polish, Russian. */
+export const titles = {
+  reading: [
+    [
+      'People and advertisements',
+      'Personen und Anzeigen',
+      'Personas y anuncios',
+      'Osoby i ogłoszenia',
+      'Люди и объявления',
+    ],
+    [
+      'Article comprehension',
+      'Einen Artikel verstehen',
+      'Comprensión de un artículo',
+      'Rozumienie artykułu',
+      'Понимание статьи',
+    ],
+    [
+      'Compare personal experiences',
+      'Erfahrungen vergleichen',
+      'Comparar experiencias personales',
+      'Porównywanie doświadczeń',
+      'Сравнение личного опыта',
+    ],
+    [
+      'Restore missing sentences',
+      'Fehlende Sätze ergänzen',
+      'Reconstruir frases omitidas',
+      'Uzupełnianie brakujących zdań',
+      'Восстановление пропущенных предложений',
+    ],
+    [
+      'Grammar in context',
+      'Grammatik im Kontext',
+      'Gramática en contexto',
+      'Gramatyka w kontekście',
+      'Грамматика в контексте',
+    ],
+  ],
+  listening: [
+    [
+      'Notices and messages',
+      'Mitteilungen und Nachrichten',
+      'Avisos y mensajes',
+      'Ogłoszenia i wiadomości',
+      'Объявления и сообщения',
+    ],
+    [
+      'Describe an experience',
+      'Ein Erlebnis beschreiben',
+      'Relatar una experiencia',
+      'Relacja z wydarzenia',
+      'Рассказ о событии',
+    ],
+    [
+      'News reports',
+      'Nachrichtenbeiträge',
+      'Noticias',
+      'Wiadomości radiowe',
+      'Новостные сообщения',
+    ],
+    [
+      'Match speakers and statements',
+      'Sprecher und Aussagen zuordnen',
+      'Relacionar hablantes y enunciados',
+      'Dopasowywanie osób i wypowiedzi',
+      'Сопоставление говорящих и высказываний',
+    ],
+    [
+      'Short conversations',
+      'Kurze Gespräche',
+      'Conversaciones breves',
+      'Krótkie rozmowy',
+      'Короткие разговоры',
+    ],
+  ],
+  writing: [
+    [
+      'Reply to an email',
+      'Auf eine E-Mail antworten',
+      'Responder a un correo',
+      'Odpowiedź na e-mail',
+      'Ответ на письмо',
+    ],
+    [
+      'Describe an experience',
+      'Ein Erlebnis beschreiben',
+      'Relatar una experiencia',
+      'Relacja z wydarzenia',
+      'Рассказ о событии',
+    ],
+  ],
+  speaking: [
+    [
+      'Present a topic',
+      'Ein Thema präsentieren',
+      'Presentar un tema',
+      'Prezentacja tematu',
+      'Презентация темы',
+    ],
+    [
+      'Follow-up conversation',
+      'Vertiefendes Gespräch',
+      'Conversación sobre el tema',
+      'Rozmowa na temat',
+      'Обсуждение темы',
+    ],
+    [
+      'Describe a scene',
+      'Eine Szene beschreiben',
+      'Describir una escena',
+      'Opis sytuacji',
+      'Описание ситуации',
+    ],
+    [
+      'Situational dialogue',
+      'Situationsgespräch',
+      'Diálogo en una situación',
+      'Dialog sytuacyjny',
+      'Ситуационный диалог',
+    ],
+  ],
+}

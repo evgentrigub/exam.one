@@ -776,7 +776,9 @@
       "content": "Content",
       "organisation": "Organisation",
       "range": "Range of language",
-      "accuracy": "Accuracy"
+      "accuracy": "Accuracy",
+      "communicativeAchievement": "Communicative Achievement",
+      "genreAdequacy": "Genre and register"
     },
     "modelAnswer": {
       "title": "Model Answer",
@@ -953,7 +955,12 @@
     "interactiveCommunication": "Interactive Communication",
     "globalAchievement": "Global Achievement",
     "vocabulary": "Vocabulary",
-    "grammar": "Grammar"
+    "grammar": "Grammar",
+    "discourseManagement": "Discourse Management",
+    "coherence": "Coherence",
+    "accuracy": "Accuracy",
+    "range": "Range of language",
+    "structures": "Structures"
   },
   "mockExam": {
     "title": "Mock exams",

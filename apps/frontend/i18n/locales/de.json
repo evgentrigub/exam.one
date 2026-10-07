@@ -776,7 +776,9 @@
       "content": "Inhalt",
       "organisation": "Aufbau",
       "range": "Sprachlicher Umfang",
-      "accuracy": "Sprachliche Richtigkeit"
+      "accuracy": "Sprachliche Richtigkeit",
+      "communicativeAchievement": "Kommunikative Wirkung",
+      "genreAdequacy": "Textsorte und Register"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -953,7 +955,12 @@
     "interactiveCommunication": "Interaktion",
     "globalAchievement": "Gesamteindruck",
     "vocabulary": "Wortschatz",
-    "grammar": "Grammatik"
+    "grammar": "Grammatik",
+    "discourseManagement": "Diskursgestaltung",
+    "coherence": "Kohärenz",
+    "accuracy": "Sprachliche Korrektheit",
+    "range": "Sprachliches Spektrum",
+    "structures": "Strukturen"
   },
   "mockExam": {
     "title": "Modellprüfungen",
