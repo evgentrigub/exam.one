@@ -1,33 +1,33 @@
 # @exam-one/contracts
 
-[Back to the project README](../../README.md#project-structure)
+[Back to the application](../../README.md#project-structure)
 
-Shared TypeScript API contracts used by the Nuxt frontend and NestJS backend. This internal workspace package keeps both applications aligned on request and response shapes; it does not run a server.
+Framework-neutral TypeScript API contracts shared by exam.one's Nuxt frontend and NestJS backend. The package expresses accounts, practice, jobs, mocks, media, and provider responses across languages and exams. It is an internal workspace package, with no running service.
 
 ## Contents
 
-| Path | Responsibility |
-| --- | --- |
-| [src/index.ts](src/index.ts) | Public exports |
-| [src/api/response.ts](src/api/response.ts) | API data/error envelopes |
-| [src/auth/types.ts](src/auth/types.ts) | Authentication, session and account request types |
-| [src/domain/](src/domain/) | Users, settings, exercises, attempts/results, drafts, jobs and mock DTOs |
-| [src/llm/types.ts](src/llm/types.ts) | AI and speech types |
-| [src/exam/difficulty.ts](src/exam/difficulty.ts) | Compatibility difficulty alias; authoritative CEFR belongs to the pack |
+| Source                                           | Responsibility                                                                              |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| [src/index.ts](src/index.ts)                     | Public exports                                                                              |
+| [src/api/response.ts](src/api/response.ts)       | Data/error envelopes                                                                        |
+| [src/auth/types.ts](src/auth/types.ts)           | Registration, session, and account requests                                                 |
+| [src/domain/](src/domain/)                       | Users/settings, exercises, attempts/results, drafts, mocks, background jobs, and media DTOs |
+| [src/llm/types.ts](src/llm/types.ts)             | AI and speech transport types                                                               |
+| [src/exam/difficulty.ts](src/exam/difficulty.ts) | Shared difficulty type; authoritative level belongs to the selected pack                    |
 
-## When to change it
+## Boundaries
 
-Edit this package when an API field or shared transport shape changes. Stage 2.11 added pack identities, attempt snapshots and stored mock rules to the relevant contracts. Keep these types independent of Vue, NestJS and Prisma.
+Keep contracts independent of Vue, NestJS decorators, and Prisma. Include pack identity where the transport needs it, while keeping exam rules and prompt content in [data/](../../data/README.md). Persistence models belong in [database](../database/README.md).
 
 ```ts
 import type { AttemptDto, ExerciseDto } from '@exam-one/contracts'
 ```
 
-TypeScript types do not validate incoming JSON at runtime. Update the corresponding NestJS DTO validation and response mapping when changing an API contract. Exam rules belong in [data/](../../data/README.md); database models belong in [database](../database/README.md).
+TypeScript types do not validate incoming JSON. When changing a contract, update the corresponding backend DTO validation, response mapper, consumers, and relevant tests. Shared job stages/progress helpers keep worker and Activity behavior aligned.
 
 ## Commands
 
-Run from the repository root after `pnpm install`:
+Run from the application root:
 
 ```bash
 pnpm --filter @exam-one/contracts build
@@ -35,4 +35,4 @@ pnpm --filter @exam-one/contracts type-check
 pnpm --filter @exam-one/contracts lint
 ```
 
-The package's `test` command is a placeholder. API behavior is tested in the backend. Edit `src/`; `dist/` is generated output, while the package entry currently exports TypeScript source for workspace consumers.
+The package test script is a placeholder; API behavior is tested in the backend. Edit `src/`. Workspace consumers currently use source exports; `dist/` is generated output.

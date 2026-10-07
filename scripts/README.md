@@ -1,55 +1,67 @@
-# Speech tools
+# Stack, speech, and content tools
 
-The project has two different speech services:
+[Back to the application](../README.md)
 
-- **TTS (text-to-speech):** Kokoro converts German text into WAV audio for Listening.
-- **STT (speech-to-text):** Parakeet converts Speaking recordings into editable transcripts.
+Utilities for running exam.one's generic platform, preparing speech assets for exam packs, checking interface locales, and evaluating prompts. Run commands from the application repository root.
 
-Both services, the applications, and PostgreSQL are defined in the single root
-`compose.yaml`.
+## Start and inspect the stack
 
-## Start everything
+Follow the [self-host quick start](../README.md#self-host-with-docker-compose), including setting `JWT_SECRET` in `.env`, then run:
 
 ```bash
-cp .env.example .env
-pnpm stack:setup
 pnpm stack:up
 pnpm stack:ps
-```
-
-`stack:setup` only downloads and verifies the models. `stack:up` performs that
-setup automatically before starting Compose. The first run downloads about 1.7
-GB of weights and builds the PyTorch
-TTS image plus the lightweight `transcribe.cpp` STT runtime; subsequent starts
-reuse those files.
-
-```bash
 pnpm stack:logs
 pnpm stack:down
 ```
 
-Stopping the stack preserves PostgreSQL, generated listening audio, and model weights.
-
-## Start only one speech service
+The root `compose.yaml` defines Nuxt, NestJS, PostgreSQL, Redis, TTS, and STT. `stack:up` prepares missing models, starts the core services, starts speech, and prepares selected bundled audio. Stopping the stack preserves named volumes and host media/model folders.
 
 ```bash
-pnpm tts:setup
+pnpm stack:setup
+pnpm stack:verify-models
+pnpm stack:seed-audio
+pnpm stack:seed-audio --packs all
+```
+
+Setup downloads model files without starting containers. English is the default TTS installation, and bundled-audio preparation defaults to Cambridge A2 Key. Additional pack audio requires voices for its language; download them in Settings → Generated files → Voice models or configure `KOKORO_LANGS` before setup.
+
+## Speech services
+
+TTS converts pack transcripts to stable WAVs. German, British English, and Spanish use Kokoro; Polish uses Piper in the same service. STT converts recordings to editable transcripts through local Parakeet. Both are optional integrations; existing WAV playback and manual speaking transcripts do not require a live speech service.
+
+```bash
 pnpm tts:up
 pnpm tts:down
-
-pnpm stt:setup
 pnpm stt:up
 pnpm stt:down
 ```
-
-These commands still use the root `compose.yaml`; they only select one service.
-
-## Health checks
 
 ```bash
 curl http://127.0.0.1:8881/v1/audio/voices
 curl http://127.0.0.1:8882/health
 ```
 
-For detailed model, voice, and native-macOS instructions, see
-[`tts/README.md`](tts/README.md) and [`stt/README.md`](stt/README.md).
+See the [TTS guide](tts/README.md) and [STT guide](stt/README.md) for voice/model files, language capabilities, and configuration.
+
+## Pack and locale checks
+
+```bash
+pnpm generate:listening-audio --packs cambridge-en-a2
+pnpm i18n:check
+pnpm tts:test
+```
+
+`generate:listening-audio.mjs` prepares selected bundled WAVs against a running TTS service. `check-locale-parity.mjs` compares frontend locale keys. Voice-catalog tests use Python's standard library.
+
+`eval-prompts.mjs` checks a selected pack with the production validators. Build the workspace first, then choose a registered pack:
+
+```bash
+pnpm build
+node scripts/eval-prompts.mjs --pack cambridge-en-a2 --control
+node scripts/eval-prompts.mjs --pack cambridge-en-a2 --n 3
+```
+
+Control mode validates bundled seeds without a paid LLM call. Sample mode evaluates generated payloads using the configured provider. Read the [pack guide](../data/README.md) when changing content or prompt rules.
+
+Stack/audio setup scripts read the repository configuration they need. Database CLI commands have separate environment handling; use the [database guide](../libraries/database/README.md) for migration and seed setup. Backup/restore belongs in the [operator runbook](../README.md#backup-restore-and-upgrades).

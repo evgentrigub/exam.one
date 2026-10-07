@@ -1,46 +1,53 @@
 # @exam-one/database
 
-[Back to the project README](../../README.md#project-structure)
+[Back to the application](../../README.md#project-structure)
 
-Owns the PostgreSQL schema, Prisma migrations, Prisma Client exports and bundled-content seed upserts. This internal workspace package is used by backend infrastructure, backend model imports and database scripts.
+PostgreSQL schema, migrations, Prisma Client, and bundled-content persistence for exam.one. This package stores the generic platform's accounts and practice records across registered exam packs.
 
 ## Contents
 
-| Path | Responsibility |
-| --- | --- |
-| [prisma/schema.prisma](prisma/schema.prisma) | Models, relationships, indexes and client generation configuration |
-| [prisma/migrations/](prisma/migrations/) | Forward SQL migrations, including partial unique indexes |
-| [prisma/seed.ts](prisma/seed.ts) | Prisma seed command entry point |
-| [src/seed.ts](src/seed.ts) | Idempotent catalog upserts and `seedCatalog` export |
-| [src/index.ts](src/index.ts) | Re-exports Prisma Client/model types and seed helpers |
-| [scripts/set-password.ts](scripts/set-password.ts) | Local account password recovery utility |
+| Source                                             | Responsibility                                    |
+| -------------------------------------------------- | ------------------------------------------------- |
+| [prisma/schema.prisma](prisma/schema.prisma)       | Models, relations, indexes, and client generation |
+| [prisma/migrations/](prisma/migrations/)           | Forward SQL migrations and partial unique indexes |
+| [prisma/seed.ts](prisma/seed.ts)                   | Seed command entry point                          |
+| [src/seed.ts](src/seed.ts)                         | Idempotent exercise and bundled mock-set upserts  |
+| [src/client.ts](src/client.ts)                     | PostgreSQL adapter/client factory                 |
+| [src/index.ts](src/index.ts)                       | Public model, client, and seed exports            |
+| [scripts/set-password.ts](scripts/set-password.ts) | Local account password recovery                   |
 
-## When to change it
+## Ownership and seeds
 
-Change this package for table, column, relation, index or seed-persistence changes. It imports bundled Goethe A2 content from [`@exam-one/exam-packs`](../../data/README.md). [nestjs-libraries](../nestjs-libraries/README.md) wraps its Prisma Client in an injectable NestJS service.
+Change this package for schema, relationships, indexes, migration, or seed-persistence work. Exam definitions, prompts, content, and grading belong in [exam packs](../../data/README.md); API transport types belong in [contracts](../contracts/README.md).
 
-Pack definitions and grading belong in [data/](../../data/README.md); API DTOs belong in [contracts](../contracts/README.md). Stage 2.11 stores pack ownership, versioned attempt snapshots, fractional scores and mock rules here. Adding a pack using supported formats needs no schema change.
+The seeder reads every registered pack's `seedExercises` and `bundledMockSet`. It carries the pack ID and CEFR into storage, keeps mock-only exercises separate, and preserves user-owned rows. A pack using supported interactions needs no schema or seeder edit.
 
-## Apply migrations and rebuild Prisma Client
+Attempts retain rendering/rubric snapshots; results support fractional points. Mock definitions preserve their own rules. Background jobs persist state/checkpoints in PostgreSQL while BullMQ executes them through Redis.
 
-Run from the repository root with PostgreSQL running and `DATABASE_URL` configured for the intended database. Migration and seed scripts use the local development database URL when that variable is absent.
+[nestjs-libraries](../nestjs-libraries/README.md) provides the injectable database lifecycle used by the API.
+
+## Setup and migrations
+
+Run from the application root with the intended PostgreSQL instance running. Export `DATABASE_URL` for a custom database. CLI/client code falls back to `postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public`; it does not automatically load the app's root `.env` for migration/seed commands.
 
 ```bash
+pnpm --filter @exam-one/exam-packs build
+pnpm --filter @exam-one/database db:generate
 pnpm db:migrate:deploy
-pnpm --filter @exam-one/database build
 pnpm db:seed
 ```
 
-`build` validates the schema, regenerates Prisma Client and compiles the package. It does not apply migrations. `db:seed` upserts bundled catalog content while preserving user-owned content. In a fresh workspace, build workspace dependencies first with `pnpm build` before invoking seed code.
+For a schema change in development, create a new migration with `pnpm db:migrate`. Preserve applied migrations and SQL-only indexes. `build` regenerates Prisma Client and compiles source; it does not apply migrations. The backend Docker entrypoint applies committed migrations and upserts bundled content on boot.
 
-For client generation alone, use `pnpm --filter @exam-one/database db:generate`. After intentionally changing the schema in development, create a new migration with `pnpm db:migrate`. Preserve applied migrations and SQL partial unique indexes. See the [backup/recovery and rehearsal guide](../../data/VERIFICATION.md), [partial-index standard](../../agent-os/standards/database/partial-unique-indexes.md) and [seed-upsert standard](../../agent-os/standards/database/seed-upsert-overlay.md).
+See the [backup/restore runbook](../../README.md#backup-restore-and-upgrades), [migration standard](../../agent-os/standards/database/migrations.md), [partial-index standard](../../agent-os/standards/database/partial-unique-indexes.md), and [seed-upsert standard](../../agent-os/standards/database/seed-upsert-overlay.md).
 
 ## Checks
 
 ```bash
+pnpm --filter @exam-one/database build
 pnpm --filter @exam-one/database db:validate
 pnpm --filter @exam-one/database type-check
 pnpm --filter @exam-one/database lint
 ```
 
-The package's `test` script validates the Prisma schema; backend integration tests and migration rehearsal scripts verify database behavior. Edit source/schema/migration files; Prisma Client and `dist/` are generated artifacts.
+The package's test script validates the schema. Backend unit tests use mocks; backend API integration tests require a real database. Edit source/schema/migration files; Prisma Client and `dist/` are generated artifacts.

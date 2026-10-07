@@ -1,77 +1,125 @@
-# Exam packs
+# Exam packs · @exam-one/exam-packs
 
-Forkers add an exam by creating a folder under `src/packs/` and registering it in `src/registry.ts`. A pack that uses the existing exercise types needs no edits to `apps/` or `libraries/`. A new *type* of exercise — a screen the app does not have yet — is application work, and is added once for every pack (see [Layouts](#layouts)).
+[Back to the application](../README.md#how-the-framework-works)
 
-| Path | What lives here |
-| --- | --- |
-| `src/types.ts` | Generic pack, module, and `PromptSpec` contracts |
-| `src/packs/goethe-de-a2/` | Live Goethe A2 (structure, prompts, bundled seeds, mock factory) |
-| `src/packs/goethe-de-a1/` | Live Goethe A1 · Start Deutsch 1 (all four modules, one seed per part, mock factory and bundled Set 1) |
-| `src/packs/cambridge-en-a2/` | Live Cambridge English A2 Key (all four skills, fourteen parts, one seed per part, gap-fill parts, solo speaking cards; mock Set 1 with seed WAVs and generated sets, reported on the Cambridge English Scale) |
-| `src/packs/certpol-pl-a2/` | Live Certyfikat Polski A2 (all four skills, sixteen tasks, one seed per task, gap-fill numbers and form, solo speaking cards and photo monologue, Polish Piper voices, mock exams passed per part: written and oral) |
-| `src/packs/dele-es-a2/` | Live DELE A2 (all four skills, thirteen tareas, one seed per tarea plus both writing options, man / woman / neither and message matching, written-scene monologue and examiner role-play cards, Spanish Kokoro voices; mock Set 1 with seed WAVs and generated sets, passed per group) |
-| `src/packs/goethe-shared/` | The raw-payload projection the Goethe packs, Cambridge A2 Key and Certyfikat Polski A2 use |
-| `src/packs/goethe-de-c1/` | Structural stub only (`live: false`) |
+This package is the content and runtime boundary of exam.one's generic language-exam framework. Each pack defines an exam board, language, CEFR level, task structure, prompts, validation, scoring, speech metadata, and optional bundled content. The application reuses shared practice and persistence flows across packs.
 
-Each prompt slot is a `PromptSpec` with `role`, `task`, `rules`, optional `examples`, and `outputContract`. Runtime values (`{count}`, `{task}`, `{userContent}`, …) are interpolated by `assemble()`.
+Add an exam by creating `src/packs/<packId>/` and registering it in [src/registry.ts](src/registry.ts). A pack using supported interactions needs no application, database, or seed-script changes. A new interaction requires shared framework work before it can be used as pack data.
 
-Optional bundled seeds, payload types, and mock Set 1 live in that pack's `content/` folder. A pack lists its seeds in `seedExercises`, per module; `pnpm db:seed` upserts every registered pack's seeds under that pack's `packId` and `cefr`, so a new pack needs no seed-script edit. Each seed needs a unique string `id`, and `examOnly: true` stores it as mock-exam-only content. New packs can be authored from an exam brief with the `exam-pack-author` skill (`.agents/skills/exam-pack-author/`).
+## Package map
 
-## Runtime contract
+| Source                                                 | Responsibility                                                     |
+| ------------------------------------------------------ | ------------------------------------------------------------------ |
+| [src/types.ts](src/types.ts)                           | Pack, part, module, speech, and PromptSpec contracts               |
+| [src/registry.ts](src/registry.ts)                     | Pack registration and live availability                            |
+| [src/runtime.ts](src/runtime.ts)                       | Exercise views, adapters, scoring, and review validation           |
+| [src/validation.ts](src/validation.ts)                 | Registry validation                                                |
+| [src/mock-rules.ts](src/mock-rules.ts)                 | Objective points, group pass rules, and scale conversion           |
+| [src/bundled-audio.ts](src/bundled-audio.ts)           | Bundled listening segments and paths                               |
+| [src/packs/](src/packs/)                               | Per-exam definitions, prompts, rules, adapters, and content        |
+| [src/testing/english-a1.ts](src/testing/english-a1.ts) | Synthetic extension fixture; excluded from the production registry |
 
-Every available part declares `itemFormat`, `runtime`, and an `adapter`. The database keeps the original payload; the adapter projects it into an `ExerciseView`, which the backend scores and validates against, TTS reads transcripts from, and Past exams renders.
+## Current packs
 
-**The practice screens read the raw payload, not the view.** Each skill has its own screen and recognises exercises by field names (`content`, `questions[].question`, `items[]`, `answerQuestions`, `keywords`, …). A pack whose exercises must run on those screens stores that raw shape and projects it with a pack-owned adapter; the Goethe packs share one in `src/packs/goethe-shared/raw-adapter.ts`, parametrised by each pack's rules. `formatAdapter(format, runtime)` projects the generic shape below, which the backend and Past exams understand but the practice screens do not render — use it for fixtures and headless tests, not for a live pack.
+| Pack              | Language / level | Available product                                                                   |
+| ----------------- | ---------------- | ----------------------------------------------------------------------------------- |
+| `goethe-de-a1`    | German A1        | Four skills and mock exams; forms, word cards, request cards                        |
+| `goethe-de-a2`    | German A2        | Four skills and mock exams                                                          |
+| `cambridge-en-a2` | English A2       | Four skills and mock exams; typed gaps and estimated Cambridge Scale results        |
+| `certpol-pl-a2`   | Polish A2        | Four skills and mock exams; fractional objective marks and written/oral pass groups |
+| `dele-es-a2`      | Spanish A2       | Four skills and mock exams; two pass groups                                         |
+| `goethe-de-c1`    | German C1        | Inactive historical stub; no new practice or grading                                |
 
-| Format | Default payload | Runtime configuration |
-| --- | --- | --- |
-| `selection` | `questions: [{id, text, options, correctAnswer, explanation?, weight?}]` | Question/option counts, maximum and multiplier |
-| `matching` | Same question shape, with the same ordered option list | Counts and `reuseOptions` |
-| `true-false` | Question shape with answer index 0 (true) or 1 (false) | Question count; two options |
-| `gap-fill` | `questions: [{id, text?, accepted: string[], explanation?, weight?}]`; no options | Question (gap) count; no `optionCount` |
-| `freeform` | `fields: { [fieldId]: prompt }` | `fields` with stable IDs, labels, word bounds and optional zero-below threshold |
-| `recording` | `segments: { [segmentId]: prompt }` | Ordered `segments` with stable IDs and labels |
+`DEFAULT_PACK_ID` is `cambridge-en-a2`. Live packs are selected in Settings → Learning plan. New levels and boards use the same registration contract. A pack's language is independent of the UI locale.
 
-A `gap-fill` question is answered by typing. It projects with `options: []` and `correctAnswer: -1`, and is scored against `accepted` by `isGapAnswerCorrect`, which ignores case, spacing, typographic apostrophes and dashes, and outer punctuation, but not spelling. List every acceptable variant (UK/US spelling, `15`/`fifteen`, `6.30`/`6:30`) in `accepted`; the accepted list is also what the learner sees after submitting. In the raw shape, gaps are `questions[].accepted` and the text marks them `(1) ____`, `(2) ____` …, with `(0)` for a worked example; the reading screen shows that text with the gaps in place, and the listening screen shows it as notes under one shared recording. Keep typed answers out of `correctAnswer`: the generation path coerces numeric strings there for every pack.
+## Runtime and payload contract
 
-All payloads have a title and optional `text`. Objective formats support a shared `transcript` and `audio` URL, per-question transcript/audio, or `audio: {shared?, items?: {[questionId]: url}}`. `replays` limits starts of each audio clip; pause/resume does not consume another replay. `minutes` supplies the practice countdown. Recording segments run sequentially and retain editable transcripts when microphone or STT support is unavailable.
+Each available part declares `itemFormat`, `runtime`, and an `adapter`. The database stores the original payload; the adapter projects it into an `ExerciseView` used by scoring, validation, speech, and Past exams.
 
-Rubrics use `criteria: [{id, label, maxPoints}]`, `maxPoints`, and optional `multiplier`. Objective weights must sum to the raw maximum. Rubric criteria must sum to their declared maximum. Scores may be fractional; percentages retain integer display rounding. A generated review returns `criteria` with points/comments, `totalPoints`, `maxPoints`, `summary`, `strengths`, and `improvements`. The API validates totals and derives scores, including configured zero-word rules. The synthetic fixture demonstrates a 3.5-point rubric.
+**Live practice screens consume established raw payload shapes.** Reading uses fields such as `content` and `questions[].question`; listening may use `items[]`; speaking uses the shapes its task layout supports. A live pack must provide that shape and a matching projection. The shared [raw adapter](src/packs/goethe-shared/raw-adapter.ts) supports existing packs with pack-owned runtime rules.
 
-A part can also carry a per-part `validate(payload, rules)` guard for anything the projection cannot express (exact item counts, fixed option labels, required metadata). It runs on every generated exercise, and a generation that fails it is retried once. `buildReviewVars` supplies the variables an `answer` or `review` prompt needs beyond `{task}`, `{userContent}` and `{outputLanguage}`.
+`formatAdapter` projects generic fixtures into views, but its default payload is not a universal live-screen schema. Use it for headless tests and supported projections; confirm every new live payload against its practice screen.
 
-Registry startup rejects duplicate identities, unsupported formats, missing runtime/adapters/prompts, invalid part references, impossible counts/word bounds, inconsistent rubric totals, a layout on the wrong format, and seeds without a unique id. Error messages identify the pack and part. Goethe JSON is projected, and its stored reviews validated, by the shared adapter in `src/packs/goethe-shared/`; A2 practice raw scores and its mock conversion remain distinct.
+| Format       | Generic projected input                                     | Runtime configuration                                    |
+| ------------ | ----------------------------------------------------------- | -------------------------------------------------------- |
+| `selection`  | Questions with `id`, `text`, `options`, and `correctAnswer` | Counts, weights, maximum, multiplier                     |
+| `matching`   | Questions sharing an ordered option list                    | Counts and `reuseOptions`                                |
+| `true-false` | Questions with answer index 0 or 1                          | Count and two options                                    |
+| `gap-fill`   | Questions with `accepted: string[]`; no options             | Gap count and weights                                    |
+| `freeform`   | `fields` keyed by field ID                                  | Field labels, word bounds, and optional zero-below rules |
+| `recording`  | `segments` keyed by segment ID                              | Ordered segments and labels                              |
 
-## Layouts
+Gap answers are checked by `isGapAnswerCorrect`. Case, spacing, typographic apostrophes/dashes, and outer punctuation are normalized; spelling is not. List valid alternatives explicitly in `accepted`. Raw reading/listening payloads use `questions[].accepted` with numbered gaps such as `(1) ____`; reserve `(0)` for a worked example. The projection uses `options: []` and `correctAnswer: -1`. Keep typed answers out of `correctAnswer`, which generation normalizes as a choice index.
 
-`itemFormat` picks the default screen for a part's skill. A part whose interaction that screen cannot express names a `layout` instead; registry validation only accepts a layout on its own format.
+Audio may be shared or per question/item. Runtime rules supply timing and replay limits; pause/resume does not consume another replay. Recording tasks retain editable/manual transcripts when microphone or STT is unavailable.
 
-| `layout` | Format | Screen | Payload |
-| --- | --- | --- | --- |
-| `form-fill` | `freeform` | A scenario and a form; blank rows are the part's `fields` | Writing topic plus `form: { title, rows: [{ label, value? , field?, options? }] }` and `expected: { [fieldId]: entry }` |
-| `word-cards` | `recording` | One recording per card: ask from a topic + word card, answer a partner question | Speaking topic plus `cards: [{ segment, kind: 'ask' \| 'answer', topic, cue }]` |
-| `request-cards` | `recording` | One recording per card: make a request, react to a partner request | Speaking topic plus `cards: [{ segment, kind: 'request' \| 'respond', cue }]` |
+### Layouts
 
-Cards map one-to-one onto the part's `segments`, in order. An `answer` or `respond` card may carry `speaker: 'examiner'`, which shows the line as the examiner's question instead of the partner's (Cambridge A2 Key speaking). Answers are stored per field or segment id, which `resolveAnswers` reads for scoring and Past exams. Goethe A1 uses all three. Another pack can use them as data; a genuinely new interaction is a new layout, which is application work.
+| Layout          | Format      | Interaction                                                              |
+| --------------- | ----------- | ------------------------------------------------------------------------ |
+| `form-fill`     | `freeform`  | Scenario plus form rows mapped to field IDs; expected entries for review |
+| `word-cards`    | `recording` | One recording per ask/answer card, mapped to segment IDs                 |
+| `request-cards` | `recording` | One recording per request/respond card, mapped to segment IDs            |
 
-Screen chrome that used to be hardcoded for A2 is now per part in the pack's practice copy: `practiceSubtitle`, `practiceMinutes`, `practiceTimerSec`, `practiceType` and `sessionTitle`, alongside the existing `practiceLabel`, `tips`, `phrases` and `instruction`.
+Form payloads include `form: { title, rows: [{ label, value?, field?, options? }] }` and `expected`. Card payloads include `cards: [{ segment, kind, cue, topic? }]` in segment order. An answer/respond card may set `speaker: 'examiner'` for a fixed examiner cue.
+
+Per-part practice copy controls labels, tips, phrases, instructions, subtitles, estimated time, session countdowns, exercise types, and session titles. Keep this copy in the pack. An unfamiliar interaction, such as a live conversation partner, requires a new shared layout or flow.
+
+### Validation and rubrics
+
+Objective weights must sum to the raw maximum. Rubric criteria use stable IDs, labels, and `maxPoints`; criterion totals must match the rubric maximum. Fractional scores are supported.
+
+A review contains criteria points/comments, `totalPoints`, `maxPoints`, `summary`, `strengths`, and `improvements`. The API validates totals, derives stored scores, and applies pack-configured word rules. A per-part `validate(payload, rules)` catches content/shape constraints that the projected view cannot express.
+
+Registry startup rejects duplicate identities, unsupported formats, missing adapters/rules/prompts, invalid references, inconsistent rubrics, impossible bounds, incompatible layouts, and invalid seed IDs. Generated payloads pass the production validators; generation retries once after an invalid response.
+
+## Prompts and bundled content
+
+Keep prompt definitions in `src/packs/<packId>/prompts/{reading,listening,writing,speaking}.ts`. Each slot is a `PromptSpec`: role, task, rules, optional examples, output contract, and optional LLM settings. `assemble()` interpolates runtime values; `buildReviewVars` supplies pack-specific review context.
+
+Edit prompt source files to change behavior. A prompt editor/override API is not mounted; an unused override table remains in the database.
+
+Bundled payloads, types, audio maps, and mock Set 1 belong in the pack's `content/` folder. `seedExercises` lists content by skill. Each payload needs a stable unique ID within that pack; `examOnly: true` keeps mock parts out of practice catalogs. `pnpm db:seed` discovers every registered pack and upserts its content without wiping user-owned exercises.
+
+Mocks are optional at the framework level. A pack with `createMockSet` may generate sets; `bundledMockSet` supplies Set 1. Mock definitions persist their own timing, replay, and scoring rules, including total pass marks, pass groups, or a score scale. All currently live packs provide mocks.
 
 ## Contributor workflow
 
-1. Create `src/packs/{packId}/pack.ts` with a unique identity, language/CEFR, modules and arbitrary positive part numbers.
-2. Configure each available part: runtime rules, an adapter that projects the payload shape its screen reads, a `validate` guard, and a `layout` where the part needs one. Add the generator, answer and review PromptSpecs its format requires, and `buildReviewVars` if a prompt names more than the three generic variables.
-3. Specify speech language and voice IDs supported by the intended installation. Omit `createMockSet` when no mock is supplied.
-4. Add `seedExercises` if the pack ships bundled exercises, and import the pack in `src/registry.ts`.
-5. Check it: `node scripts/eval-prompts.mjs --pack {packId} --control` scores the seeds against the production validators offline; `--n 3` runs every generator through the configured LLM and scores the output. Then run `pnpm db:seed`, select the pack in Learning plan and try every part. `src/packs/goethe-de-a1/` is the worked example.
+1. Write a brief that distinguishes the exam's rules from application practice adaptations.
+2. Define a unique identity and structure in `src/packs/<packId>/pack.ts`. Part numbers are positive and scoped to each skill.
+3. Configure runtime rules, payload adapters, validation, prompt specs, and supported layouts for every available part.
+4. Add original seeds, explicit accepted answers, speech metadata, and optional mock factories/rules.
+5. Register the pack in `src/registry.ts`. Add shared UI locale entries if it introduces new criterion or exercise-type labels.
+6. Build, validate seeds and generation, seed the database, and try every part and mock result path. Enable `live` only after the supported flows work.
 
-See `src/testing/english-a1.ts` for a deliberately synthetic, unofficial English A1 example covering all six formats, parts 7/9/11/13/15/17, a different rubric and no mock. It is a test fixture and is not production-registered. Do not copy its example prompts as official exam content. A fundamentally new interaction, such as a live conversation partner, requires framework work beyond this contract.
+The [exam-pack-author skill](../.agents/skills/exam-pack-author/SKILL.md) guides authoring. Existing pack folders are worked examples; the synthetic English A1 fixture demonstrates arbitrary parts, another rubric, and supported formats without claiming an official exam.
 
-## Identity, history and optional services
+Run from the application root:
 
-Frontend requests capture explicit `packId`; the transport sends `x-exam-pack` on the existing API paths. Requests without it resolve the user's active setting. Part-based requests must name a registered available part. Invalid or inactive identities cannot start practice, generation or grading. Catalogs, drafts, attempts, jobs, mock sets and generated audio are isolated by pack and user; exercise external IDs can repeat across packs.
+```bash
+pnpm --filter @exam-one/exam-packs build
+pnpm --filter @exam-one/exam-packs lint
+pnpm --filter @exam-one/exam-packs type-check
+pnpm test:backend
+```
 
-New attempts store a version-1 rendering/rubric snapshot. Historical review uses that snapshot and the stored pack, independent of the current selection. Version-0 snapshots preserve old payloads for attempts whose exercise could not be projected. Progress → Past exams uses owner-scoped attempt detail and supports inactive C1 history without retries or grading. Unattributable old records retain `legacy-history`, which is not selectable. Existing Goethe routes and seed IDs remain valid.
+The prompt-evaluation harness requires a built workspace (`pnpm build`). For a chosen registered pack:
 
-Mock definitions persist their own timing, replay, scoring and pass rules. A pack without a factory has an explicit unavailable mock state. Goethe's provisional speaking arithmetic is preserved. Prompt overrides remain unmounted; their unused database table is retained.
+```bash
+node scripts/eval-prompts.mjs --pack cambridge-en-a2 --control
+node scripts/eval-prompts.mjs --pack cambridge-en-a2 --n 3
+```
 
-TTS checks pack language/voices against `TTS_LANGUAGES` (or the single `TTS_LANG`) and `TTS_VOICES`, and against the voices the TTS service actually reports; a pack whose voices are missing is reported as `unsupported`, not offline. German uses its fixed four-voice roster; other languages assign dialogue voices from the pack's own `speech.voices` by speaker gender, read from English, Polish or Spanish role and name labels. STT checks `STT_LANGUAGES` (Compose default `de,en,pl,es`). Unsupported capabilities return an unavailable response, preserving manual transcription and playback. No model installation is implied by registering a pack. New generated files use a user/pack/exercise namespace; historical shared paths remain readable and are retained during cleanup.
+`--control` checks bundled seeds without a paid call; `--n` exercises generators through the configured LLM. Replace the sample pack ID with the pack under development. The data package's `test` command is a placeholder; automated pack/runtime tests run in backend Jest.
+
+Format validation verifies implementation contracts. Linguistic accuracy, level appropriateness, and useful feedback also require content review.
+
+## Identity, history, and provider availability
+
+Frontend requests send `x-exam-pack`; requests without it resolve the user's active settings. New practice/generation requires a registered live identity. Catalogs, drafts, attempts, mocks, and generated media carry user/pack ownership. Activity lists the user's jobs across packs.
+
+New practice attempts store version-1 rendering/rubric snapshots. Historical review uses the saved snapshot and pack; version-0 snapshots retain older payloads. Inactive history remains readable without enabling new practice. `legacy-history` holds unattributable old records and is not selectable.
+
+Speech metadata declares the intended language/voices, but does not install models. TTS checks instance configuration and reported installed voices; STT checks supported languages. Unavailable providers preserve explicit error states and manual transcript entry. New generated audio uses user/pack/exercise namespaces; historical shared paths remain readable.
+
+See the [TTS](../scripts/tts/README.md) and [STT](../scripts/stt/README.md) guides for installation and capabilities.

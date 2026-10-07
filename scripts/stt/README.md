@@ -1,87 +1,69 @@
-# Local Parakeet speech-to-text
+# Speaking speech-to-text
 
-Speaking practice can transcribe recordings with Handy's Q8 GGUF conversion of
-NVIDIA `parakeet-tdt-0.6b-v3`, served by `transcribe.cpp` behind the existing
-OpenAI-compatible local endpoint. The service is optional: editable manual
-transcripts and progress saving work without it.
+[Back to scripts](../README.md)
 
-## Model and runtime
+exam.one's speaking flows turn recordings into editable transcripts using an optional STT provider. Pack metadata selects the language; manual entry remains available when the provider or microphone is unavailable. Transcripts and reviews are persisted, while browser recording blobs are temporary.
 
-- Source: `handy-computer/parakeet-tdt-0.6b-v3-gguf`
-- File: `parakeet-tdt-0.6b-v3-Q8_0.gguf`
-- Download size: 739,508,576 bytes (about 740 MB / 705 MiB)
-- SHA-256: `5859f77944efcd8eafa23a6350731960b2b55b2203df51f319665c807d802cc7`
-- Engine: pinned `handy-computer/transcribe.cpp`, CPU backend in Docker
+## Local Parakeet service
 
-The download script writes to a temporary `.partial` file, verifies the fixed
-checksum, and only then installs the model under
-`scripts/stt/parakeet/models/`. The directory is mounted read-only in Compose.
-It is independent of the Handy desktop app and works on machines without Handy.
-When the same verified model already exists in the standard Hugging Face cache
-(for example after Handy downloaded it), the script reuses it with a hard link
-or copy-on-write clone when the filesystem allows that, avoiding a second
-physical 740 MB copy.
+The `parakeet` service uses Handy's Q8 GGUF conversion of NVIDIA `parakeet-tdt-0.6b-v3` with a pinned `transcribe.cpp` CPU runtime. It serves an OpenAI-compatible transcription endpoint.
+
+| Asset       | Value                                                              |
+| ----------- | ------------------------------------------------------------------ |
+| Source      | `handy-computer/parakeet-tdt-0.6b-v3-gguf`                         |
+| File        | `parakeet-tdt-0.6b-v3-Q8_0.gguf`                                   |
+| Download    | 739,508,576 bytes (about 740 MB)                                   |
+| SHA-256     | `5859f77944efcd8eafa23a6350731960b2b55b2203df51f319665c807d802cc7` |
+| Host folder | `scripts/stt/parakeet/models/`                                     |
+
+The download script writes a `.partial` file, verifies the checksum, and installs it only after success. It can reuse the same verified file from the standard Hugging Face cache. The service works independently of the Handy desktop app.
 
 ## Start and stop
+
+Run from the application root:
 
 ```bash
 pnpm stt:setup
 pnpm stt:up
+curl http://127.0.0.1:8882/health
 pnpm stt:down
 ```
 
-`stt:setup` downloads and verifies the model without starting a container.
-`stt:up` also performs setup and then selects the `parakeet` service from the
-root `compose.yaml`. To
-download both speech-model sets and start the application, database, TTS, and
-STT together, run `pnpm stack:up`.
+Setup downloads/verifies files without starting a container. `stt:up` performs setup, builds the runtime, and starts the root Compose `parakeet` service. Its model directory is mounted read-only; stopping the service preserves the files. `pnpm stack:up` starts it with the rest of the platform.
 
-`stt:up` downloads and verifies the GGUF if necessary, builds the pinned
-`transcribe.cpp` runtime, and starts the service on `:8882`. The model remains
-on the host project disk after `pnpm stack:down`.
+The model loads once and inference is serialized. FFmpeg converts supported browser recordings to 16 kHz mono PCM. Docker uses the CPU backend, including on Apple Silicon; adjust `STT_CPU_THREADS` for the host.
 
-Verify:
+## API and languages
 
-```bash
-curl http://127.0.0.1:8882/health
-```
-
-The service loads the model once at startup and serializes inference through
-that shared model. Browser WebM/MP4/OGG recordings are converted locally with
-FFmpeg to the 16 kHz mono PCM expected by `transcribe.cpp`.
-
-Docker Desktop on Apple Silicon runs this Linux service on CPU; Metal is not
-exposed inside Docker. `STT_CPU_THREADS` controls inference threads.
-
-## Environment
-
-```bash
-STT_PROVIDER=local
-STT_BASE_URL=http://127.0.0.1:8882
-STT_MODEL=handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
-STT_CPU_THREADS=4
-```
-
-For OpenAI instead:
-
-```bash
-STT_PROVIDER=openai
-OPENAI_API_KEY=sk-...
-STT_OPENAI_MODEL=whisper-1
-```
-
-The local endpoint remains API-compatible with the Nuxt STT adapter:
+The backend NestJS STT adapter calls:
 
 - `GET /health`
 - `POST /v1/audio/transcriptions`
 
-The local service accepts the OpenAI-compatible `model`, `language`, and
-`response_format=json` form fields. Parakeet V3 detects its supported European
-language automatically.
+The local endpoint accepts OpenAI-compatible `model`, `language`, and JSON-response fields. Parakeet detects its supported languages automatically. The app checks the pack's language against `STT_LANGUAGES`, configured as `de,en,pl,es` in the supplied environment/Compose setup. Adding a pack does not establish speech support for another language; configure and verify the provider capability separately.
 
-## Licenses
+## Configuration
 
-- `transcribe.cpp`: MIT
-- Parakeet model and Handy GGUF conversion: CC-BY-4.0
+For local transcription in host development:
 
-Keep upstream attribution when redistributing the model or a derived image.
+```dotenv
+STT_PROVIDER=local
+STT_BASE_URL=http://127.0.0.1:8882
+STT_MODEL=handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
+STT_LANGUAGES=de,en,pl,es
+STT_CPU_THREADS=4
+```
+
+Compose points the API at the service's internal hostname. For OpenAI Whisper, configure:
+
+```dotenv
+STT_PROVIDER=openai
+OPENAI_API_KEY=<your-key>
+STT_OPENAI_MODEL=whisper-1
+```
+
+Restart the backend after environment changes. Unsupported language or provider failures return an explicit unavailable response; users can edit or enter their transcript manually.
+
+## Attribution
+
+`transcribe.cpp` is distributed under MIT; the Parakeet model and Handy GGUF conversion use CC-BY-4.0. Preserve upstream attribution when distributing the model or a derived image. The pinned assets and download checks live beside this guide under [parakeet/](parakeet/).
