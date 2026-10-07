@@ -15,7 +15,7 @@ export const DELE_ES_B1_PACK_ID = 'dele-es-b1'
 
 export const deleEsB1: ExamPack = {
   packId: DELE_ES_B1_PACK_ID,
-  board: 'dele',
+  board: 'instituto-cervantes',
   language: 'es',
   cefr: 'B1',
   title: EXAM_TITLE,
