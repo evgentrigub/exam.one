@@ -1095,7 +1095,11 @@
         "gradeB": "Nota B · A2",
         "gradeC": "Nota C · A2",
         "levelA1": "Nivel A1",
-        "none": "Sin certificado"
+        "none": "Sin certificado",
+        "levelA2": "Nivel A2",
+        "gradeAB2": "Nota A · B2",
+        "gradeBB1": "Nota B · B1",
+        "gradeCB1": "Nota C · B1"
       },
       "passFrom": "aprobado desde {pass}",
       "pending": "La puntuación en la escala aparece cuando termina la corrección con IA.",
@@ -1103,7 +1107,8 @@
       "belowMessage": "Por debajo de {pass} en la escala. Sigue practicando e inténtalo de nuevo.",
       "estimate": "Una estimación según la conversión de Cambridge para pruebas de práctica. La expresión oral no tiene aquí nota de pronunciación, así que sus 30 puntos se escalan a los 45 del examen.",
       "below": "por debajo de {min}",
-      "raw": "Puntos brutos {score} / {max}"
+      "raw": "Puntos brutos {score} / {max}",
+      "originalEstimate": "Resultado estimado en la Cambridge English Scale a partir de tareas originales de la aplicación, sin calibración oficial. La expresión oral utiliza una rúbrica adaptada de transcripciones, sin pronunciación ni ponderación oficial de los criterios."
     }
   },
   "pastExams": {

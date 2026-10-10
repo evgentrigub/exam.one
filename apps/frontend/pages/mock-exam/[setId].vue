@@ -8,7 +8,11 @@
 
   <div v-else-if="view === 'result'" class="mx-auto max-w-[940px] space-y-6 px-4 py-8 sm:px-6">
     <div class="rounded-box border p-6" :class="resultBannerClass">
-      <ScaleResult v-if="set.rules?.scale && passResult.scale" :scale="set.rules.scale" :result="passResult.scale" />
+      <ScaleResult
+        v-if="set.rules?.scale && passResult.scale"
+        :scale="set.rules.scale"
+        :result="passResult.scale"
+      />
       <div v-else class="flex flex-col gap-5 sm:flex-row sm:items-center">
         <div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-base-100/70">
           <Trophy :size="30" />
@@ -17,13 +21,21 @@
           <div class="text-xs font-semibold uppercase tracking-wider">
             {{ $t('mockExam.provisionalResult') }}
           </div>
-          <h1 class="mt-1 font-display text-3xl font-bold">{{ roundedOverall }} / {{ maximumPoints }}</h1>
+          <h1 class="mt-1 font-display text-3xl font-bold">
+            {{ roundedOverall }} / {{ maximumPoints }}
+          </h1>
           <p class="mt-1 text-sm opacity-80">{{ passMessage }}</p>
         </div>
         <div class="sm:ml-auto sm:text-right">
-          <div class="font-mono text-3xl font-bold">{{ Math.round(roundedOverall / maximumPoints * 100) }}%</div>
+          <div class="font-mono text-3xl font-bold">
+            {{ Math.round((roundedOverall / maximumPoints) * 100) }}%
+          </div>
           <div class="text-xs opacity-70">
-            {{ passResult.groups.length ? $t('mockExam.passEachGroup') : `${passPoints} / ${maximumPoints}` }}
+            {{
+              passResult.groups.length
+                ? $t('mockExam.passEachGroup')
+                : `${passPoints} / ${maximumPoints}`
+            }}
           </div>
         </div>
       </div>
@@ -639,7 +651,10 @@ const passResult = computed(() => {
     Object.fromEntries(
       set.value.modules.map(module => {
         const moduleState = state.value.modules[module.skill]
-        return [module.skill, scaled && moduleState.grading === 'pending' ? null : moduleState.scoreFinal]
+        return [
+          module.skill,
+          scaled && !['auto', 'done'].includes(moduleState.grading) ? null : moduleState.scoreFinal,
+        ]
       })
     ),
     Object.fromEntries(set.value.modules.map(module => [module.skill, module.maxRawPoints]))
@@ -650,7 +665,9 @@ const passPoints = computed(() => set.value.rules?.passPoints ?? 60)
 const passMessage = computed(() => {
   const { groups, passed } = passResult.value
   if (!groups.length) {
-    return passed ? t('mockExam.passMessage', { points: passPoints.value }) : t('mockExam.almostMessage')
+    return passed
+      ? t('mockExam.passMessage', { points: passPoints.value })
+      : t('mockExam.almostMessage')
   }
   if (passed) return t('mockExam.passAllGroups')
   const below = groups.filter(group => !group.passed).map(group => group.label)
@@ -664,9 +681,9 @@ const hasPendingAiGrading = computed(() =>
  * a complete one only notes that speaking is graded from transcripts.
  */
 const provisionalSpeakingNote = computed(() => {
-  const examParts =
-    pack.value.structure.find(module => module.id === 'speaking')?.parts.length ?? 0
-  const setParts = set.value.modules.find(module => module.skill === 'speaking')?.exercises.length ?? 0
+  const examParts = pack.value.structure.find(module => module.id === 'speaking')?.parts.length ?? 0
+  const setParts =
+    set.value.modules.find(module => module.skill === 'speaking')?.exercises.length ?? 0
   return setParts < examParts
     ? t('mockExam.provisionalSpeakingNote')
     : t('mockExam.provisionalSpeakingNoteTranscript')
@@ -689,7 +706,10 @@ const isGapFillReading = computed(
       ?.parts.find(part => part.n === readingExercise.value?.testingPart)?.itemFormat === 'gap-fill'
 )
 /** Typed gap answers, mirrored from the questions into the gapped text. */
-const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({ answers: {}, revealed: false })
+const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({
+  answers: {},
+  revealed: false,
+})
 const listeningExercise = computed<ListeningA2Exercise | undefined>(() =>
   activeExercise.value
     ? set.value.content.listening.find(exercise => exercise.id === activeExercise.value?.id)
@@ -822,7 +842,9 @@ function scoreLabel(skill: SkillId): string {
   if (scale) {
     const score = scaleScoreOf(skill)
     if (score === null) return '—'
-    return score < scale.min ? t('mockExam.scale.below', { min: scale.min }) : String(Math.round(score))
+    return score < scale.min
+      ? t('mockExam.scale.below', { min: scale.min })
+      : String(Math.round(score))
   }
   const definition = set.value.modules.find(module => module.skill === skill)
   const score = state.value.modules[skill].scoreFinal
@@ -1029,7 +1051,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
     if (skill === 'writing') {
       const topic = set.value.content.writing.find(item => item.id === exerciseId)
       if (!topic || !response.content?.trim()) return
-      const part = topic.testingPart === 2 ? 2 : 1
+      const part = topic.testingPart ?? 1
       const prompt = assemble('writing', part, 'review', {
         task: topic.task,
         requirements: topic.requirements?.join(', ') ?? '',

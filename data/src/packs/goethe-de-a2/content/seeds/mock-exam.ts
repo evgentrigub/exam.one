@@ -51,6 +51,8 @@ export interface MockPassGroup {
 export interface MockScaleRules {
   /** Names the scale for the UI (`mockExam.scale.<id>`). */
   id: string
+  /** Original app tasks use an estimated conversion, not a calibrated official result. */
+  estimated?: boolean
   /** The lowest reported score; anything below shows as "below {min}". */
   min: number
   max: number
@@ -59,7 +61,7 @@ export interface MockScaleRules {
   officialRaw: Partial<Record<SkillId, number>>
   anchors: Partial<Record<SkillId, ReadonlyArray<readonly [number, number]>>>
   /** Highest first: an overall score earns the first band whose `min` it reaches. */
-  bands: ReadonlyArray<{ id: string; min: number }>
+  bands: ReadonlyArray<{ id: string; min: number; labelKey?: string }>
 }
 
 /**

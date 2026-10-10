@@ -52,7 +52,12 @@ export function objectiveExercisePoints(
  * official maximum (practice Speaking: 30 → 45), then interpolated between the anchors; below
  * the lowest anchor the first segment is extended, floored at 0. Not rounded.
  */
-export function scaleScore(scale: MockScaleRules, skill: SkillId, raw: number, maxRaw: number): number {
+export function scaleScore(
+  scale: MockScaleRules,
+  skill: SkillId,
+  raw: number,
+  maxRaw: number
+): number {
   const anchors = scale.anchors[skill]
   if (!anchors?.length) throw new Error(`No scale anchors for ${skill}`)
   const official = scale.officialRaw[skill] ?? maxRaw
@@ -76,11 +81,17 @@ export function evaluateMockScale(
   scores: Partial<Record<SkillId, number | null>>,
   maxima: Partial<Record<SkillId, number>>
 ): MockScaleResult {
-  const entries = Object.entries(scores) as Array<[SkillId, number | null | undefined]>
+  // The scale defines the required skills. An omitted grade must not produce an average
+  // from just the already-scored papers (for example Reading alone).
+  const entries = (Object.keys(scale.anchors) as SkillId[]).map(
+    skill => [skill, scores[skill]] as const
+  )
   const skills = Object.fromEntries(
     entries.map(([skill, raw]) => [
       skill,
-      typeof raw === 'number' ? scaleScore(scale, skill, raw, maxima[skill] ?? 0) : null,
+      typeof raw === 'number' && Number.isFinite(raw)
+        ? scaleScore(scale, skill, raw, maxima[skill] ?? 0)
+        : null,
     ])
   ) as Partial<Record<SkillId, number | null>>
   const values = Object.values(skills)

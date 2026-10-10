@@ -1095,7 +1095,11 @@
         "gradeB": "Note B · A2",
         "gradeC": "Note C · A2",
         "levelA1": "Niveau A1",
-        "none": "Kein Zertifikat"
+        "none": "Kein Zertifikat",
+        "levelA2": "Niveau A2",
+        "gradeAB2": "Note A · B2",
+        "gradeBB1": "Note B · B1",
+        "gradeCB1": "Note C · B1"
       },
       "passFrom": "bestanden ab {pass}",
       "pending": "Der Skalenwert erscheint, sobald die KI-Bewertung fertig ist.",
@@ -1103,7 +1107,8 @@
       "belowMessage": "Unter {pass} auf der Skala. Übe weiter und versuch es noch einmal.",
       "estimate": "Eine Schätzung nach Cambridges Umrechnung für Übungstests. Sprechen hat hier keine Aussprachewertung, daher werden die 30 Punkte auf die 45 der Prüfung hochgerechnet.",
       "below": "unter {min}",
-      "raw": "Rohpunkte {score} / {max}"
+      "raw": "Rohpunkte {score} / {max}",
+      "originalEstimate": "Geschätztes Ergebnis auf der Cambridge English Scale anhand eigener App-Aufgaben, die keine kalibrierten offiziellen Tests sind. Sprechen nutzt ein angepasstes Transkript-Raster ohne Aussprache oder offizielle Kriteriengewichtung."
     }
   },
   "pastExams": {

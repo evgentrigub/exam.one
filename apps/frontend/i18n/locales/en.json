@@ -1095,7 +1095,11 @@
         "gradeB": "Grade B · A2",
         "gradeC": "Grade C · A2",
         "levelA1": "Level A1",
-        "none": "No certificate"
+        "none": "No certificate",
+        "levelA2": "Level A2",
+        "gradeAB2": "Grade A · B2",
+        "gradeBB1": "Grade B · B1",
+        "gradeCB1": "Grade C · B1"
       },
       "passFrom": "{pass} to pass",
       "pending": "The Scale score appears once AI grading has finished.",
@@ -1103,7 +1107,8 @@
       "belowMessage": "Below {pass} on the Scale. Keep practising and retry when you are ready.",
       "estimate": "An estimate from Cambridge's practice-test conversion. Speaking has no pronunciation mark here, so its 30 marks are scaled to the exam's 45.",
       "below": "below {min}",
-      "raw": "Raw {score} / {max}"
+      "raw": "Raw {score} / {max}",
+      "originalEstimate": "Estimated Cambridge English Scale result from original app tasks, which are not calibrated official tests. Speaking uses an adapted transcript rubric without pronunciation or official criterion weighting."
     }
   },
   "pastExams": {
