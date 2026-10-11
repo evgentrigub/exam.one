@@ -60,6 +60,7 @@ export interface TtsHealthData {
 export interface ListeningExerciseAudioMap {
   shared?: string
   items?: Record<string, string>
+  sections?: Record<string, string>
 }
 
 export interface GenerateListeningAudioData {

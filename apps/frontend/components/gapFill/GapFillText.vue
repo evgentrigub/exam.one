@@ -18,7 +18,7 @@
             </span>
             <span v-else class="tracking-widest opacity-50">{{ BLANK }}</span>
             <span v-if="isWrong(token.n)" class="font-medium text-success">
-              {{ questionFor(token.n)?.accepted?.[0] }}
+              {{ correctFor(token.n) }}
             </span>
           </button>
         </template>
@@ -50,7 +50,9 @@ const { pack } = useActivePack()
 // The text is in the exam language, whatever the interface language is.
 const lang = computed(() => pack.value.language)
 
-const lines = computed(() => props.content.split('\n').map(line => (line.trim() ? splitGapLine(line) : [])))
+const lines = computed(() =>
+  props.content.split('\n').map(line => (line.trim() ? splitGapLine(line) : []))
+)
 
 /** Gap `(n)` is the n-th question. */
 function questionFor(n: number): GapQuestion | undefined {
@@ -60,12 +62,23 @@ function questionFor(n: number): GapQuestion | undefined {
 function answerFor(n: number): string {
   const question = questionFor(n)
   const value = question ? props.answers[question.id] : undefined
-  return typeof value === 'string' ? value.trim() : ''
+  return typeof value === 'number'
+    ? (question?.options?.[value] ?? '')
+    : typeof value === 'string'
+      ? value.trim()
+      : ''
 }
 
 function isCorrect(n: number): boolean {
   const question = questionFor(n)
-  return Boolean(question?.accepted && isGapAnswerCorrect(answerFor(n), question.accepted))
+  return question?.accepted
+    ? isGapAnswerCorrect(answerFor(n), question.accepted)
+    : props.answers[question?.id ?? ''] === question?.correctAnswer
+}
+
+function correctFor(n: number): string {
+  const q = questionFor(n)
+  return q?.accepted?.[0] ?? q?.options?.[q.correctAnswer ?? -1] ?? ''
 }
 
 function isWrong(n: number): boolean {
@@ -73,7 +86,8 @@ function isWrong(n: number): boolean {
 }
 
 function gapClass(n: number): string {
-  if (props.revealed) return isCorrect(n) ? 'border-success bg-success/15' : 'border-error bg-error/10'
+  if (props.revealed)
+    return isCorrect(n) ? 'border-success bg-success/15' : 'border-error bg-error/10'
   return answerFor(n)
     ? 'border-primary bg-primary/10 text-base-content hover:bg-primary/20'
     : 'border-dashed border-base-content/30 text-base-content/60 hover:bg-base-200'

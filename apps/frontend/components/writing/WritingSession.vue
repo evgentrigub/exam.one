@@ -186,6 +186,7 @@
         :initial-content="currentDraft"
         :submitted="isSubmitted"
         :exam-mode="examMode ?? false"
+        :word-count-guidance-only="wordCountGuidanceOnly"
         @submit="handleSubmit"
         @save-draft="handleSaveDraft"
         @finish="handleFinish"
@@ -196,6 +197,7 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
+import { getLivePack } from '@exam-one/exam-packs'
 import {
   AlertTriangle,
   CheckCircle2,
@@ -227,6 +229,14 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useI18n()
+const settings = useSettingsStore()
+const wordCountGuidanceOnly = computed(() =>
+  Boolean(
+    getLivePack(settings.packId)
+      .structure.find(m => m.id === 'writing')
+      ?.parts.find(p => p.n === props.topic.testingPart)?.runtime?.wordCountGuidanceOnly
+  )
+)
 
 const emit = defineEmits<{
   complete: [topicId: string, content: string, wordCount: number, timeSpent: number]
@@ -235,7 +245,7 @@ const emit = defineEmits<{
   finish: []
 }>()
 
-const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission } =
+const { saveWritingSubmission, saveWritingDraft, getWritingSession, getLatestSubmission, hydrate } =
   useProgress()
 const {
   requestReview,
@@ -284,10 +294,11 @@ const reviewError = computed(() => {
   return getReviewError(props.topic.id)
 })
 
-onMounted(() => {
+onMounted(async () => {
   if (props.examMode) return
+  await hydrate()
   const existingSession = getWritingSession(props.topic.id)
-  if (existingSession) {
+  if (existingSession && !currentDraft.value) {
     currentDraft.value = existingSession.content
   }
 

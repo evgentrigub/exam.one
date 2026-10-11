@@ -1161,6 +1161,10 @@
       "examiner": {
         "title": "Pregunta {round} · Responde al examinador",
         "description": "Responde con una o dos frases y da un motivo cuando puedas."
+      },
+      "presentation": {
+        "title": "Presentación · 5 minutos",
+        "description": "Presenta el tema elegido con una estructura clara."
       }
     },
     "recorder": {
@@ -1382,5 +1386,16 @@
     "gapEmptyAria": "Hueco {n}, aún sin responder",
     "correct": "Correcto",
     "incorrect": "Incorrecto"
+  },
+  "c1": {
+    "chooseTopic": "Elige un tema de presentación",
+    "simulatedPartner": "Es una simulación guiada con preguntas preparadas del interlocutor.",
+    "preparation": "Preparación oral · 20 minutos",
+    "notes": "Notas de preparación",
+    "finishPreparation": "Terminar la preparación e iniciar la prueba oral",
+    "preview": "Lee las preguntas: quedan {seconds} segundos",
+    "prepareSection": "Preparar sección {n}",
+    "section": "Sección {n}",
+    "wordTarget": "Objetivo: aproximadamente {count} palabras"
   }
 }

@@ -14,7 +14,9 @@
           <AlertCircle :size="16" />
         </div>
         <div class="min-w-0">
-          <p class="text-xs font-semibold text-base-content/80">{{ $t('listening.audioNotGenerated') }}</p>
+          <p class="text-xs font-semibold text-base-content/80">
+            {{ $t('listening.audioNotGenerated') }}
+          </p>
           <p class="text-[11px] text-base-content/50 mt-0.5 leading-snug">
             {{ audioStatusDetail }}
           </p>
@@ -26,7 +28,13 @@
         <div class="space-y-2 w-full">
           <p class="font-semibold">{{ $t('listening.filesMissing') }}</p>
           <p class="text-xs opacity-80">
-            {{ $t('listening.filesNotFound', { missing: missingCount, total: expectedCount }, expectedCount) }}
+            {{
+              $t(
+                'listening.filesNotFound',
+                { missing: missingCount, total: expectedCount },
+                expectedCount
+              )
+            }}
           </p>
           <button
             type="button"
@@ -39,7 +47,11 @@
           </button>
           <p v-if="generateError" class="text-xs text-error">{{ generateError }}</p>
           <p v-else-if="!isTtsReady" class="text-xs opacity-70">
-            {{ ttsStatus === 'unsupported' ? $t('listening.ttsUnsupported') : $t('listening.ttsOffline') }}
+            {{
+              ttsStatus === 'unsupported'
+                ? $t('listening.ttsUnsupported')
+                : $t('listening.ttsOffline')
+            }}
           </p>
         </div>
       </div>
@@ -62,6 +74,12 @@
         </div>
       </div>
 
+      <p
+        v-if="examMode && model.mode === 'shared' && previewRemaining('shared') > 0"
+        class="alert alert-info text-sm"
+      >
+        {{ $t('c1.preview', { seconds: previewRemaining('shared') }) }}
+      </p>
       <!-- Shared audio (Teil 2 + 4) — play/scrubber only; volume lives under timer -->
       <AudioPlayer
         v-if="model.mode === 'shared'"
@@ -74,10 +92,12 @@
         :disable-seeking="examMode ?? false"
         hide-volume-speed
         :volume="volume"
-        :speed="speed"
-        :disabled="interactionLocked"
+        :speed="examMode ? 1 : speed"
+        :disabled="interactionLocked || previewRemaining('shared') > 0"
+        :initial-playback="playback['shared']"
         player-id="shared"
         :active-player-id="activePlayerId"
+        @playback="savePlayback('shared', $event)"
         @play="onPlayerPlay"
         @pause="onPlayerPause"
         @audio-unavailable="onAudioUnavailable"
@@ -88,7 +108,9 @@
         class="bg-base-100 rounded-box border border-base-300/70 p-5"
         :class="{ 'opacity-50 pointer-events-none': interactionLocked }"
       >
-        <div class="text-xs font-semibold text-base-content/70 mb-3">{{ $t('listening.playback') }}</div>
+        <div class="text-xs font-semibold text-base-content/70 mb-3">
+          {{ $t('listening.playback') }}
+        </div>
         <div class="flex items-center gap-3">
           <Volume2 :size="14" class="text-base-content/50 shrink-0" />
           <input
@@ -157,11 +179,20 @@
         <div class="flex items-center gap-2">
           <h2 class="font-display text-2xl font-bold">{{ $t('listening.questions') }}</h2>
           <span class="ml-auto text-xs text-base-content/60">
-            {{ $t('listening.answeredCount', { answered: answeredCount, total: model.questions.length }) }}
+            {{
+              $t('listening.answeredCount', {
+                answered: answeredCount,
+                total: model.questions.length,
+              })
+            }}
           </span>
         </div>
         <p class="text-sm text-base-content/60 mt-1">
-          {{ model.optionStyle === 'gaps' ? $t('listening.notesIntro') : $t('listening.questionsIntro') }}
+          {{
+            model.optionStyle === 'gaps'
+              ? $t('listening.notesIntro')
+              : $t('listening.questionsIntro')
+          }}
         </p>
 
         <div
@@ -190,8 +221,59 @@
           />
         </div>
 
-        <div v-else class="mt-6 space-y-7" :class="{ 'opacity-60': interactionLocked && !isFinished }">
+        <div
+          v-else
+          class="mt-6 space-y-7"
+          :class="{ 'opacity-60': interactionLocked && !isFinished }"
+        >
           <div v-for="(q, i) in model.questions" :key="q.id">
+            <div v-if="sectionForQuestion(q.id)" class="mb-4 space-y-3">
+              <button
+                v-if="examMode && !playback[sectionForQuestion(q.id)!.id]?.previewEndsAt"
+                class="btn btn-info btn-sm"
+                :disabled="!sectionEnabled(sectionForQuestion(q.id)!.id)"
+                @click="beginPreview(sectionForQuestion(q.id)!.id)"
+              >
+                {{
+                  $t('c1.prepareSection', {
+                    n: audioSections.indexOf(sectionForQuestion(q.id)!) + 1,
+                  })
+                }}
+              </button>
+              <p
+                v-if="previewRemaining(sectionForQuestion(q.id)!.id) > 0"
+                class="text-sm text-info"
+              >
+                {{ $t('c1.preview', { seconds: previewRemaining(sectionForQuestion(q.id)!.id) }) }}
+              </p>
+              <AudioPlayer
+                :transcript="sectionForQuestion(q.id)!.transcript"
+                :src="sectionAudio(sectionForQuestion(q.id)!.id)"
+                :label="
+                  $t('c1.section', { n: audioSections.indexOf(sectionForQuestion(q.id)!) + 1 })
+                "
+                :player-id="sectionForQuestion(q.id)!.id"
+                :active-player-id="activePlayerId"
+                :reveal-transcript="isFinished && !examMode"
+                :max-plays="examMode ? replayLimit : null"
+                :disable-seeking="examMode"
+                :speed="examMode ? 1 : speed"
+                :volume="volume"
+                hide-volume-speed
+                :initial-playback="playback[sectionForQuestion(q.id)!.id]"
+                :disabled="
+                  interactionLocked ||
+                  (examMode &&
+                    (!playback[sectionForQuestion(q.id)!.id]?.previewEndsAt ||
+                      previewRemaining(sectionForQuestion(q.id)!.id) > 0 ||
+                      !sectionEnabled(sectionForQuestion(q.id)!.id)))
+                "
+                @play="onPlayerPlay"
+                @pause="onPlayerPause"
+                @playback="savePlayback(sectionForQuestion(q.id)!.id, $event)"
+                @audio-unavailable="onAudioUnavailable"
+              />
+            </div>
             <AudioPlayer
               v-if="model.mode === 'peritem' && q.transcript"
               :key="`${q.id}-${sessionKey}`"
@@ -204,7 +286,7 @@
               :disable-seeking="examMode ?? false"
               hide-volume-speed
               :volume="volume"
-              :speed="speed"
+              :speed="examMode ? 1 : speed"
               :disabled="interactionLocked"
               :player-id="q.id"
               :active-player-id="activePlayerId"
@@ -339,6 +421,8 @@ import {
   isStatementListening,
   type NotesListening,
   type SharedChoiceListening,
+  type ListeningPlayback,
+  type ListeningPlaybackState,
 } from '~/utils/listening/audioUrls'
 import type { GapQuestion, ObjectiveAnswer, ObjectiveAnswers } from '~/utils/gapFill'
 import GapFillInputs from '~/components/gapFill/GapFillInputs.vue'
@@ -366,7 +450,7 @@ interface NormalizedQuestion {
 }
 
 interface NormalizedModel {
-  mode: 'shared' | 'peritem'
+  mode: 'shared' | 'peritem' | 'sections'
   /** `gaps`: a page of notes with a typed answer per gap. */
   optionStyle: 'buttons' | 'select' | 'gaps'
   sharedTranscript?: string
@@ -380,16 +464,25 @@ const props = withDefaults(
     examMode?: boolean
     configuredReplays?: number | undefined
     initialAnswers?: ObjectiveAnswers
+    initialPlayback?: ListeningPlayback
   }>(),
   {
     examMode: false,
     configuredReplays: undefined,
     initialAnswers: () => ({}),
+    initialPlayback: () => ({}),
   }
 )
 const emit = defineEmits<{
   finish: []
-  progress: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
+  progress: [
+    payload: {
+      answers: ObjectiveAnswers
+      score: number
+      total: number
+      playback?: ListeningPlayback
+    },
+  ]
   examComplete: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
 }>()
 
@@ -397,7 +490,15 @@ const { t } = useI18n()
 const { saveListeningCompletion } = useProgress()
 const { updateExerciseAudio, getExerciseById, reload } = useListeningExercises()
 const center = useJobCenter()
-const audioJob = computed(() => center.jobs.value.find(job => job.type === 'LISTENING_AUDIO' && job.targetId === props.exercise.id && job.packId === useSettingsStore().packId) ?? null)
+const audioJob = computed(
+  () =>
+    center.jobs.value.find(
+      job =>
+        job.type === 'LISTENING_AUDIO' &&
+        job.targetId === props.exercise.id &&
+        job.packId === useSettingsStore().packId
+    ) ?? null
+)
 const { isReady: isTtsReady, status: ttsStatus } = useTtsHealth()
 const { activePlayerId, claim, release } = useListeningExclusivePlayback()
 
@@ -407,7 +508,12 @@ const sessionKey = ref(0)
 const volume = ref(0.6)
 const speed = ref(1)
 const legacyGeneratingAudio = ref(false)
-const isGeneratingAudio = computed(() => legacyGeneratingAudio.value || (!props.examMode && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(audioJob.value?.status ?? '')))
+const isGeneratingAudio = computed(
+  () =>
+    legacyGeneratingAudio.value ||
+    (!props.examMode &&
+      ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(audioJob.value?.status ?? ''))
+)
 const generateProgress = ref<{ done: number; total: number } | null>(null)
 const generateError = ref<string | null>(null)
 
@@ -445,6 +551,66 @@ const gapQuestions = computed<GapQuestion[]>(() =>
     explanation: q.explanation,
   }))
 )
+const playback = reactive<ListeningPlayback>(
+  JSON.parse(JSON.stringify(props.initialPlayback)) as ListeningPlayback
+)
+const playbackTick = ref(Date.now())
+let previewTimer: ReturnType<typeof setInterval> | null = null
+onMounted(() => {
+  previewTimer = setInterval(() => {
+    playbackTick.value = Date.now()
+  }, 1000)
+})
+onUnmounted(() => {
+  if (previewTimer) clearInterval(previewTimer)
+})
+const audioSections = computed(() => currentExercise.value.sections ?? [])
+function savePlayback(id: string, value: ListeningPlaybackState) {
+  playback[id] = { ...playback[id], ...value }
+  if (props.examMode)
+    emit('progress', {
+      answers: { ...answers },
+      score: score.value,
+      total: model.value.questions.length,
+      playback: { ...playback },
+    })
+}
+function beginPreview(id: string) {
+  if (
+    !props.examMode ||
+    !listeningPart.value?.runtime?.previewSeconds ||
+    playback[id]?.previewEndsAt
+  )
+    return
+  savePlayback(id, {
+    plays: 0,
+    position: 0,
+    completed: false,
+    previewEndsAt: new Date(
+      Date.now() + listeningPart.value.runtime.previewSeconds * 1000
+    ).toISOString(),
+  })
+}
+function previewRemaining(id: string): number {
+  return (
+    Math.max(
+      0,
+      Math.ceil((Date.parse(playback[id]?.previewEndsAt ?? '') - playbackTick.value) / 1000)
+    ) || 0
+  )
+}
+function sectionForQuestion(id: string) {
+  return audioSections.value.find(s => s.questionIds[0] === id)
+}
+function sectionEnabled(id: string): boolean {
+  const i = audioSections.value.findIndex(s => s.id === id)
+  if (!props.examMode || i < 1) return true
+  const previous = playback[audioSections.value[i - 1]!.id]
+  return Boolean(previous?.completed && previous.plays >= replayLimit.value)
+}
+function sectionAudio(id: string): string {
+  return currentExercise.value.audio?.sections?.[id] ?? ''
+}
 const sharedAudioSrc = computed(() => resolveSharedListeningAudioSrc(currentExercise.value) ?? '')
 
 function itemAudioSrc(itemId: string): string {
@@ -486,10 +652,7 @@ const instructions = computed(() => {
   if (props.examMode) {
     return t('listening.examInstructions', { count: replayLimit.value }, replayLimit.value)
   }
-  return (
-    listeningPart.value?.instruction ??
-    t('listening.practiceInstructions')
-  )
+  return listeningPart.value?.instruction ?? t('listening.practiceInstructions')
 })
 
 const replayLimit = computed(
@@ -576,22 +739,35 @@ function onAudioUnavailable() {
 }
 
 const lastAppliedJob = ref(-1)
-watch(audioJob, async job => {
-  if (!job || job.status !== 'COMPLETED' || job.revision <= lastAppliedJob.value || props.examMode) return
-  lastAppliedJob.value = job.revision
-  await reload()
-  const current = getExerciseById(props.exercise.id ?? '')
-  if (current) currentExercise.value = { ...current }
-  sessionKey.value += 1
-  await refreshAvailability()
-}, { immediate: true })
+watch(
+  audioJob,
+  async job => {
+    if (
+      !job ||
+      job.status !== 'COMPLETED' ||
+      job.revision <= lastAppliedJob.value ||
+      props.examMode
+    )
+      return
+    lastAppliedJob.value = job.revision
+    await reload()
+    const current = getExerciseById(props.exercise.id ?? '')
+    if (current) currentExercise.value = { ...current }
+    sessionKey.value += 1
+    await refreshAvailability()
+  },
+  { immediate: true }
+)
 
 async function generateAudioForExercise() {
   if (!isTtsReady.value || isGeneratingAudio.value) return
   generateError.value = null
   if (!props.examMode) {
-    try { await center.enqueueListeningAudio(currentExercise.value.id ?? '') }
-    catch (error) { generateError.value = error instanceof Error ? error.message : t('listening.generationFailed') }
+    try {
+      await center.enqueueListeningAudio(currentExercise.value.id ?? '')
+    } catch (error) {
+      generateError.value = error instanceof Error ? error.message : t('listening.generationFailed')
+    }
     return
   }
   legacyGeneratingAudio.value = true
@@ -637,6 +813,7 @@ async function generateAudioForExercise() {
 }
 
 onMounted(() => {
+  if (props.examMode && model.value.mode === 'shared') beginPreview('shared')
   model.value.questions.forEach(q => {
     answers[q.id] = props.examMode ? props.initialAnswers[q.id] : undefined
   })
@@ -746,7 +923,12 @@ function finish() {
     })
     return
   }
-  saveListeningCompletion(currentExercise.value.id ?? '', score.value, model.value.questions.length, { ...answers })
+  saveListeningCompletion(
+    currentExercise.value.id ?? '',
+    score.value,
+    model.value.questions.length,
+    { ...answers }
+  )
 }
 
 function restart() {
@@ -760,6 +942,20 @@ function restart() {
 }
 
 function normalize(ex: ListeningA2Exercise): NormalizedModel {
+  if (ex.sections?.length) {
+    const raw = ex as unknown as SharedChoiceListening
+    return {
+      mode: 'sections',
+      optionStyle: 'buttons',
+      questions: raw.questions.map((q, i) => ({
+        id: q.id ?? `${ex.id}-q${i}`,
+        prompt: q.question,
+        options: q.options,
+        correctIndex: q.correctAnswer,
+        explanation: q.explanation ?? '',
+      })),
+    }
+  }
   // The part's format picks the interaction; the payload shape only picks the audio source.
   if (listeningPart.value?.itemFormat === 'gap-fill') {
     const notes = ex as unknown as NotesListening

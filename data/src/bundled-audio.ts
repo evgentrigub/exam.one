@@ -9,6 +9,8 @@ export interface BundledAudioSegment {
   exerciseId: string
   /** Set for per-item recordings; absent for an exercise's single `shared.wav`. */
   itemId?: string
+  /** Stable section identity when multiple questions share this recording. */
+  sectionId?: string
   url: string
   /** `url` relative to {@link LISTENING_AUDIO_URL_ROOT}, e.g. `cambridge-en-a2/<id>/shared.wav`. */
   path: string
@@ -26,12 +28,18 @@ const PART_WORDS: Readonly<Record<string, string>> = {
 /** "Part 1: ", "Zadanie III: ", also after a "Mock Set 1 · " lead-in. */
 const PART_PREFIX = /(^|·\s*)(?:Teil|Part|Część|Zadanie|Tarea)\s*(?:\d+|[IVX]+)\s*[:—–-]\s*/
 
-function audioMapOf(
-  exercise: Record<string, unknown>
-): { shared?: unknown; items?: Record<string, unknown> } | null {
+function audioMapOf(exercise: Record<string, unknown>): {
+  shared?: unknown
+  items?: Record<string, unknown>
+  sections?: Record<string, unknown>
+} | null {
   const audio = exercise['audio']
   return audio && typeof audio === 'object'
-    ? (audio as { shared?: unknown; items?: Record<string, unknown> })
+    ? (audio as {
+        shared?: unknown
+        items?: Record<string, unknown>
+        sections?: Record<string, unknown>
+      })
     : null
 }
 
@@ -56,13 +64,14 @@ export function bundledAudioSegments(pack: ExamPack): BundledAudioSegment[] {
     const audio = audioMapOf(exercise)
     const exerciseId = exercise['id']
     if (!audio || typeof exerciseId !== 'string') continue
-    const add = (url: unknown, transcript: unknown, itemId?: string): void => {
+    const add = (url: unknown, transcript: unknown, itemId?: string, sectionId?: string): void => {
       if (typeof url !== 'string' || !url.startsWith(prefix) || !url.startsWith(root)) return
       if (typeof transcript !== 'string' || !transcript.trim() || segments.has(url)) return
       segments.set(url, {
         packId: pack.packId,
         exerciseId,
         ...(itemId ? { itemId } : {}),
+        ...(sectionId ? { sectionId } : {}),
         url,
         path: url.slice(root.length),
         transcript,
@@ -71,6 +80,15 @@ export function bundledAudioSegments(pack: ExamPack): BundledAudioSegment[] {
     add(audio.shared, exercise['transcript'])
     for (const [itemId, url] of Object.entries(audio.items ?? {}))
       add(url, itemTranscript(exercise, itemId), itemId)
+    for (const [sectionId, url] of Object.entries(audio.sections ?? {})) {
+      const sections = (exercise['sections'] ?? []) as Record<string, unknown>[]
+      add(
+        url,
+        sections.find(section => section['id'] === sectionId)?.['transcript'],
+        undefined,
+        sectionId
+      )
+    }
   }
 
   return [...segments.values()]

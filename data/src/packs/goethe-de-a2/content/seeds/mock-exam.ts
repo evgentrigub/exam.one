@@ -24,6 +24,8 @@ export interface MockExamExerciseDefinition {
 }
 
 export interface MockExamModuleDefinition {
+  preparationMinutes?: number
+  roundFinalPoints?: boolean
   /** Stable paper identity; omitted legacy sets use their renderer skill. */
   id?: string
   /** Optional paper name, independent of the renderer (for example Grammar). */

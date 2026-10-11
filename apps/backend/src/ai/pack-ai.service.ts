@@ -7,6 +7,7 @@ import {
   record,
   validateView,
   validateReview,
+  applyReviewRules,
   withQuestionIds,
   coerceAnswerIndices,
   type LlmComplete,
@@ -226,6 +227,14 @@ export class PackAiService {
         ?.parts.find(p => p.n === n && p.available !== false)
       if (!pack.live || !part?.adapter || !part.runtime)
         throw new Error('This exercise is unavailable')
+      if (skill === 'speaking') {
+        const data = record(payload)
+        const chosen = record(answers)['selectedTopic']
+        if (Array.isArray(data['topicOptions'])) {
+          const option = data['topicOptions'].map(record).find(o => o['id'] === chosen)
+          if (option) payload = { ...data, theme: option['theme'], cards: option['cards'] }
+        }
+      }
       part.adapter.project(payload)
       // A blank transcript would be graded anyway, and the model returns a confident score
       // for nothing. The screen blocks it too; this covers every other caller.
@@ -264,22 +273,16 @@ export class PackAiService {
       if (!parsed) throw new Error('The provider did not return a JSON object')
       // A model answer is handed to the client as-is: the prompt's contract already matches
       // the `{ content, wordCount, highlights }` shape the writing screen renders.
-      if (kind === 'answer') return { data: parsed, error: null }
-      const review = validateReview(parsed, part.runtime)
-      const responses = record(answers)
-      if (
-        part.runtime.fields?.some(
-          field =>
-            field.zeroBelowWords !== undefined &&
-            String(responses[field.id] ?? '')
-              .trim()
-              .split(/\s+/)
-              .filter(Boolean).length < field.zeroBelowWords
-        )
-      ) {
-        review.totalPoints = 0
-        review.criteria = review.criteria.map(c => ({ ...c, points: 0 }))
+      if (kind === 'answer') {
+        if (skill === 'writing' && typeof parsed['content'] === 'string')
+          parsed['wordCount'] = parsed['content'].trim().split(/\s+/u).filter(Boolean).length
+        return { data: parsed, error: null }
       }
+      const review = applyReviewRules(
+        validateReview(parsed, part.runtime),
+        part.runtime,
+        record(answers)
+      )
       return { data: review, error: null }
     } catch (error) {
       return { data: null, error: error instanceof Error ? error.message : 'Review failed' }

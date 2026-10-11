@@ -158,6 +158,7 @@ interface Props {
   initialContent?: string
   submitted?: boolean
   examMode?: boolean
+  wordCountGuidanceOnly?: boolean
 }
 
 const props = defineProps<Props>()
@@ -212,7 +213,7 @@ const wordCountPercentage = computed(() => {
 })
 
 const isSubmittable = computed(() => {
-  if (props.examMode) return content.value.trim().length > 0
+  if (props.examMode || props.wordCountGuidanceOnly) return content.value.trim().length > 0
   return (
     wordCount.value >= props.topic.wordCount.min &&
     wordCount.value <= props.topic.wordCount.max &&
@@ -235,6 +236,7 @@ const progressBarColor = computed(() => {
 
 const wordCountStatus = computed(() => {
   if (wordCount.value === 0) return t('writing.editor.statusEmpty')
+  if (props.wordCountGuidanceOnly) return t('c1.wordTarget', { count: props.topic.wordCount.min })
   if (wordCount.value < props.topic.wordCount.min) {
     const missing = props.topic.wordCount.min - wordCount.value
     return t('writing.editor.wordsNeeded', { count: missing }, missing)

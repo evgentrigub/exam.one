@@ -40,13 +40,14 @@ Practice adaptations are defined by each pack. Solo speaking and transcript-base
 
 ## Supported exam packs
 
-All nine live packs provide Reading, Writing, Listening, Speaking, bundled practice content and mock exams. Each includes bundled Set 1 and supports generating additional sets with configured AI and TTS providers:
+All ten live packs provide Reading, Writing, Listening, Speaking, bundled practice content and mock exams. Each includes bundled Set 1 and supports generating additional sets with configured AI and TTS providers:
 
 | Exam                     | Language | Level | Pack ID           |
 | ------------------------ | -------- | ----- | ----------------- |
 | Goethe · Start Deutsch 1 | German   | A1    | `goethe-de-a1`    |
 | Goethe-Zertifikat A2     | German   | A2    | `goethe-de-a2`    |
 | Goethe-Zertifikat B1     | German   | B1    | `goethe-de-b1`    |
+| Goethe-Zertifikat C1     | German   | C1    | `goethe-de-c1`    |
 | Cambridge A2 Key         | English  | A2    | `cambridge-en-a2` |
 | Cambridge B1 Preliminary | English  | B1    | `cambridge-en-b1` |
 | Certyfikat Polski A2     | Polish   | A2    | `certpol-pl-a2`   |
@@ -58,12 +59,12 @@ Select an exam in **Settings → Learning plan**. New accounts start on Cambridg
 
 All four B1 packs include fresh mock-exam tasks, saved attempts, paper timers and detailed reviews. Their bundled Set 1 tasks are separate from the individual practice catalog:
 
-| B1 exam | Practice tasks | Set 1 tasks | Mock result rules |
-| --- | --- | --- | --- |
-| Cambridge B1 Preliminary | 16 | 16 | Estimated Cambridge English Scale; pass threshold 140 |
-| Goethe-Zertifikat B1 | 15 | 15 | Four independent modules; at least 60/100 in each after whole-point rounding |
-| Certyfikat Polski B1 | 23 | 23 | Five independent papers: Listening, Reading, Grammar, Writing and Speaking; at least 50% in each |
-| DELE B1 | 16 | 16 | Each paper normalized to /25; at least 30/50 in both Reading + Writing and Listening + Speaking |
+| B1 exam                  | Practice tasks | Set 1 tasks | Mock result rules                                                                                |
+| ------------------------ | -------------- | ----------- | ------------------------------------------------------------------------------------------------ |
+| Cambridge B1 Preliminary | 16             | 16          | Estimated Cambridge English Scale; pass threshold 140                                            |
+| Goethe-Zertifikat B1     | 15             | 15          | Four independent modules; at least 60/100 in each after whole-point rounding                     |
+| Certyfikat Polski B1     | 23             | 23          | Five independent papers: Listening, Reading, Grammar, Writing and Speaking; at least 50% in each |
+| DELE B1                  | 16             | 16          | Each paper normalized to /25; at least 30/50 in both Reading + Writing and Listening + Speaking  |
 
 English B1 uses solo speaking cues, written scene descriptions and assigned article/story tasks. See the [brief](data/src/packs/cambridge-en-b1/brief.md) and [verification](data/src/packs/cambridge-en-b1/verification.md).
 
@@ -75,7 +76,11 @@ German B1 retains all three writing tasks and their /40, /40 and /20 rubrics. Sp
 
 Prepare the B1 listening WAVs using the [bundled-audio instructions](scripts/tts/README.md#bundled-audio). Set 1 attempts and objective scores work without an LLM; writing/speaking grades and AI reviews require a configured LLM. All mock results remain practice estimates.
 
-The [registry](data/src/registry.ts) determines availability. Goethe C1 is an inactive historical stub. Additional levels and boards can be introduced as packs; a new task interaction may also require a shared application component.
+Goethe C1 includes 12 original practice tasks, 20 prompt slots and 12 separate Set 1 tasks in the current modular format. Reading, Listening, Writing and Speaking use 65/40/75/20-minute timers. Speaking adds saved 20-minute preparation, a choice of two presentation topics and notes. Writing uses the recovered C1 prompts with corrected A–E rubrics; Speaking uses fixed partner cues and a provisional transcript score. See its [brief](data/src/packs/goethe-de-c1/brief.md) and [verification](data/src/packs/goethe-de-c1/verification.md).
+
+Before activating a replacement C1 catalog on an existing installation, run the one-time `pnpm db:prune --pack goethe-de-c1`, then `pnpm db:seed`. This removes C1 practice, mocks, jobs and obsolete prompt overrides while preserving accounts, sessions, settings and other packs. Running jobs must acknowledge cancellation before deletion. Normal startup and seeding never prune. Prepare its 14 listening WAVs with `TTS_CONCURRENCY=1 pnpm generate:listening-audio --packs goethe-de-c1`; later runs reuse transcript hashes.
+
+The [registry](data/src/registry.ts) determines availability. Additional levels and boards can be introduced as packs; a new task interaction may also require a shared application component.
 
 ## How the framework works
 

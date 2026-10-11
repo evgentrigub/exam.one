@@ -1,4 +1,18 @@
 <template>
+  <div v-if="topicOptions.length" class="mb-5 rounded-box border border-base-300 bg-base-100 p-5">
+    <label class="label font-semibold" for="presentation-topic">{{ $t('c1.chooseTopic') }}</label>
+    <select
+      id="presentation-topic"
+      v-model="selectedTopicId"
+      class="select select-bordered w-full"
+      :disabled="submitted || activeRecording !== null || examMode"
+    >
+      <option v-for="option in topicOptions" :key="option.id" :value="option.id">
+        {{ option.theme }}
+      </option>
+    </select>
+    <p class="mt-2 text-sm text-base-content/60">{{ $t('c1.simulatedPartner') }}</p>
+  </div>
   <div class="grid items-start gap-5 lg:grid-cols-2">
     <div class="space-y-4 lg:sticky lg:top-4">
       <div class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft">
@@ -11,7 +25,7 @@
           </span>
           <span class="level-pip">{{ t('exercisesUi.part') }} {{ topic.testingPart }}</span>
         </div>
-        <h2 class="mb-2 text-lg font-semibold">{{ topic.theme }}</h2>
+        <h2 class="mb-2 text-lg font-semibold">{{ selectedTopic?.theme ?? topic.theme }}</h2>
         <p class="text-sm text-base-content/60">{{ instruction }}</p>
       </div>
 
@@ -35,7 +49,10 @@
         </ol>
       </div>
 
-      <div v-if="!examMode" class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft">
+      <div
+        v-if="!examMode && usefulPhrases.length"
+        class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft"
+      >
         <p class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
           {{ t('speaking.session.usefulPhrases') }}
         </p>
@@ -223,6 +240,8 @@
 </template>
 
 <script setup lang="ts">
+import { apiFetch } from '~/composables/useApi'
+
 import {
   AlertTriangle,
   CircleCheck,
@@ -283,6 +302,7 @@ const emit = defineEmits<{
 }>()
 
 const { saveSpeakingAttempt } = useProgress()
+const draftPackId = useSettingsStore().packId
 const {
   health,
   checkingHealth,
@@ -306,6 +326,20 @@ const speakingPart = computed(() =>
     ?.parts.find(part => part.n === props.topic.testingPart)
 )
 
+const topicOptions = computed(() =>
+  'topicOptions' in props.topic ? (props.topic.topicOptions ?? []) : []
+)
+const selectedTopicId = ref(
+  props.initialTranscripts['selectedTopic'] ?? topicOptions.value[0]?.id ?? ''
+)
+const selectedTopic = computed(() =>
+  topicOptions.value.find(option => option.id === selectedTopicId.value)
+)
+watch(selectedTopicId, () => {
+  for (const id of segmentIds) transcripts[id] = ''
+  emit('progress', { transcripts: attemptTranscripts(), durationSec: 0 })
+})
+
 /** Every segment this session can record: the A2 keys plus the part's own configured ids. */
 const segmentIds = [
   ...new Set([
@@ -318,6 +352,62 @@ const segmentIds = [
 const transcripts = reactive<Record<SegmentKey, string>>(
   Object.fromEntries(segmentIds.map(id => [id, props.initialTranscripts[id] ?? '']))
 )
+let draftReady = false
+let draftTimer: ReturnType<typeof setTimeout> | null = null
+let draftWriting = false
+let draftPending = false
+async function persistSpeakingDraft() {
+  if (props.examMode || !draftReady || submitted.value) return
+  if (draftWriting) {
+    draftPending = true
+    return
+  }
+  draftWriting = true
+  try {
+    do {
+      draftPending = false
+      await apiFetch(`/drafts/SPEAKING/${encodeURIComponent(props.topic.id)}`, {
+        packId: draftPackId,
+        method: 'PUT',
+        body: { payload: { transcripts: attemptTranscripts() } },
+      })
+    } while (draftPending && !submitted.value)
+  } catch (error) {
+    console.warn('Could not save speaking draft', error)
+  } finally {
+    draftWriting = false
+  }
+}
+onMounted(async () => {
+  if (props.examMode) return
+  try {
+    const draft = await apiFetch<{ payload: { transcripts?: SpeakingTranscripts } } | null>(
+      `/drafts/SPEAKING/${encodeURIComponent(props.topic.id)}`,
+      { packId: draftPackId }
+    )
+    const saved = draft?.payload.transcripts
+    if (saved?.['selectedTopic']) selectedTopicId.value = saved['selectedTopic']
+    await nextTick()
+    for (const key of segmentIds) if (saved?.[key]) transcripts[key] = saved[key]!
+  } catch (error) {
+    console.warn('Could not restore speaking draft', error)
+  }
+  draftReady = true
+})
+watch(
+  transcripts,
+  () => {
+    if (!draftReady || props.examMode) return
+    if (draftTimer) clearTimeout(draftTimer)
+    draftTimer = setTimeout(() => void persistSpeakingDraft(), 500)
+  },
+  { deep: true }
+)
+onBeforeUnmount(() => {
+  if (draftTimer) clearTimeout(draftTimer)
+  void persistSpeakingDraft()
+})
+
 const durations = reactive<Record<SegmentKey, number>>(
   Object.fromEntries(segmentIds.map(id => [id, 0]))
 )
@@ -373,7 +463,7 @@ const promptGroups = computed(() => {
 
 /** One recording per configured segment, each with its card and a round number per kind. */
 function cardSegments(): SessionSegment[] {
-  const cards = 'cards' in props.topic ? props.topic.cards : []
+  const cards = selectedTopic.value?.cards ?? ('cards' in props.topic ? props.topic.cards : [])
   const rounds: Record<string, number> = {}
   return (speakingPart.value?.runtime?.segments ?? []).flatMap(segment => {
     const card = cards.find(item => item.segment === segment.id)
@@ -387,7 +477,7 @@ function cardSegments(): SessionSegment[] {
         title: t(`speaking.cards.${copy}.title`, { round }),
         description: t(`speaking.cards.${copy}.description`),
         placeholder: t('speaking.cards.placeholder'),
-        maxSeconds: CARD_TURN_SECONDS,
+        maxSeconds: segment.maxSeconds ?? CARD_TURN_SECONDS,
         card,
       },
     ]
@@ -459,7 +549,9 @@ const missingTranscriptLabel = computed(() => {
     monologue: t('speaking.session.missing.monologue'),
   }
   const titles = Object.fromEntries(segments.value.map(segment => [segment.key, segment.title]))
-  return missing.map(key => labels[key] ?? titles[key] ?? key).join(t('speaking.session.missing.and'))
+  return missing
+    .map(key => labels[key] ?? titles[key] ?? key)
+    .join(t('speaking.session.missing.and'))
 })
 const healthStatusLabel = computed(() => {
   if (checkingHealth.value) return t('mockExam.checking')
@@ -512,14 +604,18 @@ async function onRecorded(key: SegmentKey, payload: RecordingPayload): Promise<v
       transcripts[key] = result
     }
   } else {
-    transcriptionErrors[key] =
-      sttError.value || t('speaking.session.transcriptionFailed')
+    transcriptionErrors[key] = sttError.value || t('speaking.session.transcriptionFailed')
   }
 }
 
 function attemptTranscripts(): SpeakingTranscripts {
   if (isCardExchange.value) {
-    return Object.fromEntries(requiredSegmentKeys.value.map(key => [key, (transcripts[key] ?? '').trim()]))
+    return {
+      ...Object.fromEntries(
+        requiredSegmentKeys.value.map(key => [key, (transcripts[key] ?? '').trim()])
+      ),
+      ...(topicOptions.value.length ? { selectedTopic: selectedTopicId.value } : {}),
+    }
   }
   if (isInterview.value) {
     return {
@@ -558,6 +654,11 @@ function saveAttempt(withReview = false): void {
     ...(withReview && reviewData.value ? { review: reviewData.value } : {}),
   })
   submitted.value = true
+  if (!props.examMode)
+    void apiFetch(`/drafts/SPEAKING/${encodeURIComponent(props.topic.id)}`, {
+      packId: draftPackId,
+      method: 'DELETE',
+    }).catch(() => undefined)
 }
 
 function saveWithoutReview(): void {
@@ -573,7 +674,12 @@ async function reviewAndSave(): Promise<void> {
     saveAttempt(false)
     return
   }
-  const result = await requestReview(props.topic, attemptTranscripts())
+  const result = await requestReview(
+    selectedTopic.value
+      ? { ...props.topic, ...selectedTopic.value, id: props.topic.id }
+      : props.topic,
+    attemptTranscripts()
+  )
   if (result) saveAttempt(true)
 }
 

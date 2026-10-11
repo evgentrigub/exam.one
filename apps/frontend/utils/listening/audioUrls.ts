@@ -71,7 +71,9 @@ export function isSharedChoiceListening(exercise: ListeningA2Exercise): boolean 
     Array.isArray(raw['questions']) &&
     raw['questions'].some(
       question =>
-        typeof question === 'object' && question !== null && Array.isArray((question as { options?: unknown }).options)
+        typeof question === 'object' &&
+        question !== null &&
+        Array.isArray((question as { options?: unknown }).options)
     )
   )
 }
@@ -82,7 +84,11 @@ export function sharedListeningAudioPath(exerciseId: string, prefix = seedPrefix
 }
 
 /** Deterministic public path for a per-item seed segment. */
-export function itemListeningAudioPath(exerciseId: string, itemId: string, prefix = seedPrefix()): string {
+export function itemListeningAudioPath(
+  exerciseId: string,
+  itemId: string,
+  prefix = seedPrefix()
+): string {
   return `${prefix}/${exerciseId}/${itemId}.${LISTENING_AUDIO_EXT}`
 }
 
@@ -98,7 +104,7 @@ export function itemListeningAudioPath(exerciseId: string, itemId: string, prefi
  * generate it.
  */
 export function resolveSharedListeningAudioSrc(exercise: ListeningA2Exercise): string | undefined {
-  if (usesItemAudio(exercise)) return undefined
+  if (usesItemAudio(exercise) || exercise.sections?.length) return undefined
   const id = exercise.id
   if (!id) return undefined
   return exercise.audio?.shared ?? sharedListeningAudioPath(id)
@@ -124,9 +130,15 @@ export function resolveItemListeningAudioSrc(
  * and no missing-audio banner.
  */
 export function collectListeningAudioSrcs(exercise: ListeningA2Exercise): string[] {
+  if (exercise.sections?.length)
+    return exercise.sections.map(
+      s => exercise.audio?.sections?.[s.id] ?? `${seedPrefix()}/${exercise.id}/${s.id}.wav`
+    )
   if (usesItemAudio(exercise)) {
     return exercise.items
-      .map((item, index) => resolveItemListeningAudioSrc(exercise, item.id ?? `${exercise.id}-i${index}`))
+      .map((item, index) =>
+        resolveItemListeningAudioSrc(exercise, item.id ?? `${exercise.id}-i${index}`)
+      )
       .filter((src): src is string => Boolean(src))
   }
 
@@ -141,6 +153,12 @@ export function buildSeedListeningAudioMap(
   const id = exercise.id
   if (!id) return undefined
 
+  if (exercise.sections?.length)
+    return {
+      sections: Object.fromEntries(
+        exercise.sections.map(s => [s.id, `${seedPrefix()}/${id}/${s.id}.wav`])
+      ),
+    }
   if (usesItemAudio(exercise)) {
     const items: Record<string, string> = {}
     for (const item of exercise.items) {
@@ -155,3 +173,11 @@ export function buildSeedListeningAudioMap(
 }
 
 /** Build audio map pointing at on-demand generated/ paths. */
+
+export interface ListeningPlaybackState {
+  plays: number
+  position: number
+  completed: boolean
+  previewEndsAt?: string
+}
+export type ListeningPlayback = Record<string, ListeningPlaybackState>

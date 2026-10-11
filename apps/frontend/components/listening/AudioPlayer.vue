@@ -13,7 +13,14 @@
         type="button"
         class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="(!canPlay && !playing) || !!disabled"
-        :title="disabled ? $t('listening.audioUnavailable') : playing ? $t('listening.pause') : $t('listening.play')"
+        :aria-label="playing ? $t('listening.pause') : $t('listening.play')"
+        :title="
+          disabled
+            ? $t('listening.audioUnavailable')
+            : playing
+              ? $t('listening.pause')
+              : $t('listening.play')
+        "
         @click="toggle"
       >
         <Pause v-if="playing" :size="14" />
@@ -88,10 +95,13 @@
 <script setup lang="ts">
 import { Play, Pause, Volume2 } from 'lucide-vue-next'
 
+import type { ListeningPlaybackState } from '~/utils/listening/audioUrls'
+
 const speeds = [0.75, 1, 1.25] as const
 
 const props = withDefaults(
   defineProps<{
+    initialPlayback?: ListeningPlaybackState | undefined
     transcript: string
     label?: string
     /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
@@ -115,6 +125,7 @@ const props = withDefaults(
     disableSeeking?: boolean
   }>(),
   {
+    initialPlayback: undefined,
     label: 'Audio',
     src: '',
     durationSec: 0,
@@ -136,6 +147,7 @@ const emit = defineEmits<{
   play: [playerId: string]
   pause: [playerId: string]
   'audio-unavailable': []
+  playback: [state: ListeningPlaybackState]
 }>()
 
 const playing = ref(false)
@@ -143,7 +155,16 @@ const currentSec = ref(0)
 const mediaReady = ref(false)
 const mediaFailed = ref(false)
 const mediaDurationSec = ref(0)
-const playCount = ref(0)
+const playCount = ref(props.initialPlayback?.plays ?? 0)
+const completed = ref(props.initialPlayback?.completed ?? false)
+let lastPlaybackSecond = -1
+function savePlayback() {
+  emit('playback', {
+    plays: playCount.value,
+    position: currentSec.value,
+    completed: completed.value,
+  })
+}
 
 let timer: ReturnType<typeof setInterval> | null = null
 let audioEl: HTMLAudioElement | null = null
@@ -168,7 +189,7 @@ const effectiveDurationSec = computed(() =>
 const canPlay = computed(() => {
   if (props.disabled) return false
   if (!props.maxPlays) return true
-  const resuming = currentSec.value > 0 && currentSec.value < effectiveDurationSec.value
+  const resuming = playCount.value > 0 && !completed.value
   return resuming || playCount.value < props.maxPlays
 })
 
@@ -227,11 +248,17 @@ function detachAudio() {
 function onTimeUpdate() {
   if (!audioEl) return
   currentSec.value = audioEl.currentTime
+  if (Math.floor(currentSec.value) !== lastPlaybackSecond) {
+    lastPlaybackSecond = Math.floor(currentSec.value)
+    savePlayback()
+  }
 }
 
 function onEnded() {
+  completed.value = true
   currentSec.value = effectiveDurationSec.value
   finishPlayback()
+  savePlayback()
 }
 
 function onLoadedMetadata() {
@@ -239,6 +266,10 @@ function onLoadedMetadata() {
   mediaDurationSec.value = Number.isFinite(audioEl.duration) ? audioEl.duration : 0
   mediaReady.value = true
   mediaFailed.value = false
+  audioEl.currentTime = props.initialPlayback?.completed
+    ? 0
+    : Math.min(props.initialPlayback?.position ?? 0, mediaDurationSec.value)
+  currentSec.value = props.initialPlayback?.completed ? mediaDurationSec.value : audioEl.currentTime
   applyAudioSettings()
 }
 
@@ -258,7 +289,8 @@ function attachAudio(src: string) {
   mediaDurationSec.value = 0
   currentSec.value = 0
   playing.value = false
-  playCount.value = 0
+  playCount.value = props.initialPlayback?.plays ?? 0
+  completed.value = props.initialPlayback?.completed ?? false
 
   const el = new Audio(src)
   el.preload = 'metadata'
@@ -279,6 +311,7 @@ function pausePlayback() {
     stopTimer()
   }
   playing.value = false
+  savePlayback()
   if (props.playerId) {
     emit('pause', props.playerId)
   }
@@ -293,8 +326,14 @@ function toggle() {
 
   if (!canPlay.value) return
 
-  const isNewPlay = currentSec.value <= 0 || currentSec.value >= effectiveDurationSec.value - 0.05
-  if (isNewPlay && props.maxPlays) playCount.value += 1
+  const isNewPlay = playCount.value === 0 || completed.value
+  if (isNewPlay && props.maxPlays) {
+    playCount.value += 1
+    completed.value = false
+    currentSec.value = 0
+    if (audioEl) audioEl.currentTime = 0
+  }
+  savePlayback()
 
   if (props.playerId) {
     emit('play', props.playerId)
@@ -313,8 +352,7 @@ function toggle() {
       })
       .catch(() => {
         mediaFailed.value = true
-        playing.value = true
-        startSimulatedTimer()
+        playing.value = false
         emit('audio-unavailable')
       })
     return

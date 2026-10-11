@@ -3,6 +3,7 @@ import {
   listeningTranscriptHashKey,
   synthesizeListeningTranscript,
   synthesizeSpeech,
+  splitSpeechText,
   ttsHealthStatus,
 } from '../../../src/speech/tts/tts.adapter'
 
@@ -166,5 +167,22 @@ describe('pack voices and health', () => {
       .fn()
       .mockResolvedValue(Response.json({ voices: ['bm_george'] })) as unknown as typeof fetch
     await expect(ttsHealthStatus(english)).resolves.toBe('ok')
+  })
+})
+
+describe('bounded listening synthesis', () => {
+  it('keeps all text in order and bounds requests at word boundaries', () => {
+    const text =
+      'Eine längere Aussage. Diese weitere Aussage verbindet mehrere präzise Argumente mit passenden Beispielen.'
+    const chunks = splitSpeechText(text, 30)
+    expect(chunks.join(' ')).toBe(text)
+    expect(chunks.every(chunk => chunk.length <= 30)).toBe(true)
+  })
+  it('changes only opted-in cache identities', () => {
+    const plain = listeningTranscriptHashKey('Ein Beispiel.', config)
+    expect(
+      listeningTranscriptHashKey('Ein Beispiel.', { ...config, maxChunkCharacters: 400 })
+    ).not.toBe(plain)
+    expect(listeningTranscriptHashKey('Ein Beispiel.', { ...config })).toBe(plain)
   })
 })

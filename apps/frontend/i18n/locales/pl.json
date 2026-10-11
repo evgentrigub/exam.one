@@ -1161,6 +1161,10 @@
       "examiner": {
         "title": "Pytanie {round} · Odpowiedz egzaminatorowi",
         "description": "Odpowiedz jednym lub dwoma zdaniami i, jeśli możesz, podaj powód."
+      },
+      "presentation": {
+        "title": "Prezentacja · 5 minut",
+        "description": "Przedstaw wybrany temat w przejrzysty sposób."
       }
     },
     "recorder": {
@@ -1382,5 +1386,16 @@
     "gapEmptyAria": "Luka {n}, jeszcze bez odpowiedzi",
     "correct": "Poprawnie",
     "incorrect": "Niepoprawnie"
+  },
+  "c1": {
+    "chooseTopic": "Wybierz temat prezentacji",
+    "simulatedPartner": "To symulacja z przygotowanymi pytaniami partnera.",
+    "preparation": "Przygotowanie do mówienia · 20 minut",
+    "notes": "Notatki do przygotowania",
+    "finishPreparation": "Zakończ przygotowanie i rozpocznij mówienie",
+    "preview": "Przeczytaj pytania: pozostało {seconds} sekund",
+    "prepareSection": "Przygotuj część {n}",
+    "section": "Część {n}",
+    "wordTarget": "Cel: około {count} słów"
   }
 }

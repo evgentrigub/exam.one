@@ -19,7 +19,11 @@ import type { ExamPart, SkillId } from '../../types'
  * Two additions are keyed on fields A2 payloads never carry, so A2 projects unchanged:
  * a writing `form.rows[]` supplies field prompts, and speaking `cards[]` supply segment prompts.
  */
-export function goetheRawAdapter(skill: SkillId, part: ExamPart, rules: PartRuntime): ExerciseAdapter {
+export function goetheRawAdapter(
+  skill: SkillId,
+  part: ExamPart,
+  rules: PartRuntime
+): ExerciseAdapter {
   const adapter = defineAdapter(payload => {
     const d = record(payload)
     const view: ExerciseView = {
@@ -35,10 +39,25 @@ export function goetheRawAdapter(skill: SkillId, part: ExamPart, rules: PartRunt
       const rows = (d['questions'] ?? d['items'] ?? []) as Record<string, unknown>[]
       const audio =
         typeof d['audio'] === 'object' && d['audio']
-          ? (d['audio'] as { shared?: string; items?: Record<string, string> })
+          ? (d['audio'] as {
+              shared?: string
+              items?: Record<string, string>
+              sections?: Record<string, string>
+            })
           : {}
       if (audio.shared) view.audio = audio.shared
       if (typeof d['transcript'] === 'string') view.transcript = d['transcript']
+      if (Array.isArray(d['sections']))
+        view.sections = d['sections'].map(value => {
+          const section = record(value)
+          const id = String(section['id'])
+          return {
+            id,
+            transcript: String(section['transcript'] ?? ''),
+            questionIds: section['questionIds'] as string[],
+            ...(audio.sections?.[id] ? { audio: audio.sections[id] } : {}),
+          }
+        })
       const rowId = (q: Record<string, unknown>, i: number): string =>
         String(
           q['id'] ??
@@ -130,7 +149,8 @@ function writingFields(
 function segmentPrompt(d: Record<string, unknown>, id: string): string {
   if (Array.isArray(d['cards'])) {
     const card = d['cards'].map(record).find(c => c['segment'] === id)
-    if (card) return [card['topic'], card['cue']].filter(v => typeof v === 'string' && v).join(' · ')
+    if (card)
+      return [card['topic'], card['cue']].filter(v => typeof v === 'string' && v).join(' · ')
   }
   return String(
     d[id === 'answers' ? 'answerQuestions' : id === 'questions' ? 'askQuestions' : 'keywords'] ?? ''

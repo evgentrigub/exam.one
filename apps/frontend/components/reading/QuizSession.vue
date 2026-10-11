@@ -3,7 +3,9 @@
     <!-- Questions list -->
     <div class="bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 sm:p-7">
       <div class="flex items-center gap-2">
-        <h2 class="font-display text-xl font-bold text-base-content">{{ t('reading.questions') }}</h2>
+        <h2 class="font-display text-xl font-bold text-base-content">
+          {{ t('reading.questions') }}
+        </h2>
         <span class="ml-auto text-xs text-base-content/60">
           {{ t('reading.answeredCount', { answered: answeredCount, total: questions.length }) }}
         </span>
@@ -26,7 +28,9 @@
       <div v-else class="mt-5 space-y-6">
         <QuestionCard
           v-for="(q, i) in questions"
+          :id="gapInputId(q.id)"
           :key="q.id"
+          tabindex="-1"
           :question="q"
           :question-number="i + 1"
           :selected-answer="choiceOf(q.id)"
@@ -145,7 +149,7 @@ import type { ReadingExercise, ReadingQuestion } from '~/utils/exercises/reading
 import { useProgress } from '~/composables/useProgress'
 import QuestionCard from '~/components/reading/QuestionCard.vue'
 import GapFillInputs from '~/components/gapFill/GapFillInputs.vue'
-import type { ObjectiveAnswer, ObjectiveAnswers } from '~/utils/gapFill'
+import { gapInputId, type ObjectiveAnswer, type ObjectiveAnswers } from '~/utils/gapFill'
 
 interface Props {
   text: ReadingExercise
@@ -201,7 +205,9 @@ function choiceOf(questionId: string): number | null {
 const answeredCount = computed(
   () => questions.value.filter(q => isAnswered(answeredQuestions.value[q.id])).length
 )
-const allAnswered = computed(() => questions.value.every(q => isAnswered(answeredQuestions.value[q.id])))
+const allAnswered = computed(() =>
+  questions.value.every(q => isAnswered(answeredQuestions.value[q.id]))
+)
 const results = computed<QuizResult[]>(() =>
   questions.value.reduce<QuizResult[]>((acc, question) => {
     const selectedAnswer = answeredQuestions.value[question.id]
@@ -224,8 +230,8 @@ const scorePercentage = computed(() =>
 onMounted(() => {
   if (props.examMode) {
     answeredQuestions.value = Object.fromEntries(
-      Object.entries(props.initialAnswers).filter(
-        (entry): entry is [string, ObjectiveAnswer] => isAnswered(entry[1])
+      Object.entries(props.initialAnswers).filter((entry): entry is [string, ObjectiveAnswer] =>
+        isAnswered(entry[1])
       )
     )
     return
@@ -261,7 +267,10 @@ function handleTypedAnswers(value: ObjectiveAnswers) {
 watch(
   [answeredQuestions, isFinished],
   () => {
-    if (isGapFill.value)
+    if (
+      isGapFill.value ||
+      partsFor('reading').find(p => p.n === props.text.testingPart)?.choiceGaps
+    )
       emit('gapState', { answers: { ...answeredQuestions.value }, revealed: isFinished.value })
   },
   { immediate: true }
@@ -298,7 +307,9 @@ function finishQuiz() {
     })
     return
   }
-  saveQuizCompletion(props.text.id, score.value, questions.value.length, { ...answeredQuestions.value })
+  saveQuizCompletion(props.text.id, score.value, questions.value.length, {
+    ...answeredQuestions.value,
+  })
   clearSession()
 }
 

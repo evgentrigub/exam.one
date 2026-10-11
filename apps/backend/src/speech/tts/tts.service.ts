@@ -28,7 +28,10 @@ class TtsUnsupportedError extends Error {}
 type PackVoice = { id: string; gender: 'male' | 'female' }
 
 /** The pack's voices with the user's default voice first, when it is one of them. */
-export function preferVoice(voices: readonly PackVoice[], preferred: string | undefined): PackVoice[] {
+export function preferVoice(
+  voices: readonly PackVoice[],
+  preferred: string | undefined
+): PackVoice[] {
   const index = preferred ? voices.findIndex(voice => voice.id === preferred) : -1
   if (index <= 0) return [...voices]
   return [voices[index]!, ...voices.slice(0, index), ...voices.slice(index + 1)]
@@ -56,7 +59,10 @@ export class TtsService {
   private async defaultVoiceFor(lang: string): Promise<string | undefined> {
     const userId = packContext.getStore()?.userId
     if (!userId) return undefined
-    const setting = await this.prisma.setting.findUnique({ where: { userId }, select: { defaultVoices: true } })
+    const setting = await this.prisma.setting.findUnique({
+      where: { userId },
+      select: { defaultVoices: true },
+    })
     const value = record(setting?.defaultVoices)[lang]
     return typeof value === 'string' ? value : undefined
   }
@@ -65,7 +71,9 @@ export class TtsService {
     const pack = getLivePack(packContext.getStore()?.packId)
     // `TTS_LANGUAGES` lists every installed language; `TTS_LANG` is the single-language form.
     const languages = list(
-      this.config.get<string>('app.TTS_LANGUAGES') ?? this.config.get<string>('app.TTS_LANG') ?? 'de'
+      this.config.get<string>('app.TTS_LANGUAGES') ??
+        this.config.get<string>('app.TTS_LANG') ??
+        'de'
     )
     const voices = list(this.config.get<string>('app.TTS_VOICES') ?? 'martin,bernd,victoria,eva')
     if (
@@ -76,7 +84,8 @@ export class TtsService {
       throw new TtsUnsupportedError('TTS language or voices are not available on this instance')
     const preferred = await this.defaultVoiceFor(pack.speech.ttsLang)
     const packVoices = preferVoice(pack.speech.voices, preferred)
-    const narrator = pack.speech.ttsLang === 'de' && packVoices[0]?.id === preferred ? preferred : undefined
+    const narrator =
+      pack.speech.ttsLang === 'de' && packVoices[0]?.id === preferred ? preferred : undefined
     return {
       baseUrl: this.config.getOrThrow<string>('app.TTS_BASE_URL'),
       voice: packVoices[0]?.id ?? this.config.get<string>('app.TTS_VOICE') ?? 'martin',
@@ -85,6 +94,9 @@ export class TtsService {
       turnPauseMs: this.config.get<number>('app.TTS_TURN_PAUSE_MS') ?? 350,
       concurrency: this.config.get<number>('app.TTS_CONCURRENCY') ?? 3,
       voices: packVoices,
+      ...(pack.speech.maxChunkCharacters
+        ? { maxChunkCharacters: pack.speech.maxChunkCharacters }
+        : {}),
       ...(narrator ? { narrator } : {}),
     }
   }
@@ -111,7 +123,8 @@ export class TtsService {
       if (status === 'offline') return { data: { ok: false, reason: 'offline' }, error: null }
       return {
         data: { ok: false, reason: 'unsupported' },
-        error: 'No voice for this exam pack is installed (Settings → Generated files → Voice models)',
+        error:
+          'No voice for this exam pack is installed (Settings → Generated files → Voice models)',
       }
     } catch (error: unknown) {
       if (error instanceof TtsUnsupportedError)
@@ -156,9 +169,16 @@ export class TtsService {
           'No voice for this language is installed. Download one in Settings → Generated files → Voice models, then try Generate audio again.'
         )
       if (status !== 'ok')
-        throw new Error('TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.')
+        throw new Error(
+          'TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.'
+        )
       const directory = this.audioDirectoryFor(payload['id'])
       const segments = [
+        ...(view.sections ?? []).map((section, index) => ({
+          key: `section-${index}`,
+          sectionId: section.id,
+          transcript: section.transcript,
+        })),
         ...(view.transcript ? [{ key: 'shared', transcript: view.transcript }] : []),
         ...(view.questions ?? []).flatMap((question, index) =>
           question.transcript
@@ -167,7 +187,7 @@ export class TtsService {
         ),
       ]
       if (!segments.length) throw new Error('No transcripts found for audio generation')
-      const audio: GenerateListeningAudioData['audio'] = { items: {} }
+      const audio: GenerateListeningAudioData['audio'] = { items: {}, sections: {} }
       let done = 0
       await mapPool(segments, config.concurrency, async segment => {
         signal?.throwIfAborted()
@@ -175,7 +195,13 @@ export class TtsService {
         const absolute = containedAudioPath(this.audioRoot(), relative)
         if (!absolute) throw new Error('Invalid audio path')
         const fingerprint = createHash('sha256')
-          .update(JSON.stringify([listeningTranscriptHashKey(segment.transcript, config), config.speed, config.turnPauseMs]))
+          .update(
+            JSON.stringify([
+              listeningTranscriptHashKey(segment.transcript, config),
+              config.speed,
+              config.turnPauseMs,
+            ])
+          )
           .digest('hex')
         const cached = await Promise.all([
           readFile(`${absolute}.hash`, 'utf8').catch(() => ''),
@@ -195,7 +221,8 @@ export class TtsService {
           }
         }
         const url = `/audio/listening/generated/${relative}`
-        if ('id' in segment) audio.items![String(segment.id)] = url
+        if ('sectionId' in segment) audio.sections![String(segment.sectionId)] = url
+        else if ('id' in segment) audio.items![String(segment.id)] = url
         else audio.shared = url
         done += 1
         await onProgress?.(done, segments.length)
@@ -211,14 +238,7 @@ export class TtsService {
   }
 
   async deleteListeningAudio(exerciseIds: string[]): Promise<AiResponse<DeleteListeningAudioData>> {
-    const ids = [
-      ...new Set(
-        exerciseIds.filter(
-          id =>
-            typeof id === 'string' && id.length > 0
-        )
-      ),
-    ]
+    const ids = [...new Set(exerciseIds.filter(id => typeof id === 'string' && id.length > 0))]
     if (ids.length === 0) return { data: { deleted: 0 }, error: null }
 
     const root = this.audioRoot()

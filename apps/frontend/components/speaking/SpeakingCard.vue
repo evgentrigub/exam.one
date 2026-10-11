@@ -1,7 +1,24 @@
 <template>
+  <div
+    v-if="card.kind === 'presentation'"
+    class="rounded-box border border-primary/30 bg-primary/5 p-5"
+  >
+    <p class="font-semibold">{{ $t('speaking.cards.presentation.title') }}</p>
+    <p class="mt-2 leading-relaxed" :lang="lang">{{ card.cue }}</p>
+  </div>
+  <!-- A full-sentence task (e.g. a C1 statement to react to) reads as plain text, not a word card. -->
+  <div v-else-if="isOwnCard && !isShortCue">
+    <p
+      v-if="card.topic"
+      class="text-xs font-semibold uppercase tracking-wider text-base-content/50"
+    >
+      {{ card.topic }}
+    </p>
+    <p class="mt-1 leading-relaxed" :lang="lang">{{ card.cue }}</p>
+  </div>
   <!-- The learner's own card: a topic and a word, or an everyday thing to ask for. -->
   <figure
-    v-if="isOwnCard"
+    v-else-if="isOwnCard"
     class="relative mx-auto w-full max-w-[16rem] rounded-box border-2 border-warning/40 bg-base-100 px-5 pb-6 pt-4 text-center shadow-sm"
   >
     <figcaption class="text-[10px] font-semibold uppercase tracking-wider text-warning">
@@ -27,7 +44,11 @@
       class="relative rounded-box rounded-tl-none border border-base-300 bg-base-200/60 px-4 py-3"
     >
       <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
-        {{ card.speaker === 'examiner' ? $t('speaking.cards.examinerSays') : $t('speaking.cards.partnerSays') }}
+        {{
+          card.speaker === 'examiner'
+            ? $t('speaking.cards.examinerSays')
+            : $t('speaking.cards.partnerSays')
+        }}
         <span v-if="card.topic" class="normal-case tracking-normal font-normal">
           · {{ card.topic }}</span
         >
@@ -49,4 +70,8 @@ const props = defineProps<{ card: SpeakingCard }>()
 const { pack } = useActivePack()
 const lang = computed(() => pack.value.language)
 const isOwnCard = computed(() => props.card.kind === 'ask' || props.card.kind === 'request')
+
+// Word cards hold a few words; anything longer is a written task.
+const MAX_WORD_CARD_WORDS = 6
+const isShortCue = computed(() => props.card.cue.trim().split(/\s+/).length <= MAX_WORD_CARD_WORDS)
 </script>
