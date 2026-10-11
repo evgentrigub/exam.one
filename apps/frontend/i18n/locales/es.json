@@ -491,7 +491,8 @@
     "availableThemes": "Temas disponibles",
     "targetGerman": "Alemán",
     "targetEnglish": "Inglés",
-    "targetSpanish": "Español"
+    "targetSpanish": "Español",
+    "pastExamDate": "Fecha del examen pasada"
   },
   "account": {
     "editProfile": "Editar perfil",

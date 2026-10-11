@@ -491,7 +491,8 @@
     "availableThemes": "Доступные темы",
     "targetGerman": "Немецкий",
     "targetEnglish": "Английский",
-    "targetSpanish": "Испанский"
+    "targetSpanish": "Испанский",
+    "pastExamDate": "Дата экзамена прошла"
   },
   "account": {
     "editProfile": "Редактировать профиль",

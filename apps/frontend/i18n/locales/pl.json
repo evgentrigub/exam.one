@@ -491,7 +491,8 @@
     "availableThemes": "Dostępne motywy",
     "targetGerman": "Niemiecki",
     "targetEnglish": "Angielski",
-    "targetSpanish": "Hiszpański"
+    "targetSpanish": "Hiszpański",
+    "pastExamDate": "Data egzaminu minęła"
   },
   "account": {
     "editProfile": "Edytuj profil",

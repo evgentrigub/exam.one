@@ -491,7 +491,8 @@
     "availableThemes": "Verfügbare Designs",
     "targetGerman": "Deutsch",
     "targetEnglish": "Englisch",
-    "targetSpanish": "Spanisch"
+    "targetSpanish": "Spanisch",
+    "pastExamDate": "Prüfungstermin vorbei"
   },
   "account": {
     "editProfile": "Profil bearbeiten",
