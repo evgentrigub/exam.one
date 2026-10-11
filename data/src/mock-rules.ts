@@ -11,6 +11,8 @@ export interface MockGroupResult {
   maximum: number
   passPoints: number
   passed: boolean
+  /** True when a required grade is missing; points are only a partial sum. */
+  pending?: true
 }
 
 export interface MockPassResult {
@@ -18,6 +20,7 @@ export interface MockPassResult {
   maximum: number
   passed: boolean
   groups: MockGroupResult[]
+  pending?: true
   /** Set when the rules report on a scale. */
   scale?: MockScaleResult
 }
@@ -107,26 +110,33 @@ export function evaluateMockScale(
  * Whether a mock result passes. A set with a `scale` passes when the average scale score of
  * every module reaches the scale's pass score (this needs each module's raw maximum in
  * `maxima`, and its scores as raw marks). A set with `groups` passes only when every group
- * reaches its own mark; otherwise the rounded total is compared with `passPoints`. For
- * points, a module without a final score (not taken, or still being graded) counts as zero.
+ * reaches its own mark; otherwise the rounded total is compared with `passPoints`.
+ * A grouped result with a missing required grade is pending; its points are a partial sum.
+ * Ungraded modules in legacy single-threshold sets continue to count as zero.
  */
 export function evaluateMockPass(
   rules: MockExamRules | undefined,
-  scores: Partial<Record<SkillId, number | null>>,
-  maxima: Partial<Record<SkillId, number>> = {}
+  scores: Partial<Record<string, number | null>>,
+  maxima: Partial<Record<string, number>> = {}
 ): MockPassResult {
-  const points = (skill: SkillId): number => scores[skill] ?? 0
-  const overall = (Object.keys(scores) as SkillId[]).reduce((sum, skill) => sum + points(skill), 0)
+  const scored = (skill: string): boolean =>
+    typeof scores[skill] === 'number' && Number.isFinite(scores[skill])
+  const points = (skill: string): number => (scored(skill) ? scores[skill]! : 0)
+  const overall = Object.keys(scores).reduce((sum, skill) => sum + points(skill), 0)
   const maximum = rules?.maximumPoints ?? DEFAULT_RULES.maximumPoints
   const groups = (rules?.groups ?? []).map(group => {
-    const total = group.skills.reduce((sum, skill) => sum + points(skill), 0)
+    const keys = group.moduleIds ?? group.skills
+    const total = keys.reduce((sum, skill) => sum + points(skill), 0)
+    const pending = keys.some(skill => !scored(skill))
     return {
       id: group.id,
       label: group.label,
       points: total,
       maximum: group.maximumPoints,
       passPoints: group.passPoints,
-      passed: Math.round(total) >= group.passPoints,
+      passed:
+        !pending && (group.rounding === 'none' ? total : Math.round(total)) >= group.passPoints,
+      ...(pending ? { pending: true as const } : {}),
     }
   })
   if (rules?.scale) {
@@ -136,5 +146,11 @@ export function evaluateMockPass(
   const passed = groups.length
     ? groups.every(group => group.passed)
     : Math.round(overall) >= (rules?.passPoints ?? DEFAULT_RULES.passPoints)
-  return { overall, maximum, passed, groups }
+  return {
+    overall,
+    maximum,
+    passed,
+    groups,
+    ...(groups.some(group => group.pending) ? { pending: true as const } : {}),
+  }
 }

@@ -14,13 +14,14 @@ export interface MockExamOverview {
 
 export interface MockExamOverviewInput {
   overallPoints: number
-  /** Set only for an exam passed per group (DELE): each group's points against its own mark. */
+  /** Each independent module or group against its own pass mark. */
   passGroups?: Array<{
     label: string
     points: number
     maximum: number
     passPoints: number
     passed: boolean
+    pending?: true
   }>
   /**
    * Set only for an exam reported on a scale (Cambridge English Scale): each module's scale
@@ -34,6 +35,8 @@ export interface MockExamOverviewInput {
     skills: Partial<Record<SkillId, number | null>>
   }
   modules: Array<{
+    id?: string
+    label?: string
     skill: SkillId
     score: number | null
     maximum: number
@@ -89,7 +92,7 @@ export function createGoetheMockOverview(examLabel: string) {
     return `Review this ${examLabel} mock-exam result and give a concise learner overview in ${outputLanguage}.
 Identify what went well and what deserves more practice. Treat pending AI grades as provisional.${
       result.passGroups?.length
-        ? '\nThe exam is passed only if every group in passGroups reaches its pass mark; there is no overall pass mark. Say which groups are passed and which need work.'
+        ? '\nThe exam is passed only if every group in passGroups reaches its pass mark; there is no overall pass mark. Say which groups are passed and which need work. If a group has pending=true, its grade is incomplete: do not report it as failed or claim a complete exam result.'
         : ''
     }${
       result.scale
