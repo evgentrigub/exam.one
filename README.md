@@ -40,7 +40,7 @@ Practice adaptations are defined by each pack. Solo speaking and transcript-base
 
 ## Supported exam packs
 
-These packs provide all four skills and bundled practice content. The A1/A2 packs also provide mock exams; all four B1 packs provide individual practice only:
+All nine live packs provide Reading, Writing, Listening, Speaking, bundled practice content and mock exams. Each includes bundled Set 1 and supports generating additional sets with configured AI and TTS providers:
 
 | Exam                     | Language | Level | Pack ID           |
 | ------------------------ | -------- | ----- | ----------------- |
@@ -56,13 +56,24 @@ These packs provide all four skills and bundled practice content. The A1/A2 pack
 
 Select an exam in **Settings → Learning plan**. New accounts start on Cambridge English A2 Key. German, English, Spanish, Polish, and Russian are available as interface languages; interface locale and the language being studied are separate choices.
 
-English B1 includes 16 original tasks with generation prompts and formative writing/speaking feedback. Its practice adaptations use solo speaking cues, written descriptions for visual tasks and an assigned article or story. See the [brief](data/src/packs/cambridge-en-b1/brief.md) and [verification](data/src/packs/cambridge-en-b1/verification.md).
+All four B1 packs include fresh mock-exam tasks, saved attempts, paper timers and detailed reviews. Their bundled Set 1 tasks are separate from the individual practice catalog:
 
-Polish B1 includes 23 original tasks, including a separately labelled grammar paper under Reading, five listening parts, two assigned writing tasks and three solo speaking parts. Official reading and grammar marks remain separate; formative practice scores do not determine certification. See the [brief](data/src/packs/certpol-pl-b1/brief.md) and [verification](data/src/packs/certpol-pl-b1/verification.md).
+| B1 exam | Practice tasks | Set 1 tasks | Mock result rules |
+| --- | --- | --- | --- |
+| Cambridge B1 Preliminary | 16 | 16 | Estimated Cambridge English Scale; pass threshold 140 |
+| Goethe-Zertifikat B1 | 15 | 15 | Four independent modules; at least 60/100 in each after whole-point rounding |
+| Certyfikat Polski B1 | 23 | 23 | Five independent papers: Listening, Reading, Grammar, Writing and Speaking; at least 50% in each |
+| DELE B1 | 16 | 16 | Each paper normalized to /25; at least 30/50 in both Reading + Writing and Listening + Speaking |
 
-Spanish B1 includes 16 original tasks: five reading, five listening, two writing and four solo speaking tasks. Writing retains the 100–120 and 130–150-word ranges. Formative scores do not apply official /25 conversions or certification thresholds. See the [brief](data/src/packs/dele-es-b1/brief.md) and [verification](data/src/packs/dele-es-b1/verification.md).
+English B1 uses solo speaking cues, written scene descriptions and assigned article/story tasks. See the [brief](data/src/packs/cambridge-en-b1/brief.md) and [verification](data/src/packs/cambridge-en-b1/verification.md).
 
-German B1 includes 15 original tasks: five reading, four listening, three writing and three solo speaking tasks. All three writing task numbers and their /40, /40 and /20 rubrics are retained. Speaking feedback assesses transcripts with formative criteria. See the [brief](data/src/packs/goethe-de-b1/brief.md) and [verification](data/src/packs/goethe-de-b1/verification.md).
+Polish B1 places clearly labelled grammar tasks under Reading for individual practice, while mocks keep Reading and Grammar as separate papers. Written papers are /30 and Speaking is normalized to /40; fractional results below a pass threshold stay below it. See the [brief](data/src/packs/certpol-pl-b1/brief.md) and [verification](data/src/packs/certpol-pl-b1/verification.md).
+
+Spanish B1 retains five reading, five listening, two writing and four solo speaking tasks, including the 100–120 and 130–150-word writing ranges. Mock pass groups use exact scores without rounding a failed group up to 30/50. See the [brief](data/src/packs/dele-es-b1/brief.md) and [verification](data/src/packs/dele-es-b1/verification.md).
+
+German B1 retains all three writing tasks and their /40, /40 and /20 rubrics. Speaking uses fixed partner cues and transcript-based feedback. See the [brief](data/src/packs/goethe-de-b1/brief.md) and [verification](data/src/packs/goethe-de-b1/verification.md).
+
+Prepare the B1 listening WAVs using the [bundled-audio instructions](scripts/tts/README.md#bundled-audio). Set 1 attempts and objective scores work without an LLM; writing/speaking grades and AI reviews require a configured LLM. All mock results remain practice estimates.
 
 The [registry](data/src/registry.ts) determines availability. Goethe C1 is an inactive historical stub. Additional levels and boards can be introduced as packs; a new task interaction may also require a shared application component.
 

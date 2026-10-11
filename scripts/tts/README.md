@@ -67,11 +67,14 @@ With TTS running and the necessary voices installed:
 ```bash
 pnpm generate:listening-audio
 pnpm generate:listening-audio --packs cambridge-en-a2,dele-es-a2
+TTS_CONCURRENCY=1 pnpm generate:listening-audio --packs cambridge-en-b1,goethe-de-b1,certpol-pl-b1,dele-es-b1
 pnpm generate:listening-audio --packs all
 FORCE=1 pnpm generate:listening-audio --packs cambridge-en-a2
 ```
 
 The default pack is Cambridge A2 Key. `--packs` or `STACK_SEED_PACKS` selects other packs. The generator reads explicit bundled segments from each pack; WAVs are normally gitignored and generated once per machine. `FORCE=1` regenerates selected files after transcript/voice changes.
+
+The four B1 packs prepare 51 Set 1 recordings: Cambridge B1 Preliminary (15), Goethe-Zertifikat B1 (4), Certyfikat Polski B1 (22) and DELE B1 (10). Their mock listening content is separate from practice seeds. Select the B1 pack IDs explicitly; the default command does not prepare them. Once the WAVs exist, bundled mock playback works with TTS stopped.
 
 `pnpm stack:seed-audio` waits for TTS and prepares the selected seed folders when missing. Its existing-folder check is coarse; use the generator directly when repairing an incomplete folder.
 

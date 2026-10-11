@@ -48,11 +48,12 @@ See the [TTS guide](tts/README.md) and [STT guide](stt/README.md) for voice/mode
 
 ```bash
 pnpm generate:listening-audio --packs cambridge-en-a2
+TTS_CONCURRENCY=1 pnpm generate:listening-audio --packs cambridge-en-b1,goethe-de-b1,certpol-pl-b1,dele-es-b1
 pnpm i18n:check
 pnpm tts:test
 ```
 
-`generate:listening-audio.mjs` prepares selected bundled WAVs against a running TTS service. `check-locale-parity.mjs` compares frontend locale keys. Voice-catalog tests use Python's standard library.
+`generate:listening-audio.mjs` prepares selected bundled WAVs against a running TTS service. All four B1 mock packs are supported: English (15 recordings), German (4), Polish (22) and Spanish (10). Install the required language voices first; prepared playback needs no TTS service. The default remains Cambridge A2, so select B1 packs explicitly. `check-locale-parity.mjs` compares frontend locale keys. Voice-catalog tests use Python's standard library.
 
 `eval-prompts.mjs` checks a selected pack with the production validators. Build the workspace first, then choose a registered pack:
 

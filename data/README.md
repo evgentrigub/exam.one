@@ -21,33 +21,42 @@ Add an exam by creating `src/packs/<packId>/` and registering it in [src/registr
 
 ## Current packs
 
-| Pack              | Language / level | Available product                                                                    |
-| ----------------- | ---------------- | ------------------------------------------------------------------------------------ |
-| `goethe-de-a1`    | German A1        | Four skills and mock exams; forms, word cards, request cards                         |
-| `goethe-de-a2`    | German A2        | Four skills and mock exams                                                           |
-| `goethe-de-b1`    | German B1        | Four skills, three writing tasks, 15 practice seeds and formative feedback; no mocks |
-| `cambridge-en-a2` | English A2       | Four skills and mock exams; typed gaps and estimated Cambridge Scale results         |
-| `cambridge-en-b1` | English B1       | Four skills, 16 original practice seeds and formative feedback; no mocks             |
-| `certpol-pl-a2`   | Polish A2        | Four skills and mock exams; fractional objective marks and written/oral pass groups  |
-| `certpol-pl-b1`   | Polish B1        | Reading/grammar, listening, writing and solo speaking; 23 practice seeds; no mocks   |
-| `dele-es-a2`      | Spanish A2       | Four skills and mock exams; two pass groups                                          |
-| `dele-es-b1`      | Spanish B1       | Four skills, 16 original practice seeds and formative feedback; no mocks             |
-| `goethe-de-c1`    | German C1        | Inactive historical stub; no new practice or grading                                 |
+| Pack              | Language / level | Available product                                                                               |
+| ----------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| `goethe-de-a1`    | German A1        | Four skills and mock exams; forms, word cards, request cards                                    |
+| `goethe-de-a2`    | German A2        | Four skills and mock exams                                                                      |
+| `goethe-de-b1`    | German B1        | Four skills, 15 practice seeds and 15 fresh mock tasks; independent module pass marks           |
+| `cambridge-en-a2` | English A2       | Four skills and mock exams; typed gaps and estimated Cambridge Scale results                    |
+| `cambridge-en-b1` | English B1       | Four skills, 16 practice seeds and 16 fresh mock tasks; estimated Cambridge Scale results       |
+| `certpol-pl-a2`   | Polish A2        | Four skills and mock exams; fractional objective marks and written/oral pass groups             |
+| `certpol-pl-b1`   | Polish B1        | Four skills with separate grammar; 23 practice seeds and 23 fresh mock tasks across five papers |
+| `dele-es-a2`      | Spanish A2       | Four skills and mock exams; two pass groups                                                     |
+| `dele-es-b1`      | Spanish B1       | Four skills, 16 practice seeds and 16 fresh mock tasks; two independent pass groups             |
+| `goethe-de-c1`    | German C1        | Inactive historical stub; no new practice or grading                                            |
 
 `DEFAULT_PACK_ID` is `cambridge-en-a2`. Live packs are selected in Settings → Learning plan. New levels and boards use the same registration contract. A pack's language is independent of the UI locale.
 
-## B1 implementation: stage 2.18
+## B1 practice and mock exams
 
-**Stages 2.18.1–2.18.4 are implemented and locally enabled.** The registry includes English B1 (`cambridge-en-b1`), Polish B1 (`certpol-pl-b1`), Spanish B1 (`dele-es-b1`) and German B1 (`goethe-de-b1`). Together they provide 70 original practice seeds and 116 prompt slots.
+English, German, Polish and Spanish B1 are live with individual practice, bundled mock Set 1 and generated mock sets. Together they provide 70 practice tasks, 70 separate mock tasks and 116 prompt slots. Their audio maps define 51 bundled listening recordings, prepared per installation with the [audio generator](../scripts/tts/README.md#bundled-audio).
 
-| Stage  | Pack              | Seeds / prompt slots | Scope and evidence                                                                               |
-| ------ | ----------------- | -------------------- | ------------------------------------------------------------------------------------------------ |
-| 2.18.1 | `cambridge-en-b1` | 16 / 28              | [Brief](src/packs/cambridge-en-b1/brief.md), [checks](src/packs/cambridge-en-b1/verification.md) |
-| 2.18.2 | `certpol-pl-b1`   | 23 / 33              | [Brief](src/packs/certpol-pl-b1/brief.md), [checks](src/packs/certpol-pl-b1/verification.md)     |
-| 2.18.3 | `dele-es-b1`      | 16 / 28              | [Brief](src/packs/dele-es-b1/brief.md), [checks](src/packs/dele-es-b1/verification.md)           |
-| 2.18.4 | `goethe-de-b1`    | 15 / 27              | [Brief](src/packs/goethe-de-b1/brief.md), [checks](src/packs/goethe-de-b1/verification.md)       |
+| Pack | Practice / prompt slots | Set 1 tasks / recordings | Scope and evidence |
+| --- | --- | --- | --- |
+| `cambridge-en-b1` | 16 / 28 | 16 / 15 | [Brief](src/packs/cambridge-en-b1/brief.md), [checks](src/packs/cambridge-en-b1/verification.md) |
+| `goethe-de-b1` | 15 / 27 | 15 / 4 | [Brief](src/packs/goethe-de-b1/brief.md), [checks](src/packs/goethe-de-b1/verification.md) |
+| `certpol-pl-b1` | 23 / 33 | 23 / 22 | [Brief](src/packs/certpol-pl-b1/brief.md), [checks](src/packs/certpol-pl-b1/verification.md) |
+| `dele-es-b1` | 16 / 28 | 16 / 10 | [Brief](src/packs/dele-es-b1/brief.md), [checks](src/packs/dele-es-b1/verification.md) |
 
-B1 packs include original practice tasks and formative writing/speaking feedback. English B1 uses solo speaking cues, written scene descriptions and one assigned writing task per exercise. It omits mock factories, official result conversions and bundled listening WAVs. Polish B1 places clearly labelled grammar tasks in the Reading catalog, preserving separate official paper scores; its writing tasks use the assigned 25+175-word pair. Spanish B1 uses fixed examiner cards, written scenes and assigned writing options. Reading and listening each retain /30 raw marks; writing/speaking use formative 0–3 analytic bands, with band 2 representing B1. German B1 preserves all three writing tasks, /40+/40+/20 rubric allocations and half-length zero rules; speaking uses fixed partner cues, an assigned presentation and a self-contained feedback task. B1 speaking scores remain formative across all packs.
+B1 mocks persist paper timings, replay rules, drafts, attempts and reviews. Their score rules are pack-owned:
+
+- **English:** Reading 45, Writing 45, Listening 30 and Speaking 12 minutes; estimated Cambridge English Scale with a pass threshold of 140.
+- **German:** Reading 65, Listening 40, Writing 60 and Speaking 15 minutes; each module is /100 and independently requires 60 after whole-point rounding.
+- **Polish:** Listening 30, Reading 40, Grammar 45, Writing 75 and Speaking 15 minutes; the four written papers are /30 with a 15-point threshold, and Speaking is normalized to /40 with a 20-point threshold. Fractional failures are not rounded up.
+- **Spanish:** Reading 70, Listening 40, Writing 60 and Speaking 15 minutes; each paper is normalized to /25. Reading + Writing and Listening + Speaking must each reach exactly 30/50 or more.
+
+Practice adaptations remain explicit. English uses solo speaking cues, written scenes and assigned article/story tasks. Polish places labelled grammar tasks in the Reading practice catalog but preserves a separate Grammar paper in mocks. Spanish uses fixed examiner cards, written scenes and assigned writing options. German retains its three writing tasks and /40+/40+/20 rubric allocations, with fixed partner cues for speaking. Speaking feedback assesses transcripts rather than live interaction or acoustic fluency; mock results are practice estimates.
+
+Bundled Set 1 and objective scoring work without an LLM after sign-in and audio preparation. Productive grading and AI reviews require a configured LLM; generating new sets also requires TTS capability. Prepared WAV playback requires no synthesis service.
 
 ## Runtime and payload contract
 
@@ -98,7 +107,7 @@ Edit prompt source files to change behavior. A prompt editor/override API is not
 
 Bundled payloads, types, audio maps, and mock Set 1 belong in the pack's `content/` folder. `seedExercises` lists content by skill. Each payload needs a stable unique ID within that pack; `examOnly: true` keeps mock parts out of practice catalogs. `pnpm db:seed` discovers every registered pack and upserts its content without wiping user-owned exercises.
 
-Mocks are optional at the framework level. A pack with `createMockSet` may generate sets; `bundledMockSet` supplies Set 1. Mock definitions persist their own timing, replay, and scoring rules, including total pass marks, pass groups, or a score scale. All four B1 packs are live practice-only packs and do not provide mocks.
+Mocks are optional at the framework level. A pack with `createMockSet` may generate sets; `bundledMockSet` supplies Set 1. Mock definitions persist their own timing, replay, and scoring rules, including total pass marks, pass groups, or a score scale. All nine live packs, including all four B1 packs, provide both mock factories and bundled Set 1.
 
 ## Contributor workflow
 
