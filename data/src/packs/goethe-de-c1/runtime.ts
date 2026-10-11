@@ -1,6 +1,6 @@
 import { record, validateView, type PartRuntime } from '../../runtime'
 import type { ExamModule, ExamPart, SkillId } from '../../types'
-import { moduleCopy, partCopy, practiceTip } from './practice-copy'
+import { moduleCopy, partCopy, practiceTip, speakingCopy } from './practice-copy'
 import { goetheRawAdapter } from '../goethe-shared/raw-adapter'
 export interface TaskDefinition {
   n: number
@@ -43,6 +43,7 @@ export function attachRuntime(modules: ModuleDefinition[]): ExamModule[] {
         practiceTimerSec: task.runtime.minutes * 60,
         tips: [display.short, practiceTip('en')],
         sessionTitle: display.title,
+        ...(module.id === 'speaking' ? speakingCopy[task.n] : {}),
       }
       const adapter = goetheRawAdapter(module.id, part, task.runtime)
       return {

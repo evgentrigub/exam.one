@@ -49,7 +49,10 @@
         </ol>
       </div>
 
-      <div v-if="!examMode" class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft">
+      <div
+        v-if="!examMode && usefulPhrases.length"
+        class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft"
+      >
         <p class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
           {{ t('speaking.session.usefulPhrases') }}
         </p>

@@ -212,3 +212,32 @@ export function structureCopy(modules: ModuleDefinition[], locale: CopyLocale): 
 export function practiceTip(locale: CopyLocale): string {
   return copy[locale].tip
 }
+
+/** Speaking coach copy per part: an English instruction and German Redemittel. */
+export const speakingCopy: Record<number, { instruction: string; phrases: readonly string[] }> = {
+  1: {
+    instruction:
+      'Give a structured presentation on your chosen topic, answer the two follow-up questions, then ask your partner a question about their presentation. Record each turn separately.',
+    phrases: [
+      'In meinem Vortrag geht es um …',
+      'Zunächst möchte ich …, anschließend …',
+      'Ein wesentlicher Vorteil besteht darin, dass …',
+      'Demgegenüber steht der Nachteil, dass …',
+      'Wägt man die Argumente ab, so …',
+      'Abschließend lässt sich festhalten, dass …',
+      'Sie haben erwähnt, dass … – könnten Sie genauer erläutern, …?',
+    ],
+  },
+  2: {
+    instruction:
+      'Discuss the question with your partner: state your position, respond to objections, weigh up the arguments and work towards a shared conclusion. Record each turn separately.',
+    phrases: [
+      'Meiner Ansicht nach …, weil …',
+      'Das mag zutreffen, allerdings sollte man bedenken, dass …',
+      'Da muss ich Ihnen widersprechen: …',
+      'Ein entscheidender Punkt ist für mich …',
+      'Wenn man beide Seiten berücksichtigt, …',
+      'Könnten wir uns darauf einigen, dass …?',
+    ],
+  },
+}
