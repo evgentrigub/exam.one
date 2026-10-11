@@ -1,3 +1,9 @@
+import { certpolB1MockExamSet1, createCertpolB1MockExamSet } from './content/seeds/mock-exam'
+import { mockReadingSeeds } from './content/seeds/mock-reading'
+import { mockListeningSeeds } from './content/seeds/mock-listening'
+import { mockWritingSeeds } from './content/seeds/mock-writing'
+import { mockSpeakingSeeds } from './content/seeds/mock-speaking'
+import { certpolB1MockOverview } from './prompts/mock-overview'
 import type { ExamPack } from '../../types'
 import { attachRuntime } from './runtime'
 import { structureText } from './structure-i18n'
@@ -43,10 +49,13 @@ export const certpolPlB1: ExamPack = {
       },
     ],
   },
+  bundledMockSet: certpolB1MockExamSet1,
+  createMockSet: createCertpolB1MockExamSet,
+  mockOverview: certpolB1MockOverview,
   seedExercises: {
-    reading: readingSeeds,
-    listening: listeningSeeds,
-    writing: writingSeeds,
-    speaking: speakingSeeds,
+    reading: [...readingSeeds, ...mockReadingSeeds],
+    listening: [...listeningSeeds, ...mockListeningSeeds],
+    writing: [...writingSeeds, ...mockWritingSeeds],
+    speaking: [...speakingSeeds, ...mockSpeakingSeeds],
   },
 }

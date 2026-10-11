@@ -1,0 +1,42 @@
+// Original assigned 25+175-word pair; retains the pack's formative 6+24-point allocation.
+export const mockWritingSeeds: Record<string, unknown>[] = [
+  {
+    id: 'mock-certpol-pl-b1-set1-writing-part1',
+    testingPart: 1,
+    difficulty: 'B1',
+    examOnly: true,
+    createdAt: '2026-10-10',
+    title: 'Pisanie a · Zaproszenie na spotkanie',
+    description: 'Krótka wiadomość, około 25 słów.',
+    topicType: 'note',
+    estimatedTime: 15,
+    wordCount: { min: 20, max: 30 },
+    category: ['B1', 'spotkania'],
+    task: 'Organizuje Pani/Pan spotkanie znajomych po wspólnym wyjeździe. Proszę napisać wiadomość do koleżanki: zaprosić ją, podać termin i miejsce oraz poprosić o przyniesienie zdjęć. Około 25 słów.',
+    requirements: [
+      'Zaprosić koleżankę',
+      'Podać termin i miejsce',
+      'Poprosić o przyniesienie zdjęć',
+    ],
+  },
+  {
+    id: 'mock-certpol-pl-b1-set1-writing-part2',
+    testingPart: 2,
+    difficulty: 'B1',
+    examOnly: true,
+    createdAt: '2026-10-10',
+    title: 'Pisanie b · Wyjazd, który zapamiętam',
+    description: 'Relacja z wyjazdu, około 175 słów.',
+    topicType: 'report',
+    estimatedTime: 60,
+    wordCount: { min: 160, max: 190 },
+    category: ['B1', 'podróże'],
+    task: 'Proszę napisać relację z wyjazdu ze znajomymi, podczas którego trzeba było zmienić plany. Proszę opisać cel podróży, wydarzenia i problem oraz wyjaśnić, jak grupa znalazła rozwiązanie. Na końcu proszę ocenić wyjazd. Około 175 słów.',
+    requirements: [
+      'Podać czas, miejsce i cel wyjazdu',
+      'Opisać uczestników i przebieg',
+      'Wyjaśnić zmianę planów i rozwiązanie problemu',
+      'Ocenić wyjazd i własne wrażenia',
+    ],
+  },
+]
