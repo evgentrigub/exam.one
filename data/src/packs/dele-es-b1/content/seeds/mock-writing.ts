@@ -1,0 +1,50 @@
+// Original complete B1 mock tasks; never official examination questions.
+export const mockWritingSeeds: Record<string, unknown>[] = [
+  {
+    id: 'mock-dele-es-b1-set1-writing-part1',
+    testingPart: 1,
+    difficulty: 'B1',
+    createdAt: '2026-10-11',
+    examOnly: true,
+    title: 'Tarea 1 · Un fin de semana juntos',
+    description: 'Responde al correo de tu amigo.',
+    task: 'Tu amigo Pablo escribe: «Voy a visitarte el mes que viene con mi hermana. Ella no conoce tu ciudad. ¿Qué podríamos hacer durante el fin de semana? ¿Recuerdas la última vez que nos vimos? Necesitamos buscar alojamiento: ¿nos recomiendas algún sitio? Dime también qué fecha te viene mejor». Escribe una respuesta de 100–120 palabras.',
+    requirements: [
+      'Saludar y expresar alegría por la visita',
+      'Proponer una actividad y explicar por qué les gustaría',
+      'Contar un recuerdo de la última visita',
+      'Recomendar un alojamiento',
+      'Indicar una fecha y despedirte',
+    ],
+    topicType: 'email',
+    estimatedTime: 25,
+    wordCount: {
+      min: 100,
+      max: 120,
+    },
+    category: ['B1', 'viajes'],
+  },
+  {
+    id: 'mock-dele-es-b1-set1-writing-part2',
+    testingPart: 2,
+    difficulty: 'B1',
+    createdAt: '2026-10-11',
+    examOnly: true,
+    title: 'Tarea 2 · Una decisión importante',
+    description: 'Escribe un relato para una revista de estudiantes.',
+    task: 'Una revista busca relatos sobre decisiones que nos ayudaron a aprender. Escribe un texto de 130–150 palabras sobre una ocasión en que elegiste hacer algo nuevo, a pesar de tener dudas. Puede tratarse de un curso, un trabajo o un viaje.',
+    requirements: [
+      'Explicar la situación y la decisión que tenías que tomar',
+      'Contar tus dudas y cómo decidiste',
+      'Narrar lo que ocurrió después',
+      'Valorar lo que aprendiste y dar un consejo',
+    ],
+    topicType: 'narrative',
+    estimatedTime: 35,
+    wordCount: {
+      min: 130,
+      max: 150,
+    },
+    category: ['B1', 'experiencias'],
+  },
+]
