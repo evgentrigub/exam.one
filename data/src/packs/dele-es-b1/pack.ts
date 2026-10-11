@@ -11,6 +11,13 @@ import { writingSeeds } from './content/seeds/writing'
 import { speakingPrompts } from './prompts/speaking'
 import { speakingSeeds } from './content/seeds/speaking'
 
+import { mockReadingSeeds } from './content/seeds/mock-reading'
+import { mockListeningSeeds } from './content/seeds/mock-listening'
+import { mockWritingSeeds } from './content/seeds/mock-writing'
+import { mockSpeakingSeeds } from './content/seeds/mock-speaking'
+import { deleB1MockExamSet1, createDeleB1MockExamSet } from './content/seeds/mock-exam'
+import { deleB1MockOverview } from './prompts/mock-overview'
+
 export const DELE_ES_B1_PACK_ID = 'dele-es-b1'
 
 export const deleEsB1: ExamPack = {
@@ -43,10 +50,13 @@ export const deleEsB1: ExamPack = {
       },
     ],
   },
+  bundledMockSet: deleB1MockExamSet1,
+  createMockSet: createDeleB1MockExamSet,
+  mockOverview: deleB1MockOverview,
   seedExercises: {
-    reading: readingSeeds,
-    listening: listeningSeeds,
-    writing: writingSeeds,
-    speaking: speakingSeeds,
+    reading: [...readingSeeds, ...mockReadingSeeds],
+    listening: [...listeningSeeds, ...mockListeningSeeds],
+    writing: [...writingSeeds, ...mockWritingSeeds],
+    speaking: [...speakingSeeds, ...mockSpeakingSeeds],
   },
 }

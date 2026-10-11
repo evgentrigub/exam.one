@@ -124,7 +124,6 @@ const levelOptions = computed<SetChoiceOption[]>(() => {
       label: pack.cefr,
       desc: pack.title,
     })),
-    { id: 'b1-soon', label: 'B1', disabled: true },
     { id: 'b2-soon', label: 'B2', disabled: true },
     { id: 'c1-soon', label: 'C1', desc: t('settings.levelC1Desc'), disabled: true },
   ]

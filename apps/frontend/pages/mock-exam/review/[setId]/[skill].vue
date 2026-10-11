@@ -30,7 +30,7 @@
             {{ set.title }}
           </div>
           <h1 class="mt-1 font-display text-3xl font-bold">
-            {{ $t('mockExam.moduleReviewTitle', { skill: $t(`skill.${skill}`) }) }}
+            {{ $t('mockExam.moduleReviewTitle', { skill: moduleLabel }) }}
           </h1>
         </div>
         <div class="stats border border-base-300 bg-base-100 sm:ml-auto">
@@ -48,7 +48,9 @@
       >
         <div class="card-body gap-5 p-5 sm:p-7">
           <div class="flex flex-wrap items-start gap-3 border-b border-base-300 pb-4">
-            <span class="badge badge-primary badge-outline">{{ labelFor(skill, definition.part) }}</span>
+            <span class="badge badge-primary badge-outline">{{
+              labelFor(skill, definition.part)
+            }}</span>
             <div class="min-w-0 flex-1">
               <h2 class="font-display text-xl font-bold">{{ definition.title }}</h2>
               <p class="mt-1 text-xs text-base-content/50">{{ exerciseScore(definition.id) }}</p>
@@ -97,7 +99,9 @@
                   v-if="listeningNotes(exercise)"
                   class="rounded-box border border-base-300 p-4 text-sm leading-6"
                 >
-                  <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-base-content/45">
+                  <div
+                    class="mb-2 text-xs font-semibold uppercase tracking-wider text-base-content/45"
+                  >
                     {{ $t('gapFill.notes') }}
                   </div>
                   <GapFillText
@@ -279,7 +283,7 @@ import GapFillText from '~/components/gapFill/GapFillText.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
 import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
-import { scaleScore, type MockExamSet } from '@exam-one/exam-packs'
+import { mockModuleId, scaleScore, type MockExamSet } from '@exam-one/exam-packs'
 import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
 import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
 import { objectivePoints } from '~/utils/mockExam/scoring'
@@ -308,12 +312,6 @@ const route = useRoute()
 const { t } = useI18n()
 const requestedSetId = String(route.params['setId'] ?? '')
 const requestedSkill = String(route.params['skill'] ?? '')
-const skill = (
-  ['reading', 'listening', 'writing', 'speaking'].includes(requestedSkill)
-    ? requestedSkill
-    : 'reading'
-) as SkillId
-const validSkill = requestedSkill === skill
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
 const { pack, labelFor } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
@@ -323,24 +321,40 @@ const set = computed(
 const { state, isInitialized: examInitialized } = useMockExam(set)
 
 const ready = computed(() => setsInitialized.value && examInitialized.value)
-const canReview = computed(() => Boolean(foundSet.value && validSkill && state.value.finished))
-const moduleDefinition = computed(() => set.value.modules.find(module => module.skill === skill))
-const moduleState = computed(() => state.value.modules[skill])
+const canReview = computed(() =>
+  Boolean(foundSet.value && moduleDefinition.value && state.value.finished)
+)
+const moduleDefinition = computed(() =>
+  set.value.modules.find(module => mockModuleId(module) === requestedSkill)
+)
+const skill = computed<SkillId>(() => moduleDefinition.value?.skill ?? 'reading')
+const moduleLabel = computed(() =>
+  moduleDefinition.value?.labelKey
+    ? t(moduleDefinition.value.labelKey)
+    : (moduleDefinition.value?.label ?? t(`skill.${skill.value}`))
+)
+const moduleState = computed(() => state.value.modules[requestedSkill])
 const scoreLabel = computed(() => {
   const score = moduleState.value?.scoreFinal
   const scale = set.value.rules?.scale
   const definition = moduleDefinition.value
   // A scale converts raw marks: show the skill's scale score with its raw marks.
-  if (scale && definition && typeof score === 'number' && moduleState.value?.grading !== 'pending') {
-    const value = scaleScore(scale, skill, score, definition.maxRawPoints)
-    const shown = value < scale.min ? t('mockExam.scale.below', { min: scale.min }) : Math.round(value)
+  if (
+    scale &&
+    definition &&
+    typeof score === 'number' &&
+    moduleState.value?.grading !== 'pending'
+  ) {
+    const value = scaleScore(scale, skill.value, score, definition.maxRawPoints)
+    const shown =
+      value < scale.min ? t('mockExam.scale.below', { min: scale.min }) : Math.round(value)
     return `${shown} · ${t('mockExam.scale.raw', { score: Number(score.toFixed(2)), max: definition.maxRawPoints })}`
   }
   return `${score === null || score === undefined ? '—' : Number(score.toFixed(2))}/${moduleDefinition.value?.maxFinalPoints ?? 0}`
 })
 
 usePageMeta('pageMeta.mockExamReviewTitle', 'pageMeta.mockExamReviewSubtitle')
-useHead({ title: () => `${t(`skill.${skill}`)} – ${t('mockExam.review')}` })
+useHead({ title: () => `${moduleLabel.value} – ${t('mockExam.review')}` })
 
 function response(exerciseId: string) {
   return moduleState.value?.responses[exerciseId]

@@ -14,10 +14,14 @@
     </div>
     <div class="sm:ml-auto sm:text-right">
       <div class="font-display text-2xl font-bold">{{ bandLabel }}</div>
-      <div class="text-xs opacity-70">{{ $t('mockExam.scale.passFrom', { pass: scale.pass }) }}</div>
+      <div class="text-xs opacity-70">
+        {{ $t('mockExam.scale.passFrom', { pass: scale.pass }) }}
+      </div>
     </div>
   </div>
-  <p class="mt-4 text-xs opacity-70">{{ $t('mockExam.scale.estimate') }}</p>
+  <p class="mt-4 text-xs opacity-70">
+    {{ $t(scale.estimated ? 'mockExam.scale.originalEstimate' : 'mockExam.scale.estimate') }}
+  </p>
 </template>
 
 <script setup lang="ts">
@@ -29,7 +33,8 @@ const { t } = useI18n()
 
 const bandLabel = computed(() => {
   if (props.result.overall === null) return '—'
-  return t(`mockExam.scale.bands.${props.result.band ?? 'none'}`)
+  const band = props.scale.bands.find(item => item.id === props.result.band)
+  return t(band?.labelKey ?? `mockExam.scale.bands.${props.result.band ?? 'none'}`)
 })
 
 const message = computed(() => {

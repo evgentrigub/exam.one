@@ -491,7 +491,8 @@
     "availableThemes": "Verfügbare Designs",
     "targetGerman": "Deutsch",
     "targetEnglish": "Englisch",
-    "targetSpanish": "Spanisch"
+    "targetSpanish": "Spanisch",
+    "pastExamDate": "Prüfungstermin vorbei"
   },
   "account": {
     "editProfile": "Profil bearbeiten",
@@ -963,6 +964,7 @@
     "structures": "Strukturen"
   },
   "mockExam": {
+    "grammar": "Grammatik",
     "title": "Modellprüfungen",
     "fullSimulation": "Vollständige Modellprüfung",
     "listDescription": "Bearbeite eine zeitbegrenzte Prüfungssimulation ({exam}). Abgegebene Aufgaben und Module werden für den Versuch gesperrt.",
@@ -988,6 +990,7 @@
     "automaticScoring": "Automatische Bewertung",
     "aiGraded": "Von KI bewertet",
     "aiProvisional": "KI · vorläufig",
+    "resultPending": "Das Ergebnis bleibt ausstehend, bis alle erforderlichen Bewertungen vorliegen.",
     "gradingPending": "Bewertung ausstehend",
     "gradingUnavailable": "KI-Bewertung nicht verfügbar",
     "restart": "Prüfung neu starten",
@@ -1008,7 +1011,7 @@
     "continueModule": "Modul fortsetzen",
     "startModule": "Modul starten",
     "allLocked": "Alle Module sind gesperrt. Dein Ergebnis ist bereit.",
-    "finishAll": "Sperre alle vier Module, um das Ergebnis anzusehen.",
+    "finishAll": "Sperre alle Module, um das Ergebnis anzuzeigen.",
     "viewResults": "Ergebnis ansehen",
     "close": "Schließen",
     "deleteSet": "Generierten Satz löschen",
@@ -1046,7 +1049,7 @@
     "dismissPipeline": "Ausblenden",
     "aiOverviewTitle": "KI-Prüfungsübersicht",
     "aiOverviewDescription": "Eine kurze Auswertung deiner Stärken und Übungsschwerpunkte.",
-    "aiOverviewEmpty": "Erstelle eine Übersicht, wenn du gemeinsames Feedback zu allen vier Modulen möchtest.",
+    "aiOverviewEmpty": "Erstelle eine Übersicht für gemeinsames Feedback zu allen Modulen.",
     "generateAiOverview": "KI-Übersicht erstellen",
     "waitingForAiGrades": "Die KI-Bewertungen für Schreiben und Sprechen müssen abgeschlossen sein, bevor diese Übersicht erstellt werden kann.",
     "generatingAiOverview": "Deine Prüfungsergebnisse werden ausgewertet…",
@@ -1095,7 +1098,11 @@
         "gradeB": "Note B · A2",
         "gradeC": "Note C · A2",
         "levelA1": "Niveau A1",
-        "none": "Kein Zertifikat"
+        "none": "Kein Zertifikat",
+        "levelA2": "Niveau A2",
+        "gradeAB2": "Note A · B2",
+        "gradeBB1": "Note B · B1",
+        "gradeCB1": "Note C · B1"
       },
       "passFrom": "bestanden ab {pass}",
       "pending": "Der Skalenwert erscheint, sobald die KI-Bewertung fertig ist.",
@@ -1103,7 +1110,8 @@
       "belowMessage": "Unter {pass} auf der Skala. Übe weiter und versuch es noch einmal.",
       "estimate": "Eine Schätzung nach Cambridges Umrechnung für Übungstests. Sprechen hat hier keine Aussprachewertung, daher werden die 30 Punkte auf die 45 der Prüfung hochgerechnet.",
       "below": "unter {min}",
-      "raw": "Rohpunkte {score} / {max}"
+      "raw": "Rohpunkte {score} / {max}",
+      "originalEstimate": "Geschätztes Ergebnis auf der Cambridge English Scale anhand eigener App-Aufgaben, die keine kalibrierten offiziellen Tests sind. Sprechen nutzt ein angepasstes Transkript-Raster ohne Aussprache oder offizielle Kriteriengewichtung."
     }
   },
   "pastExams": {

@@ -491,7 +491,8 @@
     "availableThemes": "Temas disponibles",
     "targetGerman": "Alemán",
     "targetEnglish": "Inglés",
-    "targetSpanish": "Español"
+    "targetSpanish": "Español",
+    "pastExamDate": "Fecha del examen pasada"
   },
   "account": {
     "editProfile": "Editar perfil",
@@ -963,6 +964,7 @@
     "structures": "Estructuras"
   },
   "mockExam": {
+    "grammar": "Gramática",
     "title": "Exámenes de prueba",
     "fullSimulation": "Examen de prueba completo",
     "listDescription": "Haz un simulacro cronometrado de {exam}. Las tareas y los módulos terminados se bloquean definitivamente en ese intento.",
@@ -988,6 +990,7 @@
     "automaticScoring": "Puntuación automática",
     "aiGraded": "Evaluado por IA",
     "aiProvisional": "IA · provisional",
+    "resultPending": "El resultado queda pendiente hasta que estén disponibles todas las evaluaciones requeridas.",
     "gradingPending": "Evaluación pendiente",
     "gradingUnavailable": "Evaluación con IA no disponible",
     "restart": "Reiniciar examen",
@@ -1008,7 +1011,7 @@
     "continueModule": "Continuar módulo",
     "startModule": "Empezar módulo",
     "allLocked": "Todos los módulos están bloqueados. Tu resultado está listo.",
-    "finishAll": "Bloquea los cuatro módulos para ver el resultado.",
+    "finishAll": "Bloquea todos los módulos para ver el resultado.",
     "viewResults": "Ver resultados",
     "close": "Cerrar",
     "deleteSet": "Eliminar set generado",
@@ -1046,7 +1049,7 @@
     "dismissPipeline": "Descartar",
     "aiOverviewTitle": "Resumen del examen con IA",
     "aiOverviewDescription": "Una revisión breve de tus puntos fuertes y de los aspectos en los que centrarte.",
-    "aiOverviewEmpty": "Genera un resumen cuando quieras feedback conjunto de los cuatro módulos.",
+    "aiOverviewEmpty": "Genera un resumen para recibir comentarios sobre todos los módulos.",
     "generateAiOverview": "Generar resumen con IA",
     "waitingForAiGrades": "Las notas de IA de Escritura y Expresión oral deben terminar antes de poder generar este resumen.",
     "generatingAiOverview": "Revisando los resultados de tu examen de prueba…",
@@ -1095,7 +1098,11 @@
         "gradeB": "Nota B · A2",
         "gradeC": "Nota C · A2",
         "levelA1": "Nivel A1",
-        "none": "Sin certificado"
+        "none": "Sin certificado",
+        "levelA2": "Nivel A2",
+        "gradeAB2": "Nota A · B2",
+        "gradeBB1": "Nota B · B1",
+        "gradeCB1": "Nota C · B1"
       },
       "passFrom": "aprobado desde {pass}",
       "pending": "La puntuación en la escala aparece cuando termina la corrección con IA.",
@@ -1103,7 +1110,8 @@
       "belowMessage": "Por debajo de {pass} en la escala. Sigue practicando e inténtalo de nuevo.",
       "estimate": "Una estimación según la conversión de Cambridge para pruebas de práctica. La expresión oral no tiene aquí nota de pronunciación, así que sus 30 puntos se escalan a los 45 del examen.",
       "below": "por debajo de {min}",
-      "raw": "Puntos brutos {score} / {max}"
+      "raw": "Puntos brutos {score} / {max}",
+      "originalEstimate": "Resultado estimado en la Cambridge English Scale a partir de tareas originales de la aplicación, sin calibración oficial. La expresión oral utiliza una rúbrica adaptada de transcripciones, sin pronunciación ni ponderación oficial de los criterios."
     }
   },
   "pastExams": {

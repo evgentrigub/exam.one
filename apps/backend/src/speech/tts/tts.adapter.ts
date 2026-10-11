@@ -19,6 +19,8 @@ export interface TtsSynthesizeOptions {
   speed?: number
   lang?: string
   signal?: AbortSignal
+  /** Background listening tracks can be much longer than a read-aloud utterance. */
+  timeoutMs?: number
 }
 
 export interface TtsConfig {
@@ -80,10 +82,11 @@ export async function synthesizeSpeech(
   }
 
   const voice = options.voice ?? config.voice
+  const deadline = AbortSignal.timeout(options.timeoutMs ?? 120_000)
   const url = `${config.baseUrl}/v1/audio/speech`
   const response = await postOnceRetried(url, {
     method: 'POST',
-    signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120_000)]) : AbortSignal.timeout(120_000),
+    signal: options.signal ? AbortSignal.any([options.signal, deadline]) : deadline,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'kokoro',
@@ -118,12 +121,12 @@ export async function synthesizeListeningTranscript(
     const monologue = planMonologue(transcript, options)
     // A language needs only one installed voice: a missing narrator falls back like a turn.
     const voice = fallbackVoiceFor(monologue.voice, available, options)
-    return synthesizeSpeech({ text: monologue.text, voice, ...(signal ? { signal } : {}) }, config)
+    return synthesizeSpeech({ text: monologue.text, voice, timeoutMs: 600_000, ...(signal ? { signal } : {}) }, config)
   }
 
   const wavParts = await mapPool(plan, config.concurrency, async turn => {
     const voice = fallbackVoiceFor(turn.voice, available, options)
-    return synthesizeSpeech({ text: turn.text, voice, ...(signal ? { signal } : {}) }, config)
+    return synthesizeSpeech({ text: turn.text, voice, timeoutMs: 600_000, ...(signal ? { signal } : {}) }, config)
   })
 
   return concatWavWithPauses(wavParts, config.turnPauseMs)

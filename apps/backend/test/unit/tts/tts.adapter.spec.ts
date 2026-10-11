@@ -34,7 +34,9 @@ describe('synthesizeSpeech', () => {
   it('does not retry an HTTP error response', async () => {
     const fetchMock = jest.fn().mockResolvedValue(new Response('boom', { status: 500 }))
     global.fetch = fetchMock as unknown as typeof fetch
-    await expect(synthesizeSpeech({ text: 'Hallo' }, config)).rejects.toThrow('TTS request failed (500')
+    await expect(synthesizeSpeech({ text: 'Hallo' }, config)).rejects.toThrow(
+      'TTS request failed (500'
+    )
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
@@ -88,13 +90,47 @@ describe('pack voices and health', () => {
     const fetchMock = server(['martin', 'victoria'])
     global.fetch = fetchMock as unknown as typeof fetch
     await synthesizeListeningTranscript('Achtung am Gleis drei.', config)
-    expect(body(fetchMock)).toMatchObject({ voice: 'martin', lang: 'de', input: 'Achtung am Gleis drei.' })
+    expect(body(fetchMock)).toMatchObject({
+      voice: 'martin',
+      lang: 'de',
+      input: 'Achtung am Gleis drei.',
+    })
+  })
+
+  it('allows long background tracks ten minutes while keeping direct speech at two minutes', async () => {
+    const fetchMock = server(['martin'])
+    global.fetch = fetchMock as unknown as typeof fetch
+    const timeout = jest.spyOn(AbortSignal, 'timeout')
+    try {
+      await synthesizeSpeech({ text: 'Hallo.' }, config)
+      expect(timeout).toHaveBeenCalledWith(120_000)
+      timeout.mockClear()
+      await synthesizeListeningTranscript('Ein längerer Vortrag.', config)
+      expect(timeout).toHaveBeenCalledWith(600_000)
+    } finally {
+      timeout.mockRestore()
+    }
+  })
+
+  it('preserves caller cancellation for background listening synthesis', async () => {
+    const fetchMock = server(['martin'])
+    global.fetch = fetchMock as unknown as typeof fetch
+    const controller = new AbortController()
+    await synthesizeListeningTranscript('Ein längerer Vortrag.', config, controller.signal)
+    const request = fetchMock.mock.calls.find(call => String(call[0]).endsWith('/speech'))!
+    const signal = (request as unknown as [string, RequestInit])[1].signal!
+    expect(signal.aborted).toBe(false)
+    controller.abort()
+    expect(signal.aborted).toBe(true)
   })
 
   it('narrates a German monologue with the default voice when one is set', async () => {
     const fetchMock = server(['martin', 'victoria'])
     global.fetch = fetchMock as unknown as typeof fetch
-    await synthesizeListeningTranscript('Achtung am Gleis drei.', { ...config, narrator: 'victoria' })
+    await synthesizeListeningTranscript('Achtung am Gleis drei.', {
+      ...config,
+      narrator: 'victoria',
+    })
     expect(body(fetchMock)).toMatchObject({ voice: 'victoria', lang: 'de' })
     expect(listeningTranscriptHashKey('Achtung.', { ...config, narrator: 'victoria' })).not.toBe(
       listeningTranscriptHashKey('Achtung.', config)
@@ -109,18 +145,26 @@ describe('pack voices and health', () => {
   })
 
   it('tells an unreachable server from one without the pack voices', async () => {
-    global.fetch = jest.fn().mockRejectedValue(new TypeError('fetch failed')) as unknown as typeof fetch
+    global.fetch = jest
+      .fn()
+      .mockRejectedValue(new TypeError('fetch failed')) as unknown as typeof fetch
     await expect(ttsHealthStatus(english)).resolves.toBe('offline')
     global.fetch = jest
       .fn()
-      .mockResolvedValue(Response.json({ voices: ['martin', 'victoria'] })) as unknown as typeof fetch
+      .mockResolvedValue(
+        Response.json({ voices: ['martin', 'victoria'] })
+      ) as unknown as typeof fetch
     await expect(ttsHealthStatus(english)).resolves.toBe('unsupported')
     global.fetch = jest
       .fn()
-      .mockResolvedValue(Response.json({ voices: ['bf_emma', 'bm_george', 'martin'] })) as unknown as typeof fetch
+      .mockResolvedValue(
+        Response.json({ voices: ['bf_emma', 'bm_george', 'martin'] })
+      ) as unknown as typeof fetch
     await expect(ttsHealthStatus(english)).resolves.toBe('ok')
     // One installed voice of the pack is enough; the others fall back to it.
-    global.fetch = jest.fn().mockResolvedValue(Response.json({ voices: ['bm_george'] })) as unknown as typeof fetch
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue(Response.json({ voices: ['bm_george'] })) as unknown as typeof fetch
     await expect(ttsHealthStatus(english)).resolves.toBe('ok')
   })
 })

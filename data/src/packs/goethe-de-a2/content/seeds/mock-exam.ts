@@ -24,6 +24,12 @@ export interface MockExamExerciseDefinition {
 }
 
 export interface MockExamModuleDefinition {
+  /** Stable paper identity; omitted legacy sets use their renderer skill. */
+  id?: string
+  /** Optional paper name, independent of the renderer (for example Grammar). */
+  label?: string
+  /** Translation key for the paper name; label remains a prompt/document fallback. */
+  labelKey?: string
   skill: SkillId
   minutes: number
   maxRawPoints: number
@@ -33,11 +39,20 @@ export interface MockExamModuleDefinition {
   exercises: MockExamExerciseDefinition[]
 }
 
+/** Resolve persisted state keys without changing older set IDs or attempt shapes. */
+export function mockModuleId(module: MockExamModuleDefinition): string {
+  return module.id ?? module.skill
+}
+
 /** Modules whose final points count together toward one pass mark (DELE: Grupo 1 and 2). */
 export interface MockPassGroup {
   id: string
   label: string
   skills: SkillId[]
+  /** Select independent papers instead of renderer skills when present. */
+  moduleIds?: string[]
+  /** Legacy groups round to whole marks; fractional papers compare exact points. */
+  rounding?: 'none'
   maximumPoints: number
   passPoints: number
 }
@@ -51,6 +66,8 @@ export interface MockPassGroup {
 export interface MockScaleRules {
   /** Names the scale for the UI (`mockExam.scale.<id>`). */
   id: string
+  /** Original app tasks use an estimated conversion, not a calibrated official result. */
+  estimated?: boolean
   /** The lowest reported score; anything below shows as "below {min}". */
   min: number
   max: number
@@ -59,7 +76,7 @@ export interface MockScaleRules {
   officialRaw: Partial<Record<SkillId, number>>
   anchors: Partial<Record<SkillId, ReadonlyArray<readonly [number, number]>>>
   /** Highest first: an overall score earns the first band whose `min` it reaches. */
-  bands: ReadonlyArray<{ id: string; min: number }>
+  bands: ReadonlyArray<{ id: string; min: number; labelKey?: string }>
 }
 
 /**
@@ -189,7 +206,9 @@ export function createGoetheA2MockExamSet(
             ? exercise.title
             : `${skill} · Teil ${exercise.testingPart}`,
       part: exercise.testingPart ?? 1,
-      ...(skill === 'listening' ? { replays: exercise.testingPart === 1 || exercise.testingPart === 4 ? 2 : 1 } : {}),
+      ...(skill === 'listening'
+        ? { replays: exercise.testingPart === 1 || exercise.testingPart === 4 ? 2 : 1 }
+        : {}),
       maxRawPoints:
         skill === 'speaking' ? (exercise.testingPart === 1 ? 4 : 8) : skill === 'writing' ? 10 : 5,
     })),

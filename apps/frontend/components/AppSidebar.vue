@@ -140,7 +140,7 @@
             <div class="text-sm font-semibold leading-tight">{{ pack.title }}</div>
             <div class="text-[11px] text-base-content/60">
               <template v-if="hasExamDate">
-                {{ $t('shell.examTargetMeta', { language: examLanguage, days: daysUntilExam }) }}
+                {{ daysUntilExam == 0 ? $t('shell.pastExamDate') : $t('shell.examTargetMeta', { language: examLanguage, days: daysUntilExam }) }}
               </template>
               <button
                 v-else

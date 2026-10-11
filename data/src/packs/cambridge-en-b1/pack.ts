@@ -10,6 +10,13 @@ import { writingPrompts } from './prompts/writing'
 import { writingSeeds } from './content/seeds/writing'
 import { speakingPrompts } from './prompts/speaking'
 import { speakingSeeds } from './content/seeds/speaking'
+import { mockReadingSeeds } from './content/seeds/mock-reading'
+import { mockListeningSeeds } from './content/seeds/mock-listening'
+import { mockWritingSeeds } from './content/seeds/mock-writing'
+import { mockSpeakingSeeds } from './content/seeds/mock-speaking'
+import { cambridgeB1MockExamSet1, createCambridgeB1MockExamSet } from './content/seeds/mock-exam'
+import { CAMBRIDGE_B1_AUDIO_PATH_PREFIX } from './content/listening-audio'
+import { cambridgeB1MockOverview } from './prompts/mock-overview'
 
 export const CAMBRIDGE_EN_B1_PACK_ID = 'cambridge-en-b1'
 
@@ -27,7 +34,7 @@ export const cambridgeEnB1: ExamPack = {
   speech: {
     ttsLang: 'en',
     sttLang: 'en',
-    audioPathPrefix: '/audio/listening/cambridge-en-b1',
+    audioPathPrefix: CAMBRIDGE_B1_AUDIO_PATH_PREFIX,
     voices: [
       {
         id: 'bf_emma',
@@ -48,9 +55,12 @@ export const cambridgeEnB1: ExamPack = {
     ],
   },
   seedExercises: {
-    reading: readingSeeds,
-    listening: listeningSeeds,
-    writing: writingSeeds,
-    speaking: speakingSeeds,
+    reading: [...readingSeeds, ...mockReadingSeeds],
+    listening: [...listeningSeeds, ...mockListeningSeeds],
+    writing: [...writingSeeds, ...mockWritingSeeds],
+    speaking: [...speakingSeeds, ...mockSpeakingSeeds],
   },
+  createMockSet: createCambridgeB1MockExamSet,
+  bundledMockSet: cambridgeB1MockExamSet1,
+  mockOverview: cambridgeB1MockOverview,
 }

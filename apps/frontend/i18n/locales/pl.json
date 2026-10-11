@@ -491,7 +491,8 @@
     "availableThemes": "Dostępne motywy",
     "targetGerman": "Niemiecki",
     "targetEnglish": "Angielski",
-    "targetSpanish": "Hiszpański"
+    "targetSpanish": "Hiszpański",
+    "pastExamDate": "Data egzaminu minęła"
   },
   "account": {
     "editProfile": "Edytuj profil",
@@ -963,6 +964,7 @@
     "structures": "Struktury"
   },
   "mockExam": {
+    "grammar": "Gramatyka",
     "title": "Egzaminy próbne",
     "fullSimulation": "Pełny egzamin próbny",
     "listDescription": "Przejdź symulację egzaminu {exam} z limitem czasu. Ukończone zadania i moduły zostają trwale zablokowane w danym podejściu.",
@@ -988,6 +990,7 @@
     "automaticScoring": "Ocena automatyczna",
     "aiGraded": "Ocenione przez AI",
     "aiProvisional": "AI · wstępnie",
+    "resultPending": "Wynik pozostaje w toku do czasu uzyskania wszystkich wymaganych ocen.",
     "gradingPending": "Ocena w toku",
     "gradingUnavailable": "Ocena AI niedostępna",
     "restart": "Zacznij egzamin od nowa",
@@ -1008,7 +1011,7 @@
     "continueModule": "Kontynuuj moduł",
     "startModule": "Rozpocznij moduł",
     "allLocked": "Wszystkie moduły są zablokowane. Twój wynik jest gotowy.",
-    "finishAll": "Zablokuj wszystkie cztery moduły, aby zobaczyć wynik.",
+    "finishAll": "Zablokuj wszystkie moduły, aby zobaczyć wynik.",
     "viewResults": "Zobacz wyniki",
     "close": "Zamknij",
     "deleteSet": "Usuń wygenerowany zestaw",
@@ -1046,7 +1049,7 @@
     "dismissPipeline": "Zamknij",
     "aiOverviewTitle": "Podsumowanie egzaminu AI",
     "aiOverviewDescription": "Zwięzłe omówienie mocnych stron i obszarów do pracy.",
-    "aiOverviewEmpty": "Wygeneruj podsumowanie, gdy chcesz otrzymać łączną informację zwrotną ze wszystkich czterech modułów.",
+    "aiOverviewEmpty": "Wygeneruj podsumowanie, aby otrzymać wspólną ocenę wszystkich modułów.",
     "generateAiOverview": "Generuj podsumowanie AI",
     "waitingForAiGrades": "Najpierw muszą zakończyć się oceny AI z pisania i mówienia, potem można wygenerować podsumowanie.",
     "generatingAiOverview": "Analizujemy wyniki twojego egzaminu próbnego…",
@@ -1095,7 +1098,11 @@
         "gradeB": "Ocena B · A2",
         "gradeC": "Ocena C · A2",
         "levelA1": "Poziom A1",
-        "none": "Bez certyfikatu"
+        "none": "Bez certyfikatu",
+        "levelA2": "Poziom A2",
+        "gradeAB2": "Ocena A · B2",
+        "gradeBB1": "Ocena B · B1",
+        "gradeCB1": "Ocena C · B1"
       },
       "passFrom": "zdane od {pass}",
       "pending": "Wynik na skali pojawi się po zakończeniu oceny AI.",
@@ -1103,7 +1110,8 @@
       "belowMessage": "Poniżej {pass} na skali. Ćwicz dalej i spróbuj ponownie.",
       "estimate": "Szacunek według przeliczenia Cambridge dla testów próbnych. Mówienie nie ma tu oceny wymowy, więc 30 punktów przeliczono na 45 punktów egzaminu.",
       "below": "poniżej {min}",
-      "raw": "Punkty surowe {score} / {max}"
+      "raw": "Punkty surowe {score} / {max}",
+      "originalEstimate": "Szacunkowy wynik Cambridge English Scale na podstawie autorskich zadań aplikacji, które nie są skalibrowanymi testami oficjalnymi. Mówienie oceniamy według dostosowanej skali transkrypcji, bez wymowy i oficjalnych wag kryteriów."
     }
   },
   "pastExams": {

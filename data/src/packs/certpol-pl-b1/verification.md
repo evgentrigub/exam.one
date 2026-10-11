@@ -33,3 +33,24 @@ Use the installation's usual frontend/backend rebuild and restart procedure so b
 Select **Certyfikat Polski B1** in **Settings → Learning plan**. The Reading catalog contains labelled reading and grammar tasks. Objective tasks score automatically. Generate exercises, writing model answers and formative reviews with the configured AI provider. Listening seeds have transcripts but no WAVs; audio generation needs installed Polish voices. Manual speaking transcripts remain available.
 
 This run did not restart services, seed a real database, perform browser checks, make live-provider calls or verify speech playback. B1 mocks, complete oral interaction, official result conversion and certification are outside the practice-pack scope. Full-sentence grammar scoring recognises enumerated variants, not every possible paraphrase. Offline and isolated checks establish implementation consistency, not exhaustive linguistic or end-to-end validation.
+
+## Adult B1 mock extension — 2.18.5.3 (2026-10-10)
+
+This extension supersedes the earlier practice-only mock/audio limits above. It adds a fresh original 23-task exam-only Set 1, empty-draft-safe generated-set factory and optional overview. Existing practice seeds and their part numbers are retained.
+
+- Five papers: Listening /30 in 30 minutes, Reading /30 in 40, Grammar /30 in 45, Writing /30 in 75 and estimated Speaking /40 in 15. All require 50% independently. Speaking normalizes the transcript-visible /36 rubric; pronunciation, intonation and live interaction remain unassessed. Writing retains the assigned 25+175-word pair and formative 6+24-point allocation.
+- Optional mock-module `id`, `label` and `labelKey` distinguish paper identity from renderer `skill`. Reading and Grammar use separate persisted keys, timers, responses, completion flags, marks and review routes while sharing the Reading renderer. Omitted IDs keep legacy skill keys and routes.
+- Pass groups select independent paper scores through optional `moduleIds`. `rounding: 'none'` preserves half-point thresholds; existing groups retain their whole-point comparison and display. Missing productive grades remain pending. The overview receives five distinct paper identities and unrounded Polish group marks.
+- Reload proof uncovered and fixed a pre-existing selected-pack hydration race. The mock page waits for sets and attempt initialization; the composable tracks the current pack and ignores stale attempt loads before restoring state.
+
+### Verification
+
+- Workspace lint passed with the existing `SetRadio.vue` prop-default warning. Full workspace type checks passed; frontend checks were repeated after the reload fix. Five UI locales match (1,226 keys).
+- Backend: 58 suites, 576 tests and four snapshots passed. Eleven new Polish mock cases cover all 23 raw payload guards, complete objective scores, independent thresholds, missing Grammar, typed banks and variants, blank drafts, sorting, legacy IDs, audio paths and overview adaptations.
+- Production prompt control passed all 23 practice seeds. Mock seeds passed the production adapters and validators through the unit suite.
+- The real local Polish Piper service generated 22 WAVs: 19 item recordings and three shared tracks. All are non-silent 16-bit PCM, totaling 354.9 seconds. Browser playback verified all 22 recordings, WAV responses and once/twice replay limits while the TTS API returned unavailable; no synthesis request was sent.
+- Browser: 42 deterministic cases passed across Polish B1, English B1, German B1, Cambridge A2 and Goethe A2. The Polish flow completed all 23 tasks, retained every review after reload, persisted five timers and a Grammar-only draft, correctly failed at 14.5/30 despite 130.72/160 overall, kept failed AI grades pending, persisted the five-paper overview and generated immutable Set 2 with all audio. Two real-audio cases were skipped in that deterministic run; the Polish real-audio case passed separately.
+- The isolated Docker frontend and backend production images built successfully. The production seeder reran against isolated PostgreSQL and retained exactly 23 distinct PRACTICE rows, 23 distinct EXAM_ONLY rows and one shared bundled Set 1.
+- Public docs facts were regenerated from the real registry; structure/privacy, drift, TypeScript and the strict 40-page production build passed. `graphify update .` refreshed the code graph without LLM calls.
+
+Prepared WAVs remain in the ignored `apps/frontend/public/audio/listening/certpol-pl-b1/` tree and are reproduced by `pnpm generate:listening-audio --packs certpol-pl-b1` or the usual self-host seed-audio setup. Real speech models were reused locally. Generated-set and grading browser checks use deterministic external-provider stubs. No production database, deployment or paid LLM was used.

@@ -10,6 +10,12 @@ import { writingPrompts } from './prompts/writing'
 import { writingSeeds } from './content/seeds/writing'
 import { speakingPrompts } from './prompts/speaking'
 import { speakingSeeds } from './content/seeds/speaking'
+import { mockReadingSeeds } from './content/seeds/mock-reading'
+import { mockListeningSeeds } from './content/seeds/mock-listening'
+import { mockWritingSeeds } from './content/seeds/mock-writing'
+import { mockSpeakingSeeds } from './content/seeds/mock-speaking'
+import { goetheB1MockExamSet1, createGoetheB1MockExamSet } from './content/seeds/mock-exam'
+import { goetheB1MockOverview } from './prompts/mock-overview'
 
 export const GOETHE_DE_B1_PACK_ID = 'goethe-de-b1'
 
@@ -48,9 +54,12 @@ export const goetheDeB1: ExamPack = {
     ],
   },
   seedExercises: {
-    reading: readingSeeds,
-    listening: listeningSeeds,
-    writing: writingSeeds,
-    speaking: speakingSeeds,
+    reading: [...readingSeeds, ...mockReadingSeeds],
+    listening: [...listeningSeeds, ...mockListeningSeeds],
+    writing: [...writingSeeds, ...mockWritingSeeds],
+    speaking: [...speakingSeeds, ...mockSpeakingSeeds],
   },
+  bundledMockSet: goetheB1MockExamSet1,
+  createMockSet: createGoetheB1MockExamSet,
+  mockOverview: goetheB1MockOverview,
 }

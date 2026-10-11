@@ -33,3 +33,26 @@ Then select **Cambridge B1 Preliminary** in **Settings → Learning plan**. Obje
 This authoring run did not restart services, seed a real database, perform browser checks, make live-provider calls or verify speech playback. A read-only Compose status query could not access the Docker socket, and no host listener was reported on the standard development ports. Installation mode could not be confirmed, so no service-specific restart was performed.
 
 B1 mocks, official scale conversion and certification results are outside this practice-pack scope. Contract and isolated service checks do not certify linguistic quality or complete end-to-end behavior.
+
+## B1 mock extension — checked 2026-10-10
+
+**Implemented: bundled Set 1 and generated mock sets.** This section supersedes the earlier practice-only mock/browser limitations. All four B1 practice packs are now live; the other three B1 mock implementations follow separately.
+
+Delivered 16 fresh exam-only tasks in addition to the 16 existing practice seeds, preserving practice IDs and catalog counts. Paper order/timers: Reading 45, Writing 45, Listening 30, Speaking 12 minutes. Existing task formats, productive rubrics and solo speaking adaptations are reused. Raw maxima /32, /40, /25 and /80 feed an explicitly estimated Cambridge English Scale result, pass 140. Grade A/B/C labels now use the B1 result levels, while existing A2 labels remain unchanged. Original tasks are uncalibrated; speaking normalization /80 → /30 does not restore pronunciation or official weighting.
+
+Checks completed:
+
+- Workspace `pnpm lint`, `pnpm type-check`, `pnpm i18n:check`: passed (1,224 keys in five locales); existing `SetRadio.vue` warning only.
+- Full workspace `pnpm build`: passed. The final scale-label update also passed production frontend/backend Docker builds in the isolated stack, with existing DaisyUI/Browserslist warnings.
+- Backend Jest: **56 suites / 552 tests / 4 snapshots passed**. New checks cover every mock seed's raw validator, blank/generated factories, task order, timers, scores, replay limits, audio maps, malformed tasks, every scale anchor, band boundaries, omitted/null/invalid grades and the pack-owned overview.
+- Production prompt control: 16 practice seeds passed; mock validators and content checks pass in the new Jest suite.
+- Isolated `exam-one-e2e` stack (real PostgreSQL, Redis/BullMQ, backend, production frontend; deterministic LLM/TTS/STT stubs): **15 Chromium mock checks passed** with `E2E_PACKS=cambridge-en-b1,cambridge-en-a2`. Covers list/overview, sequential unlocking, resume, soft timer expiry, reset, completing all 16 tasks, stored writing/speaking criterion reviews and all four review routes after reload, unavailable writing grades remaining pending after reload, generated Set 2 with all four audio jobs, duplicate generation rejection and immutable set content.
+- The production seeder ran on the isolated real database on boot and again explicitly. Counts remain exactly **16 PRACTICE + 16 EXAM_ONLY**, all IDs distinct, and one bundled `cambridge-en-b1-set-1`. No production/development database reset or reseed was performed.
+- `pnpm generate:listening-audio --packs cambridge-en-b1` used the installed British English Kokoro models and wrote **15 real WAVs, zero failures**. PCM/non-silence checks passed for all files: durations 11.2–119.5 seconds, 365.6 seconds total. Files remain in the existing ignored host audio tree, prepared through the standard self-host audio workflow.
+- Actual bundled playback passed in Chromium against the isolated frontend serving copied real WAVs: successful WAV GETs and playing/paused control state with TTS endpoints disabled; no synthesis requests. This verifies prepared Set 1 playback independently of TTS availability. Optional speech health probes remain part of the shared session.
+- Public docs `pnpm sync-facts && pnpm check`: generated support/rule tables, privacy/structure, drift, types and strict production build passed. Internal roadmap and next-stage plan record English complete and German next.
+- `graphify update .`: AST graph refreshed without an LLM call.
+
+The mock screen now retains arbitrary writing task numbers, including Aufgabe 3. Scale results require every scale-defined skill and withhold the overall result for pending/unavailable module grades; partial numeric sums cannot become a complete result. Failure of the optional overview still leaves valid results intact.
+
+No paid LLM call or live external-provider grading was performed. Linguistic quality and exam calibration still require human review; these mocks provide practice estimates and do not award certificates. Existing installations need their normal frontend/backend rebuild and catalog seed; seed audio can be prepared with the command above. The isolated verification stack is separate from the user's normal installation.
