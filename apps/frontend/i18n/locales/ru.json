@@ -402,6 +402,7 @@
     "mediaTitle": "Сгенерированные файлы",
     "mediaDesc": "Файлы на этом устройстве для заданий по аудированию и синтеза речи.",
     "mediaUsed": "занято",
+    "mediaCalculating": "Подсчёт…",
     "mediaVoiceModels": "Голосовые модели",
     "mediaListeningAudio": "Аудио для аудирования",
     "mediaAll": "Все",

@@ -402,6 +402,7 @@
     "mediaTitle": "Erzeugte Dateien",
     "mediaDesc": "Auf diesem Gerät gespeicherte Dateien für Hörübungen und Sprachausgabe.",
     "mediaUsed": "belegt",
+    "mediaCalculating": "Wird berechnet…",
     "mediaVoiceModels": "Stimmmodelle",
     "mediaListeningAudio": "Hörverstehen-Audio",
     "mediaAll": "Alle",

@@ -402,6 +402,7 @@
     "mediaTitle": "Archivos generados",
     "mediaDesc": "Archivos guardados en este dispositivo para ejercicios de comprensión auditiva y síntesis de voz.",
     "mediaUsed": "en uso",
+    "mediaCalculating": "Calculando…",
     "mediaVoiceModels": "Modelos de voz",
     "mediaListeningAudio": "Audio de comprensión auditiva",
     "mediaAll": "Todos",

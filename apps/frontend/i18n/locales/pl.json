@@ -402,6 +402,7 @@
     "mediaTitle": "Wygenerowane pliki",
     "mediaDesc": "Pliki zapisane na tym urządzeniu do ćwiczeń ze słuchania i syntezy mowy.",
     "mediaUsed": "zajęte",
+    "mediaCalculating": "Obliczanie…",
     "mediaVoiceModels": "Modele głosów",
     "mediaListeningAudio": "Nagrania do słuchania",
     "mediaAll": "Wszystkie",

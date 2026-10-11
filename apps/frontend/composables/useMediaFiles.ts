@@ -14,19 +14,24 @@ import { apiFetch } from '~/composables/useApi'
 const summary = () => useState<MediaSummaryDto | null>('media-summary', () => null)
 const rows = () => useState<MediaAudioRowDto[]>('media-audio-rows', () => [])
 const audioLoaded = () => useState<boolean>('media-audio-loaded', () => false)
+const summaryPending = () => useState<boolean>('media-summary-loading', () => false)
 
 export function useMediaFiles() {
   const summaryState = summary()
   const rowState = rows()
   const loaded = audioLoaded()
+  const summaryLoading = summaryPending()
   const loading = ref(false)
   const error = ref<string | null>(null)
 
   async function loadSummary(): Promise<void> {
+    summaryLoading.value = true
     try {
       summaryState.value = await apiFetch<MediaSummaryDto>('/media/summary')
     } catch (cause) {
       error.value = cause instanceof Error ? cause.message : String(cause)
+    } finally {
+      summaryLoading.value = false
     }
   }
 
@@ -66,6 +71,7 @@ export function useMediaFiles() {
 
   return {
     summary: summaryState,
+    summaryLoading,
     rows: rowState,
     loaded,
     loading,

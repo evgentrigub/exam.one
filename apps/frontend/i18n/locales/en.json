@@ -402,6 +402,7 @@
     "mediaTitle": "Generated files",
     "mediaDesc": "Files stored on this device for listening exercises and text-to-speech.",
     "mediaUsed": "used",
+    "mediaCalculating": "Calculating…",
     "mediaVoiceModels": "Voice models",
     "mediaListeningAudio": "Listening audio",
     "mediaAll": "All",
