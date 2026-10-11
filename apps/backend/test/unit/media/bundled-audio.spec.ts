@@ -18,7 +18,7 @@ describe('bundled listening audio helpers', () => {
       }
     }
     expect(bundledAudioSegments(getPack('cambridge-en-a2')!).length).toBeGreaterThan(0)
-    expect(bundledAudioSegments(getPack('goethe-de-c1')!)).toEqual([])
+    expect(bundledAudioSegments(getPack('goethe-de-c1')!)).toHaveLength(14)
   })
 
   it('names parts in the pack language', () => {

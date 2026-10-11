@@ -1161,6 +1161,10 @@
       "examiner": {
         "title": "Question {round} · Answer the examiner",
         "description": "Answer in a sentence or two, and give a reason where you can."
+      },
+      "presentation": {
+        "title": "Presentation · 5 minutes",
+        "description": "Present the chosen topic with a clear structure."
       }
     },
     "recorder": {
@@ -1382,5 +1386,16 @@
     "gapEmptyAria": "Gap {n}, not answered yet",
     "correct": "Correct",
     "incorrect": "Incorrect"
+  },
+  "c1": {
+    "chooseTopic": "Choose a presentation topic",
+    "simulatedPartner": "This is a guided simulation with prepared partner questions.",
+    "preparation": "Speaking preparation · 20 minutes",
+    "notes": "Preparation notes",
+    "finishPreparation": "Finish preparation and start speaking",
+    "preview": "Read the questions: {seconds} seconds remaining",
+    "prepareSection": "Prepare section {n}",
+    "section": "Section {n}",
+    "wordTarget": "Target: approximately {count} words"
   }
 }

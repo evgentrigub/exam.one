@@ -52,7 +52,7 @@ export interface SpeakingKeywordTopic extends SpeakingTopicBase {
  * everyday object or action); `answer` and `respond` hold the partner's fixed line that the
  * learner reacts to. `segment` is the recording the card belongs to.
  */
-export type SpeakingCardKind = 'ask' | 'answer' | 'request' | 'respond'
+export type SpeakingCardKind = 'ask' | 'answer' | 'request' | 'respond' | 'presentation'
 
 export interface SpeakingCard {
   segment: string
@@ -73,13 +73,11 @@ export interface SpeakingCardsTopic extends SpeakingTopicBase {
   topicType: string
   theme: string
   cards: SpeakingCard[]
+  topicOptions?: Array<{ id: string; theme: string; cards: SpeakingCard[] }>
 }
 
 export type SpeakingA2Topic =
-  | SpeakingTopicA2Teil1
-  | SpeakingTopicA2Teil2
-  | SpeakingKeywordTopic
-  | SpeakingCardsTopic
+  SpeakingTopicA2Teil1 | SpeakingTopicA2Teil2 | SpeakingKeywordTopic | SpeakingCardsTopic
 
 export interface SpeakingTranscripts {
   answers?: string

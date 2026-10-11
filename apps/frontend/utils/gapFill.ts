@@ -13,6 +13,8 @@ export interface GapQuestion {
   id: string
   question: string
   accepted?: readonly string[]
+  options?: readonly string[]
+  correctAnswer?: number
   explanation?: string
 }
 

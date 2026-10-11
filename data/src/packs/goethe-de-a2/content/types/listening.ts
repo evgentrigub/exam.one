@@ -28,6 +28,7 @@ export type ListeningNineOptions = [
 export interface ListeningExerciseAudioMap {
   shared?: string
   items?: Record<string, string> // item id -> audio url
+  sections?: Record<string, string>
 }
 
 export interface ListeningExerciseBase {
@@ -39,6 +40,7 @@ export interface ListeningExerciseBase {
   /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
   examOnly?: boolean
   audio?: ListeningExerciseAudioMap | undefined
+  sections?: Array<{ id: string; transcript: string; questionIds: string[] }>
 }
 
 export interface ListeningItemA2Teil1 {

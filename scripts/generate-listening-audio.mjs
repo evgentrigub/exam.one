@@ -67,6 +67,7 @@ function packTtsConfig(base, pack) {
     lang: pack.speech.ttsLang,
     voice: pack.speech.voices[0]?.id ?? base.voice,
     voices: pack.speech.voices,
+    maxChunkCharacters: pack.speech.maxChunkCharacters,
   }
 }
 

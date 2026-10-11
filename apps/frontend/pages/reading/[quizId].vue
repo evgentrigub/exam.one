@@ -25,7 +25,9 @@
             <button
               class="join-item btn btn-xs btn-ghost"
               :class="{ 'btn-active': isSpeaking }"
-              :aria-label="isSpeaking ? $t('pages.reading.stopReadAloud') : $t('pages.reading.readAloud')"
+              :aria-label="
+                isSpeaking ? $t('pages.reading.stopReadAloud') : $t('pages.reading.readAloud')
+              "
               @click="toggleReadAloud"
             >
               <Volume2 :size="12" />
@@ -71,7 +73,7 @@
           </span>
         </div>
         <article
-          v-if="isGapFill"
+          v-if="isGapFill || hasChoiceGaps"
           class="mt-5 text-base-content/85 overflow-y-auto max-h-[calc(100vh-300px)] pr-1"
           :class="contentSizeClass"
         >
@@ -160,7 +162,9 @@
       <p class="text-sm text-base-content/60 mt-2">
         {{ $t('pages.reading.notFoundDescription') }}
       </p>
-      <button class="btn btn-primary btn-sm mt-5" @click="goBack">{{ $t('pages.common.backToExercises') }}</button>
+      <button class="btn btn-primary btn-sm mt-5" @click="goBack">
+        {{ $t('pages.common.backToExercises') }}
+      </button>
     </div>
   </div>
 </template>
@@ -199,11 +203,16 @@ const SAVED_TEXTS_KEY = 'exam-one:reading:saved-texts'
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
-const { getTexts } = useReadingTexts()
+const { getTexts, hydrate } = useReadingTexts()
 const { pack, partsFor } = useActivePack()
 
 /** Browser read-aloud voices by exam language. */
-const SPEECH_LOCALES: Record<string, string> = { de: 'de-DE', en: 'en-GB', pl: 'pl-PL', es: 'es-ES' }
+const SPEECH_LOCALES: Record<string, string> = {
+  de: 'de-DE',
+  en: 'en-GB',
+  pl: 'pl-PL',
+  es: 'es-ES',
+}
 
 const fontSize = ref<'base' | 'lg'>('base')
 const selectedWord = ref('')
@@ -219,8 +228,20 @@ const isGapFill = computed(
     partsFor('reading').find(part => part.n === text.value?.testingPart)?.itemFormat === 'gap-fill'
 )
 /** The tap-a-word helper only knows German words. */
-const hasWordHelper = computed(() => pack.value.language === 'de' && !isGapFill.value)
-const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({ answers: {}, revealed: false })
+const hasChoiceGaps = computed(
+  () =>
+    pack.value.structure
+      .find(m => m.id === 'reading')
+      ?.parts.find(p => p.n === text.value?.testingPart)?.choiceGaps ?? false
+)
+
+const hasWordHelper = computed(
+  () => pack.value.language === 'de' && !isGapFill.value && !hasChoiceGaps.value
+)
+const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({
+  answers: {},
+  revealed: false,
+})
 const paragraphs = computed(() =>
   (text.value?.content ?? '').split(/\n+/).filter(paragraph => paragraph.trim().length > 0)
 )
@@ -368,14 +389,16 @@ watchEffect(() => {
   }
 })
 
-// Resolve from the API-backed store on the client; redirect only when the
-// id is genuinely missing (catalogs hydrate after login, so defer to the client).
-if (import.meta.client && !text.value) {
-  navigateTo('/exercises?skill=reading', { replace: true })
-}
-
-onMounted(() => {
-  isSaved.value = text.value ? getSavedTextIds().includes(text.value.id) : false
+// Wait for settings and the catalog before deciding a direct link is missing.
+onMounted(async () => {
+  const settings = useSettingsStore()
+  if (!settings.hydrated) await settings.hydrateFromApi()
+  await hydrate()
+  if (!text.value) {
+    await navigateTo('/exercises?skill=reading', { replace: true })
+    return
+  }
+  isSaved.value = getSavedTextIds().includes(text.value.id)
 })
 
 onBeforeUnmount(() => {

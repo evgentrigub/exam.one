@@ -1,3 +1,4 @@
+import { getLivePack } from '@exam-one/exam-packs'
 import { Test, TestingModule } from '@nestjs/testing'
 import { HttpException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@exam-one/nestjs-libraries'
@@ -5,11 +6,7 @@ import { AttemptsService } from '../../../src/practice/attempts.service'
 import { ExercisesService } from '../../../src/practice/exercises.service'
 import { makeAttempt, makeExercise, makeResult, makeUser } from '../../../src/testing/fixtures'
 
-function expectCode(
-  error: unknown,
-  type: new (...args: any[]) => HttpException,
-  code: string
-) {
+function expectCode(error: unknown, type: new (...args: any[]) => HttpException, code: string) {
   expect(error).toBeInstanceOf(type)
   expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
 }
@@ -215,6 +212,85 @@ describe('AttemptsService', () => {
     )
   })
 
-
-
+  it.each([
+    [114, false, 0],
+    [115, false, 60],
+    [230, true, 0],
+  ] as const)(
+    'normalizes C1 saved writing at %s words, off-topic %s',
+    async (count, offTopic, expected) => {
+      const pack = getLivePack('goethe-de-c1')
+      const payload = pack.seedExercises!.writing![0]!
+      const rules = pack.structure.find(m => m.id === 'writing')!.parts[0]!.runtime!
+      prisma.setting.findUnique.mockResolvedValue({ packId: pack.packId })
+      const exercise = makeExercise({
+        packId: pack.packId,
+        skill: 'WRITING',
+        payload: payload as never,
+      })
+      exercises.findForUser.mockResolvedValue(exercise)
+      prisma.attempt.create.mockResolvedValue({
+        ...makeAttempt({ packId: pack.packId, skill: 'WRITING' }),
+        result: null,
+        exercise,
+      })
+      const review = {
+        criteria: rules.criteria!.map(c => ({
+          ...c,
+          points: c.maxPoints,
+          grade: 'A',
+          comment: 'Evidence',
+        })),
+        totalPoints: 60,
+        maxPoints: 60,
+        summary: 'Summary',
+        strengths: [],
+        improvements: [],
+      }
+      if (offTopic) {
+        review.criteria[0]!.points = 0
+        review.criteria[0]!.grade = 'E'
+        review.totalPoints -= rules.criteria![0]!.maxPoints
+      }
+      await service.create(user, {
+        skill: 'WRITING',
+        exerciseExternalId: String(payload['id']),
+        answers: { content: Array(count).fill('Wort').join(' ') },
+        result: { review: { writingReview: { status: 'ready', responseData: review } } },
+      })
+      const saved = prisma.attempt.create.mock.calls[0]![0].data.result.create
+      expect(saved.score).toBe(expected)
+      expect(
+        saved.review.writingReview.responseData.criteria.every(
+          (c: { grade: string }) => c.grade === (expected === 0 ? 'E' : 'A')
+        )
+      ).toBe(true)
+    }
+  )
+  it('rejects an invalid C1 saved band before inserting the attempt', async () => {
+    const pack = getLivePack('goethe-de-c1')
+    const payload = pack.seedExercises!.writing![1]!
+    const rules = pack.structure.find(m => m.id === 'writing')!.parts[1]!.runtime!
+    prisma.setting.findUnique.mockResolvedValue({ packId: pack.packId })
+    exercises.findForUser.mockResolvedValue(
+      makeExercise({ packId: pack.packId, skill: 'WRITING', payload: payload as never })
+    )
+    const review = {
+      criteria: rules.criteria!.map(c => ({ ...c, points: 10, grade: 'F', comment: 'Evidence' })),
+      totalPoints: 40,
+      maxPoints: 40,
+      summary: 'Summary',
+      strengths: [],
+      improvements: [],
+    }
+    await expect(
+      service.create(user, {
+        skill: 'WRITING',
+        exerciseExternalId: String(payload['id']),
+        answers: { content: Array(120).fill('Wort').join(' ') },
+        result: { review },
+      })
+    ).rejects.toBeInstanceOf(HttpException)
+    expect(prisma.attempt.create).not.toHaveBeenCalled()
+  })
 })

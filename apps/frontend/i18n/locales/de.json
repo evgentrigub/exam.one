@@ -1161,6 +1161,10 @@
       "examiner": {
         "title": "Frage {round} · Der Prüferin / dem Prüfer antworten",
         "description": "Antworte in ein, zwei Sätzen und nenne, wenn möglich, einen Grund."
+      },
+      "presentation": {
+        "title": "Präsentation · 5 Minuten",
+        "description": "Präsentiere das gewählte Thema mit einem klaren Aufbau."
       }
     },
     "recorder": {
@@ -1382,5 +1386,16 @@
     "gapEmptyAria": "Lücke {n}, noch nicht beantwortet",
     "correct": "Richtig",
     "incorrect": "Falsch"
+  },
+  "c1": {
+    "chooseTopic": "Wähle ein Vortragsthema",
+    "simulatedPartner": "Dies ist eine geleitete Simulation mit vorbereiteten Partnerfragen.",
+    "preparation": "Sprechvorbereitung · 20 Minuten",
+    "notes": "Vorbereitungsnotizen",
+    "finishPreparation": "Vorbereitung beenden und Sprechen starten",
+    "preview": "Lies die Fragen: noch {seconds} Sekunden",
+    "prepareSection": "Abschnitt {n} vorbereiten",
+    "section": "Abschnitt {n}",
+    "wordTarget": "Richtwert: ungefähr {count} Wörter"
   }
 }

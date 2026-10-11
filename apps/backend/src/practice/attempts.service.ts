@@ -3,6 +3,7 @@ import {
   objectiveScore,
   resolveAnswers,
   validateReview,
+  applyReviewRules,
   type RuntimeSnapshot,
   type SkillId,
 } from '@exam-one/exam-packs'
@@ -197,25 +198,48 @@ export class AttemptsService {
       // `{}` would be truthy and create an empty Result row for every ungraded submission.
       return result
     }
+    if (
+      snapshot.rules.zeroCriterion &&
+      typeof result.review === 'object' &&
+      result.review !== null
+    ) {
+      const wrapper = result.review as Record<string, unknown>
+      const writing = wrapper['writingReview'] as Record<string, unknown> | undefined
+      const nested = writing?.['responseData'] ?? wrapper['review']
+      if (isCriterionReview(nested)) {
+        try {
+          const normalized = applyReviewRules(
+            validateReview(nested, snapshot.rules),
+            snapshot.rules,
+            resolved
+          )
+          return {
+            ...result,
+            review: writing
+              ? { ...wrapper, writingReview: { ...writing, responseData: normalized } }
+              : { ...wrapper, review: normalized },
+            score: normalized.totalPoints * (snapshot.rules.multiplier ?? 1),
+            maxScore: normalized.maxPoints * (snapshot.rules.multiplier ?? 1),
+            percentage: Math.round((normalized.totalPoints / normalized.maxPoints) * 100),
+          }
+        } catch {
+          throw new BadRequestException({
+            code: 'INVALID_REVIEW',
+            message: 'Invalid saved criterion score or band',
+          })
+        }
+      }
+    }
     // Only a bare rubric carries a score. The AI screens persist their own wrappers — a
     // writing review record, a speaking attempt, a model answer — which `validateStoredReview`
     // already checks through the pack adapter; re-validating them here would reject them all.
     if (!isCriterionReview(result.review)) return result
     try {
-      const review = validateReview(result.review, snapshot.rules)
-      if (
-        snapshot.rules.fields?.some(
-          field =>
-            field.zeroBelowWords !== undefined &&
-            String(resolved[field.id] ?? '')
-              .trim()
-              .split(/\s+/)
-              .filter(Boolean).length < field.zeroBelowWords
-        )
-      ) {
-        review.totalPoints = 0
-        review.criteria = review.criteria.map(criterion => ({ ...criterion, points: 0 }))
-      }
+      const review = applyReviewRules(
+        validateReview(result.review, snapshot.rules),
+        snapshot.rules,
+        resolved
+      )
       const multiplier = snapshot.rules.multiplier ?? 1
       return {
         review,

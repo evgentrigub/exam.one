@@ -4,6 +4,8 @@ export interface RubricCriterion {
   id: string
   label: string
   maxPoints: number
+  /** Discrete rubric bands, highest first (A–E). */
+  allowedPoints?: number[]
 }
 export interface ResponseField {
   id: string
@@ -18,8 +20,11 @@ export interface PartRuntime {
   optionCount?: number
   reuseOptions?: boolean
   replays?: number
+  previewSeconds?: number
+  zeroCriterion?: string
+  wordCountGuidanceOnly?: boolean
   fields?: ResponseField[]
-  segments?: Array<{ id: string; label: string }>
+  segments?: Array<{ id: string; label: string; maxSeconds?: number }>
   criteria?: RubricCriterion[]
   maxPoints: number
   multiplier?: number
@@ -80,6 +85,7 @@ export interface ExerciseView {
   segments?: Array<{ id: string; label: string; prompt: string }>
   audio?: string
   transcript?: string
+  sections?: Array<{ id: string; transcript: string; questionIds: string[]; audio?: string }>
 }
 /** A concrete error the learner made, with the correction and the rule behind it. */
 export interface ReviewExample {
@@ -272,6 +278,18 @@ export function validateView(view: ExerciseView, rules: PartRuntime): void {
     )
       throw new Error('Matching answers must be unique')
   }
+  if (view.sections) {
+    const ids = view.sections.map(section => section.id)
+    const references = view.sections.flatMap(section => section.questionIds)
+    if (
+      new Set(ids).size !== ids.length ||
+      view.sections.some(s => !s.id || !s.transcript.trim() || !s.questionIds.length) ||
+      new Set(references).size !== references.length ||
+      references.length !== view.questions?.length ||
+      references.some(id => !view.questions?.some(q => q.id === id))
+    )
+      throw new Error('Invalid audio section references')
+  }
 }
 
 function validateGap(q: RuntimeQuestion): void {
@@ -357,6 +375,10 @@ export function validateReview(value: unknown, rules: PartRuntime): CriterionRev
     )
       throw new Error('Invalid criterion score')
     seen.add(definition.id)
+    if (definition.allowedPoints) {
+      const band = definition.allowedPoints.indexOf(row['points'])
+      if (band < 0 || row['grade'] !== 'ABCDE'[band]) throw new Error('Invalid criterion band')
+    }
     return {
       ...definition,
       points: row['points'],
@@ -387,6 +409,35 @@ export function validateReview(value: unknown, rules: PartRuntime): CriterionRev
   }
 }
 
+/** Apply task-wide zero rules using actual submitted words, never the model's claimed count. */
+export function applyReviewRules(
+  review: CriterionReview,
+  rules: PartRuntime,
+  answers: Record<string, unknown>
+): CriterionReview {
+  const tooShort = (rules.fields ?? []).some(
+    field =>
+      field.zeroBelowWords !== undefined &&
+      String(answers[field.id] ?? '')
+        .trim()
+        .split(/\s+/u)
+        .filter(Boolean).length < field.zeroBelowWords
+  )
+  const unfulfilled =
+    rules.zeroCriterion && review.criteria.some(c => c.id === rules.zeroCriterion && c.points === 0)
+  if (!tooShort && !unfulfilled) return review
+  return {
+    ...review,
+    totalPoints: 0,
+    criteria: review.criteria.map(c => ({
+      ...c,
+      points: 0,
+      ...(c.allowedPoints ? { grade: 'E' } : {}),
+    })),
+    ruleApplied: tooShort ? 'below_half_length' : 'task_fulfilment_zero',
+  }
+}
+
 /** Optional richer feedback a rubric may report. Anything malformed is dropped, not thrown on. */
 function reviewExtras(review: Record<string, unknown>): Partial<CriterionReview> {
   const strings = (value: unknown): string[] | undefined =>
@@ -401,11 +452,14 @@ function reviewExtras(review: Record<string, unknown>): Partial<CriterionReview>
       )
     : undefined
   const checks = Array.isArray(review['checks'])
-    ? review['checks'].filter((item): item is ReviewCheck => isRecord(item) && typeof item['id'] === 'string')
+    ? review['checks'].filter(
+        (item): item is ReviewCheck => isRecord(item) && typeof item['id'] === 'string'
+      )
     : undefined
-  const wordCount = isRecord(review['wordCount']) && typeof review['wordCount']['actual'] === 'number'
-    ? (review['wordCount'] as CriterionReview['wordCount'])
-    : undefined
+  const wordCount =
+    isRecord(review['wordCount']) && typeof review['wordCount']['actual'] === 'number'
+      ? (review['wordCount'] as CriterionReview['wordCount'])
+      : undefined
   const priorityFixes = strings(review['priorityFixes'])
   return {
     ...(examples?.length ? { examples } : {}),

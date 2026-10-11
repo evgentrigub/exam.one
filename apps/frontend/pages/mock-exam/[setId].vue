@@ -306,6 +306,7 @@
       :configured-replays="activeExercise?.replays"
       exam-mode
       :initial-answers="activeResponse?.answers ?? {}"
+      :initial-playback="activeResponse?.playback ?? {}"
       @finish="leaveExercise"
       @progress="saveProgress"
       @exam-complete="completeActiveExercise"
@@ -321,15 +322,61 @@
       @exam-complete="completeActiveExercise"
     />
 
-    <SpeakingSession
-      v-else-if="activeSkill === 'speaking' && speakingExercise"
-      :topic="speakingExercise"
-      exam-mode
-      :initial-transcripts="activeResponse?.transcripts ?? {}"
-      @finish="leaveExercise"
-      @progress="saveProgress"
-      @exam-complete="completeActiveExercise"
+    <div v-else-if="activeSkill === 'speaking' && speakingExercise" class="space-y-5">
+      <div v-if="preparation?.notes" class="rounded-box bg-base-200 p-5 whitespace-pre-wrap">
+        {{ preparation.notes }}
+      </div>
+      <SpeakingSession
+        :topic="speakingExercise"
+        exam-mode
+        :initial-transcripts="
+          activeResponse?.transcripts ?? {
+            selectedTopic: activeModuleState?.preparation?.selectedTopic,
+          }
+        "
+        @finish="leaveExercise"
+        @progress="saveProgress"
+        @exam-complete="completeActiveExercise"
+      />
+    </div>
+  </div>
+
+  <div
+    v-else-if="view === 'part' && preparation && !preparation.finished && activeModuleId"
+    class="mx-auto max-w-[860px] space-y-5 px-4 py-8 sm:px-6"
+  >
+    <h1 class="font-display text-2xl font-bold">{{ $t('c1.preparation') }}</h1>
+    <TimerChip :seconds="preparationSeconds" />
+    <label class="label" for="prep-topic">{{ $t('c1.chooseTopic') }}</label>
+    <select
+      id="prep-topic"
+      class="select select-bordered w-full"
+      :value="preparation.selectedTopic"
+      @change="
+        updatePreparation(activeModuleId, {
+          selectedTopic: ($event.target as HTMLSelectElement).value,
+        })
+      "
+    >
+      <option v-for="topic in preparationTopics" :key="topic.id" :value="topic.id">
+        {{ topic.theme }}
+      </option>
+    </select>
+    <p class="rounded-box bg-base-200 p-5">
+      {{ preparationTopics.find(t => t.id === preparation?.selectedTopic)?.cards[0]?.cue }}
+    </p>
+    <label class="label" for="prep-notes">{{ $t('c1.notes') }}</label>
+    <textarea
+      id="prep-notes"
+      class="textarea textarea-bordered w-full min-h-48"
+      :value="preparation.notes"
+      @input="
+        updatePreparation(activeModuleId, { notes: ($event.target as HTMLTextAreaElement).value })
+      "
     />
+    <button class="btn btn-primary" @click="finishPreparation(activeModuleId)">
+      {{ $t('c1.finishPreparation') }}
+    </button>
   </div>
 
   <div
@@ -634,6 +681,8 @@ const {
   totalExerciseCount,
   overallPoints,
   startModule,
+  updatePreparation,
+  finishPreparation,
   saveExerciseProgress,
   completeExercise,
   updateExerciseGrade,
@@ -669,6 +718,25 @@ const activeExercise = computed<MockExamExerciseDefinition | null>(
 const activeResponse = computed<MockExerciseResult | undefined>(() => {
   if (!activeSkill.value || !activeExercise.value) return undefined
   return state.value.modules[activeModuleId.value!]!.responses[activeExercise.value.id]
+})
+const preparation = computed(() => activeModuleState.value?.preparation)
+const preparationSeconds = computed(
+  () =>
+    Math.max(0, Math.ceil((Date.parse(preparation.value?.endsAt ?? '') - nowTick.value) / 1000)) ||
+    0
+)
+const preparationTopics = computed(() => {
+  const topic = set.value.content.speaking[0]
+  return topic && 'topicOptions' in topic ? (topic.topicOptions ?? []) : []
+})
+watch([preparationSeconds, preparation], () => {
+  if (
+    preparation.value &&
+    !preparation.value.finished &&
+    preparationSeconds.value === 0 &&
+    activeModuleId.value
+  )
+    finishPreparation(activeModuleId.value)
 })
 const remaining = computed(() => {
   void nowTick.value
@@ -752,7 +820,11 @@ const isGapFillReading = computed(
   () =>
     pack.value.structure
       .find(module => module.id === 'reading')
-      ?.parts.find(part => part.n === readingExercise.value?.testingPart)?.itemFormat === 'gap-fill'
+      ?.parts.some(
+        part =>
+          part.n === readingExercise.value?.testingPart &&
+          (part.itemFormat === 'gap-fill' || part.choiceGaps)
+      ) ?? false
 )
 /** Typed gap answers, mirrored from the questions into the gapped text. */
 const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({
@@ -1008,6 +1080,7 @@ function openModule(skill: string): void {
 
 function canOpenExercise(index: number): boolean {
   if (
+    (activeModuleState.value?.preparation && !activeModuleState.value.preparation.finished) ||
     !activeModuleState.value ||
     activeModuleState.value.locked ||
     activeModuleState.value.done[index]

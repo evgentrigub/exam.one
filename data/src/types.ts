@@ -10,12 +10,7 @@ export type PromptKind = 'generator' | 'answer' | 'review'
  * scored against the question's `accepted` list instead of an option index.
  */
 export type ItemFormat =
-  | 'selection'
-  | 'matching'
-  | 'true-false'
-  | 'gap-fill'
-  | 'freeform'
-  | 'recording'
+  'selection' | 'matching' | 'true-false' | 'gap-fill' | 'freeform' | 'recording'
 
 /** Formats scored automatically from the learner's answers, without a rubric review. */
 export const OBJECTIVE_FORMATS: readonly ItemFormat[] = [
@@ -51,6 +46,8 @@ export interface ExamPart {
   skill: string
   itemFormat: ItemFormat
   layout?: PartLayout
+  /** Show selected choice words/sentences in numbered passage gaps. Answers remain indices. */
+  choiceGaps?: boolean
   runtime?: PartRuntime
   adapter?: ExerciseAdapter
   /**
@@ -135,6 +132,8 @@ export interface SpeechVoice {
 }
 
 export interface SpeechConfig {
+  /** Bound long listening requests for local speech engines with limited memory. */
+  maxChunkCharacters?: number
   ttsLang: string
   voices: readonly SpeechVoice[]
   sttLang: string

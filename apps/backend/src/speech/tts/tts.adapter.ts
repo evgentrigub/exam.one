@@ -24,6 +24,7 @@ export interface TtsSynthesizeOptions {
 }
 
 export interface TtsConfig {
+  maxChunkCharacters?: number
   baseUrl: string
   voice: string
   speed: number
@@ -39,7 +40,11 @@ export interface TtsConfig {
 export type TtsHealthStatus = 'ok' | 'offline' | 'unsupported'
 
 function voiceOptions(config: TtsConfig): DialogueVoiceOptions {
-  return { lang: config.lang, voices: config.voices ?? [], ...(config.narrator ? { narrator: config.narrator } : {}) }
+  return {
+    lang: config.lang,
+    voices: config.voices ?? [],
+    ...(config.narrator ? { narrator: config.narrator } : {}),
+  }
 }
 
 export function getTtsConfigFromEnv(env: NodeJS.ProcessEnv = process.env): TtsConfig {
@@ -109,6 +114,51 @@ export async function synthesizeSpeech(
   return Buffer.from(arrayBuffer)
 }
 
+/** Prefer complete sentences; split unusually long sentences at word boundaries. */
+export function splitSpeechText(text: string, maxCharacters: number): string[] {
+  if (!Number.isInteger(maxCharacters) || maxCharacters < 1)
+    throw new Error('Invalid speech chunk limit')
+  const chunks: string[] = []
+  let current = ''
+  for (const sentence of text.trim().split(/(?<=[.!?])\s+/u)) {
+    for (const word of sentence.split(/\s+/u)) {
+      if (current && current.length + word.length + 1 > maxCharacters) {
+        chunks.push(current)
+        current = ''
+      }
+      current += (current ? ' ' : '') + word
+    }
+    if (current && current.length >= maxCharacters * 0.6) {
+      chunks.push(current)
+      current = ''
+    }
+  }
+  if (current) chunks.push(current)
+  return chunks
+}
+
+async function synthesizeListeningTurn(
+  text: string,
+  voice: string,
+  config: TtsConfig,
+  signal?: AbortSignal
+): Promise<Buffer> {
+  const chunks = config.maxChunkCharacters
+    ? splitSpeechText(text, config.maxChunkCharacters)
+    : [text]
+  const parts: Buffer[] = []
+  for (const chunk of chunks) {
+    signal?.throwIfAborted()
+    parts.push(
+      await synthesizeSpeech(
+        { text: chunk, voice, timeoutMs: 600_000, ...(signal ? { signal } : {}) },
+        config
+      )
+    )
+  }
+  return parts.length === 1 ? parts[0]! : concatWavWithPauses(parts, 80)
+}
+
 export async function synthesizeListeningTranscript(
   transcript: string,
   config: TtsConfig = getTtsConfigFromEnv(),
@@ -121,19 +171,22 @@ export async function synthesizeListeningTranscript(
     const monologue = planMonologue(transcript, options)
     // A language needs only one installed voice: a missing narrator falls back like a turn.
     const voice = fallbackVoiceFor(monologue.voice, available, options)
-    return synthesizeSpeech({ text: monologue.text, voice, timeoutMs: 600_000, ...(signal ? { signal } : {}) }, config)
+    return synthesizeListeningTurn(monologue.text, voice, config, signal)
   }
 
   const wavParts = await mapPool(plan, config.concurrency, async turn => {
     const voice = fallbackVoiceFor(turn.voice, available, options)
-    return synthesizeSpeech({ text: turn.text, voice, timeoutMs: 600_000, ...(signal ? { signal } : {}) }, config)
+    return synthesizeListeningTurn(turn.text, voice, config, signal)
   })
 
   return concatWavWithPauses(wavParts, config.turnPauseMs)
 }
 
 export function listeningTranscriptHashKey(transcript: string, config?: TtsConfig): string {
-  return dialogueAudioPlanKey(transcript, config ? voiceOptions(config) : undefined)
+  const plan = dialogueAudioPlanKey(transcript, config ? voiceOptions(config) : undefined)
+  return config?.maxChunkCharacters
+    ? JSON.stringify([plan, 'bounded-v1', config.maxChunkCharacters])
+    : plan
 }
 
 const voicesCache = new Map<string, { checkedAt: number; voices: Set<string> }>()
@@ -151,7 +204,10 @@ async function fetchVoicesFrom(baseUrl: string): Promise<Set<string>> {
   }
 
   try {
-    const response = await fetch(`${baseUrl}/v1/audio/voices`, { method: 'GET', signal: AbortSignal.timeout(10000) })
+    const response = await fetch(`${baseUrl}/v1/audio/voices`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(10000),
+    })
     if (!response.ok) {
       const empty = new Set<string>()
       voicesCache.set(baseUrl, { checkedAt: Date.now(), voices: empty })
