@@ -3,6 +3,7 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 importers:
 
@@ -34,7 +35,7 @@ importers:
         version: link:../../libraries/contracts
       '@exam-one/database':
         specifier: workspace:*
-        version: link:../../libraries/database
+        version: file:libraries/database(typescript@6.0.3)
       '@exam-one/exam-packs':
         specifier: workspace:*
         version: link:../../data
@@ -358,7 +359,7 @@ importers:
     dependencies:
       '@exam-one/database':
         specifier: workspace:*
-        version: link:../database
+        version: file:libraries/database(typescript@6.0.3)
       '@nestjs/common':
         specifier: ^11.2.1
         version: 11.2.1(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -1241,6 +1242,12 @@ packages:
   '@eslint/plugin-kit@0.7.2':
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@exam-one/database@file:libraries/database':
+    resolution: {directory: libraries/database, type: directory}
+
+  '@exam-one/exam-packs@file:data':
+    resolution: {directory: data, type: directory}
 
   '@fastify/busboy@3.2.2':
     resolution: {integrity: sha512-yXSS27qPExaXeuLvMRMXOLtpipzfQYNjG3FkunDWKGfMYjKuhFXko9CVzqxm8jcF+lmtS9Fd89QNdh9XDjnbNg==}
@@ -9066,6 +9073,26 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@exam-one/database@file:libraries/database(typescript@6.0.3)':
+    dependencies:
+      '@exam-one/exam-packs': file:data
+      '@prisma/adapter-pg': 7.10.0
+      '@prisma/client': 7.10.0(prisma@7.10.0(@types/react@19.2.18)(magicast@0.5.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3))(typescript@6.0.3)
+      bcrypt: 6.0.0
+      pg: 8.23.0
+      prisma: 7.10.0(@types/react@19.2.18)(magicast@0.5.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+      - better-sqlite3
+      - magicast
+      - pg-native
+      - react
+      - react-dom
+      - typescript
+
+  '@exam-one/exam-packs@file:data': {}
 
   '@fastify/busboy@3.2.2':
     optional: true

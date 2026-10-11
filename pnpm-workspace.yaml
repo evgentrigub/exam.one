@@ -2,3 +2,8 @@ packages:
   - 'apps/*'
   - 'libraries/*'
   - 'data'
+
+# Package workspace dependencies into portable pnpm deployments.
+injectWorkspacePackages: true
+syncInjectedDepsAfterScripts:
+  - build

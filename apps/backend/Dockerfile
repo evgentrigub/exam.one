@@ -19,7 +19,7 @@ RUN pnpm --filter @exam-one/exam-packs build \
   && pnpm --filter @exam-one/contracts build \
   && pnpm --filter @exam-one/nestjs-libraries build \
   && pnpm --filter ./apps/backend build
-RUN pnpm deploy --filter ./apps/backend --prod --legacy /production
+RUN pnpm deploy --filter ./apps/backend --prod /production
 # pnpm deploy --prod skips @prisma/engines postinstall, so migrate would try
 # to download schema-engine into a root-owned directory at runtime. Query
 # engines are no longer required: Prisma 7 Client is generated into
@@ -44,7 +44,6 @@ FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /production ./
-COPY --from=build /workspace/apps/backend/dist ./dist
 COPY apps/backend/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN apk add --no-cache su-exec \
     && chmod +x /usr/local/bin/docker-entrypoint.sh \

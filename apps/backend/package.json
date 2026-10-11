@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "commonjs",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "nest build",
     "dev": "pnpm --filter @exam-one/database build && pnpm --filter @exam-one/nestjs-libraries build && pnpm --filter @exam-one/exam-packs build && nest start --watch",
