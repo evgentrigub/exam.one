@@ -963,6 +963,7 @@
     "structures": "Estructuras"
   },
   "mockExam": {
+    "grammar": "Gramática",
     "title": "Exámenes de prueba",
     "fullSimulation": "Examen de prueba completo",
     "listDescription": "Haz un simulacro cronometrado de {exam}. Las tareas y los módulos terminados se bloquean definitivamente en ese intento.",
@@ -988,6 +989,7 @@
     "automaticScoring": "Puntuación automática",
     "aiGraded": "Evaluado por IA",
     "aiProvisional": "IA · provisional",
+    "resultPending": "El resultado queda pendiente hasta que estén disponibles todas las evaluaciones requeridas.",
     "gradingPending": "Evaluación pendiente",
     "gradingUnavailable": "Evaluación con IA no disponible",
     "restart": "Reiniciar examen",
@@ -1008,7 +1010,7 @@
     "continueModule": "Continuar módulo",
     "startModule": "Empezar módulo",
     "allLocked": "Todos los módulos están bloqueados. Tu resultado está listo.",
-    "finishAll": "Bloquea los cuatro módulos para ver el resultado.",
+    "finishAll": "Bloquea todos los módulos para ver el resultado.",
     "viewResults": "Ver resultados",
     "close": "Cerrar",
     "deleteSet": "Eliminar set generado",
@@ -1046,7 +1048,7 @@
     "dismissPipeline": "Descartar",
     "aiOverviewTitle": "Resumen del examen con IA",
     "aiOverviewDescription": "Una revisión breve de tus puntos fuertes y de los aspectos en los que centrarte.",
-    "aiOverviewEmpty": "Genera un resumen cuando quieras feedback conjunto de los cuatro módulos.",
+    "aiOverviewEmpty": "Genera un resumen para recibir comentarios sobre todos los módulos.",
     "generateAiOverview": "Generar resumen con IA",
     "waitingForAiGrades": "Las notas de IA de Escritura y Expresión oral deben terminar antes de poder generar este resumen.",
     "generatingAiOverview": "Revisando los resultados de tu examen de prueba…",

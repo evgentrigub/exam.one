@@ -963,6 +963,7 @@
     "structures": "Structures"
   },
   "mockExam": {
+    "grammar": "Grammar",
     "title": "Mock exams",
     "fullSimulation": "Full mock exam",
     "listDescription": "Complete a timed {exam} simulation. Finished tasks and modules lock permanently for the attempt.",
@@ -988,6 +989,7 @@
     "automaticScoring": "Automatic scoring",
     "aiGraded": "AI graded",
     "aiProvisional": "AI · provisional",
+    "resultPending": "The result is pending until every required grade is available.",
     "gradingPending": "Grading pending",
     "gradingUnavailable": "AI grading unavailable",
     "restart": "Restart exam",
@@ -1008,7 +1010,7 @@
     "continueModule": "Continue module",
     "startModule": "Start module",
     "allLocked": "All modules are locked. Your result is ready.",
-    "finishAll": "Lock all four modules to view the result.",
+    "finishAll": "Lock every module to view the result.",
     "viewResults": "View results",
     "close": "Close",
     "deleteSet": "Delete generated set",
@@ -1046,7 +1048,7 @@
     "dismissPipeline": "Dismiss",
     "aiOverviewTitle": "AI exam overview",
     "aiOverviewDescription": "A concise review of strengths and areas to focus on.",
-    "aiOverviewEmpty": "Generate an overview when you want combined feedback across all four modules.",
+    "aiOverviewEmpty": "Generate an overview when you want combined feedback across all modules.",
     "generateAiOverview": "Generate AI overview",
     "waitingForAiGrades": "The Writing and Speaking AI grades must finish before this overview can be generated.",
     "generatingAiOverview": "Reviewing your mock exam results…",

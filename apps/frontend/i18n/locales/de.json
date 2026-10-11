@@ -963,6 +963,7 @@
     "structures": "Strukturen"
   },
   "mockExam": {
+    "grammar": "Grammatik",
     "title": "Modellprüfungen",
     "fullSimulation": "Vollständige Modellprüfung",
     "listDescription": "Bearbeite eine zeitbegrenzte Prüfungssimulation ({exam}). Abgegebene Aufgaben und Module werden für den Versuch gesperrt.",
@@ -988,6 +989,7 @@
     "automaticScoring": "Automatische Bewertung",
     "aiGraded": "Von KI bewertet",
     "aiProvisional": "KI · vorläufig",
+    "resultPending": "Das Ergebnis bleibt ausstehend, bis alle erforderlichen Bewertungen vorliegen.",
     "gradingPending": "Bewertung ausstehend",
     "gradingUnavailable": "KI-Bewertung nicht verfügbar",
     "restart": "Prüfung neu starten",
@@ -1008,7 +1010,7 @@
     "continueModule": "Modul fortsetzen",
     "startModule": "Modul starten",
     "allLocked": "Alle Module sind gesperrt. Dein Ergebnis ist bereit.",
-    "finishAll": "Sperre alle vier Module, um das Ergebnis anzusehen.",
+    "finishAll": "Sperre alle Module, um das Ergebnis anzuzeigen.",
     "viewResults": "Ergebnis ansehen",
     "close": "Schließen",
     "deleteSet": "Generierten Satz löschen",
@@ -1046,7 +1048,7 @@
     "dismissPipeline": "Ausblenden",
     "aiOverviewTitle": "KI-Prüfungsübersicht",
     "aiOverviewDescription": "Eine kurze Auswertung deiner Stärken und Übungsschwerpunkte.",
-    "aiOverviewEmpty": "Erstelle eine Übersicht, wenn du gemeinsames Feedback zu allen vier Modulen möchtest.",
+    "aiOverviewEmpty": "Erstelle eine Übersicht für gemeinsames Feedback zu allen Modulen.",
     "generateAiOverview": "KI-Übersicht erstellen",
     "waitingForAiGrades": "Die KI-Bewertungen für Schreiben und Sprechen müssen abgeschlossen sein, bevor diese Übersicht erstellt werden kann.",
     "generatingAiOverview": "Deine Prüfungsergebnisse werden ausgewertet…",

@@ -25,10 +25,14 @@
       <div class="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
         <div
           v-for="module in set.modules"
-          :key="module.skill"
+          :key="mockModuleId(module)"
           class="rounded-field bg-base-200 p-2.5"
         >
-          <div class="font-semibold">{{ $t(`skill.${module.skill}`) }}</div>
+          <div class="font-semibold">
+            {{
+              module.labelKey ? $t(module.labelKey) : (module.label ?? $t(`skill.${module.skill}`))
+            }}
+          </div>
           <div class="mt-0.5 text-base-content/50">
             {{ module.minutes }} {{ $t('mockExam.minutes') }}
           </div>
@@ -58,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+import { mockModuleId } from '@exam-one/exam-packs'
 import { ArrowRight, Trash2 } from 'lucide-vue-next'
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
 
@@ -67,7 +72,7 @@ const { t, locale } = useI18n()
 const { state, doneExerciseCount, totalExerciseCount } = useMockExam(props.set)
 
 const lockedCount = computed(
-  () => props.set.modules.filter(module => state.value.modules[module.skill].locked).length
+  () => props.set.modules.filter(module => state.value.modules[mockModuleId(module)]!.locked).length
 )
 const statusLabel = computed(() => {
   if (state.value.finished) return t('mockExam.completed')

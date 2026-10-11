@@ -963,6 +963,7 @@
     "structures": "Struktury"
   },
   "mockExam": {
+    "grammar": "Gramatyka",
     "title": "Egzaminy próbne",
     "fullSimulation": "Pełny egzamin próbny",
     "listDescription": "Przejdź symulację egzaminu {exam} z limitem czasu. Ukończone zadania i moduły zostają trwale zablokowane w danym podejściu.",
@@ -988,6 +989,7 @@
     "automaticScoring": "Ocena automatyczna",
     "aiGraded": "Ocenione przez AI",
     "aiProvisional": "AI · wstępnie",
+    "resultPending": "Wynik pozostaje w toku do czasu uzyskania wszystkich wymaganych ocen.",
     "gradingPending": "Ocena w toku",
     "gradingUnavailable": "Ocena AI niedostępna",
     "restart": "Zacznij egzamin od nowa",
@@ -1008,7 +1010,7 @@
     "continueModule": "Kontynuuj moduł",
     "startModule": "Rozpocznij moduł",
     "allLocked": "Wszystkie moduły są zablokowane. Twój wynik jest gotowy.",
-    "finishAll": "Zablokuj wszystkie cztery moduły, aby zobaczyć wynik.",
+    "finishAll": "Zablokuj wszystkie moduły, aby zobaczyć wynik.",
     "viewResults": "Zobacz wyniki",
     "close": "Zamknij",
     "deleteSet": "Usuń wygenerowany zestaw",
@@ -1046,7 +1048,7 @@
     "dismissPipeline": "Zamknij",
     "aiOverviewTitle": "Podsumowanie egzaminu AI",
     "aiOverviewDescription": "Zwięzłe omówienie mocnych stron i obszarów do pracy.",
-    "aiOverviewEmpty": "Wygeneruj podsumowanie, gdy chcesz otrzymać łączną informację zwrotną ze wszystkich czterech modułów.",
+    "aiOverviewEmpty": "Wygeneruj podsumowanie, aby otrzymać wspólną ocenę wszystkich modułów.",
     "generateAiOverview": "Generuj podsumowanie AI",
     "waitingForAiGrades": "Najpierw muszą zakończyć się oceny AI z pisania i mówienia, potem można wygenerować podsumowanie.",
     "generatingAiOverview": "Analizujemy wyniki twojego egzaminu próbnego…",
