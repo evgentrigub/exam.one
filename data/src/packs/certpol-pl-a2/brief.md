@@ -81,8 +81,8 @@ descriptions of people, objects, places and situations, and forms.
   Reviews are written in the learner's interface language (`{outputLanguage}`).
 - **Speech.** TTS uses three Piper voices on the local speech service: `pl_gosia` (female), `pl_darkman` and `pl_bass`
   (male). With one female voice, two women in one dialogue share `pl_gosia`. Speaker labels are roles, first names or
-  "Pan / Pani" + surname, which the Polish voice mapping reads for gender. STT uses Parakeet v3 (auto-detects Polish)
-  or Whisper; transcripts stay editable.
+  "Pan / Pani" + surname, which the Polish voice mapping reads for gender. STT uses Parakeet v3 (auto-detects Polish);
+  transcripts stay editable.
 - **Seeds** ship without audio; **Generate audio** synthesises it per user.
 
 ## Mock exams

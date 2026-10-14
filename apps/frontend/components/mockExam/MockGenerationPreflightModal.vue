@@ -61,6 +61,13 @@
         >
           <TriangleAlert :size="20" class="text-warning" />
           <span>{{ $t('mockExam.preflightBlocked') }}</span>
+          <NuxtLink
+            v-if="!preflight.llmConfigured"
+            to="/settings?section=ai"
+            class="btn btn-xs btn-outline rounded-field"
+          >
+            {{ $t('mockExam.openAiSettings') }}
+          </NuxtLink>
         </div>
 
         <div class="card-actions items-center justify-end border-t border-base-300 pt-4">

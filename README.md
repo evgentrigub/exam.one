@@ -107,7 +107,7 @@ See the [exam-pack authoring guide](data/README.md) for contracts, examples, and
 | PostgreSQL / Prisma                | Accounts, settings, exercises, attempts, drafts, reviews, mock state, and job records   |
 | Redis / BullMQ                     | Work queues and live job-event delivery                                                 |
 | Local TTS (text-to-speech) service | German, British English, and Spanish on Kokoro; Polish on Piper                         |
-| Local STT (speech-to-text) service | Parakeet transcription; OpenAI Whisper is an alternative                                |
+| Local STT (speech-to-text) service | Parakeet transcription                                                                  |
 
 The browser loads the Nuxt UI and calls the NestJS API. Requests carry the selected pack identity; practice records are scoped by user and pack. Saved attempt snapshots preserve the content and grading rules used at submission.
 
@@ -194,7 +194,9 @@ Swagger is enabled in local development and disabled in Compose production unles
 
 ### LLM
 
-Set `LLM_PROVIDER=openai` or `openrouter`, then configure that provider's API key and model in `.env`. Restart the backend after changes. Keys are instance-level configuration shared by the instance's signed-in users; the settings UI checks the configured connection.
+Each user brings their own key. In **Settings → AI provider** a user picks OpenAI, OpenRouter, Google Gemini, Anthropic or xAI, pastes an API key, chooses a model from the provider's live list, and optionally sets a reasoning effort (default `medium`) and up to three fallback models. Keys are checked with the provider before they are saved, stored encrypted with `SECRETS_ENCRYPTION_KEY`, and never sent back to the browser. There are no LLM environment variables.
+
+OpenRouter's `:free` models cost nothing but are rate-limited and may use prompts for training; the settings screen warns about this.
 
 Existing exercises and objective scoring work with empty keys. Generation, model answers, writing/speaking review, and aggregate mock feedback report their availability explicitly.
 
@@ -207,7 +209,7 @@ pnpm stt:up
 
 TTS checks the selected pack's language and available voices. Installed voice files are reused and runtime downloads load without a restart. Stable WAV playback needs no live synthesis once files exist.
 
-STT uses local Parakeet by default. To use OpenAI Whisper, set `STT_PROVIDER=openai`, `OPENAI_API_KEY`, and `STT_OPENAI_MODEL` in `.env`. Manual transcripts are available with either provider unavailable.
+STT uses local Parakeet. Manual transcripts are available when it is unavailable.
 
 Details: [TTS guide](scripts/tts/README.md), [STT guide](scripts/stt/README.md).
 
@@ -287,16 +289,15 @@ Committed migrations and bundled-content upserts run during backend container st
 | Database        | `POSTGRES_*`, `DATABASE_URL`                                                                                       |
 | Jobs            | `REDIS_URL`, `REDIS_PORT`, `REDIS_VOLUME_NAME`, `JOBS_WORKER_ENABLED`                                              |
 | Queue dashboard | `BULL_BOARD_USER`, `BULL_BOARD_PASSWORD`                                                                           |
-| Auth            | `JWT_SECRET`, `AUTH_COOKIE_SECURE`, `SWAGGER_ENABLED`                                                              |
+| Auth            | `JWT_SECRET`, `SECRETS_ENCRYPTION_KEY`, `AUTH_COOKIE_SECURE`, `SWAGGER_ENABLED`                                    |
 | Email           | `EMAIL_PROVIDER`, `SMTP_*`                                                                                         |
-| LLM             | `LLM_PROVIDER`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `LLM_REASONING_EFFORT` |
 | TTS             | `TTS_BASE_URL`, `TTS_PORT`, `KOKORO_LANGS`, `TTS_LANGUAGES`, `TTS_VOICES`, `TTS_SPEED`, `TTS_CONCURRENCY`          |
-| STT             | `STT_PROVIDER`, `STT_BASE_URL`, `STT_PORT`, `STT_LANGUAGES`, `STT_MODEL`, `STT_CPU_THREADS`, `STT_OPENAI_MODEL`    |
+| STT             | `STT_BASE_URL`, `STT_PORT`, `STT_LANGUAGES`, `STT_MODEL`, `STT_CPU_THREADS`                                        |
 | Media           | `SEED_LISTENING_AUDIO_DIR`, `GENERATED_LISTENING_AUDIO_DIR`, `AUDIO_HOST_DISPLAY_ROOT`, `STACK_SEED_PACKS`         |
 
 Redis must be reachable at API startup and participates in readiness checks. Bull Board is available at `/api/admin/queues` with HTTP basic authentication when both dashboard credentials are set; otherwise it returns 404.
 
-For HTTP localhost, keep `AUTH_COOKIE_SECURE=false`. Enable secure cookies when serving over HTTPS. Rotating `JWT_SECRET` invalidates sessions. The current deployment defaults target a local self-hosted instance; managed cloud hosting is separate roadmap work.
+For HTTP localhost, keep `AUTH_COOKIE_SECURE=false`. Enable secure cookies when serving over HTTPS. Rotating `JWT_SECRET` invalidates sessions. Rotating `SECRETS_ENCRYPTION_KEY` makes saved LLM keys unreadable, so users paste them again. The current deployment defaults target a local self-hosted instance; managed cloud hosting is separate roadmap work.
 
 ## Troubleshooting
 

@@ -55,6 +55,7 @@ services:
       BULL_BOARD_USER: '${BULL_BOARD_USER:-}'
       BULL_BOARD_PASSWORD: '${BULL_BOARD_PASSWORD:-}'
       JWT_SECRET: '${JWT_SECRET}'
+      SECRETS_ENCRYPTION_KEY: '${SECRETS_ENCRYPTION_KEY}'
       AUTH_COOKIE_SECURE: '${AUTH_COOKIE_SECURE:-false}'
       SWAGGER_ENABLED: '${SWAGGER_ENABLED:-}'
       EMAIL_PROVIDER: '${EMAIL_PROVIDER:-none}'
@@ -63,12 +64,6 @@ services:
       SMTP_USER: '${SMTP_USER:-}'
       SMTP_PASS: '${SMTP_PASS:-}'
       SMTP_FROM: '${SMTP_FROM:-exam.one <noreply@localhost>}'
-      LLM_PROVIDER: '${LLM_PROVIDER:-openrouter}'
-      OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
-      OPENAI_MODEL: '${OPENAI_MODEL:-gpt-6-sol}'
-      OPENROUTER_API_KEY: '${OPENROUTER_API_KEY:-}'
-      OPENROUTER_MODEL: '${OPENROUTER_MODEL:-google/gemma-4-26b-a4b-it:free}'
-      LLM_REASONING_EFFORT: '${LLM_REASONING_EFFORT:-medium}'
       TTS_BASE_URL: 'http://kokoro-voices:8881'
       TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
       TTS_SPEED: '${TTS_SPEED:-1.0}'
@@ -76,11 +71,9 @@ services:
       TTS_LANGUAGES: '${TTS_LANGUAGES:-de,en,pl,es}'
       TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva,bf_emma,bf_isabella,bm_george,bm_fable,pl_gosia,pl_darkman,pl_bass,ef_dora,em_alex,em_santa}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
-      STT_PROVIDER: '${STT_PROVIDER:-local}'
       STT_BASE_URL: 'http://parakeet:8882'
       STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
       STT_LANGUAGES: '${STT_LANGUAGES:-de,en,pl,es}'
-      STT_OPENAI_MODEL: '${STT_OPENAI_MODEL:-whisper-1}'
       SEED_LISTENING_AUDIO_DIR: /app/data/listening
       GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
       AUDIO_HOST_DISPLAY_ROOT: apps/frontend/public/audio/listening

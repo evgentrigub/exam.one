@@ -11,7 +11,6 @@ describe('SttService', () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
-              if (key === 'app.STT_PROVIDER') return 'local'
               if (key === 'app.STT_BASE_URL') return 'http://127.0.0.1:8882'
               return ''
             }),

@@ -3,7 +3,6 @@ import { packContext } from '../../core/interceptors/pack-context.interceptor'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import type { AiResponse, SttHealthData, TranscriptionData } from '@exam-one/contracts'
-import type { AppConfig } from '../../config/app.config'
 import { checkSttHealth, getSttConfig, transcribeAudio, type SttConfig } from './stt.adapter'
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024
@@ -50,11 +49,8 @@ export class SttService {
     }
     return {
       ...getSttConfig({
-        provider: this.config.get<AppConfig['STT_PROVIDER']>('app.STT_PROVIDER'),
         baseUrl: this.config.get<string>('app.STT_BASE_URL'),
         model: this.config.get<string>('app.STT_MODEL'),
-        openaiModel: this.config.get<string>('app.STT_OPENAI_MODEL'),
-        openaiApiKey: this.config.get<string>('app.OPENAI_API_KEY'),
       }),
       language,
     }

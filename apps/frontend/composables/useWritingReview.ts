@@ -146,9 +146,8 @@ export function useWritingReview() {
   }
 
   /**
-   * Request a review for the given topic and user submission content.
-   * This function mocks latency and response. If an OpenAI API key is
-   * available, the call site is prepared but disabled by default.
+   * Request a review for the given topic and user submission content through `/llm/review`,
+   * which uses the API key the user saved in Settings → AI provider.
    */
   async function requestReview(topic: WritingExercise, userContent: string): Promise<void> {
     const prompt = getReviewPrompt(topic, userContent)
@@ -161,7 +160,7 @@ export function useWritingReview() {
       requestedAt,
     })
 
-    // Call internal server endpoint to keep API key private (server mocks response offline)
+    // The backend holds the user's encrypted key; the browser never sees it.
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
       // The server re-assembles the prompt from `topic` and the answers, so the feedback

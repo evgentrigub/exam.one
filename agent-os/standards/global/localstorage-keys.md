@@ -47,7 +47,7 @@ writing-reviews
 model-answers
 ```
 
-**Not implemented:** `exam-one:prompt-templates`, `exam-one:ai-settings`. Prompts stay as TS modules; LLM keys stay in env.
+**Not implemented:** `exam-one:prompt-templates`, `exam-one:ai-settings`. Prompts stay as TS modules; LLM keys are stored server-side per user, encrypted.
 
 ## Rules
 
@@ -56,7 +56,7 @@ model-answers
 - Path segments: kebab-case, lowercase
 - Structure: `exam-one:<feature>:<what>` (e.g., `exam-one:theme`)
 - Define the key as a `const KEY = 'exam-one:...'` at the top of the owning composable / store; never inline string literals in multiple places
-- **Secrets stay out of localStorage**. A bring-your-own-key API key should come from runtime/env config
+- **Secrets stay out of localStorage**. A bring-your-own-key API key is saved through `/settings/llm` and stored encrypted on the server
 - **Never call `localStorage.clear()`** — it would wipe theme and other UI prefs
 
 ```ts

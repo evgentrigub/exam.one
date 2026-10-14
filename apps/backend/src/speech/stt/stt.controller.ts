@@ -27,8 +27,8 @@ export class SttController {
 
   @Get('health')
   @ApiOperation({
-    summary: 'Check local Parakeet or OpenAI Whisper readiness',
-    description: 'Checks whether local Parakeet STT container is healthy or OpenAI Whisper fallback is configured.',
+    summary: 'Check local Parakeet readiness',
+    description: 'Checks whether the local Parakeet STT container is healthy and its model is loaded.',
   })
   @ApiResponseDoc({ status: 200, description: 'STT service readiness status', type: SttHealthResponseDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
@@ -42,7 +42,7 @@ export class SttController {
   @ApiConsumes('multipart/form-data')
   @ApiOperation({
     summary: 'Transcribe a speaking recording',
-    description: 'Transcribes an uploaded audio file (up to 25 MiB) using Parakeet or Whisper and returns the text transcript.',
+    description: 'Transcribes an uploaded audio file (up to 25 MiB) using local Parakeet and returns the text transcript.',
   })
   @ApiBody({
     schema: {

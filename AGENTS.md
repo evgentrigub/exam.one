@@ -17,7 +17,7 @@ This file is the working guide for coding agents in this repository. It should b
 - Mock exam bundled Set 1 (per pack), generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
 - Auth and account UI — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
 - Skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
-- OpenAI/OpenRouter, Kokoro, and Parakeet/Whisper on NestJS with the `{ data, error }` envelope
+- Per-user BYOK LLM (OpenAI, OpenRouter, Gemini, Anthropic, xAI), Kokoro, and Parakeet on NestJS with the `{ data, error }` envelope
 - Docker Compose packaging — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
 - Self-host runbook — README, `.env.example`, first user, API keys, named-volume backup/restore
 

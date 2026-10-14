@@ -47,20 +47,13 @@ The local endpoint accepts OpenAI-compatible `model`, `language`, and JSON-respo
 For local transcription in host development:
 
 ```dotenv
-STT_PROVIDER=local
 STT_BASE_URL=http://127.0.0.1:8882
 STT_MODEL=handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
 STT_LANGUAGES=de,en,pl,es
 STT_CPU_THREADS=4
 ```
 
-Compose points the API at the service's internal hostname. For OpenAI Whisper, configure:
-
-```dotenv
-STT_PROVIDER=openai
-OPENAI_API_KEY=<your-key>
-STT_OPENAI_MODEL=whisper-1
-```
+Compose points the API at the service's internal hostname. Local Parakeet is the only transcription provider.
 
 Restart the backend after environment changes. Unsupported language or provider failures return an explicit unavailable response; users can edit or enter their transcript manually.
 

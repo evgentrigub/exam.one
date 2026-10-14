@@ -80,7 +80,7 @@ describe('Goethe A1 speaking', () => {
   describe('review request', () => {
     const complete = jest.fn()
     const llm = {
-      getConfig: () => ({ provider: 'openai' }),
+      hasConfig: async () => true,
       complete,
       missingKeyError: () => 'no key',
     } as unknown as LlmService

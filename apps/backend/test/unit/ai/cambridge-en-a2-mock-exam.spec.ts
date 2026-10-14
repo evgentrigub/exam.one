@@ -186,7 +186,7 @@ describe('Cambridge A2 Key mock exam', () => {
       JSON.stringify({ summary: 'Good', strengths: [], focusAreas: [], nextSteps: ['Writing'] })
     )
     const llm = {
-      getConfig: () => ({ provider: 'openai' }),
+      hasConfig: async () => true,
       complete,
       missingKeyError: () => 'no key',
     } as unknown as LlmService

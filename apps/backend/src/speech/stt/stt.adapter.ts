@@ -3,15 +3,10 @@ import type { SttHealthData, SttProvider } from '@exam-one/contracts'
 const DEFAULT_LOCAL_BASE_URL = 'http://127.0.0.1:8882'
 const DEFAULT_LOCAL_MODEL = 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0'
 const LEGACY_LOCAL_MODEL = 'nvidia/parakeet-tdt-0.6b-v3'
-const DEFAULT_OPENAI_MODEL = 'whisper-1'
-const OPENAI_TRANSCRIPTIONS_URL = 'https://api.openai.com/v1/audio/transcriptions'
 
 export interface SttEnvSource {
-  provider?: string | undefined
   baseUrl?: string | undefined
   model?: string | undefined
-  openaiModel?: string | undefined
-  openaiApiKey?: string | undefined
 }
 
 export interface SttConfig {
@@ -19,7 +14,6 @@ export interface SttConfig {
   provider: SttProvider
   baseUrl: string
   model: string
-  apiKey: string
 }
 
 export interface SttAudioInput {
@@ -29,30 +23,12 @@ export interface SttAudioInput {
 }
 
 export function getSttConfig(source: SttEnvSource): SttConfig {
-  const providerValue = (source.provider || 'local').trim()
-  if (providerValue !== 'local' && providerValue !== 'openai') {
-    throw new Error(`Unsupported STT_PROVIDER "${providerValue}". Use "local" or "openai".`)
-  }
-
-  const provider: SttProvider = providerValue
-  const configuredLocalModel = source.model || DEFAULT_LOCAL_MODEL
+  const configuredModel = source.model || DEFAULT_LOCAL_MODEL
   return {
-    provider,
+    provider: 'local',
     baseUrl: (source.baseUrl || DEFAULT_LOCAL_BASE_URL).replace(/\/+$/, ''),
-    model:
-      provider === 'local'
-        ? configuredLocalModel === LEGACY_LOCAL_MODEL
-          ? DEFAULT_LOCAL_MODEL
-          : configuredLocalModel
-        : source.openaiModel || DEFAULT_OPENAI_MODEL,
-    apiKey: source.openaiApiKey || '',
+    model: configuredModel === LEGACY_LOCAL_MODEL ? DEFAULT_LOCAL_MODEL : configuredModel,
   }
-}
-
-function transcriptionUrl(config: SttConfig): string {
-  return config.provider === 'local'
-    ? `${config.baseUrl}/v1/audio/transcriptions`
-    : OPENAI_TRANSCRIPTIONS_URL
 }
 
 function responseError(value: unknown, status: number): string {
@@ -81,10 +57,6 @@ function responseError(value: unknown, status: number): string {
 }
 
 export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): Promise<string> {
-  if (config.provider === 'openai' && !config.apiKey) {
-    throw new Error('OpenAI STT is selected but OPENAI_API_KEY is not configured.')
-  }
-
   const form = new FormData()
   form.append('model', config.model)
   form.append('language', config.language ?? 'de')
@@ -93,22 +65,16 @@ export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): 
 
   let response: Response
   try {
-    response = await fetch(transcriptionUrl(config), {
+    response = await fetch(`${config.baseUrl}/v1/audio/transcriptions`, {
       method: 'POST',
-      ...(config.provider === 'openai'
-        ? { headers: { Authorization: `Bearer ${config.apiKey}` } }
-        : {}),
       body: form,
       signal: AbortSignal.timeout(120_000),
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown connection error'
-    if (config.provider === 'local') {
-      throw new Error(`Local STT is offline. Run pnpm stt:up and try again. (${message})`, {
-        cause: error,
-      })
-    }
-    throw new Error(`Could not reach OpenAI STT. ${message}`, { cause: error })
+    throw new Error(`Local STT is offline. Run pnpm stt:up and try again. (${message})`, {
+      cause: error,
+    })
   }
 
   const payload = (await response.json().catch(() => null)) as unknown
@@ -133,20 +99,6 @@ export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): 
 }
 
 export async function checkSttHealth(config: SttConfig): Promise<SttHealthData> {
-  if (config.provider === 'openai') {
-    return config.apiKey
-      ? {
-          provider: 'openai',
-          ready: true,
-          detail: `OpenAI key configured · model ${config.model}`,
-        }
-      : {
-          provider: 'openai',
-          ready: false,
-          detail: 'Set OPENAI_API_KEY to use cloud transcription.',
-        }
-  }
-
   try {
     const response = await fetch(`${config.baseUrl}/health`, {
       signal: AbortSignal.timeout(5_000),

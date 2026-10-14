@@ -78,7 +78,7 @@ No official task text, image or recording is bundled; every seed is original.
 - **Speech.** TTS uses three Kokoro v1.0 voices on the local speech service: `ef_dora` (female), `em_alex` and
   `em_santa` (male), on the base model shared with British English, with misaki's espeak `es` G2P. With one female
   voice, two women in one dialogue share `ef_dora`. Speaker labels are roles, first names or "Señor / Señora" +
-  surname, which the Spanish voice mapping reads for gender. STT uses Parakeet v3 (auto-detects Spanish) or Whisper;
+  surname, which the Spanish voice mapping reads for gender. STT uses Parakeet v3 (auto-detects Spanish);
   transcripts stay editable.
 - **Practice seeds** ship without audio; **Generate audio** synthesises it per user. The exam-only mock Set 1 ships seed WAVs.
 

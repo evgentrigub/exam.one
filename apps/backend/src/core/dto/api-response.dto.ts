@@ -10,6 +10,12 @@ import type {
   HealthReadyData,
   ListeningExerciseAudioMap,
   LlmHealthData,
+  LlmKeySummary,
+  LlmModelListData,
+  LlmModelOption,
+  LlmProvider,
+  LlmReasoningEffort,
+  LlmSettingsDto,
   MockExamAttemptDto,
   MockExamSetDto,
   MockExamSetSummaryDto,
@@ -22,6 +28,7 @@ import type {
   TtsHealthData,
   UserDto,
 } from '@exam-one/contracts'
+import { LLM_PROVIDERS, LLM_REASONING_EFFORTS } from '../../ai/llm-options'
 
 // ---------------------------------------------------------------------------
 // Common Envelopes & Errors
@@ -492,7 +499,7 @@ export class AiGenericResponseDto {
 }
 
 export class LlmHealthDataDto implements LlmHealthData {
-  @ApiProperty({ description: 'Whether an LLM API key is present in environment', example: true })
+  @ApiProperty({ description: "Whether the current user has chosen a provider, saved its key and picked a model", example: true })
   configured!: boolean
 
   @ApiProperty({ description: 'Whether connection test to upstream LLM succeeded', example: true })
@@ -501,7 +508,7 @@ export class LlmHealthDataDto implements LlmHealthData {
   @ApiPropertyOptional({ description: 'Active LLM provider', nullable: true, example: 'openai' })
   provider!: string | null
 
-  @ApiPropertyOptional({ description: 'Configured LLM model', nullable: true, example: 'gpt-4o' })
+  @ApiPropertyOptional({ description: "The user's main LLM model", nullable: true, example: 'google/gemma-4-31b-it:free' })
   model!: string | null
 
   @ApiPropertyOptional({ description: 'Connection status message or error note', nullable: true, example: 'OK' })
@@ -530,8 +537,8 @@ export class TtsHealthResponseDto {
 }
 
 export class SttHealthDataDto implements SttHealthData {
-  @ApiProperty({ description: 'Configured STT provider', enum: ['local', 'openai'], example: 'local' })
-  provider!: 'local' | 'openai'
+  @ApiProperty({ description: 'Configured STT provider', enum: ['local'], example: 'local' })
+  provider!: 'local'
 
   @ApiProperty({ description: 'Whether speech-to-text service is ready', example: true })
   ready!: boolean
@@ -552,8 +559,8 @@ export class TranscriptionDataDto implements TranscriptionData {
   @ApiProperty({ description: 'Transcribed text from user audio', example: 'Ich möchte gerne einen Deutschkurs besuchen.' })
   transcript!: string
 
-  @ApiProperty({ description: 'Provider that performed transcription', enum: ['local', 'openai'], example: 'local' })
-  provider!: 'local' | 'openai'
+  @ApiProperty({ description: 'Provider that performed transcription', enum: ['local'], example: 'local' })
+  provider!: 'local'
 }
 
 export class TranscriptionResponseDto {
@@ -603,4 +610,70 @@ export class DeleteListeningAudioResponseDto {
 
   @ApiPropertyOptional({ nullable: true, example: null })
   error!: string | null
+}
+
+// ---------------------------------------------------------------------------
+// Per-user LLM settings
+// ---------------------------------------------------------------------------
+
+export class LlmKeySummaryDto implements LlmKeySummary {
+  @ApiProperty({ enum: LLM_PROVIDERS, example: 'openrouter' })
+  provider!: LlmProvider
+
+  @ApiProperty({ description: 'Last four characters of the saved key', example: '3f9a' })
+  last4!: string
+
+  @ApiProperty({ example: '2026-10-12T12:00:00.000Z' })
+  updatedAt!: string
+}
+
+export class LlmSettingsDtoModel implements LlmSettingsDto {
+  @ApiPropertyOptional({ enum: LLM_PROVIDERS, nullable: true, example: 'openrouter' })
+  provider!: LlmProvider | null
+
+  @ApiPropertyOptional({ nullable: true, example: 'google/gemma-4-31b-it:free' })
+  model!: string | null
+
+  @ApiProperty({ type: [String], example: ['nvidia/nemotron-3-super-120b-a12b:free'] })
+  fallbackModels!: string[]
+
+  @ApiProperty({ enum: LLM_REASONING_EFFORTS, example: 'medium' })
+  reasoningEffort!: LlmReasoningEffort
+
+  @ApiProperty({ type: [LlmKeySummaryDto] })
+  keys!: LlmKeySummaryDto[]
+}
+
+export class LlmSettingsResponseDto {
+  @ApiProperty({ type: LlmSettingsDtoModel })
+  data!: LlmSettingsDtoModel
+}
+
+export class LlmKeySummaryResponseDto {
+  @ApiProperty({ type: LlmKeySummaryDto })
+  data!: LlmKeySummaryDto
+}
+
+export class LlmModelOptionDto implements LlmModelOption {
+  @ApiProperty({ example: 'google/gemma-4-31b-it:free' })
+  id!: string
+
+  @ApiProperty({ example: 'Google: Gemma 4 31B (free)' })
+  name!: string
+
+  @ApiPropertyOptional({ example: 262144 })
+  contextLength?: number
+
+  @ApiPropertyOptional({ description: 'OpenRouter only: prompt and completion are free', example: true })
+  free?: boolean
+}
+
+export class LlmModelListDataDto implements LlmModelListData {
+  @ApiProperty({ type: [LlmModelOptionDto] })
+  models!: LlmModelOptionDto[]
+}
+
+export class LlmModelListResponseDto {
+  @ApiProperty({ type: LlmModelListDataDto })
+  data!: LlmModelListDataDto
 }

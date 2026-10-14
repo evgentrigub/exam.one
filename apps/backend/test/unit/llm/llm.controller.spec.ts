@@ -1,9 +1,10 @@
 import { Test, type TestingModule } from '@nestjs/testing'
 import { LlmController } from '../../../src/ai/llm.controller'
 import { LlmService } from '../../../src/ai/llm.service'
+import { makeUser } from '../../../src/testing/fixtures'
 
 describe('LlmController', () => {
-  it('delegates health to LlmService', async () => {
+  it("delegates health to LlmService for the current user", async () => {
     const health = jest.fn().mockResolvedValue({
       data: {
         configured: false,
@@ -20,7 +21,8 @@ describe('LlmController', () => {
     }).compile()
 
     const controller = module.get(LlmController)
-    await expect(controller.health()).resolves.toEqual({
+    const user = makeUser({ id: 'user-42' })
+    await expect(controller.health(user)).resolves.toEqual({
       data: {
         configured: false,
         connected: false,
@@ -30,6 +32,6 @@ describe('LlmController', () => {
       },
       error: null,
     })
-    expect(health).toHaveBeenCalledTimes(1)
+    expect(health).toHaveBeenCalledWith('user-42')
   })
 })

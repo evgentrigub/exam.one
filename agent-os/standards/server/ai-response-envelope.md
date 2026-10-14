@@ -12,7 +12,7 @@ interface AiResponse<T> {
 - NestJS owns the AI/TTS/STT proxy under `/api/v1` (`/llm`, `/ai`, `/tts`, `/stt`). Keep this envelope so frontend composables stay stable.
 - Shared type: `AiResponse<T>` in `@exam-one/contracts` (distinct from REST `ApiResponse`, whose `error` is `{ code, message }`).
 
-AI is **bring-your-own-key** with a provider-agnostic contract — the key, provider, model, and (optional) base URL come from runtime/env config supplied by the self-hoster. **Supported providers today: OpenAI and OpenRouter.** Never hard-code a single provider into the endpoint contract; isolate provider specifics behind a helper.
+AI is **bring-your-own-key, per user** with a provider-agnostic contract — each user saves a key, provider, model, fallback models and reasoning effort in Settings → AI provider (`/settings/llm`). Keys are encrypted at rest with `SECRETS_ENCRYPTION_KEY` and never returned to the client. **Supported providers: OpenAI, OpenRouter, Gemini, Anthropic and xAI**, all through the `openai` SDK with per-provider presets in `ai/llm-providers.ts`. Never hard-code a single provider into the endpoint contract; isolate provider specifics behind the presets.
 
 ## Rules
 
@@ -20,7 +20,7 @@ AI is **bring-your-own-key** with a provider-agnostic contract — the key, prov
 - **Invalid body** → HTTP 400. **Missing session** → HTTP 401.
 - `error` is a short, user-displayable string. Log the full error server-side.
 - `data` is `null` whenever `error` is set, and non-null on success. Never both populated.
-- Read the AI key/config from Nest `ConfigService` / env; treat a missing key as a graceful business failure, not a crash.
+- Resolve the AI config through `LlmService` (current user from `packContext`); treat a missing key as a graceful business failure, not a crash.
 
 ## Example (NestJS)
 
@@ -28,7 +28,7 @@ AI is **bring-your-own-key** with a provider-agnostic contract — the key, prov
 @Post('generate-reading')
 @HttpCode(200)
 async generateReading(@Body() body: GenerateReadingDto): Promise<AiResponse<ReadingExercise[]>> {
-  if (!this.llm.getConfig()) {
+  if (!(await this.llm.hasConfig())) {
     return { data: null, error: this.llm.missingKeyError() }
   }
   const parsed = await this.generate(body)

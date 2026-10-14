@@ -5,7 +5,6 @@ import request from 'supertest'
 import { createPrismaClient } from '@exam-one/database'
 import { AppModule } from '../src/app.module'
 import { configureApp } from '../src/bootstrap'
-import { LlmService } from '../src/ai/llm.service'
 
 describe('Auth + health (e2e)', () => {
   let app: INestApplication
@@ -14,6 +13,7 @@ describe('Auth + health (e2e)', () => {
 
   beforeEach(async () => {
     process.env['JWT_SECRET'] = 'e2e-test-secret-at-least-32-chars'
+    process.env['SECRETS_ENCRYPTION_KEY'] = Buffer.alloc(32, 5).toString('base64')
     process.env['DATABASE_URL'] ??=
       'postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public'
     process.env['FRONTEND_URL'] ??= 'http://localhost:3000'
@@ -22,22 +22,7 @@ describe('Auth + health (e2e)', () => {
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(LlmService)
-      .useValue({
-        health: async () => ({
-          data: {
-            configured: false,
-            connected: false,
-            provider: null,
-            model: null,
-            message: 'No LLM API key is configured.',
-          },
-          error: null,
-        }),
-        onModuleInit: async () => undefined,
-      })
-      .compile()
+    }).compile()
 
     app = moduleFixture.createNestApplication()
     configureApp(app)
@@ -149,10 +134,36 @@ describe('Auth + health (e2e)', () => {
         connected: false,
         provider: null,
         model: null,
-        message: 'No LLM API key is configured.',
+        message: 'No LLM API key is configured. Add one in Settings → AI provider.',
       },
       error: null,
     })
+  })
+
+  it('LLM settings belong to the user: defaults, validation, and no provider without a key', async () => {
+    await request(app.getHttpServer()).get('/api/v1/settings/llm').expect(401)
+
+    const agent = request.agent(app.getHttpServer())
+    await agent
+      .post('/api/v1/auth/register')
+      .send({ name: 'E2E User', email, password: 'password12' })
+      .expect(201)
+
+    const settings = await agent.get('/api/v1/settings/llm').expect(200)
+    expect(settings.body).toEqual({
+      data: { provider: null, model: null, fallbackModels: [], reasoningEffort: 'medium', keys: [] },
+    })
+
+    await agent.put('/api/v1/settings/llm/keys/deepseek').send({ apiKey: 'sk-something-long' }).expect(400)
+    await agent.put('/api/v1/settings/llm/keys/openai').send({ apiKey: 'short' }).expect(400)
+
+    const missingKey = await agent
+      .put('/api/v1/settings/llm')
+      .send({ provider: 'openrouter', model: 'google/gemma-4-31b-it:free' })
+      .expect(400)
+    expect(missingKey.body).toEqual(expect.objectContaining({ code: 'LLM_KEY_MISSING' }))
+
+    await agent.get('/api/v1/settings/llm/models?provider=openrouter').expect(400)
   })
 
   it('media endpoints need a session; a new account starts on Cambridge and lists its audio', async () => {

@@ -204,7 +204,7 @@ describe('Cambridge B1 Preliminary mock exam', () => {
       })
     )
     const llm = {
-      getConfig: () => ({ provider: 'openai' }),
+      hasConfig: async () => true,
       complete,
       missingKeyError: () => 'no key',
     } as unknown as LlmService
