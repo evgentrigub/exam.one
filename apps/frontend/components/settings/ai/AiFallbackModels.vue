@@ -12,7 +12,9 @@
       >
         <span class="text-xs font-medium text-base-content/45 w-4">{{ index + 1 }}</span>
         <span class="min-w-0 flex-1 truncate font-mono text-xs">{{ id }}</span>
-        <span v-if="isFree(id)" class="badge badge-xs badge-success badge-soft">{{ $t('settings.aiFree') }}</span>
+        <span v-if="isFree(id)" class="badge badge-xs badge-success badge-soft">{{
+          $t('settings.aiFree')
+        }}</span>
         <button
           type="button"
           class="btn btn-ghost btn-xs btn-square rounded-field"
@@ -28,7 +30,10 @@
       v-if="modelValue.length < max"
       class="select select-bordered select-sm rounded-field w-full max-w-sm"
       :aria-label="$t('settings.aiFallbackAdd')"
-      :disabled="!options.length"
+      @pointerdown="emit('open')"
+      @keydown.enter="emit('open')"
+      @keydown.space="emit('open')"
+      @keydown.down="emit('open')"
       @change="add"
     >
       <option value="" selected>{{ $t('settings.aiFallbackAdd') }}</option>
@@ -55,6 +60,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [ids: string[]]
+  open: []
 }>()
 
 const options = computed(() =>
