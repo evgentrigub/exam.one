@@ -1,12 +1,17 @@
 <template>
-  <div class="bg-base-100 shadow-sm border-b">
+  <div class="bg-base-100 shadow-sm border-b border-base-300">
     <nav class="navbar container mx-auto">
       <div class="navbar-start">
         <NuxtLink to="/" class="btn btn-ghost normal-case gap-2">
           <div
             class="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center"
           >
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-5 h-5 text-primary-content"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -116,7 +121,7 @@
                       @click="setTheme(themeOption.value)"
                     >
                       <span>{{ themeOption.icon }}</span>
-                      <span>{{ themeOption.label }}</span>
+                      <span>{{ $t(`settings.theme${themeOption.label}`) }}</span>
                     </a>
                   </li>
                 </ul>
@@ -237,7 +242,9 @@ const { locale, locales, setLocale } = useI18n()
 
 const localeOptions = computed(() =>
   locales.value.map(item =>
-    typeof item === 'string' ? { code: item, name: item } : { code: item.code, name: item.name ?? item.code }
+    typeof item === 'string'
+      ? { code: item, name: item }
+      : { code: item.code, name: item.name ?? item.code }
   )
 )
 

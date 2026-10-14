@@ -10,7 +10,9 @@
       :aria-label="$t('shell.openLanding')"
       class="flex items-center gap-2.5 px-4 h-14 shrink-0 border-b border-base-300 transition-colors hover:bg-base-200"
     >
-      <div class="w-7 h-7 rounded-field bg-primary text-primary-content grid place-items-center shrink-0">
+      <div
+        class="w-7 h-7 rounded-field bg-primary text-primary-content grid place-items-center shrink-0"
+      >
         <span class="font-display font-bold text-sm">E</span>
       </div>
       <span class="font-display text-lg font-bold leading-none tracking-tight">
@@ -120,17 +122,22 @@
 
     <!-- Exam target widget -->
     <div class="mt-auto p-3 border-t border-base-300">
-      <div class="rounded-box bg-base-200 p-3">
+      <div class="relative rounded-box bg-base-200 p-3 hover:bg-base-300/60 transition-colors">
+        <NuxtLink
+          to="/settings?section=learning"
+          :aria-label="$t('settings.navLearning')"
+          class="absolute inset-0 rounded-box focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        />
         <div class="flex items-center justify-between mb-2">
           <div class="text-xs font-semibold text-base-content/70">{{ $t('shell.examTarget') }}</div>
-          <NuxtLink to="/exercises" class="text-[10px] text-primary font-medium hover:underline">
+          <NuxtLink
+            to="/exercises"
+            class="relative z-10 text-[10px] text-primary font-medium hover:underline"
+          >
             {{ $t('shell.viewExercises') }}
           </NuxtLink>
         </div>
-        <NuxtLink
-          to="/exercises"
-          class="w-full flex items-center gap-2 rounded-field p-1 -m-1 hover:bg-base-300/60 transition-colors text-left"
-        >
+        <div class="w-full flex items-center gap-2 rounded-field p-1 -m-1 text-left">
           <div
             class="w-9 h-9 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0"
           >
@@ -140,19 +147,18 @@
             <div class="text-sm font-semibold leading-tight">{{ pack.title }}</div>
             <div class="text-[11px] text-base-content/60">
               <template v-if="hasExamDate">
-                {{ daysUntilExam == 0 ? $t('shell.pastExamDate') : $t('shell.examTargetMeta', { language: examLanguage, days: daysUntilExam }) }}
+                {{
+                  daysUntilExam == 0
+                    ? $t('shell.pastExamDate')
+                    : $t('shell.examTargetMeta', { language: examLanguage, days: daysUntilExam })
+                }}
               </template>
-              <button
-                v-else
-                type="button"
-                class="text-base-content/50 hover:text-primary hover:underline"
-                @click.stop="router.push('/settings?section=learning')"
-              >
+              <span v-else class="text-base-content/50">
                 {{ $t('shell.setExamDate') }}
-              </button>
+              </span>
             </div>
           </div>
-        </NuxtLink>
+        </div>
       </div>
     </div>
   </aside>
@@ -179,7 +185,6 @@ import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
 import { useAccountProfile } from '~/composables/useAccountProfile'
 
 const route = useRoute()
-const router = useRouter()
 const runtimeConfig = useRuntimeConfig()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
@@ -188,7 +193,9 @@ const { daysUntilExam, hasExamDate } = useAccountProfile()
 const { locale } = useI18n()
 
 const examLanguage = computed(() => {
-  const name = new Intl.DisplayNames([String(locale.value)], { type: 'language' }).of(pack.value.language)
+  const name = new Intl.DisplayNames([String(locale.value)], { type: 'language' }).of(
+    pack.value.language
+  )
   if (!name) return pack.value.language
   return name.charAt(0).toLocaleUpperCase(String(locale.value)) + name.slice(1)
 })

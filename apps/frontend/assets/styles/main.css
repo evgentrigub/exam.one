@@ -1,9 +1,14 @@
+/* Keep daisyUI modifiers above component defaults, as on the landing page. */
+@layer properties, theme, base, components, utilities;
+@layer utilities.daisyui.component, utilities.daisyui.modifier, utilities.daisyui.style;
+@layer utilities.daisyui.modifier.placement, utilities.daisyui.modifier.color;
+
 /* Tailwind CSS v4 with daisyUI v5 */
 @import 'tailwindcss';
 
-/* Include multiple daisyUI themes */
+/* Match the landing page's two palettes. */
 @plugin "daisyui" {
-  themes: light, cupcake;
+  themes: light, dark;
 }
 
 html,
@@ -16,6 +21,10 @@ body {
     Roboto,
     sans-serif;
   line-height: 1.6;
+}
+
+body {
+  @apply bg-base-200 text-base-content;
 }
 
 /* ─── Typography ─── */

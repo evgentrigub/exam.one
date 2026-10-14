@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-50 grid place-items-center bg-base-content/40 p-4 backdrop-blur-sm"
+    class="fixed inset-0 z-50 grid place-items-center bg-neutral/60 p-4 backdrop-blur-sm"
     @click="emit('close')"
   >
     <section

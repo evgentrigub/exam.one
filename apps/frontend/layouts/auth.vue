@@ -4,6 +4,12 @@
       <div class="grid lg:grid-cols-2 min-h-[640px]">
         <AuthAside />
         <div class="flex flex-col p-7 sm:p-10">
+          <div class="flex justify-end mb-3">
+            <ClientOnly>
+              <ThemeSwitcher />
+              <template #fallback><div class="w-8 h-8" /></template>
+            </ClientOnly>
+          </div>
           <div class="flex items-center justify-between gap-3 lg:hidden mb-8">
             <div class="flex items-center gap-2">
               <div
