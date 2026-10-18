@@ -9,9 +9,10 @@ import type {
 } from '@exam-one/contracts'
 import type { User } from '@exam-one/database'
 import { CurrentUser } from '../core/decorators/current-user.decorator'
-import { DeleteMediaAudioDto, SetDefaultVoiceDto } from './dto/media.dto'
+import { DeleteMediaAudioDto, SetDefaultVoiceDto, SetPreferredSttModelDto } from './dto/media.dto'
 import { MediaAudioService } from './media-audio.service'
 import { VoiceModelsService } from './voice-models.service'
+import { SttModelsService } from './stt-models.service'
 
 /** Settings → Generated files: listening audio on disk and the TTS voice models. */
 @ApiTags('media')
@@ -20,17 +21,19 @@ import { VoiceModelsService } from './voice-models.service'
 export class MediaController {
   constructor(
     private readonly audio: MediaAudioService,
-    private readonly voices: VoiceModelsService
+    private readonly voices: VoiceModelsService,
+    private readonly sttModels: SttModelsService
   ) {}
 
   @Get('summary')
   @ApiOperation({ summary: 'Bytes used by installed voice models and listening audio' })
   async summary(@CurrentUser() user: User): Promise<ApiResponse<MediaSummaryDto>> {
-    const [voiceBytes, audioBytes] = await Promise.all([
+    const [voiceBytes, audioBytes, stt] = await Promise.all([
       this.voices.installedBytes(),
       this.audio.totalBytes(user),
+      this.sttModels.list(),
     ])
-    return { data: { voiceBytes, audioBytes } }
+    return { data: { voiceBytes, audioBytes, sttBytes: stt.installedBytes } }
   }
 
   @Get('audio')
@@ -98,5 +101,33 @@ export class MediaController {
     @Param('id') id: string
   ): Promise<ApiResponse<{ freedBytes: number }>> {
     return { data: await this.voices.remove(user, id) }
+  }
+
+  @Get('stt-models')
+  @ApiOperation({ summary: 'Speech models, language preferences and installation progress' })
+  async listSttModels() {
+    return { data: await this.sttModels.list() }
+  }
+
+  @Put('stt-models/preferred')
+  @ApiOperation({ summary: 'Set the instance-wide speech model for an exam language' })
+  async preferSttModel(@Body() body: SetPreferredSttModelDto) {
+    return { data: await this.sttModels.prefer(body.lang, body.modelId) }
+  }
+
+  @Post('stt-models/:id/download')
+  @HttpCode(202)
+  async downloadSttModel(@Param('id') id: string) {
+    return { data: await this.sttModels.mutate(id, 'download') }
+  }
+
+  @Delete('stt-models/:id/download')
+  async cancelSttDownload(@Param('id') id: string) {
+    return { data: await this.sttModels.mutate(id, 'cancel') }
+  }
+
+  @Delete('stt-models/:id')
+  async removeSttModel(@Param('id') id: string) {
+    return { data: await this.sttModels.mutate(id, 'remove') }
   }
 }

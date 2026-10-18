@@ -1,0 +1,8 @@
+Parakeet TDT 0.6B v3, by NVIDIA.
+GGUF conversion by Handy (handy-computer/parakeet-tdt-0.6b-v3-gguf).
+Changes: weights converted to GGUF and quantized to Q4_K_M by Handy; packaging and language routing by exam.one.
+Weights: CC-BY-4.0; preserve attribution and indicate changes when redistributing.
+https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3
+https://huggingface.co/handy-computer/parakeet-tdt-0.6b-v3-gguf
+https://creativecommons.org/licenses/by/4.0/
+Runtime transcribe.cpp is separately licensed under MIT.

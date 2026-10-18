@@ -31,7 +31,6 @@ export interface AppConfig {
   TTS_CONCURRENCY: number
   STT_BASE_URL: string
   STT_LANGUAGES: string
-  STT_MODEL: string
   GENERATED_LISTENING_AUDIO_DIR: string
   /** Root of every pack's bundled seed WAVs (`<root>/<pack prefix>/<exercise>/…`). */
   SEED_LISTENING_AUDIO_DIR: string
@@ -125,8 +124,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   TTS_TURN_PAUSE_MS: Number(process.env['TTS_TURN_PAUSE_MS'] ?? '350') || 350,
   TTS_CONCURRENCY: Number(process.env['TTS_CONCURRENCY'] ?? '3') || 3,
   STT_BASE_URL: (process.env['STT_BASE_URL'] ?? 'http://127.0.0.1:8882').replace(/\/+$/, ''),
-  STT_LANGUAGES: process.env['STT_LANGUAGES'] ?? 'de',
-  STT_MODEL: process.env['STT_MODEL'] ?? 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
+  STT_LANGUAGES: process.env['STT_LANGUAGES'] ?? 'de,en,pl,es',
   GENERATED_LISTENING_AUDIO_DIR:
     process.env['GENERATED_LISTENING_AUDIO_DIR']?.trim() || defaultGeneratedListeningAudioDir(),
   SEED_LISTENING_AUDIO_DIR: process.env['SEED_LISTENING_AUDIO_DIR']?.trim() || defaultSeedListeningAudioDir(),

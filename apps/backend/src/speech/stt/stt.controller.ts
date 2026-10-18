@@ -27,10 +27,15 @@ export class SttController {
 
   @Get('health')
   @ApiOperation({
-    summary: 'Check local Parakeet readiness',
-    description: 'Checks whether the local Parakeet STT container is healthy and its model is loaded.',
+    summary: 'Check local speech recognition readiness',
+    description:
+      'Checks whether the selected local speech model is available for the active exam language.',
   })
-  @ApiResponseDoc({ status: 200, description: 'STT service readiness status', type: SttHealthResponseDto })
+  @ApiResponseDoc({
+    status: 200,
+    description: 'STT service readiness status',
+    type: SttHealthResponseDto,
+  })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   health(): Promise<AiResponse<SttHealthData>> {
     return this.stt.health()
@@ -42,7 +47,8 @@ export class SttController {
   @ApiConsumes('multipart/form-data')
   @ApiOperation({
     summary: 'Transcribe a speaking recording',
-    description: 'Transcribes an uploaded audio file (up to 25 MiB) using local Parakeet and returns the text transcript.',
+    description:
+      'Transcribes an uploaded audio file (up to 25 MiB) using local speech recognition and returns the text transcript.',
   })
   @ApiBody({
     schema: {
@@ -57,8 +63,16 @@ export class SttController {
       required: ['file'],
     },
   })
-  @ApiResponseDoc({ status: 200, description: 'Transcription result or error message', type: TranscriptionResponseDto })
-  @ApiResponseDoc({ status: 400, description: 'Missing or oversized audio file', type: ApiErrorDto })
+  @ApiResponseDoc({
+    status: 200,
+    description: 'Transcription result or error message',
+    type: TranscriptionResponseDto,
+  })
+  @ApiResponseDoc({
+    status: 400,
+    description: 'Missing or oversized audio file',
+    type: ApiErrorDto,
+  })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   @UseInterceptors(
     FileInterceptor('file', {

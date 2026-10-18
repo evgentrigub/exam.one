@@ -26,3 +26,14 @@ export class SetDefaultVoiceDto {
   @Matches(/^[a-z][a-z0-9_]{1,40}$/)
   voiceId!: string
 }
+
+export class SetPreferredSttModelDto {
+  @ApiProperty({ description: 'Exam language', example: 'en' })
+  @IsIn(['de', 'en', 'pl', 'es'])
+  lang!: string
+
+  @ApiProperty({ description: 'Installed STT model id', example: 'phonon-2' })
+  @IsString()
+  @Matches(/^[a-z0-9][a-z0-9-]{1,60}$/)
+  modelId!: string
+}

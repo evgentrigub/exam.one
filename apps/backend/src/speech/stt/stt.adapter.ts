@@ -1,19 +1,15 @@
 import type { SttHealthData, SttProvider } from '@exam-one/contracts'
 
 const DEFAULT_LOCAL_BASE_URL = 'http://127.0.0.1:8882'
-const DEFAULT_LOCAL_MODEL = 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0'
-const LEGACY_LOCAL_MODEL = 'nvidia/parakeet-tdt-0.6b-v3'
 
 export interface SttEnvSource {
   baseUrl?: string | undefined
-  model?: string | undefined
 }
 
 export interface SttConfig {
   language?: string
   provider: SttProvider
   baseUrl: string
-  model: string
 }
 
 export interface SttAudioInput {
@@ -23,11 +19,9 @@ export interface SttAudioInput {
 }
 
 export function getSttConfig(source: SttEnvSource): SttConfig {
-  const configuredModel = source.model || DEFAULT_LOCAL_MODEL
   return {
     provider: 'local',
     baseUrl: (source.baseUrl || DEFAULT_LOCAL_BASE_URL).replace(/\/+$/, ''),
-    model: configuredModel === LEGACY_LOCAL_MODEL ? DEFAULT_LOCAL_MODEL : configuredModel,
   }
 }
 
@@ -58,8 +52,7 @@ function responseError(value: unknown, status: number): string {
 
 export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): Promise<string> {
   const form = new FormData()
-  form.append('model', config.model)
-  form.append('language', config.language ?? 'de')
+  form.append('language', config.language ?? 'en')
   form.append('response_format', 'json')
   form.append('file', new Blob([audio.data], { type: audio.mimeType }), audio.fileName)
 
@@ -100,18 +93,28 @@ export async function transcribeAudio(audio: SttAudioInput, config: SttConfig): 
 
 export async function checkSttHealth(config: SttConfig): Promise<SttHealthData> {
   try {
-    const response = await fetch(`${config.baseUrl}/health`, {
-      signal: AbortSignal.timeout(5_000),
-    })
+    const response = await fetch(
+      `${config.baseUrl}/health?${new URLSearchParams({ language: config.language ?? 'en' })}`,
+      {
+        signal: AbortSignal.timeout(5_000),
+      }
+    )
     if (!response.ok) {
       return {
         provider: 'local',
         ready: false,
-        detail: `Local Parakeet health check returned HTTP ${response.status}.`,
+        detail: `Local STT health check returned HTTP ${response.status}.`,
       }
     }
 
     const payload = (await response.json().catch(() => null)) as unknown
+    const model =
+      typeof payload === 'object' &&
+      payload !== null &&
+      'model' in payload &&
+      typeof payload.model === 'string'
+        ? payload.model
+        : undefined
     if (
       typeof payload === 'object' &&
       payload !== null &&
@@ -121,20 +124,34 @@ export async function checkSttHealth(config: SttConfig): Promise<SttHealthData> 
       return {
         provider: 'local',
         ready: false,
-        detail: 'Local Parakeet is still loading its model.',
+        detail:
+          'detail' in payload && typeof payload.detail === 'string'
+            ? payload.detail
+            : 'Local STT is still loading its model.',
+        state:
+          'state' in payload &&
+          ['ready', 'missing', 'loading', 'unsupported', 'offline'].includes(String(payload.state))
+            ? (payload.state as NonNullable<SttHealthData['state']>)
+            : 'loading',
+        ...(model ? { model } : {}),
+        ...(config.language ? { language: config.language } : {}),
       }
     }
 
     return {
       provider: 'local',
       ready: true,
-      detail: `Local Parakeet ready · ${config.model}`,
+      detail: `Local STT ready${model ? ' · ' + model : ''}`,
+      ...(model ? { model } : {}),
+      state: 'ready',
+      ...(config.language ? { language: config.language } : {}),
     }
   } catch {
     return {
       provider: 'local',
       ready: false,
-      detail: 'Local Parakeet is offline. Run pnpm stt:up.',
+      detail: 'Local STT is offline. Run pnpm stt:up.',
+      state: 'offline',
     }
   }
 }

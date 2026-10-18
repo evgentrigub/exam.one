@@ -80,6 +80,9 @@ export interface SttHealthData {
   provider: SttProvider
   ready: boolean
   detail: string
+  model?: string
+  language?: string
+  state?: 'ready' | 'missing' | 'loading' | 'unsupported' | 'offline'
 }
 
 export interface TranscriptionData {

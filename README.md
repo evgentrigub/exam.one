@@ -107,7 +107,7 @@ See the [exam-pack authoring guide](data/README.md) for contracts, examples, and
 | PostgreSQL / Prisma                | Accounts, settings, exercises, attempts, drafts, reviews, mock state, and job records   |
 | Redis / BullMQ                     | Work queues and live job-event delivery                                                 |
 | Local TTS (text-to-speech) service | German, British English, and Spanish on Kokoro; Polish on Piper                         |
-| Local STT (speech-to-text) service | Parakeet transcription                                                                  |
+| Local STT (speech-to-text) service | Language-selected Phonon / Parakeet transcription                                                                  |
 
 The browser loads the Nuxt UI and calls the NestJS API. Requests carry the selected pack identity; practice records are scoped by user and pack. Saved attempt snapshots preserve the content and grading rules used at submission.
 
@@ -123,7 +123,7 @@ The default worker runs inside the backend process; generation continues indepen
 | Redis named volume                      | Queue state and pending work                                                                   |
 | `apps/frontend/public/audio/listening/` | Bundled listening WAVs and user/pack-scoped audio under `generated/`                           |
 | `scripts/tts/victoria/models/`          | Installed TTS model and voice files                                                            |
-| `scripts/stt/parakeet/models/`          | Local STT model                                                                                |
+| `scripts/stt/models/`                   | STT models, language preferences and derived caches                                                                                |
 | Browser preferences                     | Theme, locale, playback preferences, and reading bookmarks                                     |
 
 Practice data is API-backed after login. Speaking audio blobs are temporary; transcripts and reviews are persisted. **Settings → Generated files** manages audio and voices. Bundled audio and installed models are shared instance resources; generated audio is organized by user and pack.
@@ -136,6 +136,7 @@ Run these commands from the application repository checkout.
 
 - Node.js 24 or newer and pnpm 10 (the repository pins pnpm 10.12.1).
 - Docker Engine and Docker Compose v2 with healthcheck support.
+- Bash for the setup launchers.
 - Several GB of free disk space for images, speech weights, and generated audio.
 - Around 4 GB RAM for the core stack; allow more for image builds and local speech services.
 
@@ -209,7 +210,9 @@ pnpm stt:up
 
 TTS checks the selected pack's language and available voices. Installed voice files are reused and runtime downloads load without a restart. Stable WAV playback needs no live synthesis once files exist.
 
-STT uses local Parakeet. Manual transcripts are available when it is unavailable.
+Speech setup and verification use Bash entry points that run Python inside the speech Docker images. Self-hosting requires no host Python or pip packages. Contributor-only `stt:test` and `tts:test` use host Python 3.10+ and its standard library.
+
+STT uses Phonon 2 for fresh English installations (about 164 MB) and shared Parakeet Q4 for German, Polish and Spanish (about 485 MB). Add models in **Settings → Generated files → Speech recognition models**. Settings offers only these two downloads, with one recommended model per language. Existing Q8 installations keep their selections and can be removed or replaced; Q8 is no longer offered for download. Language preferences in Settings control model selection. `STT_SETUP_LANGS=en` controls initial downloads. Model files and preferences are instance-wide, and missing models keep manual transcripts available. Download sizes exclude runtime images, unpacked files and caches.
 
 Details: [TTS guide](scripts/tts/README.md), [STT guide](scripts/stt/README.md).
 
@@ -265,7 +268,7 @@ tar -czf "backups/listening-audio-$(date +%Y%m%d).tar.gz" \
   -C apps/frontend/public/audio listening
 ```
 
-Model folders can be backed up or downloaded again with `pnpm stack:setup`. Older installations may retain the `exam-one_generated_listening_audio` volume; copy its contents into the host `generated/` folder and verify playback before removing that old volume. There is no current `stack:migrate-generated-audio` command.
+Back up `scripts/stt/models/preferences.json` to preserve instance-wide language choices. Weights can be backed up or downloaded again for `STT_SETUP_LANGS` with `pnpm stack:setup`; other models can be added from Settings. Stop speech services before copying model state. Older installations may retain the `exam-one_generated_listening_audio` volume; copy its contents into the host `generated/` folder and verify playback before removing that old volume. There is no current `stack:migrate-generated-audio` command.
 
 ### Upgrade
 
@@ -292,7 +295,7 @@ Committed migrations and bundled-content upserts run during backend container st
 | Auth            | `JWT_SECRET`, `SECRETS_ENCRYPTION_KEY`, `AUTH_COOKIE_SECURE`, `SWAGGER_ENABLED`                                    |
 | Email           | `EMAIL_PROVIDER`, `SMTP_*`                                                                                         |
 | TTS             | `TTS_BASE_URL`, `TTS_PORT`, `KOKORO_LANGS`, `TTS_LANGUAGES`, `TTS_VOICES`, `TTS_SPEED`, `TTS_CONCURRENCY`          |
-| STT             | `STT_BASE_URL`, `STT_PORT`, `STT_LANGUAGES`, `STT_MODEL`, `STT_CPU_THREADS`                                        |
+| STT             | `STT_BASE_URL`, `STT_PORT`, `STT_LANGUAGES`, `STT_SETUP_LANGS`, `STT_CPU_THREADS`                                        |
 | Media           | `SEED_LISTENING_AUDIO_DIR`, `GENERATED_LISTENING_AUDIO_DIR`, `AUDIO_HOST_DISPLAY_ROOT`, `STACK_SEED_PACKS`         |
 
 Redis must be reachable at API startup and participates in readiness checks. Bull Board is available at `/api/admin/queues` with HTTP basic authentication when both dashboard credentials are set; otherwise it returns 404.

@@ -65,8 +65,10 @@
         <SettingsNotify v-else-if="section === 'notify'" />
         <SettingsAppearance v-else-if="section === 'appearance'" />
         <SettingsMedia
-          v-else-if="section === 'media-audio' || section === 'media-voices'"
-          :view="section === 'media-voices' ? 'voices' : 'audio'"
+          v-else-if="
+            section === 'media-audio' || section === 'media-voices' || section === 'media-stt'
+          "
+          :view="section === 'media-stt' ? 'stt' : section === 'media-voices' ? 'voices' : 'audio'"
         />
         <SettingsData v-else-if="section === 'data'" />
       </div>
@@ -127,6 +129,7 @@ const nav: { groupKey: string; items: NavItem[] }[] = [
         children: [
           { id: 'media-audio', labelKey: 'settings.navMediaAudio', icon: Headphones },
           { id: 'media-voices', labelKey: 'settings.navMediaVoices', icon: Mic },
+          { id: 'media-stt', labelKey: 'settings.sttModelsTitle', icon: Mic },
         ],
       },
       { id: 'data', labelKey: 'settings.navData', icon: Database },

@@ -11,6 +11,7 @@
     >
       <Search :size="15" class="opacity-50 shrink-0" />
       <input
+        ref="searchInput"
         v-model="query"
         type="search"
         role="combobox"
@@ -38,7 +39,7 @@
         <span class="flex items-center gap-1.5 text-error"
           ><AlertCircle :size="14" /> {{ error }}</span
         >
-        <button type="button" class="btn btn-xs btn-outline rounded-field" @click="emit('retry')">
+        <button type="button" class="btn btn-xs btn-outline rounded-field" @click="retryModels">
           {{ $t('settings.aiModelsRetry') }}
         </button>
       </div>
@@ -48,8 +49,8 @@
       </p>
 
       <ul
-        :id="listId"
         v-else
+        :id="listId"
         role="listbox"
         :aria-label="$t('settings.aiModel')"
         class="max-h-64 overflow-y-auto py-1"
@@ -113,6 +114,7 @@ const emit = defineEmits<{
 const query = ref('')
 const open = ref(false)
 const picker = ref<HTMLElement | null>(null)
+const searchInput = ref<HTMLInputElement | null>(null)
 const listId = useId()
 
 onClickOutside(picker, closePicker)
@@ -134,7 +136,13 @@ function onFocusOut(event: FocusEvent) {
 
 function selectModel(id: string) {
   emit('update:modelValue', id)
+  searchInput.value?.focus()
   closePicker()
+}
+
+function retryModels() {
+  searchInput.value?.focus()
+  emit('retry')
 }
 
 const filtered = computed(() => {

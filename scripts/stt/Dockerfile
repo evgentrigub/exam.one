@@ -53,11 +53,13 @@ WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --upgrade pip \
+    && pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu \
     && pip install -r requirements.txt
 
 COPY --from=transcribe-builder /opt/transcribe /opt/transcribe
 COPY --from=transcribe-builder /src/transcribe.cpp/bindings/python/src /opt/transcribe/python
-COPY main.py .
+COPY *.py model-manifest.json ./
+COPY notices ./notices
 
 EXPOSE 8882
 

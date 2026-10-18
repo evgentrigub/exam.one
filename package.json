@@ -20,7 +20,7 @@
     "format": "prettier --write . \"!graphify-out/**\" \"!scripts/**\"",
     "type-check": "pnpm --recursive type-check",
     "i18n:check": "node scripts/check-locale-parity.mjs",
-    "test": "pnpm --recursive test",
+    "test": "pnpm --recursive test && pnpm stt:test",
     "test:full": "pnpm test:frontend && pnpm test:backend && pnpm test:e2e",
     "test:all": "pnpm test:frontend && pnpm test:backend",
     "test:frontend": "pnpm --filter ./apps/frontend test",
@@ -46,7 +46,8 @@
     "tts:test": "cd scripts/tts/victoria && python3 -m unittest test_voice_catalog",
     "tts:up": "pnpm tts:setup && docker compose up -d --build --wait kokoro-voices",
     "tts:down": "docker compose stop kokoro-voices",
-    "stt:setup": "bash scripts/stt/parakeet/download-models.sh",
+    "stt:setup": "bash scripts/stt/setup.sh",
+    "stt:test": "cd scripts/stt && python3 -m unittest test_catalog",
     "stt:up": "pnpm stt:setup && docker compose up -d --build --wait parakeet",
     "stt:down": "docker compose stop parakeet"
   },

@@ -1,0 +1,6 @@
+fastapi>=0.116,<1
+python-multipart>=0.0.20,<1
+uvicorn>=0.35,<1
+# Verified upstream runtime; CPU torch is installed from the CPU-only wheel index.
+fermion-research @ https://files.pythonhosted.org/packages/35/c3/90dc124286ce01004ddb30cd302381aad79fc281899d7dd2973ec85faef6/fermion_research-0.2.11-py3-none-any.whl#sha256=c4097574ef42e96caf31732097321da9e16c0b9108b5c616aa9d5d1f540319f8
+transformers==5.17.0

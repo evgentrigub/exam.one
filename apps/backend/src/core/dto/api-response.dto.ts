@@ -46,7 +46,10 @@ export class ApiErrorDto {
 }
 
 export class MessageDataDto {
-  @ApiProperty({ description: 'Status or outcome message', example: 'Verification email resent successfully' })
+  @ApiProperty({
+    description: 'Status or outcome message',
+    example: 'Verification email resent successfully',
+  })
   message!: string
 }
 
@@ -112,7 +115,11 @@ export class HealthLivenessResponseDto {
 }
 
 export class HealthReadyChecksDto {
-  @ApiProperty({ description: 'Postgres database connection check', enum: ['up', 'down'], example: 'up' })
+  @ApiProperty({
+    description: 'Postgres database connection check',
+    enum: ['up', 'down'],
+    example: 'up',
+  })
   database!: 'up' | 'down'
 }
 
@@ -162,16 +169,27 @@ export class UserDtoModel implements UserDto {
   @ApiProperty({ description: 'User display name', example: 'Ada Lovelace' })
   name!: string
 
-  @ApiPropertyOptional({ description: 'Target exam date ISO timestamp', nullable: true, example: '2026-12-15T00:00:00.000Z' })
+  @ApiPropertyOptional({
+    description: 'Target exam date ISO timestamp',
+    nullable: true,
+    example: '2026-12-15T00:00:00.000Z',
+  })
   examTargetDate!: string | null
 
-  @ApiProperty({ description: 'User subscription plan', enum: ['free', 'pro', 'enterprise'], example: 'free' })
+  @ApiProperty({
+    description: 'User subscription plan',
+    enum: ['free', 'pro', 'enterprise'],
+    example: 'free',
+  })
   plan!: PlanId
 
   @ApiProperty({ description: 'Whether email verification has been completed', example: true })
   emailVerified!: boolean
 
-  @ApiProperty({ description: 'Account creation ISO timestamp', example: '2026-01-01T12:00:00.000Z' })
+  @ApiProperty({
+    description: 'Account creation ISO timestamp',
+    example: '2026-01-01T12:00:00.000Z',
+  })
   createdAt!: string
 
   @ApiProperty({ description: 'Account update ISO timestamp', example: '2026-01-02T12:00:00.000Z' })
@@ -248,22 +266,40 @@ export class ExerciseDtoModel implements ExerciseDto {
   @ApiProperty({ description: 'Owning exam pack ID', example: 'goethe-de-a2' })
   packId!: string
 
-  @ApiProperty({ description: 'Skill area', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], example: 'READING' })
+  @ApiProperty({
+    description: 'Skill area',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    example: 'READING',
+  })
   skill!: Skill
 
   @ApiProperty({ description: 'CEFR level of the owning pack (e.g. A1, A2)', example: 'A2' })
   level!: string
 
-  @ApiProperty({ description: 'Origin source: seed or user-generated', enum: ['seed', 'generated'], example: 'generated' })
+  @ApiProperty({
+    description: 'Origin source: seed or user-generated',
+    enum: ['seed', 'generated'],
+    example: 'generated',
+  })
   source!: 'seed' | 'generated' | string
 
-  @ApiProperty({ description: 'Exercise visibility mode', enum: ['PRACTICE', 'EXAM_ONLY'], example: 'PRACTICE' })
+  @ApiProperty({
+    description: 'Exercise visibility mode',
+    enum: ['PRACTICE', 'EXAM_ONLY'],
+    example: 'PRACTICE',
+  })
   visibility!: 'PRACTICE' | 'EXAM_ONLY' | string
 
-  @ApiProperty({ description: 'External slug identifier', example: 'goethe-a2-reading-part-1-gen-1' })
+  @ApiProperty({
+    description: 'External slug identifier',
+    example: 'goethe-a2-reading-part-1-gen-1',
+  })
   externalId!: string
 
-  @ApiProperty({ description: 'Pack-specific exercise payload (texts, questions, options, keys)', type: Object })
+  @ApiProperty({
+    description: 'Pack-specific exercise payload (texts, questions, options, keys)',
+    type: Object,
+  })
   payload!: unknown
 
   @ApiProperty({ description: 'Creation ISO timestamp', example: '2026-01-01T12:00:00.000Z' })
@@ -306,7 +342,11 @@ export class ResultDtoModel implements ResultDto {
   @ApiPropertyOptional({ description: 'Percentage score 0-100', nullable: true, example: 100 })
   percentage!: number | null
 
-  @ApiPropertyOptional({ description: 'Detailed AI or rubric review JSON', nullable: true, type: Object })
+  @ApiPropertyOptional({
+    description: 'Detailed AI or rubric review JSON',
+    nullable: true,
+    type: Object,
+  })
   review!: unknown
 
   @ApiProperty({ description: 'Result creation timestamp', example: '2026-01-01T12:00:00.000Z' })
@@ -314,7 +354,10 @@ export class ResultDtoModel implements ResultDto {
 }
 
 export class AttemptDtoModel implements AttemptDto {
-  @ApiProperty({ description: 'Exam pack ID under which attempt was made', example: 'goethe-de-a2' })
+  @ApiProperty({
+    description: 'Exam pack ID under which attempt was made',
+    example: 'goethe-de-a2',
+  })
   packId!: string
 
   @ApiProperty({ description: 'Attempt UUID', example: 'att_c1234567890' })
@@ -323,22 +366,46 @@ export class AttemptDtoModel implements AttemptDto {
   @ApiProperty({ description: 'Owner user ID', example: 'usr_c1234567890' })
   userId!: string
 
-  @ApiPropertyOptional({ description: 'Foreign key to exercise if persisted', nullable: true, example: 'ex_c1234567890' })
+  @ApiPropertyOptional({
+    description: 'Foreign key to exercise if persisted',
+    nullable: true,
+    example: 'ex_c1234567890',
+  })
   exerciseId!: string | null
 
-  @ApiPropertyOptional({ description: 'External slug of exercise', nullable: true, example: 'goethe-a2-reading-part-1' })
+  @ApiPropertyOptional({
+    description: 'External slug of exercise',
+    nullable: true,
+    example: 'goethe-a2-reading-part-1',
+  })
   exerciseExternalId!: string | null
 
-  @ApiProperty({ description: 'Tested skill area', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], example: 'READING' })
+  @ApiProperty({
+    description: 'Tested skill area',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    example: 'READING',
+  })
   skill!: Skill
 
-  @ApiPropertyOptional({ description: 'Historical rendering snapshot of exercise content', nullable: true, type: Object })
+  @ApiPropertyOptional({
+    description: 'Historical rendering snapshot of exercise content',
+    nullable: true,
+    type: Object,
+  })
   snapshot?: unknown
 
-  @ApiProperty({ description: 'User-submitted answers dictionary', type: Object, example: { 'question-1': 0, 'question-2': 1 } })
+  @ApiProperty({
+    description: 'User-submitted answers dictionary',
+    type: Object,
+    example: { 'question-1': 0, 'question-2': 1 },
+  })
   answers!: unknown
 
-  @ApiPropertyOptional({ type: ResultDtoModel, nullable: true, description: 'Evaluation result and scores' })
+  @ApiPropertyOptional({
+    type: ResultDtoModel,
+    nullable: true,
+    description: 'Evaluation result and scores',
+  })
   result!: ResultDtoModel | null
 
   @ApiProperty({ description: 'Submission ISO timestamp', example: '2026-01-01T12:00:00.000Z' })
@@ -375,7 +442,11 @@ export class DraftDtoModel implements DraftDto {
   @ApiProperty({ description: 'Owner user ID', example: 'usr_c1234567890' })
   userId!: string
 
-  @ApiProperty({ description: 'Target skill', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], example: 'WRITING' })
+  @ApiProperty({
+    description: 'Target skill',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    example: 'WRITING',
+  })
   skill!: Skill
 
   @ApiProperty({ description: 'Topic or exercise identifier', example: 'writing-topic-part1' })
@@ -424,7 +495,10 @@ export class MockExamSetSummaryDtoModel implements MockExamSetSummaryDto {
   @ApiProperty({ description: 'Proficiency level', example: 'A2' })
   level!: string
 
-  @ApiProperty({ description: 'Human-readable mock set title', example: 'Goethe-Zertifikat A2 Mock Exam Set 1' })
+  @ApiProperty({
+    description: 'Human-readable mock set title',
+    example: 'Goethe-Zertifikat A2 Mock Exam Set 1',
+  })
   title!: string
 
   @ApiProperty({ description: 'Whether set was dynamically AI-generated', example: false })
@@ -435,7 +509,11 @@ export class MockExamSetSummaryDtoModel implements MockExamSetSummaryDto {
 }
 
 export class MockExamSetDtoModel extends MockExamSetSummaryDtoModel implements MockExamSetDto {
-  @ApiPropertyOptional({ description: 'Exam rules including timing and pass thresholds', nullable: true, type: Object })
+  @ApiPropertyOptional({
+    description: 'Exam rules including timing and pass thresholds',
+    nullable: true,
+    type: Object,
+  })
   rules?: unknown
 
   @ApiProperty({ description: 'Full exam exercises grouped by module', type: Object })
@@ -471,10 +549,16 @@ export class MockExamAttemptDtoModel implements MockExamAttemptDto {
   @ApiProperty({ description: 'Mock exam set external slug', example: 'goethe-a2-set-1' })
   setExternalId!: string
 
-  @ApiProperty({ description: 'Persisted full mock exam state (answers, step, timers, reviews)', type: Object })
+  @ApiProperty({
+    description: 'Persisted full mock exam state (answers, step, timers, reviews)',
+    type: Object,
+  })
   state!: unknown
 
-  @ApiProperty({ description: 'Last state save ISO timestamp', example: '2026-01-01T12:00:00.000Z' })
+  @ApiProperty({
+    description: 'Last state save ISO timestamp',
+    example: '2026-01-01T12:00:00.000Z',
+  })
   updatedAt!: string
 }
 
@@ -491,15 +575,26 @@ export class MockExamAttemptResponseDto {
 // ---------------------------------------------------------------------------
 
 export class AiGenericResponseDto {
-  @ApiPropertyOptional({ description: 'Generated content, model answer, or grading payload', nullable: true, type: Object })
+  @ApiPropertyOptional({
+    description: 'Generated content, model answer, or grading payload',
+    nullable: true,
+    type: Object,
+  })
   data!: unknown | null
 
-  @ApiPropertyOptional({ description: 'Error message if generation or review failed', nullable: true, example: null })
+  @ApiPropertyOptional({
+    description: 'Error message if generation or review failed',
+    nullable: true,
+    example: null,
+  })
   error!: string | null
 }
 
 export class LlmHealthDataDto implements LlmHealthData {
-  @ApiProperty({ description: "Whether the current user has chosen a provider, saved its key and picked a model", example: true })
+  @ApiProperty({
+    description: 'Whether the current user has chosen a provider, saved its key and picked a model',
+    example: true,
+  })
   configured!: boolean
 
   @ApiProperty({ description: 'Whether connection test to upstream LLM succeeded', example: true })
@@ -508,10 +603,18 @@ export class LlmHealthDataDto implements LlmHealthData {
   @ApiPropertyOptional({ description: 'Active LLM provider', nullable: true, example: 'openai' })
   provider!: string | null
 
-  @ApiPropertyOptional({ description: "The user's main LLM model", nullable: true, example: 'google/gemma-4-31b-it:free' })
+  @ApiPropertyOptional({
+    description: "The user's main LLM model",
+    nullable: true,
+    example: 'google/gemma-4-31b-it:free',
+  })
   model!: string | null
 
-  @ApiPropertyOptional({ description: 'Connection status message or error note', nullable: true, example: 'OK' })
+  @ApiPropertyOptional({
+    description: 'Connection status message or error note',
+    nullable: true,
+    example: 'OK',
+  })
   message!: string | null
 }
 
@@ -543,8 +646,20 @@ export class SttHealthDataDto implements SttHealthData {
   @ApiProperty({ description: 'Whether speech-to-text service is ready', example: true })
   ready!: boolean
 
-  @ApiProperty({ description: 'Readiness detail or fallback information', example: 'Parakeet container ready' })
+  @ApiProperty({
+    description: 'Readiness detail or fallback information',
+    example: 'Phonon 2 ready',
+  })
   detail!: string
+
+  @ApiPropertyOptional({ description: 'Selected speech model', example: 'phonon-2' })
+  model?: string
+
+  @ApiPropertyOptional({ description: 'Active exam language', example: 'en' })
+  language?: string
+
+  @ApiPropertyOptional({ enum: ['ready', 'missing', 'loading', 'unsupported', 'offline'] })
+  state?: NonNullable<SttHealthData['state']>
 }
 
 export class SttHealthResponseDto {
@@ -556,10 +671,17 @@ export class SttHealthResponseDto {
 }
 
 export class TranscriptionDataDto implements TranscriptionData {
-  @ApiProperty({ description: 'Transcribed text from user audio', example: 'Ich möchte gerne einen Deutschkurs besuchen.' })
+  @ApiProperty({
+    description: 'Transcribed text from user audio',
+    example: 'Ich möchte gerne einen Deutschkurs besuchen.',
+  })
   transcript!: string
 
-  @ApiProperty({ description: 'Provider that performed transcription', enum: ['local'], example: 'local' })
+  @ApiProperty({
+    description: 'Provider that performed transcription',
+    enum: ['local'],
+    example: 'local',
+  })
   provider!: 'local'
 }
 
@@ -572,19 +694,25 @@ export class TranscriptionResponseDto {
 }
 
 export class ListeningExerciseAudioMapDto implements ListeningExerciseAudioMap {
-  @ApiPropertyOptional({ description: 'Shared intro/scenario audio URL path', example: '/audio/listening/goethe-a2-intro.wav' })
+  @ApiPropertyOptional({
+    description: 'Shared intro/scenario audio URL path',
+    example: '/audio/listening/goethe-a2-intro.wav',
+  })
   shared?: string
 
   @ApiPropertyOptional({
     description: 'Map of question item ID to generated audio URL path',
     type: Object,
-    example: { 'q1': '/audio/listening/q1.wav', 'q2': '/audio/listening/q2.wav' },
+    example: { q1: '/audio/listening/q1.wav', q2: '/audio/listening/q2.wav' },
   })
   items?: Record<string, string>
 }
 
 export class GenerateListeningAudioDataDto implements GenerateListeningAudioData {
-  @ApiProperty({ type: ListeningExerciseAudioMapDto, description: 'Generated listening audio paths' })
+  @ApiProperty({
+    type: ListeningExerciseAudioMapDto,
+    description: 'Generated listening audio paths',
+  })
   audio!: ListeningExerciseAudioMapDto
 
   @ApiProperty({ description: 'Count of audio files written', example: 3 })
@@ -664,7 +792,10 @@ export class LlmModelOptionDto implements LlmModelOption {
   @ApiPropertyOptional({ example: 262144 })
   contextLength?: number
 
-  @ApiPropertyOptional({ description: 'OpenRouter only: prompt and completion are free', example: true })
+  @ApiPropertyOptional({
+    description: 'OpenRouter only: prompt and completion are free',
+    example: true,
+  })
   free?: boolean
 }
 

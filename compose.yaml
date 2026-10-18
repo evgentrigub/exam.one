@@ -72,7 +72,6 @@ services:
       TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva,bf_emma,bf_isabella,bm_george,bm_fable,pl_gosia,pl_darkman,pl_bass,ef_dora,em_alex,em_santa}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
       STT_BASE_URL: 'http://parakeet:8882'
-      STT_MODEL: '${STT_MODEL:-handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0}'
       STT_LANGUAGES: '${STT_LANGUAGES:-de,en,pl,es}'
       SEED_LISTENING_AUDIO_DIR: /app/data/listening
       GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
@@ -163,17 +162,18 @@ services:
 
   parakeet:
     build:
-      context: ./scripts/stt/parakeet
+      context: ./scripts/stt
       dockerfile: Dockerfile
     environment:
-      PARAKEET_MODEL_DIR: /app/models
-      PARAKEET_MODEL_FILE: parakeet-tdt-0.6b-v3-Q8_0.gguf
-      PARAKEET_MODEL_ID: handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0
+      STT_MODEL_DIR: /app/models
+      STT_LEGACY_MODEL: /app/legacy-models/parakeet-tdt-0.6b-v3-Q8_0.gguf
+      STT_SETUP_LANGS: '${STT_SETUP_LANGS:-en}'
       STT_CPU_THREADS: '${STT_CPU_THREADS:-4}'
     ports:
       - '127.0.0.1:${STT_PORT:-8882}:8882'
     volumes:
-      - ./scripts/stt/parakeet/models:/app/models:ro
+      - ./scripts/stt/models:/app/models
+      - ./scripts/stt/parakeet/models:/app/legacy-models:ro
     healthcheck:
       test:
         - CMD-SHELL

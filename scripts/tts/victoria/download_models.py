@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--langs", default=os.getenv("KOKORO_LANGS", "en"), help="comma-separated languages")
     parser.add_argument("--voices", default="", help="comma-separated voice ids (overrides --langs)")
     parser.add_argument("--target", default=str(ROOT / "models"), help="model directory")
+    parser.add_argument("--verify", action="store_true", help="check selected voices without downloading")
     args = parser.parse_args()
 
     catalog = VoiceCatalog(Path(args.target))
@@ -40,6 +41,8 @@ def main() -> int:
         if catalog.installed(voice_id):
             print(f"[setup-voices] Already present: {voice_id} ({voice.lang})", flush=True)
             continue
+        if args.verify:
+            raise ValueError(f"Missing voice {voice_id}; run pnpm tts:setup")
         megabytes = catalog.download_bytes(voice_id) / 1_000_000
         print(f"[setup-voices] Downloading {voice_id} ({voice.lang}, {megabytes:.1f} MB)…", flush=True)
         catalog.install(voice_id)

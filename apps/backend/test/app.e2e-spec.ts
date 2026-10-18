@@ -180,7 +180,7 @@ describe('Auth + health (e2e)', () => {
     expect(settings.body.data).toEqual(expect.objectContaining({ packId: 'cambridge-en-a2', targetLanguage: 'en' }))
 
     const summary = await agent.get('/api/v1/media/summary').expect(200)
-    expect(summary.body.data).toEqual({ voiceBytes: expect.any(Number), audioBytes: expect.any(Number) })
+    expect(summary.body.data).toEqual({ voiceBytes: expect.any(Number), audioBytes: expect.any(Number), sttBytes: expect.any(Number) })
 
     const audio = await agent.get('/api/v1/media/audio').expect(200)
     expect(Array.isArray(audio.body.data.rows)).toBe(true)

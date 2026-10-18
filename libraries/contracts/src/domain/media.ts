@@ -41,6 +41,31 @@ export interface MediaAudioDeleteResultDto {
 export interface MediaSummaryDto {
   voiceBytes: number
   audioBytes: number
+  sttBytes: number
+}
+
+export interface SttModelDto {
+  id: string
+  name: string
+  engine: string
+  languages: string[]
+  /** Curated Settings languages; capabilities above may include additional languages. */
+  recommendedLanguages?: string[]
+  /** False for retained legacy assets: inference/removal only, no new downloads or selections. */
+  downloadable?: boolean
+  license: string
+  installed: boolean
+  downloadBytes: number
+  installedBytes: number
+  selectedLanguages: string[]
+  progress: VoiceDownloadProgressDto | null
+}
+
+export interface SttModelsDto {
+  online: boolean
+  manageable: boolean
+  installedBytes: number
+  models: SttModelDto[]
 }
 
 export type VoiceQuality = 'low' | 'medium' | 'high'

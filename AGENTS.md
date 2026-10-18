@@ -17,7 +17,7 @@ This file is the working guide for coding agents in this repository. It should b
 - Mock exam bundled Set 1 (per pack), generated immutable sets, resumable AI/TTS pipeline, automatic grading, module reviews, and aggregate AI overview
 - Auth and account UI — login-gated NestJS session, profile, settings; optional SMTP; `pnpm auth:set-password`
 - Skill practice, mock exams, progress, and drafts are NestJS/PostgreSQL-backed after login
-- Per-user BYOK LLM (OpenAI, OpenRouter, Gemini, Anthropic, xAI), Kokoro, and Parakeet on NestJS with the `{ data, error }` envelope
+- Per-user BYOK LLM (OpenAI, OpenRouter, Gemini, Anthropic, xAI), Kokoro, and language-aware Phonon/Parakeet on NestJS with the `{ data, error }` envelope
 - Docker Compose packaging — one root `compose.yaml`, migrate/seed on backend boot, durable volumes, core-first `pnpm stack:up`
 - Self-host runbook — README, `.env.example`, first user, API keys, named-volume backup/restore
 
@@ -51,7 +51,7 @@ Use `pnpm`.
 - `pnpm stack:seed-audio` - generate bundled listening WAVs if they are missing
 - `pnpm stack:down` - stop the complete stack without deleting named volumes
 - `pnpm tts:up` - prepare and start only Kokoro TTS
-- `pnpm stt:up` - prepare and start only Parakeet STT
+- `pnpm stt:up` - prepare selected models and start the language-aware STT service
 - `pnpm auth:set-password` - set or recover a local account password (`--email you@example.com`)
 
 ## Codebase Shape
@@ -125,6 +125,14 @@ The canonical implementation standards live under `agent-os/standards/`. Follow 
 - Generated mock sets require LLM configuration/connection and Docker TTS preflight checks; preserve completed artifacts and resumable pipeline state on failure
 - Writing and Speaking mock grading starts automatically and persists the full validated review alongside the score
 - Aggregate mock-exam AI review is optional and must never invalidate or block completed exam results
+
+## Speech setup
+
+Self-host setup/verification must not require host Python or pip packages. Bash launchers run Python in temporary Compose speech containers and reuse the runtime mounts/language settings. Contributor catalog tests may use host Python’s standard library.
+
+## Speech model ownership
+
+`scripts/stt/model-manifest.json` owns STT model assets, checksums and language defaults. Fresh German/Polish/Spanish defaults use Parakeet Q4; Q8 is legacy-only: preserve existing selections/aliases, but hide it on fresh instances and reject new downloads/selections. Settings offers Phonon for English and Q4 for German/Polish/Spanish. Public documentation and E2E catalog fixtures derive from this manifest. STT models and language preferences are instance-wide; never auto-download a fallback after a transcription failure.
 
 ## Before Finishing A Change
 

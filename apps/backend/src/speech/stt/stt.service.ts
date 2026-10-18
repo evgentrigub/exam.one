@@ -43,14 +43,13 @@ export class SttService {
 
   private sttConfig(): SttConfig {
     const language = getLivePack(packContext.getStore()?.packId).speech.sttLang
-    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de').split(',').map(value => value.trim())
+    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de,en,pl,es').split(',').map(value => value.trim())
     if (!installedLanguages.includes(language)) {
       throw new Error(`Speech recognition for ${language} is unavailable on this instance. You can enter a transcript manually.`)
     }
     return {
       ...getSttConfig({
         baseUrl: this.config.get<string>('app.STT_BASE_URL'),
-        model: this.config.get<string>('app.STT_MODEL'),
       }),
       language,
     }
