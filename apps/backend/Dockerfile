@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM node:24-alpine AS build
 WORKDIR /workspace
 RUN corepack enable
@@ -8,7 +9,10 @@ COPY libraries/contracts/package.json libraries/contracts/package.json
 COPY libraries/database/package.json libraries/database/package.json
 COPY libraries/nestjs-libraries/package.json libraries/nestjs-libraries/package.json
 COPY data/package.json data/package.json
-RUN pnpm install --frozen-lockfile
+# Every manifest is copied so the frozen lockfile matches the workspace; only the backend and its
+# workspace dependencies are installed. The pnpm store cache is shared with the frontend image.
+RUN --mount=type=cache,id=exam-one-pnpm-store,target=/pnpm/store \
+  pnpm install --frozen-lockfile --store-dir /pnpm/store --filter exam-one-backend...
 COPY apps/backend apps/backend
 COPY libraries/contracts libraries/contracts
 COPY libraries/database libraries/database
@@ -19,7 +23,9 @@ RUN pnpm --filter @exam-one/exam-packs build \
   && pnpm --filter @exam-one/contracts build \
   && pnpm --filter @exam-one/nestjs-libraries build \
   && pnpm --filter ./apps/backend build
-RUN pnpm deploy --filter ./apps/backend --prod /production
+# deploy reads packages from the store, so it needs the same cache mount.
+RUN --mount=type=cache,id=exam-one-pnpm-store,target=/pnpm/store \
+  pnpm deploy --filter ./apps/backend --prod --store-dir /pnpm/store /production
 # pnpm deploy --prod skips @prisma/engines postinstall, so migrate would try
 # to download schema-engine into a root-owned directory at runtime. Query
 # engines are no longer required: Prisma 7 Client is generated into

@@ -1,9 +1,10 @@
 name: exam-one
 
 # One Compose project for the application, database, text-to-speech, and
-# speech-to-text services. On the first run, use `pnpm stack:up` so the TTS and
-# STT model snapshots are downloaded to their gitignored host directories
-# before Docker starts the model mounts. Only English TTS voices and the
+# speech-to-text services. On the first run, use `pnpm stack:up` (or
+# `pnpm stack:up:speech` after `stack:up:core`) so the TTS and STT model
+# snapshots are downloaded to their gitignored host directories before Docker
+# starts the model mounts. Only English TTS voices and the
 # Cambridge A2 Key seed audio are prepared up front; other languages are
 # downloaded and generated on demand from Settings → Generated files.
 #

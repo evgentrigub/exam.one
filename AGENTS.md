@@ -46,7 +46,7 @@ Use `pnpm`.
 - `pnpm format` - run Prettier
 - `pnpm type-check` - type-check all workspace projects
 - `pnpm test` - test all workspace projects
-- `pnpm stack:up` - prepare speech models and start the complete Docker Compose stack
+- `pnpm stack:up` - start the core app, then prepare speech models and start speech (`stack:up:core` + `stack:up:speech`)
 - `pnpm stack:verify-models` - fail if TTS/STT model snapshots are missing
 - `pnpm stack:seed-audio` - generate bundled listening WAVs if they are missing
 - `pnpm stack:down` - stop the complete stack without deleting named volumes
@@ -63,7 +63,7 @@ Use `pnpm`.
 - `data/` (`@exam-one/exam-packs`) holds exam structure, PromptSpecs, and optional bundled seeds under `src/packs/{packId}/`
 - `libraries/nestjs-libraries/` is the shared backend infrastructure boundary
 - `compose.yaml` is the only Compose file; it defines frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT
-- `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the core app after migrate/seed, then speech sidecars, after ensuring host-persisted speech models are present
+- `pnpm dev:infra` selects only PostgreSQL for local development; `pnpm stack:up` starts the core app after migrate/seed (`stack:up:core`), then ensures host-persisted speech models are present and starts the speech sidecars (`stack:up:speech`)
 - `agent-os/standards/` contains canonical implementation standards
 
 ## Agent Priorities

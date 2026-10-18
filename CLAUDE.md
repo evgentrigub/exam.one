@@ -15,7 +15,7 @@ pnpm lint:fix     # autofix all workspace projects
 pnpm format       # Prettier
 pnpm type-check   # type-check all workspace projects
 pnpm test         # test all workspace projects
-pnpm stack:up     # prepare speech models and start the complete Docker Compose stack
+pnpm stack:up     # start the core app, then prepare speech models and start speech (stack:up:core + stack:up:speech)
 pnpm stack:verify-models # fail if TTS/STT snapshots are missing
 pnpm stack:seed-audio    # generate the default pack's bundled listening WAVs if missing (--packs a,b|all)
 pnpm stack:down   # stop the complete stack without deleting named volumes

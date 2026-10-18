@@ -51,7 +51,8 @@ export default defineNuxtConfig({
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: true,
+    // The Docker image sets SKIP_NUXT_TYPECHECK=1; CI type-checks separately with `pnpm type-check`
+    typeCheck: process.env.SKIP_NUXT_TYPECHECK !== '1',
   },
 
   // CSS configuration

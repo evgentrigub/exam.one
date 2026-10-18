@@ -15,7 +15,7 @@ pnpm stack:logs
 pnpm stack:down
 ```
 
-The root `compose.yaml` defines Nuxt, NestJS, PostgreSQL, Redis, TTS, and STT. `stack:up` prepares missing models, starts the core services, starts speech, and prepares selected bundled audio. Stopping the stack preserves named volumes and host media/model folders.
+The root `compose.yaml` defines Nuxt, NestJS, PostgreSQL, Redis, TTS, and STT. `stack:up` starts the core services (`stack:up:core`), then prepares missing models, starts speech, and prepares selected bundled audio (`stack:up:speech`). Stopping the stack preserves named volumes and host media/model folders.
 
 ```bash
 pnpm stack:setup

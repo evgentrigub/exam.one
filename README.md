@@ -157,7 +157,7 @@ pnpm stack:ps
 
 Open [http://localhost:3000](http://localhost:3000) and register an account. There is no seeded operator account.
 
-`stack:up` downloads missing speech models, starts PostgreSQL and Redis, waits for the API and frontend, starts the speech sidecars, and prepares bundled listening audio. The backend container applies committed migrations and upserts bundled content on boot, preserving user-generated rows.
+`stack:up` runs two steps. `stack:up:core` starts PostgreSQL and Redis and waits for the API and frontend, so the app is usable before any speech model is downloaded. `stack:up:speech` then downloads missing speech models, starts the speech sidecars, and prepares bundled listening audio. Run either step on its own when you only need that part. The backend container applies committed migrations and upserts bundled content on boot, preserving user-generated rows.
 
 First-run TTS setup installs English voices, and seed-audio preparation selects Cambridge A2 Key. Download other languages in **Settings → Generated files → Voice models**, or prepare them before startup:
 
@@ -396,7 +396,9 @@ pnpm i18n:check             # Check interface locale key parity
 pnpm stack:setup            # Download configured speech models
 pnpm stack:verify-models    # Check model snapshots
 pnpm stack:seed-audio       # Prepare bundled audio for the default/selected packs
-pnpm stack:up              # Start core, speech and bundled-audio preparation
+pnpm stack:up              # Start core, then speech and bundled-audio preparation
+pnpm stack:up:core         # Start PostgreSQL, Redis, API and frontend only
+pnpm stack:up:speech       # Download missing models, start speech, prepare bundled audio
 pnpm stack:down            # Stop the stack; preserve named volumes
 pnpm stack:logs
 pnpm stack:ps
