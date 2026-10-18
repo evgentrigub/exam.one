@@ -132,7 +132,7 @@ Self-host setup/verification must not require host Python or pip packages. Bash 
 
 ## Speech model ownership
 
-`scripts/stt/model-manifest.json` owns STT model assets, checksums and language defaults. Fresh German/Polish/Spanish defaults use Parakeet Q4; Q8 is legacy-only: preserve existing selections/aliases, but hide it on fresh instances and reject new downloads/selections. Settings offers Phonon for English and Q4 for German/Polish/Spanish. Public documentation and E2E catalog fixtures derive from this manifest. STT models and language preferences are instance-wide; never auto-download a fallback after a transcription failure.
+`scripts/stt/model-manifest.json` owns STT model assets, checksums and language defaults. English defaults to Phonon 2; German/Polish/Spanish use shared Parakeet Q4. Q8 is retired completely from the catalog/UI/runtime: migrate only known retired IDs/aliases in saved preferences to current language defaults, preserving old files without copying or deleting them. Settings offers Phonon for English and Q4 for German/Polish/Spanish. Public documentation and E2E catalog fixtures derive from this manifest. STT models and language preferences are instance-wide; never auto-download a fallback after a transcription failure.
 
 ## Before Finishing A Change
 

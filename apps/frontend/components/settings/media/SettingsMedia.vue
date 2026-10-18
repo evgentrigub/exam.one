@@ -65,7 +65,7 @@ const { summary, summaryLoading, error, loadSummary } = useMediaFiles()
 const voiceBytes = computed(() => summary.value?.voiceBytes ?? 0)
 const audioBytes = computed(() => summary.value?.audioBytes ?? 0)
 const sttBytes = computed(() => summary.value?.sttBytes ?? 0)
-const total = computed(() => voiceBytes.value + audioBytes.value || 1)
+const total = computed(() => voiceBytes.value + audioBytes.value + sttBytes.value || 1)
 /** First computation: no totals to show yet, so the bar runs indeterminate until it lands or fails. */
 const computing = computed(() => !summary.value && !error.value)
 

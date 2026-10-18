@@ -22,7 +22,7 @@ def digest(path: Path) -> str:
 
 
 class Catalog:
-    def __init__(self, root: Path, *, manifest: dict | None = None, legacy: Path | None = None):
+    def __init__(self, root: Path, *, manifest: dict | None = None):
         self.root = root
         root.mkdir(parents=True, exist_ok=True)
         self.manifest = manifest or json.loads(MANIFEST_PATH.read_text())
@@ -39,20 +39,14 @@ class Catalog:
                 raise ValueError("Invalid STT preferences.json")
         else:
             self.preferences = dict(self.manifest["recommended"])
-            if legacy is not None and "parakeet-v3-q8" in self.models:
-                model = self.models["parakeet-v3-q8"]
-                if legacy.is_file() and digest(legacy) == model["sha256"]:
-                    destination = self.path(model["id"])
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    if not destination.exists():
-                        try:
-                            os.link(legacy, destination)
-                        except OSError:
-                            temporary = destination.with_suffix(".partial")
-                            shutil.copyfile(legacy, temporary)
-                            os.replace(temporary, destination)
-                    self.preferences.update({lang: model["id"] for lang in model["languages"]})
-                    self.write_notices(model["id"])
+        # Retire Q8 selections explicitly; leave valid current preferences and old files intact.
+        retired = set(self.manifest.get("retiredModelIds", []))
+        changed = not self.state_path.exists()
+        for language, model_id in self.preferences.items():
+            if model_id in retired and language in self.manifest["recommended"]:
+                self.preferences[language] = self.manifest["recommended"][language]
+                changed = True
+        if changed:
             self.save()
         # A killed download is retried explicitly; partial files never count as installed.
         for partial in root.glob("*/*.partial"):
@@ -126,16 +120,16 @@ class Catalog:
                 size = sum(p.stat().st_size for p in directory.rglob("*") if p.is_file() and not p.name.endswith(".partial")) if directory.exists() else 0
                 selected = [lang for lang, selected in self.preferences.items() if selected == model_id]
                 downloadable = model.get("downloadable", True)
-                # Retired assets remain visible only for existing installations/preferences.
-                if not downloadable and not size and not selected:
-                    continue
                 rows.append({"downloadable": downloadable,
                              "recommendedLanguages": [lang for lang, recommended in self.manifest["recommended"].items() if recommended == model_id],
                              **{k: model[k] for k in ("id", "name", "engine", "languages", "license", "downloadBytes")},
                              "installed": self.installed(model_id), "installedBytes": size,
                              "selectedLanguages": selected,
                              "progress": self.progress.get(model_id)})
-            return {"online": True, "manageable": True, "installedBytes": sum(row["installedBytes"] for row in rows), "models": rows}
+            # Retained retired directories still occupy disk, even though they have no catalog row.
+            size = sum(p.stat().st_size for directory in self.root.iterdir() if directory.is_dir()
+                       for p in directory.rglob("*") if p.is_file() and not p.name.endswith(".partial"))
+            return {"online": True, "manageable": True, "installedBytes": size, "models": rows}
 
     def download(self, model_id: str) -> None:
         model = self.model(model_id)

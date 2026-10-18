@@ -3,10 +3,12 @@ import { apiFetch } from '~/composables/useApi'
 import { useMediaFiles } from '~/composables/useMediaFiles'
 
 const POLL_MS = 1000
+const RECONNECT_MS = 5000
 
 /**
  * Settings → Generated files → Voice models. Downloads run on the TTS service; while any is
- * in progress the list is polled every second until none is left, or the page unmounts.
+ * in progress the list is polled every second. Unreachable services are retried every five
+ * seconds so opening Settings during TTS startup cannot leave a permanent offline state.
  */
 export function useVoiceModels() {
   const state = useState<VoiceModelsDto | null>('media-voices', () => null)
@@ -15,6 +17,7 @@ export function useVoiceModels() {
   const { loadSummary } = useMediaFiles()
   let timer: ReturnType<typeof setTimeout> | null = null
   let active = true
+  let unreachable = state.value?.online === false
 
   const voices = computed<VoiceModelDto[]>(() => state.value?.voices ?? [])
   const online = computed(() => state.value?.online ?? true)
@@ -27,9 +30,10 @@ export function useVoiceModels() {
     timer = null
   }
 
-  function schedule(keepPolling: boolean): void {
+  function schedule(reachable: boolean): void {
     stopPolling()
-    if (active && (keepPolling || downloading.value)) timer = setTimeout(() => void load(), POLL_MS)
+    if (active && (!reachable || downloading.value))
+      timer = setTimeout(() => void load(), reachable ? POLL_MS : RECONNECT_MS)
   }
 
   async function load(): Promise<void> {
@@ -44,8 +48,9 @@ export function useVoiceModels() {
     } catch (cause) {
       error.value = cause instanceof Error ? cause.message : String(cause)
     }
-    if (reachable && wasDownloading && !downloading.value) await loadSummary()
-    schedule(wasDownloading && !reachable)
+    if (reachable && (unreachable || (wasDownloading && !downloading.value))) await loadSummary()
+    unreachable = !reachable
+    schedule(reachable)
   }
 
   async function run(voiceId: string, action: () => Promise<unknown>): Promise<void> {

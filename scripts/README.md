@@ -68,3 +68,5 @@ Control mode validates bundled seeds without a paid LLM call. Sample mode evalua
 Stack/audio setup scripts read the repository configuration they need. Database CLI commands have separate environment handling; use the [database guide](../libraries/database/README.md) for migration and seed setup. Backup/restore belongs in the [operator runbook](../README.md#backup-restore-and-upgrades).
 
 Speech setup (`tts:setup`, `stt:setup`) and `stack:verify-models` run through Bash and temporary Compose containers, using Python bundled in the speech images. Self-hosting needs no Python installation on the host. Contributor `tts:test`/`stt:test` commands use optional host Python 3.10+ and standard-library tests. Setup containers write to the service mounts as the invoking user and are removed afterward.
+
+The default `pnpm stack:setup`/`stack:up` includes this English model through `STT_SETUP_LANGS=en`; add other languages with that variable or Settings.

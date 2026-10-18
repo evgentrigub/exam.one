@@ -4,6 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "${REPO_ROOT}"
-mkdir -p scripts/stt/models scripts/stt/parakeet/models
+mkdir -p scripts/stt/models
 exec docker compose run --rm --no-deps --build -T \
   --user "$(id -u):$(id -g)" parakeet python /app/setup.py "$@"

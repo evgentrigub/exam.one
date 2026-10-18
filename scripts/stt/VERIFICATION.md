@@ -2,6 +2,18 @@
 
 Verified locally on 2026-10-16. This records integration behavior, not comparative recognition accuracy. No learner recordings or custom accuracy benchmark were collected.
 
+## Retire Q8 and explicit English setup — 2026-10-18
+
+This supersedes the earlier Q8-preservation/adoption decisions below. The application manifest now contains only Phonon 2 and shared Parakeet Q4. Retired IDs/aliases remain solely for migrating saved preferences to Phonon for English and Q4 for German/Polish/Spanish. Q8 files are neither copied nor deleted automatically; retained managed directories still count in disk totals, without a Settings row. Unknown missing preferences continue to fail closed. Sidebar label: “Speech models,” translated across all five locales.
+
+- **17 standard-library catalog/lifecycle tests passed**, including migration with present/missing retired assets and all known aliases, file preservation/accounting, unchanged valid/unknown preferences, explicit English setup overriding saved choices/setup languages, shared Q4, verification without downloads, checksums, cancellation and safe removal.
+- **10 backend STT tests across three suites passed.** Workspace lint/type checks, locale parity (**1,287 keys**), changed UI formatting, Bash syntax and cross-project diff whitespace checks passed. The existing optional SetRadio lint warning remains.
+- A temporary real FastAPI gateway using that image and fixture mount returned exactly two catalog entries, persisted retired-preference migration, reported missing Q4 for German/Polish/Spanish, rejected Q8 download with **HTTP 400**, and counted retained retired files without exposing a row. This verifies actual gateway behavior rather than only the E2E stub.
+- **Three focused browser scenarios passed** against rebuilt frontend/backend production images: fresh English/shared-Q4 lifecycle with manual transcripts, installed-retired migration, and missing-retired migration. Both retired cases show no Q8 in API or UI, install Q4 without a further selection step, and verify a one-line menu label. Inspected the missing-retired screenshot.
+- E2E type checking and public-docs fact generation/drift, structure/privacy, type checking and strict production build passed. Existing non-failing frontend build and Docusaurus update-check notices remain. App/private/public setup and upgrade docs, workspace index/plan and E2E fixtures describe the same behavior. The unchanged landing has no affected model-specific claims. Application graph refreshed (**7,541 nodes**).
+
+Tests used the current sibling workingtrees with the application manifest mounted directly into E2E stubs. Temporary setup files/network and gateway were removed; E2E containers were stopped after checking. Existing application weights/preferences and application containers were not changed. No real weight downloads, new inference/accuracy claims, database migration, publishing or deployment were needed; earlier real-engine codec/platform evidence remains below.
+
 ## Container-based speech setup — 2026-10-18
 
 Self-host setup no longer requires host Python/pip packages. `stt:setup` invokes Bash; both STT and TTS Bash launchers run Python inside their speech Compose images with the service model mounts, configured languages and invoking UID/GID. Setup containers are removed on exit. `stack:verify-models` now calls the same launchers in verification mode, so it shares their environment, mount paths and checks. The legacy STT Bash path forwards to the new launcher. Contributor-only `stt:test`/`tts:test` remain standard-library host Python commands.

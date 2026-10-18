@@ -6,7 +6,7 @@ The local service transcribes recordings into editable text. Missing models, mic
 
 ## Language-specific installation
 
-`pnpm stt:setup` runs a Bash launcher and a temporary Compose container using the STT image. Python and inference dependencies stay inside Docker; no host Python or pip packages are required for setup or `stack:up`. The launcher builds/reuses the image, shares the service’s model mounts and language settings, and removes the setup container on exit. Existing files/preferences are reused.
+`pnpm stt:setup` runs a Bash launcher and a temporary Compose container using the STT image. Python and inference dependencies stay inside Docker; no host Python or pip packages are required for setup or `stack:up`. The launcher builds/reuses the image, shares the service’s model mounts and language settings, and removes the setup container on exit. Verified current files are reused; setup installs and selects the recommended model for each requested language.
 
 Fresh installations use **Phonon 2 for English** (163,515,201-byte download). German, Polish and Spanish use **Parakeet v3 Q4** (485,425,504 bytes), shared across languages and levels. The approximately 200 MB model-download target remains unmet for these three languages. Model evidence, runtime versions, hashes, licenses and defaults live in [model-manifest.json](model-manifest.json).
 
@@ -23,13 +23,17 @@ To prepare more languages before startup:
 STT_SETUP_LANGS=en,de,pl,es pnpm stt:setup
 ```
 
-`STT_SETUP_LANGS=en` controls setup downloads. `STT_LANGUAGES=de,en,pl,es` controls permitted exam languages; it does not download models. Persistent instance preferences select the model for each exam language. Changing backend environment requires a restart.
+`STT_SETUP_LANGS=en` controls setup downloads and is the default for `stack:setup`/`stack:up`.
+
+Restart an already running STT service after a setup command changes preferences on disk. `--verify` only checks recommended files; it never downloads or changes current selections.
+
+`STT_LANGUAGES=de,en,pl,es` controls permitted exam languages; it does not download models. Persistent instance preferences select the model for each exam language. Changing backend environment requires a restart.
 
 The Compose service keeps the name `parakeet` and port 8882 for compatibility. Its build context is now `scripts/stt/`. `pnpm stack:up`, `stt:setup`, `stt:up` and `stt:down` remain supported. Model files, derived caches and `preferences.json` live in `scripts/stt/models/`, mounted writable. Copy this folder when preserving choices across installations. Model files are shared resources, not per-user downloads.
 
 ## Model management
 
-**Settings → Generated files → Speech recognition models** lists models by language, downloads, actual managed disk usage and selected languages. Download, cancel, retry, remove or select an installed model without restarting. Multilingual files count once in storage totals. Removing a model affects all its languages/users, preserves preferences, and makes transcription unavailable until the model returns or another model is selected. It never downloads a fallback automatically. Model management uses the existing authenticated Settings boundary.
+**Settings → Generated files → Speech models** lists models by language, downloads, actual managed disk usage and selected languages. Download, cancel, retry, remove or select an installed model without restarting. Multilingual files count once in storage totals. Removing a model affects all its languages/users, preserves preferences, and makes transcription unavailable until the model returns or another model is selected. It never downloads a fallback automatically. Model management uses the existing authenticated Settings boundary.
 
 The backend exposes `GET /media/stt-models`, `PUT /media/stt-models/preferred` (`lang`, `modelId`), `POST /media/stt-models/:id/download`, `DELETE /media/stt-models/:id/download`, and `DELETE /media/stt-models/:id`, under `/api/v1`. The sidecar implements these under `/v1/models/stt`. `/media/summary` includes `sttBytes`.
 
@@ -37,7 +41,14 @@ Custom `STT_BASE_URL` endpoints still receive OpenAI-compatible transcription re
 
 ## Upgrades and reliability
 
-The first setup/service start adopts an existing checksum-valid `scripts/stt/parakeet/models/parakeet-tdt-0.6b-v3-Q8_0.gguf`, using a hard link where possible and copying otherwise. Existing installations keep Parakeet for all four languages. The original is never automatically deleted; copied legacy files can occupy extra space outside the managed total. Verify operation before removing any old copy yourself. Download and select Phonon in Settings to switch English.
+Q8 is no longer in the catalog or runtime. On setup/service startup, saved Q8 IDs and their known aliases migrate to Phonon for English and Q4 for German/Polish/Spanish. Current-model preferences are otherwise preserved. Migration itself never downloads weights. Missing replacements report unavailable; manual transcripts remain usable.
+
+Apply an update and install both supported models:
+
+```bash
+STT_SETUP_LANGS=en,de,pl,es pnpm stt:setup
+docker compose up -d --build parakeet frontend
+```
 
 Downloads use temporary files and a pinned SHA-256 before atomic installation. After a restart, interrupted downloads can be retried; partial files never count as installed. Corrupt preference files fail closed instead of changing providers.
 
@@ -71,8 +82,8 @@ Phonon 2 weights: Fermion Research, derived from NVIDIA Parakeet, CC-BY-4.0. Ins
 
 ## Smaller multilingual default
 
-Fresh German, Polish and Spanish selections use Q4_K_M (485,425,504 bytes), about 34% smaller than Q8. Q8 is retained internally for upgrades, hidden on fresh instances and blocked from new downloads/selections; existing saved preferences still resolve to Q8. To switch, download Q4 and select it for each language in Settings. Remove Q8 only after switching its selected languages; the original adopted source is never removed automatically.
+German, Polish and Spanish use Q4_K_M (485,425,504 bytes), about 34% smaller than the retired Q8 model.
 
 Upstream reports English LibriSpeech test-clean WER of 1.98% for Q4 and 1.94% for Q8. This does not establish equivalent multilingual or learner-speech accuracy.
 
-Settings offers only Phonon for English and shared Parakeet Q4 for German, Polish and Spanish. `downloadable: false` in the manifest marks legacy assets. They remain visible only when installed, occupying storage, or still selected, so operators can replace/remove them without losing saved preferences. The API rejects new legacy downloads and selections; already installed legacy inference and setup verification continue to work. Published capability languages remain separate from the curated `recommendedLanguages` shown in Settings.
+Settings offers only Phonon for English and shared Parakeet Q4 for German, Polish and Spanish. Published capability languages remain separate from the curated `recommendedLanguages` shown in Settings. The manifest retains only retired IDs for preference migration, without retired asset URLs or download entries.

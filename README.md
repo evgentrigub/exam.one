@@ -212,7 +212,9 @@ TTS checks the selected pack's language and available voices. Installed voice fi
 
 Speech setup and verification use Bash entry points that run Python inside the speech Docker images. Self-hosting requires no host Python or pip packages. Contributor-only `stt:test` and `tts:test` use host Python 3.10+ and its standard library.
 
-STT uses Phonon 2 for fresh English installations (about 164 MB) and shared Parakeet Q4 for German, Polish and Spanish (about 485 MB). Add models in **Settings → Generated files → Speech recognition models**. Settings offers only these two downloads, with one recommended model per language. Existing Q8 installations keep their selections and can be removed or replaced; Q8 is no longer offered for download. Language preferences in Settings control model selection. `STT_SETUP_LANGS=en` controls initial downloads. Model files and preferences are instance-wide, and missing models keep manual transcripts available. Download sizes exclude runtime images, unpacked files and caches.
+STT uses Phonon 2 for fresh English installations (about 164 MB) and shared Parakeet Q4 for German, Polish and Spanish (about 485 MB). Add models in **Settings → Generated files → Speech models**. Settings offers only these two downloads, with one recommended model per language. Retired Q8 selections migrate to Phonon for English and Q4 for German/Polish/Spanish; Q8 is absent from the catalog. Old weight files are left on disk. Language preferences in Settings control model selection. `STT_SETUP_LANGS=en` makes `stack:setup` and `stack:up` install/select Phonon for English by default. Model files and preferences are instance-wide, and missing models keep manual transcripts available. Download sizes exclude runtime images, unpacked files and caches.
+
+Rebuild/recreate `frontend` as well after updating the Settings interface. See the [STT upgrade instructions](scripts/stt/README.md#upgrades-and-reliability) for Q4 installation and old-file cleanup.
 
 Details: [TTS guide](scripts/tts/README.md), [STT guide](scripts/stt/README.md).
 

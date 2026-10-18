@@ -38,9 +38,6 @@
           >
             {{ $t('settings.sttModelsMissing') }}
           </p>
-          <p v-if="model.downloadable === false" class="mb-2 text-sm text-base-content/60">
-            {{ $t('settings.sttModelsLegacy') }}
-          </p>
           <p v-if="model.progress?.error" class="mb-2 text-sm text-error">
             {{ model.progress.error }}
           </p>
@@ -121,9 +118,9 @@ function modelsForLanguage(lang: string) {
   return (
     state.value?.models.filter(
       model =>
-        (model.recommendedLanguages ?? model.languages).includes(lang) ||
-        model.selectedLanguages.includes(lang) ||
-        (model.downloadable === false && model.installedBytes > 0 && model.languages[0] === lang)
+        model.downloadable !== false &&
+        ((model.recommendedLanguages ?? model.languages).includes(lang) ||
+          model.selectedLanguages.includes(lang))
     ) ?? []
   )
 }

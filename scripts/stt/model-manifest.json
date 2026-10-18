@@ -80,46 +80,11 @@
           "path": "LICENSE-WEIGHTS-CC-BY-4.0.txt"
         }
       ]
-    },
-    {
-      "id": "parakeet-v3-q8",
-      "name": "Parakeet v3 Q8",
-      "engine": "transcribe.cpp",
-      "runtimeVersion": "856d7c10a1a864b900e066b7c9801edf373f5148",
-      "languages": [
-        "de",
-        "en",
-        "pl",
-        "es"
-      ],
-      "aliases": [
-        "handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0",
-        "nvidia/parakeet-tdt-0.6b-v3"
-      ],
-      "license": "CC-BY-4.0",
-      "attribution": "NVIDIA Parakeet TDT 0.6B v3; GGUF conversion by Handy. transcribe.cpp is MIT licensed.",
-      "source": "https://huggingface.co/handy-computer/parakeet-tdt-0.6b-v3-gguf",
-      "platforms": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "evidence": "Existing project model. The supplier reports 1.94% WER on LibriSpeech test-clean; this English result does not establish learner accuracy in other languages. The approximately 200 MB target is unmet for German, Polish and Spanish.",
-      "file": "parakeet-tdt-0.6b-v3-Q8_0.gguf",
-      "downloadBytes": 739508576,
-      "sha256": "5859f77944efcd8eafa23a6350731960b2b55b2203df51f319665c807d802cc7",
-      "url": "https://huggingface.co/handy-computer/parakeet-tdt-0.6b-v3-gguf/resolve/d8d8c32cb2017c57e5307767343e97870f8a7f53/parakeet-tdt-0.6b-v3-Q8_0.gguf",
-      "revision": "d8d8c32cb2017c57e5307767343e97870f8a7f53",
-      "notices": [
-        {
-          "source": "notices/parakeet-NOTICE.txt",
-          "path": "NOTICE"
-        },
-        {
-          "source": "notices/CC-BY-4.0.txt",
-          "path": "LICENSE-WEIGHTS-CC-BY-4.0.txt"
-        }
-      ],
-      "downloadable": false
     }
+  ],
+  "retiredModelIds": [
+    "parakeet-v3-q8",
+    "handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0",
+    "nvidia/parakeet-tdt-0.6b-v3"
   ]
 }

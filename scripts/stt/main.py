@@ -20,7 +20,7 @@ runtime: Runtime
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     global catalog, runtime
-    catalog = Catalog(Path(os.environ.get("STT_MODEL_DIR", "/app/models")), legacy=Path(os.environ.get("STT_LEGACY_MODEL", "/app/legacy-models/parakeet-tdt-0.6b-v3-Q8_0.gguf")))
+    catalog = Catalog(Path(os.environ.get("STT_MODEL_DIR", "/app/models")))
     runtime = Runtime(catalog, threads=max(1, int(os.environ.get("STT_CPU_THREADS", "4"))))
     try:
         yield

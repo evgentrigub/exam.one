@@ -129,7 +129,7 @@ const nav: { groupKey: string; items: NavItem[] }[] = [
         children: [
           { id: 'media-audio', labelKey: 'settings.navMediaAudio', icon: Headphones },
           { id: 'media-voices', labelKey: 'settings.navMediaVoices', icon: Mic },
-          { id: 'media-stt', labelKey: 'settings.sttModelsTitle', icon: Mic },
+          { id: 'media-stt', labelKey: 'settings.sttModelsMenu', icon: Mic },
         ],
       },
       { id: 'data', labelKey: 'settings.navData', icon: Database },

@@ -17,10 +17,9 @@ class CatalogTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         self.data = b"verified model"
-        self.manifest = {"recommended": {"en": "phonon-2", "de": "parakeet-v3-q4", "pl": "parakeet-v3-q4", "es": "parakeet-v3-q4"}, "models": [
+        self.manifest = {"retiredModelIds": ["parakeet-v3-q8", "nvidia/parakeet-tdt-0.6b-v3", "handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0"], "recommended": {"en": "phonon-2", "de": "parakeet-v3-q4", "pl": "parakeet-v3-q4", "es": "parakeet-v3-q4"}, "models": [
             {"id": key, "file": key, "name": key, "engine": "test", "languages": langs, "license": "test", "downloadBytes": len(self.data), "sha256": hashlib.sha256(self.data).hexdigest(), "url": "https://example.invalid/model"}
-            for key, langs in [("phonon-2", ["en"]), ("parakeet-v3-q4", ["en", "de", "pl", "es"]), ("parakeet-v3-q8", ["en", "de", "pl", "es"])]]}
-        self.manifest["models"][-1]["downloadable"] = False
+            for key, langs in [("phonon-2", ["en"]), ("parakeet-v3-q4", ["en", "de", "pl", "es"])]]}
         self.catalog = Catalog(self.root / "models", manifest=self.manifest)
 
     def tearDown(self):
@@ -37,9 +36,10 @@ class CatalogTests(unittest.TestCase):
             time.sleep(.01)
         self.assertFalse(self.catalog.jobs)
 
-    def test_fresh_language_routing_and_legacy_api_alias(self):
+    def test_fresh_language_routing_rejects_retired_model(self):
         self.assertEqual(self.catalog.resolve("en")["id"], "phonon-2")
-        self.assertEqual(self.catalog.resolve("en", "parakeet-v3-q8")["id"], "parakeet-v3-q8")
+        with self.assertRaises(ValueError):
+            self.catalog.resolve("en", "parakeet-v3-q8")
         for lang in ["de", "pl", "es"]:
             self.assertEqual(self.catalog.resolve(lang)["id"], "parakeet-v3-q4")
         with self.assertRaises(ValueError):
@@ -59,13 +59,27 @@ class CatalogTests(unittest.TestCase):
             self.catalog.prefer(lang, "parakeet-v3-q4")
         self.assertEqual(self.catalog.snapshot()["installedBytes"], len(self.data))
 
-    def test_legacy_adoption_preserves_source_and_all_languages(self):
-        legacy = self.root / "old.gguf"
-        legacy.write_bytes(self.data)
-        adopted = Catalog(self.root / "adopted", manifest=self.manifest, legacy=legacy)
-        self.assertTrue(adopted.installed("parakeet-v3-q8"))
-        self.assertTrue(legacy.exists())
-        self.assertEqual(adopted.resolve("en")["id"], "parakeet-v3-q8")
+    def test_retired_preferences_migrate_with_or_without_files(self):
+        for installed in [False, True]:
+            for retired in self.manifest["retiredModelIds"]:
+                with self.subTest(installed=installed, retired=retired):
+                    root = self.root / (str(installed) + str(self.manifest["retiredModelIds"].index(retired)))
+                    root.mkdir()
+                    state = root / "preferences.json"
+                    state.write_text(json.dumps({lang: retired for lang in ["en", "de", "pl", "es"]}))
+                    old = root / "parakeet-v3-q8" / "old.gguf"
+                    if installed:
+                        old.parent.mkdir()
+                        old.write_bytes(self.data)
+                    with patch("urllib.request.urlopen") as download:
+                        restarted = Catalog(root, manifest=self.manifest)
+                    download.assert_not_called()
+                    self.assertEqual(restarted.preferences, self.manifest["recommended"])
+                    self.assertEqual(json.loads(state.read_text()), self.manifest["recommended"])
+                    self.assertEqual([row["id"] for row in restarted.snapshot()["models"]], ["phonon-2", "parakeet-v3-q4"])
+                    self.assertEqual(restarted.snapshot()["installedBytes"], len(self.data) if installed else 0)
+                    self.assertEqual(old.exists(), installed)
+                    self.assertFalse(restarted.installed("parakeet-v3-q4"))
 
     def test_verified_download_and_bad_checksum(self):
         with patch("urllib.request.urlopen", return_value=io.BytesIO(self.data)):
@@ -128,18 +142,36 @@ class CatalogTests(unittest.TestCase):
         with patch.object(setup, "ROOT", self.root), patch.object(setup, "Catalog", return_value=self.catalog), patch.dict("os.environ", {}, clear=True), patch("sys.argv", ["setup.py"]), patch("urllib.request.urlopen", return_value=io.BytesIO(self.data)), patch("sys.stdout", new_callable=io.StringIO):
             setup.main()
         self.assertTrue(self.catalog.installed("phonon-2"))
-        for model_id in ["parakeet-v3-q4", "parakeet-v3-q8"]:
-            self.assertFalse(self.catalog.path(model_id).exists())
+        self.assertFalse(self.catalog.path("parakeet-v3-q4").exists())
 
-    def test_existing_q8_preferences_survive_new_q4_recommendation(self):
-        self.install("parakeet-v3-q8")
-        for lang in ["de", "pl", "es"]:
-            self.catalog.preferences[lang] = "parakeet-v3-q8"
+    def test_english_setup_overrides_language_env_and_saved_multilingual_choice(self):
+        import setup
+        self.install("parakeet-v3-q4")
+        self.catalog.prefer("en", "parakeet-v3-q4")
+        with patch.object(setup, "ROOT", self.root), patch.object(setup, "Catalog", return_value=self.catalog), patch.dict("os.environ", {"STT_SETUP_LANGS": "de,pl,es"}, clear=True), patch("sys.argv", ["setup.py", "--languages", "en"]), patch("urllib.request.urlopen", return_value=io.BytesIO(self.data)) as download, patch("sys.stdout", new_callable=io.StringIO):
+            setup.main()
+        download.assert_called_once()
+        self.assertTrue(self.catalog.installed("phonon-2"))
+        self.assertEqual(self.catalog.resolve("en")["id"], "phonon-2")
+        self.assertTrue(self.catalog.installed("parakeet-v3-q4"))
+
+    def test_setup_verify_never_downloads_or_changes_current_preferences(self):
+        import setup
+        self.install("parakeet-v3-q4")
+        self.catalog.prefer("en", "parakeet-v3-q4")
+        with patch.object(setup, "ROOT", self.root), patch.object(setup, "Catalog", return_value=self.catalog), patch.dict("os.environ", {}, clear=True), patch("sys.argv", ["setup.py", "--verify"]), patch("urllib.request.urlopen") as download:
+            with self.assertRaises(SystemExit):
+                setup.main()
+        download.assert_not_called()
+        self.assertEqual(self.catalog.resolve("en")["id"], "parakeet-v3-q4")
+
+    def test_unknown_preferences_are_not_silently_replaced(self):
+        self.catalog.preferences["en"] = "custom-unavailable-model"
         self.catalog.save()
         restarted = Catalog(self.catalog.root, manifest=self.manifest)
-        for lang in ["de", "pl", "es"]:
-            self.assertEqual(restarted.resolve(lang)["id"], "parakeet-v3-q8")
-        self.assertFalse(restarted.path("parakeet-v3-q4").exists())
+        self.assertEqual(restarted.preferences["en"], "custom-unavailable-model")
+        with self.assertRaises(ValueError):
+            restarted.resolve("en")
 
     def test_multilingual_setup_downloads_q4_once_without_q8(self):
         import setup
@@ -147,7 +179,6 @@ class CatalogTests(unittest.TestCase):
             setup.main()
         download.assert_called_once()
         self.assertTrue(self.catalog.installed("parakeet-v3-q4"))
-        self.assertFalse(self.catalog.path("parakeet-v3-q8").exists())
         self.assertFalse(self.catalog.path("phonon-2").exists())
 
     def test_fresh_catalog_offers_only_two_curated_downloads(self):
@@ -160,29 +191,11 @@ class CatalogTests(unittest.TestCase):
                 self.catalog.download("parakeet-v3-q8")
         download.assert_not_called()
 
-    def test_retired_installed_model_remains_usable_and_removable_only(self):
-        self.install("parakeet-v3-q8")
-        self.catalog.preferences["de"] = "parakeet-v3-q8"
-        self.catalog.save()
-        self.assertEqual(self.catalog.resolve("de")["id"], "parakeet-v3-q8")
-        row = next(row for row in self.catalog.snapshot()["models"] if row["id"] == "parakeet-v3-q8")
-        self.assertFalse(row["downloadable"])
-        self.assertEqual(row["installedBytes"], len(self.data))
-        self.catalog.download("parakeet-v3-q8")  # Already installed: setup remains usable.
-        with self.assertRaises(ValueError):
-            self.catalog.prefer("en", "parakeet-v3-q8")
-        self.catalog.remove("parakeet-v3-q8")
-        with self.assertRaises(ValueError):
-            self.catalog.download("parakeet-v3-q8")
-        # Preserve missing selections until the operator explicitly picks a current model.
-        self.assertEqual(self.catalog.resolve("de")["id"], "parakeet-v3-q8")
-
     def test_removed_environment_override_does_not_change_setup_selection(self):
         import setup
         with patch.object(setup, "ROOT", self.root), patch.object(setup, "Catalog", return_value=self.catalog), patch.dict("os.environ", {"STT_MODEL": "parakeet-v3-q8"}, clear=True), patch("sys.argv", ["setup.py"]), patch("urllib.request.urlopen", return_value=io.BytesIO(self.data)), patch("sys.stdout", new_callable=io.StringIO):
             setup.main()
         self.assertTrue(self.catalog.installed("phonon-2"))
-        self.assertFalse(self.catalog.path("parakeet-v3-q8").exists())
 
     def test_idle_worker_teardown_releases_process_but_not_an_active_request(self):
         runtime = Runtime.__new__(Runtime)
