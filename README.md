@@ -208,7 +208,7 @@ pnpm tts:up
 pnpm stt:up
 ```
 
-TTS checks the selected pack's language and available voices. Installed voice files are reused and runtime downloads load without a restart. Stable WAV playback needs no live synthesis once files exist.
+TTS checks the selected pack's language and available voices. Installed voice files are reused and runtime downloads load without a restart. Settings reconnects automatically while TTS starts and refreshes its storage total after recovery. Stable WAV playback needs no live synthesis once files exist.
 
 Speech setup and verification use Bash entry points that run Python inside the speech Docker images. Self-hosting requires no host Python or pip packages. Contributor-only `stt:test` and `tts:test` use host Python 3.10+ and its standard library.
 

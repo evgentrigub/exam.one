@@ -69,8 +69,7 @@
       <div class="rounded-box border border-base-300 bg-base-100 p-4 ring-soft">
         <div class="flex items-start gap-3">
           <span class="grid h-9 w-9 shrink-0 place-items-center rounded-field bg-base-200">
-            <Cloud v-if="health?.provider === 'openai'" :size="16" />
-            <Server v-else :size="16" />
+            <Server :size="16" />
           </span>
           <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
@@ -80,8 +79,15 @@
               </span>
             </div>
             <p class="mt-1 text-xs text-base-content/55">
-              {{ health?.detail || sttError || t('speaking.session.checkingProvider') }}
+              {{ healthDetail }}
             </p>
+            <NuxtLink
+              v-if="health?.state === 'missing'"
+              to="/settings?section=media-stt"
+              class="mt-2 inline-block text-xs font-medium link link-primary"
+            >
+              {{ t('speaking.session.manageSpeechModels') }}
+            </NuxtLink>
             <p class="mt-1 text-[11px] text-base-content/45">
               {{ t('speaking.session.sttHint') }}
             </p>
@@ -240,12 +246,12 @@
 </template>
 
 <script setup lang="ts">
+import { mediaLanguage } from '~/data/account/mediaLanguages'
 import { apiFetch } from '~/composables/useApi'
 
 import {
   AlertTriangle,
   CircleCheck,
-  Cloud,
   Mic,
   Quote,
   RefreshCcw,
@@ -556,7 +562,39 @@ const missingTranscriptLabel = computed(() => {
 const healthStatusLabel = computed(() => {
   if (checkingHealth.value) return t('mockExam.checking')
   if (!health.value) return t('mockExam.unavailable')
-  return health.value.ready ? t('mockExam.ready') : t('speaking.session.offline')
+  if (health.value.ready) return t('mockExam.ready')
+  switch (health.value.state) {
+    case 'missing':
+      return t('speaking.session.modelMissing')
+    case 'loading':
+      return t('speaking.session.modelLoading')
+    case 'unsupported':
+      return t('speaking.session.languageUnavailable')
+    case 'offline':
+      return t('speaking.session.offline')
+    default:
+      return t('mockExam.unavailable')
+  }
+})
+const healthDetail = computed(() => {
+  if (checkingHealth.value) return t('speaking.session.checkingProvider')
+  if (!health.value) return sttError.value || t('mockExam.unavailable')
+  const language = health.value.language ?? pack.value.speech.sttLang
+  const labelKey = mediaLanguage(language)?.labelKey
+  const variables = { language: labelKey ? t(labelKey) : language }
+  if (health.value.ready) return t('speaking.session.sttReadyDetail', variables)
+  switch (health.value.state) {
+    case 'missing':
+      return t('speaking.session.sttMissingDetail', variables)
+    case 'loading':
+      return t('speaking.session.sttLoadingDetail', variables)
+    case 'unsupported':
+      return t('speaking.session.sttUnsupportedDetail', variables)
+    case 'offline':
+      return t('speaking.session.sttOfflineDetail')
+    default:
+      return health.value.detail || t('mockExam.unavailable')
+  }
 })
 const healthStatusClass = computed(() => {
   if (checkingHealth.value) return 'badge-ghost'

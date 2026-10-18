@@ -33,7 +33,9 @@ The Compose service keeps the name `parakeet` and port 8882 for compatibility. I
 
 ## Model management
 
-**Settings → Generated files → Speech models** lists models by language, downloads, actual managed disk usage and selected languages. Download, cancel, retry, remove or select an installed model without restarting. Multilingual files count once in storage totals. Removing a model affects all its languages/users, preserves preferences, and makes transcription unavailable until the model returns or another model is selected. It never downloads a fallback automatically. Model management uses the existing authenticated Settings boundary.
+**Settings → Generated files → Speech models** shows one card per model, with download size, actual managed disk usage and selected languages. English uses its own card; German, Polish and Spanish share a single **Multilingual** card and one download/cancel/remove control. Download, cancel, retry, remove or select an installed model without restarting. Multilingual files count once in storage totals. Removing a model affects all its languages/users, preserves preferences, and makes transcription unavailable until the model returns or another model is selected. It never downloads a fallback automatically. Model management uses the existing authenticated Settings boundary.
+
+Speaking distinguishes a missing language model, model loading, unsupported languages and an offline service. A missing model links directly to Speech models in Settings; editable transcripts remain available. The frontend uses the shared health contract rather than interpreting every non-ready result as offline.
 
 The backend exposes `GET /media/stt-models`, `PUT /media/stt-models/preferred` (`lang`, `modelId`), `POST /media/stt-models/:id/download`, `DELETE /media/stt-models/:id/download`, and `DELETE /media/stt-models/:id`, under `/api/v1`. The sidecar implements these under `/v1/models/stt`. `/media/summary` includes `sttBytes`.
 

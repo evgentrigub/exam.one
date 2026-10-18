@@ -7,22 +7,25 @@
     </p>
     <p v-if="error" role="alert" class="mb-4 text-sm text-error">{{ error }}</p>
     <div v-if="state?.manageable" class="flex flex-col gap-5">
-      <div
-        v-for="language in MEDIA_LANGUAGES"
-        :key="language.id"
+      <section
+        v-for="model in modelCards"
+        :key="model.id"
+        :aria-labelledby="`stt-model-${model.id}`"
         class="rounded-field border border-base-300 p-4"
       >
-        <h3 class="mb-3 flex items-center gap-2 font-medium">
-          <MediaLangChip :lang="language.id" />{{ $t(language.labelKey) }}
+        <h3 :id="`stt-model-${model.id}`" class="mb-3 flex items-center gap-2 font-medium">
+          <MediaLangChip
+            v-if="model.cardLanguages.length === 1"
+            :lang="model.cardLanguages[0]!.id"
+          />
+          {{ model.cardTitle }}
         </h3>
-        <div v-for="model in modelsForLanguage(language.id)" :key="model.id" class="mb-4 last:mb-0">
+        <div>
           <div class="flex flex-wrap items-center gap-2">
             <strong class="text-sm">{{ model.name }}</strong>
-            <span
-              v-if="model.selectedLanguages.includes(language.id)"
-              class="badge badge-primary badge-sm"
-              >{{ $t('settings.sttModelsSelected') }}</span
-            >
+            <span v-if="model.selectedCardLanguages.length" class="badge badge-primary badge-sm">{{
+              model.selectionLabel
+            }}</span>
             <span v-if="model.languages.length > 1" class="badge badge-ghost badge-sm">{{
               $t('settings.sttModelsMultilingual')
             }}</span>
@@ -33,7 +36,7 @@
             {{ model.license }}
           </p>
           <p
-            v-if="!model.installed && model.selectedLanguages.includes(language.id)"
+            v-if="!model.installed && model.selectedCardLanguages.length"
             class="mb-2 text-sm text-warning"
           >
             {{ $t('settings.sttModelsMissing') }}
@@ -54,7 +57,7 @@
             <button
               v-if="model.progress?.state === 'downloading'"
               class="btn btn-sm"
-              :disabled="busy"
+              :disabled="busy || selecting"
               @click="cancel(model.id)"
             >
               {{ $t('settings.sttModelsCancel') }}
@@ -62,25 +65,29 @@
             <button
               v-else-if="!model.installed && model.downloadable !== false"
               class="btn btn-primary btn-sm"
-              :disabled="busy"
+              :disabled="busy || selecting"
               @click="download(model.id)"
             >
               {{ $t('settings.sttModelsDownload') }}
             </button>
             <template v-else>
               <button
-                v-if="
-                  model.downloadable !== false && !model.selectedLanguages.includes(language.id)
-                "
+                v-if="model.unselectedLanguages.length"
                 class="btn btn-primary btn-sm"
-                :disabled="busy"
-                @click="prefer(language.id, model.id)"
+                :disabled="busy || selecting"
+                @click="preferLanguages(model.unselectedLanguages, model.id)"
               >
-                {{ $t('settings.sttModelsUse') }}
+                {{
+                  $t(
+                    model.cardLanguages.length > 1
+                      ? 'settings.sttModelsUseLanguages'
+                      : 'settings.sttModelsUse'
+                  )
+                }}
               </button>
               <button
                 class="btn btn-ghost btn-sm text-error"
-                :disabled="busy"
+                :disabled="busy || selecting"
                 @click="requestRemove(model.id)"
               >
                 {{ $t('settings.sttModelsRemove') }}
@@ -88,7 +95,7 @@
             </template>
           </div>
         </div>
-      </div>
+      </section>
       <p class="text-xs text-base-content/60">{{ $t('settings.sttModelsFootprint') }}</p>
     </div>
     <dialog ref="confirmation" class="modal">
@@ -114,15 +121,49 @@ import { useSttModels } from '~/composables/useSttModels'
 import { fmtBytes } from '~/utils/fmtBytes'
 
 const { state, error, busy, load, download, cancel, remove, prefer } = useSttModels()
-function modelsForLanguage(lang: string) {
-  return (
-    state.value?.models.filter(
-      model =>
-        model.downloadable !== false &&
-        ((model.recommendedLanguages ?? model.languages).includes(lang) ||
-          model.selectedLanguages.includes(lang))
-    ) ?? []
-  )
+const { t } = useI18n()
+const selecting = ref(false)
+const modelCards = computed(() =>
+  (state.value?.models ?? [])
+    .filter(model => model.downloadable !== false)
+    .map(model => {
+      const cardLanguages = MEDIA_LANGUAGES.filter(
+        language =>
+          (model.recommendedLanguages ?? model.languages).includes(language.id) ||
+          model.selectedLanguages.includes(language.id)
+      )
+      const selectedCardLanguages = cardLanguages.filter(language =>
+        model.selectedLanguages.includes(language.id)
+      )
+      const languageNames = cardLanguages.map(language => t(language.labelKey)).join(', ')
+      return {
+        ...model,
+        cardLanguages,
+        selectedCardLanguages,
+        unselectedLanguages: cardLanguages
+          .filter(language => !model.selectedLanguages.includes(language.id))
+          .map(language => language.id),
+        cardTitle:
+          cardLanguages.length === 1
+            ? languageNames
+            : t('settings.sttModelsLanguages', { languages: languageNames }),
+        selectionLabel:
+          selectedCardLanguages.length === cardLanguages.length
+            ? t('settings.sttModelsSelected')
+            : t('settings.sttModelsSelectedFor', {
+                languages: selectedCardLanguages.map(language => t(language.labelKey)).join(', '),
+              }),
+      }
+    })
+    .filter(model => model.cardLanguages.length)
+)
+async function preferLanguages(languages: string[], modelId: string): Promise<void> {
+  selecting.value = true
+  try {
+    for (const language of languages) await prefer(language, modelId)
+  } finally {
+    selecting.value = false
+  }
 }
 const confirmation = ref<HTMLDialogElement | null>(null)
 const pendingRemoval = ref('')
