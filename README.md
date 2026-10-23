@@ -1,24 +1,19 @@
 # exam.one
 
-An open-source and self-hostable platform for language certification exam preparation.
+A self-hostable platform to prepare for language [CEFR](https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions) exams.
 Prepare for English, German, Spanish, Polish exams.
 
 exam.one brings Reading, Writing, Listening, Speaking, and mock exams into one reusable application.
-Each **exam pack** defines
-
-- a language
-- exam board
-- CEFR level
-- task structure
-- prompts
-- scoring rules
+Each **exam pack** contains:
+- a language, exam board, CEFR level
+- task structure, scoring rules
+- prompts to generate content
+- prompts to evaluate responses (writing and speaking)
 - and bundled content.
-
-Learners choose a pack; contributors extend the catalog through the same framework.
 
 The project focuses on repeatable, exam-style practice across languages and levels. Shared accounts, practice flows, history, AI integration, and speech services support every pack. Exam-specific content and rules live with the pack that owns them.
 
-Run the application on your own machine with Docker Compose. Practice data stays in your PostgreSQL database, and optional AI features use the instance's configured OpenAI or OpenRouter key. The roadmap includes an open-source release and a later hosted cloud offering.
+Run the application on your own machine with `Docker Compose`. Practice data stays in your `PostgreSQL` database, and optional AI features use the instance's configured OpenAI or OpenRouter key. 
 
 ## What you can do
 
@@ -55,30 +50,8 @@ All ten live packs provide Reading, Writing, Listening, Speaking, bundled practi
 | DELE A2                  | Spanish  | A2    | `dele-es-a2`      |
 | DELE B1                  | Spanish  | B1    | `dele-es-b1`      |
 
-Select an exam in **Settings → Learning plan**. New accounts start on Cambridge English A2 Key. German, English, Spanish, Polish, and Russian are available as interface languages; interface locale and the language being studied are separate choices.
-
-All four B1 packs include fresh mock-exam tasks, saved attempts, paper timers and detailed reviews. Their bundled Set 1 tasks are separate from the individual practice catalog:
-
-| B1 exam                  | Practice tasks | Set 1 tasks | Mock result rules                                                                                |
-| ------------------------ | -------------- | ----------- | ------------------------------------------------------------------------------------------------ |
-| Cambridge B1 Preliminary | 16             | 16          | Estimated Cambridge English Scale; pass threshold 140                                            |
-| Goethe-Zertifikat B1     | 15             | 15          | Four independent modules; at least 60/100 in each after whole-point rounding                     |
-| Certyfikat Polski B1     | 23             | 23          | Five independent papers: Listening, Reading, Grammar, Writing and Speaking; at least 50% in each |
-| DELE B1                  | 16             | 16          | Each paper normalized to /25; at least 30/50 in both Reading + Writing and Listening + Speaking  |
-
-English B1 uses solo speaking cues, written scene descriptions and assigned article/story tasks. See the [brief](data/src/packs/cambridge-en-b1/brief.md) and [verification](data/src/packs/cambridge-en-b1/verification.md).
-
-Polish B1 places clearly labelled grammar tasks under Reading for individual practice, while mocks keep Reading and Grammar as separate papers. Written papers are /30 and Speaking is normalized to /40; fractional results below a pass threshold stay below it. See the [brief](data/src/packs/certpol-pl-b1/brief.md) and [verification](data/src/packs/certpol-pl-b1/verification.md).
-
-Spanish B1 retains five reading, five listening, two writing and four solo speaking tasks, including the 100–120 and 130–150-word writing ranges. Mock pass groups use exact scores without rounding a failed group up to 30/50. See the [brief](data/src/packs/dele-es-b1/brief.md) and [verification](data/src/packs/dele-es-b1/verification.md).
-
-German B1 retains all three writing tasks and their /40, /40 and /20 rubrics. Speaking uses fixed partner cues and transcript-based feedback. See the [brief](data/src/packs/goethe-de-b1/brief.md) and [verification](data/src/packs/goethe-de-b1/verification.md).
-
-Prepare the B1 listening WAVs using the [bundled-audio instructions](scripts/tts/README.md#bundled-audio). Set 1 attempts and objective scores work without an LLM; writing/speaking grades and AI reviews require a configured LLM. All mock results remain practice estimates.
-
-Goethe C1 includes 12 original practice tasks, 20 prompt slots and 12 separate Set 1 tasks in the current modular format. Reading, Listening, Writing and Speaking use 65/40/75/20-minute timers. Speaking adds saved 20-minute preparation, a choice of two presentation topics and notes. Writing uses the recovered C1 prompts with corrected A–E rubrics; Speaking uses fixed partner cues and a provisional transcript score. See its [brief](data/src/packs/goethe-de-c1/brief.md) and [verification](data/src/packs/goethe-de-c1/verification.md).
-
-Before activating a replacement C1 catalog on an existing installation, run the one-time `pnpm db:prune --pack goethe-de-c1`, then `pnpm db:seed`. This removes C1 practice, mocks, jobs and obsolete prompt overrides while preserving accounts, sessions, settings and other packs. Running jobs must acknowledge cancellation before deletion. Normal startup and seeding never prune. Prepare its 14 listening WAVs with `TTS_CONCURRENCY=1 pnpm generate:listening-audio --packs goethe-de-c1`; later runs reuse transcript hashes.
+Select an exam in **Settings → Learning plan**. New accounts start on Cambridge English A2 Key. 
+English, German, Spanish, Polish, and Russian are available as interface languages; interface locale and the language being studied are separate choices.
 
 The [registry](data/src/registry.ts) determines availability. Additional levels and boards can be introduced as packs; a new task interaction may also require a shared application component.
 

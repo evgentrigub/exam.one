@@ -1457,5 +1457,37 @@
     "prepareSection": "Prepare section {n}",
     "section": "Section {n}",
     "wordTarget": "Target: approximately {count} words"
+  },
+  "quickStart": {
+    "title": "Quick start",
+    "tooltip": "Click to open Quick start guide",
+    "close": "Close quick start",
+    "documentation": "Read the full documentation",
+    "opensInNewTab": "(opens in a new tab)",
+    "ai": {
+      "question": "How do I connect AI?",
+      "answer": "Open your profile → {settings} → {aiProvider}. Add your API key, choose a model, and save. This enables exercise generation and AI evaluation."
+    },
+    "language": {
+      "question": "How do I choose my language?",
+      "answer": "Open the {examTarget} card at the bottom left to open {learningPlan}. Choose the exam board for your language and your level, then save your changes."
+    },
+    "models": {
+      "question": "Do I need to download models?",
+      "answer": "English models are included by default. For German, Polish, or Spanish, open {settings} → {generatedFiles} → {voiceModels} and download a voice for listening audio. For speaking transcription, also download and select a model under {speechModels}.",
+      "note": "This only applies to model downloads. AI features need an API key in every language, including English."
+    },
+    "exercises": {
+      "question": "How do I practise individual skills?",
+      "answer": "Open {exercises} and choose {reading}, {writing}, {listening}, or {speaking}. Click {generateExercises} to create a new exercise set."
+    },
+    "audio": {
+      "question": "How do I create listening audio?",
+      "answer": "Open a listening exercise and click {generateAudio} when audio is missing."
+    },
+    "mock": {
+      "question": "How do I practise a full exam?",
+      "answer": "Open {mockExams} to take an existing exam or generate a new one. Complete the exam to see your results and feedback."
+    }
   }
 }

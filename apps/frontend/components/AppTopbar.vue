@@ -14,6 +14,7 @@
 
     <!-- Right controls -->
     <div class="flex flex-wrap justify-end items-center gap-2 max-w-full">
+      <QuickStartButton />
       <ActivityBell />
       <!-- Language selector -->
       <div class="dropdown dropdown-end">

@@ -1457,5 +1457,37 @@
     "prepareSection": "Preparar sección {n}",
     "section": "Sección {n}",
     "wordTarget": "Objetivo: aproximadamente {count} palabras"
+  },
+  "quickStart": {
+    "title": "Inicio rápido",
+    "tooltip": "Haz clic para abrir la guía de inicio rápido",
+    "close": "Cerrar inicio rápido",
+    "documentation": "Leer la documentación completa",
+    "opensInNewTab": "(se abre en una pestaña nueva)",
+    "ai": {
+      "question": "¿Cómo conecto la IA?",
+      "answer": "Abre tu perfil → {settings} → {aiProvider}. Añade tu clave de API, elige un modelo y guarda. Así podrás generar ejercicios y usar la evaluación con IA."
+    },
+    "language": {
+      "question": "¿Cómo elijo mi idioma?",
+      "answer": "Abre la tarjeta {examTarget}, abajo a la izquierda, para acceder a {learningPlan}. Elige la entidad examinadora de tu idioma y tu nivel, y guarda los cambios."
+    },
+    "models": {
+      "question": "¿Tengo que descargar modelos?",
+      "answer": "Los modelos de inglés están incluidos por defecto. Para alemán, polaco o español, abre {settings} → {generatedFiles} → {voiceModels} y descarga una voz para los ejercicios de comprensión auditiva. Para transcribir grabaciones orales, descarga y selecciona también un modelo en {speechModels}.",
+      "note": "Esto solo se aplica a la descarga de modelos. Las funciones de IA necesitan una clave de API en todos los idiomas, incluido el inglés."
+    },
+    "exercises": {
+      "question": "¿Cómo practico cada destreza?",
+      "answer": "Abre {exercises} y elige {reading}, {writing}, {listening} o {speaking}. Haz clic en {generateExercises} para crear un nuevo conjunto de ejercicios."
+    },
+    "audio": {
+      "question": "¿Cómo creo el audio de los ejercicios?",
+      "answer": "Abre un ejercicio de comprensión auditiva y haz clic en {generateAudio} si falta el audio."
+    },
+    "mock": {
+      "question": "¿Cómo practico un examen completo?",
+      "answer": "Abre {mockExams} para realizar un examen existente o generar uno nuevo. Completa el examen para ver tus resultados y comentarios."
+    }
   }
 }

@@ -1457,5 +1457,37 @@
     "prepareSection": "Abschnitt {n} vorbereiten",
     "section": "Abschnitt {n}",
     "wordTarget": "Richtwert: ungefähr {count} Wörter"
+  },
+  "quickStart": {
+    "title": "Schnellstart",
+    "tooltip": "Klicken, um die Schnellstart-Anleitung zu öffnen",
+    "close": "Schnellstart schließen",
+    "documentation": "Vollständige Dokumentation lesen",
+    "opensInNewTab": "(öffnet sich in einem neuen Tab)",
+    "ai": {
+      "question": "Wie verbinde ich die KI?",
+      "answer": "Öffne dein Profil → {settings} → {aiProvider}. Gib deinen API-Schlüssel ein, wähle ein Modell und speichere. Damit kannst du Übungen generieren und KI-Bewertungen nutzen."
+    },
+    "language": {
+      "question": "Wie wähle ich meine Sprache?",
+      "answer": "Öffne die Karte {examTarget} unten links, um zu {learningPlan} zu gelangen. Wähle den Prüfungsanbieter für deine Sprache und dein Niveau und speichere die Änderungen."
+    },
+    "models": {
+      "question": "Muss ich Modelle herunterladen?",
+      "answer": "Englische Modelle sind standardmäßig enthalten. Öffne für Deutsch, Polnisch oder Spanisch {settings} → {generatedFiles} → {voiceModels} und lade eine Stimme für Hörübungen herunter. Für die Transkription von Sprachaufnahmen lade außerdem unter {speechModels} ein Modell herunter und wähle es aus.",
+      "note": "Das gilt nur für Modell-Downloads. KI-Funktionen benötigen in jeder Sprache einen API-Schlüssel, auch auf Englisch."
+    },
+    "exercises": {
+      "question": "Wie übe ich einzelne Fertigkeiten?",
+      "answer": "Öffne {exercises} und wähle {reading}, {writing}, {listening} oder {speaking}. Klicke auf {generateExercises}, um einen neuen Übungssatz zu erstellen."
+    },
+    "audio": {
+      "question": "Wie erstelle ich Audio für Hörübungen?",
+      "answer": "Öffne eine Hörübung und klicke auf {generateAudio}, wenn Audio fehlt."
+    },
+    "mock": {
+      "question": "Wie übe ich eine vollständige Prüfung?",
+      "answer": "Öffne {mockExams}, um eine vorhandene Prüfung zu bearbeiten oder eine neue zu generieren. Schließe die Prüfung ab, um Ergebnisse und Feedback zu sehen."
+    }
   }
 }

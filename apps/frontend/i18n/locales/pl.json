@@ -1457,5 +1457,37 @@
     "prepareSection": "Przygotuj część {n}",
     "section": "Część {n}",
     "wordTarget": "Cel: około {count} słów"
+  },
+  "quickStart": {
+    "title": "Szybki start",
+    "tooltip": "Kliknij, aby otworzyć przewodnik szybkiego startu",
+    "close": "Zamknij szybki start",
+    "documentation": "Przeczytaj pełną dokumentację",
+    "opensInNewTab": "(otwiera się w nowej karcie)",
+    "ai": {
+      "question": "Jak podłączyć AI?",
+      "answer": "Otwórz swój profil → {settings} → {aiProvider}. Dodaj klucz API, wybierz model i zapisz. Umożliwi to generowanie ćwiczeń i ocenianie przez AI."
+    },
+    "language": {
+      "question": "Jak wybrać język?",
+      "answer": "Otwórz kartę {examTarget} w lewym dolnym rogu, aby przejść do sekcji {learningPlan}. Wybierz organizatora egzaminu dla swojego języka oraz poziom, a następnie zapisz zmiany."
+    },
+    "models": {
+      "question": "Czy muszę pobierać modele?",
+      "answer": "Modele angielskie są domyślnie dołączone. Dla niemieckiego, polskiego lub hiszpańskiego otwórz {settings} → {generatedFiles} → {voiceModels} i pobierz głos do ćwiczeń ze słuchania. Aby transkrybować nagrania mowy, pobierz i wybierz również model w sekcji {speechModels}.",
+      "note": "Dotyczy to tylko pobierania modeli. Funkcje AI wymagają klucza API w każdym języku, również angielskim."
+    },
+    "exercises": {
+      "question": "Jak ćwiczyć poszczególne umiejętności?",
+      "answer": "Otwórz {exercises} i wybierz {reading}, {writing}, {listening} lub {speaking}. Kliknij {generateExercises}, aby utworzyć nowy zestaw ćwiczeń."
+    },
+    "audio": {
+      "question": "Jak utworzyć nagrania do słuchania?",
+      "answer": "Otwórz ćwiczenie ze słuchania i kliknij {generateAudio}, jeśli brakuje nagrania."
+    },
+    "mock": {
+      "question": "Jak przećwiczyć cały egzamin?",
+      "answer": "Otwórz {mockExams}, aby rozwiązać istniejący egzamin lub wygenerować nowy. Ukończ egzamin, aby zobaczyć wyniki i informację zwrotną."
+    }
   }
 }
