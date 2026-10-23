@@ -65,14 +65,14 @@ services:
       SMTP_USER: '${SMTP_USER:-}'
       SMTP_PASS: '${SMTP_PASS:-}'
       SMTP_FROM: '${SMTP_FROM:-exam.one <noreply@localhost>}'
-      TTS_BASE_URL: 'http://kokoro-voices:8881'
+      TTS_BASE_URL: 'http://text-to-speech:8881'
       TTS_CONCURRENCY: '${TTS_CONCURRENCY:-3}'
       TTS_SPEED: '${TTS_SPEED:-1.0}'
       TTS_LANG: '${TTS_LANG:-en}'
       TTS_LANGUAGES: '${TTS_LANGUAGES:-de,en,pl,es}'
       TTS_VOICES: '${TTS_VOICES:-martin,bernd,victoria,eva,bf_emma,bf_isabella,bm_george,bm_fable,pl_gosia,pl_darkman,pl_bass,ef_dora,em_alex,em_santa}'
       TTS_TURN_PAUSE_MS: '${TTS_TURN_PAUSE_MS:-350}'
-      STT_BASE_URL: 'http://parakeet:8882'
+      STT_BASE_URL: 'http://speech-to-text:8882'
       STT_LANGUAGES: '${STT_LANGUAGES:-de,en,pl,es}'
       SEED_LISTENING_AUDIO_DIR: /app/data/listening
       GENERATED_LISTENING_AUDIO_DIR: /app/data/listening/generated
@@ -131,7 +131,8 @@ services:
       retries: 10
     restart: unless-stopped
 
-  kokoro-voices:
+  text-to-speech:
+    container_name: text-to-speech-1
     build:
       context: ./scripts/tts/victoria
       dockerfile: Dockerfile
@@ -161,7 +162,8 @@ services:
       start_period: 300s
     restart: unless-stopped
 
-  parakeet:
+  speech-to-text:
+    container_name: speech-to-text-1
     build:
       context: ./scripts/stt
       dockerfile: Dockerfile

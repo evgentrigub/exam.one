@@ -4,7 +4,7 @@
 
 Exam packs supply listening transcripts, language, voice metadata, and audio maps. The local TTS service synthesizes stable WAV files for those tasks; replaying an existing file does not require TTS or an LLM.
 
-One Compose service, `kokoro-voices`, serves German, British English, and Spanish through Kokoro and Polish through Piper. The API selects language/voices from the active pack and supports shared recordings, per-item clips, monologues, and dialogues.
+One Compose service, `text-to-speech`, serves German, British English, and Spanish through Kokoro and Polish through Piper. The API selects language/voices from the active pack and supports shared recordings, per-item clips, monologues, and dialogues.
 
 ## Install and start
 

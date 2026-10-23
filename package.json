@@ -40,18 +40,18 @@
     "stack:seed-audio": "node scripts/stack-seed-audio.mjs",
     "stack:up": "pnpm stack:up:core && pnpm stack:up:speech",
     "stack:up:core": "mkdir -p apps/frontend/public/audio/listening/generated && docker compose up -d --build --wait postgres redis backend frontend",
-    "stack:up:speech": "pnpm stack:setup && pnpm stack:verify-models && docker compose up -d --build kokoro-voices parakeet && pnpm stack:seed-audio",
+    "stack:up:speech": "pnpm stack:setup && pnpm stack:verify-models && docker compose up -d --build text-to-speech speech-to-text && pnpm stack:seed-audio",
     "stack:down": "docker compose down --remove-orphans",
     "stack:logs": "docker compose logs -f",
     "stack:ps": "docker compose ps",
     "tts:setup": "bash scripts/tts/victoria/download-models.sh",
     "tts:test": "cd scripts/tts/victoria && python3 -m unittest test_voice_catalog",
-    "tts:up": "pnpm tts:setup && docker compose up -d --build --wait kokoro-voices",
-    "tts:down": "docker compose stop kokoro-voices",
+    "tts:up": "pnpm tts:setup && docker compose up -d --build --wait text-to-speech",
+    "tts:down": "docker compose stop text-to-speech",
     "stt:setup": "bash scripts/stt/setup.sh",
     "stt:test": "cd scripts/stt && python3 -m unittest test_catalog",
-    "stt:up": "pnpm stt:setup && docker compose up -d --build --wait parakeet",
-    "stt:down": "docker compose stop parakeet"
+    "stt:up": "pnpm stt:setup && docker compose up -d --build --wait speech-to-text",
+    "stt:down": "docker compose stop speech-to-text"
   },
   "devDependencies": {
     "jiti": "^2.7.0",

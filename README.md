@@ -189,6 +189,8 @@ Accounts, text-based practice, saved history, and mock state work without speech
 | TTS           | http://127.0.0.1:8881                     |
 | STT           | http://127.0.0.1:8882                     |
 
+The speech services are `text-to-speech` and `speech-to-text`. Their container names are `text-to-speech-1` and `speech-to-text-1`.
+
 Swagger is enabled in local development and disabled in Compose production unless `SWAGGER_ENABLED=true`. Database, Redis, and speech ports bind to localhost by default. Compose application ports are configured through `.env`.
 
 ## Optional providers

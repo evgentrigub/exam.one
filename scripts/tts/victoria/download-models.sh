@@ -6,5 +6,5 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 cd "${REPO_ROOT}"
 mkdir -p scripts/tts/victoria/models
 exec docker compose run --rm --no-deps --build -T \
-  --user "$(id -u):$(id -g)" kokoro-voices \
+  --user "$(id -u):$(id -g)" text-to-speech \
   python /app/download_models.py --target /app/models "$@"

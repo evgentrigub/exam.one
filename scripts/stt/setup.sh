@@ -6,4 +6,4 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "${REPO_ROOT}"
 mkdir -p scripts/stt/models
 exec docker compose run --rm --no-deps --build -T \
-  --user "$(id -u):$(id -g)" parakeet python /app/setup.py "$@"
+  --user "$(id -u):$(id -g)" speech-to-text python /app/setup.py "$@"

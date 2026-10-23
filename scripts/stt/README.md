@@ -29,7 +29,7 @@ Restart an already running STT service after a setup command changes preferences
 
 `STT_LANGUAGES=de,en,pl,es` controls permitted exam languages; it does not download models. Persistent instance preferences select the model for each exam language. Changing backend environment requires a restart.
 
-The Compose service keeps the name `parakeet` and port 8882 for compatibility. Its build context is now `scripts/stt/`. `pnpm stack:up`, `stt:setup`, `stt:up` and `stt:down` remain supported. Model files, derived caches and `preferences.json` live in `scripts/stt/models/`, mounted writable. Copy this folder when preserving choices across installations. Model files are shared resources, not per-user downloads.
+The Compose service uses the name `speech-to-text` and port 8882. Its build context is now `scripts/stt/`. `pnpm stack:up`, `stt:setup`, `stt:up` and `stt:down` remain supported. Model files, derived caches and `preferences.json` live in `scripts/stt/models/`, mounted writable. Copy this folder when preserving choices across installations. Model files are shared resources, not per-user downloads.
 
 ## Model management
 
@@ -49,7 +49,7 @@ Apply an update and install both supported models:
 
 ```bash
 STT_SETUP_LANGS=en,de,pl,es pnpm stt:setup
-docker compose up -d --build parakeet frontend
+docker compose up -d --build speech-to-text frontend
 ```
 
 Downloads use temporary files and a pinned SHA-256 before atomic installation. After a restart, interrupted downloads can be retried; partial files never count as installed. Corrupt preference files fail closed instead of changing providers.
@@ -71,7 +71,7 @@ pnpm stt:test
 To check an installed runtime with an existing English audio sample mounted at `/samples/english.wav`, run inside the service container:
 
 ```bash
-docker compose exec parakeet python smoke.py --audio /samples/english.wav
+docker compose exec speech-to-text python smoke.py --audio /samples/english.wav
 ```
 
 Both models must already be installed for the default smoke command. Use `--models phonon-2` for English-only setup. It checks codecs and nonempty responses, without comparing accuracy.
