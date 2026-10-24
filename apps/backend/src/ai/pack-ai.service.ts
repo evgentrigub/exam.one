@@ -39,8 +39,8 @@ export class PackAiService {
     return getPack(packContext.getStore()?.packId ?? DEFAULT_PACK_ID)!
   }
 
-  private configured(): boolean {
-    return this.llm.getConfig() !== null
+  private configured(): Promise<boolean> {
+    return this.llm.hasConfig()
   }
 
   private missingKey(): AiResponse<unknown> {
@@ -100,10 +100,10 @@ export class PackAiService {
     }
     // Checked before dispatch: an unconfigured provider has always reported the missing key
     // rather than the pack's own unavailability.
-    if (!this.configured()) {
+    if (!(await this.configured())) {
       return {
         data: null,
-        error: 'AI overview is unavailable because no LLM API key is configured.',
+        error: 'AI overview is unavailable because no LLM API key is configured. Add one in Settings → AI provider.',
       }
     }
     const overview = pack.mockOverview
@@ -170,7 +170,7 @@ export class PackAiService {
     try {
       const pack = this.pack()
       if (!pack.live) throw new Error('This pack is unavailable for new practice')
-      if (!this.llm.getConfig()) return { data: null, error: this.llm.missingKeyError() }
+      if (!(await this.configured())) return { data: null, error: this.llm.missingKeyError() }
       const output: unknown[] = []
       for (const n of parts) {
         const part = pack.structure
@@ -248,7 +248,7 @@ export class PackAiService {
       }
       const prompt = findPrompt(pack, skill, n, kind)
       if (!prompt) throw new Error('This prompt is unavailable')
-      if (!this.llm.getConfig()) return { data: null, error: this.llm.missingKeyError() }
+      if (!(await this.configured())) return { data: null, error: this.llm.missingKeyError() }
       // A pack may need more than the three generic variables; anything it does not
       // supply would otherwise reach the model as a literal "{placeholder}".
       const vars: PromptVars = pack.buildReviewVars

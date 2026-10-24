@@ -140,6 +140,10 @@ export function makeSetting(overrides: Partial<Setting> = {}): Setting {
     targetLanguage: 'de',
     defaultVoices: {},
     notifyMockReadyEmail: true,
+    llmProvider: null,
+    llmModel: null,
+    llmFallbackModels: [],
+    llmReasoningEffort: 'medium',
     updatedAt: NOW,
     ...overrides,
   }

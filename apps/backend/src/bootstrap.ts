@@ -57,7 +57,7 @@ export function configureApp(app: INestApplication): void {
         '- **Backend**: Standalone NestJS application running on port 3001 with global prefix `/api` and URI versioning `/v1`.',
         '- **Frontend**: Nuxt 4 web application running on port 3000.',
         '- **Database**: PostgreSQL with Prisma ORM for accounts, learning settings, practice catalogs, user attempts, and mock sets.',
-        '- **Speech Services**: Local or containerized Kokoro TTS (synthesis) and Parakeet/Whisper STT (transcription).',
+        '- **Speech Services**: Local or containerized Kokoro TTS (synthesis) and Parakeet STT (transcription).',
         '',
         '## Authentication Architecture',
         '- Authentication is session-based using **HTTP-only cookies**:',
@@ -133,7 +133,7 @@ export function configureApp(app: INestApplication): void {
     .addTag('drafts', 'Draft management for ongoing exercise and writing sessions')
     .addTag('llm', 'LLM provider connectivity, exercise generation, model answers, automated grading, and mock reviews')
     .addTag('tts', 'Kokoro Text-to-Speech synthesis and audio file lifecycle management')
-    .addTag('stt', 'Parakeet and Whisper Speech-to-Text audio transcription services')
+    .addTag('stt', 'Parakeet Speech-to-Text audio transcription service')
     .addTag('mock-exam', 'Mock exam sets, full-module attempts, grading states, and drafts')
     .addTag('jobs', 'Background jobs (exercise generation, listening audio, mock exam sets) with live SSE updates')
     .build()

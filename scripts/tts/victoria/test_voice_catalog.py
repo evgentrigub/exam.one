@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import io
 import tempfile
 import threading
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from voice_catalog import CatalogError, VoiceCatalog, contained_path, load_manifest
 
@@ -121,6 +123,27 @@ class CatalogTest(unittest.TestCase):
         with self.assertRaises(CatalogError):
             self.catalog.remove("pl_bass")
         gate.set()
+
+
+class SetupVerificationTests(unittest.TestCase):
+    def test_verification_fails_without_downloading_missing_voices(self):
+        import download_models
+        with tempfile.TemporaryDirectory() as directory:
+            catalog = VoiceCatalog(Path(directory), MANIFEST, fetch=fake_fetch)
+            with patch.object(download_models, "VoiceCatalog", return_value=catalog), patch.object(catalog, "install") as install, patch("sys.argv", ["download_models.py", "--verify", "--langs", "en"]):
+                with self.assertRaisesRegex(ValueError, "Missing voice"):
+                    download_models.main()
+                install.assert_not_called()
+
+    def test_verification_accepts_installed_selected_voices_without_downloads(self):
+        import download_models
+        with tempfile.TemporaryDirectory() as directory:
+            catalog = VoiceCatalog(Path(directory), MANIFEST, fetch=fake_fetch)
+            for voice_id in catalog.voices_for_langs({"en"}):
+                install_files(Path(directory), voice_id)
+            with patch.object(download_models, "VoiceCatalog", return_value=catalog), patch.object(catalog, "install") as install, patch("sys.argv", ["download_models.py", "--verify", "--langs", "en"]), patch("sys.stdout", new_callable=io.StringIO):
+                self.assertEqual(download_models.main(), 0)
+                install.assert_not_called()
 
 
 if __name__ == "__main__":

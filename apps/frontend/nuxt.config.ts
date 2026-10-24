@@ -51,7 +51,8 @@ export default defineNuxtConfig({
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: true,
+    // The Docker image sets SKIP_NUXT_TYPECHECK=1; CI type-checks separately with `pnpm type-check`
+    typeCheck: process.env['SKIP_NUXT_TYPECHECK'] !== '1',
   },
 
   // CSS configuration
@@ -112,6 +113,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      docsUrl: process.env['DOCS_URL'] || 'http://localhost:3012',
       frontendLandingUrl: process.env['FRONTEND_LANDING_URL'] || 'http://localhost:3001',
       apiUrl: process.env['NUXT_PUBLIC_API_URL'] || 'http://localhost:3001',
     },

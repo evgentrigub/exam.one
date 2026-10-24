@@ -10,7 +10,7 @@
           <div class="flex items-center justify-center gap-12 py-16">
             <Tooltip text="Top tooltip" position="top">
               <button
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 border-none"
+                class="px-4 py-2 bg-primary text-primary-content rounded-md hover:bg-primary/90 border-none"
               >
                 Hover me (Top)
               </button>
@@ -18,7 +18,7 @@
 
             <Tooltip text="Bottom tooltip" position="bottom">
               <button
-                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 border-none"
+                class="px-4 py-2 bg-success text-success-content rounded-md hover:bg-success/90 border-none"
               >
                 Hover me (Bottom)
               </button>
@@ -26,7 +26,7 @@
 
             <Tooltip text="Left tooltip" position="left">
               <button
-                class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 border-none"
+                class="px-4 py-2 bg-secondary text-secondary-content rounded-md hover:bg-secondary/90 border-none"
               >
                 Hover me (Left)
               </button>
@@ -34,7 +34,7 @@
 
             <Tooltip text="Right tooltip" position="right">
               <button
-                class="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 border-none"
+                class="px-4 py-2 bg-accent text-accent-content rounded-md hover:bg-accent/90 border-none"
               >
                 Hover me (Right)
               </button>
@@ -49,14 +49,14 @@
           </h2>
           <div class="flex items-center justify-center gap-4 py-8">
             <button
-              class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 border-none"
+              class="px-6 py-3 bg-success text-success-content rounded-lg hover:bg-success/90 border-none"
             >
               {{ $t('writing.checkReview') }}
             </button>
 
             <Tooltip :text="$t('writing.repeatExercise')" position="top">
               <button
-                class="px-3 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 border-none flex items-center justify-center"
+                class="px-3 py-3 bg-success text-success-content rounded-lg hover:bg-success/90 border-none flex items-center justify-center"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -89,7 +89,7 @@
             </Tooltip>
 
             <Tooltip text="Delete document" position="top">
-              <button class="p-3 bg-red-100 text-red-600 rounded-md hover:bg-red-200 border-none">
+              <button class="p-3 bg-error/10 text-error rounded-md hover:bg-error/20 border-none">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -103,7 +103,7 @@
 
             <Tooltip text="Download file" position="top">
               <button
-                class="p-3 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 border-none"
+                class="p-3 bg-primary/10 text-primary rounded-md hover:bg-primary/20 border-none"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -118,7 +118,7 @@
 
             <Tooltip text="Share with others" position="top">
               <button
-                class="p-3 bg-green-100 text-green-600 rounded-md hover:bg-green-200 border-none"
+                class="p-3 bg-success/10 text-success rounded-md hover:bg-success/20 border-none"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path

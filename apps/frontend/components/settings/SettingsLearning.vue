@@ -78,7 +78,9 @@ const settingsStore = useSettingsStore()
 const { packId } = storeToRefs(settingsStore)
 
 const livePacks = listLivePacks()
-const examBoard = ref(livePacks.find(pack => pack.packId === packId.value)?.board ?? livePacks[0]?.board ?? '')
+const examBoard = ref(
+  livePacks.find(pack => pack.packId === packId.value)?.board ?? livePacks[0]?.board ?? ''
+)
 const selectedPackId = ref(packId.value)
 const examDate = ref(profile.value.examTargetDate)
 const error = ref('')
@@ -111,7 +113,8 @@ const boardOptions = computed<SetRadioOption[]>(() =>
   }))
 )
 watch(examBoard, board => {
-  if (!livePacks.some(pack => pack.packId === selectedPackId.value && pack.board === board)) selectedPackId.value = livePacks.find(pack => pack.board === board)?.packId ?? packId.value
+  if (!livePacks.some(pack => pack.packId === selectedPackId.value && pack.board === board))
+    selectedPackId.value = livePacks.find(pack => pack.board === board)?.packId ?? packId.value
 })
 
 const levelOptions = computed<SetChoiceOption[]>(() => {
@@ -125,7 +128,6 @@ const levelOptions = computed<SetChoiceOption[]>(() => {
       desc: pack.title,
     })),
     { id: 'b2-soon', label: 'B2', disabled: true },
-    { id: 'c1-soon', label: 'C1', desc: t('settings.levelC1Desc'), disabled: true },
   ]
 })
 

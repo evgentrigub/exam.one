@@ -4,6 +4,7 @@
       v-for="option in options"
       :key="option.id"
       type="button"
+      :aria-pressed="value === option.id"
       :disabled="option.disabled"
       :title="option.disabled ? $t('settings.availableSoon') : undefined"
       class="rounded-field border px-3 py-3 text-left transition-colors"
@@ -16,21 +17,13 @@
           v-if="option.icon"
           :size="15"
           :class="
-            option.disabled
-              ? 'opacity-30'
-              : value === option.id
-                ? 'text-primary'
-                : 'opacity-55'
+            option.disabled ? 'opacity-30' : value === option.id ? 'text-primary' : 'opacity-55'
           "
         />
         <span
           class="text-sm font-medium"
           :class="
-            option.disabled
-              ? 'text-base-content/40'
-              : value === option.id
-                ? 'text-primary'
-                : ''
+            option.disabled ? 'text-base-content/40' : value === option.id ? 'text-primary' : ''
           "
         >
           {{ option.label }}

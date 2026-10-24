@@ -1,34 +1,31 @@
-import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { Injectable } from '@nestjs/common'
 import type { AiResponse, LlmHealthData } from '@exam-one/contracts'
-import type { AppConfig } from '../config/app.config'
+import { packContext } from '../core/interceptors/pack-context.interceptor'
 import {
-  callLlm,
-  getLlmConfig,
+  callLlmWithFallback,
   verifyLlmConnection,
   type LlmConfig,
   type LlmMessage,
   type LlmOptions,
 } from './llm.adapter'
+import { LlmSettingsService } from './llm-settings.service'
 
 const MISSING_KEY_MESSAGE =
-  'AI features are unavailable because no API key is configured. Please set OPENAI_API_KEY or OPENROUTER_API_KEY in your environment.'
+  'AI features are unavailable because no API key is configured. Add one in Settings → AI provider.'
+const UNCONFIGURED_HEALTH_MESSAGE = 'No LLM API key is configured. Add one in Settings → AI provider.'
 
+/** LLM access for the current user; HTTP requests and job processors both carry the user in `packContext`. */
 @Injectable()
-export class LlmService implements OnModuleInit {
-  private readonly logger = new Logger(LlmService.name)
+export class LlmService {
+  constructor(private readonly settings: LlmSettingsService) {}
 
-  constructor(private readonly config: ConfigService) {}
+  async getConfig(userId = packContext.getStore()?.userId): Promise<LlmConfig | null> {
+    if (!userId) return null
+    return this.settings.resolveConfig(userId)
+  }
 
-  getConfig(): LlmConfig | null {
-    return getLlmConfig({
-      provider: this.config.get<AppConfig['LLM_PROVIDER']>('app.LLM_PROVIDER'),
-      openaiApiKey: this.config.get<string>('app.OPENAI_API_KEY'),
-      openrouterApiKey: this.config.get<string>('app.OPENROUTER_API_KEY'),
-      openaiModel: this.config.get<string>('app.OPENAI_MODEL'),
-      openrouterModel: this.config.get<string>('app.OPENROUTER_MODEL'),
-      reasoningEffort: this.config.get<string>('app.LLM_REASONING_EFFORT'),
-    })
+  async hasConfig(userId?: string): Promise<boolean> {
+    return (await this.getConfig(userId)) !== null
   }
 
   missingKeyError(): string {
@@ -36,15 +33,15 @@ export class LlmService implements OnModuleInit {
   }
 
   async complete(messages: LlmMessage[], opts?: LlmOptions): Promise<string> {
-    const llmConfig = this.getConfig()
+    const llmConfig = await this.getConfig()
     if (!llmConfig) {
       throw new Error(MISSING_KEY_MESSAGE)
     }
-    return callLlm(llmConfig, messages, opts)
+    return callLlmWithFallback(llmConfig, messages, opts)
   }
 
-  async health(): Promise<AiResponse<LlmHealthData>> {
-    const llmConfig = this.getConfig()
+  async health(userId?: string): Promise<AiResponse<LlmHealthData>> {
+    const llmConfig = await this.getConfig(userId)
     if (!llmConfig) {
       return {
         data: {
@@ -52,7 +49,7 @@ export class LlmService implements OnModuleInit {
           connected: false,
           provider: null,
           model: null,
-          message: 'No LLM API key is configured.',
+          message: UNCONFIGURED_HEALTH_MESSAGE,
         },
         error: null,
       }
@@ -64,37 +61,10 @@ export class LlmService implements OnModuleInit {
         configured: true,
         connected: result.status === 'ok',
         provider: result.provider,
-        model: 'model' in result ? result.model : llmConfig.model,
-        message: 'message' in result ? result.message : null,
+        model: result.model,
+        message: result.status === 'error' ? result.message : null,
       },
       error: null,
-    }
-  }
-
-  async onModuleInit(): Promise<void> {
-    if ((this.config.get<string>('app.NODE_ENV') ?? process.env['NODE_ENV']) === 'test') {
-      return
-    }
-    const llmConfig = this.getConfig()
-    if (!llmConfig) {
-      const provider = this.config.get<AppConfig['LLM_PROVIDER']>('app.LLM_PROVIDER') ?? 'openrouter'
-      const apiKeyEnvVar = provider === 'openai' ? 'OPENAI_API_KEY' : 'OPENROUTER_API_KEY'
-      this.logger.log(
-        `AI features disabled: no API key configured for provider "${provider}". Set ${apiKeyEnvVar} to enable AI.`
-      )
-      return
-    }
-
-    this.logger.log(`Verifying LLM connection (${llmConfig.provider}, model: ${llmConfig.model})...`)
-    const result = await verifyLlmConnection(llmConfig)
-    if (result.status === 'ok') {
-      this.logger.log(`LLM connection verified (${result.provider}, model: ${result.model}).`)
-      return
-    }
-    if (result.status === 'error') {
-      this.logger.error(
-        `LLM connection failed (${result.provider}, model: ${result.model}): ${result.message}`
-      )
     }
   }
 }

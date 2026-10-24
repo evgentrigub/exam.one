@@ -26,7 +26,7 @@ Backend architecture under `apps/backend/src/` is organized into cohesive domain
   - `pack-ai.service.ts`, `generate-*.service.ts`, `review.service.ts`
 - `speech/`: Speech synthesis and recognition (`SpeechModule`):
   - `tts/`: Kokoro TTS adapter, service, controller, audio slicing/caching utilities.
-  - `stt/`: Parakeet / Whisper STT adapter, service, controller.
+  - `stt/`: Parakeet STT adapter, service, controller.
 - `mock-exam/`: Mock exam set administration and resumable generation jobs (`MockExamModule`):
   - `mock-exam.controller.ts`, `mock-exam.service.ts`
   - `generation-jobs.controller.ts`, `generation-jobs.service.ts`

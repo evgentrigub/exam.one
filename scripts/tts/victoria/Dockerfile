@@ -16,12 +16,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY main.py voice_catalog.py voice-manifest.json ./
+COPY main.py voice_catalog.py download_models.py voice-manifest.json ./
 
 ENV KOKORO_VICTORIA_MODEL_DIR=/app/models
 ENV KOKORO_MULTI_SPEED=1.0
 ENV KOKORO_PAUSE_DURATION=0.25
-# Only picks what the host setup script downloads; the service loads every installed voice.
+# Only picks what the setup container downloads; the service loads every installed voice.
 ENV KOKORO_LANGS=en
 # Every model and the spaCy English model ship with the image or the mount; Hugging Face Hub is
 # never queried at runtime. Voice downloads from Settings use plain HTTPS from voice-manifest.json.

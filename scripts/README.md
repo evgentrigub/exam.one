@@ -15,7 +15,7 @@ pnpm stack:logs
 pnpm stack:down
 ```
 
-The root `compose.yaml` defines Nuxt, NestJS, PostgreSQL, Redis, TTS, and STT. `stack:up` prepares missing models, starts the core services, starts speech, and prepares selected bundled audio. Stopping the stack preserves named volumes and host media/model folders.
+The root `compose.yaml` defines Nuxt, NestJS, PostgreSQL, Redis, TTS, and STT. `stack:up` starts the core services (`stack:up:core`), then prepares missing models, starts speech, and prepares selected bundled audio (`stack:up:speech`). Stopping the stack preserves named volumes and host media/model folders.
 
 ```bash
 pnpm stack:setup
@@ -28,7 +28,7 @@ Setup downloads model files without starting containers. English is the default 
 
 ## Speech services
 
-TTS converts pack transcripts to stable WAVs. German, British English, and Spanish use Kokoro; Polish uses Piper in the same service. STT converts recordings to editable transcripts through local Parakeet. Both are optional integrations; existing WAV playback and manual speaking transcripts do not require a live speech service.
+TTS converts pack transcripts to stable WAVs. German, British English, and Spanish use Kokoro; Polish uses Piper in the same service. STT converts recordings to editable transcripts through local Phonon / Parakeet. Both are optional integrations; existing WAV playback and manual speaking transcripts do not require a live speech service.
 
 ```bash
 pnpm tts:up
@@ -66,3 +66,7 @@ node scripts/eval-prompts.mjs --pack cambridge-en-a2 --n 3
 Control mode validates bundled seeds without a paid LLM call. Sample mode evaluates generated payloads using the configured provider. Read the [pack guide](../data/README.md) when changing content or prompt rules.
 
 Stack/audio setup scripts read the repository configuration they need. Database CLI commands have separate environment handling; use the [database guide](../libraries/database/README.md) for migration and seed setup. Backup/restore belongs in the [operator runbook](../README.md#backup-restore-and-upgrades).
+
+Speech setup (`tts:setup`, `stt:setup`) and `stack:verify-models` run through Bash and temporary Compose containers, using Python bundled in the speech images. Self-hosting needs no Python installation on the host. Contributor `tts:test`/`stt:test` commands use optional host Python 3.10+ and standard-library tests. Setup containers write to the service mounts as the invoking user and are removed afterward.
+
+The default `pnpm stack:setup`/`stack:up` includes this English model through `STT_SETUP_LANGS=en`; add other languages with that variable or Settings.

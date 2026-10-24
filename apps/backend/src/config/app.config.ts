@@ -1,9 +1,6 @@
 import path from 'node:path'
 import { registerAs } from '@nestjs/config'
 
-export type LlmProviderName = 'openai' | 'openrouter'
-export type SttProviderName = 'local' | 'openai'
-
 export interface AppConfig {
   NODE_ENV: string
   BACKEND_PORT: number
@@ -14,6 +11,8 @@ export interface AppConfig {
   BULL_BOARD_PASSWORD: string
   FRONTEND_URL: string
   JWT_SECRET: string
+  /** Base64 32-byte key that encrypts users' saved LLM API keys. */
+  SECRETS_ENCRYPTION_KEY: string
   AUTH_COOKIE_SECURE: boolean
   EMAIL_PROVIDER: 'none' | 'smtp'
   SMTP_HOST: string
@@ -21,12 +20,6 @@ export interface AppConfig {
   SMTP_USER: string
   SMTP_PASS: string
   SMTP_FROM: string
-  LLM_PROVIDER: LlmProviderName
-  OPENAI_API_KEY: string
-  OPENAI_MODEL: string
-  OPENROUTER_API_KEY: string
-  OPENROUTER_MODEL: string
-  LLM_REASONING_EFFORT: string
   TTS_BASE_URL: string
   TTS_VOICES: string
   TTS_VOICE: string
@@ -36,11 +29,8 @@ export interface AppConfig {
   TTS_LANGUAGES: string
   TTS_TURN_PAUSE_MS: number
   TTS_CONCURRENCY: number
-  STT_PROVIDER: SttProviderName
   STT_BASE_URL: string
   STT_LANGUAGES: string
-  STT_MODEL: string
-  STT_OPENAI_MODEL: string
   GENERATED_LISTENING_AUDIO_DIR: string
   /** Root of every pack's bundled seed WAVs (`<root>/<pack prefix>/<exercise>/…`). */
   SEED_LISTENING_AUDIO_DIR: string
@@ -77,19 +67,26 @@ export function requireJwtSecret(value: string | undefined): string {
   return secret
 }
 
+const SECRETS_KEY_BYTES = 32
+const SECRETS_KEY_HINT = 'Generate one with: openssl rand -base64 32'
+
+export function requireSecretsKey(value: string | undefined): string {
+  const key = value?.trim() ?? ''
+  if (!key) {
+    throw new Error(`SECRETS_ENCRYPTION_KEY is not set. ${SECRETS_KEY_HINT}`)
+  }
+  const isBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(key)
+  if (!isBase64 || Buffer.from(key, 'base64').length !== SECRETS_KEY_BYTES) {
+    throw new Error(
+      `SECRETS_ENCRYPTION_KEY must be base64 for exactly ${SECRETS_KEY_BYTES} bytes. ${SECRETS_KEY_HINT}`
+    )
+  }
+  return key
+}
+
 function emailProvider(): 'none' | 'smtp' {
   const raw = (process.env['EMAIL_PROVIDER'] ?? 'none').trim().toLowerCase()
   return raw === 'smtp' ? 'smtp' : 'none'
-}
-
-function llmProvider(): LlmProviderName {
-  const raw = (process.env['LLM_PROVIDER'] ?? 'openrouter').trim().toLowerCase()
-  return raw === 'openai' ? 'openai' : 'openrouter'
-}
-
-function sttProvider(): SttProviderName {
-  const raw = (process.env['STT_PROVIDER'] ?? 'local').trim().toLowerCase()
-  return raw === 'openai' ? 'openai' : 'local'
 }
 
 function defaultGeneratedListeningAudioDir(): string {
@@ -110,6 +107,7 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   BULL_BOARD_PASSWORD: process.env['BULL_BOARD_PASSWORD'] ?? '',
   FRONTEND_URL: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
   JWT_SECRET: requireJwtSecret(process.env['JWT_SECRET']),
+  SECRETS_ENCRYPTION_KEY: requireSecretsKey(process.env['SECRETS_ENCRYPTION_KEY']),
   AUTH_COOKIE_SECURE: process.env['AUTH_COOKIE_SECURE'] === 'true',
   EMAIL_PROVIDER: emailProvider(),
   SMTP_HOST: process.env['SMTP_HOST'] ?? '',
@@ -117,12 +115,6 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   SMTP_USER: process.env['SMTP_USER'] ?? '',
   SMTP_PASS: process.env['SMTP_PASS'] ?? '',
   SMTP_FROM: process.env['SMTP_FROM'] ?? 'exam.one <noreply@localhost>',
-  LLM_PROVIDER: llmProvider(),
-  OPENAI_API_KEY: (process.env['OPENAI_API_KEY'] ?? '').trim(),
-  OPENAI_MODEL: (process.env['OPENAI_MODEL'] ?? 'gpt-6-sol').trim(),
-  OPENROUTER_API_KEY: (process.env['OPENROUTER_API_KEY'] ?? '').trim(),
-  OPENROUTER_MODEL: (process.env['OPENROUTER_MODEL'] ?? 'google/gemma-4-26b-a4b-it:free').trim(),
-  LLM_REASONING_EFFORT: (process.env['LLM_REASONING_EFFORT'] ?? 'medium').trim(),
   TTS_BASE_URL: (process.env['TTS_BASE_URL'] ?? 'http://127.0.0.1:8881').replace(/\/$/, ''),
   TTS_VOICES: process.env['TTS_VOICES'] ?? 'martin,bernd,victoria,eva',
   TTS_VOICE: process.env['TTS_VOICE'] ?? 'martin',
@@ -131,11 +123,8 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   TTS_LANGUAGES: process.env['TTS_LANGUAGES'] ?? process.env['TTS_LANG'] ?? 'de',
   TTS_TURN_PAUSE_MS: Number(process.env['TTS_TURN_PAUSE_MS'] ?? '350') || 350,
   TTS_CONCURRENCY: Number(process.env['TTS_CONCURRENCY'] ?? '3') || 3,
-  STT_PROVIDER: sttProvider(),
   STT_BASE_URL: (process.env['STT_BASE_URL'] ?? 'http://127.0.0.1:8882').replace(/\/+$/, ''),
-  STT_LANGUAGES: process.env['STT_LANGUAGES'] ?? 'de',
-  STT_MODEL: process.env['STT_MODEL'] ?? 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
-  STT_OPENAI_MODEL: process.env['STT_OPENAI_MODEL'] ?? 'whisper-1',
+  STT_LANGUAGES: process.env['STT_LANGUAGES'] ?? 'de,en,pl,es',
   GENERATED_LISTENING_AUDIO_DIR:
     process.env['GENERATED_LISTENING_AUDIO_DIR']?.trim() || defaultGeneratedListeningAudioDir(),
   SEED_LISTENING_AUDIO_DIR: process.env['SEED_LISTENING_AUDIO_DIR']?.trim() || defaultSeedListeningAudioDir(),

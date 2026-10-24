@@ -1,8 +1,4 @@
-interface SttHealthData {
-  provider: 'local' | 'openai'
-  ready: boolean
-  detail: string
-}
+import type { SttHealthData, TranscriptionData } from '@exam-one/contracts'
 
 function audioFileName(blob: Blob): string {
   if (blob.type.includes('ogg')) return 'speaking.ogg'
@@ -39,13 +35,10 @@ export function useSpeechTranscription() {
     try {
       const form = new FormData()
       form.append('file', blob, audioFileName(blob))
-      const response = await aiFetch<{ transcript: string; provider: 'local' | 'openai' }>(
-        '/stt/transcribe',
-        {
-          method: 'POST',
-          body: form,
-        }
-      )
+      const response = await aiFetch<TranscriptionData>('/stt/transcribe', {
+        method: 'POST',
+        body: form,
+      })
       if (response.error || !response.data) {
         throw new Error(response.error || t('errors.transcriptionFailed'))
       }

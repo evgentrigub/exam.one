@@ -1,5 +1,7 @@
 <template>
-  <header class="h-14 shrink-0 flex items-center gap-4 px-6 bg-base-100 border-b border-base-300">
+  <header
+    class="min-h-14 shrink-0 flex items-center gap-2 sm:gap-4 px-2 sm:px-6 py-2 sm:py-0 bg-base-100 border-b border-base-300"
+  >
     <!-- Page title -->
     <div class="flex-1 min-w-0">
       <ClientOnly>
@@ -11,7 +13,8 @@
     </div>
 
     <!-- Right controls -->
-    <div class="flex items-center gap-2 shrink-0">
+    <div class="flex flex-wrap justify-end items-center gap-2 max-w-full">
+      <QuickStartButton />
       <ActivityBell />
       <!-- Language selector -->
       <div class="dropdown dropdown-end">
@@ -45,29 +48,7 @@
         </ul>
       </div>
 
-      <!-- Theme selector -->
-      <div class="dropdown dropdown-end">
-        <button
-          tabindex="0"
-          class="btn btn-sm btn-ghost btn-circle"
-          :aria-label="$t('shell.theme')"
-        >
-          <Cake v-if="theme === 'cupcake'" :size="16" />
-          <Sun v-else :size="16" />
-        </button>
-        <ul
-          tabindex="0"
-          class="dropdown-content menu bg-base-100 rounded-box z-30 w-40 p-1 mt-1 border border-base-300 shadow"
-        >
-          <li class="menu-title text-[10px] uppercase tracking-wider">{{ $t('shell.theme') }}</li>
-          <li v-for="t in availableThemes" :key="t.value">
-            <a :class="theme === t.value ? 'active' : ''" @click="setTheme(t.value)">
-              <span>{{ t.icon }}</span>
-              <span class="capitalize">{{ t.label }}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <ThemeSwitcher />
 
       <!-- Profile button (session is client-only; SSR would paint EX / empty name) -->
       <ClientOnly>
@@ -151,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { Globe, ChevronDown, Cake, Sun, User, Settings, TrendingUp, LogOut } from 'lucide-vue-next'
+import { Globe, ChevronDown, User, Settings, TrendingUp, LogOut } from 'lucide-vue-next'
 import { LANGUAGE_LABELS, LANGUAGE_OPTIONS } from '~/utils/types'
 import type { LanguageOptions } from '~/utils/types'
 
@@ -160,7 +141,6 @@ defineProps<{
   subtitle?: string
 }>()
 
-const { theme, setTheme, availableThemes } = useTheme()
 const { profile, initials } = useAccountProfile()
 const { locale, setLocale } = useI18n()
 const { logout } = useAuth()

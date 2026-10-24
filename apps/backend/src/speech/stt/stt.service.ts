@@ -3,7 +3,6 @@ import { packContext } from '../../core/interceptors/pack-context.interceptor'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import type { AiResponse, SttHealthData, TranscriptionData } from '@exam-one/contracts'
-import type { AppConfig } from '../../config/app.config'
 import { checkSttHealth, getSttConfig, transcribeAudio, type SttConfig } from './stt.adapter'
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024
@@ -44,17 +43,13 @@ export class SttService {
 
   private sttConfig(): SttConfig {
     const language = getLivePack(packContext.getStore()?.packId).speech.sttLang
-    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de').split(',').map(value => value.trim())
+    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de,en,pl,es').split(',').map(value => value.trim())
     if (!installedLanguages.includes(language)) {
       throw new Error(`Speech recognition for ${language} is unavailable on this instance. You can enter a transcript manually.`)
     }
     return {
       ...getSttConfig({
-        provider: this.config.get<AppConfig['STT_PROVIDER']>('app.STT_PROVIDER'),
         baseUrl: this.config.get<string>('app.STT_BASE_URL'),
-        model: this.config.get<string>('app.STT_MODEL'),
-        openaiModel: this.config.get<string>('app.STT_OPENAI_MODEL'),
-        openaiApiKey: this.config.get<string>('app.OPENAI_API_KEY'),
       }),
       language,
     }

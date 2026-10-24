@@ -5,14 +5,15 @@
 
 const STORAGE_KEY = 'exam-one:theme'
 
-export type Theme = 'light' | 'cupcake'
+export type Theme = 'light' | 'dark'
 
 export const LIGHT_THEMES: { value: Theme; label: string; icon: string }[] = [
   { value: 'light', label: 'Light', icon: '☀️' },
-  { value: 'cupcake', label: 'Cupcake', icon: '🧁' },
 ]
 
-export const DARK_THEMES: { value: Theme; label: string; icon: string }[] = []
+export const DARK_THEMES: { value: Theme; label: string; icon: string }[] = [
+  { value: 'dark', label: 'Dark', icon: '🌙' },
+]
 
 export const AVAILABLE_THEMES = [...LIGHT_THEMES, ...DARK_THEMES]
 

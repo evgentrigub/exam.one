@@ -14,7 +14,7 @@ The app is login-gated. Accounts, session, profile, and exam settings require th
 
 Skill catalogs, attempts, drafts, generation jobs, and mock exams are NestJS/PostgreSQL-backed after login. Theme, locale, listening playback volume/speed, and reading bookmarks may still use client storage (see `theme-catalog.md` and `localstorage-keys.md`).
 
-Optional BYOK LLM, Kokoro TTS, and Parakeet/Whisper STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
+Optional per-user BYOK LLM, Kokoro TTS, and Parakeet STT proxy through NestJS. Core practice still must not require a cloud SaaS or an LLM key. Bundled mock Set 1 remains usable without LLM/TTS.
 
 One root Docker Compose file packages frontend, backend, Postgres, Kokoro, and Parakeet. `pnpm stack:up` migrates and seeds Postgres in the backend image.
 

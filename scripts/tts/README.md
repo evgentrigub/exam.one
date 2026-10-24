@@ -4,7 +4,7 @@
 
 Exam packs supply listening transcripts, language, voice metadata, and audio maps. The local TTS service synthesizes stable WAV files for those tasks; replaying an existing file does not require TTS or an LLM.
 
-One Compose service, `kokoro-voices`, serves German, British English, and Spanish through Kokoro and Polish through Piper. The API selects language/voices from the active pack and supports shared recordings, per-item clips, monologues, and dialogues.
+One Compose service, `text-to-speech`, serves German, British English, and Spanish through Kokoro and Polish through Piper. The API selects language/voices from the active pack and supports shared recordings, per-item clips, monologues, and dialogues.
 
 ## Install and start
 
@@ -24,7 +24,7 @@ To prepare more languages before startup:
 KOKORO_LANGS=en,de,pl,es pnpm tts:setup
 ```
 
-While TTS runs, **Settings → Generated files → Voice models** downloads/removes individual voices and sets the user's preferred voice per language. Downloaded voices load without a restart. At least one installed voice for a pack's language is needed; other requested voices can fall back to an installed voice of that language.
+While TTS runs, **Settings → Generated files → Voice models** downloads/removes individual voices and sets the user's preferred voice per language. Downloaded voices load without a restart. A running container may still be loading its engines. Settings retries an unavailable voice catalog every five seconds, refreshes the storage total when it reconnects, and stops retrying when you leave the page. At least one installed voice for a pack's language is needed; other requested voices can fall back to an installed voice of that language.
 
 ```bash
 pnpm tts:down

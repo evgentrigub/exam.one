@@ -1,3 +1,4 @@
+import type { LlmHealthData } from '@exam-one/contracts'
 import { useJobCenter } from '~/composables/useJobCenter'
 
 type Preflight = {
@@ -26,7 +27,7 @@ export function useBackgroundMockGeneration() {
   async function checkPreflight(): Promise<boolean> {
     preflight.value = { ...preflight.value, checking: true }
     const [llmResult, ttsResult] = await Promise.allSettled([
-      aiFetch<{ configured: boolean; connected: boolean; provider: string | null; model: string | null; message: string | null }>('/llm/health', { packId }),
+      aiFetch<LlmHealthData>('/llm/health', { packId }),
       aiFetch<{ ok: boolean }>('/tts/health', { packId }),
     ])
     const llm = llmResult.status === 'fulfilled' ? llmResult.value : null

@@ -1,0 +1,4 @@
+models
+parakeet/models
+__pycache__
+*.partial

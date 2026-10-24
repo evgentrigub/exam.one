@@ -9,6 +9,6 @@ await expect(service.generate(...)).resolves.toEqual({
 })
 ```
 
-- Mock `LlmService` (`getConfig`, `complete`, `missingKeyError`). No network, no real API keys.
+- Mock `LlmService` (`hasConfig` / `getConfig` are async, `complete`, `missingKeyError`). No network, no real API keys.
 - Cover at least: no config, unparseable model output.
 - Invalid body still HTTP 400 (pipe). Missing session still HTTP 401 (guard). Those stay thrown exceptions.

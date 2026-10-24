@@ -502,7 +502,7 @@
               }
             ],
             "url": "{{baseUrl}}/api/v1/stt/health",
-            "description": "Authed (cookie). Local Parakeet or OpenAI Whisper readiness."
+            "description": "Authed (cookie). Local Parakeet readiness."
           },
           "response": []
         },

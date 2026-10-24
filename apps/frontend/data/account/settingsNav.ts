@@ -7,6 +7,7 @@ export const SETTINGS_SECTIONS = [
   'appearance',
   'media-audio',
   'media-voices',
+  'media-stt',
   'data',
 ] as const
 

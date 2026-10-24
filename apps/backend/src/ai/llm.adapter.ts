@@ -1,27 +1,15 @@
 import type { LlmProvider, LlmReasoningEffort } from '@exam-one/contracts'
-
-const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
-
-const DEFAULT_OPENAI_MODEL = 'gpt-6-sol'
-const DEFAULT_OPENROUTER_MODEL = 'google/gemma-4-26b-a4b-it:free'
-const DEFAULT_REASONING_EFFORT = 'medium'
-
-const REASONING_EFFORT_VALUES = ['minimal', 'low', 'medium', 'high'] as const
+import { extractJsonObject } from './json'
+import { redactLlmError } from './llm-errors'
+import { runWithFallback } from './llm-fallback'
+import { buildChatParams, providerBaseUrl } from './llm-providers'
 
 export interface LlmConfig {
   provider: LlmProvider
   apiKey: string
   model: string
-  reasoningEffort?: LlmReasoningEffort
-}
-
-export interface LlmEnvSource {
-  provider?: string | undefined
-  openaiApiKey?: string | undefined
-  openrouterApiKey?: string | undefined
-  openaiModel?: string | undefined
-  openrouterModel?: string | undefined
-  reasoningEffort?: string | undefined
+  fallbackModels: string[]
+  reasoningEffort: LlmReasoningEffort
 }
 
 export interface LlmMessage {
@@ -38,11 +26,13 @@ export interface LlmOptions {
 const DEFAULT_GENERATION_TIMEOUT_MS = 120_000
 
 export type LlmConnectionResult =
-  | { status: 'skipped'; provider: LlmProvider; message: string }
   | { status: 'ok'; provider: LlmProvider; model: string }
   | { status: 'error'; provider: LlmProvider; model: string; message: string }
 
-const LLM_HEALTH_CHECK_TIMEOUT_MS = 15_000
+const LLM_HEALTH_CHECK_TIMEOUT_MS = 30_000
+// Reasoning models spend part of this budget thinking, so it is not tiny.
+const HEALTH_CHECK_MAX_TOKENS = 1024
+const HEALTH_CHECK_PROMPT = 'Reply with exactly this JSON and nothing else: {"ok": true}'
 
 function toErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -51,93 +41,94 @@ function toErrorMessage(error: unknown): string {
   return 'Unknown LLM connection error'
 }
 
-export function getLlmConfig(source: LlmEnvSource): LlmConfig | null {
-  const providerRaw = (source.provider || 'openrouter').trim()
-  const provider: LlmProvider = providerRaw === 'openai' ? 'openai' : 'openrouter'
-  const apiKey = (
-    provider === 'openai' ? source.openaiApiKey || '' : source.openrouterApiKey || ''
-  ).trim()
+/** Non-reasoning models reject a reasoning effort with HTTP 400; such a call is retried without it. */
+function rejectsReasoning(error: unknown): boolean {
+  const status = (error as { status?: unknown } | null)?.status
+  return status === 400 && /reasoning/i.test(toErrorMessage(error))
+}
 
-  if (!apiKey) {
-    return null
-  }
-
-  const model =
-    provider === 'openai'
-      ? source.openaiModel || DEFAULT_OPENAI_MODEL
-      : source.openrouterModel || DEFAULT_OPENROUTER_MODEL
-
-  const configuredEffort = source.reasoningEffort || DEFAULT_REASONING_EFFORT
-  const reasoningEffort = REASONING_EFFORT_VALUES.includes(configuredEffort as LlmReasoningEffort)
-    ? (configuredEffort as LlmReasoningEffort)
-    : DEFAULT_REASONING_EFFORT
-
-  return {
-    provider,
-    apiKey,
+async function requestCompletion(
+  config: LlmConfig,
+  model: string,
+  messages: LlmMessage[],
+  opts: LlmOptions | undefined,
+  reasoningEffort: LlmReasoningEffort | undefined
+): Promise<string> {
+  const { OpenAI } = await import('openai')
+  const client = new OpenAI({
+    apiKey: config.apiKey,
+    baseURL: providerBaseUrl(config.provider),
+    maxRetries: 0,
+    timeout: opts?.timeoutMs ?? DEFAULT_GENERATION_TIMEOUT_MS,
+  })
+  const params = buildChatParams(config.provider, {
     model,
-    ...(provider === 'openai' && { reasoningEffort }),
+    messages,
+    reasoningEffort,
+    ...(opts?.temperature !== undefined && { temperature: opts.temperature }),
+    ...(opts?.maxTokens !== undefined && { maxTokens: opts.maxTokens }),
+  })
+  const completion = await client.chat.completions.create(
+    params as unknown as Parameters<typeof client.chat.completions.create>[0] & { stream?: false }
+  )
+  return completion.choices?.[0]?.message?.content ?? ''
+}
+
+/** One model, one request; retried once without a reasoning effort if the model rejects it. */
+export async function callLlm(
+  config: LlmConfig,
+  model: string,
+  messages: LlmMessage[],
+  opts?: LlmOptions
+): Promise<string> {
+  console.log(`[exam.one][llm] request provider=${config.provider} model=${model} messages=${messages.length}`)
+  const startedAt = Date.now()
+
+  try {
+    let content: string
+    try {
+      content = await requestCompletion(config, model, messages, opts, config.reasoningEffort)
+    } catch (error: unknown) {
+      if (!rejectsReasoning(error)) throw error
+      console.log(`[exam.one][llm] model=${model} rejected reasoning effort; retrying without it`)
+      content = await requestCompletion(config, model, messages, opts, undefined)
+    }
+    console.log(`[exam.one][llm] done ms=${Date.now() - startedAt} chars=${content.length}`)
+    return content
+  } catch (error: unknown) {
+    // Provider errors can quote the key ("Incorrect API key provided: sk-…"); they reach logs,
+    // job rows and the browser, so they are redacted once, here.
+    const safe = redactLlmError(error, config.apiKey)
+    console.error(`[exam.one][llm] failed ms=${Date.now() - startedAt} error=${safe.message}`)
+    throw safe
   }
 }
 
-export async function callLlm(
+/** The main model, then each fallback model when the previous one is rate-limited or unavailable. */
+export function callLlmWithFallback(
   config: LlmConfig,
   messages: LlmMessage[],
   opts?: LlmOptions
 ): Promise<string> {
-  const { OpenAI } = await import('openai')
-  const baseURL = config.provider === 'openrouter' ? OPENROUTER_BASE_URL : undefined
-  const client = new OpenAI({
-    apiKey: config.apiKey,
-    baseURL,
-    maxRetries: 0,
-    timeout: opts?.timeoutMs ?? DEFAULT_GENERATION_TIMEOUT_MS,
-  })
-
-  const usesOpenAiReasoning = config.provider === 'openai' && config.reasoningEffort !== undefined
-  const maxTokensOption =
-    opts?.maxTokens !== undefined
-      ? config.provider === 'openai'
-        ? { max_completion_tokens: opts.maxTokens }
-        : { max_tokens: opts.maxTokens }
-      : {}
-
-  console.log(
-    `[exam.one][llm] request provider=${config.provider} model=${config.model} messages=${messages.length}`
+  return runWithFallback(
+    [config.model, ...config.fallbackModels],
+    model => callLlm(config, model, messages, opts),
+    (from, to) => console.log(`[exam.one][llm] model=${from} unavailable; falling back to model=${to}`)
   )
-
-  const startedAt = Date.now()
-
-  try {
-    const completion = await client.chat.completions.create({
-      model: config.model,
-      messages,
-      ...(usesOpenAiReasoning && { reasoning_effort: config.reasoningEffort }),
-      ...(!usesOpenAiReasoning &&
-        opts?.temperature !== undefined && { temperature: opts.temperature }),
-      ...maxTokensOption,
-    })
-
-    const content = completion.choices?.[0]?.message?.content ?? ''
-    const duration = Date.now() - startedAt
-    console.log(`[exam.one][llm] done ms=${duration} chars=${content.length}`)
-    return content
-  } catch (error: unknown) {
-    const duration = Date.now() - startedAt
-    const errorMessage = error instanceof Error ? error.message : 'Unknown LLM error'
-    console.error(`[exam.one][llm] failed ms=${duration} error=${errorMessage}`)
-    throw error
-  }
 }
 
+/** Checks that the main model answers and returns parseable JSON, which every AI feature relies on. */
 export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnectionResult> {
+  let timer: NodeJS.Timeout | undefined
   try {
     const response = await Promise.race([
-      callLlm(config, [{ role: 'user', content: 'Reply with OK.' }], { maxTokens: 16 }),
+      callLlm({ ...config, reasoningEffort: 'low' }, config.model, [{ role: 'user', content: HEALTH_CHECK_PROMPT }], {
+        maxTokens: HEALTH_CHECK_MAX_TOKENS,
+        timeoutMs: LLM_HEALTH_CHECK_TIMEOUT_MS,
+      }),
       new Promise<never>((_, reject) => {
-        setTimeout(
-          () =>
-            reject(new Error(`LLM health check timed out after ${LLM_HEALTH_CHECK_TIMEOUT_MS}ms`)),
+        timer = setTimeout(
+          () => reject(new Error(`LLM health check timed out after ${LLM_HEALTH_CHECK_TIMEOUT_MS}ms`)),
           LLM_HEALTH_CHECK_TIMEOUT_MS
         )
       }),
@@ -151,6 +142,14 @@ export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnect
         message: 'LLM returned an empty response during health check.',
       }
     }
+    if (!extractJsonObject(response)) {
+      return {
+        status: 'error',
+        provider: config.provider,
+        model: config.model,
+        message: 'The model answered, but not with valid JSON. AI features need a model that can return JSON.',
+      }
+    }
 
     return { status: 'ok', provider: config.provider, model: config.model }
   } catch (error: unknown) {
@@ -160,5 +159,7 @@ export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnect
       model: config.model,
       message: toErrorMessage(error),
     }
+  } finally {
+    clearTimeout(timer)
   }
 }

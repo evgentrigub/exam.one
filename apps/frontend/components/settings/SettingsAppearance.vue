@@ -9,7 +9,7 @@
           </span>
           <SetChoice
             :value="theme"
-            cols="grid-cols-2 max-w-sm"
+            cols="grid-cols-1 sm:grid-cols-2 max-w-sm"
             :options="themeOptions"
             @update:value="onTheme"
           />
@@ -36,30 +36,29 @@
 </template>
 
 <script setup lang="ts">
-import { Cake, Languages, Sun } from 'lucide-vue-next'
-import type { Theme } from '~/composables/useTheme'
+import { Moon, Languages, Sun } from 'lucide-vue-next'
 import { LANGUAGE_LABELS, LANGUAGE_OPTIONS, isLanguageOption } from '~/utils/types'
 import type { SetChoiceOption } from '~/components/settings/SetChoice.vue'
 
-const { theme, setTheme } = useTheme()
+const { theme, setTheme, availableThemes, darkThemes } = useTheme()
 const { locale, setLocale, t } = useI18n()
 
-const themeOptions = computed<SetChoiceOption[]>(() => [
-  { id: 'light', label: t('settings.themeLight'), icon: Sun, desc: t('settings.themeLightDesc') },
-  {
-    id: 'cupcake',
-    label: t('settings.themeCupcake'),
-    icon: Cake,
-    desc: t('settings.themeCupcakeDesc'),
-  },
-])
+const themeOptions = computed<SetChoiceOption[]>(() =>
+  availableThemes.map(option => ({
+    id: option.value,
+    label: t(`settings.theme${option.label}`),
+    icon: darkThemes.some(dark => dark.value === option.value) ? Moon : Sun,
+    desc: t(`settings.theme${option.label}Desc`),
+  }))
+)
 
 const languageOptions = computed<SetChoiceOption[]>(() =>
-  LANGUAGE_OPTIONS.map(code => ({ id: code, label: LANGUAGE_LABELS[code] })),
+  LANGUAGE_OPTIONS.map(code => ({ id: code, label: LANGUAGE_LABELS[code] }))
 )
 
 function onTheme(id: string) {
-  setTheme(id as Theme)
+  const option = availableThemes.find(option => option.value === id)
+  if (option) setTheme(option.value)
 }
 
 function onLocale(id: string) {

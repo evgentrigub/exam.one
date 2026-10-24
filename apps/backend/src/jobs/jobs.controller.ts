@@ -72,7 +72,7 @@ export class JobsController {
   @Post('exercise-generation')
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   async enqueueExercises(@CurrentUser() user: User, @Body() body: EnqueueExercisesDto): Promise<ApiResponse<BackgroundJobDto>> {
-    if (!this.llm.getConfig()) throw new BadRequestException({ code: 'LLM_UNAVAILABLE', message: 'Configure an LLM to generate exercises' })
+    if (!(await this.llm.hasConfig(user.id))) throw new BadRequestException({ code: 'LLM_UNAVAILABLE', message: 'Add an LLM API key in Settings → AI provider to generate exercises' })
     const pack = getLivePack(await resolveUserPackId(this.prisma, user.id))
     const unique = new Set(body.selections.map(item => `${item.skill}:${item.part}`))
     if (unique.size !== body.selections.length || body.selections.some(item =>
@@ -89,7 +89,7 @@ export class JobsController {
     const packId = await resolveUserPackId(this.prisma, user.id)
     const pack = getLivePack(packId)
     if (!pack.createMockSet) throw new BadRequestException({ code: 'MOCK_UNAVAILABLE', message: 'This pack has no mock exams' })
-    const health = await Promise.all([this.llm.health(), this.tts.health()])
+    const health = await Promise.all([this.llm.health(user.id), this.tts.health()])
     if (!health[0].data?.connected || !health[1].data?.ok)
       throw new BadRequestException({ code: 'MOCK_PREFLIGHT_FAILED', message: 'LLM and speech must be ready to generate a mock set' })
     const set = pack.createMockSet(body.setNumber, { reading: [], listening: [], writing: [], speaking: [] })

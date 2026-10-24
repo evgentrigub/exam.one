@@ -9,8 +9,11 @@
 //   node scripts/eval-prompts.mjs --n 3 --out FILE   # real run, 3 samples per prompt
 //   node scripts/eval-prompts.mjs --n 1 --skill reading
 //   node scripts/eval-prompts.mjs --pack goethe-de-a1 --control   # default pack: goethe-de-a2
+//   EVAL_LLM_API_KEY=sk-or-... node scripts/eval-prompts.mjs --provider openrouter --model google/gemma-4-31b-it:free
 //
-// Requires a built workspace (`pnpm build`) and LLM env vars, which it reads from .env.
+// Requires a built workspace (`pnpm build`). A live run takes the provider and model as flags
+// (--provider, --model, optional --effort, default medium) and the key from EVAL_LLM_API_KEY,
+// read from the shell or .env. The app itself stores keys per user, not in the environment.
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -21,7 +24,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const require = createRequire(path.join(ROOT, 'apps/backend/package.json'))
 
 const packs = require(path.join(ROOT, 'data/dist/index.js'))
-const { getLlmConfig, callLlm } = require(path.join(ROOT, 'apps/backend/dist/ai/llm.adapter.js'))
+const { callLlmWithFallback } = require(path.join(ROOT, 'apps/backend/dist/ai/llm.adapter.js'))
 
 // ---------------------------------------------------------------- args
 
@@ -35,6 +38,10 @@ const N = Number(flag('n', '3'))
 const ONLY_SKILL = flag('skill', null)
 const OUT = flag('out', null)
 const PACK_ID = flag('pack', 'goethe-de-a2')
+const PROVIDER = flag('provider', null)
+const MODEL = flag('model', null)
+const EFFORT = flag('effort', 'medium')
+const PROVIDERS = ['openai', 'openrouter', 'gemini', 'anthropic', 'xai']
 
 // ---------------------------------------------------------------- env
 
@@ -202,20 +209,16 @@ function runControl() {
 
 async function runEval() {
   loadEnv()
-  const config = getLlmConfig({
-    provider: process.env.LLM_PROVIDER,
-    openaiApiKey: process.env.OPENAI_API_KEY,
-    openaiModel: process.env.OPENAI_MODEL,
-    openrouterApiKey: process.env.OPENROUTER_API_KEY,
-    openrouterModel: process.env.OPENROUTER_MODEL,
-    reasoningEffort: process.env.LLM_REASONING_EFFORT,
-  })
-  if (!config) throw new Error('No LLM key configured - set OPENAI_API_KEY or OPENROUTER_API_KEY')
+  const apiKey = (process.env.EVAL_LLM_API_KEY ?? '').trim()
+  if (!PROVIDERS.includes(PROVIDER)) throw new Error(`Pass --provider (${PROVIDERS.join(' | ')})`)
+  if (!MODEL) throw new Error('Pass --model, e.g. --model google/gemma-4-31b-it:free')
+  if (!apiKey) throw new Error('Set EVAL_LLM_API_KEY to the API key of the chosen provider')
+  const config = { provider: PROVIDER, apiKey, model: MODEL, fallbackModels: [], reasoningEffort: EFFORT }
 
   let calls = 0
   const complete = async (messages, options) => {
     calls += 1
-    return callLlm(config, messages, options)
+    return callLlmWithFallback(config, messages, options)
   }
 
   const results = []

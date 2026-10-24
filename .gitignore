@@ -39,3 +39,7 @@ graphify-out
 # Local agent config
 .claude/
 .cursor/skills/
+
+# Managed STT weights, preferences and derived runtime caches
+scripts/stt/models/
+**/__pycache__/
