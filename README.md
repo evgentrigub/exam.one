@@ -69,10 +69,10 @@ Both are required before startup, even if you do not use AI. `JWT_SECRET` must b
 pnpm stack:up
 ```
 
-The initial setup could take around 10-15 minutes to build the images, download the speech models and generate initial exercises. 
+The initial setup could take around 10-15 minutes to build the images, download the speech models and generate initial exercises.
 
 4. Open [http://localhost:3000](http://localhost:3000) and register an account with any email. In the top right navbar click question mark icon to open `Quick Start` guide.
-5. By default, the app is configured to use the `Cambridge English A2` exam. Choose your exam in **Settings → Learning plan**. 
+5. By default, the app is configured to use the `Cambridge English A2` exam. Choose your exam in **Settings → Learning plan**.
 6. Set AI provider credentials in **Settings → AI providers** to enable AI features to generate exercise, exercise feedback, and mock exams.
 7. For other exams, download voices in **Settings → Generated files → Voice models**, then generate the pack's listening audio in the app. Transcription models are managed under **Settings → Generated files → Speech models**.
 
@@ -235,10 +235,20 @@ Exam packs own their task structure, content, prompts, and scoring rules. Shared
 
 ## Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, pull requests, content provenance, and contribution licensing. Participation in project spaces follows the [Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities privately using the [Security Policy](SECURITY.md).
+
 Start with [AGENTS.md](AGENTS.md) and the [implementation standards](agent-os/standards/). Keep shared practice flows independent of language and exam board; place exam-specific content and rules in the owning pack.
 
 For application changes, run `pnpm lint`, `pnpm type-check`, and the relevant tests, and verify affected practice/mock flows. `pnpm test` includes backend tests, schema validation, and STT catalog tests; the latter require host Python 3.10+.
 
 ## License and attribution
 
-A project license has not yet been added to this checkout. Speech engines, models, and other dependencies retain their own licenses; see the [TTS](scripts/tts/README.md) and [STT](scripts/stt/README.md) guides for attribution.
+Copyright (c) 2026 exam.one contributors.
+
+Except where a file or third-party notice states otherwise, exam.one's original code, documentation, and bundled practice content are licensed under the **GNU Affero General Public License v3.0 only (`AGPL-3.0-only`)**. See [LICENSE](LICENSE) for the full terms. This declaration does not license user records, API keys, or third-party material as project source.
+
+Commercial use and paid hosting are permitted under the license. If you modify the program and let users interact with it over a network, AGPLv3 section 13 requires a prominent offer of the corresponding source of that modified version to those users. The license does not reserve commercial hosting to the project maintainers.
+
+Speech engines, models, voices, and other dependencies retain their own licenses. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [TTS](scripts/tts/README.md) and [STT](scripts/stt/README.md) guides. Exam-board names identify the formats being practised and do not imply endorsement or affiliation.
+
+See [CHANGELOG.md](CHANGELOG.md) and the [v1.0.0 release description draft](docs/releases/v1.0.0.md) for the first public release.
