@@ -1,17 +1,23 @@
 <template>
-  <aside class="w-60 shrink-0 h-full flex flex-col bg-base-100 border-r border-base-300 overflow-y-auto">
+  <aside
+    class="w-60 shrink-0 h-full flex flex-col bg-base-100 border-r border-base-300 overflow-y-auto"
+  >
     <!-- Logo -->
     <a
       :href="landingUrl"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Open the Exam.one landing page"
+      :aria-label="$t('shell.openLanding')"
       class="flex items-center gap-2.5 px-4 h-14 shrink-0 border-b border-base-300 transition-colors hover:bg-base-200"
     >
-      <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-        <span class="text-primary-content font-bold text-sm font-display">E</span>
+      <div
+        class="w-7 h-7 rounded-field bg-primary text-primary-content grid place-items-center shrink-0"
+      >
+        <span class="font-display font-bold text-sm">E</span>
       </div>
-      <span class="font-display text-base font-semibold tracking-tight">Exam.one</span>
+      <span class="font-display text-lg font-bold leading-none tracking-tight">
+        Exam<span class="text-primary">.one</span>
+      </span>
     </a>
 
     <!-- Main nav -->
@@ -41,14 +47,6 @@
         {{ $t('nav.examFormat') }}
       </NuxtLink>
       <NuxtLink
-        to="/progress"
-        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
-        :class="isActive('/progress') ? 'nav-item-active' : 'text-base-content/70'"
-      >
-        <TrendingUp :size="16" />
-        {{ $t('nav.progress') }}
-      </NuxtLink>
-      <NuxtLink
         to="/mock-exam"
         class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
         :class="isActive('/mock-exam') ? 'nav-item-active' : 'text-base-content/70'"
@@ -56,11 +54,21 @@
         <FileText :size="16" />
         {{ $t('nav.mockExams') }}
       </NuxtLink>
+      <NuxtLink
+        to="/progress"
+        class="flex items-center gap-2.5 px-3 py-2 rounded-field text-sm font-medium transition-colors hover:bg-base-200"
+        :class="isActive('/progress') ? 'nav-item-active' : 'text-base-content/70'"
+      >
+        <TrendingUp :size="16" />
+        {{ $t('nav.progress') }}
+      </NuxtLink>
     </nav>
 
     <!-- Practice by skill -->
     <div class="px-4 mt-4">
-      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-1.5">{{ $t('shell.practiceBySkill') }}</p>
+      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/40 mb-1.5">
+        {{ $t('shell.practiceBySkill') }}
+      </p>
       <div class="flex flex-col gap-0.5">
         <NuxtLink
           to="/exercises?skill=reading"
@@ -71,7 +79,7 @@
             <BookOpen :size="14" class="text-reading" />
             {{ $t('skill.reading') }}
           </span>
-          <span class="level-pip text-reading">{{ readingCount }}</span>
+          <span class="text-xs text-base-content/50">{{ readingCount }}</span>
         </NuxtLink>
         <NuxtLink
           to="/exercises?skill=writing"
@@ -82,7 +90,7 @@
             <PenLine :size="14" class="text-writing" />
             {{ $t('skill.writing') }}
           </span>
-          <span class="level-pip text-writing">{{ writingCount }}</span>
+          <span class="text-xs text-base-content/50">{{ writingCount }}</span>
         </NuxtLink>
         <NuxtLink
           to="/exercises?skill=listening"
@@ -93,7 +101,7 @@
             <Headphones :size="14" class="text-listening" />
             {{ $t('skill.listening') }}
           </span>
-          <span class="level-pip text-listening">{{ listeningCount }}</span>
+          <span class="text-xs text-base-content/50">{{ listeningCount }}</span>
         </NuxtLink>
         <NuxtLink
           to="/exercises?skill=speaking"
@@ -104,7 +112,7 @@
             <Mic :size="14" class="text-speaking" />
             {{ $t('skill.speaking') }}
           </span>
-          <span class="level-pip text-speaking">{{ speakingCount }}</span>
+          <span class="text-xs text-base-content/50">{{ speakingCount }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -114,39 +122,43 @@
 
     <!-- Exam target widget -->
     <div class="mt-auto p-3 border-t border-base-300">
-      <div class="rounded-box bg-base-200 p-3">
+      <div class="relative rounded-box bg-base-200 p-3 hover:bg-base-300/60 transition-colors">
+        <NuxtLink
+          to="/settings?section=learning"
+          :aria-label="$t('settings.navLearning')"
+          class="absolute inset-0 rounded-box focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        />
         <div class="flex items-center justify-between mb-2">
           <div class="text-xs font-semibold text-base-content/70">{{ $t('shell.examTarget') }}</div>
-          <NuxtLink to="/exercises" class="text-[10px] text-primary font-medium hover:underline">
+          <NuxtLink
+            to="/exercises"
+            class="relative z-10 text-[10px] text-primary font-medium hover:underline"
+          >
             {{ $t('shell.viewExercises') }}
           </NuxtLink>
         </div>
-        <NuxtLink
-          to="/exercises"
-          class="w-full flex items-center gap-2 rounded-field p-1 -m-1 hover:bg-base-300/60 transition-colors text-left"
-        >
-          <div class="w-9 h-9 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0">
+        <div class="w-full flex items-center gap-2 rounded-field p-1 -m-1 text-left">
+          <div
+            class="w-9 h-9 rounded-field bg-primary/10 text-primary grid place-items-center shrink-0"
+          >
             <Flag :size="16" />
           </div>
           <div class="min-w-0">
-            <div class="text-sm font-semibold leading-tight">Goethe {{ examLevel }}</div>
-            <div class="text-[11px] text-base-content/60">{{ $t('shell.examTargetMeta', { days: 42 }) }}</div>
+            <div class="text-sm font-semibold leading-tight">{{ pack.title }}</div>
+            <div class="text-[11px] text-base-content/60">
+              <template v-if="hasExamDate">
+                {{
+                  daysUntilExam == 0
+                    ? $t('shell.pastExamDate')
+                    : $t('shell.examTargetMeta', { language: examLanguage, days: daysUntilExam })
+                }}
+              </template>
+              <span v-else class="text-base-content/50">
+                {{ $t('shell.setExamDate') }}
+              </span>
+            </div>
           </div>
-        </NuxtLink>
-        <div class="mt-3 flex gap-1.5">
-          <button
-            v-for="level in levels"
-            :key="level"
-            type="button"
-            class="flex-1 h-8 rounded-selector text-xs font-semibold transition-colors"
-            :class="examLevel === level ? 'bg-primary text-primary-content' : 'bg-base-100 text-base-content/70 hover:bg-base-300'"
-            :aria-pressed="examLevel === level"
-            @click="selectLevel(level)"
-          >
-            {{ level }}
-          </button>
         </div>
-        <div class="mt-2 text-[10px] text-base-content/50 text-center">{{ $t('shell.tapLevel') }}</div>
       </div>
     </div>
   </aside>
@@ -155,33 +167,44 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import {
-  LayoutDashboard, BookOpen, FileText, TrendingUp, ListTree,
-  PenLine, Headphones, Mic, Flag
+  LayoutDashboard,
+  BookOpen,
+  FileText,
+  TrendingUp,
+  ListTree,
+  PenLine,
+  Headphones,
+  Mic,
+  Flag,
 } from 'lucide-vue-next'
 import { useSettingsStore } from '~/stores/settings'
 import { useReadingTexts } from '~/composables/useReadingTexts'
 import { useWritingTopics } from '~/composables/useWritingTopics'
 import { useListeningExercises } from '~/composables/useListeningExercises'
 import { useSpeakingExercises } from '~/composables/useSpeakingExercises'
+import { useAccountProfile } from '~/composables/useAccountProfile'
 
 const route = useRoute()
-const router = useRouter()
 const runtimeConfig = useRuntimeConfig()
 const settingsStore = useSettingsStore()
 const { examLevel } = storeToRefs(settingsStore)
+const { pack } = useActivePack()
+const { daysUntilExam, hasExamDate } = useAccountProfile()
+const { locale } = useI18n()
+
+const examLanguage = computed(() => {
+  const name = new Intl.DisplayNames([String(locale.value)], { type: 'language' }).of(
+    pack.value.language
+  )
+  if (!name) return pack.value.language
+  return name.charAt(0).toLocaleUpperCase(String(locale.value)) + name.slice(1)
+})
 
 const landingUrl = computed(() => {
   const configuredUrl = String(runtimeConfig.public.frontendLandingUrl || '').trim()
   if (/^https?:\/\//i.test(configuredUrl)) return configuredUrl
   return `http://${configuredUrl || 'localhost:3001'}`
 })
-
-function selectLevel(level: 'A2' | 'C1') {
-  examLevel.value = level
-  router.push('/exercises')
-}
-
-const levels: Array<'A2' | 'C1'> = ['A2', 'C1']
 
 const { getTexts } = useReadingTexts()
 const { getTopics } = useWritingTopics()
@@ -194,10 +217,16 @@ onMounted(() => {
   isClient.value = true
 })
 
-const readingCount = computed(() => isClient.value ? getTexts().filter(text => text.difficulty === examLevel.value).length : 0)
-const writingCount = computed(() => isClient.value ? getTopics().filter(topic => topic.difficulty === examLevel.value).length : 0)
-const listeningCount = computed(() => isClient.value ? getListening().length : 0)
-const speakingCount = computed(() => isClient.value ? getSpeaking().filter(t => t.difficulty === examLevel.value).length : 0)
+const readingCount = computed(() =>
+  isClient.value ? getTexts().filter(text => text.difficulty === examLevel.value).length : 0
+)
+const writingCount = computed(() =>
+  isClient.value ? getTopics().filter(topic => topic.difficulty === examLevel.value).length : 0
+)
+const listeningCount = computed(() => (isClient.value ? getListening().length : 0))
+const speakingCount = computed(() =>
+  isClient.value ? getSpeaking().filter(t => t.difficulty === examLevel.value).length : 0
+)
 
 function isActive(path: string) {
   return route.path === path || route.path.startsWith(`${path}/`)

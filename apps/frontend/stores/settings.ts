@@ -1,37 +1,59 @@
 import { defineStore } from 'pinia'
+import { DEFAULT_PACK_ID, getLivePack } from '@exam-one/exam-packs'
+import type { Difficulty } from '~/utils/types'
 
 /**
  * Settings store
- * Holds globally shared UI preferences like exam level and target exam language.
- * Persists to localStorage via VueUse so it works fully offline.
+ * Active pack and target language are loaded from NestJS /settings/me after login.
+ * Theme stays client-side (useTheme).
  */
 export const useSettingsStore = defineStore('settings', () => {
-  const examLevel = useLocalStorage<'A2' | 'C1'>(
-    'examLevel',
-    'A2',
-    {
-      // Defer reading/writing until client mount to avoid SSR hydration
-      // overwriting an existing localStorage value with the default.
-      initOnMounted: true,
-    },
-  )
+  const packId = ref(DEFAULT_PACK_ID)
+  const targetLanguage = ref<string>(getLivePack(DEFAULT_PACK_ID).language)
+  const hydrated = ref(false)
 
-  /**
-   * Target language for exam preparation.
-   * Currently only German is fully supported.
-   */
-  const targetLanguage = useLocalStorage<'de' | 'en' | 'es'>(
-    'targetLanguage',
-    'de',
-    {
-      initOnMounted: true,
-    },
-  )
+  const examLevel = computed<Difficulty>(() => {
+    const cefr = getLivePack(packId.value).cefr
+    return cefr
+  })
+
+  async function hydrateFromApi(): Promise<void> {
+    if (!import.meta.client) return
+    try {
+      const { getSettings } = useAuth()
+      const settings = await getSettings()
+      packId.value = settings.packId || DEFAULT_PACK_ID
+      const lang = settings.targetLanguage
+      targetLanguage.value = lang
+      hydrated.value = true
+    } catch {
+      hydrated.value = true
+    }
+  }
+
+  async function selectPack(id: string): Promise<void> {
+    const { updateSettings } = useAuth()
+    const saved = await updateSettings({ packId: id })
+    targetLanguage.value = saved.targetLanguage
+    packId.value = saved.packId
+  }
+
+  async function persist(): Promise<void> {
+    if (!import.meta.client) return
+    const { updateSettings } = useAuth()
+    await updateSettings({
+      packId: packId.value,
+      targetLanguage: targetLanguage.value,
+    })
+  }
 
   return {
+    packId,
     examLevel,
     targetLanguage,
+    hydrated,
+    hydrateFromApi,
+    persist,
+    selectPack,
   }
 })
-
-

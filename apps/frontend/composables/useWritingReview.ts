@@ -6,13 +6,17 @@
  * OpenAI request is mocked. We still shape the payload as if calling OpenAI
  * and keep a placeholder variable with the composed input.
  *
- * Storage: localStorage under key `exam-one:writing:reviews`
+ * Storage: NestJS attempts (`Result.review.writingReview`)
  */
 
-import type { WritingExercise, AiReviewData } from '~/utils/types'
+import type { CriterionReview } from '@exam-one/exam-packs'
+import type { WritingExercise } from '~/utils/types'
+import { onPackReset, packEpoch } from '~/utils/packScope'
+import { writingReviewPayload } from '~/utils/writing/formFill'
 import { ref } from 'vue'
-import { reviewPromptC1Teil1, reviewPromptC1Teil2 } from '~/data/writing/c1/reviewTextWritingC1'
-import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
+import type { AttemptDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
+import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 
 type ReviewStatus = 'idle' | 'pending' | 'ready' | 'error'
 
@@ -24,33 +28,56 @@ interface WritingReviewRecord {
   requestedAt: string
   completedAt?: string
   responseText?: string
-  responseData?: AiReviewData
+  responseData?: CriterionReview
   error?: string
 }
 
-const WRITING_REVIEW_KEY = 'exam-one:writing:reviews'
-const WRITING_REVIEW_LEGACY_KEY = 'writing-reviews'
-
-// Global reactive tick to notify UI of updates to localStorage-backed reviews
+const reviews = ref<Record<string, WritingReviewRecord>>({})
 const reviewVersion = ref(0)
+let hydrated = false
+onPackReset(() => {
+  reviews.value = {}
+  hydrated = false
+  reviewVersion.value++
+})
+
+function persistReview(record: WritingReviewRecord): void {
+  void apiFetch('/attempts', {
+    method: 'POST',
+    body: {
+      skill: 'WRITING',
+      exerciseExternalId: record.topicId,
+      answers: { kind: 'writing-review', content: record.content },
+      result: { review: { writingReview: record } },
+    },
+  }).catch(error => console.warn('Failed to persist writing review', error))
+}
 
 function readAllReviews(): Record<string, WritingReviewRecord> {
-  if (!import.meta.client) return {}
-  try {
-    const raw = localStorage.getItem(WRITING_REVIEW_KEY) || localStorage.getItem(WRITING_REVIEW_LEGACY_KEY)
-    return raw ? (JSON.parse(raw) as Record<string, WritingReviewRecord>) : {}
-  } catch {
-    return {}
-  }
+  return reviews.value
 }
 
 function writeAllReviews(map: Record<string, WritingReviewRecord>): void {
-  if (!import.meta.client) return
+  reviews.value = map
+  reviewVersion.value++
+}
+
+async function hydrateReviews(): Promise<void> {
+  if (!import.meta.client || hydrated) return
+  hydrated = true
   try {
-    localStorage.setItem(WRITING_REVIEW_KEY, JSON.stringify(map))
-    reviewVersion.value++
+    const rows = await apiFetch<AttemptDto[]>('/attempts?skill=WRITING')
+    const map: Record<string, WritingReviewRecord> = {}
+    for (const row of rows) {
+      const review = row.result?.review
+      if (!review || typeof review !== 'object' || Array.isArray(review)) continue
+      const nested = (review as { writingReview?: WritingReviewRecord }).writingReview
+      const topicId = nested?.topicId ?? row.exerciseExternalId
+      if (nested && topicId) map[topicId] = nested
+    }
+    reviews.value = map
   } catch (error) {
-    console.warn('Failed to save writing reviews:', error)
+    console.warn('Failed to load writing reviews', error)
   }
 }
 
@@ -58,6 +85,7 @@ function saveRecord(record: WritingReviewRecord): void {
   const all = readAllReviews()
   all[record.topicId] = record
   writeAllReviews(all)
+  persistReview(record)
 }
 
 function getRecord(topicId: string): WritingReviewRecord | null {
@@ -66,6 +94,13 @@ function getRecord(topicId: string): WritingReviewRecord | null {
 }
 
 export function useWritingReview() {
+  const { t } = useI18n()
+  const requestPackId = useSettingsStore().packId
+  const requestEpoch = packEpoch()
+  if (import.meta.client) void hydrateReviews()
+  const outputLanguage = useReviewOutputLanguage()
+  const { assemble } = usePackPrompt(requestPackId)
+
   function getReview(topicId: string): WritingReviewRecord | null {
     return getRecord(topicId)
   }
@@ -81,7 +116,7 @@ export function useWritingReview() {
 
   function getReviewError(topicId: string): string | null {
     const rec = getRecord(topicId)
-    return rec?.status === 'error' ? rec.error || 'AI review is unavailable.' : null
+    return rec?.status === 'error' ? rec.error || t('errors.aiReviewUnavailable') : null
   }
 
   function clearReview(topicId: string): void {
@@ -96,27 +131,23 @@ export function useWritingReview() {
   }
 
   function getReviewPrompt(topic: WritingExercise, userContent: string) {
-    // Select prompts based on difficulty level
-    if (topic.difficulty === 'A2') {
-      if (topic.testingPart === 1) {
-        return reviewPromptA2Teil1(topic, userContent)
-      } else {
-        return reviewPromptA2Teil2(topic, userContent)
-      }
-    } else {
-      // C1 level
-      if (topic.testingPart === 1) {
-        return reviewPromptC1Teil1(topic, userContent)
-      } else {
-        return reviewPromptC1Teil2(topic, userContent)
-      }
+    const part = topic.testingPart || 1
+    const prompt = assemble('writing', part, 'review', {
+      task: topic.task,
+      requirements: topic.requirements?.join(', ') ?? '',
+      userContent,
+      outputLanguage: outputLanguage.value,
+      topicId: topic.id,
+    })
+    if (!prompt) {
+      throw new Error(t('errors.reviewPromptMissing', { part }))
     }
-}
+    return prompt
+  }
 
   /**
-   * Request a review for the given topic and user submission content.
-   * This function mocks latency and response. If an OpenAI API key is
-   * available, the call site is prepared but disabled by default.
+   * Request a review for the given topic and user submission content through `/llm/review`,
+   * which uses the API key the user saved in Settings → AI provider.
    */
   async function requestReview(topic: WritingExercise, userContent: string): Promise<void> {
     const prompt = getReviewPrompt(topic, userContent)
@@ -129,38 +160,57 @@ export function useWritingReview() {
       requestedAt,
     })
 
-    // Call internal server endpoint to keep API key private (server mocks response offline)
+    // The backend holds the user's encrypted key; the browser never sees it.
     try {
       // Cast through unknown to bypass Nuxt's complex route type inference
-      const response = (await $fetch('/api/review', {
+      // The server re-assembles the prompt from `topic` and the answers, so the feedback
+      // language has to travel in the body; the client-assembled `prompt` is not used for it.
+      const response = await aiFetch<CriterionReview>('/llm/review', {
+        packId: requestPackId,
         method: 'POST',
-        body: { topic, userContent, prompt }
-      }) as unknown) as { text?: string; data?: AiReviewData | null; error?: string | null }
+        body: {
+          topic,
+          ...writingReviewPayload(topic, userContent),
+          prompt,
+          outputLanguage: outputLanguage.value,
+        },
+      })
+      if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)
       if (current) {
-        if (current.requestedAt !== requestedAt || current.content !== userContent || current.prompt !== prompt) return
+        if (
+          current.requestedAt !== requestedAt ||
+          current.content !== userContent ||
+          current.prompt !== prompt
+        )
+          return
         if (response.error) throw new Error(response.error)
         const update: WritingReviewRecord = {
           ...current,
           status: 'ready',
           completedAt: new Date().toISOString(),
-          responseText: response?.text || '',
+          responseText: response.data ? JSON.stringify(response.data) : '',
         }
         if (response && response.data) {
           update.responseData = response.data
         }
         saveRecord(update)
-
       }
     } catch (error) {
+      if (requestEpoch !== packEpoch()) return
       const current = getRecord(topic.id)
       if (current) {
-        if (current.requestedAt !== requestedAt || current.content !== userContent || current.prompt !== prompt) return
+        if (
+          current.requestedAt !== requestedAt ||
+          current.content !== userContent ||
+          current.prompt !== prompt
+        )
+          return
         saveRecord({
           ...current,
           status: 'error',
           completedAt: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'AI review is unavailable.',
+          error: error instanceof Error ? error.message : t('errors.aiReviewUnavailable'),
         })
       }
     }
@@ -179,5 +229,3 @@ export function useWritingReview() {
     clearReview,
   }
 }
-
-

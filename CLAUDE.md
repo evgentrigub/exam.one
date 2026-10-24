@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev:infra    # start persistent PostgreSQL in Docker
+pnpm dev:infra    # start persistent PostgreSQL and Redis in Docker
 pnpm dev          # start Nuxt :3000 and NestJS :3001 with hot reload
 pnpm dev:frontend # start only Nuxt
 pnpm dev:backend  # start only NestJS
@@ -15,42 +15,46 @@ pnpm lint:fix     # autofix all workspace projects
 pnpm format       # Prettier
 pnpm type-check   # type-check all workspace projects
 pnpm test         # test all workspace projects
-pnpm stack:up     # prepare speech models and start the complete Docker Compose stack
+pnpm stack:up     # start the core app, then prepare speech models and start speech (stack:up:core + stack:up:speech)
+pnpm stack:verify-models # fail if TTS/STT snapshots are missing
+pnpm stack:seed-audio    # generate the default pack's bundled listening WAVs if missing (--packs a,b|all)
 pnpm stack:down   # stop the complete stack without deleting named volumes
-pnpm tts:up       # prepare and start only Kokoro TTS
+pnpm tts:up       # prepare and start only Kokoro TTS (English voices unless KOKORO_LANGS says more)
+pnpm tts:test     # voice catalog unit tests (Python standard library)
 pnpm stt:up       # prepare and start only Parakeet STT
+pnpm auth:set-password --email you@example.com  # recover a local account password
 ```
 
 Before finishing any change, run `pnpm lint` and `pnpm type-check`.
 
 ## Architecture Overview
 
-**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The completed offline-first Nuxt 3 frontend remains usable without the standalone NestJS backend. The backend, shared libraries, Prisma boundary, and Docker Compose infrastructure establish the current Phase 2 architecture while AI requests still use temporary Nuxt server routes.
+**exam.one** is an open-source, self-hostable language exam prep platform organized as a pnpm monorepo. The app is **login-gated**. After sign-in, practice data plus optional AI/TTS/STT are API-backed: Nuxt talks to NestJS for accounts, session, profile, settings, skill catalogs, attempts, drafts, background jobs, mock exams, LLM generation/review, Kokoro TTS, and Parakeet STT. Theme, locale, and playback prefs stay in the browser.
 
-**Phase 1 is complete and tested:** German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with local-first persistence and optional AI enhancements. The mock exam includes offline Set 1, locally generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview.
-
-**Phase 2 is current:** preserve the completed product behavior while moving accounts, persistence, generated content, and AI proxy ownership to NestJS/PostgreSQL and the self-hosted Docker Compose stack. Existing frontend domains remain on localStorage until they are deliberately migrated. Canonical status lives in `agent-os/product/roadmap.md` and `agent-os/product/index.md`.
+German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode work end-to-end with optional AI enhancements. The mock exam includes bundled Set 1, generated immutable sets, resumable AI/TTS generation, automatic grading, detailed module reviews, and an optional aggregate AI overview. Goethe A1 (Start Deutsch 1) is a second live pack covering all four modules and the same mock exam flow (bundled Set 1 with seed WAVs, generated sets, automatic grading, reviews, AI overview). Cambridge English A2 Key (`cambridge-en-a2`) is a third live pack: fourteen parts including typed `gap-fill` tasks, solo speaking on examiner cards, and British English TTS voices; its mock exams (bundled Set 1 with seed WAVs, generated sets) are reported on the Cambridge English Scale through the pack-neutral `rules.scale` (raw marks per skill → Scale 82–150, overall average, grade, pass at 120). Certyfikat Polski A2 (`certpol-pl-a2`) is a fourth live pack: sixteen tasks, gap-fill numbers and a form, solo speaking on examiner cards and a photo monologue, and Polish Piper TTS voices in the same speech service; its mock exams (bundled Set 1 with seed WAVs, generated sets) score objective tasks in points (half-point gaps via `objectiveExercisePoints`) and are passed per part through `rules.groups` (written 40 of 80, oral 18 of 36, pronunciation not scored). DELE A2 (`dele-es-a2`) is a fifth live pack: thirteen tareas, man / woman / neither and message matching, solo speaking with a written scene and examiner role-play cards, and Spanish Kokoro TTS voices sharing the English base model; its mock exams (bundled Set 1 with seed WAVs, generated sets) are passed per group through the pack-neutral `rules.groups` (Grupo 1 reading + writing and Grupo 2 listening + speaking, 30 of 50 each).
 
 ### Key directories
 
 | Path                          | Purpose                                                                                                      |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, utilities, and temporary Nitro AI endpoints  |
+| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, and utilities                                |
 | `apps/backend/`               | Standalone NestJS API; local default port is 3001                                                            |
 | `libraries/contracts/`        | Framework-neutral shared API contracts                                                                       |
 | `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
-| `libraries/exam-content/`     | Shared exam-content boundary                                                                                 |
+| `data/`                       | `@exam-one/exam-packs`: exam structure, PromptSpecs, and optional bundled seeds (`src/packs/{packId}/`)       |
 | `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                        |
-| `compose.yaml`                | Unified frontend, backend, PostgreSQL, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
-| `agent-os/`                   | Product context and canonical implementation standards                                                       |
+| `compose.yaml`                | Unified frontend, backend, PostgreSQL, Redis, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
+| `agent-os/standards/`         | Canonical implementation standards                                                                           |
 
-### Frontend data lifecycle (until Phase 2 migration)
+### Frontend data lifecycle
 
-1. On first client load, if localStorage is empty, seed from `apps/frontend/data/{skill}/` defaults and persist
-2. On subsequent loads, merge: `items = defaults ∪ stored.filter(x => !isDefault(x.id))`
-3. Only non-default (user/AI-generated) items are persisted to localStorage
+1. Catalogs, progress, drafts, and mock sets hydrate from NestJS (`GET /api/v1/...`)
+2. Exercise generation, listening audio and mock-set generation run server-side as BullMQ jobs (`apps/backend/src/jobs/`, Redis). Each job is a `BackgroundJob` row; the Activity center (`useJobCenter`) hydrates `GET /jobs` and follows `GET /jobs/stream` (SSE). Never drive generation loops from the browser
+3. Every registered pack's `seedExercises` are upserted by Prisma `db:seed` from `@exam-one/exam-packs` (`source=seed`, `userId` null, `packId` and level from the pack). User-generated rows overlay seeds by `(packId, externalId)`
 
-This ensures app updates can ship new seed content without wiping user data. During Phase 2, migrate one domain at a time to API/PostgreSQL ownership rather than creating a second competing source of truth.
+Theme, locale cookie, listening volume/speed, and reading bookmarks stay in the browser. Do not treat localStorage as the source of truth for practice data.
+
+Prompt templates remain typed `PromptSpec` modules under `data/src/packs/{packId}/`.
 
 ## Standards (read `agent-os/standards/` before editing)
 
@@ -69,7 +73,7 @@ try {
 
 ### localStorage keys
 
-Prefix all keys with `exam-one:` in kebab-case. Define as a `const KEY = 'exam-one:...'` at the top of the owning file.
+Prefix remaining client keys with `exam-one:` in kebab-case. Practice catalogs, progress, drafts, and mock exams are API-backed. Allowed client keys: `exam-one:theme`, locale cookie `exam-one:locale`, listening playback volume/speed, reading saved-text bookmarks. Define as a `const KEY = 'exam-one:...'` at the top of the owning file.
 
 ### Styling
 
@@ -86,16 +90,23 @@ Prefix all keys with `exam-one:` in kebab-case. Define as a `const KEY = 'exam-o
 
 ### Server / AI endpoints
 
-Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures. Use `throw createError(...)` only for infrastructure failures.
+Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for business failures. Invalid body is HTTP 400; missing session is HTTP 401.
 
 ## AI Integration
 
-- AI is **optional and provider-agnostic** (bring-your-own-key). Set `LLM_PROVIDER=openai` with `OPENAI_API_KEY`, or `LLM_PROVIDER=openrouter` with `OPENROUTER_API_KEY`; missing keys and upstream failures must degrade gracefully.
-- Keep provider SDK/configuration logic behind server adapters. Frontend AI requests use the thin `/api/*` endpoints and feature-scoped orchestration, preferably through composables when the behavior is shared.
-- Prompt templates currently live as typed seed data under `apps/frontend/data/{skill}/a2/` and are user-editable.
+- AI is **optional and provider-agnostic** (bring-your-own-key, per user). Each user chooses OpenAI, OpenRouter, Gemini, Anthropic or xAI, a key and a model in Settings → AI provider (`/settings/llm`); keys are stored encrypted with `SECRETS_ENCRYPTION_KEY` and never returned. There are no LLM env vars. `LlmService` resolves the current user from `packContext` (HTTP and job processors). Missing keys and upstream failures must degrade gracefully.
+- Keep provider SDK/configuration logic behind NestJS adapters (`apps/backend/src/ai`, `speech`). Frontend AI requests use `aiFetch` to `/api/v1/llm|tts|stt` and feature-scoped orchestration, preferably through composables when the behavior is shared.
+- Prompt templates currently live as typed `PromptSpec` modules under `data/src/packs/{packId}/`. Generation always uses pack defaults (prompt overrides are unmounted).
 - Generated mock sets require successful LLM configuration/connection and Docker TTS preflight checks; bundled Set 1 must remain available without them.
 - Writing and Speaking mock grading starts automatically. Persist full successful reviews with scores, and do not block completed results when optional aggregate AI review fails.
 
-## Design Reference
+## graphify
 
-Run `npx --yes serve exam-one-design/project -l 5174` to preview the design locally.
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

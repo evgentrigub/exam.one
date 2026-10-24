@@ -2,20 +2,24 @@
   <div>
     <NuxtRouteAnnouncer />
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage :page-key="route => `${route.path}:${auth.user.value?.id}:${settings.packId}`" />
     </NuxtLayout>
   </div>
 </template>
 
 <script setup lang="ts">
+const auth = useAuth()
+const settings = useSettingsStore()
 // Initialize theme system
 const { theme, initTheme } = useTheme()
+const { localeProperties } = useI18n()
 
-// Apply theme to HTML element
+// Apply theme and active locale to HTML element
 useHead({
   htmlAttrs: {
-    'data-theme': theme
-  }
+    'data-theme': theme,
+    lang: () => localeProperties.value.language,
+  },
 })
 
 // Initialize theme from localStorage on mount

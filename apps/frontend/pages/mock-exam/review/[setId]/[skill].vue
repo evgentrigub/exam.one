@@ -30,7 +30,7 @@
             {{ set.title }}
           </div>
           <h1 class="mt-1 font-display text-3xl font-bold">
-            {{ $t('mockExam.moduleReviewTitle', { skill: $t(`skill.${skill}`) }) }}
+            {{ $t('mockExam.moduleReviewTitle', { skill: moduleLabel }) }}
           </h1>
         </div>
         <div class="stats border border-base-300 bg-base-100 sm:ml-auto">
@@ -48,7 +48,9 @@
       >
         <div class="card-body gap-5 p-5 sm:p-7">
           <div class="flex flex-wrap items-start gap-3 border-b border-base-300 pb-4">
-            <span class="badge badge-primary badge-outline">Teil {{ definition.part }}</span>
+            <span class="badge badge-primary badge-outline">{{
+              labelFor(skill, definition.part)
+            }}</span>
             <div class="min-w-0 flex-1">
               <h2 class="font-display text-xl font-bold">{{ definition.title }}</h2>
               <p class="mt-1 text-xs text-base-content/50">{{ exerciseScore(definition.id) }}</p>
@@ -61,8 +63,15 @@
               :key="exercise?.id ?? definition.id"
             >
               <div v-if="exercise" class="space-y-5">
-                <div class="whitespace-pre-line rounded-box bg-base-200/50 p-4 text-sm leading-6">
-                  {{ exercise.content }}
+                <div class="rounded-box bg-base-200/50 p-4 text-sm leading-6">
+                  <GapFillText
+                    v-if="isGapFill('reading', exercise.testingPart)"
+                    :content="exercise.content"
+                    :questions="exercise.questions ?? []"
+                    :answers="responseAnswers(definition.id)"
+                    revealed
+                  />
+                  <div v-else class="whitespace-pre-line">{{ exercise.content }}</div>
                 </div>
                 <ReviewQuestionList
                   :questions="readingQuestions(exercise)"
@@ -85,6 +94,22 @@
                   <div class="mt-2 whitespace-pre-line text-sm leading-6">
                     {{ listeningTranscript(exercise) }}
                   </div>
+                </div>
+                <div
+                  v-if="listeningNotes(exercise)"
+                  class="rounded-box border border-base-300 p-4 text-sm leading-6"
+                >
+                  <div
+                    class="mb-2 text-xs font-semibold uppercase tracking-wider text-base-content/45"
+                  >
+                    {{ $t('gapFill.notes') }}
+                  </div>
+                  <GapFillText
+                    :content="listeningNotes(exercise)"
+                    :questions="notesQuestions(exercise)"
+                    :answers="responseAnswers(definition.id)"
+                    revealed
+                  />
                 </div>
                 <ReviewQuestionList
                   :questions="listeningQuestions(exercise)"
@@ -117,9 +142,9 @@
                   <div
                     class="mt-2 min-h-32 whitespace-pre-line rounded-box border border-base-300 p-4 text-sm leading-6"
                   >
-                    {{ response(definition.id)?.content || $t('mockExam.noResponse') }}
+                    {{ writingResponseText(exercise, definition.id) || $t('mockExam.noResponse') }}
                   </div>
-                  <p class="mt-2 text-xs text-base-content/50">
+                  <p v-if="!isFormFillTopic(exercise)" class="mt-2 text-xs text-base-content/50">
                     {{
                       $t('mockExam.wordCountResult', {
                         count: response(definition.id)?.wordCount ?? 0,
@@ -132,9 +157,16 @@
                     <Sparkles :size="17" class="text-primary" />
                     <h3 class="text-sm font-semibold">{{ $t('mockExam.detailedAiReview') }}</h3>
                   </div>
-                  <WritingReviewDetails
-                    v-if="response(definition.id)?.writingReview"
+                  <FormFillReviewDetails
+                    v-if="response(definition.id)?.writingReview && isFormFillTopic(exercise)"
                     :review="response(definition.id)!.writingReview!"
+                    :entries="formEntries(exercise, definition.id)"
+                    :teil="definition.part"
+                  />
+                  <WritingReviewDetails
+                    v-else-if="response(definition.id)?.writingReview"
+                    :review="response(definition.id)!.writingReview!"
+                    :teil="definition.part"
                   />
                   <div
                     v-else-if="isDeterministicWritingZero(definition.id, definition.part)"
@@ -199,7 +231,7 @@
                       :key="key"
                     >
                       <div class="text-xs font-semibold uppercase text-base-content/45">
-                        {{ key }}
+                        {{ segmentLabel(definition.part, String(key)) }}
                       </div>
                       <div class="mt-1 whitespace-pre-line">
                         {{ text || $t('mockExam.noResponse') }}
@@ -244,12 +276,33 @@
 </template>
 
 <script setup lang="ts">
+import type { GapQuestion, ObjectiveAnswers } from '~/utils/gapFill'
 import { ArrowLeft, CircleAlert, Info, Lock, Sparkles } from 'lucide-vue-next'
 import ReviewQuestionList from '~/components/mockExam/ReviewQuestionList.vue'
+import GapFillText from '~/components/gapFill/GapFillText.vue'
 import SpeakingReviewDetails from '~/components/speaking/SpeakingReviewDetails.vue'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
-import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
+import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
+import { mockModuleId, scaleScore, type MockExamSet } from '@exam-one/exam-packs'
+import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
+import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
+import { objectivePoints } from '~/utils/mockExam/scoring'
+import type { WritingExercise } from '~/utils/types'
+import {
+  blankRows,
+  displayWritingContent,
+  isFormFillTopic,
+  parseFormValues,
+} from '~/utils/writing/formFill'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
+import {
+  isSharedChoiceListening,
+  isSharedMatchingListening,
+  isStatementListening,
+  usesItemAudio,
+  type NotesListening,
+  type SharedChoiceListening,
+} from '~/utils/listening/audioUrls'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
@@ -259,54 +312,101 @@ const route = useRoute()
 const { t } = useI18n()
 const requestedSetId = String(route.params['setId'] ?? '')
 const requestedSkill = String(route.params['skill'] ?? '')
-const skill = (
-  ['reading', 'listening', 'writing', 'speaking'].includes(requestedSkill)
-    ? requestedSkill
-    : 'reading'
-) as SkillId
-const validSkill = requestedSkill === skill
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
+const { pack, labelFor } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
-const set = computed(() => foundSet.value ?? goetheA2MockExamSet1)
+const set = computed(
+  (): MockExamSet => foundSet.value ?? pack.value.bundledMockSet ?? createUnavailableMockSet(t)
+)
 const { state, isInitialized: examInitialized } = useMockExam(set)
 
 const ready = computed(() => setsInitialized.value && examInitialized.value)
-const canReview = computed(() => Boolean(foundSet.value && validSkill && state.value.finished))
-const moduleDefinition = computed(() => set.value.modules.find(module => module.skill === skill))
-const moduleState = computed(() => state.value.modules[skill])
+const canReview = computed(() =>
+  Boolean(foundSet.value && moduleDefinition.value && state.value.finished)
+)
+const moduleDefinition = computed(() =>
+  set.value.modules.find(module => mockModuleId(module) === requestedSkill)
+)
+const skill = computed<SkillId>(() => moduleDefinition.value?.skill ?? 'reading')
+const moduleLabel = computed(() =>
+  moduleDefinition.value?.labelKey
+    ? t(moduleDefinition.value.labelKey)
+    : (moduleDefinition.value?.label ?? t(`skill.${skill.value}`))
+)
+const moduleState = computed(() => state.value.modules[requestedSkill])
 const scoreLabel = computed(() => {
   const score = moduleState.value?.scoreFinal
+  const scale = set.value.rules?.scale
+  const definition = moduleDefinition.value
+  // A scale converts raw marks: show the skill's scale score with its raw marks.
+  if (
+    scale &&
+    definition &&
+    typeof score === 'number' &&
+    moduleState.value?.grading !== 'pending'
+  ) {
+    const value = scaleScore(scale, skill.value, score, definition.maxRawPoints)
+    const shown =
+      value < scale.min ? t('mockExam.scale.below', { min: scale.min }) : Math.round(value)
+    return `${shown} · ${t('mockExam.scale.raw', { score: Number(score.toFixed(2)), max: definition.maxRawPoints })}`
+  }
   return `${score === null || score === undefined ? '—' : Number(score.toFixed(2))}/${moduleDefinition.value?.maxFinalPoints ?? 0}`
 })
 
-usePageMeta('Mock exam review', 'Review completed mock exam exercises')
-useHead({ title: computed(() => `${t(`skill.${skill}`)} – ${t('mockExam.review')}`) })
+usePageMeta('pageMeta.mockExamReviewTitle', 'pageMeta.mockExamReviewSubtitle')
+useHead({ title: () => `${moduleLabel.value} – ${t('mockExam.review')}` })
 
 function response(exerciseId: string) {
   return moduleState.value?.responses[exerciseId]
 }
 
-function responseAnswers(exerciseId: string): Record<string, number | undefined> {
+function responseAnswers(exerciseId: string): ObjectiveAnswers {
   return response(exerciseId)?.answers ?? {}
 }
 
 function exerciseScore(exerciseId: string): string {
   const result = response(exerciseId)
-  const score = result?.rawScore ?? result?.score
   const maximum =
-    result?.total ??
     moduleDefinition.value?.exercises.find(item => item.id === exerciseId)?.maxRawPoints ??
+    result?.total ??
     0
+  const score = result?.rawScore ?? objectivePoints(result, maximum)
   return t('mockExam.exerciseScore', { score: score ?? '—', maximum })
 }
 
 function writingMinimumWords(part: number): number {
-  return part === 1 ? 10 : 15
+  return writingZeroThreshold(pack.value, part) ?? 0
 }
 
 function isDeterministicWritingZero(exerciseId: string, part: number): boolean {
   const result = response(exerciseId)
-  return result?.rawScore === 0 && (result.wordCount ?? 0) < writingMinimumWords(part)
+  const threshold = writingZeroThreshold(pack.value, part)
+  return threshold !== undefined && result?.rawScore === 0 && (result.wordCount ?? 0) < threshold
+}
+
+/** A form is stored as its entries; show them as readable "Label: entry" lines. */
+function writingResponseText(exercise: WritingExercise, exerciseId: string): string {
+  const content = response(exerciseId)?.content
+  return content ? displayWritingContent(exercise, content) : ''
+}
+
+function formEntries(exercise: WritingExercise, exerciseId: string) {
+  const values = parseFormValues(response(exerciseId)?.content)
+  return blankRows(exercise).map(row => ({
+    id: row.field,
+    label: row.label,
+    answer: values[row.field] ?? '',
+  }))
+}
+
+/** A transcript heading: the part's own segment label, or the stored key. */
+function segmentLabel(part: number, key: string): string {
+  return (
+    pack.value.structure
+      .find(module => module.id === 'speaking')
+      ?.parts.find(item => item.n === part)
+      ?.runtime?.segments?.find(segment => segment.id === key)?.label ?? key
+  )
 }
 
 function missingReviewTitle(exerciseId: string): string {
@@ -343,18 +443,64 @@ function speakingExercise(id: string) {
   return set.value.content.speaking.find(exercise => exercise.id === id)
 }
 
+/** Whether a part of this pack is answered by typing into gaps. */
+function isGapFill(module: SkillId, part: number | undefined): boolean {
+  return (
+    pack.value.structure.find(item => item.id === module)?.parts.find(item => item.n === part)
+      ?.itemFormat === 'gap-fill'
+  )
+}
+
 function readingQuestions(exercise: ReadingExercise): ReviewQuestion[] {
   return (exercise.questions ?? []).map(question => ({
     id: question.id,
     prompt: question.question,
-    options: question.options,
-    correctIndex: question.correctAnswer,
+    options: question.options ?? [],
+    correctIndex: question.correctAnswer ?? -1,
+    ...(question.accepted ? { accepted: question.accepted } : {}),
     explanation: question.explanation,
   }))
 }
 
+/** The notes' gaps, in the shape the gapped text reads. */
+function notesQuestions(exercise: ListeningA2Exercise): GapQuestion[] {
+  return listeningQuestions(exercise).map(question => ({
+    id: question.id,
+    question: question.prompt,
+    accepted: question.accepted ?? [],
+  }))
+}
+
+/** The page of notes a gap-fill listening part completes, or an empty string. */
+function listeningNotes(exercise: ListeningA2Exercise): string {
+  if (!isGapFill('listening', exercise.testingPart)) return ''
+  return (exercise as unknown as NotesListening).content ?? ''
+}
+
 function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  // The part's format picks the interaction; the payload shape only picks the audio source.
+  if (isGapFill('listening', exercise.testingPart)) {
+    const notes = exercise as unknown as NotesListening
+    return (notes.questions ?? []).map((question, index) => ({
+      id: question.id ?? `${exercise.id}-q${index}`,
+      prompt: question.question,
+      options: [],
+      correctIndex: -1,
+      accepted: question.accepted ?? [],
+      explanation: question.explanation ?? '',
+    }))
+  }
+  if (isSharedChoiceListening(exercise)) {
+    const shared = exercise as unknown as SharedChoiceListening
+    return shared.questions.map((question, index) => ({
+      id: question.id ?? `${shared.id}-q${index}`,
+      prompt: question.question,
+      options: question.options,
+      correctIndex: question.correctAnswer,
+      explanation: question.explanation ?? '',
+    }))
+  }
+  if (usesItemAudio(exercise)) {
     return exercise.items.map((item, index) => ({
       id: item.id ?? `${exercise.id}-item-${index}`,
       prompt: item.question,
@@ -363,7 +509,7 @@ function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
       explanation: item.explanation,
     }))
   }
-  if (exercise.testingPart === 2) {
+  if (isSharedMatchingListening(exercise)) {
     return exercise.questions.map((question, index) => ({
       id: question.id ?? `${exercise.id}-question-${index}`,
       prompt: question.person,
@@ -372,6 +518,7 @@ function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
       explanation: question.explanation,
     }))
   }
+  if (!isStatementListening(exercise)) return []
   return exercise.questions.map((question, index) => ({
     id: question.id ?? `${exercise.id}-question-${index}`,
     prompt: question.statement,
@@ -382,15 +529,16 @@ function listeningQuestions(exercise: ListeningA2Exercise): ReviewQuestion[] {
 }
 
 function listeningTranscript(exercise: ListeningA2Exercise): string {
-  if (exercise.testingPart === 1 || exercise.testingPart === 3) {
+  if (usesItemAudio(exercise)) {
     return exercise.items.map((item, index) => `${index + 1}. ${item.transcript}`).join('\n\n')
   }
   return exercise.transcript
 }
 
 function speakingPrompts(exercise: SpeakingA2Topic): string[] {
-  return exercise.testingPart === 1
-    ? [...exercise.answerQuestions, ...exercise.askQuestions]
-    : exercise.keywords
+  if ('answerQuestions' in exercise) return [...exercise.answerQuestions, ...exercise.askQuestions]
+  return 'keywords' in exercise
+    ? exercise.keywords
+    : exercise.cards.map(card => (card.topic ? `${card.topic} · ${card.cue}` : card.cue))
 }
 </script>

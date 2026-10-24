@@ -3,48 +3,74 @@
     <!-- Questions list -->
     <div class="bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 sm:p-7">
       <div class="flex items-center gap-2">
-        <h2 class="font-display text-xl font-bold text-base-content">Questions</h2>
+        <h2 class="font-display text-xl font-bold text-base-content">
+          {{ t('reading.questions') }}
+        </h2>
         <span class="ml-auto text-xs text-base-content/60">
-          {{ answeredCount }} of {{ questions.length }} answered
+          {{ t('reading.answeredCount', { answered: answeredCount, total: questions.length }) }}
         </span>
       </div>
-      <p class="text-sm text-base-content/60 mt-1">Read the text and choose the best answer for each question.</p>
+      <p class="text-sm text-base-content/60 mt-1">
+        {{ isGapFill ? t('reading.gapInstructions') : t('reading.quizInstructions') }}
+      </p>
 
-      <div class="mt-5 space-y-6">
+      <GapFillInputs
+        v-if="isGapFill"
+        class="mt-5"
+        :questions="questions"
+        :model-value="answeredQuestions"
+        :disabled="isFinished"
+        :revealed="isFinished"
+        :show-feedback="!examMode"
+        @update:model-value="handleTypedAnswers"
+        @commit="flushDraft"
+      />
+      <div v-else class="mt-5 space-y-6">
         <QuestionCard
           v-for="(q, i) in questions"
+          :id="gapInputId(q.id)"
           :key="q.id"
+          tabindex="-1"
           :question="q"
           :question-number="i + 1"
-          :selected-answer="answeredQuestions[q.id] ?? null"
+          :selected-answer="choiceOf(q.id)"
           :submitted="isFinished"
           :show-feedback="!examMode"
+          :true-false="isTrueFalse"
           @answer-selected="handleAnswerSelected"
         />
       </div>
 
       <!-- Submit row -->
-      <div class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap">
-        <button class="btn btn-ghost btn-sm" @click="saveAndExit">{{ examMode ? 'Back to module' : 'Save & Exit' }}</button>
+      <div
+        class="mt-7 pt-5 border-t border-base-300/70 flex items-center gap-3 flex-wrap sm:flex-nowrap"
+      >
+        <button class="btn btn-ghost btn-sm" @click="saveAndExit">
+          {{ examMode ? t('reading.backToModule') : t('writing.formFill.saveAndExit') }}
+        </button>
         <button
           v-if="!isFinished"
           class="btn btn-primary btn-sm flex-1 gap-1"
           :disabled="!allAnswered"
           @click="finishQuiz"
         >
-          Submit Answers
+          {{ t('reading.submitAnswers') }}
           <ArrowRight :size="12" />
         </button>
         <div v-else-if="!examMode" class="flex-1 flex items-center gap-3 flex-wrap">
           <div class="text-sm">
-            Score: <b class="font-mono" :class="getScoreTextColor()">{{ score }} / {{ questions.length }}</b> · {{ scorePercentage }}%
+            {{ t('quiz.scoreLabel') }}
+            <b class="font-mono" :class="getScoreTextColor()"
+              >{{ score }} / {{ questions.length }}</b
+            >
+            · {{ scorePercentage }}%
           </div>
           <button class="btn btn-outline btn-sm gap-1 sm:ml-auto" @click="restartQuiz">
             <RotateCcw :size="12" />
-            Retry
+            {{ t('generation.retry') }}
           </button>
           <button class="btn btn-primary btn-sm gap-1" @click="$emit('finish')">
-            Back
+            {{ t('quiz.back') }}
             <ArrowRight :size="12" />
           </button>
         </div>
@@ -52,7 +78,10 @@
     </div>
 
     <!-- Results screen -->
-    <div v-if="isFinished && !examMode" class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden">
+    <div
+      v-if="isFinished && !examMode"
+      class="bg-base-100 border border-base-300/70 ring-soft rounded-box overflow-hidden"
+    >
       <!-- Score header -->
       <div class="p-6 text-center border-b border-base-300">
         <div
@@ -66,7 +95,9 @@
         <div class="text-3xl font-bold font-mono mb-1" :class="getScoreTextColor()">
           {{ score }}/{{ questions.length }}
         </div>
-        <div class="text-sm text-base-content/60">{{ scorePercentage }}% correct · {{ getScoreMessage() }}</div>
+        <div class="text-sm text-base-content/60">
+          {{ t('quiz.percentCorrect', { percent: scorePercentage, message: getScoreMessage() }) }}
+        </div>
       </div>
 
       <!-- Result rows -->
@@ -84,11 +115,15 @@
             <X v-else :size="14" />
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-base-content/60 mb-0.5">Question {{ index + 1 }}</p>
+            <p class="text-xs font-medium text-base-content/60 mb-0.5">
+              {{ t('quiz.question') }} {{ index + 1 }}
+            </p>
             <p class="text-sm">{{ questions[index]?.question }}</p>
             <p v-if="!result.isCorrect" class="text-xs text-base-content/50 mt-1">
-              Your answer: <strong>{{ formatAnswerLabel(result.selectedAnswer) }}</strong> ·
-              Correct: <strong>{{ formatAnswerLabel(questions[index]?.correctAnswer ?? 0) }}</strong>
+              {{ t('quiz.yourAnswer') }}
+              <strong>{{ answerLabel(result.selectedAnswer, questions[index]) }}</strong>
+              · {{ t('quiz.correctLabel') }}
+              <strong>{{ correctLabel(questions[index]) }}</strong>
             </p>
           </div>
         </div>
@@ -96,8 +131,12 @@
 
       <!-- Actions -->
       <div class="p-4 border-t border-base-300 flex gap-3 flex-wrap sm:flex-nowrap">
-        <button class="btn btn-primary flex-1" @click="restartQuiz">Try again</button>
-        <button class="btn btn-ghost flex-1" @click="$emit('finish')">Back to exercises</button>
+        <button class="btn btn-primary flex-1" @click="restartQuiz">
+          {{ t('quiz.tryAgain') }}
+        </button>
+        <button class="btn btn-ghost flex-1" @click="$emit('finish')">
+          {{ t('quiz.backToExercises') }}
+        </button>
       </div>
     </div>
   </div>
@@ -105,21 +144,27 @@
 
 <script setup lang="ts">
 import { ArrowRight, Check, CircleAlert, CircleCheck, Info, RotateCcw, X } from 'lucide-vue-next'
-import type { ReadingExercise } from '~/utils/exercises/reading'
+import { isGapAnswerCorrect } from '@exam-one/exam-packs'
+import type { ReadingExercise, ReadingQuestion } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
 import QuestionCard from '~/components/reading/QuestionCard.vue'
+import GapFillInputs from '~/components/gapFill/GapFillInputs.vue'
+import { gapInputId, type ObjectiveAnswer, type ObjectiveAnswers } from '~/utils/gapFill'
 
 interface Props {
   text: ReadingExercise
   examMode?: boolean
-  initialAnswers?: Record<string, number | undefined>
+  initialAnswers?: ObjectiveAnswers
 }
 
 interface QuizResult {
   questionId: string
-  selectedAnswer: number
+  selectedAnswer: ObjectiveAnswer
   isCorrect: boolean
 }
+
+/** Typing saves the draft after a short pause, not on every keystroke. */
+const DRAFT_DEBOUNCE_MS = 500
 
 const props = withDefaults(defineProps<Props>(), {
   examMode: false,
@@ -128,35 +173,66 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   finish: []
-  progress: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
-  examComplete: [payload: { answers: Record<string, number | undefined>; score: number; total: number }]
+  progress: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
+  examComplete: [payload: { answers: ObjectiveAnswers; score: number; total: number }]
+  /** Gap-fill parts: the typed answers, for the gapped text beside the questions. */
+  gapState: [payload: { answers: ObjectiveAnswers; revealed: boolean }]
 }>()
 
+const { t } = useI18n()
 const { saveQuizCompletion, clearSession, saveSession, getSession } = useProgress()
 
 const isFinished = ref(false)
-const answeredQuestions = ref<Record<string, number>>({})
+const answeredQuestions = ref<ObjectiveAnswers>({})
 
 const questions = computed(() => props.text.questions || [])
-const answeredCount = computed(() => Object.keys(answeredQuestions.value).length)
-const allAnswered = computed(() => questions.value.every(q => q.id in answeredQuestions.value))
-const results = computed<QuizResult[]>(() => questions.value.reduce<QuizResult[]>((acc, question) => {
-  const selectedAnswer = answeredQuestions.value[question.id]
-  if (typeof selectedAnswer !== 'number') return acc
-  acc.push({
-    questionId: question.id,
-    selectedAnswer,
-    isCorrect: selectedAnswer === question.correctAnswer
-  })
-  return acc
-}, []))
+const { partsFor } = useActivePack()
+const itemFormat = computed(
+  () => partsFor('reading').find(part => part.n === props.text.testingPart)?.itemFormat
+)
+const isTrueFalse = computed(() => itemFormat.value === 'true-false')
+const isGapFill = computed(() => itemFormat.value === 'gap-fill')
+
+/** A choice is an index; a typed gap counts once it is not blank. */
+function isAnswered(value: ObjectiveAnswer | undefined): value is ObjectiveAnswer {
+  return typeof value === 'number' || (typeof value === 'string' && value.trim() !== '')
+}
+function choiceOf(questionId: string): number | null {
+  const value = answeredQuestions.value[questionId]
+  return typeof value === 'number' ? value : null
+}
+
+const answeredCount = computed(
+  () => questions.value.filter(q => isAnswered(answeredQuestions.value[q.id])).length
+)
+const allAnswered = computed(() =>
+  questions.value.every(q => isAnswered(answeredQuestions.value[q.id]))
+)
+const results = computed<QuizResult[]>(() =>
+  questions.value.reduce<QuizResult[]>((acc, question) => {
+    const selectedAnswer = answeredQuestions.value[question.id]
+    if (!isAnswered(selectedAnswer)) return acc
+    acc.push({
+      questionId: question.id,
+      selectedAnswer,
+      isCorrect: question.accepted
+        ? isGapAnswerCorrect(selectedAnswer, question.accepted)
+        : selectedAnswer === question.correctAnswer,
+    })
+    return acc
+  }, [])
+)
 const score = computed(() => results.value.filter(result => result.isCorrect).length)
-const scorePercentage = computed(() => questions.value.length ? Math.round((score.value / questions.value.length) * 100) : 0)
+const scorePercentage = computed(() =>
+  questions.value.length ? Math.round((score.value / questions.value.length) * 100) : 0
+)
 
 onMounted(() => {
   if (props.examMode) {
     answeredQuestions.value = Object.fromEntries(
-      Object.entries(props.initialAnswers).filter((entry): entry is [string, number] => typeof entry[1] === 'number'),
+      Object.entries(props.initialAnswers).filter((entry): entry is [string, ObjectiveAnswer] =>
+        isAnswered(entry[1])
+      )
     )
     return
   }
@@ -166,10 +242,46 @@ onMounted(() => {
   }
 })
 
+let draftTimer: ReturnType<typeof setTimeout> | undefined
+
+function flushDraft() {
+  if (draftTimer === undefined) return
+  clearTimeout(draftTimer)
+  draftTimer = undefined
+  if (!props.examMode && !isFinished.value) saveSession(props.text.id, 0, answeredQuestions.value)
+}
+
+function handleTypedAnswers(value: ObjectiveAnswers) {
+  answeredQuestions.value = value
+  if (props.examMode) {
+    emit('progress', { answers: { ...value }, score: score.value, total: questions.value.length })
+    return
+  }
+  if (draftTimer !== undefined) clearTimeout(draftTimer)
+  draftTimer = setTimeout(() => {
+    draftTimer = undefined
+    saveSession(props.text.id, 0, answeredQuestions.value)
+  }, DRAFT_DEBOUNCE_MS)
+}
+
+watch(
+  [answeredQuestions, isFinished],
+  () => {
+    if (
+      isGapFill.value ||
+      partsFor('reading').find(p => p.n === props.text.testingPart)?.choiceGaps
+    )
+      emit('gapState', { answers: { ...answeredQuestions.value }, revealed: isFinished.value })
+  },
+  { immediate: true }
+)
+
+onBeforeUnmount(flushDraft)
+
 function handleAnswerSelected(questionId: string, selectedAnswer: number) {
   answeredQuestions.value = {
     ...answeredQuestions.value,
-    [questionId]: selectedAnswer
+    [questionId]: selectedAnswer,
   }
   if (props.examMode) {
     emit('progress', {
@@ -184,6 +296,8 @@ function handleAnswerSelected(questionId: string, selectedAnswer: number) {
 
 function finishQuiz() {
   if (!allAnswered.value) return
+  if (draftTimer !== undefined) clearTimeout(draftTimer)
+  draftTimer = undefined
   isFinished.value = true
   if (props.examMode) {
     emit('examComplete', {
@@ -193,11 +307,15 @@ function finishQuiz() {
     })
     return
   }
-  saveQuizCompletion(props.text.id, score.value, questions.value.length)
+  saveQuizCompletion(props.text.id, score.value, questions.value.length, {
+    ...answeredQuestions.value,
+  })
   clearSession()
 }
 
 function saveAndExit() {
+  if (draftTimer !== undefined) clearTimeout(draftTimer)
+  draftTimer = undefined
   if (!props.examMode) saveSession(props.text.id, 0, answeredQuestions.value)
   emit('finish')
 }
@@ -208,8 +326,18 @@ function restartQuiz() {
   clearSession()
 }
 
-function formatAnswerLabel(index: number) {
-  return String.fromCharCode(65 + index)
+/** A letter for lettered options; the option itself for Richtig / Falsch; a gap's own word. */
+function formatAnswerLabel(index: number, options?: readonly string[]) {
+  return isTrueFalse.value ? (options?.[index] ?? '') : String.fromCharCode(65 + index)
+}
+
+function answerLabel(answer: ObjectiveAnswer, question?: ReadingQuestion) {
+  return typeof answer === 'string' ? answer.trim() : formatAnswerLabel(answer, question?.options)
+}
+
+function correctLabel(question?: ReadingQuestion) {
+  if (question?.accepted) return question.accepted.join(' / ')
+  return formatAnswerLabel(question?.correctAnswer ?? 0, question?.options)
 }
 
 function getScoreColor() {
@@ -225,9 +353,9 @@ function getScoreTextColor() {
 }
 
 function getScoreMessage() {
-  if (scorePercentage.value >= 90) return 'Excellent!'
-  if (scorePercentage.value >= 75) return 'Well done!'
-  if (scorePercentage.value >= 50) return 'Keep practicing!'
-  return "Don't give up!"
+  if (scorePercentage.value >= 90) return t('quiz.excellent')
+  if (scorePercentage.value >= 75) return t('quiz.wellDone')
+  if (scorePercentage.value >= 50) return t('quiz.keepPracticing')
+  return t('quiz.dontGiveUp')
 }
 </script>

@@ -1,27 +1,33 @@
 <template>
-  <div class="group bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 card-hov h-full min-h-[280px] flex flex-col relative">
+  <div
+    class="group bg-base-100 border border-base-300/70 ring-soft rounded-box p-5 card-hov h-full min-h-[280px] flex flex-col relative"
+  >
     <button
       class="btn btn-circle btn-error btn-xs absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
-      title="Delete text"
-      aria-label="Delete reading text"
+      :title="t('reading.deleteText')"
+      :aria-label="t('reading.deleteTextAria')"
       @click.stop="$emit('deleteText', text.id)"
     >
       <Trash2 :size="13" />
     </button>
 
     <div class="flex items-start justify-between gap-3 pr-8">
-      <div class="w-9 h-9 rounded-selector bg-reading-soft text-reading grid place-items-center shrink-0">
+      <div
+        class="w-9 h-9 rounded-selector bg-reading-soft text-reading grid place-items-center shrink-0"
+      >
         <component :is="textTypeIcon" :size="16" />
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end">
         <span class="level-pip">{{ text.difficulty }}</span>
-        <span v-if="text.testingPart" class="level-pip">Teil {{ text.testingPart }}</span>
+        <span v-if="text.testingPart" class="level-pip"
+          >{{ t('exercisesUi.part') }} {{ text.testingPart }}</span
+        >
       </div>
     </div>
 
     <div class="mt-4">
       <div class="text-[11px] font-medium uppercase tracking-wider text-base-content/50">
-        Reading · {{ getTextTypeLabel(text.textType) }}
+        {{ t('skill.reading') }} · {{ getTypeLabel(text.textType, t) }}
       </div>
       <h3 class="font-display text-xl font-bold leading-tight mt-1 text-base-content line-clamp-2">
         {{ text.title }}
@@ -29,17 +35,23 @@
     </div>
 
     <div class="flex flex-wrap gap-2 mt-4">
-      <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+      <span
+        class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+      >
         <Clock :size="11" />
-        {{ text.estimatedReadingTime }} min
+        {{ text.estimatedReadingTime }} {{ t('exercisesUi.min') }}
       </span>
-      <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+      <span
+        class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+      >
         <AlignLeft :size="11" />
-        {{ text.wordCount }} words
+        {{ text.wordCount }} {{ t('exercisesUi.words') }}
       </span>
-      <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70">
+      <span
+        class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-base-200 text-base-content/70"
+      >
         <HelpCircle :size="11" />
-        {{ text.questions?.length || 0 }} questions
+        {{ t('reading.questionCount', text.questions?.length || 0) }}
       </span>
     </div>
 
@@ -53,12 +65,17 @@
       </span>
     </div>
 
-    <div v-if="textCompleted" class="mt-4 rounded-box bg-success/10 border border-success/20 p-3 flex items-center gap-3">
+    <div
+      v-if="textCompleted"
+      class="mt-4 rounded-box bg-success/10 border border-success/20 p-3 flex items-center gap-3"
+    >
       <CheckCircle :size="18" class="text-success shrink-0" />
       <div class="min-w-0 flex-1">
-        <div class="text-sm font-semibold text-success">Best score {{ scorePercentage }}%</div>
+        <div class="text-sm font-semibold text-success">
+          {{ t('reading.bestScore', { percent: scorePercentage }) }}
+        </div>
         <div class="text-xs text-success/80">
-          {{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}
+          {{ t('reading.attempts', progress?.attemptCount || 1) }}
         </div>
       </div>
     </div>
@@ -70,17 +87,30 @@
       :class="textCompleted ? 'btn-success' : 'btn-primary'"
       @click="$emit('startReading', text.id)"
     >
-      {{ textCompleted ? 'Read again' : 'Start reading' }}
+      {{ textCompleted ? t('practice.textCard.readAgain') : t('practice.textCard.startReading') }}
       <ArrowRight :size="13" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { AlignLeft, ArrowRight, Bell, CheckCircle, Clock, FileText, HelpCircle, Mail, Megaphone, Newspaper, Trash2 } from 'lucide-vue-next'
+import {
+  AlignLeft,
+  ArrowRight,
+  Bell,
+  CheckCircle,
+  Clock,
+  FileText,
+  HelpCircle,
+  Mail,
+  Megaphone,
+  Newspaper,
+  Trash2,
+} from 'lucide-vue-next'
 import type { Component } from 'vue'
 import type { ReadingExercise } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
+import { getTypeLabel } from '~/utils/labels'
 
 interface Props {
   text: ReadingExercise
@@ -93,6 +123,7 @@ const _emit = defineEmits<{
   deleteText: [textId: string]
 }>()
 
+const { t } = useI18n()
 const { isTextCompleted, getBestScore, getTextProgress } = useProgress()
 const isClient = ref(false)
 
@@ -100,24 +131,16 @@ onMounted(() => {
   isClient.value = true
 })
 
-const textCompleted = computed(() => isClient.value ? isTextCompleted(props.text.id) : false)
-const bestScore = computed(() => isClient.value ? getBestScore(props.text.id) : 0)
-const progress = computed(() => isClient.value ? getTextProgress(props.text.id) : null)
-const scorePercentage = computed(() => Math.round((bestScore.value / (props.text.questions?.length || 1)) * 100))
-const displayTopics = computed(() => props.text.topics.map(topic => topic.length > 18 ? `${topic.slice(0, 16)}…` : topic).slice(0, 3))
+const textCompleted = computed(() => (isClient.value ? isTextCompleted(props.text.id) : false))
+const bestScore = computed(() => (isClient.value ? getBestScore(props.text.id) : 0))
+const progress = computed(() => (isClient.value ? getTextProgress(props.text.id) : null))
+const scorePercentage = computed(() =>
+  Math.round((bestScore.value / (props.text.questions?.length || 1)) * 100)
+)
+const displayTopics = computed(() =>
+  props.text.topics.map(topic => (topic.length > 18 ? `${topic.slice(0, 16)}…` : topic)).slice(0, 3)
+)
 const textTypeIcon = computed<Component>(() => getTextTypeIcon(props.text.textType))
-
-function getTextTypeLabel(type: string) {
-  const labels: Record<string, string> = {
-    email: 'E-Mail',
-    notice: 'Notice',
-    article: 'Article',
-    advertisement: 'Advertisement',
-    instructions: 'Instructions',
-    announcement: 'Announcement'
-  }
-  return labels[type] || type
-}
 
 function getTextTypeIcon(type: string): Component {
   const icons: Record<string, Component> = {
@@ -126,7 +149,7 @@ function getTextTypeIcon(type: string): Component {
     article: Newspaper,
     advertisement: Megaphone,
     instructions: FileText,
-    announcement: Bell
+    announcement: Bell,
   }
   return icons[type] || FileText
 }

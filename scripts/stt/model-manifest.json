@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "recommended": {
+    "en": "phonon-2",
+    "de": "parakeet-v3-q4",
+    "pl": "parakeet-v3-q4",
+    "es": "parakeet-v3-q4"
+  },
+  "models": [
+    {
+      "id": "phonon-2",
+      "name": "Phonon 2",
+      "engine": "fermion",
+      "runtimeVersion": "0.2.11",
+      "languages": [
+        "en"
+      ],
+      "aliases": [
+        "FermionResearch/Phonon-2"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "Fermion Research; derived from NVIDIA Parakeet TDT 0.6B v3. Preserve the upstream NOTICE and weight license.",
+      "source": "https://huggingface.co/FermionResearch/Phonon-2",
+      "revision": "7e153e4054c0a10db6d47d6fff5c062d4c77c154",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "evidence": "Upstream reports 5.21% average WER on seven English sets, versus 4.96% for its full-precision teacher. This is published evidence, not a local learner-speech comparison. English only; CPU dependencies and unpacked caches exceed the archive size.",
+      "file": "phonon-2.bps.tar.zst",
+      "downloadBytes": 163515201,
+      "unpackedBytes": 177716675,
+      "sha256": "98125795b6dda72f5c6eee9ba33d19815df65dcb18b50a357bf9f73c9935309e",
+      "url": "https://huggingface.co/FermionResearch/Phonon-2/resolve/7e153e4054c0a10db6d47d6fff5c062d4c77c154/phonon-2.bps.tar.zst",
+      "notices": [
+        {
+          "source": "notices/phonon-2-NOTICE.txt",
+          "path": "NOTICE"
+        },
+        {
+          "source": "notices/CC-BY-4.0.txt",
+          "path": "LICENSE-WEIGHTS-CC-BY-4.0.txt"
+        }
+      ]
+    },
+    {
+      "id": "parakeet-v3-q4",
+      "name": "Parakeet v3 Q4",
+      "engine": "transcribe.cpp",
+      "runtimeVersion": "856d7c10a1a864b900e066b7c9801edf373f5148",
+      "languages": [
+        "de",
+        "en",
+        "pl",
+        "es"
+      ],
+      "aliases": [
+        "handy-computer/parakeet-tdt-0.6b-v3-gguf:Q4_K_M"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "NVIDIA Parakeet TDT 0.6B v3; GGUF conversion by Handy. transcribe.cpp is MIT licensed.",
+      "source": "https://huggingface.co/handy-computer/parakeet-tdt-0.6b-v3-gguf",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "evidence": "Default multilingual quantization. The supplier reports 1.98% WER on LibriSpeech test-clean versus 1.94% for Q8. These English results do not establish equivalent accuracy for German, Polish, Spanish or learner speech. The approximately 200 MB download target remains unmet.",
+      "file": "parakeet-tdt-0.6b-v3-Q4_K_M.gguf",
+      "downloadBytes": 485425504,
+      "sha256": "b68557be1e3c40207fd7c4bd9d63f1d3316b963f15325bfb0cc16a8bb0ffd181",
+      "url": "https://huggingface.co/handy-computer/parakeet-tdt-0.6b-v3-gguf/resolve/d8d8c32cb2017c57e5307767343e97870f8a7f53/parakeet-tdt-0.6b-v3-Q4_K_M.gguf",
+      "revision": "d8d8c32cb2017c57e5307767343e97870f8a7f53",
+      "notices": [
+        {
+          "source": "notices/parakeet-q4-NOTICE.txt",
+          "path": "NOTICE"
+        },
+        {
+          "source": "notices/CC-BY-4.0.txt",
+          "path": "LICENSE-WEIGHTS-CC-BY-4.0.txt"
+        }
+      ]
+    }
+  ],
+  "retiredModelIds": [
+    "parakeet-v3-q8",
+    "handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0",
+    "nvidia/parakeet-tdt-0.6b-v3"
+  ]
+}

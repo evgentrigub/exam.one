@@ -1,7 +1,32 @@
+import type { Difficulty, WritingExercise, WritingTopicTypes } from '@exam-one/exam-packs'
+
+export type { Difficulty, WritingExercise, WritingTopicTypes }
+
 /**
  * Exam.one - Type Definitions
  * Shared data structures for exercises, reviews, and user progress
  */
+
+export const LANGUAGE_OPTIONS = ['en', 'de', 'es', 'pl', 'ru'] as const
+export type LanguageOptions = (typeof LANGUAGE_OPTIONS)[number]
+export const DEFAULT_LANGUAGE: LanguageOptions = 'en'
+
+/** Each UI language in its own name, so it stays recognisable whatever the current locale. */
+export const LANGUAGE_LABELS: Record<LanguageOptions, string> = {
+  en: 'English',
+  de: 'Deutsch',
+  es: 'Español',
+  pl: 'Polski',
+  ru: 'Русский',
+}
+
+export function isLanguageOption(value: string): value is LanguageOptions {
+  return (LANGUAGE_OPTIONS as readonly string[]).includes(value)
+}
+
+export function toLanguageOption(value: string): LanguageOptions {
+  return isLanguageOption(value) ? value : DEFAULT_LANGUAGE
+}
 
 export interface UserProgress {
   textId: string
@@ -22,43 +47,6 @@ export interface Session {
   score?: number
   timeSpent?: number
 }
-
-export type Difficulty = 'A2' | 'C1'
-
-// Writing Topic Types
-export interface WritingExercise {
-  id: string
-  title: string
-  topicType: WritingTopicTypes
-  difficulty: Difficulty
-  testingPart?: 1 | 2
-  estimatedTime: number // in minutes
-  wordCount: {
-    min: number
-    max: number
-  }
-  category: string[]
-  createdAt: string
-  description: string // What type of text they should write
-  task: string // The actual writing prompt/task
-  requirements: string[] // Specific requirements (format, length, etc.)
-  /** Bundled content reserved for mock-exam sets and hidden from practice lists. */
-  examOnly?: boolean
-}
-
-export type WritingTopicTypes =
-  | 'report'
-  | 'review'
-  | 'proposal'
-  | 'article'
-  | 'note'
-  | 'form'
-  | 'email'
-  | 'letter'
-  | 'essay'
-  | 'postcard'
-  | 'post'
-  | string // Allow any string to ensure all generated topics are saved
 
 export interface WritingProgress {
   topicId: string
@@ -89,76 +77,6 @@ export interface WritingFeedbackModel {
   overallScore: number // 1-5 scale
 }
 
-// --- AI Review Types ---
-export type TeilRuleApplied = 'none' | 'E_zero_rule' | 'wordcount_lt_50' | 'off_topic'
-
-export interface AiReviewCriteriaItem {
-  grade: string
-  points: number
-  comment: string
-}
-
-// C1 Review Types
-export interface AiReviewCriteriaC1 {
-  aufgabenerfuellung: AiReviewCriteriaItem
-  kohaerenz: AiReviewCriteriaItem
-  wortschatz: AiReviewCriteriaItem
-  strukturen: AiReviewCriteriaItem
-}
-
-// A2 Review Types
-export interface AiReviewCriteriaA2 {
-  aufgabenerfuellung: AiReviewCriteriaItem
-  sprache: AiReviewCriteriaItem
-}
-
-export interface RegisterCheck {
-  expected: 'du' | 'sie'
-  detected: 'du' | 'sie' | 'mixed' | 'unknown'
-  ok: boolean
-}
-
-export interface ContentPointsCovered {
-  required: number
-  covered: number
-}
-
-export interface AiReviewExampleItem {
-  error: string
-  correction: string
-  rule: string
-}
-
-// C1 Review Data Structure
-export interface AiReviewDataC1 {
-  teil: number
-  word_count: number
-  required_word_count: number
-  criteria: AiReviewCriteriaC1
-  teil_points: number
-  teil_rule_applied: TeilRuleApplied
-  passed_module: boolean
-  priority_fixes: readonly string[]
-  examples: readonly AiReviewExampleItem[]
-  report: string
-}
-
-// A2 Review Data Structure
-export interface AiReviewDataA2 {
-  teil: number
-  word_count: number
-  required_word_count: { min: number; max: number }
-  criteria: AiReviewCriteriaA2
-  teil_points_mess: number
-  teil_points_result: number
-  teil_rule_applied: TeilRuleApplied
-  register_check: RegisterCheck
-  content_points_covered: ContentPointsCovered
-  priority_fixes: readonly string[]
-  examples: readonly AiReviewExampleItem[]
-  report: string
-}
-
 /**
  * Model answers for German A2/C1 writing exercises
  * High-quality example responses that demonstrate proper structure, vocabulary, and grammar
@@ -176,19 +94,3 @@ export interface ModelAnswer {
     keyPhrases?: string[]
   }
 }
-
-// Union type for both A2 and C1 reviews
-export type AiReviewData = AiReviewDataC1 | AiReviewDataA2
-
-// Type guard to check if review is A2
-export function isA2Review(review: AiReviewData): review is AiReviewDataA2 {
-  return 'teil_points_mess' in review
-}
-
-// Type guard to check if review is C1
-export function isC1Review(review: AiReviewData): review is AiReviewDataC1 {
-  return 'teil_points' in review
-}
-
-// Backward compatibility - keep old name pointing to C1
-export type AiReviewCriteria = AiReviewCriteriaC1

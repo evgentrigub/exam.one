@@ -13,7 +13,14 @@
         type="button"
         class="w-9 h-9 rounded-full bg-info text-info-content grid place-items-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="(!canPlay && !playing) || !!disabled"
-        :title="disabled ? 'Audio unavailable' : playing ? 'Pause' : 'Play'"
+        :aria-label="playing ? $t('listening.pause') : $t('listening.play')"
+        :title="
+          disabled
+            ? $t('listening.audioUnavailable')
+            : playing
+              ? $t('listening.pause')
+              : $t('listening.play')
+        "
         @click="toggle"
       >
         <Pause v-if="playing" :size="14" />
@@ -29,7 +36,7 @@
           class="w-full accent-info disabled:opacity-40"
           :disabled="!!disabled || !!disableSeeking"
           @input="seekTo(Number(($event.target as HTMLInputElement).value))"
-        >
+        />
         <div class="flex justify-between font-mono text-[11px] text-base-content/60 mt-1">
           <span>{{ fmt(currentSec) }}</span>
           <span>{{ fmt(effectiveDurationSec) }}</span>
@@ -38,7 +45,7 @@
     </div>
 
     <p v-if="maxPlays" class="mt-2 text-[11px] text-base-content/50">
-      Plays: {{ playCount }}/{{ maxPlays }}
+      {{ $t('listening.plays', { count: playCount, max: maxPlays }) }}
     </p>
 
     <!-- Controls row -->
@@ -54,7 +61,7 @@
           class="flex-1 accent-info min-w-0 disabled:opacity-40"
           :disabled="!!disabled"
           @input="onVolumeInput(Number(($event.target as HTMLInputElement).value))"
-        >
+        />
 
         <div class="join">
           <button
@@ -73,8 +80,13 @@
     </div>
 
     <!-- Transcript (revealed after submit) -->
-    <div v-if="revealTranscript" class="mt-4 p-3 rounded-field bg-base-200/60 border border-base-300/70">
-      <p class="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1">Transcript</p>
+    <div
+      v-if="revealTranscript"
+      class="mt-4 p-3 rounded-field bg-base-200/60 border border-base-300/70"
+    >
+      <p class="text-[10px] uppercase tracking-wider font-semibold text-base-content/50 mb-1">
+        {{ $t('pastExams.transcript') }}
+      </p>
       <p class="text-sm leading-relaxed whitespace-pre-line">{{ transcript }}</p>
     </div>
   </div>
@@ -83,44 +95,51 @@
 <script setup lang="ts">
 import { Play, Pause, Volume2 } from 'lucide-vue-next'
 
+import type { ListeningPlaybackState } from '~/utils/listening/audioUrls'
+
 const speeds = [0.75, 1, 1.25] as const
 
-const props = withDefaults(defineProps<{
-  transcript: string
-  label?: string
-  /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
-  src?: string
-  durationSec?: number
-  revealTranscript?: boolean
-  /** When true, only play + scrubber are shown (volume/speed live in the sidebar). */
-  hideVolumeSpeed?: boolean
-  /** Controlled volume from parent (0–1). */
-  volume?: number
-  /** Controlled playback rate from parent. */
-  speed?: number
-  /** Stable id for exclusive playback coordination. */
-  playerId?: string
-  /** Currently active player id from the session (exclusive play). */
-  activePlayerId?: string | null
-  /** Disable play/scrub/controls (e.g. when audio files are missing). */
-  disabled?: boolean
-  /** Optional exam replay cap. Pausing and resuming the same play does not consume another play. */
-  maxPlays?: number | null
-  disableSeeking?: boolean
-}>(), {
-  label: 'Audio',
-  src: '',
-  durationSec: 0,
-  revealTranscript: false,
-  hideVolumeSpeed: false,
-  volume: 0.6,
-  speed: 1,
-  playerId: '',
-  activePlayerId: null,
-  disabled: false,
-  maxPlays: null,
-  disableSeeking: false,
-})
+const props = withDefaults(
+  defineProps<{
+    initialPlayback?: ListeningPlaybackState | undefined
+    transcript: string
+    label?: string
+    /** Public URL to a pre-generated audio file (e.g. /audio/listening/a2/...). */
+    src?: string
+    durationSec?: number
+    revealTranscript?: boolean
+    /** When true, only play + scrubber are shown (volume/speed live in the sidebar). */
+    hideVolumeSpeed?: boolean
+    /** Controlled volume from parent (0–1). */
+    volume?: number
+    /** Controlled playback rate from parent. */
+    speed?: number
+    /** Stable id for exclusive playback coordination. */
+    playerId?: string
+    /** Currently active player id from the session (exclusive play). */
+    activePlayerId?: string | null
+    /** Disable play/scrub/controls (e.g. when audio files are missing). */
+    disabled?: boolean
+    /** Optional exam replay cap. Pausing and resuming the same play does not consume another play. */
+    maxPlays?: number | null
+    disableSeeking?: boolean
+  }>(),
+  {
+    initialPlayback: undefined,
+    label: 'Audio',
+    src: '',
+    durationSec: 0,
+    revealTranscript: false,
+    hideVolumeSpeed: false,
+    volume: 0.6,
+    speed: 1,
+    playerId: '',
+    activePlayerId: null,
+    disabled: false,
+    maxPlays: null,
+    disableSeeking: false,
+  }
+)
 
 const emit = defineEmits<{
   'update:volume': [value: number]
@@ -128,6 +147,7 @@ const emit = defineEmits<{
   play: [playerId: string]
   pause: [playerId: string]
   'audio-unavailable': []
+  playback: [state: ListeningPlaybackState]
 }>()
 
 const playing = ref(false)
@@ -135,7 +155,16 @@ const currentSec = ref(0)
 const mediaReady = ref(false)
 const mediaFailed = ref(false)
 const mediaDurationSec = ref(0)
-const playCount = ref(0)
+const playCount = ref(props.initialPlayback?.plays ?? 0)
+const completed = ref(props.initialPlayback?.completed ?? false)
+let lastPlaybackSecond = -1
+function savePlayback() {
+  emit('playback', {
+    plays: playCount.value,
+    position: currentSec.value,
+    completed: completed.value,
+  })
+}
 
 let timer: ReturnType<typeof setInterval> | null = null
 let audioEl: HTMLAudioElement | null = null
@@ -148,19 +177,19 @@ const useRealAudio = computed(() => Boolean(props.src) && !mediaFailed.value && 
 const simulatedDurationSec = computed(() =>
   props.durationSec > 0
     ? props.durationSec
-    : Math.min(180, Math.max(30, Math.round(props.transcript.length / 13))),
+    : Math.min(180, Math.max(30, Math.round(props.transcript.length / 13)))
 )
 
 const effectiveDurationSec = computed(() =>
   useRealAudio.value && mediaDurationSec.value > 0
     ? mediaDurationSec.value
-    : simulatedDurationSec.value,
+    : simulatedDurationSec.value
 )
 
 const canPlay = computed(() => {
   if (props.disabled) return false
   if (!props.maxPlays) return true
-  const resuming = currentSec.value > 0 && currentSec.value < effectiveDurationSec.value
+  const resuming = playCount.value > 0 && !completed.value
   return resuming || playCount.value < props.maxPlays
 })
 
@@ -219,11 +248,17 @@ function detachAudio() {
 function onTimeUpdate() {
   if (!audioEl) return
   currentSec.value = audioEl.currentTime
+  if (Math.floor(currentSec.value) !== lastPlaybackSecond) {
+    lastPlaybackSecond = Math.floor(currentSec.value)
+    savePlayback()
+  }
 }
 
 function onEnded() {
+  completed.value = true
   currentSec.value = effectiveDurationSec.value
   finishPlayback()
+  savePlayback()
 }
 
 function onLoadedMetadata() {
@@ -231,6 +266,10 @@ function onLoadedMetadata() {
   mediaDurationSec.value = Number.isFinite(audioEl.duration) ? audioEl.duration : 0
   mediaReady.value = true
   mediaFailed.value = false
+  audioEl.currentTime = props.initialPlayback?.completed
+    ? 0
+    : Math.min(props.initialPlayback?.position ?? 0, mediaDurationSec.value)
+  currentSec.value = props.initialPlayback?.completed ? mediaDurationSec.value : audioEl.currentTime
   applyAudioSettings()
 }
 
@@ -250,7 +289,8 @@ function attachAudio(src: string) {
   mediaDurationSec.value = 0
   currentSec.value = 0
   playing.value = false
-  playCount.value = 0
+  playCount.value = props.initialPlayback?.plays ?? 0
+  completed.value = props.initialPlayback?.completed ?? false
 
   const el = new Audio(src)
   el.preload = 'metadata'
@@ -271,6 +311,7 @@ function pausePlayback() {
     stopTimer()
   }
   playing.value = false
+  savePlayback()
   if (props.playerId) {
     emit('pause', props.playerId)
   }
@@ -285,8 +326,14 @@ function toggle() {
 
   if (!canPlay.value) return
 
-  const isNewPlay = currentSec.value <= 0 || currentSec.value >= effectiveDurationSec.value - 0.05
-  if (isNewPlay && props.maxPlays) playCount.value += 1
+  const isNewPlay = playCount.value === 0 || completed.value
+  if (isNewPlay && props.maxPlays) {
+    playCount.value += 1
+    completed.value = false
+    currentSec.value = 0
+    if (audioEl) audioEl.currentTime = 0
+  }
+  savePlayback()
 
   if (props.playerId) {
     emit('play', props.playerId)
@@ -298,14 +345,16 @@ function toggle() {
       currentSec.value = 0
     }
     applyAudioSettings()
-    void audioEl.play().then(() => {
-      playing.value = true
-    }).catch(() => {
-      mediaFailed.value = true
-      playing.value = true
-      startSimulatedTimer()
-      emit('audio-unavailable')
-    })
+    void audioEl
+      .play()
+      .then(() => {
+        playing.value = true
+      })
+      .catch(() => {
+        mediaFailed.value = true
+        playing.value = false
+        emit('audio-unavailable')
+      })
     return
   }
 
@@ -337,7 +386,7 @@ function onSpeedInput(value: number) {
 
 watch(
   () => props.src,
-  (src) => {
+  src => {
     stopTimer()
     playing.value = false
     currentSec.value = 0
@@ -351,33 +400,33 @@ watch(
       emit('audio-unavailable')
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 watch(
   () => [effectiveVolume.value, effectiveSpeed.value] as const,
   () => {
     applyAudioSettings()
-  },
+  }
 )
 
 watch(
   () => props.activePlayerId,
-  (activeId) => {
+  activeId => {
     if (!props.playerId || !playing.value) return
     if (activeId !== null && activeId !== props.playerId) {
       pausePlayback()
     }
-  },
+  }
 )
 
 watch(
   () => props.disabled,
-  (locked) => {
+  locked => {
     if (locked && playing.value) {
       pausePlayback()
     }
-  },
+  }
 )
 
 onUnmounted(() => {

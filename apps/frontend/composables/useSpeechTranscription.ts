@@ -1,21 +1,4 @@
-interface SttHealthData {
-  provider: 'local' | 'openai'
-  ready: boolean
-  detail: string
-}
-
-interface SttHealthResponse {
-  data: SttHealthData | null
-  error: string | null
-}
-
-interface TranscriptionResponse {
-  data: {
-    transcript: string
-    provider: 'local' | 'openai'
-  } | null
-  error: string | null
-}
+import type { SttHealthData, TranscriptionData } from '@exam-one/contracts'
 
 function audioFileName(blob: Blob): string {
   if (blob.type.includes('ogg')) return 'speaking.ogg'
@@ -25,6 +8,7 @@ function audioFileName(blob: Blob): string {
 }
 
 export function useSpeechTranscription() {
+  const { t } = useI18n()
   const health = ref<SttHealthData | null>(null)
   const checkingHealth = ref(false)
   const transcribing = ref(false)
@@ -33,13 +17,13 @@ export function useSpeechTranscription() {
   async function refreshHealth(): Promise<void> {
     checkingHealth.value = true
     try {
-      const response = (await $fetch('/api/stt/health')) as unknown as SttHealthResponse
+      const response = await aiFetch<SttHealthData>('/stt/health')
       health.value = response.data
       error.value = response.error
     } catch (requestError: unknown) {
       health.value = null
       error.value =
-        requestError instanceof Error ? requestError.message : 'Could not check STT status.'
+        requestError instanceof Error ? requestError.message : t('errors.sttStatusFailed')
     } finally {
       checkingHealth.value = false
     }
@@ -51,16 +35,17 @@ export function useSpeechTranscription() {
     try {
       const form = new FormData()
       form.append('file', blob, audioFileName(blob))
-      const response = (await $fetch('/api/transcribe', {
+      const response = await aiFetch<TranscriptionData>('/stt/transcribe', {
         method: 'POST',
         body: form,
-      })) as unknown as TranscriptionResponse
+      })
       if (response.error || !response.data) {
-        throw new Error(response.error || 'Transcription failed.')
+        throw new Error(response.error || t('errors.transcriptionFailed'))
       }
       return response.data.transcript
     } catch (requestError: unknown) {
-      error.value = requestError instanceof Error ? requestError.message : 'Transcription failed.'
+      error.value =
+        requestError instanceof Error ? requestError.message : t('errors.transcriptionFailed')
       return null
     } finally {
       transcribing.value = false

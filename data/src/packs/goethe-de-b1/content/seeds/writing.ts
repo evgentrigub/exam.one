@@ -1,0 +1,66 @@
+// Original B1 practice content; not official examination questions.
+export const writingSeeds: Record<string, unknown>[] = [
+  {
+    title: 'Aufgabe 1 · Eine persönliche E-Mail',
+    description: 'Aufgabe 1 · Eine persönliche E-Mail',
+    task: 'Sie haben einen Kochkurs besucht. Ihre Freundin konnte nicht teilnehmen. Schreiben Sie ihr eine E-Mail mit circa 80 Wörtern.',
+    requirements: [
+      'Beschreiben Sie, wie der Kurs war',
+      'Begründen Sie, welches Gericht Ihnen besonders gefallen hat',
+      'Schlagen Sie vor, gemeinsam etwas zu kochen',
+    ],
+    topicType: 'email',
+    estimatedTime: 20,
+    wordCount: {
+      min: 70,
+      max: 90,
+    },
+    category: ['B1', 'Alltag'],
+    id: 'writing-goethe-de-b1-part1-001',
+    testingPart: 1,
+    difficulty: 'B1',
+    createdAt: '2026-10-07',
+  },
+  {
+    title: 'Aufgabe 2 · Ein Diskussionsbeitrag',
+    description: 'Aufgabe 2 · Ein Diskussionsbeitrag',
+    task: 'In einem Online-Forum lesen Sie: „Neue Dinge zu kaufen ist oft einfacher, als alte Sachen zu reparieren. Deshalb lohnt sich Reparieren kaum.“ Schreiben Sie Ihre Meinung dazu in circa 80 Wörtern.',
+    requirements: [
+      'Ihre Meinung klar ausdrücken',
+      'Die Meinung begründen',
+      'Ein Beispiel oder eine eigene Erfahrung nennen',
+    ],
+    topicType: 'post',
+    estimatedTime: 25,
+    wordCount: {
+      min: 70,
+      max: 90,
+    },
+    category: ['B1', 'Alltag'],
+    id: 'writing-goethe-de-b1-part2-001',
+    testingPart: 2,
+    difficulty: 'B1',
+    createdAt: '2026-10-07',
+  },
+  {
+    title: 'Aufgabe 3 · Eine höfliche Nachricht',
+    description: 'Aufgabe 3 · Eine höfliche Nachricht',
+    task: 'Sie haben einen Termin mit Ihrer Kursleiterin vereinbart, können aber nicht kommen. Schreiben Sie eine höfliche E-Mail mit circa 40 Wörtern.',
+    requirements: [
+      'Entschuldigen Sie sich',
+      'Erklären Sie den Grund',
+      'Bitten Sie um einen neuen Termin',
+    ],
+    topicType: 'email',
+    estimatedTime: 15,
+    wordCount: {
+      min: 35,
+      max: 50,
+    },
+    category: ['B1', 'Alltag'],
+    id: 'writing-goethe-de-b1-part3-001',
+    testingPart: 3,
+    difficulty: 'B1',
+    createdAt: '2026-10-07',
+  },
+]

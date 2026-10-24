@@ -1,10 +1,12 @@
 <template>
-  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[380px] group">
+  <div
+    class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300 h-[380px] group"
+  >
     <div class="card-body p-4 flex flex-col relative">
       <!-- Delete button - top right corner -->
       <button
         class="btn btn-circle btn-error btn-sm absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-        title="Delete topic"
+        :title="t('exercisesUi.deleteWritingTopic')"
         @click.stop="$emit('deleteTopic', topic.id)"
       >
         <X :size="16" aria-hidden="true" />
@@ -15,17 +17,17 @@
         <!-- Time indicator always on left -->
         <div class="flex items-center text-xs opacity-60">
           <Clock :size="12" class="mr-1" aria-hidden="true" />
-          {{ topic.estimatedTime }} Min
+          {{ topic.estimatedTime }} {{ t('exercisesUi.min') }}
         </div>
-        
+
         <!-- Completion or topic type badge always on right -->
-        <span 
+        <span
           class="badge gap-1"
           :class="topicCompleted ? 'badge-success' : getTopicBadgeClass(topic.topicType)"
         >
           <!-- Completion check icon for completed topics -->
           <Check v-if="topicCompleted" :size="12" aria-hidden="true" />
-          {{ topicCompleted ? 'Completed' : getTopicTypeLabel(topic.topicType) }}
+          {{ topicCompleted ? t('practice.completed') : getTopicTypeLabel(topic.topicType) }}
         </span>
       </div>
 
@@ -46,12 +48,14 @@
           <span>•</span>
           <span>{{ displayTestingPart }}</span>
           <span>•</span>
-          <span>{{ topic.wordCount.min }}-{{ topic.wordCount.max }} Wörter</span>
+          <span>{{
+            t('writing.common.wordRange', { min: topic.wordCount.min, max: topic.wordCount.max })
+          }}</span>
         </div>
       </div>
       <div class="flex flex-wrap gap-1 mb-4">
-        <span 
-          v-for="categoryObj in displayCategories" 
+        <span
+          v-for="categoryObj in displayCategories"
           :key="categoryObj.full"
           :title="categoryObj.full"
           class="badge badge-ghost badge-sm"
@@ -65,16 +69,18 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center text-success">
             <CheckCircle2 :size="16" class="mr-2" aria-hidden="true" />
-            <span class="text-sm font-medium">Completed</span>
+            <span class="text-sm font-medium">{{ t('practice.completed') }}</span>
           </div>
           <div class="text-right">
-            <div class="text-sm font-bold text-success">{{ progress?.attemptCount || 1 }} {{ (progress?.attemptCount || 1) === 1 ? 'attempt' : 'attempts' }}</div>
+            <div class="text-sm font-bold text-success">
+              {{ t('writing.topicCard.attempts', { count: attemptCount }, attemptCount) }}
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Spacer to push button to bottom -->
-      <div class="flex-1"/>
+      <div class="flex-1" />
 
       <!-- Action Buttons -->
       <div class="card-actions">
@@ -83,7 +89,7 @@
           class="btn btn-primary flex-1"
           @click="$emit('startWriting', topic.id)"
         >
-          Start Writing
+          {{ t('writing.topicCard.startWriting') }}
         </button>
 
         <NuxtLink
@@ -93,11 +99,7 @@
         >
           {{ $t('writing.checkReview') }}
         </NuxtLink>
-        <button
-          v-else-if="topicCompleted && isPending"
-          class="btn btn-disabled flex-[4]"
-          disabled
-        >
+        <button v-else-if="topicCompleted && isPending" class="btn btn-disabled flex-[4]" disabled>
           {{ $t('writing.checking') }}
         </button>
 
@@ -134,6 +136,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { t, te } = useI18n()
 
 const _emit = defineEmits<{
   startWriting: [topicId: string]
@@ -155,13 +158,14 @@ const isTopicCompleted = (topicId: string) => isWritingTopicCompleted(topicId)
 const getTopicProgress = (topicId: string) => getWritingTopicProgress(topicId)
 
 // Computed properties for progress display
-const topicCompleted = computed(() => isClient.value ? isTopicCompleted(props.topic.id) : false)
-const progress = computed(() => isClient.value ? getTopicProgress(props.topic.id) : null)
+const topicCompleted = computed(() => (isClient.value ? isTopicCompleted(props.topic.id) : false))
+const progress = computed(() => (isClient.value ? getTopicProgress(props.topic.id) : null))
+const attemptCount = computed(() => progress.value?.attemptCount || 1)
 
 // Review state
 const { isReviewInProgress, reviewVersion, hasReview } = useWritingReview()
 const isPending = computed(() => {
-  // depend on version to refresh when localStorage-backed status changes
+  // depend on version to refresh when API-backed status changes
   void reviewVersion.value
   return isClient.value ? isReviewInProgress(props.topic.id) : false
 })
@@ -177,13 +181,12 @@ const displayCategories = computed(() => {
     .slice(0, 2) // Show max 2 categories
     .map(category => ({
       display: category.length > 15 ? category.substring(0, 15) + '...' : category,
-      full: category
+      full: category,
     }))
 })
 
-const displayTestingPart = computed(() => {
-  return props.topic.testingPart === 1 ? 'Teil 1' : 'Teil 2'
-})
+const { labelFor } = useActivePack()
+const displayTestingPart = computed(() => labelFor('writing', props.topic.testingPart))
 
 // Topic type badge styling (daisyUI)
 const topicBadgeClasses: Record<string, string> = {
@@ -205,24 +208,10 @@ function getTopicBadgeClass(type: string): string {
   return topicBadgeClasses[type] || 'badge-ghost'
 }
 
-// Topic type labels in German with fallback
-const topicTypeLabels: Record<string, string> = {
-  email: 'E-Mail',
-  letter: 'Brief',
-  essay: 'Aufsatz',
-  form: 'Formular',
-  postcard: 'Postkarte',
-  note: 'Notiz',
-  post: 'Beitrag',
-  article: 'Artikel',
-  report: 'Bericht',
-  review: 'Rezension',
-  proposal: 'Vorschlag',
-}
-
+// Localized topic type label, or the capitalized type as fallback
 function getTopicTypeLabel(type: string): string {
-  // Return known label or capitalize the type as fallback
-  return topicTypeLabels[type] || type.charAt(0).toUpperCase() + type.slice(1)
+  const key = `writing.topicType.${type}`
+  return te(key) ? t(key) : type.charAt(0).toUpperCase() + type.slice(1)
 }
 </script>
 

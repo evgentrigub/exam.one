@@ -23,10 +23,38 @@ export interface SkillMeta {
 }
 
 export const SKILLS: SkillMeta[] = [
-  { id: 'reading', color: 'primary', icon: 'BookOpen', textClass: 'text-reading', softBgClass: 'bg-reading-soft', progressClass: 'progress-primary' },
-  { id: 'writing', color: 'success', icon: 'PenLine', textClass: 'text-writing', softBgClass: 'bg-writing-soft', progressClass: 'progress-success' },
-  { id: 'listening', color: 'info', icon: 'Headphones', textClass: 'text-listening', softBgClass: 'bg-listening-soft', progressClass: 'progress-info' },
-  { id: 'speaking', color: 'warning', icon: 'Mic', textClass: 'text-speaking', softBgClass: 'bg-speaking-soft', progressClass: 'progress-warning' },
+  {
+    id: 'reading',
+    color: 'primary',
+    icon: 'BookOpen',
+    textClass: 'text-reading',
+    softBgClass: 'bg-reading-soft',
+    progressClass: 'progress-primary',
+  },
+  {
+    id: 'writing',
+    color: 'success',
+    icon: 'PenLine',
+    textClass: 'text-writing',
+    softBgClass: 'bg-writing-soft',
+    progressClass: 'progress-success',
+  },
+  {
+    id: 'listening',
+    color: 'info',
+    icon: 'Headphones',
+    textClass: 'text-listening',
+    softBgClass: 'bg-listening-soft',
+    progressClass: 'progress-info',
+  },
+  {
+    id: 'speaking',
+    color: 'warning',
+    icon: 'Mic',
+    textClass: 'text-speaking',
+    softBgClass: 'bg-speaking-soft',
+    progressClass: 'progress-warning',
+  },
 ]
 
 export const SKILL_IDS: SkillId[] = SKILLS.map(s => s.id)
@@ -37,7 +65,7 @@ export function getSkillMeta(skill: string): SkillMeta {
 
 type TranslateFn = (key: string, ...args: unknown[]) => string
 
-const titleCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1)
+const titleCase = (value: string = '') => value.charAt(0).toUpperCase() + value.slice(1)
 
 /** Localized skill label, e.g. `t('skill.reading')` → "Reading". */
 export function getSkillLabel(skill: string, t: TranslateFn): string {
@@ -57,13 +85,7 @@ export function getTypeLabel(type: string, t: TranslateFn): string {
 export function getStatusLabel(status: ExerciseStatus, t: TranslateFn): string {
   const key = `status.${status}`
   const label = t(key)
-  if (label !== key) return label
-  const fallback: Record<ExerciseStatus, string> = {
-    new: 'New',
-    inprogress: 'In progress',
-    mastered: 'Mastered',
-  }
-  return fallback[status]
+  return label === key ? t('status.new') : label
 }
 
 export function getStatusClass(status: ExerciseStatus): string {

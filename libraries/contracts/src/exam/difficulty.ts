@@ -1,1 +1,2 @@
-export type ExamDifficulty = 'A2' | 'C1'
+/** @deprecated CEFR lives on the exam pack. Kept as a string alias for older imports. */
+export type ExamDifficulty = string

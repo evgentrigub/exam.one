@@ -8,8 +8,8 @@
             <ClipboardList :size="20" class="text-success" aria-hidden="true" />
           </div>
           <div>
-            <h2 class="card-title text-lg">Instructions</h2>
-            <p class="text-sm text-success">Your writing assignment</p>
+            <h2 class="card-title text-lg">{{ t('writing.instructions.title') }}</h2>
+            <p class="text-sm text-success">{{ t('writing.instructions.subtitle') }}</p>
           </div>
         </div>
 
@@ -25,7 +25,9 @@
     <div class="card-body flex-1 overflow-y-auto min-h-0">
       <!-- Writing Prompt -->
       <div class="mb-4">
-        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-3 uppercase tracking-wide">Your Task</h4>
+        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-3 uppercase tracking-wide">
+          {{ t('writing.instructions.yourTask') }}
+        </h4>
         <div class="alert alert-success shadow-sm flex items-start gap-3">
           <CheckCircle2 :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p class="leading-relaxed font-medium text-sm">{{ topic.task }}</p>
@@ -34,12 +36,11 @@
 
       <!-- Requirements List -->
       <div class="mb-4">
-        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-3 uppercase tracking-wide">Requirements</h4>
+        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-3 uppercase tracking-wide">
+          {{ t('writing.requirements') }}
+        </h4>
         <ul class="menu menu-compact bg-base-200 rounded-box">
-          <li 
-            v-for="requirement in topic.requirements" 
-            :key="requirement"
-          >
+          <li v-for="requirement in topic.requirements" :key="requirement">
             <span class="text-sm">{{ requirement }}</span>
           </li>
         </ul>
@@ -60,4 +61,5 @@ interface Props {
 }
 
 defineProps<Props>()
+const { t } = useI18n()
 </script>

@@ -3,61 +3,103 @@
   "version": "0.0.1",
   "private": true,
   "type": "commonjs",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch",
+    "dev": "pnpm --filter @exam-one/database build && pnpm --filter @exam-one/nestjs-libraries build && pnpm --filter @exam-one/exam-packs build && nest start --watch",
     "start": "node dist/main",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit && tsc -p tsconfig.spec.json --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@bull-board/api": "6.14.0",
+    "@bull-board/express": "6.14.0",
+    "@bull-board/nestjs": "6.14.0",
     "@exam-one/contracts": "workspace:*",
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/config": "^4.0.0",
-    "@nestjs/core": "^11.0.0",
-    "@nestjs/platform-express": "^11.0.0",
-    "@nestjs/swagger": "^11.0.0",
+    "@exam-one/database": "workspace:*",
+    "@exam-one/exam-packs": "workspace:*",
+    "@exam-one/nestjs-libraries": "workspace:*",
+    "@nestjs/bullmq": "11.0.4",
+    "@nestjs/common": "^11.2.1",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.2.1",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/platform-express": "^11.2.1",
+    "@nestjs/swagger": "^11.4.7",
+    "@nestjs/throttler": "^6.5.0",
+    "bcrypt": "^6.0.0",
+    "bullmq": "5.52.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "ioredis": "5.4.2",
+    "multer": "^2.0.2",
+    "nodemailer": "^9.0.5",
+    "openai": "^5.12.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.0",
-    "@nestjs/schematics": "^11.0.0",
-    "@nestjs/testing": "^11.0.0",
+    "@eslint/js": "^9.29.0",
     "@jest/globals": "^29.7.0",
+    "@nestjs/cli": "^11.0.24",
+    "@nestjs/schematics": "^11.1.0",
+    "@nestjs/testing": "^11.2.1",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.0.0",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.13.3",
+    "@types/nodemailer": "^8.0.1",
     "@types/supertest": "^6.0.2",
-    "@eslint/js": "^9.29.0",
     "eslint": "^9.29.0",
-    "supertest": "^7.0.0",
     "globals": "^16.0.0",
-    "typescript-eslint": "^8.34.1",
     "jest": "^29.7.0",
+    "prettier": "^3.9.6",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.8.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.34.1"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testMatch": [
+      "<rootDir>/test/unit/**/*.spec.ts"
+    ],
     "transform": {
-      "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "tsconfig.spec.json" }]
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.spec.json"
+        }
+      ]
     },
-    "collectCoverageFrom": ["**/*.(t|j)s"],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "collectCoverageFrom": [
+      "src/**/*.(t|j)s"
+    ],
+    "coverageDirectory": "coverage",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@exam-one/exam-packs$": "<rootDir>/../../data/src/index.ts"
+    }
   }
 }

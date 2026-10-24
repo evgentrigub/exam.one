@@ -1,5 +1,13 @@
 <template>
-  <div v-if="!validSet" class="mx-auto max-w-2xl px-6 py-16 text-center">
+  <div
+    v-if="!setsInitialized || !examInitialized"
+    class="mx-auto max-w-[1080px] space-y-5 px-4 py-8 sm:px-6"
+  >
+    <div class="skeleton h-12 w-64" />
+    <div class="skeleton h-72 rounded-box" />
+  </div>
+
+  <div v-else-if="!validSet" class="mx-auto max-w-2xl px-6 py-16 text-center">
     <h1 class="font-display text-2xl font-bold">{{ $t('mockExam.notFound') }}</h1>
     <NuxtLink to="/mock-exam" class="btn btn-primary btn-sm mt-5">{{
       $t('mockExam.backToList')
@@ -8,7 +16,12 @@
 
   <div v-else-if="view === 'result'" class="mx-auto max-w-[940px] space-y-6 px-4 py-8 sm:px-6">
     <div class="rounded-box border p-6" :class="resultBannerClass">
-      <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+      <ScaleResult
+        v-if="set.rules?.scale && passResult.scale"
+        :scale="set.rules.scale"
+        :result="passResult.scale"
+      />
+      <div v-else class="flex flex-col gap-5 sm:flex-row sm:items-center">
         <div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-base-100/70">
           <Trophy :size="30" />
         </div>
@@ -16,34 +29,73 @@
           <div class="text-xs font-semibold uppercase tracking-wider">
             {{ $t('mockExam.provisionalResult') }}
           </div>
-          <h1 class="mt-1 font-display text-3xl font-bold">{{ roundedOverall }} / 100</h1>
-          <p class="mt-1 text-sm opacity-80">
-            {{ roundedOverall >= 60 ? $t('mockExam.passMessage') : $t('mockExam.almostMessage') }}
-          </p>
+          <h1 class="mt-1 font-display text-3xl font-bold">
+            {{
+              passResult.pending
+                ? $t('mockExam.gradingPending')
+                : `${roundedOverall} / ${maximumPoints}`
+            }}
+          </h1>
+          <p class="mt-1 text-sm opacity-80">{{ passMessage }}</p>
         </div>
         <div class="sm:ml-auto sm:text-right">
-          <div class="font-mono text-3xl font-bold">{{ roundedOverall }}%</div>
-          <div class="text-xs opacity-70">{{ $t('mockExam.passMark') }}</div>
+          <div class="font-mono text-3xl font-bold">
+            {{
+              passResult.pending ? '—' : `${Math.round((roundedOverall / maximumPoints) * 100)}%`
+            }}
+          </div>
+          <div class="text-xs opacity-70">
+            {{
+              passResult.groups.length
+                ? $t('mockExam.passEachGroup')
+                : `${passPoints} / ${maximumPoints}`
+            }}
+          </div>
         </div>
       </div>
+      <ul v-if="passResult.groups.length" class="mt-5 grid gap-2 sm:grid-cols-2">
+        <li
+          v-for="group in passResult.groups"
+          :key="group.id"
+          class="flex items-center gap-3 rounded-box bg-base-100/70 px-4 py-3 text-base-content"
+        >
+          <Clock v-if="group.pending" :size="18" class="shrink-0 opacity-60" />
+          <CircleCheck v-else-if="group.passed" :size="18" class="shrink-0 text-success" />
+          <CircleAlert v-else :size="18" class="shrink-0 text-warning" />
+          <div>
+            <div class="text-sm font-semibold">{{ group.label }}</div>
+            <div class="font-mono text-xs opacity-70">
+              {{
+                group.pending
+                  ? $t('mockExam.gradingPending')
+                  : $t('mockExam.groupScore', {
+                      points: groupPoints(group.id, group.points),
+                      max: group.maximum,
+                      pass: group.passPoints,
+                    })
+              }}
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
 
     <div class="alert border border-warning/30 bg-warning/10 text-sm">
       <Info :size="18" class="text-warning" />
-      <span>{{ $t('mockExam.provisionalSpeakingNote') }}</span>
+      <span>{{ provisionalSpeakingNote }}</span>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">
       <article
         v-for="definition in set.modules"
-        :key="definition.skill"
+        :key="mockModuleId(definition)"
         class="card border border-base-300 bg-base-100 ring-soft transition-colors"
-        :class="resultModuleCardClass(definition.skill)"
+        :class="resultModuleCardClass(mockModuleId(definition))"
         role="link"
-        :tabindex="canOpenModuleReview(definition.skill) ? 0 : -1"
-        :aria-disabled="!canOpenModuleReview(definition.skill)"
-        @click="openModuleReview(definition.skill)"
-        @keydown.enter="openModuleReview(definition.skill)"
+        :tabindex="canOpenModuleReview(mockModuleId(definition)) ? 0 : -1"
+        :aria-disabled="!canOpenModuleReview(mockModuleId(definition))"
+        @click="openModuleReview(mockModuleId(definition))"
+        @keydown.enter="openModuleReview(mockModuleId(definition))"
       >
         <div class="card-body gap-3 p-5">
           <div class="flex items-center gap-3">
@@ -54,14 +106,22 @@
               <component :is="moduleIcon(definition.skill)" :size="19" />
             </div>
             <div>
-              <h2 class="font-semibold">{{ $t(`skill.${definition.skill}`) }}</h2>
-              <p class="text-xs text-base-content/50">{{ gradingLabel(definition.skill) }}</p>
+              <h2 class="font-semibold">
+                {{
+                  definition.labelKey
+                    ? $t(definition.labelKey)
+                    : (definition.label ?? $t(`skill.${definition.skill}`))
+                }}
+              </h2>
+              <p class="text-xs text-base-content/50">
+                {{ gradingLabel(mockModuleId(definition)) }}
+              </p>
             </div>
             <div class="ml-auto font-mono text-lg font-bold">
-              {{ scoreLabel(definition.skill) }}
+              {{ scoreLabel(mockModuleId(definition)) }}
             </div>
             <span
-              v-if="!canOpenModuleReview(definition.skill)"
+              v-if="!canOpenModuleReview(mockModuleId(definition))"
               class="loading loading-spinner loading-sm text-primary"
               aria-hidden="true"
             />
@@ -70,9 +130,12 @@
           <progress
             class="progress h-2 w-full"
             :class="moduleProgressClass(definition.skill)"
-            :value="state.modules[definition.skill].scoreFinal ?? 0"
-            :max="definition.maxFinalPoints"
+            :value="progressValue(mockModuleId(definition))"
+            :max="progressMax(mockModuleId(definition))"
           />
+          <p v-if="set.rules?.scale" class="font-mono text-xs text-base-content/50">
+            {{ rawLabel(mockModuleId(definition)) }}
+          </p>
         </div>
       </article>
     </div>
@@ -214,7 +277,15 @@
     <div v-if="activeSkill === 'reading' && readingExercise" class="space-y-5">
       <article class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft sm:p-7">
         <h1 class="font-display text-2xl font-bold">{{ readingExercise.title }}</h1>
-        <div class="mt-4 whitespace-pre-line text-[15px] leading-7">
+        <GapFillText
+          v-if="isGapFillReading"
+          class="mt-4 text-[15px]"
+          :content="readingExercise.content"
+          :questions="readingExercise.questions ?? []"
+          :answers="gapState.answers"
+          :revealed="false"
+        />
+        <div v-else class="mt-4 whitespace-pre-line text-[15px] leading-7">
           {{ readingExercise.content }}
         </div>
       </article>
@@ -225,14 +296,17 @@
         @finish="leaveExercise"
         @progress="saveProgress"
         @exam-complete="completeActiveExercise"
+        @gap-state="gapState = $event"
       />
     </div>
 
     <ListeningSession
       v-else-if="activeSkill === 'listening' && listeningExercise"
       :exercise="listeningExercise"
+      :configured-replays="activeExercise?.replays"
       exam-mode
       :initial-answers="activeResponse?.answers ?? {}"
+      :initial-playback="activeResponse?.playback ?? {}"
       @finish="leaveExercise"
       @progress="saveProgress"
       @exam-complete="completeActiveExercise"
@@ -248,15 +322,61 @@
       @exam-complete="completeActiveExercise"
     />
 
-    <SpeakingSession
-      v-else-if="activeSkill === 'speaking' && speakingExercise"
-      :topic="speakingExercise"
-      exam-mode
-      :initial-transcripts="activeResponse?.transcripts ?? {}"
-      @finish="leaveExercise"
-      @progress="saveProgress"
-      @exam-complete="completeActiveExercise"
+    <div v-else-if="activeSkill === 'speaking' && speakingExercise" class="space-y-5">
+      <div v-if="preparation?.notes" class="rounded-box bg-base-200 p-5 whitespace-pre-wrap">
+        {{ preparation.notes }}
+      </div>
+      <SpeakingSession
+        :topic="speakingExercise"
+        exam-mode
+        :initial-transcripts="
+          activeResponse?.transcripts ?? {
+            selectedTopic: activeModuleState?.preparation?.selectedTopic,
+          }
+        "
+        @finish="leaveExercise"
+        @progress="saveProgress"
+        @exam-complete="completeActiveExercise"
+      />
+    </div>
+  </div>
+
+  <div
+    v-else-if="view === 'part' && preparation && !preparation.finished && activeModuleId"
+    class="mx-auto max-w-[860px] space-y-5 px-4 py-8 sm:px-6"
+  >
+    <h1 class="font-display text-2xl font-bold">{{ $t('c1.preparation') }}</h1>
+    <TimerChip :seconds="preparationSeconds" />
+    <label class="label" for="prep-topic">{{ $t('c1.chooseTopic') }}</label>
+    <select
+      id="prep-topic"
+      class="select select-bordered w-full"
+      :value="preparation.selectedTopic"
+      @change="
+        updatePreparation(activeModuleId, {
+          selectedTopic: ($event.target as HTMLSelectElement).value,
+        })
+      "
+    >
+      <option v-for="topic in preparationTopics" :key="topic.id" :value="topic.id">
+        {{ topic.theme }}
+      </option>
+    </select>
+    <p class="rounded-box bg-base-200 p-5">
+      {{ preparationTopics.find(t => t.id === preparation?.selectedTopic)?.cards[0]?.cue }}
+    </p>
+    <label class="label" for="prep-notes">{{ $t('c1.notes') }}</label>
+    <textarea
+      id="prep-notes"
+      class="textarea textarea-bordered w-full min-h-48"
+      :value="preparation.notes"
+      @input="
+        updatePreparation(activeModuleId, { notes: ($event.target as HTMLTextAreaElement).value })
+      "
     />
+    <button class="btn btn-primary" @click="finishPreparation(activeModuleId)">
+      {{ $t('c1.finishPreparation') }}
+    </button>
   </div>
 
   <div
@@ -280,7 +400,13 @@
             <component :is="moduleIcon(activeSkill)" :size="22" />
           </div>
           <div>
-            <h1 class="font-display text-2xl font-bold">{{ $t(`skill.${activeSkill}`) }}</h1>
+            <h1 class="font-display text-2xl font-bold">
+              {{
+                activeModule.labelKey
+                  ? $t(activeModule.labelKey)
+                  : (activeModule.label ?? $t(`skill.${activeSkill}`))
+              }}
+            </h1>
             <p class="text-sm text-base-content/55">
               {{ doneCount }}/{{ activeModule.exercises.length }} {{ $t('mockExam.tasksDone') }}
             </p>
@@ -352,9 +478,6 @@
   </div>
 
   <div v-else class="mx-auto max-w-[1080px] space-y-5 px-4 py-8 sm:px-6">
-    <div v-if="notice" class="alert alert-warning text-sm">
-      <Clock :size="17" /><span>{{ notice }}</span>
-    </div>
     <div class="flex items-center justify-between gap-3">
       <NuxtLink to="/mock-exam" class="btn btn-ghost btn-sm gap-1"
         ><ArrowLeft :size="14" /> {{ $t('mockExam.backToList') }}</NuxtLink
@@ -399,9 +522,9 @@
         <div class="mt-6 grid gap-4 sm:grid-cols-2">
           <article
             v-for="definition in set.modules"
-            :key="definition.skill"
+            :key="mockModuleId(definition)"
             class="rounded-box border p-5"
-            :class="moduleCardClass(definition.skill)"
+            :class="moduleCardClass(mockModuleId(definition))"
           >
             <div class="flex items-center gap-3">
               <div
@@ -412,7 +535,11 @@
               </div>
               <div class="flex-1">
                 <h2 class="font-display text-lg font-bold">
-                  {{ $t(`skill.${definition.skill}`) }}
+                  {{
+                    definition.labelKey
+                      ? $t(definition.labelKey)
+                      : (definition.label ?? $t(`skill.${definition.skill}`))
+                  }}
                 </h2>
                 <p class="text-xs text-base-content/50">
                   {{ definition.exercises.length }} {{ $t('mockExam.exercises') }} ·
@@ -420,32 +547,40 @@
                 </p>
               </div>
               <span
-                v-if="state.modules[definition.skill].locked"
+                v-if="state.modules[mockModuleId(definition)]!.locked"
                 class="badge badge-success badge-sm gap-1"
                 ><Lock :size="11" /> {{ $t('mockExam.locked') }}</span
               >
-              <span v-else class="text-xs text-base-content/45"
-                >{{ state.modules[definition.skill].done.filter(Boolean).length }}/{{
-                  definition.exercises.length
-                }}</span
-              >
+              <div v-else class="flex items-center gap-2">
+                <TimerChip
+                  v-if="state.modules[mockModuleId(definition)]!.endsAt"
+                  :seconds="moduleRemainingSeconds(mockModuleId(definition))"
+                />
+                <span class="text-xs text-base-content/45"
+                  >{{ state.modules[mockModuleId(definition)]!.done.filter(Boolean).length }}/{{
+                    definition.exercises.length
+                  }}</span
+                >
+              </div>
             </div>
             <div
-              v-if="state.modules[definition.skill].locked"
+              v-if="state.modules[mockModuleId(definition)]!.locked"
               class="mt-4 flex items-center justify-between"
             >
-              <span class="text-xs text-base-content/55">{{ gradingLabel(definition.skill) }}</span>
-              <span class="font-mono font-bold">{{ scoreLabel(definition.skill) }}</span>
+              <span class="text-xs text-base-content/55">{{
+                gradingLabel(mockModuleId(definition))
+              }}</span>
+              <span class="font-mono font-bold">{{ scoreLabel(mockModuleId(definition)) }}</span>
             </div>
             <button
               v-else
               class="btn btn-sm mt-4 w-full"
               :class="moduleButtonClass(definition.skill)"
-              @click="openModule(definition.skill)"
+              @click="openModule(mockModuleId(definition))"
             >
               <Play :size="13" />
               {{
-                state.modules[definition.skill].endsAt
+                state.modules[mockModuleId(definition)]!.endsAt
                   ? $t('mockExam.continueModule')
                   : $t('mockExam.startModule')
               }}
@@ -497,46 +632,61 @@ import ListeningSession from '~/components/listening/ListeningSession.vue'
 import WritingSession from '~/components/writing/WritingSession.vue'
 import SpeakingSession from '~/components/speaking/SpeakingSession.vue'
 import TimerChip from '~/components/mockExam/TimerChip.vue'
-import { goetheA2MockExamSet1 } from '~/data/mockExam/goetheA2'
-import type { MockExamExerciseDefinition, MockExamModuleDefinition } from '~/data/mockExam/goetheA2'
-import type { MockExamOverview, MockExamOverviewInput } from '~/data/mockExam/reviewMockExamA2'
+import ScaleResult from '~/components/mockExam/ScaleResult.vue'
+import GapFillText from '~/components/gapFill/GapFillText.vue'
+import type { ObjectiveAnswers } from '~/utils/gapFill'
+import type {
+  CriterionReview,
+  MockExamExerciseDefinition,
+  MockExamModuleDefinition,
+  MockExamOverview,
+  MockExamOverviewInput,
+  MockExamSet,
+} from '@exam-one/exam-packs'
+import { evaluateMockPass, mockModuleId } from '@exam-one/exam-packs'
+import { objectivePoints } from '~/utils/mockExam/scoring'
 import { useMockExam, type MockExerciseResult } from '~/composables/useMockExam'
-import { reviewPromptA2Teil1, reviewPromptA2Teil2 } from '~/data/writing/a2/reviewWritingA2'
-import { isA2Review, type AiReviewData, type WritingExercise } from '~/utils/types'
+import type { WritingExercise } from '~/utils/types'
+import { createUnavailableMockSet } from '~/utils/mockExam/unavailableSet'
+import { writingZeroThreshold } from '~/utils/mockExam/writingRules'
+import { writingReviewPayload } from '~/utils/writing/formFill'
+import { useReviewOutputLanguage } from '~/utils/reviewLocale'
 import type { ListeningA2Exercise } from '~/utils/exercises/listening'
 import type { ReadingExercise } from '~/utils/exercises/reading'
-import type {
-  SpeakingA2Topic,
-  SpeakingReviewData,
-  SpeakingTranscripts,
-} from '~/utils/exercises/speaking'
+import type { SpeakingA2Topic } from '~/utils/exercises/speaking'
 import type { SkillId } from '~/utils/labels'
 
 type ViewName = 'overview' | 'part' | 'exercise' | 'result'
 
 const route = useRoute()
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const reviewOutputLanguage = useReviewOutputLanguage()
+const { assemble } = usePackPrompt()
 const requestedSetId = String(route.params['setId'] || '')
 const { getSet, isInitialized: setsInitialized } = useMockExamSets()
+const { pack } = useActivePack()
 const foundSet = computed(() => getSet(requestedSetId))
-const set = computed(() => foundSet.value ?? goetheA2MockExamSet1)
+const bundledSet = computed(() => pack.value.bundledMockSet as MockExamSet | undefined)
+const set = computed(() => foundSet.value ?? bundledSet.value ?? createUnavailableMockSet(t))
 const validSet = computed(() => Boolean(foundSet.value) || !setsInitialized.value)
 
-usePageMeta('Mock exam', 'Timed Goethe A2 simulation')
-useHead({ title: computed(() => `${set.value.title} – Mock exam`) })
+usePageMeta('pageMeta.mockExamTitle', pack.value.title)
+useHead({ title: () => `${set.value.title} – ${t('pageMeta.mockExamTitle')}` })
 
 const {
   state,
+  isInitialized: examInitialized,
   allLocked,
   doneExerciseCount,
   totalExerciseCount,
   overallPoints,
   startModule,
+  updatePreparation,
+  finishPreparation,
   saveExerciseProgress,
   completeExercise,
   updateExerciseGrade,
   lockModule,
-  expireModule,
   finishExam,
   resetExam,
   remainingSeconds,
@@ -546,19 +696,19 @@ const {
 } = useMockExam(set)
 
 const view = ref<ViewName>('overview')
-const activeSkill = ref<SkillId | null>(null)
+const activeModuleId = ref<string | null>(null)
 const activeIndex = ref(0)
 const nowTick = ref(Date.now())
-const notice = ref('')
 const overviewExpanded = ref(true)
 const activeGradingJobs = new Set<string>()
 let timerHandle: ReturnType<typeof setInterval> | null = null
 
 const activeModule = computed<MockExamModuleDefinition | null>(
-  () => set.value.modules.find(module => module.skill === activeSkill.value) ?? null
+  () => set.value.modules.find(module => mockModuleId(module) === activeModuleId.value) ?? null
 )
+const activeSkill = computed(() => activeModule.value?.skill ?? null)
 const activeModuleState = computed(() =>
-  activeSkill.value ? state.value.modules[activeSkill.value] : null
+  activeModuleId.value ? state.value.modules[activeModuleId.value] : null
 )
 const activeDone = computed(() => activeModuleState.value?.done ?? [])
 const activeGrading = computed(() => activeModuleState.value?.grading ?? 'pending')
@@ -567,24 +717,98 @@ const activeExercise = computed<MockExamExerciseDefinition | null>(
 )
 const activeResponse = computed<MockExerciseResult | undefined>(() => {
   if (!activeSkill.value || !activeExercise.value) return undefined
-  return state.value.modules[activeSkill.value].responses[activeExercise.value.id]
+  return state.value.modules[activeModuleId.value!]!.responses[activeExercise.value.id]
+})
+const preparation = computed(() => activeModuleState.value?.preparation)
+const preparationSeconds = computed(
+  () =>
+    Math.max(0, Math.ceil((Date.parse(preparation.value?.endsAt ?? '') - nowTick.value) / 1000)) ||
+    0
+)
+const preparationTopics = computed(() => {
+  const topic = set.value.content.speaking[0]
+  return topic && 'topicOptions' in topic ? (topic.topicOptions ?? []) : []
+})
+watch([preparationSeconds, preparation], () => {
+  if (
+    preparation.value &&
+    !preparation.value.finished &&
+    preparationSeconds.value === 0 &&
+    activeModuleId.value
+  )
+    finishPreparation(activeModuleId.value)
 })
 const remaining = computed(() => {
   void nowTick.value
-  return activeSkill.value ? remainingSeconds(activeSkill.value) : 0
+  return activeModuleId.value ? remainingSeconds(activeModuleId.value) : 0
 })
 const doneCount = computed(() => activeModuleState.value?.done.filter(Boolean).length ?? 0)
 const lockedCount = computed(
-  () => set.value.modules.filter(module => state.value.modules[module.skill].locked).length
+  () => set.value.modules.filter(module => state.value.modules[mockModuleId(module)]!.locked).length
 )
-const roundedOverall = computed(() => Math.round(overallPoints.value))
+const roundedOverall = computed(() =>
+  set.value.rules?.groups?.some(group => group.rounding === 'none')
+    ? Number(overallPoints.value.toFixed(2))
+    : Math.round(overallPoints.value)
+)
+/**
+ * Pass state: one total against `passPoints`, every group against its own mark (DELE), or the
+ * average on a scale (Cambridge). Grouped and scaled results need complete grades, so an
+ * unavailable or partial AI grade remains unscored.
+ */
+const passResult = computed(() => {
+  const requiresCompleteGrades = Boolean(set.value.rules?.scale || set.value.rules?.groups?.length)
+  return evaluateMockPass(
+    set.value.rules,
+    Object.fromEntries(
+      set.value.modules.map(module => {
+        const moduleState = state.value.modules[mockModuleId(module)]!
+        return [
+          mockModuleId(module),
+          requiresCompleteGrades && !['auto', 'done'].includes(moduleState.grading)
+            ? null
+            : moduleState.scoreFinal,
+        ]
+      })
+    ),
+    Object.fromEntries(set.value.modules.map(module => [mockModuleId(module), module.maxRawPoints]))
+  )
+})
+const maximumPoints = computed(() => passResult.value.maximum)
+const passPoints = computed(() => set.value.rules?.passPoints ?? 60)
+const passMessage = computed(() => {
+  if (passResult.value.pending) return t('mockExam.resultPending')
+  const { groups, passed } = passResult.value
+  if (!groups.length) {
+    return passed
+      ? t('mockExam.passMessage', { points: passPoints.value })
+      : t('mockExam.almostMessage')
+  }
+  if (passed) return t('mockExam.passAllGroups')
+  const below = groups.filter(group => !group.passed).map(group => group.label)
+  return t('mockExam.groupBelow', { groups: below.join(', ') })
+})
 const hasPendingAiGrading = computed(() =>
   (['writing', 'speaking'] as const).some(skill => isAiReviewInProgress(skill))
 )
+/**
+ * A set that scores fewer speaking parts than the exam has (Goethe A2: Teil 1–2 of 3) says so;
+ * a complete one only notes that speaking is graded from transcripts.
+ */
+const provisionalSpeakingNote = computed(() => {
+  const examParts = pack.value.structure.find(module => module.id === 'speaking')?.parts.length ?? 0
+  const setParts =
+    set.value.modules.find(module => module.skill === 'speaking')?.exercises.length ?? 0
+  return setParts < examParts
+    ? t('mockExam.provisionalSpeakingNote')
+    : t('mockExam.provisionalSpeakingNoteTranscript')
+})
 const resultBannerClass = computed(() =>
-  roundedOverall.value >= 60
-    ? 'border-success/40 bg-success/10 text-success'
-    : 'border-warning/40 bg-warning/10 text-warning'
+  passResult.value.pending
+    ? 'border-base-300 bg-base-200 text-base-content'
+    : passResult.value.passed
+      ? 'border-success/40 bg-success/10 text-success'
+      : 'border-warning/40 bg-warning/10 text-warning'
 )
 
 const readingExercise = computed<ReadingExercise | undefined>(() =>
@@ -592,6 +816,21 @@ const readingExercise = computed<ReadingExercise | undefined>(() =>
     ? set.value.content.reading.find(exercise => exercise.id === activeExercise.value?.id)
     : undefined
 )
+const isGapFillReading = computed(
+  () =>
+    pack.value.structure
+      .find(module => module.id === 'reading')
+      ?.parts.some(
+        part =>
+          part.n === readingExercise.value?.testingPart &&
+          (part.itemFormat === 'gap-fill' || part.choiceGaps)
+      ) ?? false
+)
+/** Typed gap answers, mirrored from the questions into the gapped text. */
+const gapState = ref<{ answers: ObjectiveAnswers; revealed: boolean }>({
+  answers: {},
+  revealed: false,
+})
 const listeningExercise = computed<ListeningA2Exercise | undefined>(() =>
   activeExercise.value
     ? set.value.content.listening.find(exercise => exercise.id === activeExercise.value?.id)
@@ -615,7 +854,6 @@ onMounted(() => {
   }
   timerHandle = setInterval(() => {
     nowTick.value = Date.now()
-    if (activeSkill.value && remainingSeconds(activeSkill.value) <= 0) handleExpiry()
   }, 1000)
 })
 onUnmounted(() => {
@@ -663,45 +901,79 @@ function moduleButtonClass(skill: SkillId): string {
   }[skill]
 }
 
-function moduleCardClass(skill: SkillId): string {
-  return state.value.modules[skill].locked
+function moduleCardClass(skill: string): string {
+  return state.value.modules[skill]!.locked
     ? 'border-success/40 bg-success/5'
     : 'border-base-300 bg-base-100'
 }
 
-function canOpenModuleReview(skill: SkillId): boolean {
+function canOpenModuleReview(skill: string): boolean {
   return !isAiReviewInProgress(skill)
 }
 
-function isAiReviewInProgress(skill: SkillId): boolean {
+function isAiReviewInProgress(skill: string): boolean {
   if (skill !== 'writing' && skill !== 'speaking') return false
-  return Object.values(state.value.modules[skill].responses).some(
+  return Object.values(state.value.modules[skill]!.responses).some(
     response =>
       response.grading === 'pending' && typeof response.rawScore !== 'number' && !response.error
   )
 }
 
-function hasAiReviewError(skill: SkillId): boolean {
+function hasAiReviewError(skill: string): boolean {
   if (skill !== 'writing' && skill !== 'speaking') return false
-  return Object.values(state.value.modules[skill].responses).some(response =>
+  return Object.values(state.value.modules[skill]!.responses).some(response =>
     Boolean(response.error)
   )
 }
 
-function resultModuleCardClass(skill: SkillId): string {
+function resultModuleCardClass(skill: string): string {
   return canOpenModuleReview(skill)
     ? 'cursor-pointer hover:border-primary/50'
     : 'cursor-not-allowed opacity-60'
 }
 
-function scoreLabel(skill: SkillId): string {
-  const definition = set.value.modules.find(module => module.skill === skill)
-  const score = state.value.modules[skill].scoreFinal
+/** A skill's scale score, or null while it is unscored or the set has no scale. */
+function scaleScoreOf(skill: string): number | null {
+  return passResult.value.scale?.skills[skill as SkillId] ?? null
+}
+
+function progressValue(skill: string): number {
+  const scale = set.value.rules?.scale
+  if (!scale) return state.value.modules[skill]!.scoreFinal ?? 0
+  return Math.max((scaleScoreOf(skill) ?? scale.min) - scale.min, 0)
+}
+
+function progressMax(skill: string): number {
+  const scale = set.value.rules?.scale
+  if (scale) return scale.max - scale.min
+  return set.value.modules.find(module => mockModuleId(module) === skill)?.maxFinalPoints ?? 0
+}
+
+function rawLabel(skill: string): string {
+  const definition = set.value.modules.find(module => mockModuleId(module) === skill)
+  const raw = state.value.modules[skill]!.scoreRaw
+  return t('mockExam.scale.raw', {
+    score: raw === null ? '—' : Number(raw.toFixed(2)),
+    max: definition?.maxRawPoints ?? 0,
+  })
+}
+
+function scoreLabel(skill: string): string {
+  const scale = set.value.rules?.scale
+  if (scale) {
+    const score = scaleScoreOf(skill)
+    if (score === null) return '—'
+    return score < scale.min
+      ? t('mockExam.scale.below', { min: scale.min })
+      : String(Math.round(score))
+  }
+  const definition = set.value.modules.find(module => mockModuleId(module) === skill)
+  const score = state.value.modules[skill]!.scoreFinal
   if (!definition || score === null) return `—/${definition?.maxFinalPoints ?? 0}`
   return `${Number(score.toFixed(2))}/${definition.maxFinalPoints}`
 }
 
-function openModuleReview(skill: SkillId): void {
+function openModuleReview(skill: string): void {
   if (!canOpenModuleReview(skill)) return
   void navigateTo(`/mock-exam/review/${set.value.id}/${skill}`)
 }
@@ -710,20 +982,60 @@ function handleOverviewToggle(event: Event): void {
   overviewExpanded.value = (event.currentTarget as HTMLDetailsElement).open
 }
 
+/** Fractional papers display exact marks; legacy whole-point results retain their display. */
+function groupPoints(id: string, points: number): number {
+  return set.value.rules?.groups?.find(group => group.id === id)?.rounding === 'none'
+    ? Number(points.toFixed(2))
+    : Math.round(points)
+}
+
 function overviewInput(): MockExamOverviewInput {
+  const groups = passResult.value.groups
+  const scale = set.value.rules?.scale
+  const scaled = passResult.value.scale
   return {
     overallPoints: roundedOverall.value,
+    ...(scale && scaled
+      ? {
+          scale: {
+            name: t(`mockExam.scale.names.${scale.id}`),
+            overall: scaled.overall,
+            band: scaled.band,
+            pass: scale.pass,
+            skills: Object.fromEntries(
+              Object.entries(scaled.skills).map(([skill, value]) => [
+                skill,
+                typeof value === 'number' ? Math.round(value) : null,
+              ])
+            ),
+          },
+        }
+      : {}),
+    ...(groups.length
+      ? {
+          passGroups: groups.map(group => ({
+            label: group.label,
+            points: groupPoints(group.id, group.points),
+            maximum: group.maximum,
+            passPoints: group.passPoints,
+            passed: group.passed,
+            ...(group.pending ? { pending: group.pending } : {}),
+          })),
+        }
+      : {}),
     modules: set.value.modules.map(definition => ({
+      ...(definition.id ? { id: definition.id } : {}),
+      ...(definition.label ? { label: definition.label } : {}),
       skill: definition.skill,
-      score: state.value.modules[definition.skill].scoreFinal,
+      score: state.value.modules[mockModuleId(definition)]!.scoreFinal,
       maximum: definition.maxFinalPoints,
-      grading: state.value.modules[definition.skill].grading,
+      grading: state.value.modules[mockModuleId(definition)]!.grading,
       exercises: definition.exercises.map(exercise => {
-        const response = state.value.modules[definition.skill].responses[exercise.id]
+        const response = state.value.modules[mockModuleId(definition)]!.responses[exercise.id]
         return {
           part: exercise.part,
-          score: response?.rawScore ?? response?.score ?? null,
-          total: response?.total ?? exercise.maxRawPoints,
+          score: response?.rawScore ?? objectivePoints(response, exercise.maxRawPoints),
+          total: exercise.maxRawPoints,
           ...(typeof response?.wordCount === 'number' ? { wordCount: response.wordCount } : {}),
           ...(response?.content ? { content: response.content } : {}),
           ...(response?.transcripts ? { transcripts: { ...response.transcripts } } : {}),
@@ -737,27 +1049,20 @@ async function generateOverview(): Promise<void> {
   if (state.value.aiOverview.status === 'loading' || hasPendingAiGrading.value) return
   startOverview()
   try {
-    const fetchApi = $fetch as unknown as (
-      url: string,
-      options?: { method?: string; body?: unknown }
-    ) => Promise<unknown>
-    const response = (await fetchApi('/api/review-mock-exam', {
+    const response = await aiFetch<MockExamOverview>('/llm/review-mock-exam', {
       method: 'POST',
-      body: {
-        locale: locale.value === 'de' ? 'de' : 'en',
-        result: overviewInput(),
-      },
-    })) as unknown as { data: MockExamOverview | null; error: string | null }
+      body: { result: overviewInput(), outputLanguage: reviewOutputLanguage.value },
+    })
     if (response.error || !response.data)
-      throw new Error(response.error || 'AI overview is unavailable.')
+      throw new Error(response.error || t('mockExam.aiOverviewUnavailable'))
     completeOverview(response.data)
   } catch (error: unknown) {
-    failOverview(error instanceof Error ? error.message : 'AI overview is unavailable.')
+    failOverview(error instanceof Error ? error.message : t('mockExam.aiOverviewUnavailable'))
   }
 }
 
-function gradingLabel(skill: SkillId): string {
-  const status = state.value.modules[skill].grading
+function gradingLabel(skill: string): string {
+  const status = state.value.modules[skill]!.grading
   if (status === 'auto') return t('mockExam.automaticScoring')
   if (status === 'done')
     return skill === 'speaking' ? t('mockExam.aiProvisional') : t('mockExam.aiGraded')
@@ -766,15 +1071,16 @@ function gradingLabel(skill: SkillId): string {
   return t('mockExam.gradingPending')
 }
 
-function openModule(skill: SkillId): void {
-  if (state.value.modules[skill].locked) return
-  activeSkill.value = skill
+function openModule(skill: string): void {
+  if (state.value.modules[skill]!.locked) return
+  activeModuleId.value = skill
   startModule(skill)
   view.value = 'part'
 }
 
 function canOpenExercise(index: number): boolean {
   if (
+    (activeModuleState.value?.preparation && !activeModuleState.value.preparation.finished) ||
     !activeModuleState.value ||
     activeModuleState.value.locked ||
     activeModuleState.value.done[index]
@@ -804,7 +1110,7 @@ function exerciseNumberClass(index: number): string {
 
 function saveProgress(payload: Omit<MockExerciseResult, 'exerciseId'>): void {
   if (!activeSkill.value || !activeExercise.value) return
-  saveExerciseProgress(activeSkill.value, activeExercise.value.id, payload)
+  saveExerciseProgress(activeModuleId.value!, activeExercise.value.id, payload)
 }
 
 function completeActiveExercise(payload: Omit<MockExerciseResult, 'exerciseId'>): void {
@@ -818,17 +1124,16 @@ function completeActiveExercise(payload: Omit<MockExerciseResult, 'exerciseId'>)
   }
 
   if (skill === 'writing') {
-    const part = writingExercise.value?.testingPart ?? 1
-    const zeroThreshold = part === 1 ? 10 : 15
-    const wordCount = payload.wordCount ?? 0
-    result.rawScore = wordCount < zeroThreshold ? 0 : null
-    result.grading = wordCount < zeroThreshold ? 'done' : 'pending'
+    const threshold = writingZeroThreshold(pack.value, writingExercise.value?.testingPart ?? 1)
+    const zero = threshold !== undefined && (payload.wordCount ?? 0) < threshold
+    result.rawScore = zero ? 0 : null
+    result.grading = zero ? 'done' : 'pending'
   } else if (skill === 'speaking') {
     result.rawScore = null
     result.grading = 'pending'
   }
 
-  completeExercise(skill, activeIndex.value, result)
+  completeExercise(activeModuleId.value!, activeIndex.value, result)
   view.value = 'part'
   if (skill === 'writing' || skill === 'speaking') void gradeResponse(skill, exercise.id)
 }
@@ -838,24 +1143,19 @@ function leaveExercise(): void {
 }
 
 function goOverview(): void {
-  activeSkill.value = null
+  activeModuleId.value = null
   view.value = 'overview'
 }
 
 function finishModule(): void {
   if (!activeSkill.value || doneCount.value !== activeModule.value?.exercises.length) return
-  lockModule(activeSkill.value)
+  lockModule(activeModuleId.value!)
   goOverview()
 }
 
-function handleExpiry(): void {
-  if (!activeSkill.value || state.value.modules[activeSkill.value].locked) return
-  const expiredSkill = activeSkill.value
-  expireModule(expiredSkill)
-  if (expiredSkill === 'writing' || expiredSkill === 'speaking')
-    void gradePendingModule(expiredSkill)
-  notice.value = t('mockExam.timeExpired', { skill: t(`skill.${expiredSkill}`) })
-  goOverview()
+function moduleRemainingSeconds(skill: string): number {
+  void nowTick.value
+  return remainingSeconds(skill)
 }
 
 function showResults(): void {
@@ -867,44 +1167,61 @@ function showResults(): void {
 function reset(): void {
   if (import.meta.client && !confirm(t('mockExam.resetConfirm'))) return
   resetExam()
-  activeSkill.value = null
-  notice.value = ''
+  activeModuleId.value = null
   view.value = 'overview'
 }
 
 async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string): Promise<void> {
-  const response = state.value.modules[skill].responses[exerciseId]
+  const response = state.value.modules[skill]!.responses[exerciseId]
   if (!response || typeof response.rawScore === 'number') return
   const jobId = `${skill}:${exerciseId}`
   if (activeGradingJobs.has(jobId)) return
   activeGradingJobs.add(jobId)
-  updateExerciseGrade(skill, exerciseId, null)
+  // Keep a saved failure visible while retrying, including after a result-page reload.
+  updateExerciseGrade(skill, exerciseId, null, response.error ?? null)
 
   try {
     if (skill === 'writing') {
       const topic = set.value.content.writing.find(item => item.id === exerciseId)
       if (!topic || !response.content?.trim()) return
-      const prompt =
-        topic.testingPart === 1
-          ? reviewPromptA2Teil1(topic, response.content)
-          : reviewPromptA2Teil2(topic, response.content)
-      const review = (await $fetch('/api/review', {
+      const part = topic.testingPart ?? 1
+      const prompt = assemble('writing', part, 'review', {
+        task: topic.task,
+        requirements: topic.requirements?.join(', ') ?? '',
+        userContent: response.content,
+        outputLanguage: reviewOutputLanguage.value,
+        topicId: topic.id,
+      })
+      if (!prompt) throw new Error(`No writing review prompt is configured for part ${part}`)
+      const review = await aiFetch<CriterionReview>('/llm/review', {
         method: 'POST',
-        body: { topic, userContent: response.content, prompt },
-      })) as unknown as { data: AiReviewData | null; error: string | null }
-      if (review.error || !review.data || !isA2Review(review.data))
-        throw new Error(review.error || 'Writing grade unavailable.')
-      updateExerciseGrade('writing', exerciseId, review.data.teil_points_mess, null, review.data)
+        body: {
+          topic,
+          ...writingReviewPayload(topic, response.content),
+          prompt,
+          outputLanguage: reviewOutputLanguage.value,
+        },
+      })
+      if (review.error || !review.data)
+        throw new Error(review.error || t('mockExam.writingGradeUnavailable'))
+      // `totalPoints` is the same number `teil_points_mess` was: the criteria sum to
+      // `maxPoints: 10`, so the score the page shows is unchanged.
+      updateExerciseGrade('writing', exerciseId, review.data.totalPoints, null, review.data)
       return
     }
 
     const topic = set.value.content.speaking.find(item => item.id === exerciseId)
     if (!topic || !response.transcripts) return
-    const review = (await $fetch('/api/review-speaking', {
+    const review = await aiFetch<CriterionReview>('/llm/review-speaking', {
       method: 'POST',
-      body: { topic, transcripts: response.transcripts as SpeakingTranscripts },
-    })) as unknown as { data: SpeakingReviewData | null; error: string | null }
-    if (review.error || !review.data) throw new Error(review.error || 'Speaking grade unavailable.')
+      body: {
+        topic,
+        answers: response.transcripts,
+        outputLanguage: reviewOutputLanguage.value,
+      },
+    })
+    if (review.error || !review.data)
+      throw new Error(review.error || t('mockExam.speakingGradeUnavailable'))
     updateExerciseGrade('speaking', exerciseId, review.data.totalPoints, null, review.data)
   } catch (error: unknown) {
     if (skill === 'writing') {
@@ -912,14 +1229,14 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
         'writing',
         exerciseId,
         null,
-        error instanceof Error ? error.message : 'Writing grade unavailable.'
+        error instanceof Error ? error.message : t('mockExam.writingGradeUnavailable')
       )
     } else {
       updateExerciseGrade(
         'speaking',
         exerciseId,
         null,
-        error instanceof Error ? error.message : 'Speaking grade unavailable.'
+        error instanceof Error ? error.message : t('mockExam.speakingGradeUnavailable')
       )
     }
   } finally {
@@ -928,7 +1245,7 @@ async function gradeResponse(skill: 'writing' | 'speaking', exerciseId: string):
 }
 
 async function gradePendingModule(skill: 'writing' | 'speaking'): Promise<void> {
-  const definition = set.value.modules.find(module => module.skill === skill)
+  const definition = set.value.modules.find(module => mockModuleId(module) === skill)
   for (const exercise of definition?.exercises ?? []) await gradeResponse(skill, exercise.id)
 }
 

@@ -1,25 +1,32 @@
 #!/usr/bin/env node
 /**
- * Pre-generate Kokoro WAV files for bundled A2 listening seeds.
+ * Pre-generate Kokoro WAV files for the bundled listening seeds of the selected exam packs.
+ *
+ * A seed is bundled when it carries an explicit `audio` map whose URLs sit under its pack's
+ * `speech.audioPathPrefix` (Goethe A2: every seed; Goethe A1: the mock Set 1). Each URL is
+ * written to `apps/frontend/public<url>`. Seeds without a map generate on demand instead.
  *
  * Prerequisites:
  *   1. bash scripts/tts/victoria/download-models.sh  (or ./scripts/tts/setup-kokoro.sh)
  *   2. pnpm tts:up
  *
  * Usage (from repo root):
- *   pnpm generate:listening-audio
+ *   pnpm generate:listening-audio                       # the default pack (cambridge-en-a2)
+ *   pnpm generate:listening-audio --packs certpol-pl-a2 # one or more packs, comma-separated
+ *   pnpm generate:listening-audio --packs all           # every pack with bundled audio
  *   FORCE=1 pnpm generate:listening-audio   # after voice-roster / pipeline changes
  *
  * Env:
  *   TTS_BASE_URL           (default http://127.0.0.1:8881) — four-voice PyTorch
  *   TTS_CONCURRENCY        (default 3) — parallel segment synthesis
  *   TTS_SPEED              (default 1.0)
- *   TTS_LANG               (default de)
  *   TTS_TURN_PAUSE_MS      (default 350)
  *   FORCE=1                regenerate even when transcript hash matches
+ *   STACK_SEED_PACKS       packs to seed when --packs is absent (default: DEFAULT_PACK_ID)
  *
- * Dialogue transcripts with Role: labels are synthesized turn-by-turn with up to
- * four voices (2 male / 2 female) and concatenated. Monologues stay Martin.
+ * Each pack is synthesised in its own `speech.ttsLang` with its own voices; a pack whose
+ * voices the server does not serve is skipped with a warning. Dialogue transcripts with
+ * Role: labels are synthesized turn-by-turn and concatenated. German monologues stay Martin.
  */
 
 import { createHash } from 'node:crypto'
@@ -30,68 +37,72 @@ import { createJiti } from 'jiti'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
-const frontendRoot = path.join(repoRoot, 'apps/frontend')
-const audioRoot = path.join(frontendRoot, 'public/audio/listening/a2')
+const publicRoot = path.join(repoRoot, 'apps/frontend/public')
+const backendTtsRoot = path.join(repoRoot, 'apps/backend/src/speech/tts')
 
-const jiti = createJiti(import.meta.url, {
-  alias: {
-    '~': frontendRoot,
-    '~~': frontendRoot,
-    '@': frontendRoot,
-  },
-})
+const jiti = createJiti(import.meta.url)
 
-const listeningModule = await jiti.import(
-  path.join(frontendRoot, 'data/listening/exerciseListening.ts'),
-)
-const { defaultListeningTopics } = listeningModule
+const { listPacks, getPack, DEFAULT_PACK_ID, bundledAudioSegments, bundledAudioDir, LISTENING_AUDIO_URL_ROOT } =
+  await jiti.import(path.join(repoRoot, 'data/src/index.ts'))
 
-const ttsModule = await jiti.import(
-  path.join(frontendRoot, 'server/utils/tts/ttsAdapter.ts'),
-)
+const ttsModule = await jiti.import(path.join(backendTtsRoot, 'tts.adapter.ts'))
 const {
   synthesizeListeningTranscript,
-  checkTtsHealth,
+  ttsHealthStatus,
   getTtsConfigFromEnv,
   listeningTranscriptHashKey,
 } = ttsModule
 
-const mapPoolModule = await jiti.import(
-  path.join(frontendRoot, 'server/utils/tts/mapPool.ts'),
-)
+const mapPoolModule = await jiti.import(path.join(backendTtsRoot, 'mapPool.ts'))
 const { mapPool, getTtsConcurrency } = mapPoolModule
 
-function hashTranscript(text) {
-  return createHash('sha256').update(listeningTranscriptHashKey(text)).digest('hex')
+function hashTranscript(text, config) {
+  return createHash('sha256').update(listeningTranscriptHashKey(text, config)).digest('hex')
 }
 
-function collectSegments(exercises) {
-  const segments = []
-
-  for (const exercise of exercises) {
-    const id = exercise.id
-    if (!id) continue
-
-    if (exercise.testingPart === 1 || exercise.testingPart === 3) {
-      for (const item of exercise.items ?? []) {
-        const itemId = item.id
-        if (!itemId || !item.transcript?.trim()) continue
-        segments.push({
-          relativePath: path.join(id, `${itemId}.wav`),
-          transcript: item.transcript,
-        })
-      }
-      continue
-    }
-
-    if (!exercise.transcript?.trim()) continue
-    segments.push({
-      relativePath: path.join(id, 'shared.wav'),
-      transcript: exercise.transcript,
-    })
+/** The env TTS settings in a pack's own language and voices. */
+function packTtsConfig(base, pack) {
+  return {
+    ...base,
+    lang: pack.speech.ttsLang,
+    voice: pack.speech.voices[0]?.id ?? base.voice,
+    voices: pack.speech.voices,
+    maxChunkCharacters: pack.speech.maxChunkCharacters,
   }
+}
 
-  return segments
+/**
+ * The packs to seed: `--packs a,b` or `STACK_SEED_PACKS` (default: the default pack only, so a
+ * first run waits for one language). `all` selects every registered pack with bundled audio.
+ */
+export function selectedPacks(argv = process.argv.slice(2), env = process.env) {
+  const flagIndex = argv.findIndex(arg => arg === '--packs' || arg.startsWith('--packs='))
+  const flag =
+    flagIndex === -1 ? undefined : argv[flagIndex].includes('=') ? argv[flagIndex].split('=')[1] : argv[flagIndex + 1]
+  const raw = (flag ?? env.STACK_SEED_PACKS ?? DEFAULT_PACK_ID).trim()
+  if (raw === 'all') return [...listPacks()]
+  const ids = raw.split(',').map(id => id.trim()).filter(Boolean)
+  const unknown = ids.filter(id => !getPack(id))
+  if (unknown.length > 0) throw new Error(`Unknown pack(s): ${unknown.join(', ')}`)
+  return ids.map(id => getPack(id))
+}
+
+/** Every bundled seed WAV of the given packs, one segment per URL. */
+export function collectSegments(packs = selectedPacks()) {
+  return packs.flatMap(pack =>
+    bundledAudioSegments(pack).map(segment => ({
+      relativePath: segment.url.replace(/^\//, ''),
+      transcript: segment.transcript,
+      pack,
+    }))
+  )
+}
+
+/** The public directory of every given pack that ships bundled seed WAVs. */
+export function bundledAudioDirs(packs = selectedPacks()) {
+  return packs
+    .filter(pack => bundledAudioSegments(pack).length > 0)
+    .map(pack => path.join(publicRoot, LISTENING_AUDIO_URL_ROOT, bundledAudioDir(pack)))
 }
 
 async function fileExists(filePath) {
@@ -121,27 +132,40 @@ async function main() {
   console.log(`[generate-listening-audio] TTS: ${config.baseUrl}`)
   console.log(`[generate-listening-audio] concurrency: ${concurrency}`)
 
-  const healthy = await checkTtsHealth(config)
+  const healthy = (await ttsHealthStatus(config)) !== 'offline'
   if (!healthy) {
     console.error(
       '[generate-listening-audio] Kokoro TTS is not reachable.\n' +
         '  1. Run: bash scripts/tts/victoria/download-models.sh\n' +
         '  2. Run: pnpm tts:up\n' +
-        '  3. Re-run: pnpm generate:listening-audio',
+        '  3. Re-run: pnpm generate:listening-audio'
     )
     process.exit(1)
   }
 
-  const segments = collectSegments(defaultListeningTopics)
+  const segments = collectSegments()
   console.log(`[generate-listening-audio] ${segments.length} segment(s) to consider`)
 
   const work = []
   let skipped = 0
+  const packConfigs = new Map()
 
   for (const segment of segments) {
-    const outPath = path.join(audioRoot, segment.relativePath)
+    if (!packConfigs.has(segment.pack.packId)) {
+      const packConfig = packTtsConfig(config, segment.pack)
+      const status = await ttsHealthStatus(packConfig)
+      if (status !== 'ok')
+        console.warn(
+          `[generate-listening-audio] skipping ${segment.pack.packId}: the server does not serve its ${packConfig.lang} voices`
+        )
+      packConfigs.set(segment.pack.packId, status === 'ok' ? packConfig : null)
+    }
+    const packConfig = packConfigs.get(segment.pack.packId)
+    if (!packConfig) continue
+
+    const outPath = path.join(publicRoot, segment.relativePath)
     const hashPath = `${outPath}.hash`
-    const nextHash = hashTranscript(segment.transcript)
+    const nextHash = hashTranscript(segment.transcript, packConfig)
 
     await mkdir(path.dirname(outPath), { recursive: true })
 
@@ -154,24 +178,24 @@ async function main() {
       }
     }
 
-    work.push({ segment, outPath, hashPath, nextHash })
+    work.push({ segment, outPath, hashPath, nextHash, packConfig })
   }
 
   console.log(`[generate-listening-audio] ${work.length} segment(s) to synthesize`)
   const synthStartedAt = Date.now()
   console.log(
-    `[generate-listening-audio] synthesis started at ${new Date(synthStartedAt).toISOString()}`,
+    `[generate-listening-audio] synthesis started at ${new Date(synthStartedAt).toISOString()}`
   )
 
   const errors = []
   let written = 0
 
-  await mapPool(work, concurrency, async (job) => {
-    const { segment, outPath, hashPath, nextHash } = job
+  await mapPool(work, concurrency, async job => {
+    const { segment, outPath, hashPath, nextHash, packConfig } = job
     const fileStartedAt = Date.now()
     console.log(`  start ${segment.relativePath}`)
     try {
-      const audio = await synthesizeListeningTranscript(segment.transcript, config)
+      const audio = await synthesizeListeningTranscript(segment.transcript, packConfig)
       await writeFile(outPath, audio)
       await writeFile(hashPath, `${nextHash}\n`, 'utf8')
       written += 1
@@ -188,12 +212,12 @@ async function main() {
   const synthElapsed = Date.now() - synthStartedAt
   const totalElapsed = Date.now() - runStartedAt
   console.log(
-    `[generate-listening-audio] synthesis finished at ${new Date().toISOString()} `
-    + `(${formatDuration(synthElapsed)})`,
+    `[generate-listening-audio] synthesis finished at ${new Date().toISOString()} ` +
+      `(${formatDuration(synthElapsed)})`
   )
   console.log(
-    `[generate-listening-audio] done — wrote ${written}, skipped ${skipped}, failed ${errors.length} `
-    + `(total ${formatDuration(totalElapsed)})`,
+    `[generate-listening-audio] done — wrote ${written}, skipped ${skipped}, failed ${errors.length} ` +
+      `(total ${formatDuration(totalElapsed)})`
   )
 
   if (errors.length > 0) {
@@ -201,7 +225,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error('[generate-listening-audio] failed', error)
-  process.exit(1)
-})
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch(error => {
+    console.error('[generate-listening-audio] failed', error)
+    process.exit(1)
+  })
+}

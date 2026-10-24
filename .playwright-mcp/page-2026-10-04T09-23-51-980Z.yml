@@ -1,0 +1,61 @@
+- generic [ref=e6]:
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - generic [ref=e9]: E
+      - generic [ref=e10]: Exam.one
+    - generic [ref=e11]:
+      - paragraph [ref=e12]: Every exercise is one step closer to the certificate.
+      - paragraph [ref=e13]: Practise the real Goethe format — reading, listening, writing and speaking — with feedback after every attempt.
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: 68%
+          - generic [ref=e18]:
+            - generic [ref=e19]: Goethe A2
+            - generic [ref=e20]: Exam in 42 days · 12-day streak
+          - generic [ref=e21]: "12"
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - generic [ref=e27]: Reading
+            - generic [ref=e30]: 74%
+          - generic [ref=e31]:
+            - generic [ref=e32]: Listening
+            - generic [ref=e35]: 61%
+          - generic [ref=e36]:
+            - generic [ref=e37]: Writing
+            - generic [ref=e40]: 48%
+          - generic [ref=e41]:
+            - generic [ref=e42]: Speaking
+            - generic [ref=e45]: 39%
+    - paragraph [ref=e46]: "Self-hosted: email is your login name. Mail is optional — add SMTP later for password-reset emails."
+  - generic [ref=e47]:
+    - generic [ref=e50]:
+      - generic [ref=e51]:
+        - heading "Start preparing" [level=1] [ref=e52]
+        - paragraph [ref=e53]: Free to begin. No card, no commitment — just the exam format.
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]: Your name
+          - textbox "Your name" [ref=e62]:
+            - /placeholder: Lena Bauer
+        - generic [ref=e63]:
+          - generic [ref=e64]: Email
+          - textbox "Email" [ref=e70]:
+            - /placeholder: you@email.de
+        - generic [ref=e72]:
+          - generic [ref=e73]: Password
+          - generic [ref=e75]:
+            - textbox "Password Show password" [ref=e79]:
+              - /placeholder: At least 8 characters
+            - button "Show password" [ref=e80] [cursor=pointer]
+        - generic [ref=e84] [cursor=pointer]:
+          - checkbox "I understand this is a local self-hosted account on this machine." [ref=e85]
+          - generic [ref=e86]: I understand this is a local self-hosted account on this machine.
+        - button "Create account" [disabled]
+        - generic [ref=e87]: or
+        - generic [ref=e91]:
+          - button "Sign up with Google" [disabled]
+          - paragraph [ref=e92]: Not available on this self-hosted instance
+    - generic [ref=e93]:
+      - text: Already have an account?
+      - link "Sign in" [ref=e94] [cursor=pointer]:
+        - /url: /auth/login

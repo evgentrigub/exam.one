@@ -2,7 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-05-15',
+  compatibilityDate: '2026-08-18',
   devtools: { enabled: true },
 
   // Explicit so startup logs and docs can point at a stable URL
@@ -31,8 +31,11 @@ export default defineNuxtConfig({
   // i18n configuration
   i18n: {
     locales: [
-      { code: 'de', iso: 'de-DE', name: 'Deutsch', file: 'de.json' },
-      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'de', language: 'de-DE', name: 'Deutsch', file: 'de.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'es', language: 'es-ES', name: 'Español', file: 'es.json' },
+      { code: 'pl', language: 'pl-PL', name: 'Polski', file: 'pl.json' },
+      { code: 'ru', language: 'ru-RU', name: 'Русский', file: 'ru.json' },
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
@@ -48,7 +51,8 @@ export default defineNuxtConfig({
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: true,
+    // The Docker image sets SKIP_NUXT_TYPECHECK=1; CI type-checks separately with `pnpm type-check`
+    typeCheck: process.env['SKIP_NUXT_TYPECHECK'] !== '1',
   },
 
   // CSS configuration
@@ -69,19 +73,9 @@ export default defineNuxtConfig({
     transpile: [],
   },
 
-  // Vite configuration for bundle optimization
+  // Vite configuration
   vite: {
     plugins: [tailwindcss()],
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['vue', 'vue-router'],
-            pinia: ['pinia'],
-          },
-        },
-      },
-    },
   },
 
   // App configuration
@@ -109,36 +103,19 @@ export default defineNuxtConfig({
     },
   },
 
-  // Security headers
-  nitro: {
-    routeRules: {
-      '/**': {
-        headers: {
-          'Content-Security-Policy':
-            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:;",
-        },
-      },
-    },
+  // Hybrid rendering: auth screens are SSR'd; the login-gated app is client-only.
+  // Session cookies live on the API host, so Nuxt cannot know the user during SSR.
+  // The Content-Security-Policy header is set per request in server/middleware/.
+  routeRules: {
+    '/auth/**': { ssr: true },
+    '/**': { ssr: false },
   },
 
   runtimeConfig: {
-    // Private (server-only). Defaults come from the monorepo-root `.env` via `nuxt --dotenv ../../.env`.
-    // Also overridable at runtime with NUXT_LLM_PROVIDER, NUXT_LLM_OPENAI_API_KEY, etc.
-    // getLlmConfig() additionally falls back to OPENAI_API_KEY / OPENROUTER_API_KEY process env.
-    llmProvider: process.env['LLM_PROVIDER'] || 'openrouter',
-    llmOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
-    llmOpenrouterApiKey: process.env['OPENROUTER_API_KEY'] || '',
-    llmOpenaiModel: process.env['OPENAI_MODEL'] || 'gpt-5.5',
-    llmOpenrouterModel: process.env['OPENROUTER_MODEL'] || 'google/gemma-4-26b-a4b-it:free',
-    llmReasoningEffort: process.env['LLM_REASONING_EFFORT'] || 'medium',
-    sttProvider: process.env['STT_PROVIDER'] || 'local',
-    sttBaseUrl: process.env['STT_BASE_URL'] || 'http://127.0.0.1:8882',
-    sttModel: process.env['STT_MODEL'] || 'handy-computer/parakeet-tdt-0.6b-v3-gguf:Q8_0',
-    sttOpenaiModel: process.env['STT_OPENAI_MODEL'] || 'whisper-1',
-    sttOpenaiApiKey: process.env['OPENAI_API_KEY'] || '',
-    // Public (exposed to client).
     public: {
+      docsUrl: process.env['DOCS_URL'] || 'http://localhost:3012',
       frontendLandingUrl: process.env['FRONTEND_LANDING_URL'] || 'http://localhost:3001',
+      apiUrl: process.env['NUXT_PUBLIC_API_URL'] || 'http://localhost:3001',
     },
   },
 })

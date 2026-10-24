@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { configureApp } from './bootstrap'
+import { configureApp, isSwaggerEnabled } from './bootstrap'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
@@ -14,7 +14,11 @@ async function bootstrap(): Promise<void> {
 
   const logger = new Logger('Bootstrap')
   logger.log(`Backend ready at http://localhost:${port}`)
-  logger.log(`Health: http://localhost:${port}/api/v1/health`)
+  logger.log(`Liveness: http://localhost:${port}/api/v1/health`)
+  logger.log(`Readiness: http://localhost:${port}/api/v1/health/ready`)
+  if (isSwaggerEnabled()) {
+    logger.log(`Swagger: http://localhost:${port}/api/docs`)
+  }
 }
 
 void bootstrap()

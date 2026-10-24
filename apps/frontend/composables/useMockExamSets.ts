@@ -1,12 +1,39 @@
-import { goetheA2MockExamSet1, type MockExamSet } from '~/data/mockExam/goetheA2'
+import type { MockExamSet } from '~/data/mockExam/goetheA2'
+import type { MockExamSetDto, MockExamSetSummaryDto } from '@exam-one/contracts'
+import { packEpoch, onPackReset } from '~/utils/packScope'
+import { apiFetch } from '~/composables/useApi'
 
-const STORAGE_KEY = 'exam-one:mock-exam:sets'
+const generatedSets = useState<MockExamSet[]>('mock-exam-generated-sets', () => [])
+const seedSet = useState<MockExamSet | null>('mock-exam-seed-set', () => null)
+const isInitialized = useState<boolean>('mock-exam-sets-initialized', () => false)
+let hydratePromise: Promise<void> | null = null
+
+onPackReset(() => {
+  generatedSets.value = []
+  seedSet.value = null
+  isInitialized.value = false
+  hydratePromise = null
+})
+
+function toSet(dto: MockExamSetDto): MockExamSet {
+  return {
+    id: dto.externalId,
+    examId: dto.examId,
+    level: dto.level,
+    title: dto.title,
+    generated: dto.generated,
+    createdAt: dto.createdAt,
+    modules: dto.modules as MockExamSet['modules'],
+    content: dto.content as MockExamSet['content'],
+    ...(dto.rules ? { rules: dto.rules as NonNullable<MockExamSet['rules']> } : {}),
+  }
+}
 
 export const useMockExamSets = () => {
-  const generatedSets = useState<MockExamSet[]>('mock-exam-generated-sets', () => [])
-  const isInitialized = useState<boolean>('mock-exam-sets-initialized', () => false)
-
-  const sets = computed(() => [goetheA2MockExamSet1, ...generatedSets.value])
+  const sets = computed(() => {
+    const bundled = seedSet.value ? [seedSet.value] : []
+    return [...bundled, ...generatedSets.value]
+  })
   const nextSetNumber = computed(() => {
     const numbers = sets.value
       .map(set => Number(set.id.match(/-set-(\d+)$/)?.[1] ?? 0))
@@ -14,79 +41,103 @@ export const useMockExamSets = () => {
     return Math.max(1, ...numbers) + 1
   })
 
-  const persist = (): void => {
-    if (import.meta.server) return
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(generatedSets.value))
-    } catch (error) {
-      console.error(`[${STORAGE_KEY}] write failed`, error)
-    }
+  const hydrate = async (): Promise<void> => {
+    if (import.meta.server || isInitialized.value) return
+    if (hydratePromise) return hydratePromise
+    const epoch = packEpoch()
+    const packId = useSettingsStore().packId
+    hydratePromise = (async () => {
+      try {
+        const summaries = await apiFetch<MockExamSetSummaryDto[]>('/mock-exam/sets', { packId })
+        const full = await Promise.all(
+          summaries.map(item =>
+            apiFetch<MockExamSetDto>(`/mock-exam/sets/${encodeURIComponent(item.externalId)}`, {
+              packId,
+            })
+          )
+        )
+        if (epoch !== packEpoch()) return
+        const mapped = full.map(toSet)
+        seedSet.value = mapped.find(set => !set.generated) ?? null
+        generatedSets.value = mapped
+          .filter(set => set.generated)
+          .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
+        isInitialized.value = true
+      } catch (error) {
+        if (epoch !== packEpoch()) return
+        console.error('Failed to load mock exam sets', error)
+        isInitialized.value = true
+      } finally {
+        if (epoch === packEpoch()) hydratePromise = null
+      }
+    })()
+    return hydratePromise
   }
 
-  const initialize = (): void => {
-    if (isInitialized.value || import.meta.server) return
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      generatedSets.value = raw ? JSON.parse(raw) as MockExamSet[] : []
-    } catch (error) {
-      console.warn(`[${STORAGE_KEY}] read failed`, error)
-      generatedSets.value = []
-    }
-    isInitialized.value = true
+  const reload = async (): Promise<void> => {
+    isInitialized.value = false
+    await hydrate()
   }
 
-  const getSet = (id: string): MockExamSet | undefined =>
-    sets.value.find(set => set.id === id)
+  const getSet = (id: string): MockExamSet | undefined => sets.value.find(set => set.id === id)
 
-  const addSet = (set: MockExamSet): void => {
+  const addSet = async (set: MockExamSet, packId = useSettingsStore().packId): Promise<void> => {
+    const epoch = packEpoch()
+    const saved = await apiFetch<MockExamSetDto>('/mock-exam/sets', {
+      method: 'POST',
+      packId,
+      body: { set },
+    })
+    if (epoch !== packEpoch() || packId !== useSettingsStore().packId) return
+    const mapped = toSet(saved)
     generatedSets.value = [
-      ...generatedSets.value.filter(existing => existing.id !== set.id),
-      set,
+      ...generatedSets.value.filter(existing => existing.id !== mapped.id),
+      mapped,
     ].sort((left, right) => left.createdAt.localeCompare(right.createdAt))
-    persist()
   }
 
   const deleteSet = async (id: string): Promise<void> => {
-    const set = generatedSets.value.find(candidate => candidate.id === id)
-    if (!set) return
-
-    generatedSets.value = generatedSets.value.filter(candidate => candidate.id !== id)
-    persist()
-
-    if (import.meta.client) {
+    const epoch = packEpoch()
+    const packId = useSettingsStore().packId
+    const data = await apiFetch<{ deleted: true; listeningExerciseIds: string[] }>(
+      `/mock-exam/sets/${encodeURIComponent(id)}`,
+      { method: 'DELETE', packId }
+    )
+    if (epoch === packEpoch())
+      generatedSets.value = generatedSets.value.filter(candidate => candidate.id !== id)
+    try {
+      await apiFetch(`/mock-exam/sets/${encodeURIComponent(id)}/attempt`, {
+        method: 'DELETE',
+        packId,
+      })
+    } catch {
+      // Attempt cleanup is best-effort.
+    }
+    if (data.listeningExerciseIds.length > 0) {
       try {
-        localStorage.removeItem(`exam-one:mock-exam:${id}`)
-      } catch {
-        // Removing the generated set itself still succeeds when attempt cleanup fails.
-      }
-
-      const exerciseIds = set.content.listening
-        .map(exercise => exercise.id)
-        .filter((exerciseId): exerciseId is string => Boolean(exerciseId))
-      if (exerciseIds.length > 0) {
-        try {
-          await $fetch('/api/tts/delete-listening-audio', {
-            method: 'POST',
-            body: { exerciseIds },
-          })
-        } catch (error) {
-          console.warn('Generated listening audio cleanup failed', error)
-        }
+        await aiFetch('/tts/delete-listening-audio', {
+          packId,
+          method: 'POST',
+          body: { exerciseIds: data.listeningExerciseIds },
+        })
+      } catch (error) {
+        console.warn('Generated listening audio cleanup failed', error)
       }
     }
   }
 
-  onMounted(initialize)
+  onMounted(() => {
+    void hydrate()
+  })
 
   return {
-    // State
     sets,
     generatedSets: computed(() => generatedSets.value),
     isInitialized: readonly(isInitialized),
     nextSetNumber,
-
-    // Methods
-    initialize,
+    initialize: hydrate,
+    hydrate,
+    reload,
     getSet,
     addSet,
     deleteSet,

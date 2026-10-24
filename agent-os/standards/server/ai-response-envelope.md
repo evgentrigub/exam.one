@@ -9,56 +9,48 @@ interface AiResponse<T> {
 }
 ```
 
-- **Phase 1 (current):** Nuxt server routes under `server/api/*.post.ts`
-- **Phase 2 onward:** NestJS owns the long-term AI proxy; keep the same envelope so the frontend composables stay stable
+- NestJS owns the AI/TTS/STT proxy under `/api/v1` (`/llm`, `/ai`, `/tts`, `/stt`). Keep this envelope so frontend composables stay stable.
+- Shared type: `AiResponse<T>` in `@exam-one/contracts` (distinct from REST `ApiResponse`, whose `error` is `{ code, message }`).
 
-AI is **bring-your-own-key** with a provider-agnostic contract — the key, provider, model, and (optional) base URL come from runtime/env config supplied by the self-hoster. **Supported providers today: OpenAI and OpenRouter.** Never hard-code a single provider into the endpoint contract; isolate provider specifics behind a helper.
+AI is **bring-your-own-key, per user** with a provider-agnostic contract — each user saves a key, provider, model, fallback models and reasoning effort in Settings → AI provider (`/settings/llm`). Keys are encrypted at rest with `SECRETS_ENCRYPTION_KEY` and never returned to the client. **Supported providers: OpenAI, OpenRouter, Gemini, Anthropic and xAI**, all through the `openai` SDK with per-provider presets in `ai/llm-providers.ts`. Never hard-code a single provider into the endpoint contract; isolate provider specifics behind the presets.
 
 ## Rules
 
-- **Business failures** (no API key, bad prompt, parse failure, empty AI output) → HTTP 200 with `{ data: null, error: "user-safe message" }`. Do not throw.
-- **Infrastructure / programmer errors** (SDK blew up, invalid body, auth) → throw via `createError({ statusCode: 5xx, statusMessage })` in Nitro, or the NestJS equivalent. Produce a real non-200 for infra failures.
+- **Business failures** (no API key, bad prompt, parse failure, empty AI output, TTS/STT offline) → HTTP 200 with `{ data: null, error: "user-safe message" }`. Do not throw.
+- **Invalid body** → HTTP 400. **Missing session** → HTTP 401.
 - `error` is a short, user-displayable string. Log the full error server-side.
 - `data` is `null` whenever `error` is set, and non-null on success. Never both populated.
-- Read the AI key/config from runtime config; treat a missing key as a graceful business failure, not a crash.
+- Resolve the AI config through `LlmService` (current user from `packContext`); treat a missing key as a graceful business failure, not a crash.
 
-## Example (Phase 1 Nitro)
+## Example (NestJS)
 
 ```ts
-export default defineEventHandler(async (event): Promise<AiResponse<ReadingExercise[]>> => {
-  const { llmOpenaiApiKey, llmOpenrouterApiKey, llmProvider } = useRuntimeConfig()
-  const apiKey = llmProvider === 'openai' ? llmOpenaiApiKey : llmOpenrouterApiKey
-  if (!apiKey) {
-    return { data: null, error: 'AI features are disabled. Add your provider API key to enable them.' }
+@Post('generate-reading')
+@HttpCode(200)
+async generateReading(@Body() body: GenerateReadingDto): Promise<AiResponse<ReadingExercise[]>> {
+  if (!(await this.llm.hasConfig())) {
+    return { data: null, error: this.llm.missingKeyError() }
   }
-
-  const body = await readBody<GenerateReadingBody>(event)
-  if (!body?.prompt) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing prompt' })
+  const parsed = await this.generate(body)
+  if (!parsed) {
+    return { data: null, error: 'Could not parse AI response. Please try again.' }
   }
-
-  try {
-    // callProvider isolates OpenAI / OpenRouter behind one helper.
-    const raw = await callProvider(body.prompt)
-    const parsed = extractJsonArray<ReadingExercise>(raw)
-    if (!parsed) {
-      return { data: null, error: 'Could not parse AI response. Please try again.' }
-    }
-    return { data: parsed, error: null }
-  } catch (e) {
-    console.error('[generate-reading] unexpected error', e)
-    throw createError({ statusCode: 502, statusMessage: 'AI provider error' })
-  }
-})
+  return { data: parsed, error: null }
+}
 ```
 
 ## Client side
 
 ```ts
-const res = await $fetch<AiResponse<ReadingExercise[]>>('/api/generate-reading', { method: 'POST', body })
+const res = await aiFetch<ReadingExercise[]>('/ai/generate-reading', {
+  method: 'POST',
+  body,
+})
 if (res.error || !res.data) {
   showError(res.error ?? 'Unknown error')
   return
 }
 useData(res.data)
 ```
+
+Do not reuse `apiFetch` for these routes: it throws on any `error` object and expects the REST `{ code, message }` shape.

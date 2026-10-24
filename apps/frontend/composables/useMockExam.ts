@@ -1,14 +1,19 @@
 import type { MockExamSet } from '~/data/mockExam/goetheA2'
-import type { MockExamOverview } from '~/data/mockExam/reviewMockExamA2'
-import type { SpeakingReviewData, SpeakingTranscripts } from '~/utils/exercises/speaking'
-import type { SkillId } from '~/utils/labels'
-import type { AiReviewDataA2 } from '~/utils/types'
+import type { MockExamOverview, CriterionReview } from '@exam-one/exam-packs'
+import { mockModuleId, objectiveExercisePoints } from '@exam-one/exam-packs'
+import type { SpeakingTranscripts } from '~/utils/exercises/speaking'
+import type { DeepReadonly } from 'vue'
+import type { MockExamAttemptDto } from '@exam-one/contracts'
+import { apiFetch } from '~/composables/useApi'
+import type { ListeningPlayback } from '~/utils/listening/audioUrls'
+import type { ObjectiveAnswers } from '~/utils/gapFill'
 
 export type MockGradingStatus = 'auto' | 'pending' | 'done' | 'unavailable'
 
 export interface MockExerciseResult {
+  playback?: ListeningPlayback
   exerciseId: string
-  answers?: Record<string, number | undefined>
+  answers?: ObjectiveAnswers
   score?: number
   total?: number
   content?: string
@@ -17,11 +22,12 @@ export interface MockExerciseResult {
   rawScore?: number | null
   grading?: MockGradingStatus
   error?: string | null
-  writingReview?: AiReviewDataA2
-  speakingReview?: SpeakingReviewData
+  writingReview?: DeepReadonly<CriterionReview>
+  speakingReview?: DeepReadonly<CriterionReview>
 }
 
 export interface MockModuleState {
+  preparation?: { endsAt: string; finished: boolean; notes: string; selectedTopic: string }
   done: boolean[]
   locked: boolean
   endsAt: string | null
@@ -42,7 +48,7 @@ export interface MockOverviewState {
 }
 
 export interface MockExamState {
-  modules: Record<SkillId, MockModuleState>
+  modules: Record<string, MockModuleState>
   finished: boolean
   startedAt: string | null
   finishedAt: string | null
@@ -62,11 +68,11 @@ function blankModule(count: number, grading: MockGradingStatus): MockModuleState
 }
 
 export function createBlankMockExamState(set: MockExamSet): MockExamState {
-  const modules = {} as Record<SkillId, MockModuleState>
+  const modules = {} as Record<string, MockModuleState>
   for (const definition of set.modules) {
     const grading =
       definition.skill === 'reading' || definition.skill === 'listening' ? 'auto' : 'pending'
-    modules[definition.skill] = blankModule(definition.exercises.length, grading)
+    modules[mockModuleId(definition)] = blankModule(definition.exercises.length, grading)
   }
   return {
     modules,
@@ -88,31 +94,64 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
+  const settings = useSettingsStore()
+  const requestPackId = computed(() => settings.packId)
   const currentSet = computed(() => toValue(setSource))
-  const storageKey = computed(() => `exam-one:mock-exam:${currentSet.value.id}`)
   const state = ref<MockExamState>(createBlankMockExamState(currentSet.value))
   const isInitialized = ref(false)
   const initializedSetId = ref<string | null>(null)
+  let persistInFlight = false
+  let persistPending = false
 
   const persist = (): void => {
     if (import.meta.server) return
-    try {
-      localStorage.setItem(storageKey.value, JSON.stringify(state.value))
-    } catch (error) {
-      console.error(`[${storageKey.value}] write failed`, error)
+    if (persistInFlight) {
+      persistPending = true
+      return
     }
+    persistInFlight = true
+    void (async () => {
+      try {
+        do {
+          persistPending = false
+          await apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+            packId: requestPackId.value,
+            method: 'PUT',
+            body: { state: state.value },
+          })
+        } while (persistPending)
+      } catch (error) {
+        console.error('[mock-exam] persist failed', error)
+      } finally {
+        persistInFlight = false
+        if (persistPending) persist()
+      }
+    })()
   }
 
-  const calculateModuleScore = (skill: SkillId): void => {
-    const definition = currentSet.value.modules.find(module => module.skill === skill)
+  const calculateModuleScore = (skill: string): void => {
+    const definition = currentSet.value.modules.find(module => mockModuleId(module) === skill)
     if (!definition) return
-    const moduleState = state.value.modules[skill]
+    const moduleState = state.value.modules[skill]!
     const responses = Object.values(moduleState.responses)
 
-    if (skill === 'reading' || skill === 'listening') {
-      const raw = responses.reduce((sum, response) => sum + (response.score ?? 0), 0)
+    if (definition.skill === 'reading' || definition.skill === 'listening') {
+      // Correct answers become points per exercise, so half-point parts are not over-credited.
+      const raw = definition.exercises.reduce((sum, exercise) => {
+        const response = moduleState.responses[exercise.id]
+        return response
+          ? sum +
+              objectiveExercisePoints(response.score ?? 0, response.total, exercise.maxRawPoints)
+          : sum
+      }, 0)
       moduleState.scoreRaw = clamp(raw, 0, definition.maxRawPoints)
-      moduleState.scoreFinal = clamp(raw * definition.multiplier, 0, definition.maxFinalPoints)
+      moduleState.scoreFinal = clamp(
+        definition.roundFinalPoints
+          ? Math.round(raw * definition.multiplier)
+          : raw * definition.multiplier,
+        0,
+        definition.maxFinalPoints
+      )
       moduleState.grading = 'auto'
       return
     }
@@ -124,49 +163,61 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
       return !response || typeof response.rawScore !== 'number'
     })
     moduleState.scoreRaw = clamp(raw, 0, definition.maxRawPoints)
-    moduleState.scoreFinal = clamp(raw * definition.multiplier, 0, definition.maxFinalPoints)
-    moduleState.grading = hasPending ? 'pending' : 'done'
+    moduleState.scoreFinal = clamp(
+      definition.roundFinalPoints
+        ? Math.round(raw * definition.multiplier)
+        : raw * definition.multiplier,
+      0,
+      definition.maxFinalPoints
+    )
+    const hasError = responses.some(
+      response => response.error && typeof response.rawScore !== 'number'
+    )
+    moduleState.grading = hasError ? 'unavailable' : hasPending ? 'pending' : 'done'
   }
 
-  const expireModule = (skill: SkillId): void => {
-    const moduleState = state.value.modules[skill]
-    if (moduleState.locked) return
-    moduleState.locked = true
-    moduleState.endsAt = null
-    calculateModuleScore(skill)
-    persist()
-  }
-
-  const initialize = (force = false): void => {
+  const initialize = async (force = false): Promise<void> => {
     if (
       (!force && isInitialized.value && initializedSetId.value === currentSet.value.id) ||
       import.meta.server
     )
       return
+    const setId = currentSet.value.id
+    const packId = requestPackId.value
+    const stillCurrent = () => setId === currentSet.value.id && packId === requestPackId.value
     try {
-      const raw = localStorage.getItem(storageKey.value)
-      if (raw) {
-        const stored = JSON.parse(raw) as MockExamState
+      const saved = await apiFetch<MockExamAttemptDto | null>(
+        `/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`,
+        { packId }
+      )
+      if (!stillCurrent()) return
+      const raw = saved?.state
+      if (raw && typeof raw === 'object') {
+        const stored = raw as MockExamState
         const blank = createBlankMockExamState(currentSet.value)
         state.value = {
           ...blank,
           ...stored,
           modules: Object.fromEntries(
             currentSet.value.modules.map(definition => {
-              const saved = stored.modules?.[definition.skill]
+              const saved = stored.modules?.[mockModuleId(definition)]
+              const done = Array.from({ length: definition.exercises.length }, (_, index) =>
+                Boolean(saved?.done?.[index])
+              )
               return [
-                definition.skill,
+                mockModuleId(definition),
                 {
-                  ...blank.modules[definition.skill],
+                  ...blank.modules[mockModuleId(definition)],
                   ...saved,
-                  done: Array.from({ length: definition.exercises.length }, (_, index) =>
-                    Boolean(saved?.done?.[index])
-                  ),
+                  done,
+                  // Timer expiry used to lock unfinished modules. Keep a lock only after
+                  // every exercise in the module was actually submitted.
+                  locked: Boolean(saved?.locked) && done.every(Boolean),
                   responses: saved?.responses ?? {},
                 },
               ]
             })
-          ) as Record<SkillId, MockModuleState>,
+          ) as Record<string, MockModuleState>,
           aiOverview: {
             ...blank.aiOverview,
             ...stored.aiOverview,
@@ -175,48 +226,79 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
               : {}),
           },
         }
+        const restoredIncompleteLock = currentSet.value.modules.some(definition => {
+          const saved = stored.modules?.[mockModuleId(definition)]
+          const moduleState = state.value.modules[mockModuleId(definition)]!
+          return Boolean(saved?.locked) && !moduleState.locked
+        })
+        if (restoredIncompleteLock) persist()
       }
     } catch (error) {
-      console.warn(`[${storageKey.value}] read failed`, error)
+      if (!stillCurrent()) return
+      console.warn('[mock-exam] read failed', error)
       state.value = createBlankMockExamState(currentSet.value)
     }
     isInitialized.value = true
-    initializedSetId.value = currentSet.value.id
-
-    for (const definition of currentSet.value.modules) {
-      const moduleState = state.value.modules[definition.skill]
-      if (
-        !moduleState.locked &&
-        moduleState.endsAt &&
-        Date.parse(moduleState.endsAt) <= Date.now()
-      ) {
-        expireModule(definition.skill)
-      }
-    }
+    initializedSetId.value = setId
   }
 
   const startExam = (): void => {
     if (!state.value.startedAt) state.value.startedAt = new Date().toISOString()
-    persist()
   }
 
-  const startModule = (skill: SkillId): void => {
-    const definition = currentSet.value.modules.find(module => module.skill === skill)
-    const moduleState = state.value.modules[skill]
+  const startModule = (skill: string): void => {
+    const definition = currentSet.value.modules.find(module => mockModuleId(module) === skill)
+    const moduleState = state.value.modules[skill]!
     if (!definition || moduleState.locked) return
     startExam()
+    if (definition.preparationMinutes && !moduleState.preparation) {
+      moduleState.preparation = {
+        endsAt: new Date(Date.now() + definition.preparationMinutes * 60_000).toISOString(),
+        finished: false,
+        notes: '',
+        selectedTopic: 'topic1',
+      }
+    }
+    if (moduleState.preparation && !moduleState.preparation.finished) {
+      if (Date.parse(moduleState.preparation.endsAt) > Date.now()) {
+        persist()
+        return
+      }
+      moduleState.preparation.finished = true
+      moduleState.endsAt = new Date(
+        Date.parse(moduleState.preparation.endsAt) + definition.minutes * 60_000
+      ).toISOString()
+    }
     if (!moduleState.endsAt) {
       moduleState.endsAt = new Date(Date.now() + definition.minutes * 60_000).toISOString()
     }
     persist()
   }
 
+  const updatePreparation = (
+    skill: string,
+    update: { notes?: string; selectedTopic?: string }
+  ): void => {
+    const prep = state.value.modules[skill]?.preparation
+    if (!prep || prep.finished) return
+    Object.assign(prep, update)
+    persist()
+  }
+  const finishPreparation = (skill: string): void => {
+    const definition = currentSet.value.modules.find(m => mockModuleId(m) === skill)
+    const module = state.value.modules[skill]
+    if (!definition || !module?.preparation || module.preparation.finished) return
+    const deadline = Math.min(Date.now(), Date.parse(module.preparation.endsAt))
+    module.preparation.finished = true
+    module.endsAt = new Date(deadline + definition.minutes * 60_000).toISOString()
+    persist()
+  }
   const saveExerciseProgress = (
-    skill: SkillId,
+    skill: string,
     exerciseId: string,
     result: Omit<MockExerciseResult, 'exerciseId'>
   ): void => {
-    const moduleState = state.value.modules[skill]
+    const moduleState = state.value.modules[skill]!
     if (moduleState.locked) return
     moduleState.responses[exerciseId] = {
       ...moduleState.responses[exerciseId],
@@ -226,10 +308,13 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     persist()
   }
 
-  const completeExercise = (skill: SkillId, index: number, result: MockExerciseResult): void => {
-    const moduleState = state.value.modules[skill]
+  const completeExercise = (skill: string, index: number, result: MockExerciseResult): void => {
+    const moduleState = state.value.modules[skill]!
     if (moduleState.locked || index < 0 || index >= moduleState.done.length) return
-    moduleState.responses[result.exerciseId] = result
+    moduleState.responses[result.exerciseId] = {
+      ...moduleState.responses[result.exerciseId],
+      ...result,
+    }
     moduleState.done[index] = true
     calculateModuleScore(skill)
     persist()
@@ -240,25 +325,25 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     exerciseId: string,
     rawScore: number | null,
     error: string | null = null,
-    review: AiReviewDataA2 | SpeakingReviewData | null = null
+    review: CriterionReview | null = null
   ): void => {
-    const moduleState = state.value.modules[skill]
+    const moduleState = state.value.modules[skill]!
     const current = moduleState.responses[exerciseId]
     if (!current) return
     moduleState.responses[exerciseId] = {
       ...current,
       rawScore,
-      grading: rawScore === null ? 'pending' : 'done',
+      grading: rawScore === null ? (error ? 'unavailable' : 'pending') : 'done',
       error,
-      ...(skill === 'writing' && review ? { writingReview: review as AiReviewDataA2 } : {}),
-      ...(skill === 'speaking' && review ? { speakingReview: review as SpeakingReviewData } : {}),
+      ...(skill === 'writing' && review ? { writingReview: review as CriterionReview } : {}),
+      ...(skill === 'speaking' && review ? { speakingReview: review } : {}),
     }
     calculateModuleScore(skill)
     persist()
   }
 
-  const lockModule = (skill: SkillId): void => {
-    const moduleState = state.value.modules[skill]
+  const lockModule = (skill: string): void => {
+    const moduleState = state.value.modules[skill]!
     if (moduleState.locked) return
     moduleState.locked = true
     moduleState.endsAt = null
@@ -266,13 +351,16 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     persist()
   }
 
-  const setGrading = (skill: SkillId, grading: MockGradingStatus): void => {
-    state.value.modules[skill].grading = grading
+  const setGrading = (skill: string, grading: MockGradingStatus): void => {
+    state.value.modules[skill]!.grading = grading
     persist()
   }
 
   const finishExam = (): void => {
-    if (!currentSet.value.modules.every(module => state.value.modules[module.skill].locked)) return
+    if (
+      !currentSet.value.modules.every(module => state.value.modules[mockModuleId(module)]!.locked)
+    )
+      return
     state.value.finished = true
     state.value.finishedAt = new Date().toISOString()
     persist()
@@ -281,19 +369,20 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   const resetExam = (): void => {
     state.value = createBlankMockExamState(currentSet.value)
     if (import.meta.client) {
-      try {
-        localStorage.removeItem(storageKey.value)
-      } catch {
-        // The in-memory reset still succeeds when browser storage is unavailable.
-      }
+      void apiFetch(`/mock-exam/sets/${encodeURIComponent(currentSet.value.id)}/attempt`, {
+        packId: requestPackId.value,
+        method: 'DELETE',
+      }).catch(() => undefined)
     }
   }
 
-  const remainingSeconds = (skill: SkillId): number => {
-    const moduleState = state.value.modules[skill]
+  const remainingSeconds = (skill: string): number => {
+    const moduleState = state.value.modules[skill]!
     if (moduleState.locked) return 0
     if (!moduleState.endsAt) {
-      return (currentSet.value.modules.find(module => module.skill === skill)?.minutes ?? 0) * 60
+      return (
+        (currentSet.value.modules.find(module => mockModuleId(module) === skill)?.minutes ?? 0) * 60
+      )
     }
     return Math.max(0, Math.ceil((Date.parse(moduleState.endsAt) - Date.now()) / 1000))
   }
@@ -332,11 +421,11 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   }
 
   const allLocked = computed(() =>
-    currentSet.value.modules.every(module => state.value.modules[module.skill].locked)
+    currentSet.value.modules.every(module => state.value.modules[mockModuleId(module)]!.locked)
   )
   const doneExerciseCount = computed(() =>
     currentSet.value.modules.reduce(
-      (sum, module) => sum + state.value.modules[module.skill].done.filter(Boolean).length,
+      (sum, module) => sum + state.value.modules[mockModuleId(module)]!.done.filter(Boolean).length,
       0
     )
   )
@@ -345,20 +434,21 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
   )
   const overallPoints = computed(() =>
     currentSet.value.modules.reduce(
-      (sum, module) => sum + (state.value.modules[module.skill].scoreFinal ?? 0),
+      (sum, module) => sum + (state.value.modules[mockModuleId(module)]!.scoreFinal ?? 0),
       0
     )
   )
 
   if (import.meta.client && !isInitialized.value) {
-    onMounted(() => initialize())
-    watch(
-      () => currentSet.value.id,
-      () => {
-        state.value = createBlankMockExamState(currentSet.value)
-        initialize(true)
-      }
-    )
+    onMounted(() => {
+      void initialize()
+    })
+    watch([() => currentSet.value.id, () => requestPackId.value], () => {
+      isInitialized.value = false
+      initializedSetId.value = null
+      state.value = createBlankMockExamState(currentSet.value)
+      void initialize(true)
+    })
   }
 
   return {
@@ -374,11 +464,12 @@ export const useMockExam = (setSource: MaybeRefOrGetter<MockExamSet>) => {
     initialize,
     startExam,
     startModule,
+    updatePreparation,
+    finishPreparation,
     saveExerciseProgress,
     completeExercise,
     updateExerciseGrade,
     lockModule,
-    expireModule,
     setGrading,
     finishExam,
     resetExam,

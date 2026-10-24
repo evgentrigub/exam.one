@@ -1,394 +1,254 @@
-# Exam.one 🎓
+# exam.one
 
-> Open-source, self-hostable language exam prep. The German / Goethe A2 experience is complete and tested across all four skills and mock exam mode.
+A self-hostable platform for English, German, Spanish, and Polish language exam preparation, organized by [CEFR level](https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions).
 
-Practice Reading, Writing, Listening, and Speaking with authentic exam-style content, optional AI feedback, and local-first progress tracking.
+Practise Reading, Writing, Listening, and Speaking, take mock exams, and review your progress. Each **exam pack** provides an exam's task formats, scoring rules, bundled exercises, and prompts for optional AI generation and feedback.
 
-Design preview: `npx --yes serve exam-one-design/project -l 5174`
+Run the application locally with Docker Compose. Accounts and practice records are stored in your PostgreSQL database. Optional AI features send the content needed for generation or review to the provider you configure with your own API key.
 
-## Current status
+## Supported exam packs
 
-Canonical roadmap: [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md).
+All ten packs include the four skills, bundled practice, and a bundled mock exam (Set 1). **Yes** means a pack is available in exam.one; **No** means that board and level are not currently supported in the app.
 
-| Area | Status |
-|------|--------|
-| Phase 1 frontend MVP | **Complete and tested** |
-| Reading (Lesen) | Complete — practice, scoring, explanations, progress, and optional generation |
-| Writing (Schreiben) | Complete — drafts, submissions, optional AI grading, and detailed review |
-| Listening (Hoeren) | Complete — four exam parts, stable audio, replay rules, and optional Docker TTS |
-| Speaking (Sprechen) | Complete — recording, STT/manual transcripts, optional AI grading, and detailed review |
-| Mock exam | Complete — offline Set 1, generated local sets, automatic grading, module reviews, and AI overview |
-| Phase 2 NestJS / Postgres | Scaffold in repo; product cutover not started |
+| Exam board / language         | A1  | A2  | B1  | B2  | C1  |
+| ----------------------------- | --- | --- | --- | --- | --- |
+| Goethe-Institut · German      | Yes | Yes | Yes | No  | Yes |
+| TELC · German                 | No  | No  | No  | No  | No  |
+| Cambridge English · English   | No  | Yes | Yes | No  | No  |
+| Certyfikat Polski · Polish    | No  | Yes | Yes | No  | No  |
+| Instituto Cervantes · Spanish | No  | Yes | Yes | No  | No  |
 
-**Current implementation focus:** Phase 2 persistence and self-hosting work. See the roadmap for the NestJS/PostgreSQL cutover plan.
+Select an exam in **Settings → Learning plan**. New accounts start on Cambridge English A2 Key. The interface is available in English, German, Spanish, Polish, and Russian; interface language and exam language are separate choices.
 
-## ✨ Features
+## What you can do
 
-### 📚 Reading Practice
-- **Different Text Topics**: Email, notice, article, advertisement, and instructions
-- **Comprehension Questions**: 4 per text with detailed German explanations
-- **Instant Feedback**: Green checkmarks for correct answers, red X's with explanations
-- **Smart Filtering**: By text type (email, article, etc.) and completion status
-- **Flexible Sorting**: By title, type, difficulty, score, or word count
-- **Progress Tracking**: Completion indicators, best scores, attempt counts
-- **Resume Functionality**: Pick up where you left off
-- **Deep-Linkable**: Share or bookmark specific quiz sessions
+| Area       | Features                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| Reading    | Choice, matching, true/false, and gap-fill tasks with automatic scoring                    |
+| Writing    | Messages, longer responses, and forms; saved drafts, model answers, and optional AI review |
+| Listening  | Audio playback with exam-specific replay rules and on-demand audio generation              |
+| Speaking   | Recording tasks, editable or manual transcripts, optional transcription, and AI feedback   |
+| Mock exams | Bundled and generated sets, timers, saved attempts, and module reviews                     |
+| Progress   | Recorded scores, completion, recent activity, and past attempts                            |
 
-### ✍️ Writing Practice
-- **Writing Topics**: informal emails and formal correspondence
-- **Three-Card Interface**: Description, instructions, and editor clearly separated
-- **Real-Time Validation**: Word count with color-coded feedback (red: under/over, green: perfect)
-- **Draft Saving**: Automatic save to continue later
-- **Text Analysis**: Instant feedback on structure, vocabulary, and completeness
-  - Sentence and paragraph counting
-  - Greeting/closing detection
-  - Vocabulary diversity metrics
-  - Formality level assessment
-  - German-specific suggestions
-- **Progress Tracking**: Track submissions, completion rates, and improvement
+Bundled exercises and objective scoring work without an AI key. Generating new exercises or mock sets, model answers, and writing/speaking feedback requires a configured language model (LLM). New mock sets also require text-to-speech (TTS) for listening audio. Listening tasks need existing audio files or TTS to create them; speaking transcripts can be entered manually without speech-to-text (STT).
 
-### 🎧 Listening Practice
-- **Goethe A2 Teile 1–4**: MCQ sessions with shared or per-item audio players
-- **Stable WAV playback**: Pre-generated Kokoro German voices (identical on every replay)
-- **On-demand TTS**: Generate missing audio when Kokoro is up (`pnpm tts:up` + Generate audio)
-- **Optional AI**: Transcript generation separate from audio generation
+Mock results are practice estimates. Solo speaking and transcript-based feedback do not assess every aspect of a live oral exam, and progress scores do not predict certification results. Bundled exercises are original practice material; exam-board names identify the formats being practised and do not imply endorsement.
 
-### 🎤 Speaking Practice
-- **Exam-oriented speaking sessions**: Structured interview/question and monologue recording with editable transcripts
-- **Optional STT**: Local Parakeet (`pnpm stt:up`) or OpenAI Whisper, with manual-text fallback
-- **Optional AI review**: Direct-point criteria, explanations, strengths, improvements, and local attempt persistence
-- **Mock exam integration**: Automatic grading and persisted detailed review on completed attempts
+## Self-host with Docker Compose
 
-### 📊 Progress Dashboard
-- **Comprehensive Statistics**: Completion rates, average scores, best scores
-- **Recent Activity**: Time-based formatting (Today, Yesterday, X days ago)
-- **Per-skill analytics**: Reading, writing, listening, and speaking progress foundations
-- **Visual Indicators**: Completion badges, progress bars, trend displays
+### Requirements
 
-### 🤖 Optional AI Enhancement
-- **Bring-your-own-key**: OpenAI / OpenRouter via thin Nuxt server routes
-- **Generate & review**: Exercises and feedback when keys are configured
-- **Graceful degrade**: Core practice works without AI
+- [ ] Install Node.js 24 or newer: `curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash - && sudo apt-get install -y nodejs`
+- [ ] Install pnpm 10 using npm: `npm install -g pnpm@10.12.1`
+- [ ] Download Docker Engine and Docker Compose v2 with healthcheck support: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
+- [ ] Install Bash and OpenSSL: `sudo apt-get install -y bash openssl`
+- [ ] Several GB of disk space for images, speech models, and audio. Allow around 4 GB RAM for the core stack, with more for builds and speech services.
 
-## 🏗️ Architecture
+### Quick start
 
-### Offline-First Core ✅
-The completed Phase 1 core flows work without internet (localStorage):
-- Reading, writing, listening, and speaking practice
-- Goethe A2 mock exam Set 1
-- Progress tracking and statistics
-- Draft saving and resume functionality
-- Full navigation and UI
-
-### Optional Online Enhancement 🌐
-When LLM API keys are configured (optional):
-- Advanced AI-powered review and generation
-- Model answers / enhanced feedback
-
-**Note**: The app gracefully degrades when offline or without API keys. Core functionality remains available.
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Node.js**: v20.x or higher (LTS recommended)
-- **pnpm**: v10.12.1+ (recommended) or npm/yarn
-
-### Installation
-
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd exame-one
-
-# Install dependencies with pnpm (recommended)
-pnpm install
-
-# Or with npm
-npm install
-```
-
-### Development
-
-```bash
-# Start development server at http://localhost:3000
-pnpm dev
-
-# The app will hot-reload as you make changes
-```
-
-### Optional: Enable AI Features
-
-AI-powered review and model answers require an OpenAI API key (optional):
-
-```bash
-# Create .env file in project root
-echo "OPENAI_API_KEY=sk-your-api-key-here" > .env
-
-# Or set environment variable
-export OPENAI_API_KEY=sk-your-api-key-here
-```
-
-**Note**: Without this key, the app still works perfectly—you just won't have advanced AI feedback.
-
-### Production Build
-
-```bash
-# Build for production
-pnpm build
-
-# Preview production build locally
-pnpm preview
-
-# Generate static site (for static hosting)
-pnpm generate
-```
-
-## 🛠️ Tech Stack
-
-### Core Framework
-- **Nuxt 3** (v3.17.5) - Meta-framework with auto-imports and file-based routing
-- **Vue 3** (v3.5.16) - Composition API with `<script setup>`
-- **TypeScript** (v5.8.3) - Strict mode for type safety
-
-### UI & Styling
-- **Tailwind CSS** (v4.1.10) - Utility-first CSS framework
-- **VueUse** (v13.4.0) - Composition API utilities
-
-### State Management
-- **Pinia** (v3.0.3) - Vue store with localStorage persistence
-- **Composables** - Feature-specific reactive state management
-
-### Internationalization
-- **@nuxtjs/i18n** (v9.5.5) - English UI, German content
-- Locales: `en` (default), `de`
-
-### Development Tools
-- **ESLint** - Code linting with Vue and TypeScript rules
-- **Prettier** - Code formatting (2-space, single quotes)
-- **Husky** - Git hooks for pre-commit linting
-- **vue-tsc** - TypeScript type checking
-
-## 📁 Project Structure
-
-```text
-exam-one/
-├── apps/
-│   ├── frontend/          # Nuxt 3 application and temporary Nitro AI endpoints
-│   └── backend/           # Standalone NestJS API
-├── libraries/
-│   ├── contracts/         # Framework-neutral shared API contracts
-│   ├── database/          # Prisma schema, migrations, and seeds
-│   ├── exam-content/      # Shared exam content boundary
-│   └── nestjs-libraries/  # Shared backend infrastructure boundary
-├── agent-os/              # Product context and implementation standards
-├── compose.yaml           # App + PostgreSQL + Kokoro TTS + Parakeet STT
-├── pnpm-workspace.yaml
-└── package.json            # Workspace orchestration scripts
-```
-
-## 🧪 Local Development
-
-Use pnpm for Node.js dependencies and local application processes. Do not use npm or create package-local lockfiles.
+1. Run from the `exam-one` repository root. For an existing installation, keep your `.env` and follow [Upgrades](#upgrades).
 
 ```bash
 pnpm install
 cp .env.example .env
-pnpm dev:infra
-pnpm dev
 ```
 
-This starts:
-
-- Nuxt with hot reload at `http://localhost:3000`
-- NestJS with watch mode at `http://localhost:3001`
-- API documentation at `http://localhost:3001/api/docs`
-- PostgreSQL in Docker at `localhost:5432`
-
-The root `compose.yaml` is the repository's only Compose file. `pnpm dev:infra`
-selects just its `postgres` service for local hot-reload development. PostgreSQL
-data lives in the `exam-one-postgres-dev-data` named volume; `pnpm dev:infra:down`
-only stops the service and does not delete its data.
+2. Generate two separate secrets and put them in `.env`:
 
 ```bash
-pnpm dev:infra          # Start PostgreSQL and wait until healthy
-pnpm dev:infra:logs     # Follow PostgreSQL logs
-pnpm dev:db:shell       # Open psql in the development database
-pnpm dev:infra:down     # Stop PostgreSQL without deleting its volume
-pnpm dev:frontend       # Run only Nuxt with hot reload
-pnpm dev:backend        # Run only NestJS in watch mode
+openssl rand -base64 48  # Copy the result into JWT_SECRET in .env
+openssl rand -base64 32  # Copy the result into SECRETS_ENCRYPTION_KEY in .env
 ```
 
-## 🐳 Unified Docker Compose Stack
+Both are required before startup, even if you do not use AI. `JWT_SECRET` must be at least 32 characters; `SECRETS_ENCRYPTION_KEY` must be base64 for exactly 32 bytes.
 
-The root stack includes Nuxt, NestJS, PostgreSQL, four-voice Kokoro TTS, and
-Parakeet STT. Use the pnpm wrapper on first start: it downloads both speech-model
-sets into the gitignored host directories and then starts every service from
-`compose.yaml`.
+3. Start the stack:
 
 ```bash
-cp .env.example .env
-pnpm stack:setup       # Download and verify TTS and STT models only
 pnpm stack:up
-pnpm stack:ps
-pnpm stack:logs
-pnpm stack:down
 ```
 
-The first run downloads about 1.7 GB of speech weights: roughly 984 MB for the
-four-voice PyTorch TTS stack and 740 MB for the Handy Parakeet Q8 GGUF. It also
-builds the TTS image and the lightweight `transcribe.cpp` STT runtime, so it can
-take a while. Later starts reuse the host model folders:
+The initial setup could take around 10-15 minutes to build the images, download the speech models and generate initial exercises.
 
-- TTS models: `scripts/tts/victoria/models/`
-- STT model: `scripts/stt/parakeet/models/`
+4. Open [http://localhost:3000](http://localhost:3000) and register an account with any email. In the top right navbar click question mark icon to open `Quick Start` guide.
+5. By default, the app is configured to use the `Cambridge English A2` exam. Choose your exam in **Settings → Learning plan**.
+6. Set AI provider credentials in **Settings → AI providers** to enable AI features to generate exercise, exercise feedback, and mock exams.
+7. For other exams, download voices in **Settings → Generated files → Voice models**, then generate the pack's listening audio in the app. Transcription models are managed under **Settings → Generated files → Speech models**.
 
-After the models exist, `docker compose up -d --build --wait` is also sufficient.
-The services are exposed at:
+Startup applies database migrations and seeds bundled content. It starts the core application first, then downloads speech models, starts TTS/STT, and prepares listening audio. The first run can take several minutes; the app becomes usable while speech setup continues.
 
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:3001`
-- PostgreSQL: `localhost:5432`
-- Kokoro TTS: `http://localhost:8881/v1/audio/voices`
-- Parakeet STT: `http://localhost:8882/health`
+### Run without speech services
 
-For a single speech service, the existing shortcuts now select that service from
-the same root Compose file:
+If you don't need speech services (listening audio generation, transcription, or AI feedback), you can run the core stack only. After completing the same installation and secret setup, use this instead of `pnpm stack:up`:
 
 ```bash
-pnpm tts:setup  # download/verify only Kokoro models
-pnpm tts:up     # download/start only Kokoro
-pnpm tts:down   # stop only Kokoro
-pnpm stt:setup  # download/verify only the Parakeet model
-pnpm stt:up     # download/start only Parakeet
-pnpm stt:down   # stop only Parakeet
+pnpm stack:up:core
 ```
 
-PostgreSQL and generated listening audio use named volumes. Do not pass
-`--volumes` to `docker compose down` unless both should be deleted.
+Accounts, text-based practice, history, and saved mock attempts work with the core stack. Listening needs previously prepared audio; manual speaking transcripts remain available. To add speech later, run `pnpm stack:up:speech`.
 
-## 🧪 Available Commands
+### Inspect and stop
 
 ```bash
-pnpm build              # Build all applications and libraries
-pnpm lint               # Lint all workspace packages
-pnpm lint:fix           # Autofix all workspace packages
-pnpm format             # Format the repository
-pnpm type-check         # Type-check all workspace packages
-pnpm test               # Run package tests
-pnpm test:e2e           # Run the NestJS health endpoint e2e test
-pnpm stack:setup        # Download and verify all speech models without starting Compose
-pnpm stack:up           # Download speech models and start the complete Compose stack
-pnpm stack:down         # Stop the complete stack without deleting named volumes
-pnpm stack:logs         # Follow logs for all Compose services
-pnpm stack:ps           # Show service and health status
-pnpm tts:setup          # Download and verify only local Kokoro TTS models
-pnpm tts:up             # Start only local Kokoro TTS from compose.yaml
-pnpm stt:setup          # Download and verify only the local Parakeet GGUF
-pnpm stt:up             # Start only local Parakeet STT from compose.yaml
-pnpm db:validate        # Validate the shared Prisma schema
-pnpm db:migrate         # Create and apply a development migration
-pnpm db:migrate:deploy  # Apply committed migrations
-pnpm db:seed            # Seed the development database
+pnpm stack:ps    # Show service status
+pnpm stack:logs  # Follow logs; Ctrl+C stops following
+pnpm stack:down  # Stop the stack while preserving data
 ```
 
-## 📊 Project Status
+The API defaults to [http://localhost:3001](http://localhost:3001), with readiness at [/api/v1/health/ready](http://localhost:3001/api/v1/health/ready). API documentation at [/api/docs](http://localhost:3001/api/docs) is enabled in local development; Compose requires `SWAGGER_ENABLED=true`.
 
-Track phase/skill progress in [`agent-os/product/roadmap.md`](./agent-os/product/roadmap.md) (source of truth). Summary:
+## Optional providers
 
-### Phase 1 — Frontend MVP (complete)
+### AI generation and feedback
 
-- ✅ German / Goethe A2 Reading, Writing, Listening, and Speaking practice
-- ✅ Offline-first progress, drafts, attempts, scoring, and local persistence
-- ✅ Optional BYOK AI generation, grading, and detailed exercise reviews
-- ✅ Goethe A2 mock exam mode with offline Set 1 and locally generated sets
-- ✅ Persisted generation pipeline, automatic grading, per-module reviews, and aggregate AI overview
-- ✅ English/German UI, responsive layouts, and graceful offline/AI-unavailable behavior
+In **Settings → AI provider**, choose OpenAI, OpenRouter, Google Gemini, Anthropic, or xAI, enter your API key, and select a model. Each user configures their own key. Keys are validated before saving, encrypted with `SECRETS_ENCRYPTION_KEY`, and never returned to the browser. Provider usage may incur charges; generation and review follow the selected provider's data policies.
 
-### Later phases
+Existing bundled content and objective scoring remain usable without a key. Background generation jobs can be inspected and retried in **Activity**.
 
-- **Current — Phase 2:** NestJS + PostgreSQL persistence cutover + Docker Compose self-host
-- Phase 3: Public open-source release + docs site
-- Phase 4: Hosted cloud product
+### Speech
 
-## 🎨 Design Philosophy
+TTS generates listening audio locally: German, British English, and Spanish use Kokoro; Polish uses Piper. Existing audio plays without a running TTS service.
 
-### User Experience Principles
-- **Delightful**: Smooth animations, encouraging feedback, celebration of progress
-- **Clear**: Intuitive navigation, obvious next actions, no jargon
-- **Fast**: < 2s load time, 60fps interactions, instant feedback
-- **Accessible**: WCAG 2.2 AA compliance, keyboard navigation, screen reader support
+STT transcribes recordings locally using Phonon 2 for English and Parakeet Q4 for German, Polish, and Spanish. Models, voices, and STT language preferences are shared across the instance. Speaking recordings are temporary; transcripts and reviews are persisted.
 
-### Technical Principles
-- **Offline-First**: Core features work without internet
-- **Type-Safe**: TypeScript strict mode throughout
-- **Component-Based**: Atomic design with clear boundaries
-- **Performance-Conscious**: Bundle size monitoring, lazy loading, optimized builds
+See the [TTS guide](scripts/tts/README.md) and [STT guide](scripts/stt/README.md) for language setup, model downloads, storage, and upgrades.
 
-## 🤝 Contributing
+### Email
 
-Contributions are welcome! Please follow these guidelines:
+Email is disabled by default (`EMAIL_PROVIDER=none`), so registration auto-verifies accounts. Configure SMTP in `.env` for verification and password-reset email. Without SMTP, an instance operator can reset a local password with:
 
-### Code Style
-- **TypeScript** for all new code
-- **Composition API** with `<script setup>` for Vue components
-- **Tailwind utilities** for styling (avoid custom CSS)
-- **2-space indentation**, single quotes, trailing commas (enforced by Prettier)
+```bash
+pnpm auth:set-password --email you@example.com
+```
 
-### Component Guidelines
-- Keep components under 300 lines (split if larger)
-- Extract reusable logic into composables
-- Use TypeScript interfaces from `utils/types.ts`
-- Follow atomic design: atoms → molecules → organisms
+## Configuration
 
-### Git Workflow
-- **Branch naming**: `feature/<description>`, `fix/<description>`, `chore/<description>`
-- **Commit format**: Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`)
-- **Pre-commit hooks**: Automatic linting and formatting via Husky
+Use [.env.example](.env.example) for the complete list of settings, defaults, and setup notes. It covers ports, database/Redis connections, authentication, email, speech languages, and media paths. LLM API keys are configured per user in Settings.
 
-### Quality Checks
-- Repository-wide lint and strict TypeScript checks
-- Production builds for all workspace applications and libraries
-- Manual end-to-end checks of the completed German / Goethe A2 practice and mock-exam flows
-- Backend health endpoint E2E coverage for the Phase 2 scaffold
+For local HTTP, keep `AUTH_COOKIE_SECURE=false`; enable secure cookies when serving over HTTPS. The supplied Compose configuration targets local use and uses localhost browser URLs. PostgreSQL, Redis, and speech ports bind to localhost by default.
 
-## 📚 Documentation
+Keep `.env` with your backups: changing `JWT_SECRET` signs users out, and losing or changing `SECRETS_ENCRYPTION_KEY` makes saved AI keys unreadable.
 
-Comprehensive project documentation is maintained in the `memory-bank/` directory:
+## Backup, restore, and upgrades
 
-- **[projectbrief.md](./memory-bank/projectbrief.md)** - Vision, goals, and constraints
-- **[productContext.md](./memory-bank/productContext.md)** - Problems solved and UX goals
-- **[systemPatterns.md](./memory-bank/systemPatterns.md)** - Architecture and design patterns
-- **[techContext.md](./memory-bank/techContext.md)** - Tech stack and setup details
-- **[progress.md](./memory-bank/progress.md)** - Detailed implementation status
-- **[activeContext.md](./memory-bank/activeContext.md)** - Current focus and next steps
+Stopping the stack preserves data. **`docker compose down -v` deletes the PostgreSQL and Redis volumes.** Audio and model files are stored separately on the host.
 
-## 🎯 Roadmap
+### Database
 
-### Current Focus
-Phase 1 is complete. The current focus is the **Phase 2 self-hostable full-stack cutover** while preserving the finished German / Goethe A2 product behavior.
+With PostgreSQL running, create a backup:
 
-### Next Steps (In Priority Order)
-1. **Persistence Cutover** - Move attempts, drafts, results, and generated content to NestJS and PostgreSQL
-2. **Account Flows** - Connect authentication, profile, and settings to the backend
-3. **AI API Migration** - Move provider adapters from temporary Nuxt routes to NestJS
-4. **Self-Host Runbook** - Complete single-command Docker Compose setup and backup/restore documentation
+```bash
+mkdir -p backups
+docker compose exec -T postgres pg_dump -U exam_one -d exam_one --clean --if-exists \
+  > "backups/exam-one-postgres-$(date +%Y%m%d).sql"
+```
 
-## 📝 License
+Restore into the intended instance with backend writes stopped:
 
-[Your License Here]
+```bash
+docker compose stop backend
+docker compose exec -T postgres psql -U exam_one -d exam_one \
+  < backups/exam-one-postgres-YYYYMMDD.sql
+docker compose start backend
+```
 
-## 🙏 Acknowledgments
+Replace the backup filename and use your configured database/user names if they differ.
 
-- Goethe Institut for exam format inspiration
-- German language learners who need better practice tools
-- The Vue and Nuxt communities for excellent tooling
+### Queue, audio, and models
 
-## 📧 Contact
+Back up these resources alongside the database:
 
-[Your contact information or links]
+- Redis's named volume, with backend workers and Redis stopped, to preserve queued work consistently with the database snapshot.
+- `apps/frontend/public/audio/listening/`, including `generated/`, for bundled and generated audio.
+- `scripts/stt/models/`, including `preferences.json`, for STT models and instance language choices.
+- `scripts/tts/victoria/models/` for TTS models and voices.
+- `.env`, including the encryption key needed to read saved AI keys.
 
----
+Default volume names are `exam-one-postgres-dev-data` and `exam-one-redis-dev-data`; `.env` can override them. Stop speech services before copying model state. Model weights can also be downloaded again using the [speech guides](scripts/README.md#speech-services).
 
-**Built with ❤️ for German language learners**
+### Upgrades
 
-*Practice makes perfect—üben macht den Meister!*
+Back up the instance, then update the checkout:
+
+```bash
+git pull
+pnpm install
+pnpm stack:up
+```
+
+Backend startup applies committed migrations and upserts bundled content while preserving user-generated records.
+
+## Troubleshooting
+
+| Symptom                        | Check                                                                                                                             |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| API will not start             | Both required secrets in `.env`, PostgreSQL/Redis health, and `pnpm stack:logs`                                                   |
+| Port conflict                  | Adjust the relevant `*_PORT` in `.env` or stop the conflicting process                                                            |
+| Cannot sign in over local HTTP | Keep `AUTH_COOKIE_SECURE=false` and check the database is available                                                               |
+| Missing listening audio        | Install voices for the exam language and generate its audio in Settings; see the [TTS guide](scripts/tts/README.md#bundled-audio) |
+| Transcription unavailable      | Install/select a model for the exam language in Settings; manual transcripts remain available                                     |
+| AI unavailable                 | Check the provider, key, and model in **Settings → AI provider**                                                                  |
+| Generation interrupted         | Inspect **Activity** and retry the failed job; completed checkpoints are retained                                                 |
+
+See the [stack and speech tools](scripts/README.md) for advanced setup and diagnostics.
+
+## Local development
+
+Complete the dependency installation and `.env` secret setup from [Quick start](#quick-start), then run Nuxt and NestJS on the host with PostgreSQL and Redis in Docker:
+
+```bash
+pnpm dev:infra
+pnpm --filter @exam-one/exam-packs build
+pnpm --filter @exam-one/database db:generate
+pnpm db:migrate:deploy
+pnpm db:seed
+pnpm dev
+```
+
+The frontend defaults to port 3000 and the backend to 3001. `pnpm dev` builds backend workspace dependencies and starts both apps with hot reload. Host development requires explicit migration/seeding because it does not use the Docker entrypoint.
+
+Database CLI commands do not automatically load `.env`; they use an exported `DATABASE_URL` or the default localhost development URL. Export it explicitly for a custom database. See the [database guide](libraries/database/README.md). Stop host development with Ctrl+C and its database/Redis containers with `pnpm dev:infra:down`.
+
+## Architecture
+
+Nuxt 4 / Vue 3 provides the UI, NestJS handles authentication and application APIs, PostgreSQL/Prisma stores accounts and practice records, and Redis/BullMQ runs background jobs. PostgreSQL and Redis are required; AI, speech, and SMTP are optional.
+
+Practice records are scoped by user and exam pack. Saved attempts retain content and grading snapshots. Browser storage holds interface preferences such as theme, locale, and playback settings.
+
+### How the framework works
+
+Exam packs own their task structure, content, prompts, and scoring rules. Shared screens and APIs serve every pack; see the [pack authoring guide](data/README.md) for supported task formats and registration in [the registry](data/src/registry.ts).
+
+## Project structure
+
+| Path                          | Purpose / guide                                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `apps/frontend/`              | Nuxt screens, interactions, and audio serving                                                                       |
+| `apps/backend/`               | NestJS API, workers, authentication, and provider integration; [Postman collection](apps/backend/postman/README.md) |
+| `data/`                       | Exam definitions, prompts, content, and scoring; [pack authoring guide](data/README.md)                             |
+| `libraries/contracts/`        | [Shared API types](libraries/contracts/README.md)                                                                   |
+| `libraries/database/`         | [Prisma schema, migrations, and seeding](libraries/database/README.md)                                              |
+| `libraries/nestjs-libraries/` | [Shared backend infrastructure](libraries/nestjs-libraries/README.md)                                               |
+| `scripts/`                    | [Stack, speech, and content tools](scripts/README.md)                                                               |
+| `compose.yaml`                | Docker Compose services and persistent storage                                                                      |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, pull requests, content provenance, and contribution licensing. Participation in project spaces follows the [Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities privately using the [Security Policy](SECURITY.md).
+
+Start with [AGENTS.md](AGENTS.md) and the [implementation standards](agent-os/standards/). Keep shared practice flows independent of language and exam board; place exam-specific content and rules in the owning pack.
+
+For application changes, run `pnpm lint`, `pnpm type-check`, and the relevant tests, and verify affected practice/mock flows. `pnpm test` includes backend tests, schema validation, and STT catalog tests; the latter require host Python 3.10+.
+
+## License and attribution
+
+Copyright (c) 2026 exam.one contributors.
+
+Except where a file or third-party notice states otherwise, exam.one's original code, documentation, and bundled practice content are licensed under the **GNU Affero General Public License v3.0 only (`AGPL-3.0-only`)**. See [LICENSE](LICENSE) for the full terms. This declaration does not license user records, API keys, or third-party material as project source.
+
+Commercial use and paid hosting are permitted under the license. If you modify the program and let users interact with it over a network, AGPLv3 section 13 requires a prominent offer of the corresponding source of that modified version to those users. The license does not reserve commercial hosting to the project maintainers.
+
+Speech engines, models, voices, and other dependencies retain their own licenses. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [TTS](scripts/tts/README.md) and [STT](scripts/stt/README.md) guides. Exam-board names identify the formats being practised and do not imply endorsement or affiliation.
+
+See [CHANGELOG.md](CHANGELOG.md) and the [v1.0.0 release](https://github.com/evgentrigub/exam.one/releases/tag/v1.0.0) for the first release.

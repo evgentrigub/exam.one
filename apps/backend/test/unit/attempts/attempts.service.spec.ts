@@ -1,0 +1,296 @@
+import { getLivePack } from '@exam-one/exam-packs'
+import { Test, TestingModule } from '@nestjs/testing'
+import { HttpException, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '@exam-one/nestjs-libraries'
+import { AttemptsService } from '../../../src/practice/attempts.service'
+import { ExercisesService } from '../../../src/practice/exercises.service'
+import { makeAttempt, makeExercise, makeResult, makeUser } from '../../../src/testing/fixtures'
+
+function expectCode(error: unknown, type: new (...args: any[]) => HttpException, code: string) {
+  expect(error).toBeInstanceOf(type)
+  expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
+}
+
+describe('AttemptsService', () => {
+  let service: AttemptsService
+  let prisma: {
+    setting: { findUnique: jest.Mock }
+    attempt: {
+      count: jest.Mock
+      findMany: jest.Mock
+      findFirst: jest.Mock
+      create: jest.Mock
+      update: jest.Mock
+    }
+  }
+  let exercises: { findForUser: jest.Mock }
+
+  const user = makeUser()
+
+  beforeEach(async () => {
+    prisma = {
+      setting: { findUnique: jest.fn().mockResolvedValue({ packId: 'goethe-de-a2' }) },
+      attempt: {
+        count: jest.fn().mockResolvedValue(0),
+        findMany: jest.fn().mockResolvedValue([]),
+        findFirst: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+      },
+    }
+    exercises = { findForUser: jest.fn() }
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AttemptsService,
+        { provide: PrismaService, useValue: prisma },
+        { provide: ExercisesService, useValue: exercises },
+      ],
+    }).compile()
+
+    service = module.get(AttemptsService)
+  })
+
+  it('lists attempts mapped with nested result and exerciseExternalId', async () => {
+    const exercise = makeExercise({ externalId: 'reading-a2-teil1-001' })
+    const result = makeResult()
+    prisma.attempt.findMany.mockResolvedValue([
+      { ...makeAttempt({ exerciseId: exercise.id }), result, exercise },
+    ])
+
+    const rows = await service.list(user, 'READING')
+
+    expect(rows).toHaveLength(1)
+    expect(rows[0]?.exerciseExternalId).toBe('reading-a2-teil1-001')
+    expect(rows[0]?.result?.score).toBe(8)
+  })
+
+  it('creates an attempt without an exercise id', async () => {
+    prisma.attempt.create.mockResolvedValue({
+      ...makeAttempt({ exerciseId: null }),
+      result: null,
+      exercise: null,
+    })
+
+    const created = await service.create(user, {
+      skill: 'READING',
+      answers: { q1: 'a' },
+    })
+
+    expect(exercises.findForUser).not.toHaveBeenCalled()
+    expect(prisma.attempt.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          userId: user.id,
+          skill: 'READING',
+          exerciseId: null,
+          answers: { q1: 'a' },
+        }),
+      })
+    )
+    expect(created.exerciseExternalId).toBeNull()
+  })
+
+  it('looks up the exercise and nested-creates a result', async () => {
+    const exercise = makeExercise({ id: 'ex-9', userId: user.id, source: 'generated' })
+    exercises.findForUser.mockResolvedValue(exercise)
+    const result = makeResult({ score: 3, maxScore: 5, percentage: 60 })
+    prisma.attempt.create.mockResolvedValue({
+      ...makeAttempt({ exerciseId: exercise.id }),
+      result,
+      exercise,
+    })
+
+    await service.create(user, {
+      skill: 'READING',
+      exerciseExternalId: exercise.externalId,
+      // Three of five correct against the fixture's `correctAnswer: 1`. The server recomputes
+      // the score from the answers rather than trusting the client's numbers.
+      answers: {
+        responses: {
+          'reading-a2-teil1-001-q1': 1,
+          'reading-a2-teil1-001-q2': 1,
+          'reading-a2-teil1-001-q3': 1,
+          'reading-a2-teil1-001-q4': 0,
+          'reading-a2-teil1-001-q5': 0,
+        },
+      },
+      result: { score: 99, maxScore: 99, percentage: 99, review: { note: 'ok' } },
+    })
+
+    expect(exercises.findForUser).toHaveBeenCalledWith(user, 'READING', exercise.externalId)
+    expect(prisma.attempt.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          exerciseId: exercise.id,
+          result: {
+            create: {
+              score: 3,
+              maxScore: 5,
+              percentage: 60,
+              review: { note: 'ok' },
+            },
+          },
+        }),
+      })
+    )
+  })
+
+  it('rejects patch when the attempt is missing', async () => {
+    prisma.attempt.findFirst.mockResolvedValue(null)
+
+    try {
+      await service.patch(user, 'missing', { answers: { q1: 'c' } })
+      fail('expected NotFoundException')
+    } catch (error) {
+      expectCode(error, NotFoundException, 'ATTEMPT_NOT_FOUND')
+    }
+  })
+
+  it('patches answers and updates an existing result', async () => {
+    const existingResult = makeResult({ score: 1, maxScore: 10, percentage: 10 })
+    const existing = {
+      ...makeAttempt({ id: 'att-1' }),
+      result: existingResult,
+    }
+    const exercise = makeExercise()
+    prisma.attempt.findFirst.mockResolvedValue(existing)
+    prisma.attempt.update.mockResolvedValue({
+      ...existing,
+      answers: { q1: 'updated' },
+      result: { ...existingResult, score: 9, percentage: 90 },
+      exercise,
+    })
+
+    await service.patch(user, existing.id, {
+      answers: { q1: 'updated' },
+      result: { score: 9, percentage: 90 },
+    })
+
+    expect(prisma.attempt.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          answers: { q1: 'updated' },
+          result: {
+            update: {
+              score: 9,
+              maxScore: existingResult.maxScore,
+              percentage: 90,
+            },
+          },
+        }),
+      })
+    )
+  })
+
+  it('nested-creates a result when patching an attempt that has none', async () => {
+    const existing = { ...makeAttempt({ id: 'att-2' }), result: null }
+    prisma.attempt.findFirst.mockResolvedValue(existing)
+    prisma.attempt.update.mockResolvedValue({
+      ...existing,
+      result: makeResult({ score: 4, maxScore: 4, percentage: 100 }),
+      exercise: null,
+    })
+
+    await service.patch(user, existing.id, {
+      result: { score: 4, maxScore: 4, percentage: 100, review: { ok: true } },
+    })
+
+    expect(prisma.attempt.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          result: {
+            create: {
+              score: 4,
+              maxScore: 4,
+              percentage: 100,
+              review: { ok: true },
+            },
+          },
+        }),
+      })
+    )
+  })
+
+  it.each([
+    [114, false, 0],
+    [115, false, 60],
+    [230, true, 0],
+  ] as const)(
+    'normalizes C1 saved writing at %s words, off-topic %s',
+    async (count, offTopic, expected) => {
+      const pack = getLivePack('goethe-de-c1')
+      const payload = pack.seedExercises!.writing![0]!
+      const rules = pack.structure.find(m => m.id === 'writing')!.parts[0]!.runtime!
+      prisma.setting.findUnique.mockResolvedValue({ packId: pack.packId })
+      const exercise = makeExercise({
+        packId: pack.packId,
+        skill: 'WRITING',
+        payload: payload as never,
+      })
+      exercises.findForUser.mockResolvedValue(exercise)
+      prisma.attempt.create.mockResolvedValue({
+        ...makeAttempt({ packId: pack.packId, skill: 'WRITING' }),
+        result: null,
+        exercise,
+      })
+      const review = {
+        criteria: rules.criteria!.map(c => ({
+          ...c,
+          points: c.maxPoints,
+          grade: 'A',
+          comment: 'Evidence',
+        })),
+        totalPoints: 60,
+        maxPoints: 60,
+        summary: 'Summary',
+        strengths: [],
+        improvements: [],
+      }
+      if (offTopic) {
+        review.criteria[0]!.points = 0
+        review.criteria[0]!.grade = 'E'
+        review.totalPoints -= rules.criteria![0]!.maxPoints
+      }
+      await service.create(user, {
+        skill: 'WRITING',
+        exerciseExternalId: String(payload['id']),
+        answers: { content: Array(count).fill('Wort').join(' ') },
+        result: { review: { writingReview: { status: 'ready', responseData: review } } },
+      })
+      const saved = prisma.attempt.create.mock.calls[0]![0].data.result.create
+      expect(saved.score).toBe(expected)
+      expect(
+        saved.review.writingReview.responseData.criteria.every(
+          (c: { grade: string }) => c.grade === (expected === 0 ? 'E' : 'A')
+        )
+      ).toBe(true)
+    }
+  )
+  it('rejects an invalid C1 saved band before inserting the attempt', async () => {
+    const pack = getLivePack('goethe-de-c1')
+    const payload = pack.seedExercises!.writing![1]!
+    const rules = pack.structure.find(m => m.id === 'writing')!.parts[1]!.runtime!
+    prisma.setting.findUnique.mockResolvedValue({ packId: pack.packId })
+    exercises.findForUser.mockResolvedValue(
+      makeExercise({ packId: pack.packId, skill: 'WRITING', payload: payload as never })
+    )
+    const review = {
+      criteria: rules.criteria!.map(c => ({ ...c, points: 10, grade: 'F', comment: 'Evidence' })),
+      totalPoints: 40,
+      maxPoints: 40,
+      summary: 'Summary',
+      strengths: [],
+      improvements: [],
+    }
+    await expect(
+      service.create(user, {
+        skill: 'WRITING',
+        exerciseExternalId: String(payload['id']),
+        answers: { content: Array(120).fill('Wort').join(' ') },
+        result: { review },
+      })
+    ).rejects.toBeInstanceOf(HttpException)
+    expect(prisma.attempt.create).not.toHaveBeenCalled()
+  })
+})

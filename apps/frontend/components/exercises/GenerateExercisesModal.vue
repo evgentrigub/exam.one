@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-50 grid place-items-center p-4 bg-base-content/40 backdrop-blur-sm"
+    class="fixed inset-0 z-50 grid place-items-center p-4 bg-neutral/60 backdrop-blur-sm"
     @click="emit('close')"
   >
     <div
@@ -34,20 +34,10 @@
           <div class="text-[11px] font-semibold uppercase tracking-wider text-base-content/50 mb-2">
             {{ $t('exercisesUi.level') }}
           </div>
-          <div class="flex gap-2">
-            <button
-              v-for="l in levels"
-              :key="l"
-              class="flex-1 h-10 rounded-field text-sm font-semibold border transition-colors"
-              :class="
-                lvl === l
-                  ? 'bg-primary text-primary-content border-primary'
-                  : 'bg-base-100 border-base-300 hover:border-base-content/30'
-              "
-              @click="lvl = l"
-            >
-              {{ l }}
-            </button>
+          <div
+            class="h-10 px-4 rounded-field text-sm font-semibold border border-primary bg-primary text-primary-content inline-flex items-center"
+          >
+            {{ pack.title }}
           </div>
         </div>
 
@@ -175,14 +165,10 @@
 import { Sparkles, X, Check, Layers, BookOpen, PenLine, Headphones, Mic } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { SKILLS, getSkillLabel, type SkillId } from '~/utils/labels'
-import { getAvailableExamParts } from '~/data/examStructure/goetheA2'
+import type { SkillId as PackSkillId } from '@exam-one/exam-packs'
 
-type ExamLevel = 'A2' | 'C1'
+type ExamLevel = string
 type Difficulty = 'easier' | 'balanced' | 'harder'
-
-const props = defineProps<{
-  level: ExamLevel
-}>()
 
 const emit = defineEmits<{
   close: []
@@ -198,8 +184,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-
-const levels: ExamLevel[] = ['A2', 'C1']
+const { pack, examLevel, partsFor } = useActivePack()
 
 const ICONS: Record<SkillId, Component> = {
   reading: BookOpen,
@@ -232,7 +217,7 @@ const difficulties = computed<{ id: Difficulty; label: string }[]>(() => [
   { id: 'harder', label: t('exercisesUi.challenging') },
 ])
 
-const lvl = ref<ExamLevel>(props.level)
+const lvl = computed<ExamLevel>(() => examLevel.value)
 const skills = ref<SkillId[]>(SKILLS.map(s => s.id))
 const diff = ref<Difficulty>('balanced')
 
@@ -247,7 +232,7 @@ function toggleSkill(id: SkillId) {
 }
 
 function partsForSkill(skill: SkillId) {
-  return getAvailableExamParts(skill)
+  return partsFor(skill as PackSkillId)
 }
 
 // One exercise is generated per part of each selected module.

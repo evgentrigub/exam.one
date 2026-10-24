@@ -1,14 +1,35 @@
 """
-OpenAI-compatible FastAPI multi-voice German TTS (PyTorch / Kikiri).
+OpenAI-compatible FastAPI multi-voice TTS: German, British English and Spanish on PyTorch
+Kokoro, Polish on Piper (ONNX).
 
-Voices:
+German voices:
   - martin   — Kikiri Stage-2 (primary male)
   - bernd    — Kikiri base + dm_bernd voicepack (second male)
   - victoria — Kikiri Stage-2 (primary female)
   - eva      — Kikiri base + df_eva voicepack (second female)
 
+British English voices: bf_emma, bf_isabella (female) and
+bm_george, bm_fable (male), all on one base Kokoro-82M v1.0 model.
+
+Spanish voices: ef_dora (female), em_alex and em_santa (male),
+on the same base v1.0 model as English, which is loaded once for both.
+
 German G2P matches kokoro-onnx: phonemizer + espeak-ng lang=de, filtered to model vocab,
-then KModel.forward with voice_pack[len(ps)-1].
+then KModel.forward with voice_pack[len(ps)-1]. English G2P is misaki's British G2P (as
+kokoro's KPipeline(lang_code="b") builds it), then the same forward pass. Spanish G2P is
+misaki's espeak-ng "es" G2P, as KPipeline(lang_code="e") builds it.
+
+Polish voices: pl_gosia (female), pl_darkman and pl_bass
+(male), Piper VITS voices with Piper's bundled espeak-ng. Kokoro has no Polish. Piper speaks
+at 22.05 kHz; its audio is resampled to the service's 24 kHz so every WAV matches.
+
+Voices are listed in voice-manifest.json. Every voice whose files are on disk under the model
+directory is loaded at startup, whatever KOKORO_LANGS says (that variable only chooses what the
+setup script downloads). /v1/models/voices installs and removes voices at runtime, loading
+or unloading them without a restart; Settings → Generated files → Voice models drives it.
+
+A request names a voice and, optionally, a language. An unknown voice, or a voice of
+another language, is refused with 400 rather than spoken by the wrong voice.
 """
 
 from __future__ import annotations
@@ -19,12 +40,15 @@ import re
 import threading
 import time
 import wave
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 import torch
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
+
+from voice_catalog import CatalogError, VoiceCatalog, load_manifest
 
 SAMPLE_RATE = 24000
 DEFAULT_SPEED = float(os.getenv("KOKORO_MULTI_SPEED", "1.0"))
@@ -34,9 +58,43 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MAX_PHONEME_LEN = 500
 NOISE_ZCR_THRESHOLD = 0.35
 
-STAGE2_VOICES = {"martin", "victoria"}
-BASE_VOICES = {"bernd", "eva"}
-ALL_VOICES = ["bernd", "eva", "martin", "victoria"]
+
+
+@dataclass(frozen=True)
+class VoiceSpec:
+    lang: str
+    backbone: str
+    model_file: str
+    voice_file: str
+    engine: str = "kokoro"
+
+
+MANIFEST = load_manifest()
+# Registry order from the manifest; German load order: Stage-2 martin, Stage-2 victoria, base.
+VOICE_SPECS: dict[str, VoiceSpec] = {
+    voice.id: VoiceSpec(
+        voice.lang,
+        voice.backbone,
+        MANIFEST.files[voice.model].path,
+        MANIFEST.files[voice.voice].path,
+        voice.engine,
+    )
+    for voice in MANIFEST.voices.values()
+}
+GERMAN_ALIASES = {
+    "female": "victoria",
+    "df_victoria": "victoria",
+    "dm_martin": "martin",
+    "dm_bernd": "bernd",
+    "df_eva": "eva",
+    "male": "martin",
+}
+PROBES = {
+    "de": "Guten Tag.",
+    "en": "Hello, how are you?",
+    "es": "Buenos días, ¿qué tal?",
+    "pl": "Dzień dobry, jak się masz?",
+}
 
 app = FastAPI()
 synth_lock = threading.Lock()
@@ -44,7 +102,14 @@ synth_lock = threading.Lock()
 models: dict[str, object] = {}  # backbone key -> KModel
 voice_tensors: dict[str, torch.Tensor] = {}
 voice_backbone: dict[str, str] = {}  # voice id -> backbone key
+piper_voices: dict[str, object] = {}  # voice id -> PiperVoice
+models_loaded = False
 phonemizer_backend = None
+misaki_g2p: dict[str, object] = {}  # lang -> misaki G2P callable ("en", "es")
+
+
+class VoiceError(ValueError):
+    """A request for a voice this server does not serve in the requested language."""
 
 
 def wav_bytes(samples: np.ndarray, sample_rate: int = SAMPLE_RATE) -> bytes:
@@ -156,11 +221,19 @@ def prepare_kokoro_checkpoint(model_path: Path) -> Path:
     return tmp_path
 
 
-def load_kmodel(model_path: Path, config_path: Path):
+def load_kmodel(model_path: Path, config_path: Path, remap: bool = True):
     patch_espeak_wrapper()
     from kokoro import KModel
     # misaki may have pointed EspeakWrapper at a broken espeakng_loader path
     patch_espeak_wrapper()
+
+    if not remap:
+        # The base Kokoro checkpoint already has the key layout KModel expects.
+        return KModel(
+            repo_id="hexgrad/Kokoro-82M",
+            config=str(config_path) if config_path.is_file() else None,
+            model=str(model_path),
+        ).to(DEVICE).eval()
 
     remapped_path = prepare_kokoro_checkpoint(model_path)
     try:
@@ -204,6 +277,28 @@ def init_phonemizer() -> None:
         language_switch="remove-flags",
     )
     print("  phonemizer EspeakBackend(language=de) ready", flush=True)
+
+
+# kokoro's KPipeline language codes: British English and Spanish.
+MISAKI_LANG_CODES = {"en": ("b", "British English"), "es": ("e", "Spanish")}
+
+
+def init_misaki_g2p(lang: str) -> None:
+    """misaki's G2P for a language, exactly as KPipeline(lang_code=…) builds it."""
+    code, name = MISAKI_LANG_CODES[lang]
+    patch_espeak_wrapper()
+    from kokoro import KPipeline
+
+    misaki_g2p[lang] = KPipeline(lang_code=code, repo_id="hexgrad/Kokoro-82M", model=False).g2p
+    patch_espeak_wrapper()
+    print(f"  misaki G2P ({name}) ready", flush=True)
+
+
+def phonemize_misaki(lang: str, text: str, vocab: dict) -> str:
+    g2p = misaki_g2p.get(lang)
+    assert g2p is not None
+    phonemes, _tokens = g2p(text)
+    return "".join(ch for ch in (phonemes or "") if ch in vocab).strip()
 
 
 def phonemize_german(text: str, vocab: dict) -> str:
@@ -250,7 +345,35 @@ def synthesize_phonemes(model, voice_pack: torch.Tensor, phonemes: str, speed: f
     return np.asarray(audio, dtype=np.float32).reshape(-1)
 
 
+def loaded_voices() -> list[str]:
+    return sorted([*voice_tensors.keys(), *piper_voices.keys()])
+
+
+def resample_to_output(samples: np.ndarray, rate: int) -> np.ndarray:
+    if rate == SAMPLE_RATE or not samples.size:
+        return samples
+    import soxr
+
+    return soxr.resample(samples, rate, SAMPLE_RATE, "HQ").astype(np.float32)
+
+
+def synthesize_piper(text: str, voice: str, speed: float) -> np.ndarray:
+    from piper import SynthesisConfig
+
+    piper_voice = piper_voices.get(voice)
+    if piper_voice is None:
+        raise RuntimeError(f"Voice not available: {voice}")
+    config = SynthesisConfig(length_scale=1.0 / max(speed, 0.1))
+    chunks = [chunk.audio_int16_array for chunk in piper_voice.synthesize(text, syn_config=config)]
+    if not chunks:
+        return np.zeros(0, dtype=np.float32)
+    samples = np.concatenate(chunks).astype(np.float32) / 32768.0
+    return resample_to_output(samples, piper_voice.config.sample_rate)
+
+
 def synthesize_sentence(text: str, voice: str, speed: float) -> np.ndarray:
+    if voice in piper_voices:
+        return synthesize_piper(text, voice, speed)
     backbone = voice_backbone.get(voice)
     model = models.get(backbone) if backbone else None
     voice_pack = voice_tensors.get(voice)
@@ -258,7 +381,8 @@ def synthesize_sentence(text: str, voice: str, speed: float) -> np.ndarray:
         raise RuntimeError(f"Voice not available: {voice}")
 
     vocab = model.vocab
-    phonemes = phonemize_german(text, vocab)
+    lang = VOICE_SPECS[voice].lang if voice in VOICE_SPECS else "de"
+    phonemes = phonemize_misaki(lang, text, vocab) if lang in MISAKI_LANG_CODES else phonemize_german(text, vocab)
     if not phonemes:
         raise RuntimeError(f"Phonemizer produced empty output for: {text[:80]!r}")
 
@@ -272,89 +396,150 @@ def synthesize_sentence(text: str, voice: str, speed: float) -> np.ndarray:
     return np.concatenate(parts)
 
 
-def load_models() -> None:
-    global models, voice_tensors, voice_backbone
-    if models and voice_tensors:
-        return
+def ensure_g2p(lang: str) -> None:
+    """The phonemizer a language needs, built once when its first voice loads."""
+    if lang == "de":
+        if phonemizer_backend is None:
+            init_phonemizer()
+    elif lang in MISAKI_LANG_CODES and lang not in misaki_g2p:
+        init_misaki_g2p(lang)
 
-    config_path = MODEL_DIR / "config.json"
-    started = time.perf_counter()
-    print(f"Loading four-voice German TTS on {DEVICE}…", flush=True)
-    print(f"  model dir: {MODEL_DIR} exists={MODEL_DIR.is_dir()}", flush=True)
 
-    # Load KModel first (imports kokoro/misaki which touch EspeakWrapper), then phonemizer.
-    stage2_specs = [
-        ("martin", MODEL_DIR / "kikiri_german_martin_ep10.pth", MODEL_DIR / "voices" / "martin.pt"),
-        ("victoria", MODEL_DIR / "kikiri_german_victoria_ep10.pth", MODEL_DIR / "voices" / "victoria.pt"),
-    ]
-    for voice_id, model_path, voice_path in stage2_specs:
-        if model_path.is_file() and voice_path.is_file():
-            key = f"stage2:{voice_id}"
-            models[key] = load_kmodel(model_path, config_path)
-            voice_tensors[voice_id] = load_voice_tensor(voice_path)
-            voice_backbone[voice_id] = key
-            print(f"  loaded {voice_id} (Stage-2)", flush=True)
-        else:
-            print(f"  WARNING: {voice_id} Stage-2 missing ({model_path.name})", flush=True)
+def load_voice(voice_id: str) -> None:
+    """Load one installed voice, plus its backbone and G2P when it is the first to need them.
+    A Kokoro backbone (KModel) is loaded before the G2P: importing kokoro/misaki touches the
+    EspeakWrapper that the German phonemizer then repairs."""
+    spec = VOICE_SPECS[voice_id]
+    model_path = MODEL_DIR / spec.model_file
+    voice_path = MODEL_DIR / spec.voice_file
+    if not model_path.is_file() or not voice_path.is_file():
+        raise RuntimeError(f"{voice_id} ({spec.lang}) missing ({model_path.name} / {voice_path.name})")
+    if spec.engine == "piper":
+        from piper import PiperVoice
 
-    base_model = MODEL_DIR / "kikiri_german_base_51spk_ep4.pth"
-    if base_model.is_file():
-        models["base"] = load_kmodel(base_model, config_path)
-        for voice_id, voice_path in [
-            ("bernd", MODEL_DIR / "voices" / "bernd.pt"),
-            ("eva", MODEL_DIR / "voices" / "eva.pt"),
-        ]:
-            if voice_path.is_file():
-                voice_tensors[voice_id] = load_voice_tensor(voice_path)
-                voice_backbone[voice_id] = "base"
-                print(f"  loaded {voice_id} (base + voicepack)", flush=True)
+        piper_voices[voice_id] = PiperVoice.load(model_path, config_path=voice_path)
     else:
-        print(f"  WARNING: multi-speaker base missing ({base_model})", flush=True)
+        try:
+            if spec.backbone not in models:
+                remap = MANIFEST.voices[voice_id].remap
+                models[spec.backbone] = load_kmodel(model_path, MODEL_DIR / "config.json", remap=remap)
+            voice_tensors[voice_id] = load_voice_tensor(voice_path)
+            voice_backbone[voice_id] = spec.backbone
+            ensure_g2p(spec.lang)
+        except Exception:
+            unload_voice(voice_id)
+            raise
+    print(f"  loaded {voice_id} ({spec.lang}, {spec.backbone})", flush=True)
 
-    init_phonemizer()
 
-    if not voice_tensors:
-        raise RuntimeError(
-            "No voices loaded. Run: bash scripts/tts/victoria/download-models.sh "
-            f"(expected models under {MODEL_DIR})",
-        )
+def unload_voice(voice_id: str) -> None:
+    """Forget a voice; a backbone no loaded voice uses any more is released with it."""
+    piper_voices.pop(voice_id, None)
+    voice_tensors.pop(voice_id, None)
+    voice_backbone.pop(voice_id, None)
+    for backbone in [key for key in models if key not in voice_backbone.values()]:
+        models.pop(backbone, None)
 
-    # Startup quality gate on martin (or first available voice)
-    probe_voice = "martin" if "martin" in voice_tensors else next(iter(voice_tensors))
-    probe = synthesize_sentence("Guten Tag.", probe_voice, 1.0)
+
+def probe_language(lang: str, voice: str) -> None:
+    """Quality gate: a short sentence must come out as speech, not noise."""
+    probe = synthesize_sentence(PROBES.get(lang, "Hello."), voice, 1.0)
     zcr = zero_crossing_rate(probe)
-    print(f"  probe voice={probe_voice} samples={probe.size} zcr={zcr:.3f}", flush=True)
+    print(f"  probe lang={lang} voice={voice} samples={probe.size} zcr={zcr:.3f}", flush=True)
     if probe.size < 1000 or zcr > NOISE_ZCR_THRESHOLD:
         raise RuntimeError(
-            f"Startup probe sounds like noise (zcr={zcr:.3f}). "
-            "Check German phonemizer / model assets.",
+            f"Startup probe for {lang} sounds like noise (zcr={zcr:.3f}). "
+            "Check the phonemizer / model assets.",
         )
 
+
+def load_models() -> None:
+    global models_loaded
+    if models_loaded:
+        return
+
+    started = time.perf_counter()
+    print(f"Loading installed TTS voices on {DEVICE}…", flush=True)
+    print(f"  model dir: {MODEL_DIR} exists={MODEL_DIR.is_dir()}", flush=True)
+
+    for voice_id in catalog.installed_voices():
+        try:
+            load_voice(voice_id)
+        except Exception as err:  # This voice stays unavailable; the others keep working.
+            print(f"  WARNING: {voice_id} failed to load ({err!r})", flush=True)
+            unload_voice(voice_id)
+
+    if not loaded_voices():
+        print(
+            "  WARNING: no voices installed. Download one in Settings → Generated files → Voice models "
+            f"or run: bash scripts/tts/victoria/download-models.sh (models under {MODEL_DIR})",
+            flush=True,
+        )
+
+    # Startup quality gate per language, on martin for German (or the first voice).
+    for lang, voices in languages().items():
+        probe_language(lang, "martin" if "martin" in voices else voices[0])
+
+    models_loaded = True
     print(
-        f"Four-voice ready in {time.perf_counter() - started:.3f}s: "
-        f"{sorted(voice_tensors.keys())}",
+        f"TTS ready in {time.perf_counter() - started:.3f}s: {loaded_voices()}",
         flush=True,
     )
 
 
-def resolve_voice(voice: str) -> str:
-    voice = voice.lower()
-    aliases = {
-        "female": "victoria",
-        "df_victoria": "victoria",
-        "dm_martin": "martin",
-        "dm_bernd": "bernd",
-        "df_eva": "eva",
-        "male": "martin",
-    }
-    voice = aliases.get(voice, voice)
-    if voice in voice_tensors:
-        return voice
-    if voice in STAGE2_VOICES and "martin" in voice_tensors:
-        return "martin"
-    if voice in BASE_VOICES and "bernd" in voice_tensors:
-        return "bernd"
-    return next(iter(voice_tensors.keys()))
+def on_voice_installed(voice_id: str) -> None:
+    """Load a freshly downloaded voice without a restart; drop it again if it sounds wrong."""
+    with synth_lock:
+        load_voice(voice_id)
+        try:
+            probe_language(VOICE_SPECS[voice_id].lang, voice_id)
+        except Exception:
+            unload_voice(voice_id)
+            raise
+
+
+def on_voice_removing(voice_id: str) -> None:
+    with synth_lock:
+        unload_voice(voice_id)
+
+
+catalog = VoiceCatalog(MODEL_DIR, MANIFEST, on_installed=on_voice_installed, on_removing=on_voice_removing)
+
+
+def languages() -> dict[str, list[str]]:
+    """Loaded voices per language, in registry order."""
+    result: dict[str, list[str]] = {}
+    loaded = set(loaded_voices())
+    for voice_id, spec in VOICE_SPECS.items():
+        if voice_id in loaded:
+            result.setdefault(spec.lang, []).append(voice_id)
+    return result
+
+
+def resolve_voice(voice: str, lang: str | None) -> str:
+    """The loaded voice for a request; German aliases still resolve. Never another language."""
+    voice = GERMAN_ALIASES.get(voice.lower(), voice.lower())
+    if voice not in voice_tensors and voice not in piper_voices:
+        raise VoiceError(f"Unknown or unavailable voice: {voice}")
+    wanted = (lang or "").split("-")[0].lower()
+    if wanted and VOICE_SPECS[voice].lang != wanted:
+        raise VoiceError(f"Voice {voice} does not speak {lang}")
+    return voice
+
+
+def clean_sentence(sentence: str, lang: str) -> str:
+    """Drop characters the G2P cannot read. German keeps its original rule unchanged."""
+    if lang == "pl":
+        # Piper reads digits and punctuation itself; \w keeps ą ć ę ł ń ó ś ź ż.
+        return re.sub(r"[^\w\s.,:;!?\"'\-%/]", " ", sentence).strip()
+    if lang == "es":
+        # \w keeps á é í ó ú ü ñ; espeak reads digits, ¿ and ¡ themselves.
+        return re.sub(r"[^\w\s.,:;!?¿¡\"'\-%/€]", " ", sentence).strip()
+    if lang != "en":
+        return re.sub(r"[^\w\säöüßÄÖÜ.,:;!?\"'\-]", " ", sentence).strip()
+    sentence = re.sub(r"[‘’ʼ`´]", "'", sentence)
+    sentence = re.sub(r"[“”]", '"', sentence)
+    return re.sub(r"[^\w\s.,:;!?\"'\-£$€%&/]", " ", sentence).strip()
 
 
 @app.on_event("startup")
@@ -364,13 +549,56 @@ async def startup() -> None:
 
 @app.get("/v1/audio/voices")
 async def list_voices():
-    return {"voices": sorted(voice_tensors.keys()) or ALL_VOICES}
+    return {"voices": loaded_voices(), "languages": languages()}
+
+
+# Plain `def`: FastAPI runs these in its threadpool, so a voice loading under synth_lock never
+# blocks the event loop (and with it the catalog the Settings page polls).
+@app.get("/v1/models/voices")
+def list_voice_models():
+    """Every downloadable voice: installed or not, its size on disk (or to download) and progress."""
+    described = catalog.describe()
+    loaded = set(loaded_voices())
+    for voice in described["voices"]:
+        voice["loaded"] = voice["id"] in loaded
+    return described
+
+
+@app.post("/v1/models/voices/{voice_id}/download")
+def download_voice_model(voice_id: str):
+    try:
+        if catalog.installed(voice_id) and voice_id in loaded_voices():
+            return {"installed": True, "progress": None}
+        return {"installed": False, "progress": catalog.start_download(voice_id)}
+    except CatalogError as err:
+        return JSONResponse(status_code=404, content={"error": str(err)})
+
+
+@app.delete("/v1/models/voices/{voice_id}/download")
+def cancel_voice_model_download(voice_id: str):
+    try:
+        catalog.cancel_download(voice_id)
+        return {"cancelled": True}
+    except CatalogError as err:
+        return JSONResponse(status_code=404, content={"error": str(err)})
+
+
+@app.delete("/v1/models/voices/{voice_id}")
+def delete_voice_model(voice_id: str):
+    try:
+        catalog.voice(voice_id)
+    except CatalogError as err:
+        return JSONResponse(status_code=404, content={"error": str(err)})
+    try:
+        return {"freedBytes": catalog.remove(voice_id)}
+    except CatalogError as err:
+        return JSONResponse(status_code=409, content={"error": str(err)})
 
 
 @app.get("/health")
 async def health():
-    ok = bool(voice_tensors) and bool(models)
-    return {"ok": ok, "voices": sorted(voice_tensors.keys())}
+    ok = models_loaded and bool(loaded_voices())
+    return {"ok": ok, "voices": loaded_voices(), "languages": languages()}
 
 
 @app.post("/v1/audio/speech")
@@ -378,7 +606,12 @@ async def generate_speech(request: Request):
     data = await request.json()
     raw_text = str(data.get("input") or "")
     text = normalize_text(raw_text)
-    voice = resolve_voice(str(data.get("voice") or "martin"))
+    try:
+        load_models()
+        voice = resolve_voice(str(data.get("voice") or "martin"), data.get("lang"))
+    except VoiceError as err:
+        return Response(status_code=400, content=str(err))
+    lang = VOICE_SPECS[voice].lang
     speed = float(data.get("speed") or DEFAULT_SPEED)
     req_pause = float(data.get("pause_duration", PAUSE_DURATION))
 
@@ -393,7 +626,7 @@ async def generate_speech(request: Request):
 
         with synth_lock:
             for i, sentence in enumerate(sentences):
-                safe = re.sub(r"[^\w\säöüßÄÖÜ.,:;!?\"'\-]", " ", sentence).strip()
+                safe = clean_sentence(sentence, lang)
                 if not safe:
                     continue
                 samples = synthesize_sentence(safe, voice, speed)
@@ -409,7 +642,7 @@ async def generate_speech(request: Request):
         zcr = zero_crossing_rate(final_audio)
         elapsed = time.perf_counter() - started
         print(
-            f"TTS fertig in {elapsed:.3f}s voice={voice} samples={len(final_audio)} zcr={zcr:.3f}",
+            f"TTS fertig in {elapsed:.3f}s voice={voice} lang={lang} samples={len(final_audio)} zcr={zcr:.3f}",
             flush=True,
         )
         if zcr > NOISE_ZCR_THRESHOLD:

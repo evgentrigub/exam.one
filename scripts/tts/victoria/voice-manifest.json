@@ -1,0 +1,357 @@
+{
+  "_comment": "Every downloadable TTS voice and the files it needs. Read by main.py, download_models.py, scripts/stack-verify-models.mjs. Order is registry order (German load order: Stage-2 martin, Stage-2 victoria, then the shared base).",
+  "files": {
+    "kokoro-config": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/config.json",
+      "path": "config.json",
+      "bytes": 2352,
+      "minBytes": 1000
+    },
+    "kikiri-martin": {
+      "url": "https://huggingface.co/kikiri-tts/kikiri-german-martin/resolve/main/kikiri_german_martin_ep10.pth",
+      "path": "kikiri_german_martin_ep10.pth",
+      "bytes": 327231582,
+      "minBytes": 300000000
+    },
+    "kikiri-victoria": {
+      "url": "https://huggingface.co/kikiri-tts/kikiri-german-victoria/resolve/main/kikiri_german_victoria_ep10.pth",
+      "path": "kikiri_german_victoria_ep10.pth",
+      "bytes": 327231582,
+      "minBytes": 300000000
+    },
+    "kikiri-base": {
+      "url": "https://huggingface.co/kikiri-tts/kikiri-german-base-51speakers-synthetic/resolve/main/kikiri_german_base_51spk_ep4.pth",
+      "path": "kikiri_german_base_51spk_ep4.pth",
+      "bytes": 327231582,
+      "minBytes": 300000000
+    },
+    "kokoro-v1": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/kokoro-v1_0.pth",
+      "path": "kokoro-v1_0.pth",
+      "bytes": 327212226,
+      "minBytes": 300000000
+    },
+    "voice-martin": {
+      "url": "https://huggingface.co/kikiri-tts/kikiri-german-martin/resolve/main/voices/martin.pt",
+      "path": "voices/martin.pt",
+      "bytes": 523440,
+      "minBytes": 400000
+    },
+    "voice-victoria": {
+      "url": "https://huggingface.co/kikiri-tts/kikiri-german-victoria/resolve/main/voices/victoria.pt",
+      "path": "voices/victoria.pt",
+      "bytes": 523445,
+      "minBytes": 400000
+    },
+    "voice-bernd": {
+      "url": "https://raw.githubusercontent.com/r1di/kokoro-fastapi-german/master/api/src/voices/v1_0/dm_bernd.pt",
+      "path": "voices/bernd.pt",
+      "bytes": 525872,
+      "minBytes": 400000
+    },
+    "voice-eva": {
+      "url": "https://raw.githubusercontent.com/r1di/kokoro-fastapi-german/master/api/src/voices/v1_0/df_eva.pt",
+      "path": "voices/eva.pt",
+      "bytes": 525794,
+      "minBytes": 400000
+    },
+    "voice-bf_emma": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/bf_emma.pt",
+      "path": "voices/bf_emma.pt",
+      "bytes": 523420,
+      "minBytes": 400000
+    },
+    "voice-bf_isabella": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/bf_isabella.pt",
+      "path": "voices/bf_isabella.pt",
+      "bytes": 523440,
+      "minBytes": 400000
+    },
+    "voice-bm_george": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/bm_george.pt",
+      "path": "voices/bm_george.pt",
+      "bytes": 523430,
+      "minBytes": 400000
+    },
+    "voice-bm_fable": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/bm_fable.pt",
+      "path": "voices/bm_fable.pt",
+      "bytes": 523425,
+      "minBytes": 400000
+    },
+    "voice-ef_dora": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/ef_dora.pt",
+      "path": "voices/ef_dora.pt",
+      "bytes": 523420,
+      "minBytes": 400000
+    },
+    "voice-em_alex": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/em_alex.pt",
+      "path": "voices/em_alex.pt",
+      "bytes": 523420,
+      "minBytes": 400000
+    },
+    "voice-em_santa": {
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/voices/em_santa.pt",
+      "path": "voices/em_santa.pt",
+      "bytes": 523430,
+      "minBytes": 400000
+    },
+    "piper-gosia": {
+      "url": "https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL/gosia/medium/pl_PL-gosia-medium.onnx",
+      "path": "piper/pl_PL-gosia-medium.onnx",
+      "bytes": 63201294,
+      "minBytes": 50000000
+    },
+    "piper-gosia-config": {
+      "url": "https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL/gosia/medium/pl_PL-gosia-medium.onnx.json",
+      "path": "piper/pl_PL-gosia-medium.onnx.json",
+      "bytes": 4814,
+      "minBytes": 1000
+    },
+    "piper-darkman": {
+      "url": "https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL/darkman/medium/pl_PL-darkman-medium.onnx",
+      "path": "piper/pl_PL-darkman-medium.onnx",
+      "bytes": 63201294,
+      "minBytes": 50000000
+    },
+    "piper-darkman-config": {
+      "url": "https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL/darkman/medium/pl_PL-darkman-medium.onnx.json",
+      "path": "piper/pl_PL-darkman-medium.onnx.json",
+      "bytes": 4816,
+      "minBytes": 1000
+    },
+    "piper-bass": {
+      "url": "https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL/bass/high/pl_PL-bass-high.onnx",
+      "path": "piper/pl_PL-bass-high.onnx",
+      "bytes": 114204024,
+      "minBytes": 50000000
+    },
+    "piper-bass-config": {
+      "url": "https://huggingface.co/rhasspy/piper-voices/resolve/main/pl/pl_PL/bass/high/pl_PL-bass-high.onnx.json",
+      "path": "piper/pl_PL-bass-high.onnx.json",
+      "bytes": 4954,
+      "minBytes": 1000
+    }
+  },
+  "voices": [
+    {
+      "id": "martin",
+      "lang": "de",
+      "name": "Martin",
+      "gender": "male",
+      "accent": null,
+      "quality": "high",
+      "engine": "kokoro",
+      "backbone": "stage2:martin",
+      "remap": true,
+      "model": "kikiri-martin",
+      "voice": "voice-martin",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "victoria",
+      "lang": "de",
+      "name": "Victoria",
+      "gender": "female",
+      "accent": null,
+      "quality": "high",
+      "engine": "kokoro",
+      "backbone": "stage2:victoria",
+      "remap": true,
+      "model": "kikiri-victoria",
+      "voice": "voice-victoria",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "bernd",
+      "lang": "de",
+      "name": "Bernd",
+      "gender": "male",
+      "accent": null,
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "base",
+      "remap": true,
+      "model": "kikiri-base",
+      "voice": "voice-bernd",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "eva",
+      "lang": "de",
+      "name": "Eva",
+      "gender": "female",
+      "accent": null,
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "base",
+      "remap": true,
+      "model": "kikiri-base",
+      "voice": "voice-eva",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "bf_emma",
+      "lang": "en",
+      "name": "Emma",
+      "gender": "female",
+      "accent": "UK",
+      "quality": "high",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-bf_emma",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "bf_isabella",
+      "lang": "en",
+      "name": "Isabella",
+      "gender": "female",
+      "accent": "UK",
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-bf_isabella",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "bm_george",
+      "lang": "en",
+      "name": "George",
+      "gender": "male",
+      "accent": "UK",
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-bm_george",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "bm_fable",
+      "lang": "en",
+      "name": "Fable",
+      "gender": "male",
+      "accent": "UK",
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-bm_fable",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "ef_dora",
+      "lang": "es",
+      "name": "Dora",
+      "gender": "female",
+      "accent": "Spain",
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-ef_dora",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "em_alex",
+      "lang": "es",
+      "name": "Alex",
+      "gender": "male",
+      "accent": "Spain",
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-em_alex",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "em_santa",
+      "lang": "es",
+      "name": "Santa",
+      "gender": "male",
+      "accent": "Spain",
+      "quality": "medium",
+      "engine": "kokoro",
+      "backbone": "v1",
+      "remap": false,
+      "model": "kokoro-v1",
+      "voice": "voice-em_santa",
+      "shared": [
+        "kokoro-config"
+      ]
+    },
+    {
+      "id": "pl_gosia",
+      "lang": "pl",
+      "name": "Gosia",
+      "gender": "female",
+      "accent": null,
+      "quality": "medium",
+      "engine": "piper",
+      "backbone": "piper",
+      "remap": false,
+      "model": "piper-gosia",
+      "voice": "piper-gosia-config",
+      "shared": []
+    },
+    {
+      "id": "pl_darkman",
+      "lang": "pl",
+      "name": "Darkman",
+      "gender": "male",
+      "accent": null,
+      "quality": "medium",
+      "engine": "piper",
+      "backbone": "piper",
+      "remap": false,
+      "model": "piper-darkman",
+      "voice": "piper-darkman-config",
+      "shared": []
+    },
+    {
+      "id": "pl_bass",
+      "lang": "pl",
+      "name": "Bass",
+      "gender": "male",
+      "accent": null,
+      "quality": "high",
+      "engine": "piper",
+      "backbone": "piper",
+      "remap": false,
+      "model": "piper-bass",
+      "voice": "piper-bass-config",
+      "shared": []
+    }
+  ]
+}

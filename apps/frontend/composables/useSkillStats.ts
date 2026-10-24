@@ -41,6 +41,7 @@ export interface RecentActivityItem {
 }
 
 export const useSkillStats = () => {
+  const { t } = useI18n()
   const settingsStore = useSettingsStore()
   const { examLevel } = storeToRefs(settingsStore)
 
@@ -63,9 +64,11 @@ export const useSkillStats = () => {
   const readingStat = (): SkillStat => {
     const items = getTexts().filter(t => t.difficulty === examLevel.value)
     const progress = getProgressData()
-    const percentages = items.map(t => progress[t.id]?.bestScore != null
-      ? Math.round(((progress[t.id]!.bestScore as number) / progress[t.id]!.totalQuestions) * 100)
-      : (progress[t.id]?.percentage ?? 0))
+    const percentages = items.map(t =>
+      progress[t.id]?.bestScore != null
+        ? Math.round(((progress[t.id]!.bestScore as number) / progress[t.id]!.totalQuestions) * 100)
+        : (progress[t.id]?.percentage ?? 0)
+    )
     const completed = items.filter(t => progress[t.id]?.completed).length
     const sessions = items.reduce((sum, t) => sum + (progress[t.id]?.attemptCount ?? 0), 0)
     return {
@@ -134,19 +137,15 @@ export const useSkillStats = () => {
   const getStat = (skill: SkillId): SkillStat =>
     skillStats.value.find(s => s.id === skill) ?? readingStat()
 
-  const overallReadiness = computed<number>(() =>
-    average(skillStats.value.map(s => s.readiness)),
-  )
+  const overallReadiness = computed<number>(() => average(skillStats.value.map(s => s.readiness)))
 
   const totalCompleted = computed<number>(() =>
-    skillStats.value.reduce((sum, s) => sum + s.completed, 0),
+    skillStats.value.reduce((sum, s) => sum + s.completed, 0)
   )
 
   /** Skills ordered weakest-first (only those with exercises available). */
   const weakestSkills = computed<SkillStat[]>(() =>
-    [...skillStats.value]
-      .filter(s => s.total > 0)
-      .sort((a, b) => a.readiness - b.readiness),
+    [...skillStats.value].filter(s => s.total > 0).sort((a, b) => a.readiness - b.readiness)
   )
 
   /** Recent completions across reading + listening (the scored skills). */
@@ -157,12 +156,12 @@ export const useSkillStats = () => {
     Object.values(readingProgress)
       .filter(p => p.completed)
       .forEach(p => {
-        const text = readingTexts.find(t => t.id === p.textId)
+        const text = readingTexts.find(candidate => candidate.id === p.textId)
         items.push({
           id: p.textId,
           skill: 'reading',
-          title: text?.title ?? 'Reading exercise',
-          detail: `${p.score}/${p.totalQuestions} correct`,
+          title: text?.title ?? t('status.untitledReading'),
+          detail: t('status.correctCount', { score: p.score, total: p.totalQuestions }),
           percentage: p.percentage,
           completedAt: p.completedAt,
         })
@@ -177,8 +176,8 @@ export const useSkillStats = () => {
         items.push({
           id: p.textId,
           skill: 'listening',
-          title: ex?.title ?? 'Listening exercise',
-          detail: `${p.score}/${p.totalQuestions} correct`,
+          title: ex?.title ?? t('status.untitledListening'),
+          detail: t('status.correctCount', { score: p.score, total: p.totalQuestions }),
           percentage: p.percentage,
           completedAt: p.completedAt,
         })

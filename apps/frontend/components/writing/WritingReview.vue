@@ -10,7 +10,7 @@
         <div class="alert alert-warning items-start">
           <AlertTriangle :size="20" class="shrink-0 mt-0.5" aria-hidden="true" />
           <div>
-            <h3 class="font-bold">AI review unavailable</h3>
+            <h3 class="font-bold">{{ $t('writing.common.reviewUnavailable') }}</h3>
             <p class="text-sm">{{ reviewError }}</p>
           </div>
         </div>
@@ -66,14 +66,19 @@
 
         <!-- Review View -->
         <div v-if="selectedView === 'review' && reviewData">
-          <WritingReviewDetails :review="reviewData" />
+          <FormFillReviewDetails
+            v-if="formEntries"
+            :review="reviewData"
+            :entries="formEntries"
+            :teil="currentTopic?.testingPart ?? 1"
+          />
+          <WritingReviewDetails v-else :review="reviewData" :teil="currentTopic?.testingPart ?? 1" />
         </div>
 
         <pre
           v-else-if="selectedView === 'review'"
           class="whitespace-pre-wrap text-sm text-base-content"
-          >{{ reviewText }}</pre
-        >
+          >{{ reviewText }}</pre>
 
         <!-- Submitted Answer View -->
         <div v-else-if="selectedView === 'answer'">
@@ -115,10 +120,17 @@
 <script setup lang="ts">
 import { AlertTriangle, CheckCircle2, Clock } from 'lucide-vue-next'
 import WritingReviewDetails from '~/components/writing/WritingReviewDetails.vue'
+import FormFillReviewDetails from '~/components/writing/FormFillReviewDetails.vue'
+import {
+  blankRows,
+  displayWritingContent,
+  isFormFillTopic,
+  parseFormValues,
+} from '~/utils/writing/formFill'
 import { useWritingReview } from '~/composables/useWritingReview'
 import { useProgress } from '~/composables/useProgress'
 import { useWritingTopics } from '~/composables/useWritingTopics'
-import type { AiReviewData } from '~/utils/types'
+import type { CriterionReview } from '@exam-one/exam-packs'
 
 interface Props {
   topicId: string
@@ -153,7 +165,7 @@ const reviewText = computed(() => {
   return rec?.responseText || ''
 })
 
-const reviewData = computed<AiReviewData | null>(() => {
+const reviewData = computed<CriterionReview | null>(() => {
   void reviewVersion.value
   const rec = getReview(props.topicId)
   return rec?.responseData || null
@@ -161,7 +173,15 @@ const reviewData = computed<AiReviewData | null>(() => {
 
 const latestSubmissionText = computed(() => {
   const sub = getLatestSubmission(props.topicId)
-  return sub?.content || ''
+  return sub?.content ? displayWritingContent(currentTopic.value, sub.content) : ''
+})
+
+/** A form-fill task's entries beside their form labels; null for an essay. */
+const formEntries = computed(() => {
+  const topic = currentTopic.value
+  if (!topic || !isFormFillTopic(topic)) return null
+  const values = parseFormValues(getLatestSubmission(props.topicId)?.content)
+  return blankRows(topic).map(row => ({ id: row.field, label: row.label, answer: values[row.field] ?? '' }))
 })
 
 const selectedView = ref<'review' | 'answer' | 'task'>('review')

@@ -8,8 +8,10 @@
             <FileText :size="20" class="text-info" aria-hidden="true" />
           </div>
           <div>
-            <h2 class="card-title text-lg">Description</h2>
-            <p class="text-sm text-info">{{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}</p>
+            <h2 class="card-title text-lg">{{ t('writing.common.description') }}</h2>
+            <p class="text-sm text-info">
+              {{ getTopicTypeLabel(topic.topicType) }} • {{ topic.difficulty }}
+            </p>
           </div>
         </div>
 
@@ -44,33 +46,40 @@
         <div class="flex items-center gap-4 text-sm">
           <div class="badge badge-outline gap-2">
             <Clock :size="16" aria-hidden="true" />
-            {{ topic.estimatedTime }} minutes
+            {{ t('writing.common.minutes', { count: topic.estimatedTime }, topic.estimatedTime) }}
           </div>
           <div class="badge badge-outline gap-2">
             <FileText :size="16" aria-hidden="true" />
-            {{ topic.wordCount.min }}-{{ topic.wordCount.max }} words
+            {{
+              t('writing.common.wordRange', { min: topic.wordCount.min, max: topic.wordCount.max })
+            }}
           </div>
         </div>
       </div>
 
       <!-- Description -->
       <div class="mb-4">
-        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-2 uppercase tracking-wide">What you should write</h4>
+        <h4 class="text-sm font-semibold text-base-content opacity-70 mb-2 uppercase tracking-wide">
+          {{ t('writing.instructions.whatToWrite') }}
+        </h4>
         <p class="text-base-content leading-relaxed text-sm">{{ topic.description }}</p>
       </div>
 
       <!-- Writing Tips (if available) -->
-      <div v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')" class="alert alert-warning shadow-sm items-start">
-          <Lightbulb :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
-          <div class="w-full">
-            <h4 class="text-sm font-semibold mb-2">Writing Tips</h4>
-            <ul class="space-y-2">
-              <li v-for="tip in writingTips" :key="tip" class="flex items-start text-sm">
-                <span class="mr-2">•</span>
-                <span>{{ tip }}</span>
-              </li>
-            </ul>
-          </div>
+      <div
+        v-if="writingTips.length > 0 && (currentMode === 'quick' || currentMode === 'model-help')"
+        class="alert alert-warning shadow-sm items-start"
+      >
+        <Lightbulb :size="20" class="flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <div class="w-full">
+          <h4 class="text-sm font-semibold mb-2">{{ t('writing.common.writingTips') }}</h4>
+          <ul class="space-y-2">
+            <li v-for="tip in writingTips" :key="tip" class="flex items-start text-sm">
+              <span class="mr-2">•</span>
+              <span>{{ tip }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -88,42 +97,26 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { t, te } = useI18n()
 
 defineEmits<{
   'mode-change': [mode: WritingMode]
 }>()
 
 // Writing modes configuration
-const writingModes = [
-  {
-    id: 'quick',
-    label: 'Quick'
-  },
-  {
-    id: 'challenge',
-    label: 'Challenge'
-  },
-  {
-    id: 'model-help',
-    label: 'Model Help'
-  }
-]
+const writingModes = computed(() => [
+  { id: 'quick', label: t('writing.instructions.modeQuick') },
+  { id: 'challenge', label: t('writing.instructions.modeChallenge') },
+  { id: 'model-help', label: t('writing.instructions.modeModelHelp') },
+])
 
-// Topic type labels in German
-const topicTypeLabels = {
-  email: 'E-Mail',
-  letter: 'Brief',
-  essay: 'Aufsatz',
-  form: 'Formular',
-  postcard: 'Postkarte',
-  note: 'Notiz'
-}
-
+const { pack } = useActivePack()
 const writingTips = computed(() => {
-  return getWritingTips(props.topic.difficulty, props.topic.testingPart)
+  return getWritingTips(pack.value, props.topic.testingPart)
 })
 
 function getTopicTypeLabel(type: string) {
-  return topicTypeLabels[type as keyof typeof topicTypeLabels] || type
+  const key = `writing.topicType.${type}`
+  return te(key) ? t(key) : type
 }
 </script>
