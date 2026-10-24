@@ -5,5 +5,9 @@ packages:
 
 # Package workspace dependencies into portable pnpm deployments.
 injectWorkspacePackages: true
+# Injected copies are snapshots from install time; re-sync after every script that writes files
+# dependants read (type-check and db:generate emit the gitignored Prisma Client into src/generated).
 syncInjectedDepsAfterScripts:
   - build
+  - type-check
+  - db:generate
