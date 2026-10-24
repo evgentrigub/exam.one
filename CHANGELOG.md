@@ -31,4 +31,4 @@ Initial public release of exam.one, a self-hostable platform for language exam p
 - Initial speech setup requires model downloads. Additional language assets may need installation after startup.
 - The supplied Compose configuration targets local use; internet-facing deployments require additional operator configuration.
 
-See the [v1.0.0 release description](docs/releases/v1.0.0.md) for setup guidance and limitations.
+See the [v1.0.0 release](https://github.com/evgentrigub/exam.one/releases/tag/v1.0.0) for setup guidance and limitations.

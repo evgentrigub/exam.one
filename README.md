@@ -251,4 +251,4 @@ Commercial use and paid hosting are permitted under the license. If you modify t
 
 Speech engines, models, voices, and other dependencies retain their own licenses. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [TTS](scripts/tts/README.md) and [STT](scripts/stt/README.md) guides. Exam-board names identify the formats being practised and do not imply endorsement or affiliation.
 
-See [CHANGELOG.md](CHANGELOG.md) and the [v1.0.0 release description draft](docs/releases/v1.0.0.md) for the first public release.
+See [CHANGELOG.md](CHANGELOG.md) and the [v1.0.0 release](https://github.com/evgentrigub/exam.one/releases/tag/v1.0.0) for the first release.
