@@ -81,7 +81,9 @@ export async function callLlm(
   messages: LlmMessage[],
   opts?: LlmOptions
 ): Promise<string> {
-  console.log(`[exam.one][llm] request provider=${config.provider} model=${model} messages=${messages.length}`)
+  console.log(
+    `[exam.one][llm] request provider=${config.provider} model=${model} messages=${messages.length}`
+  )
   const startedAt = Date.now()
 
   try {
@@ -113,7 +115,8 @@ export function callLlmWithFallback(
   return runWithFallback(
     [config.model, ...config.fallbackModels],
     model => callLlm(config, model, messages, opts),
-    (from, to) => console.log(`[exam.one][llm] model=${from} unavailable; falling back to model=${to}`)
+    (from, to) =>
+      console.log(`[exam.one][llm] model=${from} unavailable; falling back to model=${to}`)
   )
 }
 
@@ -122,13 +125,19 @@ export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnect
   let timer: NodeJS.Timeout | undefined
   try {
     const response = await Promise.race([
-      callLlm({ ...config, reasoningEffort: 'low' }, config.model, [{ role: 'user', content: HEALTH_CHECK_PROMPT }], {
-        maxTokens: HEALTH_CHECK_MAX_TOKENS,
-        timeoutMs: LLM_HEALTH_CHECK_TIMEOUT_MS,
-      }),
+      callLlm(
+        { ...config, reasoningEffort: 'low' },
+        config.model,
+        [{ role: 'user', content: HEALTH_CHECK_PROMPT }],
+        {
+          maxTokens: HEALTH_CHECK_MAX_TOKENS,
+          timeoutMs: LLM_HEALTH_CHECK_TIMEOUT_MS,
+        }
+      ),
       new Promise<never>((_, reject) => {
         timer = setTimeout(
-          () => reject(new Error(`LLM health check timed out after ${LLM_HEALTH_CHECK_TIMEOUT_MS}ms`)),
+          () =>
+            reject(new Error(`LLM health check timed out after ${LLM_HEALTH_CHECK_TIMEOUT_MS}ms`)),
           LLM_HEALTH_CHECK_TIMEOUT_MS
         )
       }),
@@ -147,7 +156,8 @@ export async function verifyLlmConnection(config: LlmConfig): Promise<LlmConnect
         status: 'error',
         provider: config.provider,
         model: config.model,
-        message: 'The model answered, but not with valid JSON. AI features need a model that can return JSON.',
+        message:
+          'The model answered, but not with valid JSON. AI features need a model that can return JSON.',
       }
     }
 

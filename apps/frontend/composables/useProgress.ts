@@ -88,7 +88,14 @@ const writingProgress = ref<Record<string, WritingProgress>>({})
 const writingDrafts = ref<Record<string, WritingSessionModel>>({})
 const listeningProgress = ref<Record<string, ListeningProgress>>({})
 const speakingProgress = ref<Record<string, SpeakingProgress>>({})
-const progressSources = { readingProgress, readingSession, writingProgress, writingDrafts, listeningProgress, speakingProgress }
+const progressSources = {
+  readingProgress,
+  readingSession,
+  writingProgress,
+  writingDrafts,
+  listeningProgress,
+  speakingProgress,
+}
 const hydrated = ref(false)
 let hydratePromise: Promise<void> | null = null
 /** Set once a screen on the client has asked for progress, so a pack switch refills it. */
@@ -276,9 +283,7 @@ async function hydrate(): Promise<void> {
               typeof payload['currentQuestionIndex'] === 'number'
                 ? payload['currentQuestionIndex']
                 : 0,
-            answers: isRecord(payload['answers'])
-              ? (payload['answers'] as ObjectiveAnswers)
-              : {},
+            answers: isRecord(payload['answers']) ? (payload['answers'] as ObjectiveAnswers) : {},
             startedAt:
               typeof payload['startedAt'] === 'string'
                 ? payload['startedAt']
@@ -321,8 +326,11 @@ export const useProgress = () => {
   function sessionRef<T>(source: Ref<T>) {
     let last = source.value
     return computed({
-      get: () => requestEpoch === packEpoch() ? (last = source.value) : last,
-      set: (value: T) => { last = value; if (requestEpoch === packEpoch()) source.value = value },
+      get: () => (requestEpoch === packEpoch() ? (last = source.value) : last),
+      set: (value: T) => {
+        last = value
+        if (requestEpoch === packEpoch()) source.value = value
+      },
     })
   }
   const readingProgress = sessionRef(progressSources.readingProgress)
@@ -333,7 +341,12 @@ export const useProgress = () => {
   const speakingProgress = sessionRef(progressSources.speakingProgress)
   const getProgressData = (): Record<string, QuizProgress> => readingProgress.value
 
-  const saveQuizCompletion = (textId: string, score: number, totalQuestions: number, responses: ObjectiveAnswers = {}) => {
+  const saveQuizCompletion = (
+    textId: string,
+    score: number,
+    totalQuestions: number,
+    responses: ObjectiveAnswers = {}
+  ) => {
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
     const current = readingProgress.value[textId]
@@ -362,11 +375,7 @@ export const useProgress = () => {
     }).catch(error => console.warn('Failed to save reading attempt', error))
   }
 
-  const saveSession = (
-    textId: string,
-    currentQuestionIndex: number,
-    answers: ObjectiveAnswers
-  ) => {
+  const saveSession = (textId: string, currentQuestionIndex: number, answers: ObjectiveAnswers) => {
     const session = {
       textId,
       currentQuestionIndex,
@@ -387,9 +396,10 @@ export const useProgress = () => {
     const textId = readingSession.value?.textId
     readingSession.value = null
     if (!textId) return
-    void apiFetch(`/drafts/READING/${encodeURIComponent(textId)}`, { method: 'DELETE', packId: requestPackId }).catch(
-      () => undefined
-    )
+    void apiFetch(`/drafts/READING/${encodeURIComponent(textId)}`, {
+      method: 'DELETE',
+      packId: requestPackId,
+    }).catch(() => undefined)
   }
 
   const getProgressStats = (): ProgressStats => {
@@ -508,9 +518,10 @@ export const useProgress = () => {
   const clearWritingSession = (topicId: string) => {
     const { [topicId]: _removed, ...rest } = writingDrafts.value
     writingDrafts.value = rest
-    void apiFetch(`/drafts/WRITING/${encodeURIComponent(topicId)}`, { method: 'DELETE', packId: requestPackId }).catch(
-      () => undefined
-    )
+    void apiFetch(`/drafts/WRITING/${encodeURIComponent(topicId)}`, {
+      method: 'DELETE',
+      packId: requestPackId,
+    }).catch(() => undefined)
   }
 
   const getAllWritingSessions = (): WritingSessionModel[] =>
@@ -566,7 +577,12 @@ export const useProgress = () => {
 
   const getListeningProgressData = (): Record<string, ListeningProgress> => listeningProgress.value
 
-  const saveListeningCompletion = (exerciseId: string, score: number, totalQuestions: number, responses: ObjectiveAnswers = {}) => {
+  const saveListeningCompletion = (
+    exerciseId: string,
+    score: number,
+    totalQuestions: number,
+    responses: ObjectiveAnswers = {}
+  ) => {
     const percentage = Math.round((score / totalQuestions) * 100)
     const completedAt = new Date().toISOString()
     const current = listeningProgress.value[exerciseId]

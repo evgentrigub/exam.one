@@ -96,7 +96,11 @@ export class GenerateTopicsDto {
   @MinLength(1)
   prompt!: string
 
-  @ApiProperty({ description: 'Writing part number (e.g. 1 for SMS, 2 for formal email)', example: 1, minimum: 1 })
+  @ApiProperty({
+    description: 'Writing part number (e.g. 1 for SMS, 2 for formal email)',
+    example: 1,
+    minimum: 1,
+  })
   @IsInt()
   @Min(1)
   part!: number
@@ -106,7 +110,11 @@ export class GenerateTopicsDto {
   @IsString()
   difficulty?: string
 
-  @ApiPropertyOptional({ description: 'How many topics to generate in one call', example: 3, minimum: 1 })
+  @ApiPropertyOptional({
+    description: 'How many topics to generate in one call',
+    example: 3,
+    minimum: 1,
+  })
   @IsOptional()
   @IsInt()
   @Min(1)
@@ -142,7 +150,6 @@ export class GenerateModelAnswerDto {
   @IsOptional()
   @IsString()
   outputLanguage?: string
-
 }
 
 export class ReviewWritingDto {
@@ -188,7 +195,6 @@ export class ReviewWritingDto {
   @IsOptional()
   @IsString()
   outputLanguage?: string
-
 }
 
 export class ReviewSpeakingDto {
@@ -217,7 +223,6 @@ export class ReviewSpeakingDto {
   @IsOptional()
   @IsString()
   outputLanguage?: string
-
 }
 
 export class ReviewMockExamDto {

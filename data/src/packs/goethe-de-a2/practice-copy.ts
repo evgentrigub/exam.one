@@ -44,10 +44,30 @@ const speakingInstructions = {
  * those screens carried, moved here verbatim so another pack can supply its own.
  */
 const listeningChrome = {
-  1: { practiceSubtitle: 'Short messages', practiceType: 'announcement', practiceMinutes: 6, practiceTimerSec: 600 },
-  2: { practiceSubtitle: 'Matching conversation', practiceType: 'matching', practiceMinutes: 7, practiceTimerSec: 480 },
-  3: { practiceSubtitle: 'Short dialogues', practiceType: 'dialog', practiceMinutes: 5, practiceTimerSec: 600 },
-  4: { practiceSubtitle: 'Interview · Ja/Nein', practiceType: 'interview', practiceMinutes: 8, practiceTimerSec: 480 },
+  1: {
+    practiceSubtitle: 'Short messages',
+    practiceType: 'announcement',
+    practiceMinutes: 6,
+    practiceTimerSec: 600,
+  },
+  2: {
+    practiceSubtitle: 'Matching conversation',
+    practiceType: 'matching',
+    practiceMinutes: 7,
+    practiceTimerSec: 480,
+  },
+  3: {
+    practiceSubtitle: 'Short dialogues',
+    practiceType: 'dialog',
+    practiceMinutes: 5,
+    practiceTimerSec: 600,
+  },
+  4: {
+    practiceSubtitle: 'Interview · Ja/Nein',
+    practiceType: 'interview',
+    practiceMinutes: 8,
+    practiceTimerSec: 480,
+  },
 } as const
 
 const speakingChrome = {
@@ -62,9 +82,7 @@ export function withPracticeCopy(modules: ExamModule[]): ExamModule[] {
     parts: module.parts.map(part => ({
       ...part,
       practiceLabel: `Teil ${part.n}`,
-      ...(module.id === 'writing'
-        ? { tips: writingTips[part.n as 1 | 2] }
-        : {}),
+      ...(module.id === 'writing' ? { tips: writingTips[part.n as 1 | 2] } : {}),
       ...(module.id === 'listening'
         ? {
             instruction: listeningInstructions[part.n as 1 | 2 | 3 | 4],

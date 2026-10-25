@@ -42,7 +42,7 @@ export class UpdateExerciseAudioDto {
     type: Object,
     example: {
       shared: '/audio/listening/shared.wav',
-      items: { 'q1': '/audio/listening/q1.wav' },
+      items: { q1: '/audio/listening/q1.wav' },
     },
   })
   @IsOptional()

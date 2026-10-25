@@ -33,7 +33,9 @@ describe('pack reading generation', () => {
   })
 
   it('rejects an unknown text type', () => {
-    expect(() => part.validate!({ ...exercise(), textType: 'blog' }, part.runtime!)).toThrow('textType')
+    expect(() => part.validate!({ ...exercise(), textType: 'blog' }, part.runtime!)).toThrow(
+      'textType'
+    )
   })
 
   it('rejects an unknown question type', () => {
@@ -71,7 +73,9 @@ describe('pack reading generation', () => {
       ...exercise(),
       questions: [{ question: 'Frage?', options: ['a', 'b', 'c'], correctAnswer: 'zwei' }],
     })
-    expect((payload['questions'] as Array<{ correctAnswer: unknown }>)[0]!.correctAnswer).toBe('zwei')
+    expect((payload['questions'] as Array<{ correctAnswer: unknown }>)[0]!.correctAnswer).toBe(
+      'zwei'
+    )
   })
 })
 
@@ -154,9 +158,9 @@ describe('pack listening generation', () => {
   it('rejects an exercise that does not have exactly five items', () => {
     const part = partFor(1)
     const payload = teil1()
-    expect(() => part.validate!({ ...payload, items: payload.items.slice(1) }, part.runtime!)).toThrow(
-      'exactly 5'
-    )
+    expect(() =>
+      part.validate!({ ...payload, items: payload.items.slice(1) }, part.runtime!)
+    ).toThrow('exactly 5')
   })
 
   it('rejects a Teil 2 exercise without nine shared options', () => {

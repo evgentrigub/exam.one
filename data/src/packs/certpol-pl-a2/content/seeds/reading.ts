@@ -4,7 +4,11 @@ type Row = Omit<ReadingPlQuestion, 'id' | 'textId' | 'type'>
 type GapRow = Omit<ReadingPlGap, 'id' | 'textId' | 'type'>
 
 /** Stamp the ids and question type the reading screen and scoring expect. */
-function questions(textId: string, type: ReadingPlQuestion['type'], rows: Row[]): ReadingPlQuestion[] {
+function questions(
+  textId: string,
+  type: ReadingPlQuestion['type'],
+  rows: Row[]
+): ReadingPlQuestion[] {
   return rows.map((row, index) => ({ ...row, id: `${textId}-q${index + 1}`, textId, type }))
 }
 
@@ -22,7 +26,19 @@ function bank(options: string[], answers: Array<[number, string]>): Row[] {
   }))
 }
 
-const WORD_BOX = ['chodzę', 'duża', 'gdzie', 'jabłek', 'jutro', 'kartą', 'kupiłam', 'lubię', 'od', 'osiem', 'z']
+const WORD_BOX = [
+  'chodzę',
+  'duża',
+  'gdzie',
+  'jabłek',
+  'jutro',
+  'kartą',
+  'kupiłam',
+  'lubię',
+  'od',
+  'osiem',
+  'z',
+]
 
 const CAPTIONS = [
   'Czy jest ta kurtka w mniejszym rozmiarze?',
@@ -58,7 +74,8 @@ export const readingPlSeeds: ReadingPlExercise[] = [
         question: 'Luka 1',
         options: ['Twój', 'Twojego', 'Twoim'],
         correctAnswer: 0,
-        explanation: 'Po „dziękuję za” używamy biernika; „list” jest rodzaju męskiego nieżywotnego: „za Twój list”.',
+        explanation:
+          'Po „dziękuję za” używamy biernika; „list” jest rodzaju męskiego nieżywotnego: „za Twój list”.',
       },
       {
         question: 'Luka 2',
@@ -88,13 +105,15 @@ export const readingPlSeeds: ReadingPlExercise[] = [
         question: 'Luka 6',
         options: ['zamówił', 'zamówiła', 'zamówili'],
         correctAnswer: 1,
-        explanation: 'Podmiot „moja siostra” jest rodzaju żeńskiego, więc czasownik ma formę „zamówiła”.',
+        explanation:
+          'Podmiot „moja siostra” jest rodzaju żeńskiego, więc czasownik ma formę „zamówiła”.',
       },
       {
         question: 'Luka 7',
         options: ['musimy', 'musieliśmy', 'musicie'],
         correctAnswer: 1,
-        explanation: 'Marek opowiada o przeszłości („miałem egzamin”), więc potrzebny jest czas przeszły: „musieliśmy”.',
+        explanation:
+          'Marek opowiada o przeszłości („miałem egzamin”), więc potrzebny jest czas przeszły: „musieliśmy”.',
       },
       {
         question: 'Luka 8',
@@ -112,7 +131,8 @@ export const readingPlSeeds: ReadingPlExercise[] = [
         question: 'Luka 10',
         options: ['przyjedziesz', 'przyjechałaś', 'przyjeżdżać'],
         correctAnswer: 0,
-        explanation: 'Marek pyta o przyszłość („Czekam na Ciebie!”), więc potrzebny jest czas przyszły: „przyjedziesz”.',
+        explanation:
+          'Marek pyta o przyszłość („Czekam na Ciebie!”), więc potrzebny jest czas przyszły: „przyjedziesz”.',
       },
     ]),
   },
@@ -147,7 +167,10 @@ export const readingPlSeeds: ReadingPlExercise[] = [
         [8, '„Od … do …” wyraża czas: od poniedziałku do piątku.'],
         [3, 'Po „kilogram” mówimy, czego: dopełniacz liczby mnogiej „jabłek”.'],
         [2, 'Pytamy o miejsce: „gdzie jest apteka?”.'],
-        [0, 'Coś robimy regularnie („zawsze”), więc używamy czasownika „chodzić”: „chodzę do kina”.'],
+        [
+          0,
+          'Coś robimy regularnie („zawsze”), więc używamy czasownika „chodzić”: „chodzę do kina”.',
+        ],
         [1, '„Za duża” – sukienka ma zły rozmiar, dlatego osoba prosi o mniejszy.'],
         [10, 'Kawa razem z mlekiem: „z mlekiem” (narzędnik).'],
         [9, 'Wiek podajemy liczebnikiem: „ma osiem lat”.'],
@@ -177,7 +200,11 @@ export const readingPlSeeds: ReadingPlExercise[] = [
     questions: questions('reading-pl-a2-zadanie3-001', 'comprehension', [
       {
         question: 'Napis 1: Co oznacza ten napis?',
-        options: ['Tu nie można teraz zapłacić.', 'Tu można kupić bilet taniej.', 'Kasa jest otwarta całą dobę.'],
+        options: [
+          'Tu nie można teraz zapłacić.',
+          'Tu można kupić bilet taniej.',
+          'Kasa jest otwarta całą dobę.',
+        ],
         correctAnswer: 0,
         explanation: '„Nieczynna” znaczy, że kasa teraz nie działa.',
       },
@@ -201,7 +228,11 @@ export const readingPlSeeds: ReadingPlExercise[] = [
       },
       {
         question: 'Napis 5: Co oznacza ten napis?',
-        options: ['Sklep jest dziś zamknięty.', 'Wszystkie rzeczy kosztują teraz połowę ceny.', 'Za zakupy trzeba zapłacić gotówką.'],
+        options: [
+          'Sklep jest dziś zamknięty.',
+          'Wszystkie rzeczy kosztują teraz połowę ceny.',
+          'Za zakupy trzeba zapłacić gotówką.',
+        ],
         correctAnswer: 1,
         explanation: '„50% taniej” znaczy, że cena jest o połowę niższa.',
       },
@@ -236,7 +267,11 @@ export const readingPlSeeds: ReadingPlExercise[] = [
     questions: questions('reading-pl-a2-zadanie4-001', 'comprehension', [
       {
         question: 'Tekst 1: Co się stanie w czwartek?',
-        options: ['Administracja będzie zamknięta.', 'W budynku przez kilka godzin nie będzie wody.', 'Mieszkańcy muszą zapłacić za wodę.'],
+        options: [
+          'Administracja będzie zamknięta.',
+          'W budynku przez kilka godzin nie będzie wody.',
+          'Mieszkańcy muszą zapłacić za wodę.',
+        ],
         correctAnswer: 1,
         explanation: 'Od 8:00 do 14:00 nie będzie wody w całym budynku.',
       },
@@ -248,7 +283,11 @@ export const readingPlSeeds: ReadingPlExercise[] = [
       },
       {
         question: 'Tekst 3: Dlaczego Tomek pisze do Piotrka?',
-        options: ['Chce, żeby Piotrek przekazał wiadomość trenerowi.', 'Chce pójść z Piotrkiem do lekarza.', 'Chce zmienić godzinę treningu.'],
+        options: [
+          'Chce, żeby Piotrek przekazał wiadomość trenerowi.',
+          'Chce pójść z Piotrkiem do lekarza.',
+          'Chce zmienić godzinę treningu.',
+        ],
         correctAnswer: 0,
         explanation: 'Tomek prosi: „Możesz powiedzieć o tym trenerowi?”.',
       },
@@ -299,7 +338,11 @@ export const readingPlSeeds: ReadingPlExercise[] = [
         accepted: ['34', '34 lata', 'trzydzieści cztery', 'trzydzieści cztery lata'],
         explanation: '„Mam trzydzieści cztery lata.”',
       },
-      { question: 'Miejsce urodzenia', accepted: ['Poznań', 'w Poznaniu'], explanation: '„Urodziłam się w Poznaniu.”' },
+      {
+        question: 'Miejsce urodzenia',
+        accepted: ['Poznań', 'w Poznaniu'],
+        explanation: '„Urodziłam się w Poznaniu.”',
+      },
       {
         question: 'Adres',
         accepted: [
@@ -315,7 +358,11 @@ export const readingPlSeeds: ReadingPlExercise[] = [
         explanation: '„Mieszkam w Gdańsku, na ulicy Morskiej 15.”',
       },
       { question: 'Zawód', accepted: ['pielęgniarka'], explanation: '„Jestem pielęgniarką.”' },
-      { question: 'Liczba dzieci', accepted: ['2', 'dwoje', 'dwoje dzieci', '2 dzieci'], explanation: '„Mam męża i dwoje dzieci.”' },
+      {
+        question: 'Liczba dzieci',
+        accepted: ['2', 'dwoje', 'dwoje dzieci', '2 dzieci'],
+        explanation: '„Mam męża i dwoje dzieci.”',
+      },
       {
         question: 'Zainteresowania',
         accepted: [
@@ -358,16 +405,53 @@ export const readingPlSeeds: ReadingPlExercise[] = [
     topics: ['Miasto', 'Czas wolny'],
     createdAt: '2026-09-30',
     questions: questions('reading-pl-a2-zadanie6-001', 'matching', [
-      { question: 'Scena 1', options: CAPTIONS, correctAnswer: 2, explanation: 'Kobieta czeka na przystanku i patrzy na zegarek – autobus się spóźnia.' },
-      { question: 'Scena 2', options: CAPTIONS, correctAnswer: 5, explanation: 'Pies biegnie z piłką chłopców.' },
-      { question: 'Scena 3', options: CAPTIONS, correctAnswer: 4, explanation: 'Mężczyzna w kawiarni zamawia u kelnerki.' },
-      { question: 'Scena 4', options: CAPTIONS, correctAnswer: 0, explanation: 'Kurtka jest za duża, więc dziewczyna pyta o mniejszy rozmiar.' },
-      { question: 'Scena 5', options: CAPTIONS, correctAnswer: 1, explanation: 'Pani na targu przy owocach pyta o cenę jabłek.' },
+      {
+        question: 'Scena 1',
+        options: CAPTIONS,
+        correctAnswer: 2,
+        explanation: 'Kobieta czeka na przystanku i patrzy na zegarek – autobus się spóźnia.',
+      },
+      {
+        question: 'Scena 2',
+        options: CAPTIONS,
+        correctAnswer: 5,
+        explanation: 'Pies biegnie z piłką chłopców.',
+      },
+      {
+        question: 'Scena 3',
+        options: CAPTIONS,
+        correctAnswer: 4,
+        explanation: 'Mężczyzna w kawiarni zamawia u kelnerki.',
+      },
+      {
+        question: 'Scena 4',
+        options: CAPTIONS,
+        correctAnswer: 0,
+        explanation: 'Kurtka jest za duża, więc dziewczyna pyta o mniejszy rozmiar.',
+      },
+      {
+        question: 'Scena 5',
+        options: CAPTIONS,
+        correctAnswer: 1,
+        explanation: 'Pani na targu przy owocach pyta o cenę jabłek.',
+      },
     ]),
   },
 ]
 
-const MOCK_WORD_BOX = ['bez', 'ciekawą', 'dużego', 'lekarza', 'mówię', 'myję', 'na', 'pada', 'wczoraj', 'wolny', 'za']
+const MOCK_WORD_BOX = [
+  'bez',
+  'ciekawą',
+  'dużego',
+  'lekarza',
+  'mówię',
+  'myję',
+  'na',
+  'pada',
+  'wczoraj',
+  'wolny',
+  'za',
+]
 
 const MOCK_CAPTIONS = [
   'Wygląda pysznie, dziękujemy!',
@@ -413,7 +497,8 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
         question: 'Luka 2',
         options: ['pokój', 'pokoje', 'pokoi'],
         correctAnswer: 1,
-        explanation: 'Po liczebniku „dwa” rzeczownik stoi w mianowniku liczby mnogiej: „dwa pokoje”.',
+        explanation:
+          'Po liczebniku „dwa” rzeczownik stoi w mianowniku liczby mnogiej: „dwa pokoje”.',
       },
       {
         question: 'Luka 3',
@@ -449,7 +534,8 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
         question: 'Luka 8',
         options: ['przyjdziesz', 'przyszedłeś', 'przychodzić'],
         correctAnswer: 0,
-        explanation: 'Impreza jest w sobotę, w przyszłości, więc potrzebny jest czas przyszły: „przyjdziesz”.',
+        explanation:
+          'Impreza jest w sobotę, w przyszłości, więc potrzebny jest czas przyszły: „przyjdziesz”.',
       },
       {
         question: 'Luka 9',
@@ -534,7 +620,8 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
           'Tu można zostawić płaszcz.',
         ],
         correctAnswer: 0,
-        explanation: 'Wyjście ewakuacyjne to wyjście na wypadek pożaru lub innego niebezpieczeństwa.',
+        explanation:
+          'Wyjście ewakuacyjne to wyjście na wypadek pożaru lub innego niebezpieczeństwa.',
       },
       {
         question: 'Napis 2: Gdzie można zobaczyć ten napis?',
@@ -602,7 +689,11 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
       },
       {
         question: 'Tekst 2: Co ma zrobić Marek?',
-        options: ['pójść jutro do banku', 'zadzwonić do pana Nowaka', 'zostawić kartkę przy telefonie'],
+        options: [
+          'pójść jutro do banku',
+          'zadzwonić do pana Nowaka',
+          'zostawić kartkę przy telefonie',
+        ],
         correctAnswer: 1,
         explanation: 'Pan Nowak prosi, żeby Marek oddzwonił jutro przed dwunastą.',
       },
@@ -662,13 +753,21 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
     examOnly: true,
     questions: gaps('mock-pl-a2-set1-reading-zadanie5', [
       { question: 'Imię', accepted: ['Piotr'], explanation: '„Nazywam się Piotr Zieliński.”' },
-      { question: 'Nazwisko', accepted: ['Zieliński'], explanation: '„Nazywam się Piotr Zieliński.”' },
+      {
+        question: 'Nazwisko',
+        accepted: ['Zieliński'],
+        explanation: '„Nazywam się Piotr Zieliński.”',
+      },
       {
         question: 'Wiek',
         accepted: ['28', '28 lat', 'dwadzieścia osiem', 'dwadzieścia osiem lat'],
         explanation: '„Mam dwadzieścia osiem lat.”',
       },
-      { question: 'Miasto pochodzenia', accepted: ['Lublin', 'z Lublina'], explanation: '„Pochodzę z Lublina.”' },
+      {
+        question: 'Miasto pochodzenia',
+        accepted: ['Lublin', 'z Lublina'],
+        explanation: '„Pochodzę z Lublina.”',
+      },
       {
         question: 'Adres',
         accepted: [
@@ -691,10 +790,19 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
       },
       {
         question: 'Dni zajęć',
-        accepted: ['wtorki i czwartki', 'we wtorki i czwartki', 'wtorek i czwartek', 'wtorki, czwartki'],
+        accepted: [
+          'wtorki i czwartki',
+          'we wtorki i czwartki',
+          'wtorek i czwartek',
+          'wtorki, czwartki',
+        ],
         explanation: '„Mogę przychodzić na zajęcia we wtorki i czwartki wieczorem.”',
       },
-      { question: 'E-mail', accepted: ['piotr.z@poczta.pl'], explanation: '„Mój adres e-mail to piotr.z@poczta.pl.”' },
+      {
+        question: 'E-mail',
+        accepted: ['piotr.z@poczta.pl'],
+        explanation: '„Mój adres e-mail to piotr.z@poczta.pl.”',
+      },
       {
         question: 'Numer telefonu',
         accepted: ['601 552 903', '601552903', '601-552-903'],
@@ -721,11 +829,36 @@ export const mockReadingPlSeeds: ReadingPlExercise[] = [
     createdAt: '2026-10-04',
     examOnly: true,
     questions: questions('mock-pl-a2-set1-reading-zadanie6', 'matching', [
-      { question: 'Scena 1', options: MOCK_CAPTIONS, correctAnswer: 1, explanation: 'Pociąg odjeżdża bez rodziny – nie zdążyli.' },
-      { question: 'Scena 2', options: MOCK_CAPTIONS, correctAnswer: 3, explanation: 'Mama patrzy na dzieci, które biegną do morza.' },
-      { question: 'Scena 3', options: MOCK_CAPTIONS, correctAnswer: 5, explanation: 'Mężczyźni sprawdzają drogę na mapie w górach.' },
-      { question: 'Scena 4', options: MOCK_CAPTIONS, correctAnswer: 0, explanation: 'Kelner przynosi rybę, a para dziękuje.' },
-      { question: 'Scena 5', options: MOCK_CAPTIONS, correctAnswer: 4, explanation: 'Chłopiec kupuje w kiosku pocztówki i znaczki.' },
+      {
+        question: 'Scena 1',
+        options: MOCK_CAPTIONS,
+        correctAnswer: 1,
+        explanation: 'Pociąg odjeżdża bez rodziny – nie zdążyli.',
+      },
+      {
+        question: 'Scena 2',
+        options: MOCK_CAPTIONS,
+        correctAnswer: 3,
+        explanation: 'Mama patrzy na dzieci, które biegną do morza.',
+      },
+      {
+        question: 'Scena 3',
+        options: MOCK_CAPTIONS,
+        correctAnswer: 5,
+        explanation: 'Mężczyźni sprawdzają drogę na mapie w górach.',
+      },
+      {
+        question: 'Scena 4',
+        options: MOCK_CAPTIONS,
+        correctAnswer: 0,
+        explanation: 'Kelner przynosi rybę, a para dziękuje.',
+      },
+      {
+        question: 'Scena 5',
+        options: MOCK_CAPTIONS,
+        correctAnswer: 4,
+        explanation: 'Chłopiec kupuje w kiosku pocztówki i znaczki.',
+      },
     ]),
   },
 ]

@@ -173,7 +173,8 @@ export const cambridgeEnA2Structure: ExamModule[] = [
         n: 2,
         title: 'Discussion',
         format: 'Pictures · opinions · follow-up questions',
-        short: 'Say what you think about some activities, ask your partner, and answer follow-up questions.',
+        short:
+          'Say what you think about some activities, ask your partner, and answer follow-up questions.',
         goal: 'Give and ask for opinions, and say what you prefer and why.',
         skill: 'Discussing likes and preferences.',
         itemFormat: 'recording',

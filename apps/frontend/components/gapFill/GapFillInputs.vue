@@ -13,7 +13,9 @@
         >
           {{ index + 1 }}
         </span>
-        <span :lang="lang">{{ question.question || t('gapFill.inputLabel', { n: index + 1 }) }}</span>
+        <span :lang="lang">{{
+          question.question || t('gapFill.inputLabel', { n: index + 1 })
+        }}</span>
         <template v-if="revealed && showFeedback">
           <Check v-if="isCorrect(question)" :size="14" class="ml-auto text-success" />
           <X v-else :size="14" class="ml-auto text-error" />
@@ -48,7 +50,12 @@
 <script setup lang="ts">
 import { Check, X } from 'lucide-vue-next'
 import { isGapAnswerCorrect } from '@exam-one/exam-packs'
-import { gapInputId, withTypedAnswer, type GapQuestion, type ObjectiveAnswers } from '~/utils/gapFill'
+import {
+  gapInputId,
+  withTypedAnswer,
+  type GapQuestion,
+  type ObjectiveAnswers,
+} from '~/utils/gapFill'
 
 const props = withDefaults(
   defineProps<{
@@ -92,6 +99,8 @@ function rowClass(question: GapQuestion): string {
 function badgeClass(question: GapQuestion): string {
   if (props.revealed && props.showFeedback)
     return isCorrect(question) ? 'bg-success/20 text-success' : 'bg-error/20 text-error'
-  return valueOf(question.id).trim() ? 'bg-primary/15 text-primary' : 'bg-base-200 text-base-content/60'
+  return valueOf(question.id).trim()
+    ? 'bg-primary/15 text-primary'
+    : 'bg-base-200 text-base-content/60'
 }
 </script>

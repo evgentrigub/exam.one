@@ -14,9 +14,11 @@ export function isFormFillTopic(topic: Pick<WritingExercise, 'form'> | null | un
   return Array.isArray(topic?.form?.rows)
 }
 
-export function blankRows(topic: Pick<WritingExercise, 'form'>): (WritingFormRow & { field: string })[] {
-  return (topic.form?.rows ?? []).filter((row): row is WritingFormRow & { field: string } =>
-    typeof row.field === 'string'
+export function blankRows(
+  topic: Pick<WritingExercise, 'form'>
+): (WritingFormRow & { field: string })[] {
+  return (topic.form?.rows ?? []).filter(
+    (row): row is WritingFormRow & { field: string } => typeof row.field === 'string'
   )
 }
 
@@ -26,7 +28,9 @@ export function parseFormValues(content: string | undefined): FormValues {
     const value: unknown = JSON.parse(content)
     if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
     return Object.fromEntries(
-      Object.entries(value).filter((entry): entry is [string, string] => typeof entry[1] === 'string')
+      Object.entries(value).filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string'
+      )
     )
   } catch {
     return {}
@@ -66,6 +70,11 @@ export function writingReviewPayload(
 }
 
 /** Stored content for display: readable lines for a form, the text itself otherwise. */
-export function displayWritingContent(topic: WritingExercise | null | undefined, content: string): string {
-  return topic && isFormFillTopic(topic) ? formatFormValues(topic, parseFormValues(content)) : content
+export function displayWritingContent(
+  topic: WritingExercise | null | undefined,
+  content: string
+): string {
+  return topic && isFormFillTopic(topic)
+    ? formatFormValues(topic, parseFormValues(content))
+    : content
 }

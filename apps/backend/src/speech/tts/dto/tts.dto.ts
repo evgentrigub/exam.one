@@ -3,13 +3,12 @@ import { IsArray, IsObject, IsOptional, IsString } from 'class-validator'
 
 export class GenerateListeningAudioDto {
   @ApiProperty({
-    description: 'Listening exercise object containing audio transcript segments, speakers, and texts',
+    description:
+      'Listening exercise object containing audio transcript segments, speakers, and texts',
     type: Object,
     example: {
       id: 'goethe-a2-listen-1',
-      items: [
-        { id: 'item-1', transcript: 'Guten Tag, hier ist die Praxis Dr. Müller...' },
-      ],
+      items: [{ id: 'item-1', transcript: 'Guten Tag, hier ist die Praxis Dr. Müller...' }],
     },
   })
   @IsObject()

@@ -19,7 +19,7 @@ const REVIEW_LLM = { maxTokens: 2000 }
  * is part of the real exam but cannot be judged from text, so it is not marked here.
  */
 const SCALES = [
-  'Mark three scales, each 0–5; half points are allowed. Judge the learner\'s whole performance across all turns, not each turn separately.',
+  "Mark three scales, each 0–5; half points are allowed. Judge the learner's whole performance across all turns, not each turn separately.",
   'grammarVocabulary – 5: good control of simple grammar and a range of everyday vocabulary for the topics. 3: enough control of simple grammar and suitable vocabulary for everyday situations. 1: limited control of a few simple forms; mostly isolated words and phrases. 0: below band 1.',
   'interactiveCommunication – 5: every turn answers its question relevantly, answers give reasons or details, and any question to the partner is natural and correct. 3: turns are mostly relevant but very short, or some do not really answer the question. 1: minimal or irrelevant responses. 0: below band 1.',
   'globalAchievement – 5: handles every turn and produces longer answers (the "tell me about" answer, reasons, preferences) despite some hesitation. 3: gets basic meaning across in very short turns. 1: struggles to convey basic meaning. 0: below band 1.',
@@ -91,7 +91,7 @@ export const speakingPrompts: PromptSpec[] = [
     kind: 'generator',
     llm: GENERATOR_LLM,
     role: AUTHOR_ROLE,
-    task: 'Task: generate {count} exercises for A2 Key Speaking Part 2 (a discussion about a set of pictures, then follow-up questions). Solo practice: the examiner\'s questions are fixed cards, and the learner asks the partner one question.',
+    task: "Task: generate {count} exercises for A2 Key Speaking Part 2 (a discussion about a set of pictures, then follow-up questions). Solo practice: the examiner's questions are fixed cards, and the learner asks the partner one question.",
     rules: [
       RULES_HEADER,
       '1. In the real exam the candidates see five pictures on one topic. Here "pictures" names the five things in words, 1–4 words each ("reading a book", "going to the cinema").',

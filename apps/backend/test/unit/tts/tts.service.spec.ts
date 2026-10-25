@@ -14,7 +14,9 @@ jest.mock('../../../src/speech/tts/tts.adapter', () => ({
   listeningTranscriptHashKey: jest.fn(() => 'test-hash'),
 }))
 
-const ttsHealthStatus = adapter.ttsHealthStatus as jest.MockedFunction<typeof adapter.ttsHealthStatus>
+const ttsHealthStatus = adapter.ttsHealthStatus as jest.MockedFunction<
+  typeof adapter.ttsHealthStatus
+>
 const synthesizeListeningTranscript = adapter.synthesizeListeningTranscript as jest.MockedFunction<
   typeof adapter.synthesizeListeningTranscript
 >
@@ -58,7 +60,8 @@ describe('TtsService', () => {
   })
 
   /** German-only instance defaults of these tests run in the Goethe A2 pack. */
-  const goethe = <T>(run: () => Promise<T>): Promise<T> => packContext.run({ packId: 'goethe-de-a2' }, run)
+  const goethe = <T>(run: () => Promise<T>): Promise<T> =>
+    packContext.run({ packId: 'goethe-de-a2' }, run)
 
   it('reports offline health without throwing', async () => {
     ttsHealthStatus.mockResolvedValue('offline')
@@ -131,23 +134,38 @@ describe('TtsService', () => {
     expect(health).toEqual({ data: { ok: true }, error: null })
     const config = ttsHealthStatus.mock.calls[0]![0]
     expect(config).toMatchObject({ lang: 'en', voice: 'bf_emma' })
-    expect(config.voices?.map(voice => voice.id)).toEqual(['bf_emma', 'bm_george', 'bf_isabella', 'bm_fable'])
+    expect(config.voices?.map(voice => voice.id)).toEqual([
+      'bf_emma',
+      'bm_george',
+      'bf_isabella',
+      'bm_fable',
+    ])
   })
 
   it('puts the user default voice first and narrates German with it', async () => {
     ttsHealthStatus.mockResolvedValue('ok')
-    prisma.setting.findUnique.mockResolvedValue({ defaultVoices: { en: 'bm_fable', de: 'victoria' } })
+    prisma.setting.findUnique.mockResolvedValue({
+      defaultVoices: { en: 'bm_fable', de: 'victoria' },
+    })
     const service = await createService({
       TTS_LANGUAGES: 'de,en',
       TTS_VOICES: 'martin,bernd,victoria,eva,bf_emma,bm_george,bf_isabella,bm_fable',
     })
     await packContext.run({ packId: 'cambridge-en-a2', userId: 'user-1' }, () => service.health())
     const english = ttsHealthStatus.mock.calls[0]![0]
-    expect(english.voices?.map(voice => voice.id)).toEqual(['bm_fable', 'bf_emma', 'bm_george', 'bf_isabella'])
+    expect(english.voices?.map(voice => voice.id)).toEqual([
+      'bm_fable',
+      'bf_emma',
+      'bm_george',
+      'bf_isabella',
+    ])
     expect(english).toMatchObject({ voice: 'bm_fable' })
     expect(english.narrator).toBeUndefined()
     await packContext.run({ packId: 'goethe-de-a2', userId: 'user-1' }, () => service.health())
-    expect(ttsHealthStatus.mock.calls[1]![0]).toMatchObject({ voice: 'victoria', narrator: 'victoria' })
+    expect(ttsHealthStatus.mock.calls[1]![0]).toMatchObject({
+      voice: 'victoria',
+      narrator: 'victoria',
+    })
   })
 
   it('keeps the pack order when the default is not one of its voices', () => {
@@ -162,7 +180,10 @@ describe('TtsService', () => {
 
   it('reports a server without the pack voices as unsupported', async () => {
     ttsHealthStatus.mockResolvedValue('unsupported')
-    const service = await createService({ TTS_LANGUAGES: 'de,en', TTS_VOICES: 'bf_emma,bm_george,bf_isabella,bm_fable' })
+    const service = await createService({
+      TTS_LANGUAGES: 'de,en',
+      TTS_VOICES: 'bf_emma,bm_george,bf_isabella,bm_fable',
+    })
     const health = await packContext.run({ packId: 'cambridge-en-a2' }, () => service.health())
     expect(health.data).toEqual({ ok: false, reason: 'unsupported' })
     expect(health.error).toContain('voice')
@@ -186,21 +207,23 @@ describe('TtsService', () => {
     ttsHealthStatus.mockResolvedValue('offline')
     const service = await createService()
     await expect(
-      goethe(() => service.generateListeningAudio({
-        id: 'listening-a2-part1-abc',
-        title: 'Teil 1',
-        testingPart: 1,
-        difficulty: 'A2',
-        items: Array.from({ length: 5 }, (_, index) => ({
-          id: `listening-a2-part1-abc-i${index + 1}`,
-          context: 'c',
-          transcript: 'Hallo',
-          question: 'Q',
-          options: ['a', 'b', 'c'],
-          correctAnswer: 0,
-          explanation: 'e',
-        })),
-      }))
+      goethe(() =>
+        service.generateListeningAudio({
+          id: 'listening-a2-part1-abc',
+          title: 'Teil 1',
+          testingPart: 1,
+          difficulty: 'A2',
+          items: Array.from({ length: 5 }, (_, index) => ({
+            id: `listening-a2-part1-abc-i${index + 1}`,
+            context: 'c',
+            transcript: 'Hallo',
+            question: 'Q',
+            options: ['a', 'b', 'c'],
+            correctAnswer: 0,
+            explanation: 'e',
+          })),
+        })
+      )
     ).resolves.toEqual({
       data: null,
       error: 'TTS is offline. Start it with `pnpm tts:up`, then try Generate audio again.',
@@ -211,21 +234,23 @@ describe('TtsService', () => {
     ttsHealthStatus.mockResolvedValue('ok')
     synthesizeListeningTranscript.mockResolvedValue(Buffer.from('RIFF'))
     const service = await createService()
-    const response = await goethe(() => service.generateListeningAudio({
-      id: '../../tmp/x',
-      title: 'Teil 1',
-      testingPart: 1,
-      difficulty: 'A2',
-      items: Array.from({ length: 5 }, (_, index) => ({
-        id: `i${index + 1}`,
-        context: 'c',
-        transcript: 'Hallo',
-        question: 'Q',
-        options: ['a', 'b', 'c'],
-        correctAnswer: 0,
-        explanation: 'e',
-      })),
-    }))
+    const response = await goethe(() =>
+      service.generateListeningAudio({
+        id: '../../tmp/x',
+        title: 'Teil 1',
+        testingPart: 1,
+        difficulty: 'A2',
+        items: Array.from({ length: 5 }, (_, index) => ({
+          id: `i${index + 1}`,
+          context: 'c',
+          transcript: 'Hallo',
+          question: 'Q',
+          options: ['a', 'b', 'c'],
+          correctAnswer: 0,
+          explanation: 'e',
+        })),
+      })
+    )
     // The id is hashed into the directory name, so traversal is impossible by construction
     // rather than rejected by pattern: no emitted url may contain the raw id.
     const urls = Object.values(response.data?.audio.items ?? {})

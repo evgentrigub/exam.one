@@ -21,12 +21,14 @@ import type {
 } from '@exam-one/database'
 
 export function toBackgroundJobDto(row: BackgroundJob): BackgroundJobDto {
-  const progress = row.progress && typeof row.progress === 'object' && !Array.isArray(row.progress)
-    ? row.progress as Record<string, unknown>
-    : {}
-  const result = row.result && typeof row.result === 'object' && !Array.isArray(row.result)
-    ? row.result as Record<string, unknown>
-    : null
+  const progress =
+    row.progress && typeof row.progress === 'object' && !Array.isArray(row.progress)
+      ? (row.progress as Record<string, unknown>)
+      : {}
+  const result =
+    row.result && typeof row.result === 'object' && !Array.isArray(row.result)
+      ? (row.result as Record<string, unknown>)
+      : null
   return {
     id: row.id,
     packId: row.packId,
@@ -39,8 +41,12 @@ export function toBackgroundJobDto(row: BackgroundJob): BackgroundJobDto {
     progress: {
       stage: typeof progress['stage'] === 'number' ? progress['stage'] : 0,
       stagePercent: typeof progress['stagePercent'] === 'number' ? progress['stagePercent'] : 0,
-      ...(Array.isArray(progress['items']) ? { items: progress['items'] as { label: string; done: boolean }[] } : {}),
-      ...(typeof progress['estimateSec'] === 'number' ? { estimateSec: progress['estimateSec'] } : {}),
+      ...(Array.isArray(progress['items'])
+        ? { items: progress['items'] as { label: string; done: boolean }[] }
+        : {}),
+      ...(typeof progress['estimateSec'] === 'number'
+        ? { estimateSec: progress['estimateSec'] }
+        : {}),
     },
     result,
     error: row.error,

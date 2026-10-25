@@ -30,7 +30,8 @@ export const listeningA1Seeds: ListeningA1Exercise[] = [
         question: 'Welche Zimmernummer hat Frau Kowalski?',
         options: ['Zimmer 341.', 'Zimmer 314.', 'Zimmer 143.'],
         correctAnswer: 1,
-        explanation: 'Der Mann sagt „Zimmer 314“ und korrigiert: nicht 341, sondern drei, eins, vier.',
+        explanation:
+          'Der Mann sagt „Zimmer 314“ und korrigiert: nicht 341, sondern drei, eins, vier.',
       },
       {
         context: 'Am Bahnhof.',
@@ -111,7 +112,8 @@ export const listeningA1Seeds: ListeningA1Exercise[] = [
         question: 'Das Kaufhaus ist heute bis 20 Uhr geöffnet.',
         options: TRUE_FALSE,
         correctAnswer: 1,
-        explanation: 'Heute schließt das Kaufhaus schon um 16 Uhr; bis 20 Uhr ist es erst morgen offen.',
+        explanation:
+          'Heute schließt das Kaufhaus schon um 16 Uhr; bis 20 Uhr ist es erst morgen offen.',
       },
       {
         context: 'Im Zug.',
@@ -354,4 +356,5 @@ const mockListeningA1Payloads: ListeningA1Exercise[] = [
   },
 ]
 
-export const mockListeningA1Seeds: ListeningA1Exercise[] = mockListeningA1Payloads.map(withSeedAudio)
+export const mockListeningA1Seeds: ListeningA1Exercise[] =
+  mockListeningA1Payloads.map(withSeedAudio)

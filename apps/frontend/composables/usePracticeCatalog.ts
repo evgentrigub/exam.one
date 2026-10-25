@@ -26,6 +26,9 @@ export async function createSkillExercise<T extends { id: string }>(
   return exercisePayloads<T>([row])[0] ?? payload
 }
 
-export async function deleteSkillExercise(externalId: string, packId = useSettingsStore().packId): Promise<void> {
+export async function deleteSkillExercise(
+  externalId: string,
+  packId = useSettingsStore().packId
+): Promise<void> {
   await apiFetch(`/exercises/${encodeURIComponent(externalId)}`, { method: 'DELETE', packId })
 }

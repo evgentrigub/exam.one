@@ -18,14 +18,12 @@ export class PackContextInterceptor implements NestInterceptor {
   constructor(private readonly prisma: PrismaService) {}
 
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<unknown>> {
-    const req = context
-      .switchToHttp()
-      .getRequest<{
-        headers: Record<string, string | undefined>
-        method: string
-        url: string
-        user?: { id: string }
-      }>()
+    const req = context.switchToHttp().getRequest<{
+      headers: Record<string, string | undefined>
+      method: string
+      url: string
+      user?: { id: string }
+    }>()
     const explicit = req.headers['x-exam-pack']
     const setting =
       !explicit && req.user

@@ -16,9 +16,13 @@ export class ListeningAudioProcessor extends WorkerHost {
     private readonly prisma: PrismaService,
     private readonly exercises: ExercisesService,
     private readonly tts: TtsService
-  ) { super() }
+  ) {
+    super()
+  }
 
-  async process(job: Job<{ jobRowId: string; attempt: number; exercise?: unknown }, unknown, string>): Promise<unknown> {
+  async process(
+    job: Job<{ jobRowId: string; attempt: number; exercise?: unknown }, unknown, string>
+  ): Promise<unknown> {
     const { jobRowId, attempt } = job.data
     const row = await this.jobs.markRunning(jobRowId, attempt)
     if (!row) return null
@@ -26,38 +30,60 @@ export class ListeningAudioProcessor extends WorkerHost {
     if (!user) throw await this.jobs.abort(row, 'User no longer exists')
     const controller = new AbortController()
     const watchdog = setInterval(() => {
-      void this.jobs.get(row.id).then(current => {
-        if (!current || current.attempt !== attempt || current.status !== 'RUNNING') controller.abort()
-      }).catch(() => undefined)
+      void this.jobs
+        .get(row.id)
+        .then(current => {
+          if (!current || current.attempt !== attempt || current.status !== 'RUNNING')
+            controller.abort()
+        })
+        .catch(() => undefined)
     }, 1000)
     try {
       return await packContext.run({ packId: row.packId, userId: user.id }, async () => {
         const input = row.input as { exerciseId?: string }
-        const exercise = job.name === 'mock-audio'
-          ? job.data.exercise
-          : input.exerciseId
-            ? (await this.exercises.findForUser(user, 'LISTENING', input.exerciseId))?.payload
-            : null
+        const exercise =
+          job.name === 'mock-audio'
+            ? job.data.exercise
+            : input.exerciseId
+              ? (await this.exercises.findForUser(user, 'LISTENING', input.exerciseId))?.payload
+              : null
         if (!exercise) throw new UnrecoverableError('Listening exercise is unavailable')
-        const response = await this.tts.generatePackAudio(exercise, async (done, total) => {
-          controller.signal.throwIfAborted()
-          await job.updateProgress(Math.round(done / total * 100))
-          if (job.name !== 'mock-audio') {
-            await this.jobs.progress(row.id, attempt, { stage: 1, stagePercent: done / total * 100 })
-          }
-        }, controller.signal)
-        if (response.error || !response.data) throw new Error(response.error || 'Audio generation failed')
+        const response = await this.tts.generatePackAudio(
+          exercise,
+          async (done, total) => {
+            controller.signal.throwIfAborted()
+            await job.updateProgress(Math.round((done / total) * 100))
+            if (job.name !== 'mock-audio') {
+              await this.jobs.progress(row.id, attempt, {
+                stage: 1,
+                stagePercent: (done / total) * 100,
+              })
+            }
+          },
+          controller.signal
+        )
+        if (response.error || !response.data)
+          throw new Error(response.error || 'Audio generation failed')
         controller.signal.throwIfAborted()
         if (job.name === 'mock-audio') return response.data.audio
         if (!input.exerciseId) throw new UnrecoverableError('Missing listening exercise ID')
         await this.jobs.progress(row.id, attempt, { stage: 2, stagePercent: 10 })
         await this.exercises.updateAudio(user, input.exerciseId, response.data.audio)
-        if (!(await this.jobs.complete(row.id, attempt, { exerciseId: input.exerciseId }))) return null
+        if (!(await this.jobs.complete(row.id, attempt, { exerciseId: input.exerciseId })))
+          return null
         return response.data.audio
       })
     } catch (error) {
-      if (error instanceof UnrecoverableError || job.attemptsMade + 1 >= (job.opts.attempts ?? 1) || controller.signal.aborted) {
-        await this.jobs.fail(row.id, attempt, error instanceof Error ? error.message : 'Audio generation failed')
+      if (
+        error instanceof UnrecoverableError ||
+        job.attemptsMade + 1 >= (job.opts.attempts ?? 1) ||
+        controller.signal.aborted
+      ) {
+        await this.jobs.fail(
+          row.id,
+          attempt,
+          error instanceof Error ? error.message : 'Audio generation failed'
+        )
       }
       throw error
     } finally {

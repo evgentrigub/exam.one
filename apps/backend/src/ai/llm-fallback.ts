@@ -1,6 +1,11 @@
 // 402: OpenRouter credits ran out, so a configured free model can still answer.
 const RETRYABLE_STATUS = new Set([402, 404, 408, 409, 429])
-const CONNECTION_ERROR_NAMES = new Set(['APIConnectionError', 'APIConnectionTimeoutError', 'AbortError', 'TimeoutError'])
+const CONNECTION_ERROR_NAMES = new Set([
+  'APIConnectionError',
+  'APIConnectionTimeoutError',
+  'AbortError',
+  'TimeoutError',
+])
 
 function statusOf(error: unknown): number | undefined {
   const status = (error as { status?: unknown } | null)?.status
@@ -12,7 +17,10 @@ export function isRetryableLlmError(error: unknown): boolean {
   const status = statusOf(error)
   if (status !== undefined) return RETRYABLE_STATUS.has(status) || status >= 500
   // The openai SDK leaves `name` as 'Error' on its connection errors; its class name tells them apart.
-  return error instanceof Error && (CONNECTION_ERROR_NAMES.has(error.name) || CONNECTION_ERROR_NAMES.has(error.constructor.name))
+  return (
+    error instanceof Error &&
+    (CONNECTION_ERROR_NAMES.has(error.name) || CONNECTION_ERROR_NAMES.has(error.constructor.name))
+  )
 }
 
 /** Tries each model in order; moves on only for errors another model could avoid. */

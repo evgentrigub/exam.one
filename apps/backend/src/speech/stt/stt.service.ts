@@ -19,7 +19,16 @@ const ALLOWED_STT_MIME_TYPES = new Set([
   'audio/x-m4a',
   'audio/aac',
 ])
-const ALLOWED_STT_EXTENSIONS = new Set(['.webm', '.wav', '.mp3', '.mpeg', '.ogg', '.m4a', '.mp4', '.aac'])
+const ALLOWED_STT_EXTENSIONS = new Set([
+  '.webm',
+  '.wav',
+  '.mp3',
+  '.mpeg',
+  '.ogg',
+  '.m4a',
+  '.mp4',
+  '.aac',
+])
 
 export function normalizeSttMimeType(raw?: string): string {
   const [base] = (raw ?? '').split(';')
@@ -43,9 +52,13 @@ export class SttService {
 
   private sttConfig(): SttConfig {
     const language = getLivePack(packContext.getStore()?.packId).speech.sttLang
-    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de,en,pl,es').split(',').map(value => value.trim())
+    const installedLanguages = (this.config.get<string>('app.STT_LANGUAGES') ?? 'de,en,pl,es')
+      .split(',')
+      .map(value => value.trim())
     if (!installedLanguages.includes(language)) {
-      throw new Error(`Speech recognition for ${language} is unavailable on this instance. You can enter a transcript manually.`)
+      throw new Error(
+        `Speech recognition for ${language} is unavailable on this instance. You can enter a transcript manually.`
+      )
     }
     return {
       ...getSttConfig({

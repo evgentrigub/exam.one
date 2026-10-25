@@ -65,7 +65,10 @@ function moduleOf(skill: SkillId) {
 
 /** Raw points of a module: the sum of its tasks' maxima (30 / 30 / 20 / 36). Practice applies no conversion. */
 function rawPointsFor(skill: SkillId): number {
-  return moduleOf(skill).parts.reduce((sum, part) => sum + certpolA2PartRules(skill, part.n).maxPoints, 0)
+  return moduleOf(skill).parts.reduce(
+    (sum, part) => sum + certpolA2PartRules(skill, part.n).maxPoints,
+    0
+  )
 }
 
 /** Module definitions for a set; per-task points and replay limits come from the runtime rules. */
@@ -124,7 +127,10 @@ export const certpolA2MockExamSet1: MockExamSet = {
  * A generated set from pipeline content. The pipeline first calls this with blank content to
  * read the set id, so it must not depend on the content being complete.
  */
-export function createCertpolA2MockExamSet(setNumber: number, content: MockExamContent): MockExamSet {
+export function createCertpolA2MockExamSet(
+  setNumber: number,
+  content: MockExamContent
+): MockExamSet {
   return {
     id: `certpol-pl-a2-set-${setNumber}`,
     examId: 'certpol-pl-a2',

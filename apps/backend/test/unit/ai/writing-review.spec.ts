@@ -100,21 +100,21 @@ describe('pack writing prompt variables', () => {
     testingPart: 1,
   }
 
-  it.each([
-    ['answer' as const],
-    ['review' as const],
-  ])('leaves no unresolved placeholder in the %s prompt', kind => {
-    const spec = pack.prompts.find(s => s.skill === 'writing' && s.part === 1 && s.kind === kind)!
-    const vars = pack.buildReviewVars!({
-      skill: 'writing',
-      part: 1,
-      kind,
-      payload: topic,
-      answers: { answer: 'Hallo Anna, ich kann leider nicht kommen.' },
-      outputLanguage: 'de',
-    })
-    expect(spec.assemble(vars)).not.toMatch(/\{[a-zA-Z][a-zA-Z0-9]*\}/)
-  })
+  it.each([['answer' as const], ['review' as const]])(
+    'leaves no unresolved placeholder in the %s prompt',
+    kind => {
+      const spec = pack.prompts.find(s => s.skill === 'writing' && s.part === 1 && s.kind === kind)!
+      const vars = pack.buildReviewVars!({
+        skill: 'writing',
+        part: 1,
+        kind,
+        payload: topic,
+        answers: { answer: 'Hallo Anna, ich kann leider nicht kommen.' },
+        outputLanguage: 'de',
+      })
+      expect(spec.assemble(vars)).not.toMatch(/\{[a-zA-Z][a-zA-Z0-9]*\}/)
+    }
+  )
 
   it('passes the requirements as a readable list, not a JSON blob', () => {
     const vars = pack.buildReviewVars!({
@@ -160,9 +160,7 @@ describe('model answer extraction', () => {
  */
 describe('pack writing generation', () => {
   const pack = getPack('goethe-de-a2')!
-  const part = pack.structure
-    .find(module => module.id === 'writing')!
-    .parts.find(p => p.n === 1)!
+  const part = pack.structure.find(module => module.id === 'writing')!.parts.find(p => p.n === 1)!
 
   const topic = () => ({
     title: 'Termin absagen',

@@ -27,7 +27,15 @@ const speakingCopy = {
     practiceMinutes: 5,
     instruction:
       'Introduce yourself using every keyword, then spell the word and say the number. Record it all in one go.',
-    phrases: ['Ich heiße …', 'Ich bin … Jahre alt.', 'Ich komme aus …', 'Ich wohne in …', 'Ich spreche …', 'Ich bin … von Beruf.', 'Mein Hobby ist …'],
+    phrases: [
+      'Ich heiße …',
+      'Ich bin … Jahre alt.',
+      'Ich komme aus …',
+      'Ich wohne in …',
+      'Ich spreche …',
+      'Ich bin … von Beruf.',
+      'Mein Hobby ist …',
+    ],
   },
   2: {
     sessionTitle: 'Ask & answer',
@@ -41,15 +49,37 @@ const speakingCopy = {
     practiceMinutes: 5,
     instruction:
       'Two rounds. Make a polite request for what is on your card, then react to your partner’s request. Record each turn separately.',
-    phrases: ['Können Sie bitte …?', 'Kannst du mir bitte … geben?', '…, bitte.', 'Ja, gern. Hier, bitte.', 'Tut mir leid, …', 'Kein Problem.'],
+    phrases: [
+      'Können Sie bitte …?',
+      'Kannst du mir bitte … geben?',
+      '…, bitte.',
+      'Ja, gern. Hier, bitte.',
+      'Tut mir leid, …',
+      'Kein Problem.',
+    ],
   },
 } as const
 
 /** Session and catalog chrome, in the same slots A2 fills (see `ExamPart`). */
 const listeningChrome = {
-  1: { practiceSubtitle: 'Short conversations', practiceType: 'dialog', practiceMinutes: 8, practiceTimerSec: 480 },
-  2: { practiceSubtitle: 'Announcements · Richtig/Falsch', practiceType: 'announcement', practiceMinutes: 5, practiceTimerSec: 300 },
-  3: { practiceSubtitle: 'Telephone messages', practiceType: 'voicemail', practiceMinutes: 7, practiceTimerSec: 420 },
+  1: {
+    practiceSubtitle: 'Short conversations',
+    practiceType: 'dialog',
+    practiceMinutes: 8,
+    practiceTimerSec: 480,
+  },
+  2: {
+    practiceSubtitle: 'Announcements · Richtig/Falsch',
+    practiceType: 'announcement',
+    practiceMinutes: 5,
+    practiceTimerSec: 300,
+  },
+  3: {
+    practiceSubtitle: 'Telephone messages',
+    practiceType: 'voicemail',
+    practiceMinutes: 7,
+    practiceTimerSec: 420,
+  },
 } as const
 
 /** Attach the labels and coach copy the practice screens show. */

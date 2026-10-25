@@ -48,7 +48,10 @@ function isUnauthorized(error: unknown): boolean {
   return (fetchError.statusCode ?? fetchError.status) === 401
 }
 
-async function requestAiOnce<T>(path: string, options: AiFetchOptions = {}): Promise<AiResponse<T>> {
+async function requestAiOnce<T>(
+  path: string,
+  options: AiFetchOptions = {}
+): Promise<AiResponse<T>> {
   const fetchOptions: {
     method: 'GET' | 'POST'
     credentials: 'include'

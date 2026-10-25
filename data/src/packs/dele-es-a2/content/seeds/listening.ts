@@ -8,7 +8,11 @@ function items(
   context: (n: number) => string,
   rows: Omit<ListeningEsItem, 'id' | 'context'>[]
 ): ListeningEsItem[] {
-  return rows.map((row, index) => ({ ...row, context: context(index + 1), id: `${exerciseId}-i${index + 1}` }))
+  return rows.map((row, index) => ({
+    ...row,
+    context: context(index + 1),
+    id: `${exerciseId}-i${index + 1}`,
+  }))
 }
 
 function rows<T extends object>(exerciseId: string, list: T[]): Array<T & { id: string }> {
@@ -59,7 +63,8 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
         question: '¿Dónde van a quedar?',
         options: ['en la puerta del cine', 'en la cafetería', 'en el trabajo de ella'],
         correctAnswer: 1,
-        explanation: '«Mejor en la cafetería de enfrente» y ella acepta: «en la cafetería a las siete».',
+        explanation:
+          '«Mejor en la cafetería de enfrente» y ella acepta: «en la cafetería a las siete».',
       },
       {
         transcript:
@@ -83,7 +88,8 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
         question: '¿Qué hizo el hombre el sábado?',
         options: ['Fue a la playa.', 'Vio películas en casa.', 'Fue a la montaña.'],
         correctAnswer: 1,
-        explanation: 'Llovió el sábado y «me quedé en casa viendo películas»; la montaña fue el domingo.',
+        explanation:
+          'Llovió el sábado y «me quedé en casa viendo películas»; la montaña fue el domingo.',
       },
       {
         transcript:
@@ -106,9 +112,14 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
         transcript:
           'Locutora: Este fin de semana llega a Zaragoza la Feria del Libro. Más de cien librerías y editoriales estarán en el parque Grande desde el viernes hasta el domingo. El sábado por la mañana habrá actividades para niños y, por la tarde, varios escritores firmarán sus libros. La entrada es libre.',
         question: '¿Qué pasa el sábado por la tarde en la feria?',
-        options: ['Hay actividades para niños.', 'Los escritores firman libros.', 'Cierran las librerías.'],
+        options: [
+          'Hay actividades para niños.',
+          'Los escritores firman libros.',
+          'Cierran las librerías.',
+        ],
         correctAnswer: 1,
-        explanation: '«Por la tarde, varios escritores firmarán sus libros»; los niños tienen actividades por la mañana.',
+        explanation:
+          '«Por la tarde, varios escritores firmarán sus libros»; los niños tienen actividades por la mañana.',
       },
       {
         transcript:
@@ -130,7 +141,11 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
         transcript:
           'Locutor: Muebles Casa Luz celebra su aniversario. Durante toda esta semana, todos los sofás tienen un veinte por ciento de descuento. Además, si compra una mesa, le regalamos dos sillas. Y recuerde: el transporte a su casa es gratis. Estamos en la calle Mayor, número cuarenta y ocho.',
         question: '¿Qué regalan en la tienda?',
-        options: ['Dos sillas con la compra de una mesa.', 'Un sofá con la compra de una mesa.', 'Un veinte por ciento en todas las mesas.'],
+        options: [
+          'Dos sillas con la compra de una mesa.',
+          'Un sofá con la compra de una mesa.',
+          'Un veinte por ciento en todas las mesas.',
+        ],
         correctAnswer: 0,
         explanation: '«Si compra una mesa, le regalamos dos sillas»; el descuento es en los sofás.',
       },
@@ -146,9 +161,14 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
         transcript:
           'Locutor: El museo de arte moderno de Málaga presenta una nueva exposición de fotografía sobre la vida en los pueblos andaluces. Se puede visitar hasta el treinta de noviembre, de martes a domingo. Los lunes el museo está cerrado. Los estudiantes pagan solo la mitad del precio de la entrada.',
         question: '¿Qué dice la noticia sobre la exposición?',
-        options: ['Es gratis para los estudiantes.', 'No se puede visitar los lunes.', 'Termina en septiembre.'],
+        options: [
+          'Es gratis para los estudiantes.',
+          'No se puede visitar los lunes.',
+          'Termina en septiembre.',
+        ],
         correctAnswer: 1,
-        explanation: '«Los lunes el museo está cerrado»; los estudiantes pagan la mitad y termina en noviembre.',
+        explanation:
+          '«Los lunes el museo está cerrado»; los estudiantes pagan la mitad y termina en noviembre.',
       },
     ]),
   },
@@ -158,7 +178,8 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
     testingPart: 3,
     difficulty: 'A2',
     createdAt: '2026-09-30',
-    context: 'Vas a escuchar una conversación entre Javier y Elena sobre sus planes para el verano.',
+    context:
+      'Vas a escuchar una conversación entre Javier y Elena sobre sus planes para el verano.',
     transcript: [
       'Elena: ¡Hola, Javier! ¡Cuánto tiempo! ¿Qué tal todo?',
       'Javier: Muy bien, Elena. Muy ocupado con el trabajo, pero ya queda poco para las vacaciones. ¿Y tú?',
@@ -176,12 +197,38 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
     ].join('\n'),
     options: ['Javier', 'Elena', NEITHER],
     questions: rows('listening-es-a2-tarea3-001', [
-      { person: 'Tiene exámenes esta semana.', correctAnswer: 1, explanation: 'Elena: «Estoy terminando los exámenes… El último es el viernes».' },
-      { person: 'Va a pasar sus vacaciones en la costa.', correctAnswer: 0, explanation: 'Javier: «En agosto me voy con mi novia a Asturias… un pueblo de la costa».' },
-      { person: 'El año pasado viajó con su familia.', correctAnswer: 1, explanation: 'Elena: «El verano pasado estuve en Galicia con mis padres».' },
-      { person: 'Va a trabajar con niños.', correctAnswer: 1, explanation: 'Elena: «Voy a trabajar de monitora en un campamento de verano con niños».' },
-      { person: 'Va a estudiar inglés en Irlanda.', correctAnswer: 2, explanation: 'Es Luis, el hermano de Javier, quien va a Irlanda; Elena dice que este año no puede.' },
-      { person: 'Va a cuidar de un familiar en agosto.', correctAnswer: 1, explanation: 'Elena: «En agosto me voy a quedar en Madrid, porque mi hermana tiene un bebé y quiero ayudarla».' },
+      {
+        person: 'Tiene exámenes esta semana.',
+        correctAnswer: 1,
+        explanation: 'Elena: «Estoy terminando los exámenes… El último es el viernes».',
+      },
+      {
+        person: 'Va a pasar sus vacaciones en la costa.',
+        correctAnswer: 0,
+        explanation: 'Javier: «En agosto me voy con mi novia a Asturias… un pueblo de la costa».',
+      },
+      {
+        person: 'El año pasado viajó con su familia.',
+        correctAnswer: 1,
+        explanation: 'Elena: «El verano pasado estuve en Galicia con mis padres».',
+      },
+      {
+        person: 'Va a trabajar con niños.',
+        correctAnswer: 1,
+        explanation: 'Elena: «Voy a trabajar de monitora en un campamento de verano con niños».',
+      },
+      {
+        person: 'Va a estudiar inglés en Irlanda.',
+        correctAnswer: 2,
+        explanation:
+          'Es Luis, el hermano de Javier, quien va a Irlanda; Elena dice que este año no puede.',
+      },
+      {
+        person: 'Va a cuidar de un familiar en agosto.',
+        correctAnswer: 1,
+        explanation:
+          'Elena: «En agosto me voy a quedar en Madrid, porque mi hermana tiene un bebé y quiero ayudarla».',
+      },
     ]),
   },
   {
@@ -202,13 +249,42 @@ export const listeningEsSeeds: ListeningEsExercise[] = [
     ].join('\n'),
     options: MESSAGES,
     questions: rows('listening-es-a2-tarea4-001', [
-      { person: 'Mensaje 1', correctAnswer: 1, explanation: '«El sábado es mi cumpleaños… ¡Espero que puedas venir!».' },
-      { person: 'Mensaje 2', correctAnswer: 2, explanation: '«Saldrá con cuarenta minutos de retraso».' },
-      { person: 'Mensaje 3', correctAnswer: 0, explanation: '«Su cita del jueves a las diez es ahora a las doce».' },
-      { person: 'Mensaje 4', correctAnswer: 3, explanation: '«Solo hoy… tienen un treinta por ciento de descuento».' },
-      { person: 'Mensaje 5', correctAnswer: 4, explanation: '«Llámame cuando escuches este mensaje, por favor».' },
-      { person: 'Mensaje 6', correctAnswer: 6, explanation: '«No olvidéis traer vuestra esterilla y una botella de agua»; la clase no se cancela, cambia de lugar.' },
-      { person: 'Mensaje 7', correctAnswer: 9, explanation: '«Efectuará su salida por la vía cuatro, y no por la vía dos».' },
+      {
+        person: 'Mensaje 1',
+        correctAnswer: 1,
+        explanation: '«El sábado es mi cumpleaños… ¡Espero que puedas venir!».',
+      },
+      {
+        person: 'Mensaje 2',
+        correctAnswer: 2,
+        explanation: '«Saldrá con cuarenta minutos de retraso».',
+      },
+      {
+        person: 'Mensaje 3',
+        correctAnswer: 0,
+        explanation: '«Su cita del jueves a las diez es ahora a las doce».',
+      },
+      {
+        person: 'Mensaje 4',
+        correctAnswer: 3,
+        explanation: '«Solo hoy… tienen un treinta por ciento de descuento».',
+      },
+      {
+        person: 'Mensaje 5',
+        correctAnswer: 4,
+        explanation: '«Llámame cuando escuches este mensaje, por favor».',
+      },
+      {
+        person: 'Mensaje 6',
+        correctAnswer: 6,
+        explanation:
+          '«No olvidéis traer vuestra esterilla y una botella de agua»; la clase no se cancela, cambia de lugar.',
+      },
+      {
+        person: 'Mensaje 7',
+        correctAnswer: 9,
+        explanation: '«Efectuará su salida por la vía cuatro, y no por la vía dos».',
+      },
     ]),
   },
 ]
@@ -241,7 +317,8 @@ const mockListeningPayloads: ListeningEsExercise[] = [
         question: '¿Adónde va a ir el hombre?',
         options: ['a la calle Mayor', 'a la plaza, al lado del banco', 'al banco'],
         correctAnswer: 1,
-        explanation: 'La farmacia de la calle Mayor está cerrada; la abierta está «en la plaza, al lado del banco».',
+        explanation:
+          'La farmacia de la calle Mayor está cerrada; la abierta está «en la plaza, al lado del banco».',
       },
       {
         transcript:
@@ -297,7 +374,11 @@ const mockListeningPayloads: ListeningEsExercise[] = [
         transcript:
           'Locutor: El próximo domingo se celebra en Bilbao la carrera popular de primavera. Pueden participar personas de todas las edades. La salida es a las nueve de la mañana desde el puente de la Salve. La inscripción cuesta cinco euros y el dinero es para un hospital infantil.',
         question: '¿Para qué es el dinero de las inscripciones?',
-        options: ['Para la ciudad de Bilbao.', 'Para un hospital de niños.', 'Para los corredores.'],
+        options: [
+          'Para la ciudad de Bilbao.',
+          'Para un hospital de niños.',
+          'Para los corredores.',
+        ],
         correctAnswer: 1,
         explanation: '«El dinero es para un hospital infantil».',
       },
@@ -305,7 +386,11 @@ const mockListeningPayloads: ListeningEsExercise[] = [
         transcript:
           'Locutora: Supermercados Frescos abre una nueva tienda en el centro comercial Las Rosas. Para celebrarlo, este viernes todos los clientes recibirán un regalo con su compra. Además, la fruta y la verdura tendrán un descuento del treinta por ciento durante toda la semana.',
         question: '¿Qué pasa este viernes en la tienda?',
-        options: ['Los clientes reciben un regalo.', 'La tienda cierra antes.', 'La fruta es gratis.'],
+        options: [
+          'Los clientes reciben un regalo.',
+          'La tienda cierra antes.',
+          'La fruta es gratis.',
+        ],
         correctAnswer: 0,
         explanation: '«Este viernes todos los clientes recibirán un regalo con su compra».',
       },
@@ -313,7 +398,11 @@ const mockListeningPayloads: ListeningEsExercise[] = [
         transcript:
           'Locutor: Atención, conductores. Por la nieve, hoy es obligatorio llevar cadenas en las carreteras de la sierra de Madrid. La policía recomienda no viajar por la noche y salir solo si es necesario. Mañana por la tarde el tiempo va a mejorar.',
         question: '¿Qué recomienda la policía?',
-        options: ['Viajar por la noche.', 'Salir solo si es necesario.', 'Ir a la sierra mañana por la mañana.'],
+        options: [
+          'Viajar por la noche.',
+          'Salir solo si es necesario.',
+          'Ir a la sierra mañana por la mañana.',
+        ],
         correctAnswer: 1,
         explanation: '«La policía recomienda… salir solo si es necesario».',
       },
@@ -321,7 +410,11 @@ const mockListeningPayloads: ListeningEsExercise[] = [
         transcript:
           'Locutora: Y ahora, una noticia curiosa: en un pueblo de Asturias, los vecinos han abierto una biblioteca en una antigua cabina de teléfono. Cualquier persona puede dejar un libro y llevarse otro. Ya hay más de doscientos libros y la idea ha llegado a otros pueblos.',
         question: '¿Qué han hecho los vecinos del pueblo?',
-        options: ['Una biblioteca en una cabina de teléfono.', 'Una tienda de libros antiguos.', 'Un concurso de lectura.'],
+        options: [
+          'Una biblioteca en una cabina de teléfono.',
+          'Una tienda de libros antiguos.',
+          'Un concurso de lectura.',
+        ],
         correctAnswer: 0,
         explanation: '«Los vecinos han abierto una biblioteca en una antigua cabina de teléfono».',
       },
@@ -368,12 +461,37 @@ const mockListeningPayloads: ListeningEsExercise[] = [
     ].join('\n'),
     options: ['Pablo', 'Marta', NEITHER],
     questions: rows('mock-es-a2-set1-listening-tarea3', [
-      { person: 'Va al trabajo a pie.', correctAnswer: 0, explanation: 'Pablo: «Voy andando a la oficina».' },
-      { person: 'Pasa mucho tiempo en el transporte público.', correctAnswer: 1, explanation: 'Marta: «Yo tardo casi una hora en metro todos los días».' },
-      { person: 'Necesita un piso nuevo.', correctAnswer: 1, explanation: 'Marta: «Yo estoy buscando piso».' },
-      { person: 'Se va a vivir con su pareja.', correctAnswer: 2, explanation: 'Es la compañera de piso de Marta quien se va con su novio, no Pablo ni Marta.' },
-      { person: 'Prepara la comida en su piso.', correctAnswer: 2, explanation: 'En el piso de Pablo cocina Jorge: «Él cocina y yo limpio».' },
-      { person: 'Quiere comprar un mueble para sus libros.', correctAnswer: 1, explanation: 'Marta: «Yo necesito una estantería para mis libros».' },
+      {
+        person: 'Va al trabajo a pie.',
+        correctAnswer: 0,
+        explanation: 'Pablo: «Voy andando a la oficina».',
+      },
+      {
+        person: 'Pasa mucho tiempo en el transporte público.',
+        correctAnswer: 1,
+        explanation: 'Marta: «Yo tardo casi una hora en metro todos los días».',
+      },
+      {
+        person: 'Necesita un piso nuevo.',
+        correctAnswer: 1,
+        explanation: 'Marta: «Yo estoy buscando piso».',
+      },
+      {
+        person: 'Se va a vivir con su pareja.',
+        correctAnswer: 2,
+        explanation:
+          'Es la compañera de piso de Marta quien se va con su novio, no Pablo ni Marta.',
+      },
+      {
+        person: 'Prepara la comida en su piso.',
+        correctAnswer: 2,
+        explanation: 'En el piso de Pablo cocina Jorge: «Él cocina y yo limpio».',
+      },
+      {
+        person: 'Quiere comprar un mueble para sus libros.',
+        correctAnswer: 1,
+        explanation: 'Marta: «Yo necesito una estantería para mis libros».',
+      },
     ]),
   },
   {
@@ -395,13 +513,41 @@ const mockListeningPayloads: ListeningEsExercise[] = [
     ].join('\n'),
     options: MOCK_MESSAGES,
     questions: rows('mock-es-a2-set1-listening-tarea4', [
-      { person: 'Mensaje 1', correctAnswer: 0, explanation: '«La reunión de mañana no es en la oficina. Es en la cafetería».' },
-      { person: 'Mensaje 2', correctAnswer: 2, explanation: '«El vuelo… saldrá con una hora de retraso».' },
-      { person: 'Mensaje 3', correctAnswer: 3, explanation: '«El viernes cumplo treinta años y voy a hacer una cena».' },
-      { person: 'Mensaje 4', correctAnswer: 4, explanation: '«Me cambio de piso y necesito ayuda con las cajas».' },
-      { person: 'Mensaje 5', correctAnswer: 5, explanation: '«Hoy… la tienda cierra a las dos de la tarde».' },
-      { person: 'Mensaje 6', correctAnswer: 6, explanation: '«Todavía no ha pagado el curso de este mes».' },
-      { person: 'Mensaje 7', correctAnswer: 8, explanation: '«Ayer se dejó usted una bufanda azul… La tenemos aquí».' },
+      {
+        person: 'Mensaje 1',
+        correctAnswer: 0,
+        explanation: '«La reunión de mañana no es en la oficina. Es en la cafetería».',
+      },
+      {
+        person: 'Mensaje 2',
+        correctAnswer: 2,
+        explanation: '«El vuelo… saldrá con una hora de retraso».',
+      },
+      {
+        person: 'Mensaje 3',
+        correctAnswer: 3,
+        explanation: '«El viernes cumplo treinta años y voy a hacer una cena».',
+      },
+      {
+        person: 'Mensaje 4',
+        correctAnswer: 4,
+        explanation: '«Me cambio de piso y necesito ayuda con las cajas».',
+      },
+      {
+        person: 'Mensaje 5',
+        correctAnswer: 5,
+        explanation: '«Hoy… la tienda cierra a las dos de la tarde».',
+      },
+      {
+        person: 'Mensaje 6',
+        correctAnswer: 6,
+        explanation: '«Todavía no ha pagado el curso de este mes».',
+      },
+      {
+        person: 'Mensaje 7',
+        correctAnswer: 8,
+        explanation: '«Ayer se dejó usted una bufanda azul… La tenemos aquí».',
+      },
     ]),
   },
 ]

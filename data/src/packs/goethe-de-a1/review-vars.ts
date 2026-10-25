@@ -129,5 +129,12 @@ function speakingVars(
       return `${segment} — ${TURN[text(card['kind'])] ?? 'turn'}. Card: "${cue}". Learner said: "${said}"`
     })
     .join('\n')
-  return { theme, task: theme, turns, userContent: turns, topicId: text(payload['id']), outputLanguage }
+  return {
+    theme,
+    task: theme,
+    turns,
+    userContent: turns,
+    topicId: text(payload['id']),
+    outputLanguage,
+  }
 }

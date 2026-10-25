@@ -1,8 +1,19 @@
 import type { LlmProvider, LlmReasoningEffort } from '@exam-one/contracts'
 
-export const LLM_PROVIDERS = ['openai', 'openrouter', 'gemini', 'anthropic', 'xai'] as const satisfies readonly LlmProvider[]
+export const LLM_PROVIDERS = [
+  'openai',
+  'openrouter',
+  'gemini',
+  'anthropic',
+  'xai',
+] as const satisfies readonly LlmProvider[]
 
-export const LLM_REASONING_EFFORTS = ['minimal', 'low', 'medium', 'high'] as const satisfies readonly LlmReasoningEffort[]
+export const LLM_REASONING_EFFORTS = [
+  'minimal',
+  'low',
+  'medium',
+  'high',
+] as const satisfies readonly LlmReasoningEffort[]
 
 export const DEFAULT_LLM_REASONING_EFFORT: LlmReasoningEffort = 'medium'
 

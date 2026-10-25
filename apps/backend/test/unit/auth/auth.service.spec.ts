@@ -571,10 +571,7 @@ describe('AuthService', () => {
     }
 
     mockedBcrypt.compare.mockResolvedValue(true as never)
-    await service.login(
-      { email: 'reset-lock@example.com', password: 'password1' },
-      res as Response
-    )
+    await service.login({ email: 'reset-lock@example.com', password: 'password1' }, res as Response)
 
     mockedBcrypt.compare.mockResolvedValue(false as never)
     await expect(

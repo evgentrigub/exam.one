@@ -28,11 +28,6 @@ import { EmailModule } from './email/email.module'
     { provide: APP_GUARD, useClass: ScaledThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
-  exports: [
-    PrismaModule,
-    EmailModule,
-    AuthModule,
-    HealthModule,
-  ],
+  exports: [PrismaModule, EmailModule, AuthModule, HealthModule],
 })
 export class CoreModule {}

@@ -20,7 +20,12 @@ export function encryptSecret(plaintext: string, base64Key: string, context = ''
   cipher.setAAD(Buffer.from(context, 'utf8'))
   const data = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()])
   const tag = cipher.getAuthTag()
-  return [FORMAT_VERSION, iv.toString('base64'), tag.toString('base64'), data.toString('base64')].join(':')
+  return [
+    FORMAT_VERSION,
+    iv.toString('base64'),
+    tag.toString('base64'),
+    data.toString('base64'),
+  ].join(':')
 }
 
 /** Opens a value from `encryptSecret`; throws when the key is wrong or the value was altered. */
@@ -31,8 +36,12 @@ export function decryptSecret(sealed: string, base64Key: string, context = ''): 
   if (version !== FORMAT_VERSION || iv.length !== IV_BYTES || tag.length !== TAG_BYTES || !data) {
     throw new Error('Unsupported secret format.')
   }
-  const decipher = createDecipheriv(ALGORITHM, keyBuffer(base64Key), iv, { authTagLength: TAG_BYTES })
+  const decipher = createDecipheriv(ALGORITHM, keyBuffer(base64Key), iv, {
+    authTagLength: TAG_BYTES,
+  })
   decipher.setAAD(Buffer.from(context, 'utf8'))
   decipher.setAuthTag(tag)
-  return Buffer.concat([decipher.update(Buffer.from(data, 'base64')), decipher.final()]).toString('utf8')
+  return Buffer.concat([decipher.update(Buffer.from(data, 'base64')), decipher.final()]).toString(
+    'utf8'
+  )
 }

@@ -1,12 +1,7 @@
 import type { PartRuntime } from '../../runtime'
 import { goetheRawAdapter } from '../goethe-shared/raw-adapter'
 import type { ExamModule } from '../../types'
-import {
-  validateListening,
-  validateReading,
-  validateSpeaking,
-  validateWriting,
-} from './validate'
+import { validateListening, validateReading, validateSpeaking, validateWriting } from './validate'
 
 /** Compatibility projection: the original seed JSON and session components remain valid. */
 export function attachGoetheRuntime(modules: ExamModule[]): ExamModule[] {

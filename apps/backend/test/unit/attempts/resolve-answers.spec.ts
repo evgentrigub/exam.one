@@ -101,8 +101,16 @@ describe('resolveAnswers', () => {
   })
 
   it('falls back to the combined transcript for a single-segment part', () => {
-    const view = viewFor('speaking', 2, { id: 's2', theme: 'Freizeit', keywords: ['a', 'b', 'c', 'd'] })
-    const resolved = resolveAnswers(view, { id: 's2-1', durationSec: 60, transcript: 'Ich spiele Fussball.' })
+    const view = viewFor('speaking', 2, {
+      id: 's2',
+      theme: 'Freizeit',
+      keywords: ['a', 'b', 'c', 'd'],
+    })
+    const resolved = resolveAnswers(view, {
+      id: 's2-1',
+      durationSec: 60,
+      transcript: 'Ich spiele Fussball.',
+    })
     expect(resolved).toEqual({ monologue: 'Ich spiele Fussball.' })
   })
 

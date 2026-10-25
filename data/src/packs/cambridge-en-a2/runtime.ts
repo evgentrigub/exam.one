@@ -80,8 +80,20 @@ const RULES: Partial<Record<SkillId, Record<number, PartRuntime>>> = {
     },
   },
   speaking: {
-    1: { minutes: 4, maxPoints: 15, multiplier: 1, segments: SPEAKING_SEGMENTS[1], criteria: SPEAKING_CRITERIA },
-    2: { minutes: 6, maxPoints: 15, multiplier: 1, segments: SPEAKING_SEGMENTS[2], criteria: SPEAKING_CRITERIA },
+    1: {
+      minutes: 4,
+      maxPoints: 15,
+      multiplier: 1,
+      segments: SPEAKING_SEGMENTS[1],
+      criteria: SPEAKING_CRITERIA,
+    },
+    2: {
+      minutes: 6,
+      maxPoints: 15,
+      multiplier: 1,
+      segments: SPEAKING_SEGMENTS[2],
+      criteria: SPEAKING_CRITERIA,
+    },
   },
 }
 

@@ -12,5 +12,4 @@ export const LOGIN_MAX_FAILURES = 5
 export const LOGIN_LOCKOUT_MS = 1000 * 60 * 15
 
 /** Precomputed bcrypt hash used only to equalize login timing when the user is missing. */
-export const DUMMY_PASSWORD_HASH =
-  '$2b$10$DnUc1l8BTrLDBWcc4UKGj.Vpx9ldoFrEKD9y4Td/qWyJ1BlJenGZW'
+export const DUMMY_PASSWORD_HASH = '$2b$10$DnUc1l8BTrLDBWcc4UKGj.Vpx9ldoFrEKD9y4Td/qWyJ1BlJenGZW'

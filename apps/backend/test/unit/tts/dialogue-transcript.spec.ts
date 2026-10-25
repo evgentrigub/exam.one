@@ -20,7 +20,9 @@ const polish = {
 /** Every transcript a pack's listening seeds carry. */
 function transcripts(pack: typeof goetheDeA2): string[] {
   return (pack.seedExercises?.listening ?? []).flatMap(exercise => {
-    const items = Array.isArray(exercise['items']) ? (exercise['items'] as Array<{ transcript?: string }>) : []
+    const items = Array.isArray(exercise['items'])
+      ? (exercise['items'] as Array<{ transcript?: string }>)
+      : []
     return [exercise['transcript'], ...items.map(item => item.transcript)].filter(
       (text): text is string => typeof text === 'string' && text.length > 0
     )
@@ -94,14 +96,20 @@ describe('dialogue voice planning', () => {
     expect(voices('Kobieta: Tak? Mężczyzna: Nie.')).toEqual(['female', 'male'])
     expect(voices('Sprzedawczyni: Słucham. Klient: Poproszę chleb.')).toEqual(['female', 'male'])
     expect(voices('Kelnerka: Proszę. Kolega: Dziękuję.')).toEqual(['female', 'male'])
-    expect(voices('Kuba: Cześć! Ewa: Cześć! Pani Nowak: Dzień dobry.')).toEqual(['male', 'female', 'female'])
+    expect(voices('Kuba: Cześć! Ewa: Cześć! Pani Nowak: Dzień dobry.')).toEqual([
+      'male',
+      'female',
+      'female',
+    ])
     expect(voices('Tata: Obiad! Agata: Już idę.')).toEqual(['male', 'female'])
   })
 
   it('gives two Polish men different voices and never a German voice', () => {
     const plan = planDialogueVoices('Piotr: Cześć. Marek: Hej. Anna: Witajcie.', polish)
     expect(plan?.map(turn => turn.voice)).toEqual(['pl_darkman', 'pl_bass', 'pl_gosia'])
-    expect(fallbackVoiceFor('pl_bass', new Set(['pl_darkman', 'martin']), polish)).toBe('pl_darkman')
+    expect(fallbackVoiceFor('pl_bass', new Set(['pl_darkman', 'martin']), polish)).toBe(
+      'pl_darkman'
+    )
   })
 
   it('voices a labelled Polish monologue by its speaker and drops the label', () => {
@@ -124,11 +132,16 @@ describe('dialogue voice planning', () => {
     const plan = planDialogueVoices(text, spanish)
     expect(plan?.map(turn => turn.speaker)).toEqual(['Señora López', 'Álvaro', 'José Luis'])
     // The other languages keep their own letter classes, so their plans cannot change.
-    expect(planDialogueVoices(text, english)?.map(turn => turn.speaker)).not.toContain('Señora López')
+    expect(planDialogueVoices(text, english)?.map(turn => turn.speaker)).not.toContain(
+      'Señora López'
+    )
   })
 
   it('reads a Spanish label only at the start of a line or a sentence', () => {
-    const plan = planDialogueVoices('Hombre: Mira: aquí hay dos. Mujer: Vale.\nLocutora: Atención: el tren sale.', spanish)
+    const plan = planDialogueVoices(
+      'Hombre: Mira: aquí hay dos. Mujer: Vale.\nLocutora: Atención: el tren sale.',
+      spanish
+    )
     expect(plan?.map(turn => turn.speaker)).toEqual(['Hombre', 'Mujer', 'Locutora'])
     expect(plan?.[0]?.text).toBe('Mira: aquí hay dos.')
   })
@@ -139,13 +152,20 @@ describe('dialogue voice planning', () => {
     expect(genders('Dependienta: Dígame. Cliente: Quería pan.')).toEqual(['female', 'male'])
     expect(genders('Camarero: ¿Qué desean? Clienta: Un café.')).toEqual(['male', 'female'])
     expect(genders('Señor García: Hola. Doña Pilar: Buenas.')).toEqual(['male', 'female'])
-    expect(genders('Lucía: ¡Hola! Javier: ¿Qué tal? Locutora: Atención.')).toEqual(['female', 'male', 'female'])
+    expect(genders('Lucía: ¡Hola! Javier: ¿Qué tal? Locutora: Atención.')).toEqual([
+      'female',
+      'male',
+      'female',
+    ])
     expect(genders('Médica: Siéntese. Farmacéutico: Aquí tiene.')).toEqual(['female', 'male'])
     expect(genders('Policía: Buenas. Consuelo: Hola.')).toEqual(['unknown', 'female'])
   })
 
   it('shares the one Spanish female voice and alternates the two male voices', () => {
-    const plan = planDialogueVoices('Elena: Hola. Olga: Hola. Pablo: Buenas. Manuel: Adiós.', spanish)
+    const plan = planDialogueVoices(
+      'Elena: Hola. Olga: Hola. Pablo: Buenas. Manuel: Adiós.',
+      spanish
+    )
     expect(plan?.map(turn => turn.voice)).toEqual(['ef_dora', 'ef_dora', 'em_alex', 'em_santa'])
     expect(fallbackVoiceFor('em_santa', new Set(['em_alex', 'martin']), spanish)).toBe('em_alex')
   })

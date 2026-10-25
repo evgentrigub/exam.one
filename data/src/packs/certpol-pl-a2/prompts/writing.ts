@@ -14,7 +14,12 @@ import {
 const GENERATOR_LLM = { temperature: 0.8, maxTokens: 2500 }
 const REVIEW_LLM = { maxTokens: 2500 }
 
-const TOPIC_FIELDS = (topicType: string, time: number, min: number, max: number) => `  "title": string,
+const TOPIC_FIELDS = (
+  topicType: string,
+  time: number,
+  min: number,
+  max: number
+) => `  "title": string,
   "topicType": ${topicType},
   "estimatedTime": ${time},
   "wordCount": { "min": ${min}, "max": ${max} },
@@ -49,7 +54,13 @@ const criteriaRules = (task: number, range: number, accuracy: number): string[] 
   'Judge A2 language fairly: simple and correct is better than ambitious and unclear. Give 2–4 typical errors with exact corrections; do not rewrite the whole text.',
 ]
 
-const reviewContract = (task: number, range: number, accuracy: number, min: number, max: number) => `Output JSON format (strict):
+const reviewContract = (
+  task: number,
+  range: number,
+  accuracy: number,
+  min: number,
+  max: number
+) => `Output JSON format (strict):
 {
   "criteria": [
     { "id": "taskCompletion", "label": "Task completion", "maxPoints": ${task}, "points": <0-${task}>, "comment": "<short comment in the feedback language>" },

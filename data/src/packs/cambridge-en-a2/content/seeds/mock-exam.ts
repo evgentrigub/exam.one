@@ -28,10 +28,34 @@ export const CAMBRIDGE_ENGLISH_SCALE: MockScaleRules = {
   pass: 120,
   officialRaw: { reading: 30, writing: 30, listening: 25, speaking: 45 },
   anchors: {
-    reading: [[7, 82], [13, 100], [20, 120], [28, 140], [30, 150]],
-    writing: [[8, 82], [12, 100], [18, 120], [26, 140], [30, 150]],
-    listening: [[6, 82], [11, 100], [17, 120], [23, 140], [25, 150]],
-    speaking: [[10, 82], [18, 100], [27, 120], [41, 140], [45, 150]],
+    reading: [
+      [7, 82],
+      [13, 100],
+      [20, 120],
+      [28, 140],
+      [30, 150],
+    ],
+    writing: [
+      [8, 82],
+      [12, 100],
+      [18, 120],
+      [26, 140],
+      [30, 150],
+    ],
+    listening: [
+      [6, 82],
+      [11, 100],
+      [17, 120],
+      [23, 140],
+      [25, 150],
+    ],
+    speaking: [
+      [10, 82],
+      [18, 100],
+      [27, 120],
+      [41, 140],
+      [45, 150],
+    ],
   },
   bands: [
     { id: 'gradeA', min: 140 },
@@ -134,7 +158,10 @@ export const cambridgeA2MockExamSet1: MockExamSet = {
  * A generated set from pipeline content. The pipeline first calls this with blank content to
  * read the set id, so it must not depend on the content being complete.
  */
-export function createCambridgeA2MockExamSet(setNumber: number, content: MockExamContent): MockExamSet {
+export function createCambridgeA2MockExamSet(
+  setNumber: number,
+  content: MockExamContent
+): MockExamSet {
   return {
     id: `cambridge-a2-set-${setNumber}`,
     examId: 'cambridge-a2',

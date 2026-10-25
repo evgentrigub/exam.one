@@ -40,11 +40,7 @@
     </SetCard>
 
     <SetCard class-name="p-6 border-error/25">
-      <SetHead
-        danger
-        :title="$t('settings.dangerTitle')"
-        :desc="$t('settings.dangerDesc')"
-      />
+      <SetHead danger :title="$t('settings.dangerTitle')" :desc="$t('settings.dangerDesc')" />
       <div class="divide-y divide-base-300">
         <SetRow
           danger

@@ -23,7 +23,8 @@ export const goetheDeA2Structure: ExamModule[] = [
         n: 2,
         title: 'Display board / schedule',
         format: '5 scenarios · choose the place (a · b · c)',
-        short: 'Find information on a display board or timetable — pick the right floor or location.',
+        short:
+          'Find information on a display board or timetable — pick the right floor or location.',
         goal: 'Locate one specific piece of information quickly in everyday signage.',
         skill: 'Selective / scanning reading.',
         itemFormat: 'selection',

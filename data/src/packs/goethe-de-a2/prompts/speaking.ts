@@ -1,6 +1,12 @@
 import { definePrompt } from '../../../assemble'
 import type { PromptSpec } from '../../../types'
-import { AUTHOR_ROLE, JSON_ONLY, RULES_HEADER, SPEAKING_EXAMINER_ROLE, TEACHER_ROLE } from './common'
+import {
+  AUTHOR_ROLE,
+  JSON_ONLY,
+  RULES_HEADER,
+  SPEAKING_EXAMINER_ROLE,
+  TEACHER_ROLE,
+} from './common'
 
 export const speakingPrompts: PromptSpec[] = [
   definePrompt({
@@ -38,7 +44,7 @@ export const speakingPrompts: PromptSpec[] = [
     rules: [
       RULES_HEADER,
       '1. Format: for each exercise generate one main theme question (theme) and exactly 4 prompt words (keywords).',
-      '2. Themes (theme): the main question must concern the candidate\'s own life. Possible topics: family, housing, daily routine, weekends, holidays, shopping, hobbies, work or study.',
+      "2. Themes (theme): the main question must concern the candidate's own life. Possible topics: family, housing, daily routine, weekends, holidays, shopping, hobbies, work or study.",
       '3. Prompt words (keywords): 4 short words or mini-questions that help the learner build a monologue (for example "Sport?", "mit wem?", "Sonntagabend?", "lange schlafen?").',
       '4. topicType: always the exact string "monologue".',
     ],

@@ -40,12 +40,12 @@ Add an exam by creating `src/packs/<packId>/` and registering it in [src/registr
 
 English, German, Polish and Spanish B1 are live with individual practice, bundled mock Set 1 and generated mock sets. Together they provide 70 practice tasks, 70 separate mock tasks and 116 prompt slots. Their audio maps define 51 bundled listening recordings, prepared per installation with the [audio generator](../scripts/tts/README.md#bundled-audio).
 
-| Pack | Practice / prompt slots | Set 1 tasks / recordings | Scope and evidence |
-| --- | --- | --- | --- |
-| `cambridge-en-b1` | 16 / 28 | 16 / 15 | [Brief](src/packs/cambridge-en-b1/brief.md), [checks](src/packs/cambridge-en-b1/verification.md) |
-| `goethe-de-b1` | 15 / 27 | 15 / 4 | [Brief](src/packs/goethe-de-b1/brief.md), [checks](src/packs/goethe-de-b1/verification.md) |
-| `certpol-pl-b1` | 23 / 33 | 23 / 22 | [Brief](src/packs/certpol-pl-b1/brief.md), [checks](src/packs/certpol-pl-b1/verification.md) |
-| `dele-es-b1` | 16 / 28 | 16 / 10 | [Brief](src/packs/dele-es-b1/brief.md), [checks](src/packs/dele-es-b1/verification.md) |
+| Pack              | Practice / prompt slots | Set 1 tasks / recordings | Scope and evidence                                                                               |
+| ----------------- | ----------------------- | ------------------------ | ------------------------------------------------------------------------------------------------ |
+| `cambridge-en-b1` | 16 / 28                 | 16 / 15                  | [Brief](src/packs/cambridge-en-b1/brief.md), [checks](src/packs/cambridge-en-b1/verification.md) |
+| `goethe-de-b1`    | 15 / 27                 | 15 / 4                   | [Brief](src/packs/goethe-de-b1/brief.md), [checks](src/packs/goethe-de-b1/verification.md)       |
+| `certpol-pl-b1`   | 23 / 33                 | 23 / 22                  | [Brief](src/packs/certpol-pl-b1/brief.md), [checks](src/packs/certpol-pl-b1/verification.md)     |
+| `dele-es-b1`      | 16 / 28                 | 16 / 10                  | [Brief](src/packs/dele-es-b1/brief.md), [checks](src/packs/dele-es-b1/verification.md)           |
 
 B1 mocks persist paper timings, replay rules, drafts, attempts and reviews. Their score rules are pack-owned:
 

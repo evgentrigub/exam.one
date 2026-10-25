@@ -4,11 +4,7 @@ import { PrismaService } from '@exam-one/nestjs-libraries'
 import { MockExamService } from '../../../src/mock-exam/mock-exam.service'
 import { makeMockExamAttempt, makeMockExamSet, makeUser } from '../../../src/testing/fixtures'
 
-function expectCode(
-  error: unknown,
-  type: new (...args: any[]) => HttpException,
-  code: string
-) {
+function expectCode(error: unknown, type: new (...args: any[]) => HttpException, code: string) {
   expect(error).toBeInstanceOf(type)
   expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
 }
@@ -73,7 +69,10 @@ describe('MockExamService', () => {
     const rows = await service.listSets(user)
 
     expect(prisma.mockExamSet.findMany).toHaveBeenCalledWith({
-      where: { packId: 'goethe-de-a2', OR: [{ generated: false, userId: null }, { userId: user.id }] },
+      where: {
+        packId: 'goethe-de-a2',
+        OR: [{ generated: false, userId: null }, { userId: user.id }],
+      },
       orderBy: { createdAt: 'asc' },
     })
     expect(rows.map(row => row.externalId)).toEqual(['set-1', 'generated-set'])

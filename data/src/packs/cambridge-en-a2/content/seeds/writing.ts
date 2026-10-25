@@ -61,9 +61,14 @@ export const mockWritingKeySeeds: WritingKeyExercise[] = [
     category: ['House and home', 'Social interaction'],
     createdAt: '2026-10-03',
     examOnly: true,
-    description: 'You are going away for a week and need your English neighbour, Chris, to help you.',
+    description:
+      'You are going away for a week and need your English neighbour, Chris, to help you.',
     task: 'You are going on holiday next week. Write a note to your English neighbour, Chris.\nIn your note:\n– say where you are going\n– ask Chris to water your plants\n– tell Chris where to find your key\nWrite 25 words or more.',
-    requirements: ['Say where you are going', 'Ask Chris to water your plants', 'Tell Chris where to find your key'],
+    requirements: [
+      'Say where you are going',
+      'Ask Chris to water your plants',
+      'Tell Chris where to find your key',
+    ],
   },
   {
     id: 'mock-key-set1-writing-part7',
@@ -77,7 +82,7 @@ export const mockWritingKeySeeds: WritingKeyExercise[] = [
     createdAt: '2026-10-03',
     examOnly: true,
     description: 'Look at the three pictures and write the story they show.',
-    task: 'Look at the three pictures. Write the story shown in the pictures.\nPicture 1: A boy is walking in the park and sees a small dog sitting alone under a tree.\nPicture 2: The boy reads the name and phone number on the dog\'s collar and calls the number.\nPicture 3: A happy woman hugs the dog and gives the boy a box of chocolates.\nWrite 35 words or more.',
+    task: "Look at the three pictures. Write the story shown in the pictures.\nPicture 1: A boy is walking in the park and sees a small dog sitting alone under a tree.\nPicture 2: The boy reads the name and phone number on the dog's collar and calls the number.\nPicture 3: A happy woman hugs the dog and gives the boy a box of chocolates.\nWrite 35 words or more.",
     requirements: ['Write about all three pictures', 'Tell the story in order', '35 words or more'],
     pictures: [
       'A boy is walking in the park and sees a small dog sitting alone under a tree.',

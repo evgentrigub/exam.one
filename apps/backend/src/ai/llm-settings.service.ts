@@ -137,7 +137,11 @@ export class LlmSettingsService {
       llmFallbackModels: uniqueFallbacks(model, input.fallbackModels),
       llmReasoningEffort: input.reasoningEffort ?? DEFAULT_LLM_REASONING_EFFORT,
     }
-    await this.prisma.setting.upsert({ where: { userId }, update: data, create: { userId, ...data } })
+    await this.prisma.setting.upsert({
+      where: { userId },
+      update: data,
+      create: { userId, ...data },
+    })
     return this.get(userId)
   }
 
@@ -165,7 +169,11 @@ export class LlmSettingsService {
     })
     if (!row) return null
     try {
-      return decryptSecret(row.keyCiphertext, this.secretsKey(), credentialContext(userId, provider))
+      return decryptSecret(
+        row.keyCiphertext,
+        this.secretsKey(),
+        credentialContext(userId, provider)
+      )
     } catch {
       // Usually SECRETS_ENCRYPTION_KEY was rotated; the user has to paste the key again.
       this.logger.warn(`Saved ${provider} key for user ${userId} could not be decrypted.`)
@@ -178,7 +186,10 @@ export class LlmSettingsService {
     const rejected = this.rejectedChecks.get(userId)
     if (rejected && rejected.resetAt > now && rejected.count >= MAX_REJECTED_KEY_CHECKS) {
       throw new HttpException(
-        { code: 'KEY_CHECKS_EXCEEDED', message: 'Too many rejected keys today. Try again tomorrow.' },
+        {
+          code: 'KEY_CHECKS_EXCEEDED',
+          message: 'Too many rejected keys today. Try again tomorrow.',
+        },
         HttpStatus.TOO_MANY_REQUESTS
       )
     }
@@ -187,25 +198,40 @@ export class LlmSettingsService {
     } catch (error: unknown) {
       const failure = this.providerFailure(provider, error, apiKey)
       if (failure instanceof BadRequestException) {
-        const current = rejected && rejected.resetAt > now ? rejected : { count: 0, resetAt: now + REJECTED_KEY_WINDOW_MS }
+        const current =
+          rejected && rejected.resetAt > now
+            ? rejected
+            : { count: 0, resetAt: now + REJECTED_KEY_WINDOW_MS }
         this.rejectedChecks.set(userId, { ...current, count: current.count + 1 })
-        this.logger.warn(`Rejected ${provider} key check for user ${userId} (${current.count + 1} today).`)
+        this.logger.warn(
+          `Rejected ${provider} key check for user ${userId} (${current.count + 1} today).`
+        )
       }
       throw failure
     }
   }
 
   private missingKey(provider: LlmProvider): BadRequestException {
-    return new BadRequestException({ code: 'LLM_KEY_MISSING', message: `Save a ${provider} API key first.` })
+    return new BadRequestException({
+      code: 'LLM_KEY_MISSING',
+      message: `Save a ${provider} API key first.`,
+    })
   }
 
   private providerFailure(provider: LlmProvider, error: unknown, apiKey: string): Error {
     if (error instanceof LlmProviderHttpError && (error.status === 401 || error.status === 403)) {
-      const scopeHint = error.status === 403 ? ' If it is a restricted key, allow it to read the model list.' : ''
-      return new BadRequestException({ code: 'INVALID_API_KEY', message: `${provider} rejected this API key.${scopeHint}` })
+      const scopeHint =
+        error.status === 403 ? ' If it is a restricted key, allow it to read the model list.' : ''
+      return new BadRequestException({
+        code: 'INVALID_API_KEY',
+        message: `${provider} rejected this API key.${scopeHint}`,
+      })
     }
     const detail = redactSecrets(error instanceof Error ? error.message : 'Unknown error', apiKey)
     this.logger.warn(`Could not reach ${provider}: ${detail}`)
-    return new BadGatewayException({ code: 'LLM_PROVIDER_UNAVAILABLE', message: `Could not reach ${provider}. ${detail}` })
+    return new BadGatewayException({
+      code: 'LLM_PROVIDER_UNAVAILABLE',
+      message: `Could not reach ${provider}. ${detail}`,
+    })
   }
 }

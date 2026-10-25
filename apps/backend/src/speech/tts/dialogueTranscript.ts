@@ -433,7 +433,14 @@ const SPANISH_MALE_ROLES = new Set([
 ])
 
 /** Roles of either gender that the -a / -o endings would misread. */
-const SPANISH_EITHER_ROLES = new Set(['policía', 'guía', 'turista', 'periodista', 'recepcionista', 'estudiante'])
+const SPANISH_EITHER_ROLES = new Set([
+  'policía',
+  'guía',
+  'turista',
+  'periodista',
+  'recepcionista',
+  'estudiante',
+])
 
 const SPANISH_FEMALE_NAMES = new Set([
   'maría',
@@ -681,7 +688,9 @@ export function fallbackVoiceFor(
   const maleFallbacks: DialogueVoiceId[] = ['martin', 'bernd']
   const femaleFallbacks: DialogueVoiceId[] = ['victoria', 'eva', 'martin']
 
-  const pool = MALE_VOICE_POOL.includes(preferred as DialogueVoiceId) ? maleFallbacks : femaleFallbacks
+  const pool = MALE_VOICE_POOL.includes(preferred as DialogueVoiceId)
+    ? maleFallbacks
+    : femaleFallbacks
   for (const candidate of pool) {
     if (available.has(candidate)) return candidate
   }
@@ -734,7 +743,10 @@ export function planDialogueVoices(
 }
 
 /** Speakers take the next voice of their gender, in order of first appearance. */
-function planPackVoices(transcript: string, options: DialogueVoiceOptions): VoicedDialogueTurn[] | null {
+function planPackVoices(
+  transcript: string,
+  options: DialogueVoiceOptions
+): VoicedDialogueTurn[] | null {
   const turns = parseDialogueTurns(transcript, labelPattern(options))
   if (!turns) return null
   const pools = packPools(options)
@@ -778,7 +790,9 @@ export function dialogueAudioPlanKey(transcript: string, options?: DialogueVoice
   if (!plan) {
     if (isGerman(options)) {
       const narrator = options?.narrator
-      return narrator && narrator !== 'martin' ? `mono:${narrator}|${transcript.trim()}` : `mono:${transcript.trim()}`
+      return narrator && narrator !== 'martin'
+        ? `mono:${narrator}|${transcript.trim()}`
+        : `mono:${transcript.trim()}`
     }
     const monologue = planMonologue(transcript, options)
     return `mono:${monologue.voice}|${monologue.text.trim()}`

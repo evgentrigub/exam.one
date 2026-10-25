@@ -15,11 +15,41 @@ export const speakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[] })[] 
     difficulty: 'A2',
     createdAt: '2026-09-29',
     cards: [
-      { segment: 'personal1', kind: 'answer', speaker: 'examiner', topic: 'About you', cue: 'Where do you live?' },
-      { segment: 'personal2', kind: 'answer', speaker: 'examiner', topic: 'About you', cue: 'Do you work or are you a student?' },
-      { segment: 'topic1', kind: 'answer', speaker: 'examiner', topic: 'Food', cue: 'What do you usually eat for breakfast?' },
-      { segment: 'topic2', kind: 'answer', speaker: 'examiner', topic: 'Food', cue: 'Where do you like to go for a meal with your friends?' },
-      { segment: 'extended', kind: 'answer', speaker: 'examiner', topic: 'Food', cue: 'Please tell me something about your favourite food.' },
+      {
+        segment: 'personal1',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'About you',
+        cue: 'Where do you live?',
+      },
+      {
+        segment: 'personal2',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'About you',
+        cue: 'Do you work or are you a student?',
+      },
+      {
+        segment: 'topic1',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Food',
+        cue: 'What do you usually eat for breakfast?',
+      },
+      {
+        segment: 'topic2',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Food',
+        cue: 'Where do you like to go for a meal with your friends?',
+      },
+      {
+        segment: 'extended',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Food',
+        cue: 'Please tell me something about your favourite food.',
+      },
     ],
   },
   {
@@ -29,7 +59,13 @@ export const speakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[] })[] 
     testingPart: 2,
     difficulty: 'A2',
     createdAt: '2026-09-29',
-    pictures: ['reading a book', 'playing football', 'cooking', 'playing video games', 'going to the cinema'],
+    pictures: [
+      'reading a book',
+      'playing football',
+      'cooking',
+      'playing video games',
+      'going to the cinema',
+    ],
     cards: [
       {
         segment: 'opinion',
@@ -38,16 +74,42 @@ export const speakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[] })[] 
         topic: 'Free-time activities',
         cue: 'Here are some free-time activities: reading a book, playing football, cooking, playing video games and going to the cinema. Do you like these different activities? Say why or why not.',
       },
-      { segment: 'askPartner', kind: 'ask', topic: 'Free-time activities', cue: 'favourite activity?' },
-      { segment: 'followUp', kind: 'answer', speaker: 'examiner', topic: 'Free-time activities', cue: 'Do you think cooking is difficult? Why? Why not?' },
-      { segment: 'favourite', kind: 'answer', speaker: 'examiner', topic: 'Free-time activities', cue: 'Which of these activities do you like best?' },
-      { segment: 'preference', kind: 'answer', speaker: 'examiner', topic: 'Free-time activities', cue: 'Do you prefer spending your free time at home or outside? Why?' },
+      {
+        segment: 'askPartner',
+        kind: 'ask',
+        topic: 'Free-time activities',
+        cue: 'favourite activity?',
+      },
+      {
+        segment: 'followUp',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Free-time activities',
+        cue: 'Do you think cooking is difficult? Why? Why not?',
+      },
+      {
+        segment: 'favourite',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Free-time activities',
+        cue: 'Which of these activities do you like best?',
+      },
+      {
+        segment: 'preference',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Free-time activities',
+        cue: 'Do you prefer spending your free time at home or outside? Why?',
+      },
     ],
   },
 ]
 
 /** Dedicated mock-exam Set 1 interview and discussion. Original, not official; `examOnly`. */
-export const mockSpeakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[]; examOnly?: boolean })[] = [
+export const mockSpeakingKeySeeds: (SpeakingCardsTopic & {
+  pictures?: string[]
+  examOnly?: boolean
+})[] = [
   {
     id: 'mock-key-set1-speaking-part1',
     theme: 'About you · Weekends',
@@ -57,11 +119,41 @@ export const mockSpeakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[]; 
     createdAt: '2026-10-03',
     examOnly: true,
     cards: [
-      { segment: 'personal1', kind: 'answer', speaker: 'examiner', topic: 'About you', cue: 'Where are you from?' },
-      { segment: 'personal2', kind: 'answer', speaker: 'examiner', topic: 'About you', cue: 'What do you study or what is your job?' },
-      { segment: 'topic1', kind: 'answer', speaker: 'examiner', topic: 'Weekends', cue: 'What time do you get up on Saturdays?' },
-      { segment: 'topic2', kind: 'answer', speaker: 'examiner', topic: 'Weekends', cue: 'Who do you usually spend your weekends with?' },
-      { segment: 'extended', kind: 'answer', speaker: 'examiner', topic: 'Weekends', cue: 'Please tell me something about what you did last weekend.' },
+      {
+        segment: 'personal1',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'About you',
+        cue: 'Where are you from?',
+      },
+      {
+        segment: 'personal2',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'About you',
+        cue: 'What do you study or what is your job?',
+      },
+      {
+        segment: 'topic1',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Weekends',
+        cue: 'What time do you get up on Saturdays?',
+      },
+      {
+        segment: 'topic2',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Weekends',
+        cue: 'Who do you usually spend your weekends with?',
+      },
+      {
+        segment: 'extended',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Weekends',
+        cue: 'Please tell me something about what you did last weekend.',
+      },
     ],
   },
   {
@@ -72,7 +164,13 @@ export const mockSpeakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[]; 
     difficulty: 'A2',
     createdAt: '2026-10-03',
     examOnly: true,
-    pictures: ['a beach holiday', 'a camping trip', 'a city break', 'a skiing holiday', 'a boat trip'],
+    pictures: [
+      'a beach holiday',
+      'a camping trip',
+      'a city break',
+      'a skiing holiday',
+      'a boat trip',
+    ],
     cards: [
       {
         segment: 'opinion',
@@ -82,9 +180,27 @@ export const mockSpeakingKeySeeds: (SpeakingCardsTopic & { pictures?: string[]; 
         cue: 'Here are some different holidays: a beach holiday, a camping trip, a city break, a skiing holiday and a boat trip. Do you like these different holidays? Say why or why not.',
       },
       { segment: 'askPartner', kind: 'ask', topic: 'Holidays', cue: 'best holiday?' },
-      { segment: 'followUp', kind: 'answer', speaker: 'examiner', topic: 'Holidays', cue: 'Do you think a camping trip is fun? Why? Why not?' },
-      { segment: 'favourite', kind: 'answer', speaker: 'examiner', topic: 'Holidays', cue: 'Which of these holidays do you like best?' },
-      { segment: 'preference', kind: 'answer', speaker: 'examiner', topic: 'Holidays', cue: 'Do you prefer going on holiday with your family or with friends? Why?' },
+      {
+        segment: 'followUp',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Holidays',
+        cue: 'Do you think a camping trip is fun? Why? Why not?',
+      },
+      {
+        segment: 'favourite',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Holidays',
+        cue: 'Which of these holidays do you like best?',
+      },
+      {
+        segment: 'preference',
+        kind: 'answer',
+        speaker: 'examiner',
+        topic: 'Holidays',
+        cue: 'Do you prefer going on holiday with your family or with friends? Why?',
+      },
     ],
   },
 ]

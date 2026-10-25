@@ -190,7 +190,9 @@
             </span>
           </div>
           <div class="font-display font-bold text-lg mt-2 leading-tight">{{ ex.title }}</div>
-          <div v-if="ex.subtitle" class="text-xs text-base-content/60 mt-0.5">{{ ex.subtitle }}</div>
+          <div v-if="ex.subtitle" class="text-xs text-base-content/60 mt-0.5">
+            {{ ex.subtitle }}
+          </div>
 
           <div class="mt-3 flex items-center gap-3 text-[11px] text-base-content/60">
             <span class="flex items-center gap-1">
@@ -210,9 +212,9 @@
               :value="ex.pct"
               max="100"
             />
-            <span class="text-[10px] font-mono text-base-content/60 w-6 text-right">{{
-              ex.pct
-            }}%</span>
+            <span class="text-[10px] font-mono text-base-content/60 w-6 text-right"
+              >{{ ex.pct }}%</span
+            >
           </div>
           <button
             v-if="ex.skill === 'writing' && ex.status === 'mastered'"
@@ -433,9 +435,16 @@ async function handleGenerateFromModal(payload: GeneratePayload) {
   }
 }
 
-watch(() => center.jobs.value.filter(job => job.type === 'EXERCISE_GENERATION' && job.packId === settingsStore.packId).map(job => `${job.id}:${job.progress.items?.filter(item => item.done).length ?? 0}`).join(','), () => {
-  void Promise.all([reloadReading(), reloadWriting(), reloadListening(), reloadSpeaking()])
-})
+watch(
+  () =>
+    center.jobs.value
+      .filter(job => job.type === 'EXERCISE_GENERATION' && job.packId === settingsStore.packId)
+      .map(job => `${job.id}:${job.progress.items?.filter(item => item.done).length ?? 0}`)
+      .join(','),
+  () => {
+    void Promise.all([reloadReading(), reloadWriting(), reloadListening(), reloadSpeaking()])
+  }
+)
 
 // Filter state
 const activeSkill = ref<string>('all')
@@ -713,5 +722,4 @@ function resetFilters() {
   search.value = ''
   sortBy.value = 'default'
 }
-
 </script>

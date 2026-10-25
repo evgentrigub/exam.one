@@ -103,7 +103,8 @@ export class PackAiService {
     if (!(await this.configured())) {
       return {
         data: null,
-        error: 'AI overview is unavailable because no LLM API key is configured. Add one in Settings → AI provider.',
+        error:
+          'AI overview is unavailable because no LLM API key is configured. Add one in Settings → AI provider.',
       }
     }
     const overview = pack.mockOverview

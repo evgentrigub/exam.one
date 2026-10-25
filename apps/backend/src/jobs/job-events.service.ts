@@ -15,14 +15,22 @@ export class JobEventsService implements OnModuleInit, OnModuleDestroy {
   constructor(config: ConfigService) {
     const url = config.getOrThrow<AppConfig['REDIS_URL']>('app.REDIS_URL')
     // Keep reconnecting after blips; ioredis re-subscribes the pattern on reconnect.
-    const options = { lazyConnect: true, maxRetriesPerRequest: 1, connectTimeout: 5000, retryStrategy: (times: number) => Math.min(times * 200, 5000) }
+    const options = {
+      lazyConnect: true,
+      maxRetriesPerRequest: 1,
+      connectTimeout: 5000,
+      retryStrategy: (times: number) => Math.min(times * 200, 5000),
+    }
     this.publisher = new Redis(url, options)
     this.subscriber = new Redis(url, options)
     this.publisher.on('error', () => this.logger.warn('Redis publisher unavailable'))
     this.subscriber.on('error', () => this.logger.warn('Redis subscriber unavailable'))
     this.subscriber.on('pmessage', (_pattern, channel, message) => {
       try {
-        this.events.next({ userId: channel.slice('jobs:user:'.length), event: JSON.parse(message) as JobEvent })
+        this.events.next({
+          userId: channel.slice('jobs:user:'.length),
+          event: JSON.parse(message) as JobEvent,
+        })
       } catch {
         return
       }
@@ -45,7 +53,10 @@ export class JobEventsService implements OnModuleInit, OnModuleDestroy {
   }
 
   streamFor(userId: string): Observable<JobEvent> {
-    return this.events.pipe(filter(message => message.userId === userId), map(message => message.event))
+    return this.events.pipe(
+      filter(message => message.userId === userId),
+      map(message => message.event)
+    )
   }
 
   async publish(userId: string, event: JobEvent): Promise<void> {

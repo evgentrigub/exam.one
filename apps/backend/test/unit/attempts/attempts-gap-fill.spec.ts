@@ -15,9 +15,9 @@ describe('AttemptsService with typed gap answers', () => {
   const user = makeUser()
 
   beforeEach(async () => {
-    create = jest.fn().mockImplementation(() =>
-      Promise.resolve({ ...makeAttempt(), result: null, exercise: null })
-    )
+    create = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ ...makeAttempt(), result: null, exercise: null }))
     const prisma = {
       setting: { findUnique: jest.fn().mockResolvedValue({ packId: 'cambridge-en-a2' }) },
       attempt: {
@@ -59,7 +59,11 @@ describe('AttemptsService with typed gap answers', () => {
     const data = create.mock.calls[0]?.[0]?.data
     expect(data.result.create).toEqual(expect.objectContaining({ score: 5, maxScore: 6 }))
     expect(data.snapshot.view.questions[0]).toEqual(
-      expect.objectContaining({ options: [], correctAnswer: -1, accepted: ['because', 'since', 'as'] })
+      expect.objectContaining({
+        options: [],
+        correctAnswer: -1,
+        accepted: ['because', 'since', 'as'],
+      })
     )
   })
 })

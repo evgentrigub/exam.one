@@ -20,7 +20,9 @@
             >
               <Check v-if="isGapCorrect(question)" :size="14" />
               <X v-else :size="14" />
-              <span class="font-medium">{{ typedAnswer(question) || $t('pastExams.notAnswered') }}</span>
+              <span class="font-medium">{{
+                typedAnswer(question) || $t('pastExams.notAnswered')
+              }}</span>
               <span class="ml-auto text-xs font-semibold">{{ $t('mockExam.yourAnswer') }}</span>
             </div>
             <p v-if="!isGapCorrect(question)" class="text-xs text-base-content/60">

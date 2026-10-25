@@ -15,7 +15,12 @@ describe('pack speaking generation', () => {
     topicType: 'interview',
     theme: 'Fragen zur Person',
     answerQuestions: ['Wie heißt du?', 'Woher kommst du?', 'Wo wohnst du?', 'Was machst du?'],
-    askQuestions: ['Wie alt bist du?', 'Hast du Geschwister?', 'Was isst du gern?', 'Wann stehst du auf?'],
+    askQuestions: [
+      'Wie alt bist du?',
+      'Hast du Geschwister?',
+      'Was isst du gern?',
+      'Wann stehst du auf?',
+    ],
   })
 
   const teil2 = () => ({
@@ -36,7 +41,10 @@ describe('pack speaking generation', () => {
   it('rejects a card list that is not exactly four entries', () => {
     const payload = teil1()
     expect(() =>
-      partFor(1).validate!({ ...payload, askQuestions: payload.askQuestions.slice(1) }, partFor(1).runtime!)
+      partFor(1).validate!(
+        { ...payload, askQuestions: payload.askQuestions.slice(1) },
+        partFor(1).runtime!
+      )
     ).toThrow('exactly 4')
   })
 
@@ -75,7 +83,9 @@ describe('pack speaking prompt variables', () => {
 
   it('leaves no unresolved placeholder in either Teil', () => {
     for (const part of [1, 2]) {
-      const spec = pack.prompts.find(s => s.skill === 'speaking' && s.part === part && s.kind === 'review')!
+      const spec = pack.prompts.find(
+        s => s.skill === 'speaking' && s.part === part && s.kind === 'review'
+      )!
       const vars = pack.buildReviewVars!({
         skill: 'speaking',
         part,

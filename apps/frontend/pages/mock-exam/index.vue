@@ -8,7 +8,9 @@
         {{ $t('mockExam.fullSimulation') }}
       </div>
       <h1 class="mt-2 font-display text-3xl font-bold">{{ $t('mockExam.title') }}</h1>
-      <p v-if="pack.createMockSet" class="mt-1 text-sm text-base-content/60">{{ $t('mockExam.listDescription', { exam: pack.title }) }}</p>
+      <p v-if="pack.createMockSet" class="mt-1 text-sm text-base-content/60">
+        {{ $t('mockExam.listDescription', { exam: pack.title }) }}
+      </p>
     </div>
 
     <p v-if="!pack.createMockSet" class="alert">{{ $t('mockExam.notAvailableForPack') }}</p>
@@ -72,7 +74,21 @@ const { isGenerating, startGeneration } = useBackgroundMockGeneration()
 const center = useJobCenter()
 const settings = useSettingsStore()
 const generationError = ref<string | null>(null)
-watch(() => center.jobs.value.filter(job => job.type === 'MOCK_EXAM_SET' && job.packId === settings.packId && job.status === 'COMPLETED').map(job => job.id).join(','), () => { void reload() })
+watch(
+  () =>
+    center.jobs.value
+      .filter(
+        job =>
+          job.type === 'MOCK_EXAM_SET' &&
+          job.packId === settings.packId &&
+          job.status === 'COMPLETED'
+      )
+      .map(job => job.id)
+      .join(','),
+  () => {
+    void reload()
+  }
+)
 
 async function generate(): Promise<void> {
   const setNumber = nextSetNumber.value
