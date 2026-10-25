@@ -57,9 +57,15 @@ export const cambridgeEnA2: ExamPack = {
   // Practice seeds first, then the exam-only Set 1 payloads (their listening WAVs are seeded).
   seedExercises: {
     reading: [...readingKeySeeds, ...mockReadingKeySeeds] as unknown as Record<string, unknown>[],
-    listening: [...listeningKeySeeds, ...mockListeningKeySeeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningKeySeeds, ...mockListeningKeySeeds] as unknown as Record<
+      string,
+      unknown
+    >[],
     writing: [...writingKeySeeds, ...mockWritingKeySeeds] as unknown as Record<string, unknown>[],
-    speaking: [...speakingKeySeeds, ...mockSpeakingKeySeeds] as unknown as Record<string, unknown>[],
+    speaking: [...speakingKeySeeds, ...mockSpeakingKeySeeds] as unknown as Record<
+      string,
+      unknown
+    >[],
   },
   createMockSet: createCambridgeA2MockExamSet,
   bundledMockSet: cambridgeA2MockExamSet1,

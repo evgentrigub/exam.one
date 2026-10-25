@@ -36,6 +36,8 @@ This file is the working guide for coding agents in this repository. It should b
 
 Use `pnpm`.
 
+- `bash scripts/stack-install.sh` / `pnpm stack:install` - check prerequisites, prepare `.env` and missing secrets, install dependencies, and start the stack; `--check` checks tools only, `--core` skips speech
+- Root database workflows are `db:migrate`, `db:migrate:deploy`, `db:seed`, and `db:reset-practice`; standalone `db:prune` and `db:validate` remain package-local
 - `pnpm dev:infra` - start the persistent development PostgreSQL container
 - `pnpm dev` - start Nuxt and NestJS locally with hot reload
 - `pnpm dev:frontend` - start only Nuxt
@@ -157,6 +159,7 @@ This project has a knowledge graph at graphify-out/ with god nodes, community st
 When the user types `/graphify`, follow the graphify skill before doing anything else.
 
 Rules:
+
 - For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
 - Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.

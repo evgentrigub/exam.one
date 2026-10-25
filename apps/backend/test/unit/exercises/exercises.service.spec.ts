@@ -9,11 +9,7 @@ import { PrismaService } from '@exam-one/nestjs-libraries'
 import { ExercisesService } from '../../../src/practice/exercises.service'
 import { makeExercise, makeUser } from '../../../src/testing/fixtures'
 
-function expectCode(
-  error: unknown,
-  type: new (...args: any[]) => HttpException,
-  code: string
-) {
+function expectCode(error: unknown, type: new (...args: any[]) => HttpException, code: string) {
   expect(error).toBeInstanceOf(type)
   expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
 }
@@ -202,7 +198,10 @@ describe('ExercisesService', () => {
         })
       )
 
-    const created = await service.createMany(user, 'READING', [readingPayload('gen-a'), readingPayload('gen-b')])
+    const created = await service.createMany(user, 'READING', [
+      readingPayload('gen-a'),
+      readingPayload('gen-b'),
+    ])
 
     expect(created.map(row => row.externalId)).toEqual(['gen-a', 'gen-b'])
     expect(prisma.exercise.create).toHaveBeenCalledTimes(2)

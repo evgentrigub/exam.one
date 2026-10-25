@@ -3,7 +3,10 @@ import { IsString, MaxLength, MinLength } from 'class-validator'
 import { PASSWORD_MAX_LENGTH } from '../auth.constants'
 
 export class ResetPasswordDto {
-  @ApiProperty({ description: 'Secure password reset token received via email', example: 'rst_abc123xyz' })
+  @ApiProperty({
+    description: 'Secure password reset token received via email',
+    example: 'rst_abc123xyz',
+  })
   @IsString()
   @MinLength(1)
   token!: string

@@ -16,9 +16,9 @@
       class="bg-base-100 border border-base-300 ring-soft rounded-box p-8 text-center"
     >
       <p class="text-sm text-base-content/60 mb-3">{{ $t('pages.writing.topicNotFound') }}</p>
-      <NuxtLink to="/exercises?skill=writing" class="btn btn-primary btn-sm"
-        >{{ $t('pages.common.backToExercises') }}</NuxtLink
-      >
+      <NuxtLink to="/exercises?skill=writing" class="btn btn-primary btn-sm">{{
+        $t('pages.common.backToExercises')
+      }}</NuxtLink>
     </div>
 
     <template v-else>

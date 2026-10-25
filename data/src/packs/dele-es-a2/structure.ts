@@ -47,7 +47,8 @@ export const deleEsA2Structure: ExamModule[] = [
         n: 4,
         title: 'Narrative text',
         format: 'Tarea 4 · 1 text · 6 questions · a · b · c',
-        short: 'Read a longer text (a biography, a blog, a story or a travel guide) and answer six questions.',
+        short:
+          'Read a longer text (a biography, a blog, a story or a travel guide) and answer six questions.',
         goal: 'Follow a longer narrative text and understand its details.',
         skill: 'Reading for detail.',
         itemFormat: 'selection',
@@ -77,7 +78,8 @@ export const deleEsA2Structure: ExamModule[] = [
         n: 2,
         title: 'Radio',
         format: 'Tarea 2 · 6 radio pieces · a · b · c',
-        short: 'Listen to six short pieces from the radio – news, ads, announcements – and answer one question about each.',
+        short:
+          'Listen to six short pieces from the radio – news, ads, announcements – and answer one question about each.',
         goal: 'Understand the main point of short broadcast texts.',
         skill: 'Listening for gist and detail.',
         itemFormat: 'selection',
@@ -86,7 +88,8 @@ export const deleEsA2Structure: ExamModule[] = [
         n: 3,
         title: 'Who says it?',
         format: 'Tarea 3 · 1 conversation · 6 statements · man · woman · neither',
-        short: 'Listen to a conversation between two friends and decide who says each of six things: the man, the woman or neither.',
+        short:
+          'Listen to a conversation between two friends and decide who says each of six things: the man, the woman or neither.',
         goal: 'Follow a conversation and link information to the right speaker.',
         skill: 'Listening for specific information.',
         itemFormat: 'matching',
@@ -107,7 +110,8 @@ export const deleEsA2Structure: ExamModule[] = [
     label: 'Writing (Expresión e interacción escritas)',
     minutes: 45,
     points: 12,
-    summary: 'A reply to a short message (60–70 words) and a text about everyday life or a biography (70–80 words).',
+    summary:
+      'A reply to a short message (60–70 words) and a text about everyday life or a biography (70–80 words).',
     scoringNote:
       'Practice marks each task on the exam’s two scales, 0–3 each: task completion (cumplimiento de la tarea) and language use (uso de la lengua). The exam weights language use 66% and task completion 34% and converts the result to 25 points (×25/3); practice shows the raw bands, where 2 means A2 is reached.',
     parts: [
@@ -124,7 +128,8 @@ export const deleEsA2Structure: ExamModule[] = [
         n: 2,
         title: 'Everyday life or a biography',
         format: 'Tarea 2 · Opción A or B · 70–80 words',
-        short: 'Write about an experience from your everyday life (Opción A) or a biography or story from given information (Opción B).',
+        short:
+          'Write about an experience from your everyday life (Opción A) or a biography or story from given information (Opción B).',
         goal: 'Write a connected text about the past and the present.',
         skill: 'Written production.',
         itemFormat: 'freeform',
@@ -145,7 +150,8 @@ export const deleEsA2Structure: ExamModule[] = [
         n: 1,
         title: 'Presentation',
         format: 'Tarea 1 · a topic · 5 points · monologue',
-        short: 'Give a short presentation about yourself on a topic, covering the points on the card.',
+        short:
+          'Give a short presentation about yourself on a topic, covering the points on the card.',
         goal: 'Talk about your own life in a short, connected monologue.',
         skill: 'Spoken production.',
         itemFormat: 'recording',
@@ -154,7 +160,8 @@ export const deleEsA2Structure: ExamModule[] = [
         n: 2,
         title: 'Describe a scene',
         format: 'Tarea 2 · a scene · guide questions · monologue',
-        short: 'Describe an everyday scene: the people, the place, what they are doing and how they feel.',
+        short:
+          'Describe an everyday scene: the people, the place, what they are doing and how they feel.',
         goal: 'Describe people and a situation with the help of guide questions.',
         skill: 'Describing.',
         itemFormat: 'recording',

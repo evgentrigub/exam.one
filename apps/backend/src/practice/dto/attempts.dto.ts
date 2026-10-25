@@ -17,7 +17,8 @@ const SKILLS = ['READING', 'WRITING', 'LISTENING', 'SPEAKING'] as const
 
 export class ListAttemptsQueryDto {
   @ApiPropertyOptional({
-    description: 'When true, includes historical attempts across all packs rather than just active pack',
+    description:
+      'When true, includes historical attempts across all packs rather than just active pack',
     enum: ['true', 'false'],
     example: 'false',
   })
@@ -98,7 +99,7 @@ export class CreateAttemptDto {
   @ApiProperty({
     description: 'Dictionary of user answers matching exercise question keys',
     type: Object,
-    example: { 'q1': 0, 'q2': 2 },
+    example: { q1: 0, q2: 2 },
   })
   @IsObject()
   answers!: Record<string, unknown>
@@ -117,7 +118,7 @@ export class PatchAttemptDto {
   @ApiPropertyOptional({
     description: 'Updated user answers dictionary',
     type: Object,
-    example: { 'q1': 1, 'q2': 2 },
+    example: { q1: 1, q2: 2 },
   })
   @IsOptional()
   @IsObject()

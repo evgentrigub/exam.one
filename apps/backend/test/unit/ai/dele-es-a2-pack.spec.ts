@@ -75,7 +75,9 @@ describe('DELE A2 pack', () => {
       expect(() => p.validate!(payload, p.runtime!)).not.toThrow()
       expect(view.questions).toHaveLength(count)
       const right = Object.fromEntries(view.questions!.map(q => [q.id, q.correctAnswer]))
-      const wrong = Object.fromEntries(view.questions!.map(q => [q.id, (q.correctAnswer + 1) % q.options.length]))
+      const wrong = Object.fromEntries(
+        view.questions!.map(q => [q.id, (q.correctAnswer + 1) % q.options.length])
+      )
       expect(objectiveScore(view, p.runtime!, right).score).toBe(points)
       expect(objectiveScore(view, p.runtime!, wrong).score).toBe(0)
       expect(findPrompt(deleEsA2, skill, n, 'generator')).toBeDefined()
@@ -111,34 +113,44 @@ describe('DELE A2 pack', () => {
 
   it('rejects a dialogue without Spanish speaker labels', () => {
     const payload = seed('listening', 1)
-    rows(payload, 'items')[0]!['transcript'] = 'Buenos días. Quería unos zapatos. ¿Qué número tiene?'
-    expect(() => part('listening', 1).validate!(payload, part('listening', 1).runtime!)).toThrow('labelled')
+    rows(payload, 'items')[0]!['transcript'] =
+      'Buenos días. Quería unos zapatos. ¿Qué número tiene?'
+    expect(() => part('listening', 1).validate!(payload, part('listening', 1).runtime!)).toThrow(
+      'labelled'
+    )
   })
 
-  it.each(RUBRIC)('projects and validates the %s part %i seed with a %i-point rubric', (skill, n, points) => {
-    const p = part(skill, n)
-    const payload = seed(skill, n)
-    expect(() => validateView(p.adapter!.project(payload), p.runtime!)).not.toThrow()
-    expect(() => p.validate!(payload, p.runtime!)).not.toThrow()
-    expect(p.runtime!.maxPoints).toBe(points)
-    expect(p.runtime!.criteria!.map(c => c.id)).toEqual(['taskCompletion', 'language'])
-    expect(p.runtime!.multiplier).toBe(1)
-  })
+  it.each(RUBRIC)(
+    'projects and validates the %s part %i seed with a %i-point rubric',
+    (skill, n, points) => {
+      const p = part(skill, n)
+      const payload = seed(skill, n)
+      expect(() => validateView(p.adapter!.project(payload), p.runtime!)).not.toThrow()
+      expect(() => p.validate!(payload, p.runtime!)).not.toThrow()
+      expect(p.runtime!.maxPoints).toBe(points)
+      expect(p.runtime!.criteria!.map(c => c.id)).toEqual(['taskCompletion', 'language'])
+      expect(p.runtime!.multiplier).toBe(1)
+    }
+  )
 
   it('ships both writing Tarea 2 options and rejects any other', () => {
-    const options = deleEsA2.seedExercises!.writing!
-      .filter(s => s['testingPart'] === 2 && s['examOnly'] !== true)
+    const options = deleEsA2
+      .seedExercises!.writing!.filter(s => s['testingPart'] === 2 && s['examOnly'] !== true)
       .map(s => s['topicType'])
     expect(options).toEqual(['opcion-a', 'opcion-b'])
     const payload = seed('writing', 2)
     payload['topicType'] = 'essay'
-    expect(() => part('writing', 2).validate!(payload, part('writing', 2).runtime!)).toThrow('topicType')
+    expect(() => part('writing', 2).validate!(payload, part('writing', 2).runtime!)).toThrow(
+      'topicType'
+    )
   })
 
   it('rejects a writing word range that differs from the part field', () => {
     const payload = seed('writing', 1)
     payload['wordCount'] = { min: 50, max: 80 }
-    expect(() => part('writing', 1).validate!(payload, part('writing', 1).runtime!)).toThrow('wordCount')
+    expect(() => part('writing', 1).validate!(payload, part('writing', 1).runtime!)).toThrow(
+      'wordCount'
+    )
   })
 
   it('uses keyword monologues for speaking 1 and 2 and examiner cards for the role-play', () => {
@@ -147,10 +159,14 @@ describe('DELE A2 pack', () => {
     expect(part('speaking', 3).layout).toBe('word-cards')
     const short = seed('speaking', 1)
     short['keywords'] = (short['keywords'] as string[]).slice(0, 4)
-    expect(() => part('speaking', 1).validate!(short, part('speaking', 1).runtime!)).toThrow('exactly 5')
+    expect(() => part('speaking', 1).validate!(short, part('speaking', 1).runtime!)).toThrow(
+      'exactly 5'
+    )
     const payload = seed('speaking', 3)
     delete rows(payload, 'cards')[0]!['speaker']
-    expect(() => part('speaking', 3).validate!(payload, part('speaking', 3).runtime!)).toThrow('examiner')
+    expect(() => part('speaking', 3).validate!(payload, part('speaking', 3).runtime!)).toThrow(
+      'examiner'
+    )
   })
 
   it('leaves no unresolved placeholder in a generator prompt but {count}', () => {
@@ -163,7 +179,9 @@ describe('DELE A2 pack', () => {
   it.each(RUBRIC)('resolves every %s part %i answer and review variable', (skill, n) => {
     const p = part(skill, n)
     const ids = skill === 'writing' ? ['answer'] : p.runtime!.segments!.map(s => s.id)
-    const answers = Object.fromEntries(ids.map(id => [id, 'Me gusta mucho leer, porque es interesante.']))
+    const answers = Object.fromEntries(
+      ids.map(id => [id, 'Me gusta mucho leer, porque es interesante.'])
+    )
     for (const kind of ['answer', 'review'] as const) {
       const vars = deleEsA2.buildReviewVars!({
         skill,
@@ -178,17 +196,20 @@ describe('DELE A2 pack', () => {
     }
   })
 
-  it.each(RUBRIC)('accepts a %s part %i review on its bands and rejects a wrong maximum', (skill, n, points) => {
-    const rules = part(skill, n).runtime!
-    const review = {
-      criteria: rules.criteria!.map(c => ({ ...c, points: 2, comment: 'ok' })),
-      totalPoints: 4,
-      maxPoints: points,
-      summary: 'Bien',
-      strengths: [],
-      improvements: [],
+  it.each(RUBRIC)(
+    'accepts a %s part %i review on its bands and rejects a wrong maximum',
+    (skill, n, points) => {
+      const rules = part(skill, n).runtime!
+      const review = {
+        criteria: rules.criteria!.map(c => ({ ...c, points: 2, comment: 'ok' })),
+        totalPoints: 4,
+        maxPoints: points,
+        summary: 'Bien',
+        strengths: [],
+        improvements: [],
+      }
+      expect(validateReview(review, rules).totalPoints).toBe(4)
+      expect(() => validateReview({ ...review, maxPoints: points + 1 }, rules)).toThrow('total')
     }
-    expect(validateReview(review, rules).totalPoints).toBe(4)
-    expect(() => validateReview({ ...review, maxPoints: points + 1 }, rules)).toThrow('total')
-  })
+  )
 })

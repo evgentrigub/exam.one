@@ -2,12 +2,16 @@
   <div class="bg-base-100 rounded-box border border-base-300/70 p-5 sm:p-7 h-fit">
     <div class="flex items-center gap-2">
       <ClipboardList :size="14" class="text-base-content/70" aria-hidden="true" />
-      <div class="text-sm font-semibold text-base-content/70">{{ $t('writing.formFill.title') }}</div>
+      <div class="text-sm font-semibold text-base-content/70">
+        {{ $t('writing.formFill.title') }}
+      </div>
       <span class="ml-auto text-xs text-base-content/60">
         <span class="font-mono font-semibold" :class="allFilled ? 'text-success' : ''">{{
           filledCount
         }}</span>
-        <span class="text-base-content/50"> / {{ blanks.length }} {{ $t('writing.formFill.filled') }}</span>
+        <span class="text-base-content/50">
+          / {{ blanks.length }} {{ $t('writing.formFill.filled') }}</span
+        >
       </span>
     </div>
 
@@ -64,7 +68,9 @@
               :aria-checked="values[row.field] === option"
               :disabled="submitted"
               class="btn btn-sm rounded-full"
-              :class="values[row.field] === option ? 'btn-primary' : 'btn-ghost border border-base-300'"
+              :class="
+                values[row.field] === option ? 'btn-primary' : 'btn-ghost border border-base-300'
+              "
               @click="setValue(row.field, option)"
             >
               {{ option }}
@@ -190,8 +196,12 @@ const rows = computed(() => {
     number: row.field ? ++number : 0,
   }))
 })
-const filledCount = computed(() => blanks.value.filter(row => values.value[row.field]?.trim()).length)
-const allFilled = computed(() => blanks.value.length > 0 && filledCount.value === blanks.value.length)
+const filledCount = computed(
+  () => blanks.value.filter(row => values.value[row.field]?.trim()).length
+)
+const allFilled = computed(
+  () => blanks.value.length > 0 && filledCount.value === blanks.value.length
+)
 
 watch(
   () => props.initialContent,

@@ -1,0 +1,12 @@
+# Prettier also skips everything in .gitignore.
+pnpm-lock.yaml
+
+# Python/shell speech tooling has its own conventions.
+scripts/
+
+# Generated or tool-owned output.
+graphify-out/
+archify-out/
+.playwright-mcp/
+.agents/
+**/src/generated/

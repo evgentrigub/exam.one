@@ -1,6 +1,14 @@
 import { definePrompt } from '../../../assemble'
 import type { PromptSpec } from '../../../types'
-import { A2_LANGUAGE, A2_TOPICS, AUTHOR_ROLE, CHOICE_RULE, LABEL_RULE, PRELUDE, RULES_HEADER } from './common'
+import {
+  A2_LANGUAGE,
+  A2_TOPICS,
+  AUTHOR_ROLE,
+  CHOICE_RULE,
+  LABEL_RULE,
+  PRELUDE,
+  RULES_HEADER,
+} from './common'
 
 const LLM = { temperature: 0.8, maxTokens: 6000 }
 

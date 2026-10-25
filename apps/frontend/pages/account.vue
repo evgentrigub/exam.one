@@ -11,9 +11,7 @@
           <div class="flex-1 min-w-0">
             <h2 class="font-display text-2xl font-bold truncate">{{ profile.name }}</h2>
             <div class="text-sm text-base-content/60 truncate">
-              {{
-                $t('account.learningLine', { email: profile.email, level: pack.title })
-              }}
+              {{ $t('account.learningLine', { email: profile.email, level: pack.title }) }}
             </div>
           </div>
           <NuxtLink
@@ -61,10 +59,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-display text-xl font-bold">{{ $t(plan.nameKey) }}</h4>
-                  <span
-                    v-if="plan.id === effectivePlan"
-                    class="badge badge-primary badge-sm"
-                  >
+                  <span v-if="plan.id === effectivePlan" class="badge badge-primary badge-sm">
                     {{ $t('account.active') }}
                   </span>
                 </div>

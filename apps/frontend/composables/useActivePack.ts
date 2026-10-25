@@ -24,8 +24,11 @@ export function useActivePack() {
   }
 
   function labelFor(skill: SkillId, partNumber: number | undefined): string {
-    const part = partsFor(skill).find(item => item.n === partNumber) ??
-      pack.value.structure.find(module => module.id === skill)?.parts.find(item => item.n === partNumber)
+    const part =
+      partsFor(skill).find(item => item.n === partNumber) ??
+      pack.value.structure
+        .find(module => module.id === skill)
+        ?.parts.find(item => item.n === partNumber)
     return part?.practiceLabel ?? (partNumber ? `Teil ${partNumber}` : '')
   }
 

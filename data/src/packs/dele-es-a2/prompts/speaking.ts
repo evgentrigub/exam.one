@@ -99,7 +99,7 @@ export const speakingPrompts: PromptSpec[] = [
     kind: 'generator',
     llm: GENERATOR_LLM,
     role: AUTHOR_ROLE,
-    task: 'Task: generate {count} exercises for DELE A2 Speaking, Tarea 3 (a role-play with the examiner in an everyday situation, 3–4 minutes). Solo practice: the examiner\'s lines are fixed cards, and the learner asks one question of their own.',
+    task: "Task: generate {count} exercises for DELE A2 Speaking, Tarea 3 (a role-play with the examiner in an everyday situation, 3–4 minutes). Solo practice: the examiner's lines are fixed cards, and the learner asks one question of their own.",
     rules: [
       RULES_HEADER,
       '1. Situation ("theme", in Spanish, addressed to "tú"): an everyday transaction or conversation in a public place, with the examiner in a role – a shop assistant, a waiter, a hotel receptionist, a ticket office clerk, a tourist-office employee, a pharmacist. Say who the learner is and what they want ("Estás en una tienda de ropa y quieres comprar un regalo para tu madre. El examinador es el dependiente.").',

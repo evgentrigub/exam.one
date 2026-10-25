@@ -56,7 +56,8 @@ export const certpolPlA2Structure: ExamModule[] = [
         n: 5,
         title: 'Numbers',
         format: 'Zadanie V · 5 gaps · a date, number, time or year',
-        short: 'Listen to an announcement and write down five numbers: dates, times, prices and years.',
+        short:
+          'Listen to an announcement and write down five numbers: dates, times, prices and years.',
         goal: 'Catch and write down numbers you hear.',
         skill: 'Note-taking.',
         itemFormat: 'gap-fill',
@@ -134,7 +135,8 @@ export const certpolPlA2Structure: ExamModule[] = [
     label: 'Writing (Pisanie)',
     minutes: 45,
     points: 20,
-    summary: 'A short text (a greeting or a message) and a longer text (a description or a letter).',
+    summary:
+      'A short text (a greeting or a message) and a longer text (a description or a letter).',
     scoringNote:
       'Officially one set of two tasks, scored together: task completion 6, range of language 7, accuracy 7 (20). Practice scores each task on the same criteria: 2/2/2 and 4/5/5.',
     parts: [
@@ -172,7 +174,8 @@ export const certpolPlA2Structure: ExamModule[] = [
         n: 1,
         title: 'About you',
         format: 'Zadanie 1 · examiner questions · 4 answers',
-        short: 'Answer the examiner’s questions about yourself, your family, your interests and your work or studies.',
+        short:
+          'Answer the examiner’s questions about yourself, your family, your interests and your work or studies.',
         goal: 'Give simple personal information in full sentences.',
         skill: 'Answering questions.',
         itemFormat: 'recording',
@@ -182,7 +185,8 @@ export const certpolPlA2Structure: ExamModule[] = [
         n: 2,
         title: 'Describe a photo',
         format: 'Zadanie 2 · a person in a photo · monologue',
-        short: 'Describe the person in a photo: who it is, what they look like, what they are doing.',
+        short:
+          'Describe the person in a photo: who it is, what they look like, what they are doing.',
         goal: 'Describe a person and a situation in a short connected monologue.',
         skill: 'Describing.',
         itemFormat: 'recording',
@@ -191,7 +195,8 @@ export const certpolPlA2Structure: ExamModule[] = [
         n: 3,
         title: 'Role-play',
         format: 'Zadanie 3 · a situation with the examiner · 4 turns',
-        short: 'Act out an everyday situation: start the conversation, then react to what the examiner says.',
+        short:
+          'Act out an everyday situation: start the conversation, then react to what the examiner says.',
         goal: 'Invite, suggest, arrange and react in a simple everyday conversation.',
         skill: 'Interaction.',
         itemFormat: 'recording',

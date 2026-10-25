@@ -36,7 +36,11 @@
         </p>
         <p>
           {{ $t('pastExams.correctAnswer') }}:
-          {{ question.accepted ? question.accepted.join(' / ') : question.options[question.correctAnswer] }}
+          {{
+            question.accepted
+              ? question.accepted.join(' / ')
+              : question.options[question.correctAnswer]
+          }}
         </p>
         <p>{{ question.explanation }}</p>
         <details v-if="question.transcript">
@@ -177,7 +181,9 @@ function isCriterionReview(value: unknown): value is CriterionReview {
 const review = computed<CriterionReview | undefined>(() => {
   const stored = props.attempt.result?.review
   if (!isRecord(stored)) return undefined
-  const writing = isRecord(stored['writingReview']) ? stored['writingReview']['responseData'] : undefined
+  const writing = isRecord(stored['writingReview'])
+    ? stored['writingReview']['responseData']
+    : undefined
   for (const candidate of [stored, stored['review'], writing]) {
     if (isCriterionReview(candidate)) return candidate
   }

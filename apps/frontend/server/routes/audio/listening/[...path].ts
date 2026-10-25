@@ -41,13 +41,17 @@ const CONTENT_TYPES: Record<string, string> = {
 /** Resolve inside ROOT or return null, so a crafted path cannot escape the directory. */
 function containedPath(relative: string): string | null {
   if (!relative || isAbsolute(relative)) return null
-  if (relative.split(/[/\\]/).some(part => part === '' || part === '.' || part === '..')) return null
+  if (relative.split(/[/\\]/).some(part => part === '' || part === '.' || part === '..'))
+    return null
   const absolute = resolve(ROOT, relative)
   return absolute.startsWith(ROOT + sep) ? absolute : null
 }
 
 /** Parse a single `bytes=` range. Multi-range is not worth supporting for a media file. */
-function parseRange(header: string | undefined, size: number): { start: number; end: number } | null {
+function parseRange(
+  header: string | undefined,
+  size: number
+): { start: number; end: number } | null {
   const match = /^bytes=(\d*)-(\d*)$/.exec(header?.trim() ?? '')
   if (!match) return null
   const [, rawStart, rawEnd] = match

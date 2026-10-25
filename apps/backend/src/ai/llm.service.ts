@@ -12,7 +12,8 @@ import { LlmSettingsService } from './llm-settings.service'
 
 const MISSING_KEY_MESSAGE =
   'AI features are unavailable because no API key is configured. Add one in Settings → AI provider.'
-const UNCONFIGURED_HEALTH_MESSAGE = 'No LLM API key is configured. Add one in Settings → AI provider.'
+const UNCONFIGURED_HEALTH_MESSAGE =
+  'No LLM API key is configured. Add one in Settings → AI provider.'
 
 /** LLM access for the current user; HTTP requests and job processors both carry the user in `packContext`. */
 @Injectable()

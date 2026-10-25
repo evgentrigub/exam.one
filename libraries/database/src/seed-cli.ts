@@ -9,7 +9,9 @@ async function main(): Promise<void> {
       `Seeded exercises: reading=${summary.reading} writing=${summary.writing} listening=${summary.listening} speaking=${summary.speaking}; mock set 1 upserted.`
     )
     console.info(
-      `Per pack: ${Object.entries(summary.packs).map(([id, n]) => `${id}=${n}`).join(' ')}`
+      `Per pack: ${Object.entries(summary.packs)
+        .map(([id, n]) => `${id}=${n}`)
+        .join(' ')}`
     )
   } finally {
     await prisma.$disconnect()

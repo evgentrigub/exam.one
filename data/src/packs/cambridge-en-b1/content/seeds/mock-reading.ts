@@ -227,14 +227,12 @@ By the end of summer, the garden had become a place where passengers waited for 
     4,
     'Our first neighbourhood concert',
     'Our street planned a small concert to raise money for the community centre. I agreed to help organise it, although I had never done anything similar. We expected a warm evening outside, but three days before the concert the forecast changed to heavy rain. (1) ____\n\nThe centre had an empty hall, but we did not own the equipment needed to perform there. (2) ____ She offered to lend us the school’s speakers and microphones.\n\nWe also needed to decide when to open the doors. Rather than guess, we emailed everyone who had reserved tickets. (3) ____ So we changed the opening time from seven to six.\n\nOn the day, several neighbours arrived to arrange chairs and decorate the hall. (4) ____ By five o’clock, the room looked welcoming and the sound equipment was working.\n\nWhen the last song began, the audience started singing too. (5) ____ I was tired, but already thinking about organising another event the following year.',
-    sentences
-      .slice(0, 5)
-      .map((answer, index) => ({
-        question: `Gap ${index + 1}`,
-        options: sentences,
-        correctAnswer: index,
-        explanation: answer,
-      }))
+    sentences.slice(0, 5).map((answer, index) => ({
+      question: `Gap ${index + 1}`,
+      options: sentences,
+      correctAnswer: index,
+      explanation: answer,
+    }))
   ),
   exercise(
     5,

@@ -53,9 +53,11 @@ describe('AttemptsService on the generic path', () => {
         count: jest.fn().mockResolvedValue(0),
         findMany: jest.fn().mockResolvedValue([]),
         findFirst: jest.fn(),
-        create: jest.fn().mockImplementation(() =>
-          Promise.resolve({ ...makeAttempt(), result: null, exercise: null })
-        ),
+        create: jest
+          .fn()
+          .mockImplementation(() =>
+            Promise.resolve({ ...makeAttempt(), result: null, exercise: null })
+          ),
         update: jest.fn(),
       },
     }
@@ -109,7 +111,13 @@ describe('AttemptsService on the generic path', () => {
   it('persists a writing review wrapper instead of rejecting it', async () => {
     const review = {
       criteria: [
-        { id: 'aufgabenerfuellung', label: 'Task completion', maxPoints: 5, points: 4, comment: 'ok' },
+        {
+          id: 'aufgabenerfuellung',
+          label: 'Task completion',
+          maxPoints: 5,
+          points: 4,
+          comment: 'ok',
+        },
         { id: 'sprache', label: 'Language', maxPoints: 5, points: 4, comment: 'ok' },
       ],
       totalPoints: 8,
@@ -124,7 +132,9 @@ describe('AttemptsService on the generic path', () => {
         skill: 'WRITING',
         exerciseExternalId: 'reading-a2-teil1-001',
         answers: { kind: 'writing-review', content: 'Sehr geehrte Frau Berger, '.repeat(6) },
-        result: { review: { writingReview: { topicId: 't', status: 'ready', responseData: review } } },
+        result: {
+          review: { writingReview: { topicId: 't', status: 'ready', responseData: review } },
+        },
       })
     ).resolves.toBeDefined()
   })
@@ -141,7 +151,13 @@ describe('AttemptsService on the generic path', () => {
       strengths: [],
       improvements: [],
     }
-    const attempt = { id: 's-1', topicId: 't', durationSec: 60, transcripts: { answers: 'a', questions: 'b' }, review }
+    const attempt = {
+      id: 's-1',
+      topicId: 't',
+      durationSec: 60,
+      transcripts: { answers: 'a', questions: 'b' },
+      review,
+    }
 
     await expect(
       service.create(user, {

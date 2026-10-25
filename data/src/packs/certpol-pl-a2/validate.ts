@@ -50,7 +50,8 @@ function requireString(value: unknown, field: string): void {
 }
 
 function requireRows(value: unknown, field: string, count: number): Record<string, unknown>[] {
-  if (!Array.isArray(value) || value.length !== count) fail(`${field} must contain exactly ${count} entries`)
+  if (!Array.isArray(value) || value.length !== count)
+    fail(`${field} must contain exactly ${count} entries`)
   return value.map((row, index) => {
     if (!isRecord(row)) fail(`${field}[${index}] must be an object`)
     return row
@@ -59,7 +60,8 @@ function requireRows(value: unknown, field: string, count: number): Record<strin
 
 function requireOptions(row: Record<string, unknown>, at: string, count: number): string[] {
   const options = row['options']
-  if (!Array.isArray(options) || options.length !== count) fail(`${at}.options must contain exactly ${count} entries`)
+  if (!Array.isArray(options) || options.length !== count)
+    fail(`${at}.options must contain exactly ${count} entries`)
   options.forEach((option, index) => requireString(option, `${at}.options[${index}]`))
   if (new Set(options.map(option => String(option).trim().toLowerCase())).size !== count)
     fail(`${at}.options must all be different`)
@@ -71,7 +73,8 @@ function requireOptions(row: Record<string, unknown>, at: string, count: number)
 
 /** A top-level option bank shared by every question of a matching task. */
 function requireBank(value: unknown, field: string, count: number): void {
-  if (!Array.isArray(value) || value.length !== count) fail(`${field} must contain exactly ${count} entries`)
+  if (!Array.isArray(value) || value.length !== count)
+    fail(`${field} must contain exactly ${count} entries`)
   value.forEach((option, index) => requireString(option, `${field}[${index}]`))
   if (new Set(value.map(option => String(option).trim().toLowerCase())).size !== count)
     fail(`${field} must all be different`)
@@ -80,7 +83,9 @@ function requireBank(value: unknown, field: string, count: number): void {
 /** The gap numbers in a text must be exactly 1..count, each once, in order. */
 function requireGapMarkers(text: unknown, field: string, count: number): void {
   requireString(text, field)
-  const numbers = [...String(text).matchAll(GAP_MARKER)].map(match => Number(match[1])).filter(n => n > 0)
+  const numbers = [...String(text).matchAll(GAP_MARKER)]
+    .map(match => Number(match[1]))
+    .filter(n => n > 0)
   const expected = Array.from({ length: count }, (_, i) => i + 1)
   if (numbers.join(',') !== expected.join(','))
     fail(`${field} must contain the gaps (1) ____ to (${count}) ____, each once and in order`)
@@ -90,12 +95,15 @@ function requireGapMarkers(text: unknown, field: string, count: number): void {
 function requireGap(row: Record<string, unknown>, at: string, maxWords: number): void {
   requireString(row['question'], `${at}.question`)
   requireString(row['explanation'], `${at}.explanation`)
-  if ('options' in row || 'correctAnswer' in row) fail(`${at} is a gap: use accepted, not options or correctAnswer`)
+  if ('options' in row || 'correctAnswer' in row)
+    fail(`${at} is a gap: use accepted, not options or correctAnswer`)
   const accepted = row['accepted']
-  if (!Array.isArray(accepted) || !accepted.length) fail(`${at}.accepted must list at least one answer`)
+  if (!Array.isArray(accepted) || !accepted.length)
+    fail(`${at}.accepted must list at least one answer`)
   accepted.forEach((answer, index) => requireString(answer, `${at}.accepted[${index}]`))
   const normalized = (accepted as string[]).map(normalizeGapAnswer)
-  if (new Set(normalized).size !== normalized.length) fail(`${at}.accepted must not repeat an answer`)
+  if (new Set(normalized).size !== normalized.length)
+    fail(`${at}.accepted must not repeat an answer`)
   if (normalized.some(answer => answer.split(' ').length > maxWords))
     fail(`${at}.accepted answers must be at most ${maxWords} words`)
 }
@@ -104,11 +112,14 @@ function requireDialogue(transcript: unknown, at: string, minTurns: number): voi
   requireString(transcript, at)
   const labels = [...String(transcript).matchAll(TURN_LABEL)].map(match => match[1]!)
   if (labels.length < minTurns || new Set(labels).size < 2)
-    fail(`${at} must have at least ${minTurns} turns by at least two speakers, labelled "Kobieta: …", "Pani Nowak: …" or "Łucja: …"`)
+    fail(
+      `${at} must have at least ${minTurns} turns by at least two speakers, labelled "Kobieta: …", "Pani Nowak: …" or "Łucja: …"`
+    )
 }
 
 function requirePrefix(row: Record<string, unknown>, at: string, prefix: string, n: number): void {
-  if (!String(row['question']).startsWith(`${prefix} ${n}`)) fail(`${at}.question must start with "${prefix} ${n}"`)
+  if (!String(row['question']).startsWith(`${prefix} ${n}`))
+    fail(`${at}.question must start with "${prefix} ${n}"`)
 }
 
 /** Reading: the reading screen's metadata, and the per-part question shape. */
@@ -118,18 +129,21 @@ export function validateReading(payload: Record<string, unknown>, rules: PartRun
   requireString(payload['content'], 'content')
   if (payload['textType'] !== READING_TEXT_TYPE[part])
     fail(`textType must be "${READING_TEXT_TYPE[part]}" for part ${part}`)
-  if (typeof payload['estimatedReadingTime'] !== 'number') fail('estimatedReadingTime must be a number')
+  if (typeof payload['estimatedReadingTime'] !== 'number')
+    fail('estimatedReadingTime must be a number')
   if (typeof payload['wordCount'] !== 'number') fail('wordCount must be a number')
   if (!Array.isArray(payload['topics']) || payload['topics'].some(t => typeof t !== 'string'))
     fail('topics must be an array of strings')
 
   const count = rules.questionCount ?? 0
   const questions = requireRows(payload['questions'], 'questions', count)
-  if (part === 1 || part === 2 || part === 5) requireGapMarkers(payload['content'], 'content', count)
+  if (part === 1 || part === 2 || part === 5)
+    requireGapMarkers(payload['content'], 'content', count)
   if (part === 3 || part === 4 || part === 6) {
     const label = part === 3 ? 'Napis' : part === 4 ? 'Tekst' : 'Scena'
     for (let n = 1; n <= count; n += 1)
-      if (!String(payload['content']).includes(`${label} ${n}`)) fail(`content must label its texts "${label} 1" to "${label} ${count}"`)
+      if (!String(payload['content']).includes(`${label} ${n}`))
+        fail(`content must label its texts "${label} 1" to "${label} ${count}"`)
   }
 
   let bank: string | undefined
@@ -142,7 +156,8 @@ export function validateReading(payload: Record<string, unknown>, rules: PartRun
     requirePrefix(row, at, READING_QUESTION_PREFIX[part] ?? '', index + 1)
     if (part === 2 || part === 6) {
       bank ??= options.join('|')
-      if (options.join('|') !== bank) fail('every question must offer the same options, in the same order')
+      if (options.join('|') !== bank)
+        fail('every question must offer the same options, in the same order')
     }
   })
 }
@@ -199,7 +214,8 @@ export function validateListening(payload: Record<string, unknown>, rules: PartR
     requireString(row['person'], `${at}.person`)
     requireString(row['explanation'], `${at}.explanation`)
     if ('options' in row) fail(`${at} must use the shared options`)
-    if (part === 4 && row['person'] !== `Wiadomość ${index + 1}`) fail(`${at}.person must be "Wiadomość ${index + 1}"`)
+    if (part === 4 && row['person'] !== `Wiadomość ${index + 1}`)
+      fail(`${at}.person must be "Wiadomość ${index + 1}"`)
   })
 }
 
@@ -218,7 +234,8 @@ export function validateWriting(payload: Record<string, unknown>, rules: PartRun
   requireString(payload['description'], 'description')
   requireString(payload['task'], 'task')
   const types = WRITING_TOPIC_TYPES[part] ?? []
-  if (!types.includes(String(payload['topicType']))) fail(`topicType must be one of ${types.join(', ')}`)
+  if (!types.includes(String(payload['topicType'])))
+    fail(`topicType must be one of ${types.join(', ')}`)
   if (typeof payload['estimatedTime'] !== 'number') fail('estimatedTime must be a number')
   if (!Array.isArray(payload['category']) || payload['category'].some(c => typeof c !== 'string'))
     fail('category must be an array of strings')
@@ -231,7 +248,11 @@ export function validateWriting(payload: Record<string, unknown>, rules: PartRun
   // The practice screen gates submission on this range, so it must match the part's field.
   const field = rules.fields?.[0]
   const wordCount = payload['wordCount']
-  if (!isRecord(wordCount) || wordCount['min'] !== field?.minWords || wordCount['max'] !== field?.maxWords)
+  if (
+    !isRecord(wordCount) ||
+    wordCount['min'] !== field?.minWords ||
+    wordCount['max'] !== field?.maxWords
+  )
     fail(`wordCount must be { "min": ${field?.minWords}, "max": ${field?.maxWords} }`)
 }
 
@@ -255,7 +276,8 @@ export function validateSpeaking(payload: Record<string, unknown>, rules: PartRu
   if (part === 2) {
     if ('cards' in payload) fail('the photo description has keywords, not cards')
     const keywords = payload['keywords']
-    if (!Array.isArray(keywords) || keywords.length !== 4) fail('keywords must contain exactly 4 prompts')
+    if (!Array.isArray(keywords) || keywords.length !== 4)
+      fail('keywords must contain exactly 4 prompts')
     keywords.forEach((keyword, index) => requireString(keyword, `keywords[${index}]`))
     return
   }
@@ -268,7 +290,9 @@ export function validateSpeaking(payload: Record<string, unknown>, rules: PartRu
     if (card['kind'] !== kind) fail(`${at}.kind must be "${kind}"`)
     requireString(card['topic'], `${at}.topic`)
     requireString(card['cue'], `${at}.cue`)
-    if (kind === 'answer' && card['speaker'] !== 'examiner') fail(`${at}.speaker must be "examiner"`)
-    if (kind === 'ask' && card['speaker'] !== undefined) fail(`${at} is the learner's own card and has no speaker`)
+    if (kind === 'answer' && card['speaker'] !== 'examiner')
+      fail(`${at}.speaker must be "examiner"`)
+    if (kind === 'ask' && card['speaker'] !== undefined)
+      fail(`${at} is the learner's own card and has no speaker`)
   })
 }

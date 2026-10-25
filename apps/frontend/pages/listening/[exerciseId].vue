@@ -46,7 +46,8 @@ const exercise = computed<ListeningA2Exercise | null>(
 const subtitle = computed(() => {
   if (!exercise.value) return ''
   const e = exercise.value
-  const qCount = 'items' in e ? (e.items?.length ?? 0) : 'questions' in e ? (e.questions?.length ?? 0) : 0
+  const qCount =
+    'items' in e ? (e.items?.length ?? 0) : 'questions' in e ? (e.questions?.length ?? 0) : 0
   const part = partsFor('listening').find(item => item.n === e.testingPart)
   return `${part?.practiceSubtitle ?? t('skill.listening')} · ${t('pages.common.questionCount', qCount)}`
 })

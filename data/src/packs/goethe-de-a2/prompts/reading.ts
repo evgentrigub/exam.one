@@ -111,7 +111,7 @@ Generate {count} new list-style texts (different topics: TV schedule, festival p
       RULES_HEADER,
       '1. Text type: personal correspondence (E-Mail) with an informal greeting ("Lieber...", "Hallo...") and closing ("Bis bald", "Liebe Grüße"). Put it in the "content" field.',
       '2. Text length: strictly about 230 words; the text recounts an event (a trip, a party, a house move, a meeting).',
-      '3. Vocabulary and grammar: strictly CEFR A2. Use Perfekt and Präteritum (haben/sein/Modalverben) and weil/dass-Sätze. Avoid Passiv, Plusquamperfekt and Konjunktiv I (except \'würde/hätte/wäre\').',
+      "3. Vocabulary and grammar: strictly CEFR A2. Use Perfekt and Präteritum (haben/sein/Modalverben) and weil/dass-Sätze. Avoid Passiv, Plusquamperfekt and Konjunktiv I (except 'würde/hätte/wäre').",
       '4. Question format: EXACTLY 5 questions, in the order the text presents them.',
       '5. Answer options: EXACTLY 3 options (a, b, c). correctAnswer is the index (0, 1 or 2).',
       '6. Reading skill tested (Lesestil): "sorgfältig-genaues Lesen" — grasping the main ideas and the details.',

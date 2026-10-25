@@ -71,9 +71,7 @@ const props = withDefaults(defineProps<Props>(), { showFeedback: true, trueFalse
 const { t } = useI18n()
 
 function optionLabel(index: number): string {
-  return props.trueFalse
-    ? (props.question.options[index] ?? '')
-    : String.fromCharCode(65 + index)
+  return props.trueFalse ? (props.question.options[index] ?? '') : String.fromCharCode(65 + index)
 }
 
 const emit = defineEmits<{

@@ -18,7 +18,11 @@ export const writingPlSeeds: WritingPlExercise[] = [
     createdAt: '2026-09-30',
     description: 'Twoja przyjaciółka Ola zdała egzamin na prawo jazdy.',
     task: 'Twoja przyjaciółka Ola zdała wczoraj egzamin na prawo jazdy. Napisz do niej krótką wiadomość z gratulacjami i zaproponuj, jak to uczcić. Napisz około 20 słów.',
-    requirements: ['Pogratuluj Oli zdanego egzaminu', 'Zaproponuj, jak razem to uczcić', 'Podpisz się'],
+    requirements: [
+      'Pogratuluj Oli zdanego egzaminu',
+      'Zaproponuj, jak razem to uczcić',
+      'Podpisz się',
+    ],
   },
   {
     id: 'writing-pl-a2-zadanie-b-001',

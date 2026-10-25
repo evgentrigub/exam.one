@@ -67,7 +67,8 @@ export function validateReading(payload: Record<string, unknown>): void {
   requireString(payload['content'], 'content')
   if (!READING_TEXT_TYPES.includes(payload['textType'] as (typeof READING_TEXT_TYPES)[number]))
     fail(`textType must be one of ${READING_TEXT_TYPES.join(', ')}`)
-  if (typeof payload['estimatedReadingTime'] !== 'number') fail('estimatedReadingTime must be a number')
+  if (typeof payload['estimatedReadingTime'] !== 'number')
+    fail('estimatedReadingTime must be a number')
   if (typeof payload['wordCount'] !== 'number') fail('wordCount must be a number')
   requireStringArray(payload['topics'], 'topics')
 
@@ -169,8 +170,7 @@ export function validateWriting(payload: Record<string, unknown>): void {
 
 /** Every speaking card list is exactly four non-empty prompts; the UI is built around it. */
 function requireFourCards(value: unknown, field: string): void {
-  if (!Array.isArray(value) || value.length !== 4)
-    fail(`${field} must contain exactly 4 entries`)
+  if (!Array.isArray(value) || value.length !== 4) fail(`${field} must contain exactly 4 entries`)
   ;(value as unknown[]).forEach((item, index) => requireString(item, `${field}[${index}]`))
 }
 

@@ -18,10 +18,13 @@ describe('redactSecrets', () => {
 
 describe('redactLlmError', () => {
   it('keeps status and name so fallback decisions still work', () => {
-    const original = Object.assign(new Error('401 Incorrect API key provided: sk-proj-abcdef123456'), {
-      status: 401,
-      name: 'AuthenticationError',
-    })
+    const original = Object.assign(
+      new Error('401 Incorrect API key provided: sk-proj-abcdef123456'),
+      {
+        status: 401,
+        name: 'AuthenticationError',
+      }
+    )
     const redacted = redactLlmError(original, 'sk-proj-abcdef123456')
     expect(redacted.message).toBe('401 Incorrect API key provided: [redacted]')
     expect(redacted).toMatchObject({ status: 401, name: 'AuthenticationError' })

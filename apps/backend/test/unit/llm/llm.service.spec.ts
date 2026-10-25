@@ -9,8 +9,12 @@ jest.mock('../../../src/ai/llm.adapter', () => ({
   verifyLlmConnection: jest.fn(),
 }))
 
-const callLlmWithFallback = adapter.callLlmWithFallback as jest.MockedFunction<typeof adapter.callLlmWithFallback>
-const verifyLlmConnection = adapter.verifyLlmConnection as jest.MockedFunction<typeof adapter.verifyLlmConnection>
+const callLlmWithFallback = adapter.callLlmWithFallback as jest.MockedFunction<
+  typeof adapter.callLlmWithFallback
+>
+const verifyLlmConnection = adapter.verifyLlmConnection as jest.MockedFunction<
+  typeof adapter.verifyLlmConnection
+>
 
 const config: adapter.LlmConfig = {
   provider: 'openrouter',
@@ -57,9 +61,9 @@ describe('LlmService', () => {
     const service = await createService()
     const messages = [{ role: 'user' as const, content: 'Hi' }]
 
-    await expect(packContext.run({ userId: 'user-1' }, () => service.complete(messages, { maxTokens: 5 }))).resolves.toBe(
-      'answer'
-    )
+    await expect(
+      packContext.run({ userId: 'user-1' }, () => service.complete(messages, { maxTokens: 5 }))
+    ).resolves.toBe('answer')
     expect(callLlmWithFallback).toHaveBeenCalledWith(config, messages, { maxTokens: 5 })
   })
 
@@ -87,11 +91,21 @@ describe('LlmService', () => {
 
   it('reports connected health after a successful check', async () => {
     resolveConfig.mockResolvedValue(config)
-    verifyLlmConnection.mockResolvedValue({ status: 'ok', provider: 'openrouter', model: 'test-model' })
+    verifyLlmConnection.mockResolvedValue({
+      status: 'ok',
+      provider: 'openrouter',
+      model: 'test-model',
+    })
     const service = await createService()
 
     await expect(service.health('user-1')).resolves.toEqual({
-      data: { configured: true, connected: true, provider: 'openrouter', model: 'test-model', message: null },
+      data: {
+        configured: true,
+        connected: true,
+        provider: 'openrouter',
+        model: 'test-model',
+        message: null,
+      },
       error: null,
     })
     expect(resolveConfig).toHaveBeenCalledWith('user-1')

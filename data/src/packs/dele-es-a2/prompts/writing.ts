@@ -16,7 +16,12 @@ import {
 const GENERATOR_LLM = { temperature: 0.8, maxTokens: 2500 }
 const REVIEW_LLM = { maxTokens: 2500 }
 
-const TOPIC_FIELDS = (topicType: string, time: number, min: number, max: number) => `  "title": string,
+const TOPIC_FIELDS = (
+  topicType: string,
+  time: number,
+  min: number,
+  max: number
+) => `  "title": string,
   "topicType": ${topicType},
   "estimatedTime": ${time},
   "wordCount": { "min": ${min}, "max": ${max} },

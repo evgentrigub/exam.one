@@ -36,7 +36,12 @@ export const speakingA1Seeds: (SpeakingKeywordTopic | SpeakingCardsTopic)[] = [
     createdAt: '2026-09-27',
     cards: [
       { segment: 'ask1', kind: 'ask', topic: 'Essen und Trinken', cue: 'Frühstück' },
-      { segment: 'answer1', kind: 'answer', topic: 'Essen und Trinken', cue: 'Was trinkst du gern?' },
+      {
+        segment: 'answer1',
+        kind: 'answer',
+        topic: 'Essen und Trinken',
+        cue: 'Was trinkst du gern?',
+      },
       { segment: 'ask2', kind: 'ask', topic: 'Freizeit', cue: 'Sport' },
       { segment: 'answer2', kind: 'answer', topic: 'Freizeit', cue: 'Was machst du am Sonntag?' },
     ],
@@ -89,9 +94,19 @@ export const mockSpeakingA1Seeds: (SpeakingKeywordTopic | SpeakingCardsTopic)[] 
     examOnly: true,
     cards: [
       { segment: 'ask1', kind: 'ask', topic: 'Wohnen', cue: 'Küche' },
-      { segment: 'answer1', kind: 'answer', topic: 'Wohnen', cue: 'Wie viele Zimmer hat deine Wohnung?' },
+      {
+        segment: 'answer1',
+        kind: 'answer',
+        topic: 'Wohnen',
+        cue: 'Wie viele Zimmer hat deine Wohnung?',
+      },
       { segment: 'ask2', kind: 'ask', topic: 'Einkaufen', cue: 'Supermarkt' },
-      { segment: 'answer2', kind: 'answer', topic: 'Einkaufen', cue: 'Was kaufst du am Wochenende?' },
+      {
+        segment: 'answer2',
+        kind: 'answer',
+        topic: 'Einkaufen',
+        cue: 'Was kaufst du am Wochenende?',
+      },
     ],
   },
   {

@@ -3,7 +3,11 @@ import type { ReadingEsExercise, ReadingEsQuestion } from '../types'
 type Row = Omit<ReadingEsQuestion, 'id' | 'textId' | 'type'>
 
 /** Stamp the ids and question type the reading screen and scoring expect. */
-function questions(textId: string, type: ReadingEsQuestion['type'], rows: Row[]): ReadingEsQuestion[] {
+function questions(
+  textId: string,
+  type: ReadingEsQuestion['type'],
+  rows: Row[]
+): ReadingEsQuestion[] {
   return rows.map((row, index) => ({ ...row, id: `${textId}-q${index + 1}`, textId, type }))
 }
 
@@ -97,31 +101,52 @@ export const readingEsSeeds: ReadingEsExercise[] = [
     questions: questions('reading-es-a2-tarea1-001', 'comprehension', [
       {
         question: '¿Por qué escribe Marina a Lucía?',
-        options: ['Para contarle su nueva vida e invitarla a su cumpleaños.', 'Para pedirle ayuda con su trabajo nuevo.', 'Para decirle que va a visitarla en Madrid.'],
+        options: [
+          'Para contarle su nueva vida e invitarla a su cumpleaños.',
+          'Para pedirle ayuda con su trabajo nuevo.',
+          'Para decirle que va a visitarla en Madrid.',
+        ],
         correctAnswer: 0,
-        explanation: 'Marina cuenta cómo le va en Salamanca y le pregunta: «¿Por qué no vienes ese fin de semana?».',
+        explanation:
+          'Marina cuenta cómo le va en Salamanca y le pregunta: «¿Por qué no vienes ese fin de semana?».',
       },
       {
         question: '¿Qué hace Marina por las mañanas?',
-        options: ['Da clases de inglés a niños.', 'Trabaja en la secretaría de la escuela.', 'Estudia en la universidad.'],
+        options: [
+          'Da clases de inglés a niños.',
+          'Trabaja en la secretaría de la escuela.',
+          'Estudia en la universidad.',
+        ],
         correctAnswer: 1,
         explanation: '«Por las mañanas ayudo en la secretaría»; las clases son por las tardes.',
       },
       {
         question: '¿Qué dice Marina de sus compañeras de piso?',
-        options: ['Las dos son estudiantes de Medicina.', 'No las ve casi nunca.', 'Se llevan bien y cocinan juntas los domingos.'],
+        options: [
+          'Las dos son estudiantes de Medicina.',
+          'No las ve casi nunca.',
+          'Se llevan bien y cocinan juntas los domingos.',
+        ],
         correctAnswer: 2,
         explanation: '«Nos llevamos muy bien y los domingos siempre cocinamos juntas».',
       },
       {
         question: 'El sábado pasado, Marina y sus amigas…',
-        options: ['subieron a una montaña a pie.', 'fueron en autobús a Madrid.', 'hicieron una fiesta en casa.'],
+        options: [
+          'subieron a una montaña a pie.',
+          'fueron en autobús a Madrid.',
+          'hicieron una fiesta en casa.',
+        ],
         correctAnswer: 0,
         explanation: '«Fuimos de excursión a la Peña de Francia… Subimos andando».',
       },
       {
         question: 'Si Lucía va a Salamanca, ¿dónde va a dormir?',
-        options: ['En el sofá del salón.', 'En la habitación de Marina.', 'En un hotel cerca de la Plaza Mayor.'],
+        options: [
+          'En el sofá del salón.',
+          'En la habitación de Marina.',
+          'En un hotel cerca de la Plaza Mayor.',
+        ],
         correctAnswer: 1,
         explanation: '«Puedes dormir en mi habitación y yo duermo en el sofá».',
       },
@@ -141,27 +166,45 @@ export const readingEsSeeds: ReadingEsExercise[] = [
     questions: questions('reading-es-a2-tarea2-001', 'comprehension', [
       {
         question: 'Texto 1: Según el anuncio, en el curso de cocina…',
-        options: ['hay que llevar los ingredientes.', 'los grupos son pequeños.', 'las clases son por la mañana.'],
+        options: [
+          'hay que llevar los ingredientes.',
+          'los grupos son pequeños.',
+          'las clases son por la mañana.',
+        ],
         correctAnswer: 1,
-        explanation: '«Grupos de diez personas como máximo»; los ingredientes están incluidos y las clases son por la tarde.',
+        explanation:
+          '«Grupos de diez personas como máximo»; los ingredientes están incluidos y las clases son por la tarde.',
       },
       {
         question: 'Texto 2: ¿Quién puede alquilar la habitación?',
-        options: ['Una estudiante con un gato.', 'Una familia con niños.', 'Una chica que trabaja.'],
+        options: [
+          'Una estudiante con un gato.',
+          'Una familia con niños.',
+          'Una chica que trabaja.',
+        ],
         correctAnswer: 2,
         explanation: '«Solo para estudiantes o chicas que trabajen. No se aceptan animales».',
       },
       {
         question: 'Texto 3: En agosto, en la biblioteca…',
-        options: ['no se puede usar la sala de estudio.', 'no se pueden devolver libros.', 'el horario es de tarde.'],
+        options: [
+          'no se puede usar la sala de estudio.',
+          'no se pueden devolver libros.',
+          'el horario es de tarde.',
+        ],
         correctAnswer: 0,
         explanation: '«La sala de estudio permanecerá cerrada por obras hasta el 1 de septiembre».',
       },
       {
         question: 'Texto 4: ¿Qué quiere Andrés?',
-        options: ['Encontrar trabajo en Valencia.', 'Conocer gente para hacer deporte.', 'Vender su bicicleta.'],
+        options: [
+          'Encontrar trabajo en Valencia.',
+          'Conocer gente para hacer deporte.',
+          'Vender su bicicleta.',
+        ],
         correctAnswer: 1,
-        explanation: '«Busco gente para hacer deporte los fines de semana… me gustaría hacer amigos».',
+        explanation:
+          '«Busco gente para hacer deporte los fines de semana… me gustaría hacer amigos».',
       },
       {
         question: 'Texto 5: En las fiestas del pueblo hay que pagar…',
@@ -171,21 +214,34 @@ export const readingEsSeeds: ReadingEsExercise[] = [
       },
       {
         question: 'Texto 6: El servicio a domicilio del supermercado es gratis si…',
-        options: ['la compra cuesta más de 50 euros.', 'se pide por la página web.', 'se pide antes de las 12:00.'],
+        options: [
+          'la compra cuesta más de 50 euros.',
+          'se pide por la página web.',
+          'se pide antes de las 12:00.',
+        ],
         correctAnswer: 0,
         explanation: '«Si compra más de 50 euros, el servicio es gratis».',
       },
       {
         question: 'Texto 7: Para trabajar en la cafetería es necesario…',
-        options: ['tener experiencia como camarero.', 'hablar inglés.', 'trabajar de lunes a viernes.'],
+        options: [
+          'tener experiencia como camarero.',
+          'hablar inglés.',
+          'trabajar de lunes a viernes.',
+        ],
         correctAnswer: 1,
         explanation: '«No es necesario tener experiencia, pero sí hablar inglés».',
       },
       {
         question: 'Texto 8: ¿Cuándo es gratis el museo para todos?',
-        options: ['Los sábados con visita guiada.', 'Los martes por la mañana.', 'Los miércoles por la tarde.'],
+        options: [
+          'Los sábados con visita guiada.',
+          'Los martes por la mañana.',
+          'Los miércoles por la tarde.',
+        ],
         correctAnswer: 2,
-        explanation: '«Los miércoles por la tarde, a partir de las 16:00, la entrada es gratis para todos».',
+        explanation:
+          '«Los miércoles por la tarde, a partir de las 16:00, la entrada es gratis para todos».',
       },
     ]),
   },
@@ -211,7 +267,8 @@ export const readingEsSeeds: ReadingEsExercise[] = [
         question: 'Puedes ir con tu perro.',
         options: TEXTS,
         correctAnswer: 1,
-        explanation: 'Texto B: «Los perros pequeños son bienvenidos»; en el texto A no se admiten mascotas.',
+        explanation:
+          'Texto B: «Los perros pequeños son bienvenidos»; en el texto A no se admiten mascotas.',
       },
       {
         question: 'Puedes montar a caballo.',
@@ -235,7 +292,8 @@ export const readingEsSeeds: ReadingEsExercise[] = [
         question: 'No tienes que pagar aparte el desayuno.',
         options: TEXTS,
         correctAnswer: 0,
-        explanation: 'Texto A: «El desayuno está incluido en el precio»; en el texto C cuesta tres euros.',
+        explanation:
+          'Texto A: «El desayuno está incluido en el precio»; en el texto C cuesta tres euros.',
       },
     ]),
   },
@@ -253,39 +311,69 @@ export const readingEsSeeds: ReadingEsExercise[] = [
     questions: questions('reading-es-a2-tarea4-001', 'comprehension', [
       {
         question: 'Según el texto, en la tienda de sus padres Carmen…',
-        options: ['aprendió a escuchar a la gente.', 'trabajaba todas las mañanas.', 'escribía cuentos para los clientes.'],
+        options: [
+          'aprendió a escuchar a la gente.',
+          'trabajaba todas las mañanas.',
+          'escribía cuentos para los clientes.',
+        ],
         correctAnswer: 0,
-        explanation: 'Primer párrafo: «Allí aprendió a hablar con todo tipo de personas y, sobre todo, a escuchar».',
+        explanation:
+          'Primer párrafo: «Allí aprendió a hablar con todo tipo de personas y, sobre todo, a escuchar».',
       },
       {
         question: '¿Por qué trabajaba Carmen en una librería en Granada?',
-        options: ['Porque quería ser escritora.', 'Porque necesitaba dinero.', 'Porque era parte de sus estudios.'],
+        options: [
+          'Porque quería ser escritora.',
+          'Porque necesitaba dinero.',
+          'Porque era parte de sus estudios.',
+        ],
         correctAnswer: 1,
-        explanation: 'Segundo párrafo: «tenía poco dinero, así que trabajaba los fines de semana en una librería».',
+        explanation:
+          'Segundo párrafo: «tenía poco dinero, así que trabajaba los fines de semana en una librería».',
       },
       {
         question: 'Los cuentos que Carmen leía en clase…',
-        options: ['eran de libros famosos.', 'los escribían los niños.', 'venían de las historias de su abuela.'],
+        options: [
+          'eran de libros famosos.',
+          'los escribían los niños.',
+          'venían de las historias de su abuela.',
+        ],
         correctAnswer: 2,
-        explanation: 'Tercer párrafo: «eran las historias de su abuela, que ella adaptaba para los pequeños».',
+        explanation:
+          'Tercer párrafo: «eran las historias de su abuela, que ella adaptaba para los pequeños».',
       },
       {
         question: '¿Cómo publicó Carmen su primer libro?',
-        options: ['Gracias a una antigua alumna.', 'Lo envió ella misma a muchas editoriales.', 'Ganó un concurso en Madrid.'],
+        options: [
+          'Gracias a una antigua alumna.',
+          'Lo envió ella misma a muchas editoriales.',
+          'Ganó un concurso en Madrid.',
+        ],
         correctAnswer: 0,
-        explanation: 'Cuarto párrafo: «una antigua alumna que trabajaba en una editorial de Madrid… le propuso publicarlo».',
+        explanation:
+          'Cuarto párrafo: «una antigua alumna que trabajaba en una editorial de Madrid… le propuso publicarlo».',
       },
       {
         question: '¿Qué hay hoy en la planta baja de la casa de Carmen?',
-        options: ['La tienda de sus padres.', 'Una biblioteca para niños.', 'Una escuela para adultos.'],
+        options: [
+          'La tienda de sus padres.',
+          'Una biblioteca para niños.',
+          'Una escuela para adultos.',
+        ],
         correctAnswer: 1,
-        explanation: 'Quinto párrafo: «En la planta baja ha abierto una pequeña biblioteca para los niños del pueblo».',
+        explanation:
+          'Quinto párrafo: «En la planta baja ha abierto una pequeña biblioteca para los niños del pueblo».',
       },
       {
         question: 'Según Carmen, las mejores historias…',
-        options: ['están en los libros antiguos.', 'hay que inventarlas.', 'las cuentan las personas.'],
+        options: [
+          'están en los libros antiguos.',
+          'hay que inventarlas.',
+          'las cuentan las personas.',
+        ],
         correctAnswer: 2,
-        explanation: 'Último párrafo: «Las mejores historias no están en los libros, están en la gente».',
+        explanation:
+          'Último párrafo: «Las mejores historias no están en los libros, están en la gente».',
       },
     ]),
   },
@@ -376,33 +464,56 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
     questions: questions('mock-es-a2-set1-reading-tarea1', 'comprehension', [
       {
         question: '¿Para qué escribe Daniel a Sara?',
-        options: ['Para invitarla a vivir en Valencia.', 'Para contarle su nueva vida y proponerle una visita.', 'Para pedirle trabajo en un hotel de Sevilla.'],
+        options: [
+          'Para invitarla a vivir en Valencia.',
+          'Para contarle su nueva vida y proponerle una visita.',
+          'Para pedirle trabajo en un hotel de Sevilla.',
+        ],
         correctAnswer: 1,
-        explanation: 'Daniel cuenta sus novedades en Valencia y escribe: «me gustaría ir a verte a Sevilla».',
+        explanation:
+          'Daniel cuenta sus novedades en Valencia y escribe: «me gustaría ir a verte a Sevilla».',
       },
       {
         question: '¿Qué dice Daniel de su trabajo?',
-        options: ['Trabaja también los fines de semana.', 'Su jefe no le deja hablar inglés.', 'Puede practicar idiomas con los clientes.'],
+        options: [
+          'Trabaja también los fines de semana.',
+          'Su jefe no le deja hablar inglés.',
+          'Puede practicar idiomas con los clientes.',
+        ],
         correctAnswer: 2,
         explanation: '«El jefe me deja practicar mi inglés con los clientes extranjeros».',
       },
       {
         question: '¿Cómo es el piso de Daniel?',
-        options: ['Es pequeño y está en un edificio sin ascensor.', 'Es grande y muy tranquilo.', 'Es la casa de su tía Rosa.'],
+        options: [
+          'Es pequeño y está en un edificio sin ascensor.',
+          'Es grande y muy tranquilo.',
+          'Es la casa de su tía Rosa.',
+        ],
         correctAnswer: 0,
         explanation: '«He alquilado un estudio pequeño… no tiene ascensor».',
       },
       {
         question: '¿Por qué se ha apuntado Daniel a un club de senderismo?',
-        options: ['Porque quiere conocer gente.', 'Porque trabaja en la montaña.', 'Porque su tía es socia del club.'],
+        options: [
+          'Porque quiere conocer gente.',
+          'Porque trabaja en la montaña.',
+          'Porque su tía es socia del club.',
+        ],
         correctAnswer: 0,
-        explanation: '«Todavía no conozco a mucha gente, así que me he apuntado a un club de senderismo».',
+        explanation:
+          '«Todavía no conozco a mucha gente, así que me he apuntado a un club de senderismo».',
       },
       {
         question: '¿Qué le pide Daniel a Sara?',
-        options: ['Que vaya a Valencia en mayo.', 'Que le preste una guía de viaje.', 'Que le busque un hotel en Sevilla.'],
+        options: [
+          'Que vaya a Valencia en mayo.',
+          'Que le preste una guía de viaje.',
+          'Que le busque un hotel en Sevilla.',
+        ],
         correctAnswer: 1,
-        explanation: '«¿Todavía tienes la guía de Andalucía que te regalé? Me gustaría llevarla en el viaje».',
+        explanation:
+          '«¿Todavía tienes la guía de Andalucía que te regalé? Me gustaría llevarla en el viaje».',
       },
     ]),
   },
@@ -421,49 +532,82 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
     questions: questions('mock-es-a2-set1-reading-tarea2', 'comprehension', [
       {
         question: 'Texto 1: Según el anuncio, este mes en el gimnasio…',
-        options: ['no hay que pagar la matrícula.', 'los domingos abre todo el día.', 'los niños pueden ir solos.'],
+        options: [
+          'no hay que pagar la matrícula.',
+          'los domingos abre todo el día.',
+          'los niños pueden ir solos.',
+        ],
         correctAnswer: 0,
         explanation: '«Este mes, la matrícula es gratis para todos los nuevos socios».',
       },
       {
         question: 'Texto 2: ¿Qué busca Laura?',
-        options: ['Clases de música.', 'Una persona para practicar alemán.', 'Un trabajo en una cafetería.'],
+        options: [
+          'Clases de música.',
+          'Una persona para practicar alemán.',
+          'Un trabajo en una cafetería.',
+        ],
         correctAnswer: 1,
         explanation: '«Busco a una persona alemana para practicar alemán una hora a la semana».',
       },
       {
         question: 'Texto 3: ¿Qué sabemos del gato?',
-        options: ['Se perdió en el parque el lunes.', 'Le gustan mucho los perros.', 'Lleva algo rojo en el cuello.'],
+        options: [
+          'Se perdió en el parque el lunes.',
+          'Le gustan mucho los perros.',
+          'Lleva algo rojo en el cuello.',
+        ],
         correctAnswer: 2,
         explanation: '«Lleva un collar rojo»; se perdió el martes y tiene miedo de los perros.',
       },
       {
         question: 'Texto 4: En el cine de verano…',
-        options: ['algunas películas tienen subtítulos.', 'las entradas se compran por internet.', 'si llueve, la película se ve dentro del museo.'],
+        options: [
+          'algunas películas tienen subtítulos.',
+          'las entradas se compran por internet.',
+          'si llueve, la película se ve dentro del museo.',
+        ],
         correctAnswer: 0,
         explanation: '«Los lunes las películas son en versión original con subtítulos».',
       },
       {
         question: 'Texto 5: Del 3 al 15 de mayo, los viajeros entre Alcalá y Guadalajara…',
-        options: ['tienen que pagar un autobús.', 'pueden ir en autobús sin pagar.', 'llegan veinte minutos antes.'],
+        options: [
+          'tienen que pagar un autobús.',
+          'pueden ir en autobús sin pagar.',
+          'llegan veinte minutos antes.',
+        ],
         correctAnswer: 1,
         explanation: '«La empresa ofrece autobuses gratuitos»; el viaje dura veinte minutos más.',
       },
       {
         question: 'Texto 6: En la panadería, las tartas de cumpleaños…',
-        options: ['solo se venden los domingos.', 'hay que pedirlas dos días antes.', 'se pueden comprar hasta las siete.'],
+        options: [
+          'solo se venden los domingos.',
+          'hay que pedirlas dos días antes.',
+          'se pueden comprar hasta las siete.',
+        ],
         correctAnswer: 1,
-        explanation: '«Puedes encargar tus tartas de cumpleaños por teléfono con dos días de antelación».',
+        explanation:
+          '«Puedes encargar tus tartas de cumpleaños por teléfono con dos días de antelación».',
       },
       {
         question: 'Texto 7: ¿Por qué vende la bicicleta esta persona?',
-        options: ['Porque está en mal estado.', 'Porque prefiere una de otro color.', 'Porque se va a otra ciudad.'],
+        options: [
+          'Porque está en mal estado.',
+          'Porque prefiere una de otro color.',
+          'Porque se va a otra ciudad.',
+        ],
         correctAnswer: 2,
         explanation: '«La vendo porque me voy a vivir a otra ciudad y no la puedo llevar».',
       },
       {
         question: 'Texto 8: Para los cursos de natación…',
-        options: ['hay que inscribirse en internet.', 'los niños tienen que tener doce años.', 'no es necesario llevar gorro.'],
+        options: [
+          'hay que inscribirse en internet.',
+          'los niños tienen que tener doce años.',
+          'no es necesario llevar gorro.',
+        ],
         correctAnswer: 0,
         explanation: '«Las inscripciones se hacen en internet a partir del 1 de junio».',
       },
@@ -486,7 +630,8 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
         question: 'Las clases son en tu propia casa.',
         options: TEXTS,
         correctAnswer: 2,
-        explanation: 'Texto C: «Damos clases individuales de guitarra española en casa del alumno».',
+        explanation:
+          'Texto C: «Damos clases individuales de guitarra española en casa del alumno».',
       },
       {
         question: 'Puedes ir aunque no tengas pareja.',
@@ -498,7 +643,8 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
         question: 'Tus trabajos se pueden ver en una exposición.',
         options: TEXTS,
         correctAnswer: 1,
-        explanation: 'Texto B: «las mejores fotos se presentan en una exposición en la biblioteca municipal».',
+        explanation:
+          'Texto B: «las mejores fotos se presentan en una exposición en la biblioteca municipal».',
       },
       {
         question: 'La primera clase no cuesta nada.',
@@ -507,10 +653,12 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
         explanation: 'Texto C: «La primera clase es gratis para conocer al profesor».',
       },
       {
-        question: 'Hay actividades para practicar con los otros alumnos fuera del horario de clase.',
+        question:
+          'Hay actividades para practicar con los otros alumnos fuera del horario de clase.',
         options: TEXTS,
         correctAnswer: 0,
-        explanation: 'Texto A: «Los viernes por la noche organizamos fiestas para practicar con los compañeros».',
+        explanation:
+          'Texto A: «Los viernes por la noche organizamos fiestas para practicar con los compañeros».',
       },
       {
         question: 'Las clases no son en un aula: se hacen en la calle.',
@@ -535,19 +683,32 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
     questions: questions('mock-es-a2-set1-reading-tarea4', 'comprehension', [
       {
         question: '¿Por qué eligió Álvaro el Camino Portugués?',
-        options: ['Porque era el más corto para su tiempo.', 'Porque vivía en Portugal.', 'Porque lo recomendaba su madre.'],
+        options: [
+          'Porque era el más corto para su tiempo.',
+          'Porque vivía en Portugal.',
+          'Porque lo recomendaba su madre.',
+        ],
         correctAnswer: 0,
         explanation: 'Primer párrafo: «Como no tenía mucho tiempo, eligió el Camino Portugués».',
       },
       {
         question: 'Según el texto, la madre de Álvaro…',
-        options: ['le preparó la mochila.', 'le regaló unas botas.', 'pensaba que iba a tener problemas en los pies.'],
+        options: [
+          'le preparó la mochila.',
+          'le regaló unas botas.',
+          'pensaba que iba a tener problemas en los pies.',
+        ],
         correctAnswer: 2,
-        explanation: 'Segundo párrafo: su madre le dio un botiquín porque «en el camino siempre hay pies con problemas».',
+        explanation:
+          'Segundo párrafo: su madre le dio un botiquín porque «en el camino siempre hay pies con problemas».',
       },
       {
         question: '¿Por qué se levantaba Álvaro tan temprano?',
-        options: ['Para encontrar sitio en los albergues.', 'Para caminar cuando no hacía calor.', 'Para escribir su diario.'],
+        options: [
+          'Para encontrar sitio en los albergues.',
+          'Para caminar cuando no hacía calor.',
+          'Para escribir su diario.',
+        ],
         correctAnswer: 1,
         explanation: 'Tercer párrafo: «se levantaba muy temprano… para caminar antes del calor».',
       },
@@ -555,19 +716,30 @@ export const mockReadingEsSeeds: ReadingEsExercise[] = [
         question: 'Peter…',
         options: ['era un estudiante alemán.', 'ya conocía el camino.', 'hablaba solo en inglés.'],
         correctAnswer: 1,
-        explanation: 'Tercer párrafo: Peter era un jubilado alemán «que hacía el camino por tercera vez».',
+        explanation:
+          'Tercer párrafo: Peter era un jubilado alemán «que hacía el camino por tercera vez».',
       },
       {
         question: '¿Qué pasó el cuarto día?',
-        options: ['Álvaro volvió a casa en autobús.', 'Llovió y Álvaro quiso abandonar el camino.', 'Los tres amigos llegaron a Santiago.'],
+        options: [
+          'Álvaro volvió a casa en autobús.',
+          'Llovió y Álvaro quiso abandonar el camino.',
+          'Los tres amigos llegaron a Santiago.',
+        ],
         correctAnswer: 1,
-        explanation: 'Cuarto párrafo: llovió todo el día y «Álvaro pensó en volver a casa en autobús», pero siguió.',
+        explanation:
+          'Cuarto párrafo: llovió todo el día y «Álvaro pensó en volver a casa en autobús», pero siguió.',
       },
       {
         question: '¿Qué planes tienen ahora los tres amigos?',
-        options: ['Visitar Italia el próximo verano.', 'Repetir el Camino Portugués.', 'Hacer otro camino por la costa.'],
+        options: [
+          'Visitar Italia el próximo verano.',
+          'Repetir el Camino Portugués.',
+          'Hacer otro camino por la costa.',
+        ],
         correctAnswer: 2,
-        explanation: 'Último párrafo: «quieren hacer juntos otro camino, el del Norte, que va por la costa».',
+        explanation:
+          'Último párrafo: «quieren hacer juntos otro camino, el del Norte, que va por la costa».',
       },
     ]),
   },

@@ -79,7 +79,8 @@ export const useListeningExercises = () => {
       })
       const payload = (row.payload ?? { ...current, audio }) as ListeningA2Exercise
       const updated = { ...payload, id: payload.id ?? id, audio }
-      if (requestEpoch === packEpoch()) exercises.value = exercises.value.map(item => (item.id === id ? updated : item))
+      if (requestEpoch === packEpoch())
+        exercises.value = exercises.value.map(item => (item.id === id ? updated : item))
       return updated
     } catch (error) {
       console.error('Failed to update listening audio:', error)

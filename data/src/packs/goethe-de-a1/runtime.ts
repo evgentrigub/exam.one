@@ -55,7 +55,10 @@ const RULES: Partial<Record<SkillId, Record<number, PartRuntime>>> = {
         { id: 'number', label: 'Number', maxPoints: 1 },
       ],
     },
-    2: cardRules(['ask1', 'answer1', 'ask2', 'answer2'], ['Question', 'Answer', 'Question', 'Answer']),
+    2: cardRules(
+      ['ask1', 'answer1', 'ask2', 'answer2'],
+      ['Question', 'Answer', 'Question', 'Answer']
+    ),
     3: cardRules(
       ['request1', 'response1', 'request2', 'response2'],
       ['Request', 'Reaction', 'Request', 'Reaction']

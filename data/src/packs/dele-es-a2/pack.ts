@@ -56,7 +56,10 @@ export const deleEsA2: ExamPack = {
   // Practice seeds first, then the exam-only Set 1 payloads (their listening WAVs are seeded).
   seedExercises: {
     reading: [...readingEsSeeds, ...mockReadingEsSeeds] as unknown as Record<string, unknown>[],
-    listening: [...listeningEsSeeds, ...mockListeningEsSeeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningEsSeeds, ...mockListeningEsSeeds] as unknown as Record<
+      string,
+      unknown
+    >[],
     writing: [...writingEsSeeds, ...mockWritingEsSeeds] as unknown as Record<string, unknown>[],
     speaking: [...speakingEsSeeds, ...mockSpeakingEsSeeds] as unknown as Record<string, unknown>[],
   },

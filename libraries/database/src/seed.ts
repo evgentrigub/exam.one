@@ -65,7 +65,13 @@ async function upsertExercise(
  * seeded whether or not they are live, so a pack's catalog is ready the moment it is enabled.
  */
 async function seedPacks(prisma: PrismaClient): Promise<SeedCatalogSummary> {
-  const summary: SeedCatalogSummary = { reading: 0, writing: 0, listening: 0, speaking: 0, packs: {} }
+  const summary: SeedCatalogSummary = {
+    reading: 0,
+    writing: 0,
+    listening: 0,
+    speaking: 0,
+    packs: {},
+  }
   for (const pack of listPacks()) {
     for (const [skill, items] of Object.entries(pack.seedExercises ?? {}) as [
       SkillId,

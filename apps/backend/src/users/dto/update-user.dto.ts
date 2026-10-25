@@ -2,13 +2,20 @@ import { ApiPropertyOptional } from '@nestjs/swagger'
 import { IsDateString, IsEmail, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator'
 
 export class UpdateUserDto {
-  @ApiPropertyOptional({ description: 'Updated display name', example: 'Ada Lovelace', minLength: 1 })
+  @ApiPropertyOptional({
+    description: 'Updated display name',
+    example: 'Ada Lovelace',
+    minLength: 1,
+  })
   @IsOptional()
   @IsString()
   @MinLength(1)
   name?: string
 
-  @ApiPropertyOptional({ description: 'Updated email address', example: 'ada.lovelace@example.com' })
+  @ApiPropertyOptional({
+    description: 'Updated email address',
+    example: 'ada.lovelace@example.com',
+  })
   @IsOptional()
   @IsEmail()
   email?: string

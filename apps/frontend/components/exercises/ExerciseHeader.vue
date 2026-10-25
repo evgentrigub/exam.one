@@ -26,7 +26,9 @@
           {{ $t('exercisesUi.skillPractice', { skill: $t(`skill.${skill}`) }) }}
           <template v-if="type"> · {{ type }}</template>
         </div>
-        <h1 class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content truncate">
+        <h1
+          class="font-display text-[28px] font-bold leading-tight mt-1 text-base-content truncate"
+        >
           {{ title }}
         </h1>
         <div v-if="subtitle" class="text-sm text-base-content/60 mt-1">{{ subtitle }}</div>

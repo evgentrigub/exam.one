@@ -11,7 +11,10 @@ export function interpolate(template: string, vars: PromptVars): string {
 }
 
 export function assemblePrompt(spec: PromptSpecFields, vars: PromptVars): string {
-  const blocks: string[] = [interpolate(spec.role, vars).trim(), interpolate(spec.task, vars).trim()]
+  const blocks: string[] = [
+    interpolate(spec.role, vars).trim(),
+    interpolate(spec.task, vars).trim(),
+  ]
   if (spec.rules.length > 0) {
     blocks.push(spec.rules.map(rule => interpolate(rule, vars)).join('\n'))
   }

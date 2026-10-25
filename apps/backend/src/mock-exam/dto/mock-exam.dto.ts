@@ -19,7 +19,10 @@ export class MockExamSetBodyDto {
   @IsObject()
   rules?: Record<string, unknown>
 
-  @ApiProperty({ description: 'Unique mock set external identifier', example: 'goethe-a2-set-custom-1' })
+  @ApiProperty({
+    description: 'Unique mock set external identifier',
+    example: 'goethe-a2-set-custom-1',
+  })
   @IsString()
   id!: string
 
@@ -31,7 +34,10 @@ export class MockExamSetBodyDto {
   @IsString()
   level!: string
 
-  @ApiProperty({ description: 'Title of the mock exam set', example: 'Goethe-Zertifikat A2 Mock Set 2' })
+  @ApiProperty({
+    description: 'Title of the mock exam set',
+    example: 'Goethe-Zertifikat A2 Mock Set 2',
+  })
   @IsString()
   title!: string
 
@@ -39,7 +45,10 @@ export class MockExamSetBodyDto {
   @IsBoolean()
   generated!: boolean
 
-  @ApiProperty({ description: 'Creation ISO timestamp string', example: '2026-01-01T12:00:00.000Z' })
+  @ApiProperty({
+    description: 'Creation ISO timestamp string',
+    example: '2026-01-01T12:00:00.000Z',
+  })
   @IsString()
   createdAt!: string
 
@@ -47,7 +56,10 @@ export class MockExamSetBodyDto {
   @IsDefined()
   modules!: unknown
 
-  @ApiProperty({ description: 'Exercise content for each module (reading, writing, listening, speaking)', type: Object })
+  @ApiProperty({
+    description: 'Exercise content for each module (reading, writing, listening, speaking)',
+    type: Object,
+  })
   @IsDefined()
   content!: unknown
 }
@@ -61,7 +73,8 @@ export class CreateMockExamSetDto {
 
 export class UpsertMockExamAttemptDto {
   @ApiProperty({
-    description: 'Complete mock exam attempt state across all modules, including answers and timer states',
+    description:
+      'Complete mock exam attempt state across all modules, including answers and timer states',
     type: Object,
     example: {
       currentModule: 'READING',

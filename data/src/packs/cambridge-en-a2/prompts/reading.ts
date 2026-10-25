@@ -1,6 +1,14 @@
 import { definePrompt } from '../../../assemble'
 import type { PromptSpec } from '../../../types'
-import { A2_LANGUAGE, A2_TOPICS, AUTHOR_ROLE, CHOICE_RULE, GAP_RULE, PRELUDE, RULES_HEADER } from './common'
+import {
+  A2_LANGUAGE,
+  A2_TOPICS,
+  AUTHOR_ROLE,
+  CHOICE_RULE,
+  GAP_RULE,
+  PRELUDE,
+  RULES_HEADER,
+} from './common'
 
 const LLM = { temperature: 0.8, maxTokens: 4000 }
 
@@ -83,7 +91,7 @@ Generate {count} new exercises (different topics) as JSON.`,
     rules: [
       RULES_HEADER,
       '1. Text: ONE magazine or website article of 200–250 words, for example a person describing an experience, a job, a trip or a hobby. First line is the title (and author), then an empty line, then 4–6 paragraphs, one per line.',
-      '2. Questions: EXACTLY 5, in the order of the text, testing main ideas, details, reasons and the writer\'s feelings or opinions.',
+      "2. Questions: EXACTLY 5, in the order of the text, testing main ideas, details, reasons and the writer's feelings or opinions.",
       `3. ${CHOICE_RULE}`,
       `4. ${A2_LANGUAGE}`,
       `5. ${A2_TOPICS}`,

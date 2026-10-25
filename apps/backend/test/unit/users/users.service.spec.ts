@@ -4,11 +4,7 @@ import { PrismaService } from '@exam-one/nestjs-libraries'
 import { UsersService } from '../../../src/users/users.service'
 import { makeUser } from '../../../src/testing/fixtures'
 
-function expectCode(
-  error: unknown,
-  type: new (...args: any[]) => HttpException,
-  code: string
-) {
+function expectCode(error: unknown, type: new (...args: any[]) => HttpException, code: string) {
   expect(error).toBeInstanceOf(type)
   expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
 }

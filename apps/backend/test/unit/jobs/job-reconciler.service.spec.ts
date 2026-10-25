@@ -5,7 +5,14 @@ import type { BackgroundJobsService } from '../../../src/jobs/background-jobs.se
 
 const old = new Date(Date.now() - 10 * 60_000)
 const row = (overrides: Partial<BackgroundJob> = {}) =>
-  ({ id: 'job-1', attempt: 0, type: 'MOCK_EXAM_SET', status: 'QUEUED', updatedAt: old, ...overrides }) as BackgroundJob
+  ({
+    id: 'job-1',
+    attempt: 0,
+    type: 'MOCK_EXAM_SET',
+    status: 'QUEUED',
+    updatedAt: old,
+    ...overrides,
+  }) as BackgroundJob
 
 function setup(rows: BackgroundJob[], job: { getState: jest.Mock; remove: jest.Mock } | null) {
   const prisma = { backgroundJob: { findMany: jest.fn().mockResolvedValue(rows) } }
@@ -15,7 +22,10 @@ function setup(rows: BackgroundJob[], job: { getState: jest.Mock; remove: jest.M
     addToQueue: jest.fn().mockResolvedValue(undefined),
     fail: jest.fn().mockResolvedValue(true),
   }
-  const service = new JobReconcilerService(prisma as unknown as PrismaService, jobs as unknown as BackgroundJobsService)
+  const service = new JobReconcilerService(
+    prisma as unknown as PrismaService,
+    jobs as unknown as BackgroundJobsService
+  )
   return { service, jobs }
 }
 
@@ -27,7 +37,10 @@ describe('JobReconcilerService', () => {
   })
 
   it('replaces a queue entry that finished without claiming its row', async () => {
-    const job = { getState: jest.fn().mockResolvedValue('completed'), remove: jest.fn().mockResolvedValue(undefined) }
+    const job = {
+      getState: jest.fn().mockResolvedValue('completed'),
+      remove: jest.fn().mockResolvedValue(undefined),
+    }
     const { service, jobs } = setup([row()], job)
     await service.reconcile()
     expect(job.remove).toHaveBeenCalled()

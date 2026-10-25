@@ -17,7 +17,9 @@ describe('secret-box', () => {
 
   it('rejects a truncated auth tag', () => {
     const [version, iv, tag, data] = encryptSecret('sk-secret', KEY).split(':')
-    const shortTag = Buffer.from(tag ?? '', 'base64').subarray(0, 4).toString('base64')
+    const shortTag = Buffer.from(tag ?? '', 'base64')
+      .subarray(0, 4)
+      .toString('base64')
     expect(() => decryptSecret([version, iv, shortTag, data].join(':'), KEY)).toThrow(/format/)
   })
 

@@ -82,9 +82,7 @@
           <button class="btn btn-primary btn-sm gap-2" type="button" @click="primaryHeroAction">
             <Play :size="14" />
             {{
-              continueExercises[0]
-                ? $t('dashboard.continueFirst')
-                : $t('dashboard.browseExercises')
+              continueExercises[0] ? $t('dashboard.continueFirst') : $t('dashboard.browseExercises')
             }}
           </button>
           <NuxtLink to="/mock-exam" class="btn btn-ghost btn-sm gap-2">
@@ -154,10 +152,7 @@
                 >{{ ex.pct }}%</span
               >
             </div>
-            <div
-              v-if="ex.hasDraft"
-              class="mt-2 text-[11px] text-warning flex items-center gap-1"
-            >
+            <div v-if="ex.hasDraft" class="mt-2 text-[11px] text-warning flex items-center gap-1">
               <PencilLine :size="11" /> {{ $t('dashboard.draftSaved') }}
             </div>
           </button>
@@ -233,10 +228,7 @@
             <ArrowRight :size="14" />
           </NuxtLink>
         </div>
-        <div
-          v-if="previewSets.length"
-          class="grid grid-cols-12 gap-0 border-t border-base-300"
-        >
+        <div v-if="previewSets.length" class="grid grid-cols-12 gap-0 border-t border-base-300">
           <div
             v-for="(set, i) in previewSets"
             :key="set.id"
@@ -403,8 +395,7 @@ const allExercises = computed<DashExercise[]>(() => {
         subtitle: `${t('exercisesUi.part')} ${item.testingPart}`,
         difficulty: item.difficulty,
         minutes: 6,
-        pct:
-          getListeningProgress(id)?.percentage ?? (isListeningCompleted(id) ? 100 : 0),
+        pct: getListeningProgress(id)?.percentage ?? (isListeningCompleted(id) ? 100 : 0),
         hasDraft: false,
       }
     })

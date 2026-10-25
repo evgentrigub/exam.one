@@ -1,7 +1,22 @@
 <template>
-  <div class="flex gap-[3px] h-1.5 w-full" role="progressbar" :aria-valuenow="Math.round(overallPercent(job.type, job.progress))" aria-valuemin="0" aria-valuemax="100">
-    <div v-for="(stage, index) in stages" :key="stage.key" class="rounded-full overflow-hidden bg-base-content/10" :style="{ flex: stage.weight }">
-      <div class="h-full transition-[width] duration-500 ease-out" :class="job.status === 'FAILED' ? 'bg-error' : 'bg-primary'" :style="{ width: `${fill(index) * 100}%` }" />
+  <div
+    class="flex gap-[3px] h-1.5 w-full"
+    role="progressbar"
+    :aria-valuenow="Math.round(overallPercent(job.type, job.progress))"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <div
+      v-for="(stage, index) in stages"
+      :key="stage.key"
+      class="rounded-full overflow-hidden bg-base-content/10"
+      :style="{ flex: stage.weight }"
+    >
+      <div
+        class="h-full transition-[width] duration-500 ease-out"
+        :class="job.status === 'FAILED' ? 'bg-error' : 'bg-primary'"
+        :style="{ width: `${fill(index) * 100}%` }"
+      />
     </div>
   </div>
 </template>

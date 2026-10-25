@@ -31,7 +31,9 @@
           <label class="label pb-1.5 block" for="rem_time">
             <span class="label-text text-sm font-medium">{{ $t('settings.reminderTime') }}</span>
           </label>
-          <label class="input input-bordered flex items-center gap-2 w-full rounded-field opacity-70">
+          <label
+            class="input input-bordered flex items-center gap-2 w-full rounded-field opacity-70"
+          >
             <Clock :size="17" class="opacity-60 shrink-0" />
             <input
               id="rem_time"
@@ -46,11 +48,7 @@
           <label class="label pb-1.5 block" for="quiet">
             <span class="label-text text-sm font-medium">{{ $t('settings.quietHours') }}</span>
           </label>
-          <select
-            id="quiet"
-            class="select select-bordered rounded-field w-full"
-            disabled
-          >
+          <select id="quiet" class="select select-bordered rounded-field w-full" disabled>
             <option>{{ $t('settings.quietEvening') }}</option>
           </select>
         </div>
@@ -109,14 +107,21 @@ const mockEmailEnabled = ref(true)
 
 onMounted(() => {
   const auth = useAuth()
-  void Promise.all([auth.loadConfig(), auth.getSettings()]).then(([config, settings]) => {
-    emailConfigured.value = config.emailConfigured
-    mockEmailEnabled.value = settings.notifyMockReadyEmail
-  }).catch(() => undefined)
+  void Promise.all([auth.loadConfig(), auth.getSettings()])
+    .then(([config, settings]) => {
+      emailConfigured.value = config.emailConfigured
+      mockEmailEnabled.value = settings.notifyMockReadyEmail
+    })
+    .catch(() => undefined)
 })
 
 async function saveMockEmail(value: boolean) {
-  try { mockEmailEnabled.value = (await useAuth().updateSettings({ notifyMockReadyEmail: value })).notifyMockReadyEmail }
-  catch { mockEmailEnabled.value = !value }
+  try {
+    mockEmailEnabled.value = (
+      await useAuth().updateSettings({ notifyMockReadyEmail: value })
+    ).notifyMockReadyEmail
+  } catch {
+    mockEmailEnabled.value = !value
+  }
 }
 </script>

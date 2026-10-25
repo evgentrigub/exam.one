@@ -151,10 +151,19 @@ describe('Auth + health (e2e)', () => {
 
     const settings = await agent.get('/api/v1/settings/llm').expect(200)
     expect(settings.body).toEqual({
-      data: { provider: null, model: null, fallbackModels: [], reasoningEffort: 'medium', keys: [] },
+      data: {
+        provider: null,
+        model: null,
+        fallbackModels: [],
+        reasoningEffort: 'medium',
+        keys: [],
+      },
     })
 
-    await agent.put('/api/v1/settings/llm/keys/deepseek').send({ apiKey: 'sk-something-long' }).expect(400)
+    await agent
+      .put('/api/v1/settings/llm/keys/deepseek')
+      .send({ apiKey: 'sk-something-long' })
+      .expect(400)
     await agent.put('/api/v1/settings/llm/keys/openai').send({ apiKey: 'short' }).expect(400)
 
     const missingKey = await agent
@@ -177,18 +186,30 @@ describe('Auth + health (e2e)', () => {
       .expect(201)
 
     const settings = await agent.get('/api/v1/settings/me').expect(200)
-    expect(settings.body.data).toEqual(expect.objectContaining({ packId: 'cambridge-en-a2', targetLanguage: 'en' }))
+    expect(settings.body.data).toEqual(
+      expect.objectContaining({ packId: 'cambridge-en-a2', targetLanguage: 'en' })
+    )
 
     const summary = await agent.get('/api/v1/media/summary').expect(200)
-    expect(summary.body.data).toEqual({ voiceBytes: expect.any(Number), audioBytes: expect.any(Number), sttBytes: expect.any(Number) })
+    expect(summary.body.data).toEqual({
+      voiceBytes: expect.any(Number),
+      audioBytes: expect.any(Number),
+      sttBytes: expect.any(Number),
+    })
 
     const audio = await agent.get('/api/v1/media/audio').expect(200)
     expect(Array.isArray(audio.body.data.rows)).toBe(true)
 
     await agent.post('/api/v1/media/audio/delete').send({ ids: 'not-a-list' }).expect(400)
-    const none = await agent.post('/api/v1/media/audio/delete').send({ ids: ['generated:cambridge-en-a2:../../x'] }).expect(200)
+    const none = await agent
+      .post('/api/v1/media/audio/delete')
+      .send({ ids: ['generated:cambridge-en-a2:../../x'] })
+      .expect(200)
     expect(none.body.data).toEqual({ deletedRows: 0, deletedFiles: 0, freedBytes: 0 })
 
-    await agent.put('/api/v1/media/voices/default').send({ lang: 'xx', voiceId: 'bf_emma' }).expect(400)
+    await agent
+      .put('/api/v1/media/voices/default')
+      .send({ lang: 'xx', voiceId: 'bf_emma' })
+      .expect(400)
   })
 })

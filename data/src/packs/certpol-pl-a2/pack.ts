@@ -55,7 +55,10 @@ export const certpolPlA2: ExamPack = {
   },
   // Practice seeds first, then the exam-only Set 1 payloads (their listening WAVs are seeded).
   seedExercises: {
-    listening: [...listeningPlSeeds, ...mockListeningPlSeeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningPlSeeds, ...mockListeningPlSeeds] as unknown as Record<
+      string,
+      unknown
+    >[],
     reading: [...readingPlSeeds, ...mockReadingPlSeeds] as unknown as Record<string, unknown>[],
     writing: [...writingPlSeeds, ...mockWritingPlSeeds] as unknown as Record<string, unknown>[],
     speaking: [...speakingPlSeeds, ...mockSpeakingPlSeeds] as unknown as Record<string, unknown>[],

@@ -3,7 +3,9 @@
     <div
       v-if="icon"
       class="grid size-10 place-items-center rounded-field shrink-0"
-      :class="danger ? 'bg-error/10 text-error' : `bg-base-200 ${iconClass ?? 'text-base-content/50'}`"
+      :class="
+        danger ? 'bg-error/10 text-error' : `bg-base-200 ${iconClass ?? 'text-base-content/50'}`
+      "
     >
       <component :is="icon" :size="18" />
     </div>

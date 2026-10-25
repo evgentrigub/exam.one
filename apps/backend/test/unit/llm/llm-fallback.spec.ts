@@ -25,7 +25,9 @@ describe('isRetryableLlmError', () => {
   })
 
   it('retries errors named like connection and timeout errors', () => {
-    const timeout = Object.assign(new Error('Request timed out.'), { name: 'APIConnectionTimeoutError' })
+    const timeout = Object.assign(new Error('Request timed out.'), {
+      name: 'APIConnectionTimeoutError',
+    })
     const connection = Object.assign(new Error('Connection error.'), { name: 'APIConnectionError' })
     expect(isRetryableLlmError(timeout)).toBe(true)
     expect(isRetryableLlmError(connection)).toBe(true)
@@ -54,7 +56,9 @@ describe('runWithFallback', () => {
     const attempt = jest.fn(async () => {
       throw httpError(401)
     })
-    await expect(runWithFallback(['main', 'backup'], attempt)).rejects.toMatchObject({ status: 401 })
+    await expect(runWithFallback(['main', 'backup'], attempt)).rejects.toMatchObject({
+      status: 401,
+    })
     expect(attempt).toHaveBeenCalledTimes(1)
   })
 
@@ -62,7 +66,9 @@ describe('runWithFallback', () => {
     const attempt = jest.fn(async (model: string) => {
       throw httpError(model === 'main' ? 503 : 429)
     })
-    await expect(runWithFallback(['main', 'backup'], attempt)).rejects.toMatchObject({ status: 429 })
+    await expect(runWithFallback(['main', 'backup'], attempt)).rejects.toMatchObject({
+      status: 429,
+    })
     expect(attempt).toHaveBeenCalledTimes(2)
   })
 })

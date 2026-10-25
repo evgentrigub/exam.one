@@ -7,7 +7,10 @@ import { JobEventsService } from '../../jobs/job-events.service'
 export class HealthService {
   private readonly logger = new Logger(HealthService.name)
 
-  constructor(private readonly prisma: PrismaService, private readonly jobs: JobEventsService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jobs: JobEventsService
+  ) {}
 
   async readiness(): Promise<HealthReadyResponse> {
     const [database, redis] = await Promise.allSettled([
@@ -15,8 +18,8 @@ export class HealthService {
       this.jobs.ping(),
     ])
     const checks = {
-      database: database.status === 'fulfilled' ? 'up' as const : 'down' as const,
-      redis: redis.status === 'fulfilled' ? 'up' as const : 'down' as const,
+      database: database.status === 'fulfilled' ? ('up' as const) : ('down' as const),
+      redis: redis.status === 'fulfilled' ? ('up' as const) : ('down' as const),
     }
     if (checks.database === 'up' && checks.redis === 'up') return { data: { status: 'ok', checks } }
     this.logger.warn(`Readiness check failed: database=${checks.database} redis=${checks.redis}`)
@@ -24,7 +27,8 @@ export class HealthService {
       data: { status: 'degraded', checks },
       error: {
         code: checks.database === 'down' ? 'DATABASE_UNAVAILABLE' : 'REDIS_UNAVAILABLE',
-        message: checks.database === 'down' ? 'Database is not reachable' : 'Job queue is not reachable',
+        message:
+          checks.database === 'down' ? 'Database is not reachable' : 'Job queue is not reachable',
       },
     }
   }
