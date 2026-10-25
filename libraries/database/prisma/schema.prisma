@@ -1,7 +1,8 @@
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated/prisma"
-  moduleFormat = "cjs"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  moduleFormat    = "cjs"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -95,22 +96,22 @@ model AuthToken {
 }
 
 model Setting {
-  id             String    @id @default(cuid())
-  userId         String    @unique
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packId         String    @default("cambridge-en-a2")
-  examLevel      String    @default("A2")
-  targetLanguage String    @default("en")
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packId               String   @default("cambridge-en-a2")
+  examLevel            String   @default("A2")
+  targetLanguage       String   @default("en")
   /// Preferred TTS voice per language, `{ [lang]: voiceId }`; set in Settings → Voice models.
-  defaultVoices  Json      @default("{}")
-  notifyMockReadyEmail Boolean @default(true)
+  defaultVoices        Json     @default("{}")
+  notifyMockReadyEmail Boolean  @default(true)
   /// Active LLM provider (`openai` | `openrouter` | `gemini` | `anthropic` | `xai`); null until chosen in Settings → AI provider.
-  llmProvider        String?
-  llmModel           String?
+  llmProvider          String?
+  llmModel             String?
   /// Tried in order when the main model is rate-limited or unavailable (max 3).
-  llmFallbackModels  String[]  @default([])
-  llmReasoningEffort String    @default("medium")
-  updatedAt      DateTime  @updatedAt
+  llmFallbackModels    String[] @default([])
+  llmReasoningEffort   String   @default("medium")
+  updatedAt            DateTime @updatedAt
 }
 
 /// One saved API key per user and provider, encrypted with SECRETS_ENCRYPTION_KEY.
@@ -128,39 +129,42 @@ model LlmCredential {
 }
 
 model Exercise {
-  id          String              @id @default(cuid())
-  userId      String?
-  user        User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packId      String              @default("goethe-de-a2")
-  skill       Skill
-  level       String              @default("A2")
-  source      String              @default("seed") // seed | generated
-  visibility  ExerciseVisibility  @default(PRACTICE)
-  externalId  String
-  payload     Json
-  attempts    Attempt[]
-  createdAt   DateTime            @default(now())
+  id         String             @id @default(cuid())
+  userId     String?
+  user       User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packId     String
+  skill      Skill
+  level      String             @default("A2")
+  source     String             @default("seed") // seed | generated
+  visibility ExerciseVisibility @default(PRACTICE)
+  externalId String
+  payload    Json
+  attempts   Attempt[]
+  createdAt  DateTime           @default(now())
 
   @@unique([userId, skill, packId, externalId])
+  // One bundled seed per pack and id; user rows are covered by the unique above.
+  @@unique([source, packId, externalId], map: "Exercise_seed_packId_externalId_key", where: raw("\"source\" = 'seed'"))
   @@index([packId, skill, level, visibility])
   @@index([userId, skill])
   @@index([source, packId, externalId])
 }
 
 model Attempt {
-  packId    String @default("goethe-de-a2")
-  snapshot  Json?
-  id         String    @id @default(cuid())
-  userId     String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exerciseId String?
-  exercise   Exercise? @relation(fields: [exerciseId], references: [id])
-  skill      Skill
-  answers    Json
-  result     Result?
-  submittedAt DateTime @default(now())
+  packId      String
+  snapshot    Json?
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId  String?
+  exercise    Exercise? @relation(fields: [exerciseId], references: [id])
+  skill       Skill
+  answers     Json
+  result      Result?
+  submittedAt DateTime  @default(now())
 
   @@index([userId, skill])
+  @@index([userId, packId, skill])
   @@index([exerciseId])
 }
 
@@ -176,7 +180,7 @@ model Result {
 }
 
 model Draft {
-  packId    String @default("goethe-de-a2")
+  packId    String
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -189,7 +193,7 @@ model Draft {
 }
 
 model MockExamSet {
-  packId    String @default("goethe-de-a2")
+  packId     String
   id         String            @id @default(cuid())
   userId     String?
   user       User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -205,6 +209,8 @@ model MockExamSet {
   attempts   MockExamAttempt[]
 
   @@unique([userId, packId, externalId])
+  // One bundled set per pack and id (userId is NULL, so the unique above does not apply).
+  @@unique([packId, externalId], map: "MockExamSet_seed_packId_externalId_key", where: raw("\"userId\" IS NULL AND \"generated\" = false"))
   @@index([userId])
 }
 
