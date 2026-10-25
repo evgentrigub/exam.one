@@ -35,16 +35,16 @@ German / Goethe A2 Reading, Writing, Listening, Speaking, and mock exam mode wor
 
 ### Key directories
 
-| Path                          | Purpose                                                                                                      |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, and utilities                                |
-| `apps/backend/`               | Standalone NestJS API; local default port is 3001                                                            |
-| `libraries/contracts/`        | Framework-neutral shared API contracts                                                                       |
-| `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                |
-| `data/`                       | `@exam-one/exam-packs`: exam structure, PromptSpecs, and optional bundled seeds (`src/packs/{packId}/`)       |
-| `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                        |
+| Path                          | Purpose                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `apps/frontend/`              | Nuxt application: pages, components, composables, stores, data, and utilities                                       |
+| `apps/backend/`               | Standalone NestJS API; local default port is 3001                                                                   |
+| `libraries/contracts/`        | Framework-neutral shared API contracts                                                                              |
+| `libraries/database/`         | Prisma schema, migrations, and seed ownership                                                                       |
+| `data/`                       | `@exam-one/exam-packs`: exam structure, PromptSpecs, and optional bundled seeds (`src/packs/{packId}/`)             |
+| `libraries/nestjs-libraries/` | Shared NestJS infrastructure boundary                                                                               |
 | `compose.yaml`                | Unified frontend, backend, PostgreSQL, Redis, Kokoro TTS, and Parakeet STT stack with persistent data/model storage |
-| `agent-os/standards/`         | Canonical implementation standards                                                                           |
+| `agent-os/standards/`         | Canonical implementation standards                                                                                  |
 
 ### Frontend data lifecycle
 
@@ -105,6 +105,7 @@ Endpoints return `{ data: T | null, error: string | null }` with HTTP 200 for bu
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
 
 Rules:
+
 - For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
 - Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.

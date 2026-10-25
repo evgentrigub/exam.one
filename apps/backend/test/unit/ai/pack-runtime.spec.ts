@@ -16,10 +16,24 @@ import { syntheticEnglishA1, syntheticPayloads } from '../../../../../data/src/t
 describe('Data-only pack runtime', () => {
   it('validates saved compatibility reviews against snapshot maxima and totals', () => {
     const part = goetheDeA2.structure.find(module => module.id === 'speaking')!.parts[0]!
-    const rules = { ...part.runtime!, maxPoints: 6, criteria: part.runtime!.criteria!.map(criterion => ({ ...criterion, maxPoints: 3 })) }
-    const review = { teil: 1, totalPoints: 6, maxPoints: 6, criteria: rules.criteria.map(criterion => ({ ...criterion, points: 3, comment: 'Clear' })), summary: 'Good', strengths: [], improvements: [] }
+    const rules = {
+      ...part.runtime!,
+      maxPoints: 6,
+      criteria: part.runtime!.criteria!.map(criterion => ({ ...criterion, maxPoints: 3 })),
+    }
+    const review = {
+      teil: 1,
+      totalPoints: 6,
+      maxPoints: 6,
+      criteria: rules.criteria.map(criterion => ({ ...criterion, points: 3, comment: 'Clear' })),
+      summary: 'Good',
+      strengths: [],
+      improvements: [],
+    }
     expect(() => part.adapter!.validateStoredReview!({ review }, rules)).not.toThrow()
-    expect(() => part.adapter!.validateStoredReview!({ review: { ...review, totalPoints: 999 } }, rules)).toThrow('total')
+    expect(() =>
+      part.adapter!.validateStoredReview!({ review: { ...review, totalPoints: 999 } }, rules)
+    ).toThrow('total')
     expect(() => part.adapter!.validateStoredReview!({ review }, part.runtime!)).toThrow('rubric')
   })
   it('accepts a different language, CEFR, part numbering and all six formats', () => {

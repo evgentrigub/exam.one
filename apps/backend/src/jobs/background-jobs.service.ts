@@ -10,7 +10,13 @@ import {
 import { InjectQueue } from '@nestjs/bullmq'
 import { getLivePack } from '@exam-one/exam-packs'
 import type { BackgroundJob, User } from '@exam-one/database'
-import type { BackgroundJobDto, BackgroundJobList, BackgroundJobStatus, BackgroundJobType, JobProgress } from '@exam-one/contracts'
+import type {
+  BackgroundJobDto,
+  BackgroundJobList,
+  BackgroundJobStatus,
+  BackgroundJobType,
+  JobProgress,
+} from '@exam-one/contracts'
 import { PrismaService } from '@exam-one/nestjs-libraries'
 import { Queue, UnrecoverableError } from 'bullmq'
 import { resolveUserPackId } from '../core/context/active-pack'
@@ -44,16 +50,20 @@ export class BackgroundJobsService {
   }
 
   async addToQueue(row: BackgroundJob): Promise<void> {
-    await this.queue(row.type).add(row.type, { jobRowId: row.id, attempt: row.attempt }, {
-      ...JOB_OPTIONS,
-      jobId: this.jobId(row),
-    })
+    await this.queue(row.type).add(
+      row.type,
+      { jobRowId: row.id, attempt: row.attempt },
+      {
+        ...JOB_OPTIONS,
+        jobId: this.jobId(row),
+      }
+    )
   }
 
   private async publish(row: BackgroundJob): Promise<void> {
-    await this.events.publish(row.userId, { type: 'upsert', job: toBackgroundJobDto(row) }).catch(error =>
-      this.logger.warn(`Job event publish failed: ${String(error)}`)
-    )
+    await this.events
+      .publish(row.userId, { type: 'upsert', job: toBackgroundJobDto(row) })
+      .catch(error => this.logger.warn(`Job event publish failed: ${String(error)}`))
   }
 
   async enqueue(
@@ -67,8 +77,15 @@ export class BackgroundJobsService {
     const activeKey = `${user.id}|${packId}|${type}|${targetId}`
     const active = await this.prisma.backgroundJob.findUnique({ where: { activeKey } })
     if (active) return toBackgroundJobDto(active)
-    if (await this.prisma.backgroundJob.count({ where: { userId: user.id, activeKey: { not: null } } }) >= 5)
-      throw new HttpException({ code: 'TOO_MANY_JOBS', message: 'Too many active jobs' }, HttpStatus.TOO_MANY_REQUESTS)
+    if (
+      (await this.prisma.backgroundJob.count({
+        where: { userId: user.id, activeKey: { not: null } },
+      })) >= 5
+    )
+      throw new HttpException(
+        { code: 'TOO_MANY_JOBS', message: 'Too many active jobs' },
+        HttpStatus.TOO_MANY_REQUESTS
+      )
 
     let row: BackgroundJob
     try {
@@ -99,7 +116,9 @@ export class BackgroundJobsService {
       const failed = await this.fail(row.id, row.attempt, 'Job queue is unavailable', 'QUEUED')
       if (!failed) this.logger.warn(`Queue acknowledgement lost for ${row.id}: ${String(error)}`)
     }
-    return toBackgroundJobDto((await this.prisma.backgroundJob.findUniqueOrThrow({ where: { id: row.id } })))
+    return toBackgroundJobDto(
+      await this.prisma.backgroundJob.findUniqueOrThrow({ where: { id: row.id } })
+    )
   }
 
   async list(userId: string, limit = 50, cursor?: string): Promise<BackgroundJobList> {
@@ -112,7 +131,9 @@ export class BackgroundJobsService {
         take: take + 1,
         ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       }),
-      this.prisma.backgroundJob.count({ where: { userId, status: { in: ['COMPLETED', 'FAILED'] }, seenAt: null } }),
+      this.prisma.backgroundJob.count({
+        where: { userId, status: { in: ['COMPLETED', 'FAILED'] }, seenAt: null },
+      }),
     ])
     return {
       jobs: rows.slice(0, take).map(toBackgroundJobDto),
@@ -134,18 +155,29 @@ export class BackgroundJobsService {
   async markRunning(id: string, attempt: number): Promise<BackgroundJob | null> {
     const claimed = await this.prisma.backgroundJob.updateMany({
       where: { id, attempt, status: 'QUEUED' },
-      data: { status: 'RUNNING', startedAt: new Date(), finishedAt: null, revision: { increment: 1 } },
+      data: {
+        status: 'RUNNING',
+        startedAt: new Date(),
+        finishedAt: null,
+        revision: { increment: 1 },
+      },
     })
     const row = await this.get(id)
     // A queue entry without a row means another environment shares this Redis; fail loudly.
     if (!row) throw new UnrecoverableError(`Background job ${id} not found in this database`)
     if (claimed.count) await this.publish(row)
     // Cancelled while waiting for a BullMQ retry: settle it now instead of after the reconciler timeout.
-    if (row.attempt === attempt && row.status === 'CANCEL_REQUESTED') await this.fail(id, attempt, 'Cancelled')
+    if (row.attempt === attempt && row.status === 'CANCEL_REQUESTED')
+      await this.fail(id, attempt, 'Cancelled')
     return row.attempt === attempt && row.status === 'RUNNING' ? row : null
   }
 
-  async progress(id: string, attempt: number, progress: JobProgress, checkpoint?: unknown): Promise<boolean> {
+  async progress(
+    id: string,
+    attempt: number,
+    progress: JobProgress,
+    checkpoint?: unknown
+  ): Promise<boolean> {
     const changed = await this.prisma.backgroundJob.updateMany({
       where: { id, attempt, status: 'RUNNING' },
       data: {
@@ -173,14 +205,20 @@ export class BackgroundJobsService {
     const changed = await this.prisma.backgroundJob.updateMany({
       where: { id, attempt, status: 'RUNNING' },
       data: {
-        status: 'COMPLETED', result: asJson(result), progress: asJson(done), activeKey: null, seenAt: null,
-        finishedAt: new Date(), revision: { increment: 1 },
+        status: 'COMPLETED',
+        result: asJson(result),
+        progress: asJson(done),
+        activeKey: null,
+        seenAt: null,
+        finishedAt: new Date(),
+        revision: { increment: 1 },
       },
     })
     if (!changed.count) {
       // The work finished after a cancel request; record the cancel rather than leaving it pending.
       const latest = await this.get(id)
-      if (latest?.attempt === attempt && latest.status === 'CANCEL_REQUESTED') await this.fail(id, attempt, 'Cancelled')
+      if (latest?.attempt === attempt && latest.status === 'CANCEL_REQUESTED')
+        await this.fail(id, attempt, 'Cancelled')
       return false
     }
     const row = await this.get(id)
@@ -188,15 +226,29 @@ export class BackgroundJobsService {
     return true
   }
 
-  async fail(id: string, attempt: number, error: string, expectedStatus?: BackgroundJobStatus): Promise<boolean> {
+  async fail(
+    id: string,
+    attempt: number,
+    error: string,
+    expectedStatus?: BackgroundJobStatus
+  ): Promise<boolean> {
     const row = await this.get(id)
-    if (!row || row.attempt !== attempt || (expectedStatus && row.status !== expectedStatus) || !['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(row.status)) return false
+    if (
+      !row ||
+      row.attempt !== attempt ||
+      (expectedStatus && row.status !== expectedStatus) ||
+      !['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(row.status)
+    )
+      return false
     const changed = await this.prisma.backgroundJob.updateMany({
       where: { id, attempt, status: row.status },
       data: {
         status: row.status === 'CANCEL_REQUESTED' ? 'CANCELLED' : 'FAILED',
-        activeKey: null, seenAt: null, error: error.slice(0, 500),
-        finishedAt: new Date(), revision: { increment: 1 },
+        activeKey: null,
+        seenAt: null,
+        error: error.slice(0, 500),
+        finishedAt: new Date(),
+        revision: { increment: 1 },
       },
     })
     if (!changed.count) return false
@@ -206,7 +258,10 @@ export class BackgroundJobsService {
   }
 
   /** Fail the row for a setup error no retry can fix; throw the result so BullMQ stops too. */
-  async abort(row: Pick<BackgroundJob, 'id' | 'attempt'>, message: string): Promise<UnrecoverableError> {
+  async abort(
+    row: Pick<BackgroundJob, 'id' | 'attempt'>,
+    message: string
+  ): Promise<UnrecoverableError> {
     await this.fail(row.id, row.attempt, message)
     return new UnrecoverableError(message)
   }
@@ -218,7 +273,12 @@ export class BackgroundJobsService {
     const changed = await this.prisma.backgroundJob.updateMany({
       where: { id, userId, attempt: row.attempt, status: row.status },
       data: queued
-        ? { status: 'CANCELLED', activeKey: null, finishedAt: new Date(), revision: { increment: 1 } }
+        ? {
+            status: 'CANCELLED',
+            activeKey: null,
+            finishedAt: new Date(),
+            revision: { increment: 1 },
+          }
         : { status: 'CANCEL_REQUESTED', revision: { increment: 1 } },
     })
     if (queued && changed.count) {
@@ -233,24 +293,38 @@ export class BackgroundJobsService {
 
   async retry(userId: string, id: string): Promise<BackgroundJobDto> {
     const row = await this.owned(userId, id)
-    if (row.status !== 'FAILED') throw new ConflictException({ code: 'JOB_NOT_FAILED', message: 'Only failed jobs can be retried' })
+    if (row.status !== 'FAILED')
+      throw new ConflictException({
+        code: 'JOB_NOT_FAILED',
+        message: 'Only failed jobs can be retried',
+      })
     const activeKey = `${userId}|${row.packId}|${row.type}|${row.targetId}`
     const active = await this.prisma.backgroundJob.findUnique({ where: { activeKey } })
-    if (active) throw new ConflictException({ code: 'JOB_ACTIVE', message: 'This work is already running' })
+    if (active)
+      throw new ConflictException({ code: 'JOB_ACTIVE', message: 'This work is already running' })
     let changed: { count: number }
     try {
       changed = await this.prisma.backgroundJob.updateMany({
         where: { id, userId, status: 'FAILED', attempt: row.attempt },
         data: {
-          status: 'QUEUED', activeKey, attempt: { increment: 1 }, revision: { increment: 1 },
-          seenAt: null, error: null, finishedAt: null,
+          status: 'QUEUED',
+          activeKey,
+          attempt: { increment: 1 },
+          revision: { increment: 1 },
+          seenAt: null,
+          error: null,
+          finishedAt: null,
         },
       })
     } catch {
       // Lost a race with a new enqueue of the same target (unique activeKey).
       throw new ConflictException({ code: 'JOB_ACTIVE', message: 'This work is already running' })
     }
-    if (!changed.count) throw new ConflictException({ code: 'JOB_CHANGED', message: 'Job changed; refresh and try again' })
+    if (!changed.count)
+      throw new ConflictException({
+        code: 'JOB_CHANGED',
+        message: 'Job changed; refresh and try again',
+      })
     const updated = await this.owned(userId, id)
     await this.publish(updated)
     try {
@@ -279,14 +353,22 @@ export class BackgroundJobsService {
 
   async dismiss(userId: string, id: string): Promise<void> {
     const row = await this.owned(userId, id)
-    if (!TERMINAL.includes(row.status as typeof TERMINAL[number]))
-      throw new ConflictException({ code: 'JOB_ACTIVE', message: 'Cancel the job before dismissing it' })
+    if (!TERMINAL.includes(row.status as (typeof TERMINAL)[number]))
+      throw new ConflictException({
+        code: 'JOB_ACTIVE',
+        message: 'Cancel the job before dismissing it',
+      })
     await this.prisma.backgroundJob.delete({ where: { id: row.id } })
-    await this.events.publish(userId, { type: 'remove', id, revision: row.revision + 1 }).catch(() => undefined)
+    await this.events
+      .publish(userId, { type: 'remove', id, revision: row.revision + 1 })
+      .catch(() => undefined)
   }
 
   async clearFinished(userId: string): Promise<void> {
-    const rows = await this.prisma.backgroundJob.findMany({ where: { userId, status: { in: [...TERMINAL] } }, select: { id: true } })
+    const rows = await this.prisma.backgroundJob.findMany({
+      where: { userId, status: { in: [...TERMINAL] } },
+      select: { id: true },
+    })
     for (const row of rows) await this.dismiss(userId, row.id)
   }
 }

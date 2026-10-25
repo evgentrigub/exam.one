@@ -1,11 +1,6 @@
 export type BackgroundJobType = 'LISTENING_AUDIO' | 'EXERCISE_GENERATION' | 'MOCK_EXAM_SET'
 export type BackgroundJobStatus =
-  | 'QUEUED'
-  | 'RUNNING'
-  | 'CANCEL_REQUESTED'
-  | 'COMPLETED'
-  | 'FAILED'
-  | 'CANCELLED'
+  'QUEUED' | 'RUNNING' | 'CANCEL_REQUESTED' | 'COMPLETED' | 'FAILED' | 'CANCELLED'
 
 export interface JobProgress {
   stage: number
@@ -46,7 +41,10 @@ export type JobEvent =
   | { type: 'remove'; id: string; revision: number }
   | { type: 'heartbeat' }
 
-export const JOB_STAGES: Record<BackgroundJobType, { stages: { key: string; weight: number }[]; estimateSec: number }> = {
+export const JOB_STAGES: Record<
+  BackgroundJobType,
+  { stages: { key: string; weight: number }[]; estimateSec: number }
+> = {
   LISTENING_AUDIO: {
     stages: [
       { key: 'activity.stages.prepare', weight: 15 },
@@ -78,5 +76,12 @@ export function overallPercent(type: BackgroundJobType, progress: JobProgress): 
   const stages = JOB_STAGES[type].stages
   const stage = Math.max(0, Math.min(stages.length - 1, Math.floor(progress.stage || 0)))
   const before = stages.slice(0, stage).reduce((sum, item) => sum + item.weight, 0)
-  return Math.max(0, Math.min(100, before + stages[stage]!.weight * Math.max(0, Math.min(100, progress.stagePercent || 0)) / 100))
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      before +
+        (stages[stage]!.weight * Math.max(0, Math.min(100, progress.stagePercent || 0))) / 100
+    )
+  )
 }

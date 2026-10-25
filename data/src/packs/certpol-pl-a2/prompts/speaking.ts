@@ -110,7 +110,7 @@ export const speakingPrompts: PromptSpec[] = [
     kind: 'generator',
     llm: GENERATOR_LLM,
     role: AUTHOR_ROLE,
-    task: 'Task: generate {count} exercises for Polish A2 Speaking, task 3 (a role-play with the examiner). Solo practice: the learner opens the conversation from a card, and the examiner\'s three lines are fixed cards.',
+    task: "Task: generate {count} exercises for Polish A2 Speaking, task 3 (a role-play with the examiner). Solo practice: the learner opens the conversation from a card, and the examiner's three lines are fixed cards.",
     rules: [
       RULES_HEADER,
       '1. Situation ("theme", in Polish, addressed to "ty"): an everyday situation where the learner must invite, suggest, arrange, ask for information or buy something, with the examiner as a friend, a shop assistant or an official ("Zaproś kolegę / koleżankę do kina. Zaproponuj film, dzień, godzinę i miejsce spotkania.").',

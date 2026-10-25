@@ -103,4 +103,3 @@ testing:
     description: Colocate specs; mock PrismaService; fixtures + assert exception codes
   unit-vs-e2e:
     description: pnpm test is unit without Postgres; e2e is supertest + real DB for auth/health
-

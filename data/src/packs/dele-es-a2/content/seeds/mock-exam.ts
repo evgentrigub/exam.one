@@ -57,7 +57,10 @@ function moduleOf(skill: SkillId) {
 
 /** Raw points of a prueba: the sum of its parts' maxima (25 / 25 / 12 / 18). */
 function rawPointsFor(skill: SkillId): number {
-  return moduleOf(skill).parts.reduce((sum, part) => sum + deleA2PartRules(skill, part.n).maxPoints, 0)
+  return moduleOf(skill).parts.reduce(
+    (sum, part) => sum + deleA2PartRules(skill, part.n).maxPoints,
+    0
+  )
 }
 
 /** Module definitions for a set; per-part points and replay limits come from the runtime rules. */

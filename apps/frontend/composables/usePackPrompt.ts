@@ -9,7 +9,7 @@ import {
 
 export function usePackPrompt(requestPackId?: string) {
   const active = useActivePack()
-  const pack = computed(() => requestPackId ? getLivePack(requestPackId) : active.pack.value)
+  const pack = computed(() => (requestPackId ? getLivePack(requestPackId) : active.pack.value))
   const examLevel = computed(() => pack.value.cefr)
 
   function assemble(

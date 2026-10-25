@@ -2,8 +2,15 @@ import type { ListeningPlExercise, ListeningPlItem } from '../types'
 import { withSeedAudio } from '../listening-audio'
 
 /** Stamp the per-item ids the per-item audio map is keyed by. */
-function items(exerciseId: string, rows: Omit<ListeningPlItem, 'id' | 'context'>[]): ListeningPlItem[] {
-  return rows.map((row, index) => ({ ...row, context: `Nagranie ${index + 1}`, id: `${exerciseId}-i${index + 1}` }))
+function items(
+  exerciseId: string,
+  rows: Omit<ListeningPlItem, 'id' | 'context'>[]
+): ListeningPlItem[] {
+  return rows.map((row, index) => ({
+    ...row,
+    context: `Nagranie ${index + 1}`,
+    id: `${exerciseId}-i${index + 1}`,
+  }))
 }
 
 function rows<T extends object>(exerciseId: string, list: T[]): Array<T & { id: string }> {
@@ -15,7 +22,15 @@ const TRUE_FALSE = ['Prawda', 'Fałsz']
 const WHO = 'Kto mówi?'
 const WHERE = 'Gdzie to słyszymy?'
 
-const SPORTS = ['bieganie', 'joga', 'jazda na nartach', 'pływanie', 'siatkówka', 'tenis', 'jazda na rowerze']
+const SPORTS = [
+  'bieganie',
+  'joga',
+  'jazda na nartach',
+  'pływanie',
+  'siatkówka',
+  'tenis',
+  'jazda na rowerze',
+]
 
 const PURPOSES = [
   'Ktoś zaprasza na przyjęcie.',
@@ -44,35 +59,40 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
     createdAt: '2026-09-30',
     items: items('listening-pl-a2-zadanie1-001', [
       {
-        transcript: 'Kobieta: Proszę otworzyć usta i powiedzieć „a”. Dobrze. Niestety ma pan chore gardło. Wypiszę panu receptę.',
+        transcript:
+          'Kobieta: Proszę otworzyć usta i powiedzieć „a”. Dobrze. Niestety ma pan chore gardło. Wypiszę panu receptę.',
         question: WHO,
         options: ['nauczycielka', 'lekarka', 'fryzjerka'],
         correctAnswer: 1,
         explanation: 'Kobieta bada gardło i wypisuje receptę – to lekarka.',
       },
       {
-        transcript: 'Mężczyzna: Dzień dobry, bilety do kontroli. Czy mogę zobaczyć pana bilet? Następna stacja: Warszawa Centralna.',
+        transcript:
+          'Mężczyzna: Dzień dobry, bilety do kontroli. Czy mogę zobaczyć pana bilet? Następna stacja: Warszawa Centralna.',
         question: WHO,
         options: ['konduktor', 'kelner', 'policjant'],
         correctAnswer: 0,
         explanation: 'Mężczyzna sprawdza bilety w pociągu – to konduktor.',
       },
       {
-        transcript: 'Kobieta: Dzisiaj zrobimy ćwiczenie numer pięć. Proszę otworzyć książki na stronie dwudziestej i przeczytać tekst.',
+        transcript:
+          'Kobieta: Dzisiaj zrobimy ćwiczenie numer pięć. Proszę otworzyć książki na stronie dwudziestej i przeczytać tekst.',
         question: WHO,
         options: ['sprzedawczyni', 'lekarka', 'nauczycielka'],
         correctAnswer: 2,
         explanation: 'Kobieta mówi o ćwiczeniach i książkach na lekcji – to nauczycielka.',
       },
       {
-        transcript: 'Mężczyzna: Mamy dziś zupę pomidorową i świeżą rybę. Co państwu podać do picia?',
+        transcript:
+          'Mężczyzna: Mamy dziś zupę pomidorową i świeżą rybę. Co państwu podać do picia?',
         question: WHO,
         options: ['kelner', 'kierowca', 'listonosz'],
         correctAnswer: 0,
         explanation: 'Mężczyzna proponuje dania i napoje – to kelner.',
       },
       {
-        transcript: 'Kobieta: Poproszę dwa bilety normalne do Krakowa na pociąg o piętnastej dwadzieścia.',
+        transcript:
+          'Kobieta: Poproszę dwa bilety normalne do Krakowa na pociąg o piętnastej dwadzieścia.',
         question: WHERE,
         options: ['na lotnisku', 'na dworcu kolejowym', 'w kinie'],
         correctAnswer: 1,
@@ -86,7 +106,8 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
         explanation: 'Mężczyzna wysyła list polecony – jest na poczcie.',
       },
       {
-        transcript: 'Kobieta: Przepraszam, gdzie jest mleko? A, jest tam, obok soków. Wezmę jeszcze chleb i masło.',
+        transcript:
+          'Kobieta: Przepraszam, gdzie jest mleko? A, jest tam, obok soków. Wezmę jeszcze chleb i masło.',
         question: WHERE,
         options: ['w restauracji', 'w supermarkecie', 'w aptece'],
         correctAnswer: 1,
@@ -100,14 +121,16 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
         explanation: 'Mężczyzna kupuje tabletki na ból głowy – jest w aptece.',
       },
       {
-        transcript: 'Kobieta: Chciałabym oddać te dwie książki i wypożyczyć nową powieść. Jak długo mogę ją mieć?',
+        transcript:
+          'Kobieta: Chciałabym oddać te dwie książki i wypożyczyć nową powieść. Jak długo mogę ją mieć?',
         question: WHERE,
         options: ['w bibliotece', 'w księgarni', 'w szkole'],
         correctAnswer: 0,
         explanation: 'Książki można oddać i wypożyczyć w bibliotece; w księgarni się je kupuje.',
       },
       {
-        transcript: 'Mężczyzna: Proszę państwa, za dwadzieścia minut lądujemy w Londynie. Proszę wrócić na swoje miejsca i zapiąć pasy.',
+        transcript:
+          'Mężczyzna: Proszę państwa, za dwadzieścia minut lądujemy w Londynie. Proszę wrócić na swoje miejsca i zapiąć pasy.',
         question: WHERE,
         options: ['w autobusie', 'w samolocie', 'na statku'],
         correctAnswer: 1,
@@ -125,11 +148,36 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
     transcript:
       'Spiker: Dzień dobry, zapraszamy na Festiwal Pierogów w Krakowie! Festiwal będzie w dniach od szesnastego do osiemnastego sierpnia na Małym Rynku. Co roku przyjeżdżają do nas kucharze z całej Polski. W tym roku można spróbować ponad trzydziestu rodzajów pierogów: z mięsem, z kapustą, z serem, a nawet z owocami. Festiwal jest otwarty codziennie od jedenastej do dwudziestej pierwszej. Wstęp jest bezpłatny, ale za pierogi trzeba zapłacić – porcja kosztuje od dwunastu do osiemnastu złotych. W sobotę o szesnastej zapraszamy dzieci na warsztaty: razem z kucharzami zrobią własne pierogi. Na warsztaty trzeba zapisać się wcześniej przez internet. Do zobaczenia w Krakowie!',
     questions: rows('listening-pl-a2-zadanie2-001', [
-      { question: 'Festiwal trwa trzy dni.', options: TRUE_FALSE, correctAnswer: 0, explanation: 'Festiwal jest od szesnastego do osiemnastego sierpnia – trzy dni.' },
-      { question: 'Na festiwal przyjeżdżają kucharze tylko z Krakowa.', options: TRUE_FALSE, correctAnswer: 1, explanation: 'Kucharze przyjeżdżają „z całej Polski”.' },
-      { question: 'Za wejście na festiwal nie trzeba płacić.', options: TRUE_FALSE, correctAnswer: 0, explanation: '„Wstęp jest bezpłatny” – płaci się tylko za pierogi.' },
-      { question: 'Warsztaty dla dzieci są w niedzielę.', options: TRUE_FALSE, correctAnswer: 1, explanation: 'Warsztaty są „w sobotę o szesnastej”.' },
-      { question: 'Na warsztaty można przyjść bez zapisów.', options: TRUE_FALSE, correctAnswer: 1, explanation: '„Na warsztaty trzeba zapisać się wcześniej przez internet.”' },
+      {
+        question: 'Festiwal trwa trzy dni.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: 'Festiwal jest od szesnastego do osiemnastego sierpnia – trzy dni.',
+      },
+      {
+        question: 'Na festiwal przyjeżdżają kucharze tylko z Krakowa.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Kucharze przyjeżdżają „z całej Polski”.',
+      },
+      {
+        question: 'Za wejście na festiwal nie trzeba płacić.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: '„Wstęp jest bezpłatny” – płaci się tylko za pierogi.',
+      },
+      {
+        question: 'Warsztaty dla dzieci są w niedzielę.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Warsztaty są „w sobotę o szesnastej”.',
+      },
+      {
+        question: 'Na warsztaty można przyjść bez zapisów.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: '„Na warsztaty trzeba zapisać się wcześniej przez internet.”',
+      },
     ]),
   },
   {
@@ -154,11 +202,31 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
     ].join('\n'),
     options: SPORTS,
     questions: rows('listening-pl-a2-zadanie3-001', [
-      { person: 'brat Kasi', correctAnswer: 0, explanation: '„Michał grał w tenisa w szkole, ale teraz codziennie biega.”' },
-      { person: 'siostra Kasi', correctAnswer: 3, explanation: '„Ola dwa razy w tygodniu chodzi na basen.”' },
-      { person: 'mama Tomka', correctAnswer: 1, explanation: '„Moja mama … zapisała się na jogę.”' },
-      { person: 'tata Tomka', correctAnswer: 6, explanation: '„Teraz jest lato, więc jeździ na rowerze do pracy.”' },
-      { person: 'pani Nowak', correctAnswer: 5, explanation: '„Pani Nowak gra w tenisa z mężem w każdą sobotę.”' },
+      {
+        person: 'brat Kasi',
+        correctAnswer: 0,
+        explanation: '„Michał grał w tenisa w szkole, ale teraz codziennie biega.”',
+      },
+      {
+        person: 'siostra Kasi',
+        correctAnswer: 3,
+        explanation: '„Ola dwa razy w tygodniu chodzi na basen.”',
+      },
+      {
+        person: 'mama Tomka',
+        correctAnswer: 1,
+        explanation: '„Moja mama … zapisała się na jogę.”',
+      },
+      {
+        person: 'tata Tomka',
+        correctAnswer: 6,
+        explanation: '„Teraz jest lato, więc jeździ na rowerze do pracy.”',
+      },
+      {
+        person: 'pani Nowak',
+        correctAnswer: 5,
+        explanation: '„Pani Nowak gra w tenisa z mężem w każdą sobotę.”',
+      },
     ]),
   },
   {
@@ -177,10 +245,26 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
     ].join('\n'),
     options: PURPOSES,
     questions: rows('listening-pl-a2-zadanie4-001', [
-      { person: 'Wiadomość 1', correctAnswer: 3, explanation: 'Kasia nie może jutro przyjść na kawę.' },
-      { person: 'Wiadomość 2', correctAnswer: 5, explanation: 'Wizyta nie jest o dziesiątej, tylko o dwunastej.' },
-      { person: 'Wiadomość 3', correctAnswer: 0, explanation: 'Tomek zaprasza na imprezę urodzinową.' },
-      { person: 'Wiadomość 4', correctAnswer: 1, explanation: 'Pani z biblioteki przypomina o oddaniu książek.' },
+      {
+        person: 'Wiadomość 1',
+        correctAnswer: 3,
+        explanation: 'Kasia nie może jutro przyjść na kawę.',
+      },
+      {
+        person: 'Wiadomość 2',
+        correctAnswer: 5,
+        explanation: 'Wizyta nie jest o dziesiątej, tylko o dwunastej.',
+      },
+      {
+        person: 'Wiadomość 3',
+        correctAnswer: 0,
+        explanation: 'Tomek zaprasza na imprezę urodzinową.',
+      },
+      {
+        person: 'Wiadomość 4',
+        correctAnswer: 1,
+        explanation: 'Pani z biblioteki przypomina o oddaniu książek.',
+      },
       { person: 'Wiadomość 5', correctAnswer: 4, explanation: 'Marek pyta: „Pomożesz mi?”.' },
     ]),
   },
@@ -205,34 +289,70 @@ export const listeningPlSeeds: ListeningPlExercise[] = [
     questions: rows('listening-pl-a2-zadanie5-001', [
       {
         question: 'Data koncertu',
-        accepted: ['20 czerwca', 'dwudziestego czerwca', '20.06', '20 VI', 'sobota, 20 czerwca', 'w sobotę 20 czerwca'],
+        accepted: [
+          '20 czerwca',
+          'dwudziestego czerwca',
+          '20.06',
+          '20 VI',
+          'sobota, 20 czerwca',
+          'w sobotę 20 czerwca',
+        ],
         explanation: '„Koncert odbędzie się w sobotę dwudziestego czerwca.”',
       },
       {
         question: 'Początek koncertu',
-        accepted: ['19:30', '19.30', '19 30', 'dziewiętnasta trzydzieści', 'dziewiętnastej trzydzieści'],
-        explanation: '„Początek o godzinie dziewiętnastej trzydzieści” – o osiemnastej otwierają park.',
+        accepted: [
+          '19:30',
+          '19.30',
+          '19 30',
+          'dziewiętnasta trzydzieści',
+          'dziewiętnastej trzydzieści',
+        ],
+        explanation:
+          '„Początek o godzinie dziewiętnastej trzydzieści” – o osiemnastej otwierają park.',
       },
       {
         question: 'Liczba muzyków',
-        accepted: ['65', '65 muzyków', 'sześćdziesiąt pięć', 'sześćdziesięciu pięciu', 'sześćdziesięciu pięciu muzyków'],
+        accepted: [
+          '65',
+          '65 muzyków',
+          'sześćdziesiąt pięć',
+          'sześćdziesięciu pięciu',
+          'sześćdziesięciu pięciu muzyków',
+        ],
         explanation: '„Orkiestra, w której jest sześćdziesięciu pięciu muzyków.”',
       },
       {
         question: 'Cena biletu dla studenta',
         accepted: ['25', '25 zł', '25 złotych', 'dwadzieścia pięć', 'dwadzieścia pięć złotych'],
-        explanation: '„Dla dzieci i studentów – dwadzieścia pięć złotych”; czterdzieści złotych to bilet normalny.',
+        explanation:
+          '„Dla dzieci i studentów – dwadzieścia pięć złotych”; czterdzieści złotych to bilet normalny.',
       },
       {
         question: 'Rok pierwszego koncertu',
-        accepted: ['2017', '2017 r.', '2017 roku', 'w 2017 roku', 'dwa tysiące siedemnasty', 'dwa tysiące siedemnastym'],
+        accepted: [
+          '2017',
+          '2017 r.',
+          '2017 roku',
+          'w 2017 roku',
+          'dwa tysiące siedemnasty',
+          'dwa tysiące siedemnastym',
+        ],
         explanation: '„Pierwszy był w dwa tysiące siedemnastym roku.”',
       },
     ]),
   },
 ]
 
-const MOCK_JOBS = ['aktor', 'fryzjer', 'kucharz', 'lekarz', 'nauczyciel', 'policjant', 'programista']
+const MOCK_JOBS = [
+  'aktor',
+  'fryzjer',
+  'kucharz',
+  'lekarz',
+  'nauczyciel',
+  'policjant',
+  'programista',
+]
 
 const MOCK_PURPOSES = [
   'Ktoś prosi o telefon.',
@@ -258,7 +378,8 @@ const mockListening: ListeningPlExercise[] = [
     examOnly: true,
     items: items('mock-pl-a2-set1-listening-zadanie1', [
       {
-        transcript: 'Mężczyzna: Proszę usiąść na krześle. Jak krótko mam obciąć? Może trochę z boku?',
+        transcript:
+          'Mężczyzna: Proszę usiąść na krześle. Jak krótko mam obciąć? Może trochę z boku?',
         question: WHO,
         options: ['fryzjer', 'lekarz', 'kelner'],
         correctAnswer: 0,
@@ -272,21 +393,26 @@ const mockListening: ListeningPlExercise[] = [
         explanation: 'Kobieta przynosi paczkę i prosi o podpis – to listonoszka.',
       },
       {
-        transcript: 'Mężczyzna: Proszę pokazać prawo jazdy i dowód rejestracyjny. Jechał pan za szybko.',
+        transcript:
+          'Mężczyzna: Proszę pokazać prawo jazdy i dowód rejestracyjny. Jechał pan za szybko.',
         question: WHO,
         options: ['mechanik', 'policjant', 'kierowca'],
         correctAnswer: 1,
-        explanation: 'Mężczyzna sprawdza dokumenty kierowcy, który jechał za szybko – to policjant.',
+        explanation:
+          'Mężczyzna sprawdza dokumenty kierowcy, który jechał za szybko – to policjant.',
       },
       {
-        transcript: 'Kobieta: Ten pokój ma widok na morze. Śniadanie jest od siódmej do dziesiątej. Tu jest pana klucz.',
+        transcript:
+          'Kobieta: Ten pokój ma widok na morze. Śniadanie jest od siódmej do dziesiątej. Tu jest pana klucz.',
         question: WHO,
         options: ['sprzedawczyni', 'przewodniczka', 'recepcjonistka'],
         correctAnswer: 2,
-        explanation: 'Kobieta daje gościowi klucz do pokoju i mówi o śniadaniu – to recepcjonistka w hotelu.',
+        explanation:
+          'Kobieta daje gościowi klucz do pokoju i mówi o śniadaniu – to recepcjonistka w hotelu.',
       },
       {
-        transcript: 'Kobieta: Poproszę bilet ulgowy na film o osiemnastej. Czy są jeszcze miejsca w środku sali?',
+        transcript:
+          'Kobieta: Poproszę bilet ulgowy na film o osiemnastej. Czy są jeszcze miejsca w środku sali?',
         question: WHERE,
         options: ['w kinie', 'w teatrze', 'na dworcu'],
         correctAnswer: 0,
@@ -307,7 +433,8 @@ const mockListening: ListeningPlExercise[] = [
         explanation: 'Kobieta kupuje warzywa – jest na targu.',
       },
       {
-        transcript: 'Mężczyzna: Proszę państwa, po prawej stronie widzimy Wawel. Za chwilę wejdziemy na dziedziniec zamku.',
+        transcript:
+          'Mężczyzna: Proszę państwa, po prawej stronie widzimy Wawel. Za chwilę wejdziemy na dziedziniec zamku.',
         question: WHERE,
         options: ['na wycieczce', 'w szkole', 'w szpitalu'],
         correctAnswer: 0,
@@ -340,11 +467,36 @@ const mockListening: ListeningPlExercise[] = [
     transcript:
       'Spiker: Uwaga, pasażerowie! Od poniedziałku dwunastego października zmienia się rozkład jazdy tramwajów w centrum Poznania. Z powodu remontu ulicy Głogowskiej tramwaje linii pięć i osiem przez trzy tygodnie będą jeździły objazdem przez ulicę Hetmańską. W tym czasie na ulicę Głogowską dojedzie autobus zastępczy, który będzie kursował co dziesięć minut. Bilety na tramwaje są ważne także w autobusach zastępczych. W weekendy tramwaje będą jeździły rzadziej, co dwadzieścia minut. Szczegółowy rozkład jazdy można znaleźć na stronie internetowej miasta i na przystankach. Przepraszamy za utrudnienia.',
     questions: rows('mock-pl-a2-set1-listening-zadanie2', [
-      { question: 'Zmiany zaczynają się w poniedziałek.', options: TRUE_FALSE, correctAnswer: 0, explanation: '„Od poniedziałku dwunastego października zmienia się rozkład jazdy.”' },
-      { question: 'Remont ulicy potrwa trzy miesiące.', options: TRUE_FALSE, correctAnswer: 1, explanation: 'Tramwaje będą jeździły objazdem „przez trzy tygodnie”.' },
-      { question: 'Autobus zastępczy jeździ co dziesięć minut.', options: TRUE_FALSE, correctAnswer: 0, explanation: '„Autobus zastępczy, który będzie kursował co dziesięć minut.”' },
-      { question: 'Na autobus zastępczy trzeba kupić osobny bilet.', options: TRUE_FALSE, correctAnswer: 1, explanation: '„Bilety na tramwaje są ważne także w autobusach zastępczych.”' },
-      { question: 'W weekendy tramwaje jeżdżą częściej.', options: TRUE_FALSE, correctAnswer: 1, explanation: '„W weekendy tramwaje będą jeździły rzadziej, co dwadzieścia minut.”' },
+      {
+        question: 'Zmiany zaczynają się w poniedziałek.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: '„Od poniedziałku dwunastego października zmienia się rozkład jazdy.”',
+      },
+      {
+        question: 'Remont ulicy potrwa trzy miesiące.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: 'Tramwaje będą jeździły objazdem „przez trzy tygodnie”.',
+      },
+      {
+        question: 'Autobus zastępczy jeździ co dziesięć minut.',
+        options: TRUE_FALSE,
+        correctAnswer: 0,
+        explanation: '„Autobus zastępczy, który będzie kursował co dziesięć minut.”',
+      },
+      {
+        question: 'Na autobus zastępczy trzeba kupić osobny bilet.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: '„Bilety na tramwaje są ważne także w autobusach zastępczych.”',
+      },
+      {
+        question: 'W weekendy tramwaje jeżdżą częściej.',
+        options: TRUE_FALSE,
+        correctAnswer: 1,
+        explanation: '„W weekendy tramwaje będą jeździły rzadziej, co dwadzieścia minut.”',
+      },
     ]),
   },
   {
@@ -370,11 +522,31 @@ const mockListening: ListeningPlExercise[] = [
     ].join('\n'),
     options: MOCK_JOBS,
     questions: rows('mock-pl-a2-set1-listening-zadanie3', [
-      { person: 'Kuba', correctAnswer: 2, explanation: '„Kuba jest teraz kucharzem” – aktorem chciał być tylko w szkole.' },
-      { person: 'Ola', correctAnswer: 3, explanation: '„Ola … pracuje jako lekarz w szpitalu dziecięcym.”' },
-      { person: 'Tomek', correctAnswer: 6, explanation: '„Jest programistą w dużej firmie w Krakowie.”' },
-      { person: 'pani Kowalczyk', correctAnswer: 1, explanation: '„Otworzyła z córką salon fryzjerski.”' },
-      { person: 'Bartek', correctAnswer: 4, explanation: '„Zmienił zdanie. Uczy matematyki” – policjantem nie został.' },
+      {
+        person: 'Kuba',
+        correctAnswer: 2,
+        explanation: '„Kuba jest teraz kucharzem” – aktorem chciał być tylko w szkole.',
+      },
+      {
+        person: 'Ola',
+        correctAnswer: 3,
+        explanation: '„Ola … pracuje jako lekarz w szpitalu dziecięcym.”',
+      },
+      {
+        person: 'Tomek',
+        correctAnswer: 6,
+        explanation: '„Jest programistą w dużej firmie w Krakowie.”',
+      },
+      {
+        person: 'pani Kowalczyk',
+        correctAnswer: 1,
+        explanation: '„Otworzyła z córką salon fryzjerski.”',
+      },
+      {
+        person: 'Bartek',
+        correctAnswer: 4,
+        explanation: '„Zmienił zdanie. Uczy matematyki” – policjantem nie został.',
+      },
     ]),
   },
   {
@@ -394,11 +566,31 @@ const mockListening: ListeningPlExercise[] = [
     ].join('\n'),
     options: MOCK_PURPOSES,
     questions: rows('mock-pl-a2-set1-listening-zadanie4', [
-      { person: 'Wiadomość 1', correctAnswer: 1, explanation: 'Ania dziękuje za pomoc przy przeprowadzce.' },
-      { person: 'Wiadomość 2', correctAnswer: 3, explanation: 'Samochód jest gotowy i można go odebrać.' },
-      { person: 'Wiadomość 3', correctAnswer: 5, explanation: 'Magda jest chora i nie przyjdzie na lekcję.' },
-      { person: 'Wiadomość 4', correctAnswer: 0, explanation: 'Pani ze szkoły językowej prosi o telefon.' },
-      { person: 'Wiadomość 5', correctAnswer: 4, explanation: 'Kuba przypomina o jutrzejszym egzaminie.' },
+      {
+        person: 'Wiadomość 1',
+        correctAnswer: 1,
+        explanation: 'Ania dziękuje za pomoc przy przeprowadzce.',
+      },
+      {
+        person: 'Wiadomość 2',
+        correctAnswer: 3,
+        explanation: 'Samochód jest gotowy i można go odebrać.',
+      },
+      {
+        person: 'Wiadomość 3',
+        correctAnswer: 5,
+        explanation: 'Magda jest chora i nie przyjdzie na lekcję.',
+      },
+      {
+        person: 'Wiadomość 4',
+        correctAnswer: 0,
+        explanation: 'Pani ze szkoły językowej prosi o telefon.',
+      },
+      {
+        person: 'Wiadomość 5',
+        correctAnswer: 4,
+        explanation: 'Kuba przypomina o jutrzejszym egzaminie.',
+      },
     ]),
   },
   {
@@ -423,13 +615,28 @@ const mockListening: ListeningPlExercise[] = [
     questions: rows('mock-pl-a2-set1-listening-zadanie5', [
       {
         question: 'Data wyjazdu',
-        accepted: ['14 listopada', 'czternastego listopada', '14.11', '14 XI', 'sobota, 14 listopada', 'w sobotę 14 listopada'],
+        accepted: [
+          '14 listopada',
+          'czternastego listopada',
+          '14.11',
+          '14 XI',
+          'sobota, 14 listopada',
+          'w sobotę 14 listopada',
+        ],
         explanation: '„Wyjeżdżamy w sobotę czternastego listopada.”',
       },
       {
         question: 'Godzina wyjazdu',
-        accepted: ['6:45', '6.45', '6 45', '06:45', 'szósta czterdzieści pięć', 'szóstej czterdzieści pięć'],
-        explanation: '„O szóstej czterdzieści pięć spod Dworca Głównego”; powrót jest około dwudziestej drugiej.',
+        accepted: [
+          '6:45',
+          '6.45',
+          '6 45',
+          '06:45',
+          'szósta czterdzieści pięć',
+          'szóstej czterdzieści pięć',
+        ],
+        explanation:
+          '„O szóstej czterdzieści pięć spod Dworca Głównego”; powrót jest około dwudziestej drugiej.',
       },
       {
         question: 'Cena dla dorosłego',
@@ -443,7 +650,14 @@ const mockListening: ListeningPlExercise[] = [
       },
       {
         question: 'Rok założenia muzeum',
-        accepted: ['1888', '1888 r.', '1888 roku', 'w 1888 roku', 'tysiąc osiemset osiemdziesiąty ósmy', 'tysiąc osiemset osiemdziesiątym ósmym'],
+        accepted: [
+          '1888',
+          '1888 r.',
+          '1888 roku',
+          'w 1888 roku',
+          'tysiąc osiemset osiemdziesiąty ósmy',
+          'tysiąc osiemset osiemdziesiątym ósmym',
+        ],
         explanation: '„Muzeum Tatrzańskie, założone w tysiąc osiemset osiemdziesiątym ósmym roku.”',
       },
     ]),

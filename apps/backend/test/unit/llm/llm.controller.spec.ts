@@ -4,7 +4,7 @@ import { LlmService } from '../../../src/ai/llm.service'
 import { makeUser } from '../../../src/testing/fixtures'
 
 describe('LlmController', () => {
-  it("delegates health to LlmService for the current user", async () => {
+  it('delegates health to LlmService for the current user', async () => {
     const health = jest.fn().mockResolvedValue({
       data: {
         configured: false,

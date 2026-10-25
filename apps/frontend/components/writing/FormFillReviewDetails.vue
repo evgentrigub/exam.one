@@ -18,7 +18,9 @@
           <span
             class="mt-0.5 w-5 h-5 rounded-full grid place-items-center shrink-0"
             :class="row.correct ? 'bg-success/15 text-success' : 'bg-error/15 text-error'"
-            :aria-label="row.correct ? $t('writing.formFill.correct') : $t('writing.formFill.wrong')"
+            :aria-label="
+              row.correct ? $t('writing.formFill.correct') : $t('writing.formFill.wrong')
+            "
           >
             <Check v-if="row.correct" :size="12" aria-hidden="true" />
             <X v-else :size="12" aria-hidden="true" />
@@ -30,9 +32,13 @@
             <div class="mt-0.5 text-[15px] font-medium">
               {{ row.answer || $t('pastExams.notAnswered') }}
             </div>
-            <div v-if="row.comment" class="mt-1 text-sm text-base-content/70">{{ row.comment }}</div>
+            <div v-if="row.comment" class="mt-1 text-sm text-base-content/70">
+              {{ row.comment }}
+            </div>
           </div>
-          <span class="badge badge-outline shrink-0 font-mono">{{ row.points }}/{{ row.maxPoints }}</span>
+          <span class="badge badge-outline shrink-0 font-mono"
+            >{{ row.points }}/{{ row.maxPoints }}</span
+          >
         </li>
       </ol>
     </section>
@@ -42,7 +48,10 @@
     </section>
 
     <div class="grid gap-3 sm:grid-cols-2">
-      <section v-if="review.strengths?.length" class="rounded-box border border-success/30 bg-success/5 p-4">
+      <section
+        v-if="review.strengths?.length"
+        class="rounded-box border border-success/30 bg-success/5 p-4"
+      >
         <h4 class="text-sm font-semibold text-success">{{ $t('writing.formFill.strengths') }}</h4>
         <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
           <li v-for="item in review.strengths" :key="item">{{ item }}</li>
@@ -52,7 +61,9 @@
         v-if="review.improvements?.length"
         class="rounded-box border border-warning/30 bg-warning/5 p-4"
       >
-        <h4 class="text-sm font-semibold text-warning">{{ $t('writing.formFill.improvements') }}</h4>
+        <h4 class="text-sm font-semibold text-warning">
+          {{ $t('writing.formFill.improvements') }}
+        </h4>
         <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
           <li v-for="item in review.improvements" :key="item">{{ item }}</li>
         </ul>

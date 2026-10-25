@@ -10,7 +10,9 @@
           >
             {{ getTypeLabel(text.textType, t) }}
           </span>
-          <div class="text-sm text-base-content/70">{{ t('reading.level', { level: text.difficulty }) }}</div>
+          <div class="text-sm text-base-content/70">
+            {{ t('reading.level', { level: text.difficulty }) }}
+          </div>
         </div>
         <button
           class="p-2 hover:bg-base-300 rounded-lg transition-colors"

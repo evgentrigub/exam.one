@@ -7,10 +7,7 @@
           <div>
             <div class="flex items-center gap-2.5">
               <span class="font-display text-2xl font-bold">{{ $t(currentPlan.nameKey) }}</span>
-              <span
-                class="badge badge-sm"
-                :class="isPro ? 'badge-primary' : 'badge-ghost'"
-              >
+              <span class="badge badge-sm" :class="isPro ? 'badge-primary' : 'badge-ghost'">
                 {{ $t('settings.planActive') }}
               </span>
             </div>

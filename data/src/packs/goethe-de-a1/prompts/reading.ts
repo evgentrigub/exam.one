@@ -100,7 +100,7 @@ Generate {count} new exercises (different everyday topics) as JSON.`,
     task: 'Your task: generate {count} unique exercises for the Lesen A1 module: Teil 3 (Schilder und Hinweise verstehen).',
     rules: [
       RULES_HEADER,
-      '1. Texts: EXACTLY 5 short signs or notices (10–25 words each) from different places: a door, a shop window, a bus stop, a school, a doctor\'s practice, a restaurant, a station.',
+      "1. Texts: EXACTLY 5 short signs or notices (10–25 words each) from different places: a door, a shop window, a bus stop, a school, a doctor's practice, a restaurant, a station.",
       '2. "content" lists the five signs, numbered, each as two lines: the number and place ("1 · An der Tür der Arztpraxis"), then the sign text in quotation marks. Separate the signs with an empty line (\\n\\n).',
       '3. Questions: EXACTLY 5 statements in "questions", in the same order as the signs. Each "question" starts with the sign number, for example "Schild 1: Die Praxis ist am Mittwochnachmittag geschlossen."',
       `4. ${TRUE_FALSE_RULE}`,

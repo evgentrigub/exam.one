@@ -49,7 +49,12 @@
           <span v-if="busy" class="loading loading-spinner loading-xs" />
           {{ busy ? $t('settings.aiKeyChecking') : $t('settings.aiKeySave') }}
         </button>
-        <button v-if="replacing" type="button" class="btn btn-ghost rounded-field" @click="cancelReplace">
+        <button
+          v-if="replacing"
+          type="button"
+          class="btn btn-ghost rounded-field"
+          @click="cancelReplace"
+        >
           {{ $t('settings.aiKeyCancel') }}
         </button>
       </div>
@@ -59,7 +64,9 @@
       <span v-if="error" class="flex items-center gap-1.5 text-sm text-error" role="alert">
         <AlertCircle :size="14" /> {{ error }}
       </span>
-      <span class="text-xs text-base-content/50 ml-auto">{{ $t('settings.aiKeyFrom', { hint }) }}</span>
+      <span class="text-xs text-base-content/50 ml-auto">{{
+        $t('settings.aiKeyFrom', { hint })
+      }}</span>
     </div>
   </div>
 </template>

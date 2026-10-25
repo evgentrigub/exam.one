@@ -1,8 +1,7 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from './generated/prisma/client'
 
-const DEFAULT_DATABASE_URL =
-  'postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public'
+const DEFAULT_DATABASE_URL = 'postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public'
 
 export function databaseUrl(): string {
   return process.env['DATABASE_URL'] ?? DEFAULT_DATABASE_URL

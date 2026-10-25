@@ -29,19 +29,28 @@ import { QUEUE_NAMES } from './queues'
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const url = new URL(config.getOrThrow<string>('app.REDIS_URL'))
-        return { connection: {
-          host: url.hostname, port: Number(url.port || 6379),
-          ...(url.username ? { username: decodeURIComponent(url.username) } : {}),
-          ...(url.password ? { password: decodeURIComponent(url.password) } : {}),
-          db: Number(url.pathname.slice(1) || 0),
-          ...(url.protocol === 'rediss:' ? { tls: {} } : {}),
-          maxRetriesPerRequest: null,
-        } }
+        return {
+          connection: {
+            host: url.hostname,
+            port: Number(url.port || 6379),
+            ...(url.username ? { username: decodeURIComponent(url.username) } : {}),
+            ...(url.password ? { password: decodeURIComponent(url.password) } : {}),
+            db: Number(url.pathname.slice(1) || 0),
+            ...(url.protocol === 'rediss:' ? { tls: {} } : {}),
+            maxRetriesPerRequest: null,
+          },
+        }
       },
     }),
     ...Object.values(QUEUE_NAMES).map(name => BullModule.registerQueue({ name })),
-    BullBoardModule.forRoot({ route: '/admin/queues', adapter: ExpressAdapter, middleware: protectBoard }),
-    ...Object.values(QUEUE_NAMES).map(name => BullBoardModule.forFeature({ name, adapter: BullMQAdapter })),
+    BullBoardModule.forRoot({
+      route: '/admin/queues',
+      adapter: ExpressAdapter,
+      middleware: protectBoard,
+    }),
+    ...Object.values(QUEUE_NAMES).map(name =>
+      BullBoardModule.forFeature({ name, adapter: BullMQAdapter })
+    ),
   ],
   controllers: [JobsController],
   providers: [
@@ -49,7 +58,8 @@ import { QUEUE_NAMES } from './queues'
     BackgroundJobsService,
     JobReconcilerService,
     ...(process.env['JOBS_WORKER_ENABLED'] === 'false'
-      ? [] : [ListeningAudioProcessor, ExerciseGenerationProcessor, MockExamProcessor]),
+      ? []
+      : [ListeningAudioProcessor, ExerciseGenerationProcessor, MockExamProcessor]),
   ],
   exports: [JobEventsService, BackgroundJobsService],
 })

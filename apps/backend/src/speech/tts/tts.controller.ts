@@ -1,5 +1,10 @@
 import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common'
-import { ApiCookieAuth, ApiOperation, ApiResponse as ApiResponseDoc, ApiTags } from '@nestjs/swagger'
+import {
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse as ApiResponseDoc,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Throttle } from '@nestjs/throttler'
 import type {
   AiResponse,
@@ -25,9 +30,14 @@ export class TtsController {
   @Get('health')
   @ApiOperation({
     summary: 'Check Kokoro TTS availability',
-    description: 'Pings the local or Docker Kokoro TTS service container to ensure synthesis endpoints are responsive.',
+    description:
+      'Pings the local or Docker Kokoro TTS service container to ensure synthesis endpoints are responsive.',
   })
-  @ApiResponseDoc({ status: 200, description: 'TTS service availability status', type: TtsHealthResponseDto })
+  @ApiResponseDoc({
+    status: 200,
+    description: 'TTS service availability status',
+    type: TtsHealthResponseDto,
+  })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   health(): Promise<AiResponse<TtsHealthData>> {
     return this.tts.health()
@@ -38,9 +48,14 @@ export class TtsController {
   @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @ApiOperation({
     summary: 'Synthesize listening WAVs and write them to the shared audio volume',
-    description: 'Generates speech WAV audio files for listening exercise segments and writes them to the persistent shared audio storage.',
+    description:
+      'Generates speech WAV audio files for listening exercise segments and writes them to the persistent shared audio storage.',
   })
-  @ApiResponseDoc({ status: 200, description: 'Generated audio paths or error message', type: GenerateListeningAudioResponseDto })
+  @ApiResponseDoc({
+    status: 200,
+    description: 'Generated audio paths or error message',
+    type: GenerateListeningAudioResponseDto,
+  })
   @ApiResponseDoc({ status: 400, description: 'Invalid exercise payload', type: ApiErrorDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   generateListeningAudio(
@@ -54,9 +69,14 @@ export class TtsController {
   @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @ApiOperation({
     summary: 'Delete generated listening audio directories',
-    description: 'Purges generated audio directories and files for the specified exercise IDs from storage.',
+    description:
+      'Purges generated audio directories and files for the specified exercise IDs from storage.',
   })
-  @ApiResponseDoc({ status: 200, description: 'Count of deleted items or error message', type: DeleteListeningAudioResponseDto })
+  @ApiResponseDoc({
+    status: 200,
+    description: 'Count of deleted items or error message',
+    type: DeleteListeningAudioResponseDto,
+  })
   @ApiResponseDoc({ status: 400, description: 'Invalid exercise IDs', type: ApiErrorDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   deleteListeningAudio(

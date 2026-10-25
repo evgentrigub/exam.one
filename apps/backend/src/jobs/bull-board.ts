@@ -15,9 +15,15 @@ export function protectBoard(request: Request, response: Response, next: NextFun
     return
   }
   const header = request.headers.authorization ?? ''
-  const decoded = header.startsWith('Basic ') ? Buffer.from(header.slice(6), 'base64').toString('utf8') : ''
+  const decoded = header.startsWith('Basic ')
+    ? Buffer.from(header.slice(6), 'base64').toString('utf8')
+    : ''
   const separator = decoded.indexOf(':')
-  if (separator < 0 || !equal(decoded.slice(0, separator), expectedUser) || !equal(decoded.slice(separator + 1), expectedPassword)) {
+  if (
+    separator < 0 ||
+    !equal(decoded.slice(0, separator), expectedUser) ||
+    !equal(decoded.slice(separator + 1), expectedPassword)
+  ) {
     response.setHeader('WWW-Authenticate', 'Basic realm="Queues"')
     response.sendStatus(401)
     return

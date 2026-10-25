@@ -56,7 +56,10 @@ export const goetheDeA1: ExamPack = {
   // as `EXAM_ONLY`, keeping them out of the practice catalogs.
   seedExercises: {
     reading: [...readingA1Seeds, ...mockReadingA1Seeds] as unknown as Record<string, unknown>[],
-    listening: [...listeningA1Seeds, ...mockListeningA1Seeds] as unknown as Record<string, unknown>[],
+    listening: [...listeningA1Seeds, ...mockListeningA1Seeds] as unknown as Record<
+      string,
+      unknown
+    >[],
     writing: [...writingA1Seeds, ...mockWritingA1Seeds] as unknown as Record<string, unknown>[],
     speaking: [...speakingA1Seeds, ...mockSpeakingA1Seeds] as unknown as Record<string, unknown>[],
   },

@@ -1,5 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsArray, IsIn, IsInt, IsNotEmpty, IsString, Max, MaxLength, Min, ValidateNested, ArrayMaxSize, ArrayMinSize } from 'class-validator'
+import {
+  IsArray,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  ValidateNested,
+  ArrayMaxSize,
+  ArrayMinSize,
+} from 'class-validator'
 import { Type } from 'class-transformer'
 
 export class EnqueueAudioDto {

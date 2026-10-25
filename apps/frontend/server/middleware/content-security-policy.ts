@@ -3,7 +3,10 @@
 // into the image, so it is assembled per request from the runtime config instead.
 function apiConnectSources(apiUrl: string): string {
   const api = new URL(apiUrl)
-  const loopback = api.hostname === 'localhost' ? `${api.protocol}//127.0.0.1${api.port ? `:${api.port}` : ''}` : ''
+  const loopback =
+    api.hostname === 'localhost'
+      ? `${api.protocol}//127.0.0.1${api.port ? `:${api.port}` : ''}`
+      : ''
   return [api.origin, loopback].filter(Boolean).join(' ')
 }
 

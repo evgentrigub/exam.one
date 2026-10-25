@@ -18,7 +18,10 @@ export const writingA1Seeds: WritingExercise[] = [
     createdAt: '2026-09-27',
     description: 'Ihr Freund meldet sich und seine Frau für einen Deutschkurs an.',
     task: 'Ihr Freund, Karim Haddad, kommt aus Marokko und wohnt seit einer Woche in Graz. Er ist Koch und arbeitet am Vormittag im Restaurant. Er möchte mit seiner Frau Lina einen Deutschkurs an der Volkshochschule machen. Seine Handynummer ist 0664 318 27 50.',
-    requirements: ['Lesen Sie die Situation.', 'Ergänzen Sie die fünf fehlenden Angaben im Formular.'],
+    requirements: [
+      'Lesen Sie die Situation.',
+      'Ergänzen Sie die fünf fehlenden Angaben im Formular.',
+    ],
     form: {
       title: 'Volkshochschule Graz – Anmeldung Deutschkurs A1',
       rows: [
@@ -71,7 +74,10 @@ export const mockWritingA1Seeds: WritingExercise[] = [
     examOnly: true,
     description: 'Ihre Freundin meldet ihre Tochter in einem Sportverein an.',
     task: 'Ihre Freundin, Elena Petrova, wohnt in Kiel, Hafenstraße 14. Ihre Tochter Mila ist 9 Jahre alt und möchte schwimmen lernen. Mila hat nur am Nachmittag Zeit, am Vormittag ist sie in der Schule. Frau Petrova bezahlt den Kurs mit Karte. Ihre E-Mail-Adresse ist elena.petrova@web.de.',
-    requirements: ['Lesen Sie die Situation.', 'Ergänzen Sie die fünf fehlenden Angaben im Formular.'],
+    requirements: [
+      'Lesen Sie die Situation.',
+      'Ergänzen Sie die fünf fehlenden Angaben im Formular.',
+    ],
     form: {
       title: 'Sportverein Kiel e. V. – Anmeldung Kinderkurs',
       rows: [

@@ -12,20 +12,20 @@ No official task text, image or recording is bundled; every seed is original.
 - Scope: full supported practice of all 13 tareas (4 reading, 4 listening, 2 writing, 3 speaking), as solo practice
   with the adaptations below, and mock exams (see below).
 - Sources, linked from https://examenes.cervantes.es/es/dele/examenes/a2 and checked 2026-09-29:
-  - **[G]** *Guía del examen DELE A2*, © 2022, NIPO 503-14-007-X, 29 pp. (`DELE_A2_v2020_Guía_de_examen_0.pdf`).
+  - **[G]** _Guía del examen DELE A2_, © 2022, NIPO 503-14-007-X, 29 pp. (`DELE_A2_v2020_Guía_de_examen_0.pdf`).
     The © 2014 guide describes the old format and was not used.
-  - **[E]** *DELE A2 Especificaciones*, 4 pp. (`Especificaciones_DELE_A2_2020.pdf`).
-  - **[M]** *Modelo 0* (exam code 00), valid from the February 2020 session (`DELE-A2_v2020_Modelo0_0.pdf`).
-  - Topic scope: *Plan Curricular del Instituto Cervantes*, Nociones específicas A1–A2 (cvc.cervantes.es).
+  - **[E]** _DELE A2 Especificaciones_, 4 pp. (`Especificaciones_DELE_A2_2020.pdf`).
+  - **[M]** _Modelo 0_ (exam code 00), valid from the February 2020 session (`DELE-A2_v2020_Modelo0_0.pdf`).
+  - Topic scope: _Plan Curricular del Instituto Cervantes_, Nociones específicas A1–A2 (cvc.cervantes.es).
 
 ## Official structure and points
 
-| Prueba | Time | Tareas | Items | Points |
-| --- | --- | --- | --- | --- |
-| 1 Comprensión de lectura | 60 min | 4 | 25 (5 / 8 / 6 / 6) | 25 |
-| 2 Comprensión auditiva | 40 min, every text heard twice | 4 | 25 (6 / 6 / 6 / 7) | 25 |
-| 3 Expresión e interacción escritas | 45 min | 2 | open | 25 |
-| 4 Expresión e interacción orales | 12 min + 12 min preparation | 3 | open | 25 |
+| Prueba                             | Time                           | Tareas | Items              | Points |
+| ---------------------------------- | ------------------------------ | ------ | ------------------ | ------ |
+| 1 Comprensión de lectura           | 60 min                         | 4      | 25 (5 / 8 / 6 / 6) | 25     |
+| 2 Comprensión auditiva             | 40 min, every text heard twice | 4      | 25 (6 / 6 / 6 / 7) | 25     |
+| 3 Expresión e interacción escritas | 45 min                         | 2      | open               | 25     |
+| 4 Expresión e interacción orales   | 12 min + 12 min preparation    | 3      | open               | 25     |
 
 - G p. 6: 100 points, each prueba 25%. G p. 27: Grupo 1 = Lectura + Escritura, Grupo 2 = Auditiva + Oral (50 each);
   **Apto** needs at least 30 in each group. There is no overall pass mark.
@@ -35,39 +35,39 @@ No official task text, image or recording is bundled; every seed is original.
   Writing: both tareas 50% each, two examiners averaged. Speaking: the calificador (60%) rates T1 + T2 (25% each) and
   T3 (50%); the entrevistador (40%) gives one global rating. Fluency and pronunciation sit inside the Uso descriptors.
 
-| Tarea | Official task | Items |
-| --- | --- | --- |
-| L 1 | Personal letter or email, 250–300 words; 3 options (G p. 8, E p. 1) | 5 |
-| L 2 | 8 ads / notices / posts, 50–80 words each; 3 options | 8 |
-| L 3 | 3 texts of 100–120 words; match statements to A / B / C | 6 |
-| L 4 | Narrative text (biography, diary, blog, story, news, guide), 375–425 words; 3 options | 6 |
-| A 1 | 6 face-to-face conversations, 50–80 words; **3 picture options** (G p. 10, E p. 2) | 6 |
-| A 2 | 6 radio pieces, 40–60 words; 3 options | 6 |
-| A 3 | 1 conversation, 225–275 words; match to the man / the woman / *ninguno de los dos* | 6 |
-| A 4 | 7 messages, 30–50 words; match to 7 of 10 statements (3 distractors) | 7 |
-| E 1 | Reply to a message of 35–40 words; note, postcard, message or email; **60–70 words** (G p. 12, M) | — |
-| E 2 | **70–80 words**; choose Opción A (everyday topic) or Opción B (biography or story from photos or data) | — |
-| O 1 | Presentation on a topic, about 5 points; choice of 2 cards; 2–3 min monologue (G p. 17, M) | — |
-| O 2 | Photo description with guide questions; choice of 2 photos; 2–3 min monologue | — |
-| O 3 | Role-play with the entrevistador in a situation linked to the T2 photo; 3–4 min | — |
+| Tarea | Official task                                                                                          | Items |
+| ----- | ------------------------------------------------------------------------------------------------------ | ----- |
+| L 1   | Personal letter or email, 250–300 words; 3 options (G p. 8, E p. 1)                                    | 5     |
+| L 2   | 8 ads / notices / posts, 50–80 words each; 3 options                                                   | 8     |
+| L 3   | 3 texts of 100–120 words; match statements to A / B / C                                                | 6     |
+| L 4   | Narrative text (biography, diary, blog, story, news, guide), 375–425 words; 3 options                  | 6     |
+| A 1   | 6 face-to-face conversations, 50–80 words; **3 picture options** (G p. 10, E p. 2)                     | 6     |
+| A 2   | 6 radio pieces, 40–60 words; 3 options                                                                 | 6     |
+| A 3   | 1 conversation, 225–275 words; match to the man / the woman / _ninguno de los dos_                     | 6     |
+| A 4   | 7 messages, 30–50 words; match to 7 of 10 statements (3 distractors)                                   | 7     |
+| E 1   | Reply to a message of 35–40 words; note, postcard, message or email; **60–70 words** (G p. 12, M)      | —     |
+| E 2   | **70–80 words**; choose Opción A (everyday topic) or Opción B (biography or story from photos or data) | —     |
+| O 1   | Presentation on a topic, about 5 points; choice of 2 cards; 2–3 min monologue (G p. 17, M)             | —     |
+| O 2   | Photo description with guide questions; choice of 2 photos; 2–3 min monologue                          | —     |
+| O 3   | Role-play with the entrevistador in a situation linked to the T2 photo; 3–4 min                        | —     |
 
 ## Practice mapping and adaptations
 
-| Part | Format / screen | Adaptation |
-| --- | --- | --- |
-| Reading 1 | `selection`, 5 × 3 | None. |
-| Reading 2 | `selection`, the 8 texts labelled "Texto 1 … 8" in one `content`, questions start "Texto n:" | None. |
-| Reading 3 | `matching`, every question carries `["Texto A", "Texto B", "Texto C"]`, reuse allowed | None; each text answers two statements. |
-| Reading 4 | `selection`, 6 × 3 | None. |
-| Listening 1 | `selection`, one recording per item, labelled `Hombre:` / `Mujer:` | **Pictures → short text labels.** |
-| Listening 2 | `selection`, one recording per item, one `Locutor:` / `Locutora:` label that picks the voice | None. |
-| Listening 3 | `matching` (`person` + shared bank): options are the two first names and "Ninguno de los dos"; `person` holds the statement | The answer sheet's columns become a dropdown per statement. |
-| Listening 4 | `matching` (`person` + shared bank), 10 statements, no reuse; seven messages in one transcript with a speaker label each, `person` "Mensaje n" | The seven messages are one recording, replayed as a whole. |
-| Writing 1 | `freeform`, one field, 60–70 words | None. |
-| Writing 2 | `freeform`, one field, 70–80 words, `topicType` `opcion-a` or `opcion-b` | **No in-task choice: each exercise is one option.** Opción B gives dated facts in words instead of photos. |
-| Speaking 1 | monologue with 5 keyword points | No choice of card: each exercise is one topic. |
-| Speaking 2 | monologue with 5 guide questions | **The photo → a written scene** in `theme` ("Escena: …"). |
-| Speaking 3 | `word-cards`: 3 examiner cards (`speaker: 'examiner'`) and the learner's own question card | **Solo role-play** with fixed examiner lines; the situation is its own exercise, not linked to a T2 exercise. |
+| Part        | Format / screen                                                                                                                                | Adaptation                                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Reading 1   | `selection`, 5 × 3                                                                                                                             | None.                                                                                                         |
+| Reading 2   | `selection`, the 8 texts labelled "Texto 1 … 8" in one `content`, questions start "Texto n:"                                                   | None.                                                                                                         |
+| Reading 3   | `matching`, every question carries `["Texto A", "Texto B", "Texto C"]`, reuse allowed                                                          | None; each text answers two statements.                                                                       |
+| Reading 4   | `selection`, 6 × 3                                                                                                                             | None.                                                                                                         |
+| Listening 1 | `selection`, one recording per item, labelled `Hombre:` / `Mujer:`                                                                             | **Pictures → short text labels.**                                                                             |
+| Listening 2 | `selection`, one recording per item, one `Locutor:` / `Locutora:` label that picks the voice                                                   | None.                                                                                                         |
+| Listening 3 | `matching` (`person` + shared bank): options are the two first names and "Ninguno de los dos"; `person` holds the statement                    | The answer sheet's columns become a dropdown per statement.                                                   |
+| Listening 4 | `matching` (`person` + shared bank), 10 statements, no reuse; seven messages in one transcript with a speaker label each, `person` "Mensaje n" | The seven messages are one recording, replayed as a whole.                                                    |
+| Writing 1   | `freeform`, one field, 60–70 words                                                                                                             | None.                                                                                                         |
+| Writing 2   | `freeform`, one field, 70–80 words, `topicType` `opcion-a` or `opcion-b`                                                                       | **No in-task choice: each exercise is one option.** Opción B gives dated facts in words instead of photos.    |
+| Speaking 1  | monologue with 5 keyword points                                                                                                                | No choice of card: each exercise is one topic.                                                                |
+| Speaking 2  | monologue with 5 guide questions                                                                                                               | **The photo → a written scene** in `theme` ("Escena: …").                                                     |
+| Speaking 3  | `word-cards`: 3 examiner cards (`speaker: 'examiner'`) and the learner's own question card                                                     | **Solo role-play** with fixed examiner lines; the situation is its own exercise, not linked to a T2 exercise. |
 
 - **Scoring.** Every writing tarea and speaking tarea is marked on both official scales, `taskCompletion` (Cumplimiento
   de la tarea) and `language` (Uso de la lengua), 0–3 each, half points allowed: 6 raw points per tarea, 12 for

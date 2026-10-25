@@ -72,7 +72,11 @@
             :entries="formEntries"
             :teil="currentTopic?.testingPart ?? 1"
           />
-          <WritingReviewDetails v-else :review="reviewData" :teil="currentTopic?.testingPart ?? 1" />
+          <WritingReviewDetails
+            v-else
+            :review="reviewData"
+            :teil="currentTopic?.testingPart ?? 1"
+          />
         </div>
 
         <pre
@@ -181,7 +185,11 @@ const formEntries = computed(() => {
   const topic = currentTopic.value
   if (!topic || !isFormFillTopic(topic)) return null
   const values = parseFormValues(getLatestSubmission(props.topicId)?.content)
-  return blankRows(topic).map(row => ({ id: row.field, label: row.label, answer: values[row.field] ?? '' }))
+  return blankRows(topic).map(row => ({
+    id: row.field,
+    label: row.label,
+    answer: values[row.field] ?? '',
+  }))
 })
 
 const selectedView = ref<'review' | 'answer' | 'task'>('review')

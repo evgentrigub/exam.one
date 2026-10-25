@@ -11,21 +11,21 @@ makes. No official task text, image or recording is bundled; every seed is origi
 - Scope: full supported practice of all 14 parts, as solo practice with the adaptations below, and mock exams
   (see below).
 - Sources, checked 2026-09-29 (cambridgeenglish.org):
-  - *A2 Key Handbook for teachers* (2024, ENG/04485-60/V3/MAY24) and the edition for exams from 2020
+  - _A2 Key Handbook for teachers_ (2024, ENG/04485-60/V3/MAY24) and the edition for exams from 2020
     (CER/6178/V1/FEB19): paper structure, task types, marking, writing scale, speaking format and scales.
-  - *A2 Key for Schools Handbook for teachers* (CER/6188/V4/JUL21): identical format.
-  - *The Cambridge English Scale explained* (ENG/36303/V1/NOV23): raw marks per skill and practice-test conversions.
-  - *Understanding the Statement of Results, A2 Key* (ENG/10052a/V2/MAY26): Scale bands and grades.
-  - *Information for candidates, A2 Key for Schools* (ENG/25835/V1/MAY26): spelling and case notes.
-  - *Assessing Speaking Performance – Level A2* (2019) and the *A2 Key Vocabulary List* (August 2025).
+  - _A2 Key for Schools Handbook for teachers_ (CER/6188/V4/JUL21): identical format.
+  - _The Cambridge English Scale explained_ (ENG/36303/V1/NOV23): raw marks per skill and practice-test conversions.
+  - _Understanding the Statement of Results, A2 Key_ (ENG/10052a/V2/MAY26): Scale bands and grades.
+  - _Information for candidates, A2 Key for Schools_ (ENG/25835/V1/MAY26): spelling and case notes.
+  - _Assessing Speaking Performance – Level A2_ (2019) and the _A2 Key Vocabulary List_ (August 2025).
 
 ## Official structure and marks
 
-| Paper | Time | Parts | Raw marks |
-| --- | --- | --- | --- |
-| Reading & Writing | 60 min (≈40 reading, 20 writing) | 7 | Reading 30 (1 per item) + Writing 30 (2 × 15) |
-| Listening | ≈30 min, every recording heard twice | 5 | 25 (1 per item) |
-| Speaking | 8–10 min per pair, two examiners | 2 | 45 = (GV + P + IC) × 2 + GA × 3, half marks allowed |
+| Paper             | Time                                 | Parts | Raw marks                                           |
+| ----------------- | ------------------------------------ | ----- | --------------------------------------------------- |
+| Reading & Writing | 60 min (≈40 reading, 20 writing)     | 7     | Reading 30 (1 per item) + Writing 30 (2 × 15)       |
+| Listening         | ≈30 min, every recording heard twice | 5     | 25 (1 per item)                                     |
+| Speaking          | 8–10 min per pair, two examiners     | 2     | 45 = (GV + P + IC) × 2 + GA × 3, half marks allowed |
 
 - Each skill is 25 % of the result. Cambridge English Scale: 140–150 Grade A (B1), 133–139 Grade B, 120–132 Grade C,
   100–119 A1 certificate. Practice-test guide (raw needed for 120 / 140): Reading 20 / 28, Writing 18 / 26,
@@ -36,24 +36,24 @@ makes. No official task text, image or recording is bundled; every seed is origi
 - Spelling must be correct in Reading Part 5. In Listening Part 2, spelled-out words and common words must be
   correctly spelled. US spelling is accepted when consistent. Case does not matter.
 
-| Part | Task | Items |
-| --- | --- | --- |
-| R1 | 6 short real-world texts, 3-option multiple choice | 6 |
-| R2 | 3 short texts, 7 questions matched to A/B/C | 7 |
-| R3 | one longer text, 3-option multiple choice | 5 |
-| R4 | factual text, multiple-choice cloze (3 words per gap) | 6 |
-| R5 | email, open cloze (one word per gap) | 6 |
-| W6 | email or note, 25+ words, 3 content points | 15 marks |
-| W7 | picture story, 35+ words, 3 pictures | 15 marks |
-| L1 | 5 short dialogues, 3 picture options | 5 |
-| L2 | monologue, complete 5 notes (word, number, date, time) | 5 |
-| L3 | longer dialogue, 3-option multiple choice | 5 |
-| L4 | 5 short monologues or dialogues, 3-option multiple choice | 5 |
-| L5 | longer dialogue, match 5 items to 8 options (A–H) | 5 |
-| S1 | interlocutor questions: personal, then a topic, then "tell me about…" (3–4 min) | — |
-| S2 | pictures discussion with the partner, follow-up questions (5–6 min) | — |
+| Part | Task                                                                            | Items    |
+| ---- | ------------------------------------------------------------------------------- | -------- |
+| R1   | 6 short real-world texts, 3-option multiple choice                              | 6        |
+| R2   | 3 short texts, 7 questions matched to A/B/C                                     | 7        |
+| R3   | one longer text, 3-option multiple choice                                       | 5        |
+| R4   | factual text, multiple-choice cloze (3 words per gap)                           | 6        |
+| R5   | email, open cloze (one word per gap)                                            | 6        |
+| W6   | email or note, 25+ words, 3 content points                                      | 15 marks |
+| W7   | picture story, 35+ words, 3 pictures                                            | 15 marks |
+| L1   | 5 short dialogues, 3 picture options                                            | 5        |
+| L2   | monologue, complete 5 notes (word, number, date, time)                          | 5        |
+| L3   | longer dialogue, 3-option multiple choice                                       | 5        |
+| L4   | 5 short monologues or dialogues, 3-option multiple choice                       | 5        |
+| L5   | longer dialogue, match 5 items to 8 options (A–H)                               | 5        |
+| S1   | interlocutor questions: personal, then a topic, then "tell me about…" (3–4 min) | —        |
+| S2   | pictures discussion with the partner, follow-up questions (5–6 min)             | —        |
 
-Conflicts resolved in favour of the handbooks: *Information for candidates* says Listening Part 2 answers are "1 or 2
+Conflicts resolved in favour of the handbooks: _Information for candidates_ says Listening Part 2 answers are "1 or 2
 words" (handbook: one word, a number, a date or a time; practice allows up to 3 words so "half past six" fits), and
 that each Listening Part 4 recording has one speaker (handbook: monologues or dialogues).
 
@@ -98,13 +98,14 @@ that each Listening Part 4 recording has one speaker (handbook: monologues or di
   adaptation:** the 60-minute Reading & Writing paper is split 40 / 20, the handbook's suggestion, with a timer per
   module. Every recording plays twice.
 - **Scoring** stays in raw marks per module (30 / 30 / 25 / 30). The result is reported on the **Cambridge English
-  Scale** through `rules.scale`: each skill's raw marks convert through the practice-test anchors of *The Cambridge
-  English Scale explained* (raw for Scale 82 / 100 / 120 / 140 — Reading 7 / 13 / 20 / 28, Writing 8 / 12 / 18 / 26,
+  Scale** through `rules.scale`: each skill's raw marks convert through the practice-test anchors of _The Cambridge
+  English Scale explained_ (raw for Scale 82 / 100 / 120 / 140 — Reading 7 / 13 / 20 / 28, Writing 8 / 12 / 18 / 26,
   Listening 6 / 11 / 17 / 23, Speaking 10 / 18 / 27 / 41 of 45 — and the raw maximum at 150), interpolated linearly;
   the overall score is their rounded average. Grade A 140–150 (B1), B 133–139, C 120–132 (pass), A1 100–119, no
   certificate below. **Practice adaptation:** practice speaking has no Pronunciation scale, so its 30 marks are
   scaled to 45 before the conversion and the result is labelled an estimate; speaking is provisional.
 - **Not modelled:** a shared Reading & Writing clock, the answer-transfer time, the paired speaking test.
+
 ## Decisions and gaps
 
 - Chosen with the user on 2026-09-29: build the gap-fill format and UI rather than drop R5/L2; add British English

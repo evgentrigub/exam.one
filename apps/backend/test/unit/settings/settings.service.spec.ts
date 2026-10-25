@@ -62,7 +62,9 @@ describe('SettingsService', () => {
   })
 
   it('ignores a requested examLevel and keeps the current pack', async () => {
-    prisma.setting.findUnique.mockResolvedValue(makeSetting({ packId: 'certpol-pl-a2', targetLanguage: 'pl' }))
+    prisma.setting.findUnique.mockResolvedValue(
+      makeSetting({ packId: 'certpol-pl-a2', targetLanguage: 'pl' })
+    )
     prisma.setting.upsert.mockResolvedValue(makeSetting())
 
     await service.updateMe(user, { examLevel: 'C1' })

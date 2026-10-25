@@ -85,7 +85,9 @@ describe('Cambridge A2 Key mock exam', () => {
       const p = part(skill, Number(payload['testingPart']))
       expect(payload['examOnly']).toBe(true)
       expect(() => p.validate!(structuredClone(payload), p.runtime!)).not.toThrow()
-      expect(() => validateView(p.adapter!.project(structuredClone(payload)), p.runtime!)).not.toThrow()
+      expect(() =>
+        validateView(p.adapter!.project(structuredClone(payload)), p.runtime!)
+      ).not.toThrow()
     }
   })
 
@@ -115,9 +117,16 @@ describe('Cambridge A2 Key mock exam', () => {
   })
 
   it('creates generated sets from blank draft content and from pipeline content', () => {
-    expect(cambridgeEnA2.createMockSet!(2, BLANK)).toMatchObject({ id: 'cambridge-a2-set-2', generated: true })
+    expect(cambridgeEnA2.createMockSet!(2, BLANK)).toMatchObject({
+      id: 'cambridge-a2-set-2',
+      generated: true,
+    })
     const generated = cambridgeEnA2.createMockSet!(3, set1.content)
-    expect(generated).toMatchObject({ id: 'cambridge-a2-set-3', generated: true, title: 'Cambridge A2 Key · Set 3' })
+    expect(generated).toMatchObject({
+      id: 'cambridge-a2-set-3',
+      generated: true,
+      title: 'Cambridge A2 Key · Set 3',
+    })
     expect(generated.modules).toEqual(set1.modules)
     expect(generated.rules).toEqual(set1.rules)
   })
@@ -144,25 +153,51 @@ describe('Cambridge A2 Key mock exam', () => {
     })
 
     it('averages the four skills into a rounded overall score and band', () => {
-      const result = evaluateMockScale(scale, { reading: 20, writing: 18, listening: 17, speaking: 18 }, MAXIMA)
+      const result = evaluateMockScale(
+        scale,
+        { reading: 20, writing: 18, listening: 17, speaking: 18 },
+        MAXIMA
+      )
       expect(result).toMatchObject({ overall: 120, band: 'gradeC', passed: true })
-      const strong = evaluateMockScale(scale, { reading: 30, writing: 26, listening: 23, speaking: 28 }, MAXIMA)
+      const strong = evaluateMockScale(
+        scale,
+        { reading: 30, writing: 26, listening: 23, speaking: 28 },
+        MAXIMA
+      )
       expect(strong.band).toBe('gradeA')
-      const weak = evaluateMockScale(scale, { reading: 10, writing: 10, listening: 9, speaking: 10 }, MAXIMA)
+      const weak = evaluateMockScale(
+        scale,
+        { reading: 10, writing: 10, listening: 9, speaking: 10 },
+        MAXIMA
+      )
       expect(weak).toMatchObject({ band: null, passed: false })
     })
 
     it('waits for every skill before it reports an overall score', () => {
-      const pending = evaluateMockScale(scale, { reading: 30, writing: null, listening: 25, speaking: 30 }, MAXIMA)
+      const pending = evaluateMockScale(
+        scale,
+        { reading: 30, writing: null, listening: 25, speaking: 30 },
+        MAXIMA
+      )
       expect(pending).toMatchObject({ overall: null, band: null, passed: false })
       expect(pending.skills.reading).toBe(150)
     })
 
     it('decides the pass on the Scale, not on raw points', () => {
-      const result = evaluateMockPass(set1.rules, { reading: 20, writing: 18, listening: 17, speaking: 18 }, MAXIMA)
+      const result = evaluateMockPass(
+        set1.rules,
+        { reading: 20, writing: 18, listening: 17, speaking: 18 },
+        MAXIMA
+      )
       expect(result.passed).toBe(true)
       expect(result.scale?.overall).toBe(120)
-      expect(evaluateMockPass(set1.rules, { reading: 19, writing: 17, listening: 16, speaking: 17 }, MAXIMA).passed).toBe(false)
+      expect(
+        evaluateMockPass(
+          set1.rules,
+          { reading: 19, writing: 17, listening: 16, speaking: 17 },
+          MAXIMA
+        ).passed
+      ).toBe(false)
     })
   })
 
@@ -170,7 +205,13 @@ describe('Cambridge A2 Key mock exam', () => {
     const plain: MockExamOverviewInput = { overallPoints: 0, modules: [] }
     const scaled: MockExamOverviewInput = {
       ...plain,
-      scale: { name: 'Cambridge English Scale', overall: 124, band: 'gradeC', pass: 120, skills: { reading: 130 } },
+      scale: {
+        name: 'Cambridge English Scale',
+        overall: 124,
+        band: 'gradeC',
+        pass: 120,
+        skills: { reading: 130 },
+      },
     }
     expect(cambridgeEnA2.mockOverview!.system).toContain('Cambridge A2 Key')
     expect(cambridgeEnA2.mockOverview!.assemble('en', scaled)).toContain('reported on the scale')
@@ -182,16 +223,21 @@ describe('Cambridge A2 Key mock exam', () => {
   })
 
   it('reviews a Cambridge result through the Cambridge overview', async () => {
-    const complete = jest.fn().mockResolvedValue(
-      JSON.stringify({ summary: 'Good', strengths: [], focusAreas: [], nextSteps: ['Writing'] })
-    )
+    const complete = jest
+      .fn()
+      .mockResolvedValue(
+        JSON.stringify({ summary: 'Good', strengths: [], focusAreas: [], nextSteps: ['Writing'] })
+      )
     const llm = {
       hasConfig: async () => true,
       complete,
       missingKeyError: () => 'no key',
     } as unknown as LlmService
     const result = await packContext.run({ packId: 'cambridge-en-a2' }, () =>
-      new PackAiService(llm).reviewMockFor({ result: { overallPoints: 80, modules: [] }, outputLanguage: 'en' })
+      new PackAiService(llm).reviewMockFor({
+        result: { overallPoints: 80, modules: [] },
+        outputLanguage: 'en',
+      })
     )
     expect(result.error).toBeNull()
     expect(complete.mock.calls[0][0][0].content).toContain('Cambridge A2 Key')

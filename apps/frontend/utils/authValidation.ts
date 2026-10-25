@@ -25,9 +25,7 @@ export function validatePassword(value: string, t: TranslateFn): string {
 /** Returns a localized "required" message for `field` (already localized), or `''`. */
 export function validateRequired(value: string, t: TranslateFn, field?: string): string {
   if (value && value.trim()) return ''
-  return field
-    ? t('auth.validation.fieldRequired', { field })
-    : t('auth.validation.required')
+  return field ? t('auth.validation.fieldRequired', { field }) : t('auth.validation.required')
 }
 
 /** Password strength 0..3 */

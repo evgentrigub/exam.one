@@ -11,12 +11,29 @@ import { QUEUE_NAMES } from '../../../src/jobs/queues'
 const now = new Date('2026-01-01T00:00:00Z')
 function row(overrides: Partial<BackgroundJob> = {}): BackgroundJob {
   return {
-    id: 'job-1', userId: 'user-1', packId: 'goethe-de-a2', level: 'A2',
-    type: 'LISTENING_AUDIO', status: 'QUEUED', title: 'Audio', subtitle: null,
-    targetId: 'exercise-1', activeKey: 'user-1|goethe-de-a2|LISTENING_AUDIO|exercise-1',
-    input: { exerciseId: 'exercise-1' }, progress: { stage: 0, stagePercent: 0 },
-    checkpoint: {}, result: null, error: null, attempt: 0, revision: 0, seenAt: null,
-    emailAttemptedAt: null, createdAt: now, startedAt: null, finishedAt: null, updatedAt: now,
+    id: 'job-1',
+    userId: 'user-1',
+    packId: 'goethe-de-a2',
+    level: 'A2',
+    type: 'LISTENING_AUDIO',
+    status: 'QUEUED',
+    title: 'Audio',
+    subtitle: null,
+    targetId: 'exercise-1',
+    activeKey: 'user-1|goethe-de-a2|LISTENING_AUDIO|exercise-1',
+    input: { exerciseId: 'exercise-1' },
+    progress: { stage: 0, stagePercent: 0 },
+    checkpoint: {},
+    result: null,
+    error: null,
+    attempt: 0,
+    revision: 0,
+    seenAt: null,
+    emailAttemptedAt: null,
+    createdAt: now,
+    startedAt: null,
+    finishedAt: null,
+    updatedAt: now,
     ...overrides,
   }
 }
@@ -40,27 +57,43 @@ describe('BackgroundJobsService', () => {
   const user = makeUser()
 
   beforeEach(async () => {
-    prisma = { backgroundJob: {
-      findUnique: jest.fn(), findFirst: jest.fn(), count: jest.fn().mockResolvedValue(0),
-      create: jest.fn(), updateMany: jest.fn(), delete: jest.fn(), findMany: jest.fn(),
-      findUniqueOrThrow: jest.fn(),
-    } }
+    prisma = {
+      backgroundJob: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        count: jest.fn().mockResolvedValue(0),
+        create: jest.fn(),
+        updateMany: jest.fn(),
+        delete: jest.fn(),
+        findMany: jest.fn(),
+        findUniqueOrThrow: jest.fn(),
+      },
+    }
     queue = { add: jest.fn().mockResolvedValue(undefined), getJob: jest.fn() }
     events = { publish: jest.fn().mockResolvedValue(undefined) }
-    const module = await Test.createTestingModule({ providers: [
-      BackgroundJobsService,
-      { provide: PrismaService, useValue: prisma },
-      { provide: JobEventsService, useValue: events },
-      ...Object.values(QUEUE_NAMES).map(name => ({ provide: getQueueToken(name), useValue: queue })),
-    ] }).compile()
+    const module = await Test.createTestingModule({
+      providers: [
+        BackgroundJobsService,
+        { provide: PrismaService, useValue: prisma },
+        { provide: JobEventsService, useValue: events },
+        ...Object.values(QUEUE_NAMES).map(name => ({
+          provide: getQueueToken(name),
+          useValue: queue,
+        })),
+      ],
+    }).compile()
     service = module.get(BackgroundJobsService)
   })
 
   it('deduplicates active audio work across tabs', async () => {
     prisma.backgroundJob.findUnique.mockResolvedValue(row())
-    const result = await packContext.run({ packId: 'goethe-de-a2' }, () => service.enqueue(user, 'LISTENING_AUDIO', {
-      targetId: 'exercise-1', title: 'Audio', input: { exerciseId: 'exercise-1' },
-    }))
+    const result = await packContext.run({ packId: 'goethe-de-a2' }, () =>
+      service.enqueue(user, 'LISTENING_AUDIO', {
+        targetId: 'exercise-1',
+        title: 'Audio',
+        input: { exerciseId: 'exercise-1' },
+      })
+    )
     expect(result.id).toBe('job-1')
     expect(prisma.backgroundJob.create).not.toHaveBeenCalled()
     expect(queue.add).not.toHaveBeenCalled()
@@ -70,27 +103,45 @@ describe('BackgroundJobsService', () => {
     prisma.backgroundJob.findUnique.mockResolvedValueOnce(null)
     prisma.backgroundJob.create.mockResolvedValue(row())
     prisma.backgroundJob.findUniqueOrThrow.mockResolvedValue(row())
-    await packContext.run({ packId: 'goethe-de-a2' }, () => service.enqueue(user, 'LISTENING_AUDIO', {
-      targetId: 'exercise-1', title: 'Audio', input: { exerciseId: 'exercise-1' },
-    }))
+    await packContext.run({ packId: 'goethe-de-a2' }, () =>
+      service.enqueue(user, 'LISTENING_AUDIO', {
+        targetId: 'exercise-1',
+        title: 'Audio',
+        input: { exerciseId: 'exercise-1' },
+      })
+    )
     expect(prisma.backgroundJob.create).toHaveBeenCalled()
-    expect(queue.add).toHaveBeenCalledWith('LISTENING_AUDIO', { jobRowId: 'job-1', attempt: 0 },
-      expect.objectContaining({ jobId: 'job-1-0' }))
-    expect(events.publish).toHaveBeenCalledWith('user-1', expect.objectContaining({ type: 'upsert' }))
+    expect(queue.add).toHaveBeenCalledWith(
+      'LISTENING_AUDIO',
+      { jobRowId: 'job-1', attempt: 0 },
+      expect.objectContaining({ jobId: 'job-1-0' })
+    )
+    expect(events.publish).toHaveBeenCalledWith(
+      'user-1',
+      expect.objectContaining({ type: 'upsert' })
+    )
   })
 
   it('cannot return another user’s job', async () => {
     prisma.backgroundJob.findFirst.mockResolvedValue(null)
     await expect(service.owned('other-user', 'job-1')).rejects.toMatchObject({ status: 404 })
-    expect(prisma.backgroundJob.findFirst).toHaveBeenCalledWith({ where: { id: 'job-1', userId: 'other-user' } })
+    expect(prisma.backgroundJob.findFirst).toHaveBeenCalledWith({
+      where: { id: 'job-1', userId: 'other-user' },
+    })
   })
 
   it('rejects excessive active jobs before insertion', async () => {
     prisma.backgroundJob.findUnique.mockResolvedValue(null)
     prisma.backgroundJob.count.mockResolvedValue(5)
-    await expect(packContext.run({ packId: 'goethe-de-a2' }, () => service.enqueue(user, 'LISTENING_AUDIO', {
-      targetId: 'exercise-1', title: 'Audio', input: {},
-    }))).rejects.toMatchObject({ status: 429 })
+    await expect(
+      packContext.run({ packId: 'goethe-de-a2' }, () =>
+        service.enqueue(user, 'LISTENING_AUDIO', {
+          targetId: 'exercise-1',
+          title: 'Audio',
+          input: {},
+        })
+      )
+    ).rejects.toMatchObject({ status: 429 })
   })
 
   it('only completes the matching active attempt', async () => {
@@ -106,14 +157,19 @@ describe('BackgroundJobsService', () => {
   })
 
   it('marks completed jobs as fully done', async () => {
-    prisma.backgroundJob.findUnique.mockResolvedValue(row({
-      status: 'RUNNING', type: 'EXERCISE_GENERATION',
-      progress: { stage: 1, stagePercent: 50, items: [{ label: 'reading:1', done: false }] },
-    }))
+    prisma.backgroundJob.findUnique.mockResolvedValue(
+      row({
+        status: 'RUNNING',
+        type: 'EXERCISE_GENERATION',
+        progress: { stage: 1, stagePercent: 50, items: [{ label: 'reading:1', done: false }] },
+      })
+    )
     prisma.backgroundJob.updateMany.mockResolvedValue({ count: 1 })
     await service.complete('job-1', 0, { exerciseIds: ['e'] })
     expect(prisma.backgroundJob.updateMany.mock.calls[0]![0].data.progress).toEqual({
-      stage: 2, stagePercent: 100, items: [{ label: 'reading:1', done: true }],
+      stage: 2,
+      stagePercent: 100,
+      items: [{ label: 'reading:1', done: true }],
     })
   })
 
@@ -121,18 +177,24 @@ describe('BackgroundJobsService', () => {
     prisma.backgroundJob.updateMany.mockResolvedValue({ count: 0 })
     prisma.backgroundJob.findUnique.mockResolvedValue(row({ status: 'CANCEL_REQUESTED' }))
     await expect(service.markRunning('job-1', 0)).resolves.toBeNull()
-    expect(prisma.backgroundJob.updateMany).toHaveBeenLastCalledWith(expect.objectContaining({
-      data: expect.objectContaining({ status: 'CANCELLED' }),
-    }))
+    expect(prisma.backgroundJob.updateMany).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: 'CANCELLED' }),
+      })
+    )
   })
 
   it('records a cancel when work finishes after the cancel request', async () => {
     prisma.backgroundJob.findUnique.mockResolvedValue(row({ status: 'CANCEL_REQUESTED' }))
-    prisma.backgroundJob.updateMany.mockResolvedValueOnce({ count: 0 }).mockResolvedValue({ count: 1 })
+    prisma.backgroundJob.updateMany
+      .mockResolvedValueOnce({ count: 0 })
+      .mockResolvedValue({ count: 1 })
     await expect(service.complete('job-1', 0, {})).resolves.toBe(false)
-    expect(prisma.backgroundJob.updateMany).toHaveBeenLastCalledWith(expect.objectContaining({
-      data: expect.objectContaining({ status: 'CANCELLED' }),
-    }))
+    expect(prisma.backgroundJob.updateMany).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: 'CANCELLED' }),
+      })
+    )
   })
 
   it('refuses to retry when the same target is already active again', async () => {

@@ -19,11 +19,36 @@ const listeningInstructions = {
 
 /** Session and catalog chrome, in the slots the listening screen reads (see `ExamPart`). */
 const listeningChrome = {
-  1: { practiceSubtitle: 'Kto mówi? Gdzie?', practiceType: 'recordings', practiceMinutes: 7, practiceTimerSec: 420 },
-  2: { practiceSubtitle: 'Komunikat w radiu', practiceType: 'announcement', practiceMinutes: 4, practiceTimerSec: 240 },
-  3: { practiceSubtitle: 'Rozmowa', practiceType: 'matching', practiceMinutes: 5, practiceTimerSec: 300 },
-  4: { practiceSubtitle: 'Wiadomości na sekretarce', practiceType: 'voicemail', practiceMinutes: 5, practiceTimerSec: 300 },
-  5: { practiceSubtitle: 'Liczby', practiceType: 'notes', practiceMinutes: 4, practiceTimerSec: 240 },
+  1: {
+    practiceSubtitle: 'Kto mówi? Gdzie?',
+    practiceType: 'recordings',
+    practiceMinutes: 7,
+    practiceTimerSec: 420,
+  },
+  2: {
+    practiceSubtitle: 'Komunikat w radiu',
+    practiceType: 'announcement',
+    practiceMinutes: 4,
+    practiceTimerSec: 240,
+  },
+  3: {
+    practiceSubtitle: 'Rozmowa',
+    practiceType: 'matching',
+    practiceMinutes: 5,
+    practiceTimerSec: 300,
+  },
+  4: {
+    practiceSubtitle: 'Wiadomości na sekretarce',
+    practiceType: 'voicemail',
+    practiceMinutes: 5,
+    practiceTimerSec: 300,
+  },
+  5: {
+    practiceSubtitle: 'Liczby',
+    practiceType: 'notes',
+    practiceMinutes: 4,
+    practiceTimerSec: 240,
+  },
 } as const
 
 const writingTips = {
@@ -48,7 +73,14 @@ const speakingCopy = {
     practiceMinutes: 4,
     instruction:
       'The examiner asks you four questions about yourself. Record one answer for each, in two or three full sentences.',
-    phrases: ['Nazywam się …', 'Mieszkam w …', 'Pracuję jako … / Studiuję …', 'Mam … lat.', 'W wolnym czasie lubię …', 'Moja rodzina jest …'],
+    phrases: [
+      'Nazywam się …',
+      'Mieszkam w …',
+      'Pracuję jako … / Studiuję …',
+      'Mam … lat.',
+      'W wolnym czasie lubię …',
+      'Moja rodzina jest …',
+    ],
   },
   2: {
     sessionTitle: 'Opis zdjęcia',
@@ -56,7 +88,14 @@ const speakingCopy = {
     practiceType: 'photo',
     instruction:
       'In the exam you see a photo. Here the photo is described in words. Describe the person in it with the help of the four prompts: who it is, what they look like, what they are doing and how they feel. Speak for about a minute.',
-    phrases: ['Na zdjęciu jest …', 'To jest chyba …', 'Ma krótkie / długie włosy.', 'Ma na sobie …', 'Wygląda na …', 'Myślę, że on / ona …'],
+    phrases: [
+      'Na zdjęciu jest …',
+      'To jest chyba …',
+      'Ma krótkie / długie włosy.',
+      'Ma na sobie …',
+      'Wygląda na …',
+      'Myślę, że on / ona …',
+    ],
   },
   3: {
     sessionTitle: 'Rozmowa z egzaminatorem',
@@ -64,7 +103,14 @@ const speakingCopy = {
     practiceType: 'roleplay',
     instruction:
       'In the exam you act out a situation with the examiner. Here, start the conversation from your card, then react to each of the examiner’s lines. Record each turn separately.',
-    phrases: ['Czy masz ochotę …?', 'Może pójdziemy …?', 'Co powiesz na …?', 'Spotkajmy się …', 'Dobrze, zgoda!', 'Niestety nie mogę, bo …'],
+    phrases: [
+      'Czy masz ochotę …?',
+      'Może pójdziemy …?',
+      'Co powiesz na …?',
+      'Spotkajmy się …',
+      'Dobrze, zgoda!',
+      'Niestety nie mogę, bo …',
+    ],
   },
 } as const
 

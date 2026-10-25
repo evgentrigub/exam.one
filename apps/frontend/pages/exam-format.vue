@@ -30,9 +30,7 @@
         </div>
 
         <!-- 2×2 module tiles -->
-        <div
-          class="grid grid-cols-2 border-t md:border-t-0 md:border-l border-base-300"
-        >
+        <div class="grid grid-cols-2 border-t md:border-t-0 md:border-l border-base-300">
           <div
             v-for="(mod, i) in modules"
             :key="mod.id"

@@ -30,7 +30,10 @@ export class LlmProviderParamDto {
 }
 
 export class SaveLlmKeyDto {
-  @ApiProperty({ description: 'Provider API key; stored encrypted and never returned', example: 'sk-or-v1-…' })
+  @ApiProperty({
+    description: 'Provider API key; stored encrypted and never returned',
+    example: 'sk-or-v1-…',
+  })
   @Transform(({ value }) => trim(value))
   @IsString()
   @Length(8, 512)

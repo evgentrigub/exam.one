@@ -34,7 +34,8 @@ function requireString(value: unknown, field: string): void {
 }
 
 function requireRows(value: unknown, field: string, count: number): Record<string, unknown>[] {
-  if (!Array.isArray(value) || value.length !== count) fail(`${field} must contain exactly ${count} entries`)
+  if (!Array.isArray(value) || value.length !== count)
+    fail(`${field} must contain exactly ${count} entries`)
   return value.map((row, index) => {
     if (!isRecord(row)) fail(`${field}[${index}] must be an object`)
     return row
@@ -43,7 +44,8 @@ function requireRows(value: unknown, field: string, count: number): Record<strin
 
 function requireOptions(row: Record<string, unknown>, at: string, count: number): string[] {
   const options = row['options']
-  if (!Array.isArray(options) || options.length !== count) fail(`${at}.options must contain exactly ${count} entries`)
+  if (!Array.isArray(options) || options.length !== count)
+    fail(`${at}.options must contain exactly ${count} entries`)
   options.forEach((option, index) => requireString(option, `${at}.options[${index}]`))
   const answer = row['correctAnswer']
   if (!Number.isInteger(answer) || (answer as number) < 0 || (answer as number) >= count)
@@ -54,7 +56,9 @@ function requireOptions(row: Record<string, unknown>, at: string, count: number)
 /** The gap numbers in a text must be exactly 1..count, each once, in order. */
 function requireGapMarkers(text: unknown, field: string, count: number): void {
   requireString(text, field)
-  const numbers = [...String(text).matchAll(GAP_MARKER)].map(match => Number(match[1])).filter(n => n > 0)
+  const numbers = [...String(text).matchAll(GAP_MARKER)]
+    .map(match => Number(match[1]))
+    .filter(n => n > 0)
   const expected = Array.from({ length: count }, (_, i) => i + 1)
   if (numbers.join(',') !== expected.join(','))
     fail(`${field} must contain the gaps (1) ____ to (${count}) ____, each once and in order`)
@@ -64,12 +68,15 @@ function requireGapMarkers(text: unknown, field: string, count: number): void {
 function requireGap(row: Record<string, unknown>, at: string, maxWords: number): void {
   requireString(row['question'], `${at}.question`)
   requireString(row['explanation'], `${at}.explanation`)
-  if ('options' in row || 'correctAnswer' in row) fail(`${at} is a gap: use accepted, not options or correctAnswer`)
+  if ('options' in row || 'correctAnswer' in row)
+    fail(`${at} is a gap: use accepted, not options or correctAnswer`)
   const accepted = row['accepted']
-  if (!Array.isArray(accepted) || !accepted.length) fail(`${at}.accepted must list at least one answer`)
+  if (!Array.isArray(accepted) || !accepted.length)
+    fail(`${at}.accepted must list at least one answer`)
   accepted.forEach((answer, index) => requireString(answer, `${at}.accepted[${index}]`))
   const normalized = (accepted as string[]).map(normalizeGapAnswer)
-  if (new Set(normalized).size !== normalized.length) fail(`${at}.accepted must not repeat an answer`)
+  if (new Set(normalized).size !== normalized.length)
+    fail(`${at}.accepted must not repeat an answer`)
   if (normalized.some(answer => answer.split(' ').length > maxWords))
     fail(`${at}.accepted answers must be at most ${maxWords} word${maxWords === 1 ? '' : 's'}`)
 }
@@ -82,7 +89,9 @@ function requireDialogue(transcript: unknown, at: string, minTurns: number): voi
   requireString(transcript, at)
   const turns = [...String(transcript).matchAll(TURN_LABEL)].length
   if (turns < minTurns || speakers(transcript).size < 2)
-    fail(`${at} must be a dialogue of at least ${minTurns} turns labelled with one word ("Man: …", "Katie: …")`)
+    fail(
+      `${at} must be a dialogue of at least ${minTurns} turns labelled with one word ("Man: …", "Katie: …")`
+    )
 }
 
 /** Reading: the reading screen's metadata, and the per-part question shape. */
@@ -92,7 +101,8 @@ export function validateReading(payload: Record<string, unknown>, rules: PartRun
   requireString(payload['content'], 'content')
   if (payload['textType'] !== READING_TEXT_TYPE[part])
     fail(`textType must be "${READING_TEXT_TYPE[part]}" for part ${part}`)
-  if (typeof payload['estimatedReadingTime'] !== 'number') fail('estimatedReadingTime must be a number')
+  if (typeof payload['estimatedReadingTime'] !== 'number')
+    fail('estimatedReadingTime must be a number')
   if (typeof payload['wordCount'] !== 'number') fail('wordCount must be a number')
   if (!Array.isArray(payload['topics']) || payload['topics'].some(t => typeof t !== 'string'))
     fail('topics must be an array of strings')
@@ -174,7 +184,10 @@ export function validateListening(payload: Record<string, unknown>, rules: PartR
   })
 }
 
-const WRITING_TOPIC_TYPES: Record<number, readonly string[]> = { 1: ['email', 'note'], 2: ['story'] }
+const WRITING_TOPIC_TYPES: Record<number, readonly string[]> = {
+  1: ['email', 'note'],
+  2: ['story'],
+}
 
 /** Writing: the writing-screen metadata; Part 6 has three points, Part 7 three pictures. */
 export function validateWriting(payload: Record<string, unknown>, rules: PartRuntime): void {
@@ -183,7 +196,8 @@ export function validateWriting(payload: Record<string, unknown>, rules: PartRun
   requireString(payload['description'], 'description')
   requireString(payload['task'], 'task')
   const types = WRITING_TOPIC_TYPES[part] ?? []
-  if (!types.includes(String(payload['topicType']))) fail(`topicType must be one of ${types.join(', ')}`)
+  if (!types.includes(String(payload['topicType'])))
+    fail(`topicType must be one of ${types.join(', ')}`)
   if (typeof payload['estimatedTime'] !== 'number') fail('estimatedTime must be a number')
   if (!Array.isArray(payload['category']) || payload['category'].some(c => typeof c !== 'string'))
     fail('category must be an array of strings')
@@ -229,7 +243,8 @@ export function validateSpeaking(payload: Record<string, unknown>, rules: PartRu
     fail(`topicType must be "${SPEAKING_TOPIC_TYPE[part]}" for part ${part}`)
   if (part === 2) {
     const pictures = payload['pictures']
-    if (!Array.isArray(pictures) || pictures.length !== 5) fail('pictures must name exactly 5 things')
+    if (!Array.isArray(pictures) || pictures.length !== 5)
+      fail('pictures must name exactly 5 things')
     pictures.forEach((picture, index) => requireString(picture, `pictures[${index}]`))
   }
   const ids = (rules.segments ?? []).map(segment => segment.id)
@@ -241,7 +256,9 @@ export function validateSpeaking(payload: Record<string, unknown>, rules: PartRu
     if (card['kind'] !== kind) fail(`${at}.kind must be "${kind}"`)
     requireString(card['topic'], `${at}.topic`)
     requireString(card['cue'], `${at}.cue`)
-    if (kind === 'answer' && card['speaker'] !== 'examiner') fail(`${at}.speaker must be "examiner"`)
-    if (kind === 'ask' && card['speaker'] !== undefined) fail(`${at} is the learner's own card and has no speaker`)
+    if (kind === 'answer' && card['speaker'] !== 'examiner')
+      fail(`${at}.speaker must be "examiner"`)
+    if (kind === 'ask' && card['speaker'] !== undefined)
+      fail(`${at} is the learner's own card and has no speaker`)
   })
 }

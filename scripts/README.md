@@ -6,22 +6,25 @@ Utilities for running exam.one's generic platform, preparing speech assets for e
 
 ## Start and inspect the stack
 
-Follow the [self-host quick start](../README.md#self-host-with-docker-compose), including setting `JWT_SECRET` in `.env`, then run:
+For a new checkout, run `bash scripts/stack-install.sh` (or `pnpm stack:install` when pnpm is available). It reports missing tools, stops until prerequisites are satisfied, prepares `.env` and missing secrets, installs dependencies, and starts the existing stack. Use `--check` for prerequisite checks only, or `--core` to install without speech. Existing nonempty secrets and configuration are preserved. See the [self-host quick start](../README.md#self-host-with-docker-compose).
+
+For subsequent starts and diagnostics:
 
 ```bash
 pnpm stack:up
-pnpm stack:ps
-pnpm stack:logs
+docker compose ps
+docker compose logs -f
 pnpm stack:down
 ```
 
 The root `compose.yaml` defines Nuxt, NestJS, PostgreSQL, Redis, TTS, and STT. `stack:up` starts the core services (`stack:up:core`), then prepares missing models, starts speech, and prepares selected bundled audio (`stack:up:speech`). Stopping the stack preserves named volumes and host media/model folders.
 
 ```bash
-pnpm stack:setup
+pnpm tts:setup
+pnpm stt:setup
 pnpm stack:verify-models
-pnpm stack:seed-audio
-pnpm stack:seed-audio --packs all
+pnpm speech:seed-audio
+pnpm speech:seed-audio --packs all
 ```
 
 Setup downloads model files without starting containers. English is the default TTS installation, and bundled-audio preparation defaults to Cambridge A2 Key. Additional pack audio requires voices for its language; download them in Settings → Generated files → Voice models or configure `KOKORO_LANGS` before setup.
@@ -69,4 +72,10 @@ Stack/audio setup scripts read the repository configuration they need. Database 
 
 Speech setup (`tts:setup`, `stt:setup`) and `stack:verify-models` run through Bash and temporary Compose containers, using Python bundled in the speech images. Self-hosting needs no Python installation on the host. Contributor `tts:test`/`stt:test` commands use optional host Python 3.10+ and standard-library tests. Setup containers write to the service mounts as the invoking user and are removed afterward.
 
-The default `pnpm stack:setup`/`stack:up` includes this English model through `STT_SETUP_LANGS=en`; add other languages with that variable or Settings.
+The default `pnpm stt:setup`/`stack:up` includes this English model through `STT_SETUP_LANGS=en`; add other languages with that variable or Settings.
+
+Installer regression checks use Node's built-in test runner and fake tools in temporary checkouts; they do not start Docker or modify the real `.env`:
+
+```bash
+node --test scripts/stack-install.test.mjs
+```

@@ -14,7 +14,10 @@ export function useLlmSettings() {
     save: (input: UpdateLlmSettingsInput) =>
       apiFetch<LlmSettingsDto>('/settings/llm', { method: 'PUT', body: input }),
     saveKey: (provider: LlmProvider, apiKey: string) =>
-      apiFetch<LlmKeySummary>(`/settings/llm/keys/${provider}`, { method: 'PUT', body: { apiKey } }),
+      apiFetch<LlmKeySummary>(`/settings/llm/keys/${provider}`, {
+        method: 'PUT',
+        body: { apiKey },
+      }),
     removeKey: (provider: LlmProvider) =>
       apiFetch<LlmSettingsDto>(`/settings/llm/keys/${provider}`, { method: 'DELETE' }),
     listModels: (provider: LlmProvider) =>

@@ -105,7 +105,7 @@ export function configureApp(app: INestApplication): void {
         '- `403 Forbidden`: Email unverified or resource belongs to another user.',
         '- `404 Not Found`: Resource does not exist.',
         '- `429 Too Many Requests`: Exceeded rate limit window.',
-        '- `503 Service Unavailable`: Database or underlying service readiness check failure.'
+        '- `503 Service Unavailable`: Database or underlying service readiness check failure.',
       ].join('\n')
     )
     .setVersion('1.0.0')
@@ -120,22 +120,32 @@ export function configureApp(app: INestApplication): void {
         type: 'apiKey',
         in: 'header',
         name: 'x-exam-pack',
-        description: 'Target exam pack identifier (e.g. goethe-de-a2). Resolves to active user setting if omitted.',
+        description:
+          'Target exam pack identifier (e.g. goethe-de-a2). Resolves to active user setting if omitted.',
       },
       'x-exam-pack'
     )
     .addTag('health', 'Service liveness and database connectivity readiness checks')
-    .addTag('auth', 'Authentication, registration, email verification, session refresh, and password recovery')
+    .addTag(
+      'auth',
+      'Authentication, registration, email verification, session refresh, and password recovery'
+    )
     .addTag('users', 'User profile management')
     .addTag('settings', 'Learning settings, exam level, and active exam pack preferences')
     .addTag('exercises', 'Skill practice catalog and user-generated practice exercises')
     .addTag('attempts', 'Skill practice attempt submissions, scoring, and historical records')
     .addTag('drafts', 'Draft management for ongoing exercise and writing sessions')
-    .addTag('llm', 'LLM provider connectivity, exercise generation, model answers, automated grading, and mock reviews')
+    .addTag(
+      'llm',
+      'LLM provider connectivity, exercise generation, model answers, automated grading, and mock reviews'
+    )
     .addTag('tts', 'Kokoro Text-to-Speech synthesis and audio file lifecycle management')
     .addTag('stt', 'Parakeet Speech-to-Text audio transcription service')
     .addTag('mock-exam', 'Mock exam sets, full-module attempts, grading states, and drafts')
-    .addTag('jobs', 'Background jobs (exercise generation, listening audio, mock exam sets) with live SSE updates')
+    .addTag(
+      'jobs',
+      'Background jobs (exercise generation, listening audio, mock exam sets) with live SSE updates'
+    )
     .build()
 
   const document = SwaggerModule.createDocument(app, config)

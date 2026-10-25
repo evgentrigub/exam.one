@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-2">
-    <audio ref="player" :src="src" @ended="playing = false; resumable = false" @error="playing = false" />
+    <audio ref="player" :src="src" @ended="onEnded" @error="playing = false" />
     <button
       class="btn btn-outline btn-sm"
       :disabled="!playing && !resumable && limit !== undefined && used >= limit"
@@ -8,9 +8,9 @@
     >
       {{ playing ? $t('pastExams.pauseAudio') : $t('pastExams.playAudio') }}
     </button>
-    <span v-if="limit !== undefined" class="text-sm text-base-content/60"
-      >{{ $t('pastExams.playsRemaining', { count: remaining }, remaining) }}</span
-    >
+    <span v-if="limit !== undefined" class="text-sm text-base-content/60">{{
+      $t('pastExams.playsRemaining', { count: remaining }, remaining)
+    }}</span>
   </div>
 </template>
 <script setup lang="ts">
@@ -20,6 +20,10 @@ const player = ref<HTMLAudioElement>()
 const playing = ref(false)
 const resumable = ref(false)
 const remaining = computed(() => Math.max(0, (props.limit ?? 0) - props.used))
+function onEnded() {
+  playing.value = false
+  resumable.value = false
+}
 async function toggle() {
   const audio = player.value
   if (!audio) return

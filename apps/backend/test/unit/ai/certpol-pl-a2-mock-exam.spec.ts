@@ -65,17 +65,36 @@ describe('Certyfikat Polski A2 mock exam', () => {
     expect(set1.rules).toEqual({
       maximumPoints: 116,
       groups: [
-        expect.objectContaining({ id: 'written', skills: ['listening', 'reading', 'writing'], maximumPoints: 80, passPoints: 40 }),
-        expect.objectContaining({ id: 'oral', skills: ['speaking'], maximumPoints: 36, passPoints: 18 }),
+        expect.objectContaining({
+          id: 'written',
+          skills: ['listening', 'reading', 'writing'],
+          maximumPoints: 80,
+          passPoints: 40,
+        }),
+        expect.objectContaining({
+          id: 'oral',
+          skills: ['speaking'],
+          maximumPoints: 36,
+          passPoints: 18,
+        }),
       ],
     })
     expect(set1.rules!.passPoints).toBeUndefined()
-    expect(evaluateMockPass(set1.rules, { listening: 15, reading: 15, writing: 10, speaking: 18 }).passed).toBe(true)
+    expect(
+      evaluateMockPass(set1.rules, { listening: 15, reading: 15, writing: 10, speaking: 18 }).passed
+    ).toBe(true)
     // A high total does not hide a failed part.
-    const weakOral = evaluateMockPass(set1.rules, { listening: 30, reading: 30, writing: 20, speaking: 17 })
+    const weakOral = evaluateMockPass(set1.rules, {
+      listening: 30,
+      reading: 30,
+      writing: 20,
+      speaking: 17,
+    })
     expect(weakOral.overall).toBe(97)
     expect(weakOral.passed).toBe(false)
-    expect(evaluateMockPass(set1.rules, { listening: 15, reading: 14, writing: 10, speaking: 36 }).passed).toBe(false)
+    expect(
+      evaluateMockPass(set1.rules, { listening: 15, reading: 14, writing: 10, speaking: 36 }).passed
+    ).toBe(false)
   })
 
   it('credits the half-point reading tasks as points, not correct answers', () => {
@@ -99,13 +118,22 @@ describe('Certyfikat Polski A2 mock exam', () => {
       const p = part(skill, Number(payload['testingPart']))
       expect(payload['examOnly']).toBe(true)
       expect(() => p.validate!(structuredClone(payload), p.runtime!)).not.toThrow()
-      expect(() => validateView(p.adapter!.project(structuredClone(payload)), p.runtime!)).not.toThrow()
+      expect(() =>
+        validateView(p.adapter!.project(structuredClone(payload)), p.runtime!)
+      ).not.toThrow()
     }
   })
 
   it('uses other texts than the practice seeds', () => {
     const text = (payload: Record<string, unknown>) =>
-      JSON.stringify(payload['content'] ?? payload['transcript'] ?? payload['items'] ?? payload['task'] ?? payload['cards'] ?? payload['theme'])
+      JSON.stringify(
+        payload['content'] ??
+          payload['transcript'] ??
+          payload['items'] ??
+          payload['task'] ??
+          payload['cards'] ??
+          payload['theme']
+      )
     for (const skill of ORDER) {
       const practice = new Set(
         certpolPlA2.seedExercises![skill]!.filter(seed => seed['examOnly'] !== true).map(text)
@@ -140,7 +168,10 @@ describe('Certyfikat Polski A2 mock exam', () => {
   })
 
   it('creates generated sets from blank draft content and from pipeline content', () => {
-    expect(certpolPlA2.createMockSet!(2, BLANK)).toMatchObject({ id: 'certpol-pl-a2-set-2', generated: true })
+    expect(certpolPlA2.createMockSet!(2, BLANK)).toMatchObject({
+      id: 'certpol-pl-a2-set-2',
+      generated: true,
+    })
     const generated = certpolPlA2.createMockSet!(3, set1.content)
     expect(generated).toMatchObject({
       id: 'certpol-pl-a2-set-3',
@@ -156,7 +187,9 @@ describe('Certyfikat Polski A2 mock exam', () => {
     const grouped: MockExamOverviewInput = {
       overallPoints: 60,
       modules: [],
-      passGroups: [{ label: 'Część pisemna', points: 41, maximum: 80, passPoints: 40, passed: true }],
+      passGroups: [
+        { label: 'Część pisemna', points: 41, maximum: 80, passPoints: 40, passed: true },
+      ],
     }
     expect(certpolPlA2.mockOverview!.system).toContain('Certyfikat Polski A2')
     expect(certpolPlA2.mockOverview!.assemble('en', grouped)).toContain('every group in passGroups')

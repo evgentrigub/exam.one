@@ -127,7 +127,8 @@ export const appConfig = registerAs('app', (): AppConfig => ({
   STT_LANGUAGES: process.env['STT_LANGUAGES'] ?? 'de,en,pl,es',
   GENERATED_LISTENING_AUDIO_DIR:
     process.env['GENERATED_LISTENING_AUDIO_DIR']?.trim() || defaultGeneratedListeningAudioDir(),
-  SEED_LISTENING_AUDIO_DIR: process.env['SEED_LISTENING_AUDIO_DIR']?.trim() || defaultSeedListeningAudioDir(),
+  SEED_LISTENING_AUDIO_DIR:
+    process.env['SEED_LISTENING_AUDIO_DIR']?.trim() || defaultSeedListeningAudioDir(),
   AUDIO_HOST_DISPLAY_ROOT:
     process.env['AUDIO_HOST_DISPLAY_ROOT']?.trim() || 'apps/frontend/public/audio/listening',
 }))

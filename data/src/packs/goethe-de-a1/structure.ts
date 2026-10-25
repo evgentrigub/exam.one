@@ -51,7 +51,8 @@ export const goetheDeA1Structure: ExamModule[] = [
     label: 'Listening (Hören)',
     minutes: 20,
     points: 15,
-    summary: 'Short conversations, public announcements and telephone messages — one question each.',
+    summary:
+      'Short conversations, public announcements and telephone messages — one question each.',
     scoringNote: SCORING_NOTE,
     parts: [
       {
@@ -88,8 +89,10 @@ export const goetheDeA1Structure: ExamModule[] = [
     label: 'Writing (Schreiben)',
     minutes: 20,
     points: 15,
-    summary: 'Fill in five missing entries in a form, then write a short message of about 30 words.',
-    scoringNote: 'Form: 1 point per entry. Message: 3 per content point + 1 for greeting and closing.',
+    summary:
+      'Fill in five missing entries in a form, then write a short message of about 30 words.',
+    scoringNote:
+      'Form: 1 point per entry. Message: 3 per content point + 1 for greeting and closing.',
     parts: [
       {
         n: 1,

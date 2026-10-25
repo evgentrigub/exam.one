@@ -24,7 +24,9 @@ export class MockExamProcessor extends WorkerHost {
     private readonly ai: PackAiService,
     private readonly mock: MockExamService,
     private readonly email: EmailService
-  ) { super() }
+  ) {
+    super()
+  }
 
   async process(job: Job<{ jobRowId: string; attempt: number }>): Promise<unknown> {
     const { jobRowId, attempt } = job.data
@@ -33,27 +35,43 @@ export class MockExamProcessor extends WorkerHost {
     const user = await this.prisma.user.findUnique({ where: { id: row.userId } })
     if (!user) throw await this.jobs.abort(row, 'User no longer exists')
     let pack: ReturnType<typeof getLivePack>
-    try { pack = getLivePack(row.packId) } catch { throw await this.jobs.abort(row, 'This exam pack is no longer available') }
+    try {
+      pack = getLivePack(row.packId)
+    } catch {
+      throw await this.jobs.abort(row, 'This exam pack is no longer available')
+    }
     const { setNumber, setId } = row.input as { setNumber: number; setId: string }
-    if (!pack.createMockSet) throw await this.jobs.abort(row, 'Mock exams are unavailable for this pack')
+    if (!pack.createMockSet)
+      throw await this.jobs.abort(row, 'Mock exams are unavailable for this pack')
     const saved = row.checkpoint as Partial<MockCheckpoint>
     const checkpoint: MockCheckpoint = {
       content: {
-        reading: saved.content?.reading ?? [], listening: saved.content?.listening ?? [],
-        writing: saved.content?.writing ?? [], speaking: saved.content?.speaking ?? [],
+        reading: saved.content?.reading ?? [],
+        listening: saved.content?.listening ?? [],
+        writing: saved.content?.writing ?? [],
+        speaking: saved.content?.speaking ?? [],
       },
       done: saved.done ?? [],
     }
-    const parts = SKILLS.flatMap(skill => getAvailableExamParts(pack, skill).map(part => ({ skill, part: part.n })))
+    const parts = SKILLS.flatMap(skill =>
+      getAvailableExamParts(pack, skill).map(part => ({ skill, part: part.n }))
+    )
     const audioParts = parts.filter(item => item.skill === 'listening')
-    const items = () => SKILLS.map(skill => ({
-      label: skill, done: parts.filter(part => part.skill === skill).every(part =>
-        checkpoint.done.includes(`${skill}:${part.part}`) && (skill !== 'listening' || checkpoint.done.includes(`audio:${part.part}`))
-      ),
-    }))
+    const items = () =>
+      SKILLS.map(skill => ({
+        label: skill,
+        done: parts
+          .filter(part => part.skill === skill)
+          .every(
+            part =>
+              checkpoint.done.includes(`${skill}:${part.part}`) &&
+              (skill !== 'listening' || checkpoint.done.includes(`audio:${part.part}`))
+          ),
+      }))
     const assertRunning = async () => {
       const latest = await this.jobs.get(row.id)
-      if (latest?.attempt !== attempt || latest.status !== 'RUNNING') throw new UnrecoverableError('Generation cancelled')
+      if (latest?.attempt !== attempt || latest.status !== 'RUNNING')
+        throw new UnrecoverableError('Generation cancelled')
     }
     try {
       return await packContext.run({ packId: row.packId, userId: row.userId }, async () => {
@@ -62,26 +80,42 @@ export class MockExamProcessor extends WorkerHost {
           const key = `${entry.skill}:${entry.part}`
           if (!checkpoint.done.includes(key)) {
             const response = await this.ai.generate(entry.skill, [entry.part], 1)
-            if (response.error || !response.data?.[0]) throw new Error(response.error || 'Missing generated mock content')
-            const exercise = { ...response.data[0] as Record<string, unknown>, examOnly: true }
+            if (response.error || !response.data?.[0])
+              throw new Error(response.error || 'Missing generated mock content')
+            const exercise = { ...(response.data[0] as Record<string, unknown>), examOnly: true }
             checkpoint.content[entry.skill] = [
-              ...checkpoint.content[entry.skill].filter(item => item['testingPart'] !== entry.part), exercise,
+              ...checkpoint.content[entry.skill].filter(item => item['testingPart'] !== entry.part),
+              exercise,
             ]
             checkpoint.done.push(key)
           }
-          if (!await this.jobs.progress(row.id, attempt, { stage: 1, stagePercent: (index + 1) / parts.length * 100, items: items() }, checkpoint))
+          if (
+            !(await this.jobs.progress(
+              row.id,
+              attempt,
+              { stage: 1, stagePercent: ((index + 1) / parts.length) * 100, items: items() },
+              checkpoint
+            ))
+          )
             throw new UnrecoverableError('Generation cancelled')
         }
 
         for (const [index, entry] of audioParts.entries()) {
           await assertRunning()
           if (!checkpoint.done.includes(`audio:${entry.part}`)) {
-            const exercise = checkpoint.content.listening.find(item => item['testingPart'] === entry.part)
+            const exercise = checkpoint.content.listening.find(
+              item => item['testingPart'] === entry.part
+            )
             if (!exercise) throw new UnrecoverableError('Missing listening content')
             const queue = this.jobs.queue('LISTENING_AUDIO')
-            const audio = await queue.add('mock-audio', { jobRowId, attempt, exercise }, {
-              ...JOB_OPTIONS, jobId: `${row.id}-${attempt}-audio-${entry.part}`,
-            })
+            const audio = await queue.add(
+              'mock-audio',
+              { jobRowId, attempt, exercise },
+              {
+                ...JOB_OPTIONS,
+                jobId: `${row.id}-${attempt}-audio-${entry.part}`,
+              }
+            )
             while (true) {
               await assertRunning()
               const state = await audio.getState()
@@ -96,21 +130,43 @@ export class MockExamProcessor extends WorkerHost {
                 checkpoint.done.push(`audio:${entry.part}`)
                 break
               }
-              if (state === 'failed') throw new Error(audio.failedReason || 'Mock audio generation failed')
+              if (state === 'failed')
+                throw new Error(audio.failedReason || 'Mock audio generation failed')
               await new Promise(resolve => setTimeout(resolve, 1000))
             }
           }
-          if (!await this.jobs.progress(row.id, attempt, { stage: 2, stagePercent: (index + 1) / audioParts.length * 100, items: items() }, checkpoint))
+          if (
+            !(await this.jobs.progress(
+              row.id,
+              attempt,
+              { stage: 2, stagePercent: ((index + 1) / audioParts.length) * 100, items: items() },
+              checkpoint
+            ))
+          )
             throw new UnrecoverableError('Generation cancelled')
         }
 
         await assertRunning()
-        const set = pack.createMockSet!(setNumber, checkpoint.content as unknown as Parameters<NonNullable<typeof pack.createMockSet>>[1])
+        const set = pack.createMockSet!(
+          setNumber,
+          checkpoint.content as unknown as Parameters<NonNullable<typeof pack.createMockSet>>[1]
+        )
         if (!set || set.id !== setId) throw new UnrecoverableError('Mock set identity changed')
-        const existing = await this.prisma.mockExamSet.findFirst({ where: { userId: user.id, packId: row.packId, externalId: setId } })
-        if (existing && existing.content && JSON.stringify(existing.content) !== JSON.stringify(set.content))
+        const existing = await this.prisma.mockExamSet.findFirst({
+          where: { userId: user.id, packId: row.packId, externalId: setId },
+        })
+        if (
+          existing &&
+          existing.content &&
+          JSON.stringify(existing.content) !== JSON.stringify(set.content)
+        )
           throw new UnrecoverableError('A different mock set already exists with this ID')
-        await this.jobs.progress(row.id, attempt, { stage: 3, stagePercent: 50, items: items() }, checkpoint)
+        await this.jobs.progress(
+          row.id,
+          attempt,
+          { stage: 3, stagePercent: 50, items: items() },
+          checkpoint
+        )
         await this.mock.createSet(user, set as unknown as MockExamSetBodyDto)
         if (await this.jobs.complete(row.id, attempt, { setId })) {
           const setting = await this.prisma.setting.findUnique({ where: { userId: user.id } })
@@ -119,17 +175,25 @@ export class MockExamProcessor extends WorkerHost {
               where: { id: row.id, status: 'COMPLETED', emailAttemptedAt: null },
               data: { emailAttemptedAt: new Date() },
             })
-            if (claimed.count) await this.email.sendMail({
-              to: user.email, subject: 'Your mock exam set is ready',
-              text: `Your ${pack.title} mock exam set is ready. Open exam.one and select ${pack.title} to start it.`,
-            }).catch(() => undefined)
+            if (claimed.count)
+              await this.email
+                .sendMail({
+                  to: user.email,
+                  subject: 'Your mock exam set is ready',
+                  text: `Your ${pack.title} mock exam set is ready. Open exam.one and select ${pack.title} to start it.`,
+                })
+                .catch(() => undefined)
           }
         }
         return { setId }
       })
     } catch (error) {
       if (error instanceof UnrecoverableError || job.attemptsMade + 1 >= (job.opts.attempts ?? 1))
-        await this.jobs.fail(row.id, attempt, error instanceof Error ? error.message : 'Mock generation failed')
+        await this.jobs.fail(
+          row.id,
+          attempt,
+          error instanceof Error ? error.message : 'Mock generation failed'
+        )
       throw error
     }
   }

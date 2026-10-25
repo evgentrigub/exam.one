@@ -12,7 +12,9 @@ export function withSeedAudio<T extends ListeningEsExercise>(exercise: T): T {
   if ('items' in exercise) {
     return {
       ...exercise,
-      audio: { items: Object.fromEntries(exercise.items.map(item => [item.id, `${base}/${item.id}.wav`])) },
+      audio: {
+        items: Object.fromEntries(exercise.items.map(item => [item.id, `${base}/${item.id}.wav`])),
+      },
     }
   }
   return { ...exercise, audio: { shared: `${base}/shared.wav` } }

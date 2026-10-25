@@ -51,3 +51,9 @@ pnpm --filter @exam-one/database lint
 ```
 
 The package's test script validates the schema. Backend unit tests use mocks; backend API integration tests require a real database. Edit source/schema/migration files; Prisma Client and `dist/` are generated artifacts.
+
+## Resetting practice data
+
+From the application root, `pnpm db:reset-practice` prunes practice records and then restores bundled content. It deletes attempts, results, drafts, generated exercises, and other practice data while preserving accounts, sessions, and settings. It is never part of installation or startup.
+
+For lower-level pruning, including the optional `--pack` and `--force` arguments, use `pnpm --filter @exam-one/database db:prune`. The root exposes the combined reset workflow; standalone schema validation remains package-local and also runs through `pnpm test`.

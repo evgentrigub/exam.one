@@ -42,7 +42,12 @@ export const SPEAKING_SEGMENTS: Record<1 | 2 | 3, Array<{ id: string; label: str
   ],
 }
 
-const objective = (minutes: number, maxPoints: number, count: number, options?: number): PartRuntime => ({
+const objective = (
+  minutes: number,
+  maxPoints: number,
+  count: number,
+  options?: number
+): PartRuntime => ({
   minutes,
   maxPoints,
   questionCount: count,
@@ -88,9 +93,27 @@ const RULES: Partial<Record<SkillId, Record<number, PartRuntime>>> = {
     },
   },
   speaking: {
-    1: { minutes: 4, maxPoints: 6, multiplier: 1, segments: SPEAKING_SEGMENTS[1], criteria: speakingCriteria(4, 1) },
-    2: { minutes: 6, maxPoints: 15, multiplier: 1, segments: SPEAKING_SEGMENTS[2], criteria: speakingCriteria(10, 2.5) },
-    3: { minutes: 5, maxPoints: 15, multiplier: 1, segments: SPEAKING_SEGMENTS[3], criteria: speakingCriteria(10, 2.5) },
+    1: {
+      minutes: 4,
+      maxPoints: 6,
+      multiplier: 1,
+      segments: SPEAKING_SEGMENTS[1],
+      criteria: speakingCriteria(4, 1),
+    },
+    2: {
+      minutes: 6,
+      maxPoints: 15,
+      multiplier: 1,
+      segments: SPEAKING_SEGMENTS[2],
+      criteria: speakingCriteria(10, 2.5),
+    },
+    3: {
+      minutes: 5,
+      maxPoints: 15,
+      multiplier: 1,
+      segments: SPEAKING_SEGMENTS[3],
+      criteria: speakingCriteria(10, 2.5),
+    },
   },
 }
 

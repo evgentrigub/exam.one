@@ -32,7 +32,12 @@ describe('LlmSettingsService', () => {
   let service: LlmSettingsService
   let prisma: {
     setting: { findUnique: jest.Mock; upsert: jest.Mock; updateMany: jest.Mock }
-    llmCredential: { findMany: jest.Mock; findUnique: jest.Mock; upsert: jest.Mock; deleteMany: jest.Mock }
+    llmCredential: {
+      findMany: jest.Mock
+      findUnique: jest.Mock
+      upsert: jest.Mock
+      deleteMany: jest.Mock
+    }
   }
 
   beforeEach(async () => {
@@ -73,9 +78,15 @@ describe('LlmSettingsService', () => {
 
     it('lists saved keys by last four characters only', async () => {
       prisma.setting.findUnique.mockResolvedValue(
-        makeSetting({ llmProvider: 'openrouter', llmModel: 'a/b:free', llmFallbackModels: ['c/d:free'] })
+        makeSetting({
+          llmProvider: 'openrouter',
+          llmModel: 'a/b:free',
+          llmFallbackModels: ['c/d:free'],
+        })
       )
-      prisma.llmCredential.findMany.mockResolvedValue([credential('openrouter', 'sk-or-secret-1234')])
+      prisma.llmCredential.findMany.mockResolvedValue([
+        credential('openrouter', 'sk-or-secret-1234'),
+      ])
 
       const result = await service.get('user-1')
 
@@ -93,7 +104,10 @@ describe('LlmSettingsService', () => {
   describe('saveKey', () => {
     it('checks the key with the provider, then stores it encrypted', async () => {
       listModels.mockResolvedValue([{ id: 'gpt-x', name: 'gpt-x' }])
-      prisma.llmCredential.upsert.mockImplementation(async ({ create }) => ({ ...create, updatedAt: NOW }))
+      prisma.llmCredential.upsert.mockImplementation(async ({ create }) => ({
+        ...create,
+        updatedAt: NOW,
+      }))
 
       const summary = await service.saveKey('user-1', 'openai', ' sk-proj-abcd9876 ')
 
@@ -101,23 +115,31 @@ describe('LlmSettingsService', () => {
       const args = prisma.llmCredential.upsert.mock.calls[0][0]
       expect(args.where).toEqual({ userId_provider: { userId: 'user-1', provider: 'openai' } })
       expect(args.create.keyCiphertext).not.toContain('sk-proj')
-      expect(decryptSecret(args.create.keyCiphertext, KEY, 'user-1:openai')).toBe('sk-proj-abcd9876')
+      expect(decryptSecret(args.create.keyCiphertext, KEY, 'user-1:openai')).toBe(
+        'sk-proj-abcd9876'
+      )
       expect(summary).toEqual({ provider: 'openai', last4: '9876', updatedAt: NOW.toISOString() })
     })
 
     it('rejects a key the provider refuses, without storing it', async () => {
-      listModels.mockRejectedValue(new providers.LlmProviderHttpError(401, 'Provider returned HTTP 401.'))
+      listModels.mockRejectedValue(
+        new providers.LlmProviderHttpError(401, 'Provider returned HTTP 401.')
+      )
 
-      await expect(service.saveKey('user-1', 'xai', 'bad-key-0000')).rejects.toBeInstanceOf(BadRequestException)
+      await expect(service.saveKey('user-1', 'xai', 'bad-key-0000')).rejects.toBeInstanceOf(
+        BadRequestException
+      )
       expect(prisma.llmCredential.upsert).not.toHaveBeenCalled()
     })
 
     it('stops checking keys for a user after too many rejected keys', async () => {
-      listModels.mockRejectedValue(new providers.LlmProviderHttpError(401, 'Provider returned HTTP 401.'))
+      listModels.mockRejectedValue(
+        new providers.LlmProviderHttpError(401, 'Provider returned HTTP 401.')
+      )
       for (let i = 0; i < 20; i += 1) {
-        await expect(service.saveKey('user-1', 'openai', `bad-key-${i}-0000`)).rejects.toBeInstanceOf(
-          BadRequestException
-        )
+        await expect(
+          service.saveKey('user-1', 'openai', `bad-key-${i}-0000`)
+        ).rejects.toBeInstanceOf(BadRequestException)
       }
       listModels.mockClear()
 
@@ -125,23 +147,31 @@ describe('LlmSettingsService', () => {
         HttpException
       )
       expect(listModels).not.toHaveBeenCalled()
-      await expect(service.saveKey('user-2', 'openai', 'bad-key-x-0000')).rejects.toBeInstanceOf(BadRequestException)
+      await expect(service.saveKey('user-2', 'openai', 'bad-key-x-0000')).rejects.toBeInstanceOf(
+        BadRequestException
+      )
     })
 
     it('reports an unreachable provider as a gateway error', async () => {
       listModels.mockRejectedValue(new TypeError('fetch failed'))
 
-      await expect(service.saveKey('user-1', 'gemini', 'g-key-0000')).rejects.toBeInstanceOf(BadGatewayException)
+      await expect(service.saveKey('user-1', 'gemini', 'g-key-0000')).rejects.toBeInstanceOf(
+        BadGatewayException
+      )
     })
   })
 
   describe('removeKey', () => {
     it('clears the active selection when the active provider key is removed', async () => {
-      prisma.setting.findUnique.mockResolvedValue(makeSetting({ llmProvider: 'openai', llmModel: 'gpt-x' }))
+      prisma.setting.findUnique.mockResolvedValue(
+        makeSetting({ llmProvider: 'openai', llmModel: 'gpt-x' })
+      )
 
       await service.removeKey('user-1', 'openai')
 
-      expect(prisma.llmCredential.deleteMany).toHaveBeenCalledWith({ where: { userId: 'user-1', provider: 'openai' } })
+      expect(prisma.llmCredential.deleteMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1', provider: 'openai' },
+      })
       expect(prisma.setting.updateMany).toHaveBeenCalledWith({
         where: { userId: 'user-1', llmProvider: 'openai' },
         data: { llmProvider: null, llmModel: null, llmFallbackModels: [] },
@@ -179,13 +209,20 @@ describe('LlmSettingsService', () => {
 
   describe('resolveConfig', () => {
     it('returns null until a provider, key and model are all set', async () => {
-      prisma.setting.findUnique.mockResolvedValue(makeSetting({ llmProvider: 'openai', llmModel: null }))
+      prisma.setting.findUnique.mockResolvedValue(
+        makeSetting({ llmProvider: 'openai', llmModel: null })
+      )
       await expect(service.resolveConfig('user-1')).resolves.toBeNull()
     })
 
     it('decrypts the key of the active provider', async () => {
       prisma.setting.findUnique.mockResolvedValue(
-        makeSetting({ llmProvider: 'gemini', llmModel: 'gemini-x', llmFallbackModels: ['gemini-y'], llmReasoningEffort: 'high' })
+        makeSetting({
+          llmProvider: 'gemini',
+          llmModel: 'gemini-x',
+          llmFallbackModels: ['gemini-y'],
+          llmReasoningEffort: 'high',
+        })
       )
       prisma.llmCredential.findUnique.mockResolvedValue(credential('gemini', 'g-secret-5555'))
 
@@ -199,10 +236,16 @@ describe('LlmSettingsService', () => {
     })
 
     it('treats a key that no longer decrypts as missing', async () => {
-      prisma.setting.findUnique.mockResolvedValue(makeSetting({ llmProvider: 'xai', llmModel: 'grok-x' }))
+      prisma.setting.findUnique.mockResolvedValue(
+        makeSetting({ llmProvider: 'xai', llmModel: 'grok-x' })
+      )
       prisma.llmCredential.findUnique.mockResolvedValue({
         ...credential('xai', 'xai-1111'),
-        keyCiphertext: encryptSecret('xai-1111', Buffer.alloc(32, 3).toString('base64'), 'user-1:xai'),
+        keyCiphertext: encryptSecret(
+          'xai-1111',
+          Buffer.alloc(32, 3).toString('base64'),
+          'user-1:xai'
+        ),
       })
 
       await expect(service.resolveConfig('user-1')).resolves.toBeNull()

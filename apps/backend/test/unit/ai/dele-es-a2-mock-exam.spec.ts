@@ -55,14 +55,34 @@ describe('DELE A2 mock exam', () => {
     expect(set1.rules).toEqual({
       maximumPoints: 100,
       groups: [
-        expect.objectContaining({ id: 'grupo-1', skills: ['reading', 'writing'], maximumPoints: 50, passPoints: 30 }),
-        expect.objectContaining({ id: 'grupo-2', skills: ['listening', 'speaking'], maximumPoints: 50, passPoints: 30 }),
+        expect.objectContaining({
+          id: 'grupo-1',
+          skills: ['reading', 'writing'],
+          maximumPoints: 50,
+          passPoints: 30,
+        }),
+        expect.objectContaining({
+          id: 'grupo-2',
+          skills: ['listening', 'speaking'],
+          maximumPoints: 50,
+          passPoints: 30,
+        }),
       ],
     })
     expect(set1.rules!.passPoints).toBeUndefined()
-    const strongReading = evaluateMockPass(set1.rules, { reading: 25, writing: 10, listening: 25, speaking: 25 })
+    const strongReading = evaluateMockPass(set1.rules, {
+      reading: 25,
+      writing: 10,
+      listening: 25,
+      speaking: 25,
+    })
     expect(strongReading.passed).toBe(true)
-    const weakListening = evaluateMockPass(set1.rules, { reading: 25, writing: 25, listening: 10, speaking: 15 })
+    const weakListening = evaluateMockPass(set1.rules, {
+      reading: 25,
+      writing: 25,
+      listening: 10,
+      speaking: 15,
+    })
     expect(weakListening.passed).toBe(false)
   })
 
@@ -92,7 +112,9 @@ describe('DELE A2 mock exam', () => {
       const p = part(skill, Number(payload['testingPart']))
       expect(payload['examOnly']).toBe(true)
       expect(() => p.validate!(structuredClone(payload), p.runtime!)).not.toThrow()
-      expect(() => validateView(p.adapter!.project(structuredClone(payload)), p.runtime!)).not.toThrow()
+      expect(() =>
+        validateView(p.adapter!.project(structuredClone(payload)), p.runtime!)
+      ).not.toThrow()
     }
   })
 
@@ -126,9 +148,17 @@ describe('DELE A2 mock exam', () => {
   })
 
   it('creates generated sets from blank draft content and from pipeline content', () => {
-    expect(deleEsA2.createMockSet!(2, BLANK)).toMatchObject({ id: 'dele-es-a2-set-2', generated: true })
+    expect(deleEsA2.createMockSet!(2, BLANK)).toMatchObject({
+      id: 'dele-es-a2-set-2',
+      generated: true,
+    })
     const generated = deleEsA2.createMockSet!(3, set1.content)
-    expect(generated).toMatchObject({ id: 'dele-es-a2-set-3', generated: true, level: 'A2', title: 'DELE A2 · Set 3' })
+    expect(generated).toMatchObject({
+      id: 'dele-es-a2-set-3',
+      generated: true,
+      level: 'A2',
+      title: 'DELE A2 · Set 3',
+    })
     expect(generated.modules).toEqual(set1.modules)
     expect(generated.rules).toEqual(set1.rules)
   })

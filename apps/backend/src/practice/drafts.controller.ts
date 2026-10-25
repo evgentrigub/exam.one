@@ -25,7 +25,8 @@ import { DraftsService } from './drafts.service'
 @ApiHeader({
   name: 'x-exam-pack',
   required: false,
-  description: 'Target exam pack identifier (e.g. goethe-de-a2). Resolves to active user setting if omitted.',
+  description:
+    'Target exam pack identifier (e.g. goethe-de-a2). Resolves to active user setting if omitted.',
 })
 @Controller('drafts')
 export class DraftsController {
@@ -34,9 +35,14 @@ export class DraftsController {
   @Get()
   @ApiOperation({
     summary: 'List drafts for a skill',
-    description: 'Lists all active in-progress exercise or writing drafts for the specified skill in the active pack.',
+    description:
+      'Lists all active in-progress exercise or writing drafts for the specified skill in the active pack.',
   })
-  @ApiQuery({ name: 'skill', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], description: 'Skill category' })
+  @ApiQuery({
+    name: 'skill',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    description: 'Skill category',
+  })
   @ApiResponseDoc({ status: 200, description: 'Drafts list', type: DraftsListResponseDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   async list(
@@ -50,10 +56,19 @@ export class DraftsController {
   @Get(':skill/:topicId')
   @ApiOperation({
     summary: 'Get one draft',
-    description: 'Retrieves a single saved draft by skill and topic identifier, or returns null if no draft exists.',
+    description:
+      'Retrieves a single saved draft by skill and topic identifier, or returns null if no draft exists.',
   })
-  @ApiParam({ name: 'skill', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], description: 'Skill area' })
-  @ApiParam({ name: 'topicId', description: 'Exercise or topic identifier', example: 'goethe-a2-writing-p1' })
+  @ApiParam({
+    name: 'skill',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    description: 'Skill area',
+  })
+  @ApiParam({
+    name: 'topicId',
+    description: 'Exercise or topic identifier',
+    example: 'goethe-a2-writing-p1',
+  })
   @ApiResponseDoc({ status: 200, description: 'Draft record or null', type: DraftResponseDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   async get(
@@ -68,10 +83,19 @@ export class DraftsController {
   @Put(':skill/:topicId')
   @ApiOperation({
     summary: 'Create or replace a draft',
-    description: 'Upserts draft state for a topic/exercise. Replaces any prior draft for this topic.',
+    description:
+      'Upserts draft state for a topic/exercise. Replaces any prior draft for this topic.',
   })
-  @ApiParam({ name: 'skill', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], description: 'Skill area' })
-  @ApiParam({ name: 'topicId', description: 'Exercise or topic identifier', example: 'goethe-a2-writing-p1' })
+  @ApiParam({
+    name: 'skill',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    description: 'Skill area',
+  })
+  @ApiParam({
+    name: 'topicId',
+    description: 'Exercise or topic identifier',
+    example: 'goethe-a2-writing-p1',
+  })
   @ApiResponseDoc({ status: 200, description: 'Saved draft', type: DraftResponseDto })
   @ApiResponseDoc({ status: 400, description: 'Validation error', type: ApiErrorDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
@@ -90,8 +114,16 @@ export class DraftsController {
     summary: 'Delete a draft',
     description: 'Deletes draft state for the given skill and topic.',
   })
-  @ApiParam({ name: 'skill', enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'], description: 'Skill area' })
-  @ApiParam({ name: 'topicId', description: 'Exercise or topic identifier', example: 'goethe-a2-writing-p1' })
+  @ApiParam({
+    name: 'skill',
+    enum: ['READING', 'WRITING', 'LISTENING', 'SPEAKING'],
+    description: 'Skill area',
+  })
+  @ApiParam({
+    name: 'topicId',
+    description: 'Exercise or topic identifier',
+    example: 'goethe-a2-writing-p1',
+  })
   @ApiResponseDoc({ status: 200, description: 'Deletion status', type: DeleteSuccessResponseDto })
   @ApiResponseDoc({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   async remove(

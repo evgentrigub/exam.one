@@ -32,7 +32,9 @@ describe('queue dashboard authorization', () => {
     process.env['BULL_BOARD_USER'] = 'operator'
     process.env['BULL_BOARD_PASSWORD'] = 'secret'
     expect(request().response.sendStatus).toHaveBeenCalledWith(401)
-    expect(request(`Basic ${Buffer.from('operator:incorrect').toString('base64')}`).response.sendStatus).toHaveBeenCalledWith(401)
+    expect(
+      request(`Basic ${Buffer.from('operator:incorrect').toString('base64')}`).response.sendStatus
+    ).toHaveBeenCalledWith(401)
   })
 
   it('accepts a matching user and password', () => {

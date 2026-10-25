@@ -81,7 +81,9 @@
           type="button"
           class="btn btn-sm btn-outline gap-1.5"
           :disabled="!audioUrl"
-          :title="audioUrl ? t('speaking.recorder.playBack') : t('speaking.recorder.playbackUnavailable')"
+          :title="
+            audioUrl ? t('speaking.recorder.playBack') : t('speaking.recorder.playbackUnavailable')
+          "
           @click="togglePlayback"
         >
           <Pause v-if="isPlaying" :size="14" />

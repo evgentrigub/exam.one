@@ -6,7 +6,12 @@ export class VerifyEmailDto {
   @IsEmail()
   email!: string
 
-  @ApiProperty({ description: '6-digit verification code sent via email', example: '123456', minLength: 6, maxLength: 6 })
+  @ApiProperty({
+    description: '6-digit verification code sent via email',
+    example: '123456',
+    minLength: 6,
+    maxLength: 6,
+  })
   @IsString()
   @Length(6, 6)
   code!: string

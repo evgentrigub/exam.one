@@ -29,18 +29,38 @@ const messages = [{ role: 'user' as const, content: 'Hi' }]
 describe('buildChatParams', () => {
   it('uses max_completion_tokens and reasoning_effort for OpenAI, dropping temperature', () => {
     expect(
-      buildChatParams('openai', { model: 'gpt-x', messages, reasoningEffort: 'medium', temperature: 0.4, maxTokens: 100 })
+      buildChatParams('openai', {
+        model: 'gpt-x',
+        messages,
+        reasoningEffort: 'medium',
+        temperature: 0.4,
+        maxTokens: 100,
+      })
     ).toEqual({ model: 'gpt-x', messages, reasoning_effort: 'medium', max_completion_tokens: 100 })
   })
 
   it('sends reasoning as an object for OpenRouter and keeps temperature', () => {
     expect(
-      buildChatParams('openrouter', { model: 'a/b:free', messages, reasoningEffort: 'low', temperature: 0.4, maxTokens: 50 })
-    ).toEqual({ model: 'a/b:free', messages, reasoning: { effort: 'low' }, temperature: 0.4, max_tokens: 50 })
+      buildChatParams('openrouter', {
+        model: 'a/b:free',
+        messages,
+        reasoningEffort: 'low',
+        temperature: 0.4,
+        maxTokens: 50,
+      })
+    ).toEqual({
+      model: 'a/b:free',
+      messages,
+      reasoning: { effort: 'low' },
+      temperature: 0.4,
+      max_tokens: 50,
+    })
   })
 
   it('maps minimal effort to low for Gemini', () => {
-    expect(buildChatParams('gemini', { model: 'gemini-x', messages, reasoningEffort: 'minimal' })).toEqual({
+    expect(
+      buildChatParams('gemini', { model: 'gemini-x', messages, reasoningEffort: 'minimal' })
+    ).toEqual({
       model: 'gemini-x',
       messages,
       reasoning_effort: 'low',
@@ -49,12 +69,19 @@ describe('buildChatParams', () => {
 
   it('always sends max_tokens to Anthropic, caps temperature at 1 and ignores effort', () => {
     expect(
-      buildChatParams('anthropic', { model: 'claude-x', messages, reasoningEffort: 'high', temperature: 1.4 })
+      buildChatParams('anthropic', {
+        model: 'claude-x',
+        messages,
+        reasoningEffort: 'high',
+        temperature: 1.4,
+      })
     ).toEqual({ model: 'claude-x', messages, temperature: 1, max_tokens: 8192 })
   })
 
   it('ignores effort for xAI', () => {
-    expect(buildChatParams('xai', { model: 'grok-x', messages, reasoningEffort: 'high', maxTokens: 10 })).toEqual({
+    expect(
+      buildChatParams('xai', { model: 'grok-x', messages, reasoningEffort: 'high', maxTokens: 10 })
+    ).toEqual({
       model: 'grok-x',
       messages,
       max_tokens: 10,
@@ -63,7 +90,12 @@ describe('buildChatParams', () => {
 
   it('omits effort when the caller disables it', () => {
     expect(
-      buildChatParams('openai', { model: 'gpt-4o', messages, reasoningEffort: undefined, temperature: 0.2 })
+      buildChatParams('openai', {
+        model: 'gpt-4o',
+        messages,
+        reasoningEffort: undefined,
+        temperature: 0.2,
+      })
     ).toEqual({ model: 'gpt-4o', messages, temperature: 0.2 })
   })
 })
@@ -108,8 +140,18 @@ describe('listModels', () => {
       'https://openrouter.ai/api/v1/models': {
         body: {
           data: [
-            { id: 'z/paid', name: 'Paid', context_length: 1000, pricing: { prompt: '0.000001', completion: '0.000002' } },
-            { id: 'a/free:free', name: 'Free', context_length: 2000, pricing: { prompt: '0', completion: '0' } },
+            {
+              id: 'z/paid',
+              name: 'Paid',
+              context_length: 1000,
+              pricing: { prompt: '0.000001', completion: '0.000002' },
+            },
+            {
+              id: 'a/free:free',
+              name: 'Free',
+              context_length: 2000,
+              pricing: { prompt: '0', completion: '0' },
+            },
           ],
         },
       },
@@ -156,7 +198,9 @@ describe('listModels', () => {
   it('drops xAI image and video models', async () => {
     const { impl } = fakeFetch({
       'https://api.x.ai/v1/models': {
-        body: { data: [{ id: 'grok-4-fast' }, { id: 'grok-2-image' }, { id: 'grok-imagine-video' }] },
+        body: {
+          data: [{ id: 'grok-4-fast' }, { id: 'grok-2-image' }, { id: 'grok-imagine-video' }],
+        },
       },
     })
     const models = await listModels('xai', 'xai-key', impl)

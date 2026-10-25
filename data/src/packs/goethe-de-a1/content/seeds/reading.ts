@@ -5,7 +5,11 @@ const TRUE_FALSE: TrueFalse = ['Richtig', 'Falsch']
 type Row = Omit<ReadingA1Question, 'id' | 'textId' | 'type'>
 
 /** Stamp the ids and question type the reading screen and scoring expect. */
-function questions(textId: string, type: ReadingA1Question['type'], rows: Row[]): ReadingA1Question[] {
+function questions(
+  textId: string,
+  type: ReadingA1Question['type'],
+  rows: Row[]
+): ReadingA1Question[] {
   return rows.map((row, index) => ({ ...row, id: `${textId}-q${index + 1}`, textId, type }))
 }
 
@@ -64,7 +68,8 @@ export const readingA1Seeds: ReadingA1Exercise[] = [
         question: 'Stefan möchte am Donnerstag spielen.',
         options: TRUE_FALSE,
         correctAnswer: 0,
-        explanation: 'Am Donnerstag hat Stefan wieder Zeit und fragt: „Spielen wir dann um 18 Uhr?“',
+        explanation:
+          'Am Donnerstag hat Stefan wieder Zeit und fragt: „Spielen wir dann um 18 Uhr?“',
       },
     ]),
   },
@@ -87,7 +92,8 @@ export const readingA1Seeds: ReadingA1Exercise[] = [
           'www.radsport-news.de – Nachrichten und Fotos vom Radrennen in Bremen am Sonntag.',
         ],
         correctAnswer: 0,
-        explanation: 'Beim Radverleih können Sie am Wochenende ein Fahrrad mieten; die andere Seite hat nur Nachrichten.',
+        explanation:
+          'Beim Radverleih können Sie am Wochenende ein Fahrrad mieten; die andere Seite hat nur Nachrichten.',
       },
       {
         question: 'Ihr Kind hat Fieber. Sie suchen einen Arzt.',
@@ -105,7 +111,8 @@ export const readingA1Seeds: ReadingA1Exercise[] = [
           'www.lingua-reisen.de – Sprachreisen nach Spanien und Italien für die ganze Familie.',
         ],
         correctAnswer: 0,
-        explanation: 'Die Sprachschule hat Deutschkurse am Abend; die Reisen sind nach Spanien und Italien.',
+        explanation:
+          'Die Sprachschule hat Deutschkurse am Abend; die Reisen sind nach Spanien und Italien.',
       },
       {
         question: 'Sie wollen am Sonntag in einem Restaurant frühstücken.',
@@ -114,7 +121,8 @@ export const readingA1Seeds: ReadingA1Exercise[] = [
           'www.gasthaus-linde.de – Gasthaus Linde: sonntags großes Frühstück von 9 bis 12 Uhr.',
         ],
         correctAnswer: 1,
-        explanation: 'Das Gasthaus Linde hat sonntags Frühstück; das Café ist am Sonntag geschlossen.',
+        explanation:
+          'Das Gasthaus Linde hat sonntags Frühstück; das Café ist am Sonntag geschlossen.',
       },
       {
         question: 'Sie suchen eine Wohnung mit zwei Zimmern.',
@@ -238,7 +246,8 @@ export const mockReadingA1Seeds: ReadingA1Exercise[] = [
         question: 'Jonas geht morgen am Nachmittag zum Arzt.',
         options: TRUE_FALSE,
         correctAnswer: 1,
-        explanation: 'Jonas geht am Vormittag zum Arzt; am Nachmittag macht Frau Klein seine Termine.',
+        explanation:
+          'Jonas geht am Vormittag zum Arzt; am Nachmittag macht Frau Klein seine Termine.',
       },
       {
         question: 'Jonas arbeitet am Donnerstag wieder.',
@@ -268,7 +277,8 @@ export const mockReadingA1Seeds: ReadingA1Exercise[] = [
           'www.muenchen-hotels.de – Hotels und Zimmer in München: ab 59 Euro pro Nacht.',
         ],
         correctAnswer: 0,
-        explanation: 'Auf der Bahn-Seite finden Sie Züge und Fahrkarten; die andere Seite hat nur Hotels.',
+        explanation:
+          'Auf der Bahn-Seite finden Sie Züge und Fahrkarten; die andere Seite hat nur Hotels.',
       },
       {
         question: 'Sie brauchen neue Schuhe für Ihren Sohn.',
@@ -277,7 +287,8 @@ export const mockReadingA1Seeds: ReadingA1Exercise[] = [
           'www.schuh-reparatur.de – Wir reparieren Ihre Schuhe schnell und billig.',
         ],
         correctAnswer: 0,
-        explanation: 'Kinder-Mode verkauft Schuhe für Kinder; die andere Seite repariert nur Schuhe.',
+        explanation:
+          'Kinder-Mode verkauft Schuhe für Kinder; die andere Seite repariert nur Schuhe.',
       },
       {
         question: 'Sie möchten am Abend schwimmen gehen.',
@@ -286,7 +297,8 @@ export const mockReadingA1Seeds: ReadingA1Exercise[] = [
           'www.see-camping.de – Camping am See: Plätze für Zelte, Mai bis September.',
         ],
         correctAnswer: 0,
-        explanation: 'Das Hallenbad ist bis 22 Uhr offen; der Campingplatz ist kein Schwimmbad am Abend.',
+        explanation:
+          'Das Hallenbad ist bis 22 Uhr offen; der Campingplatz ist kein Schwimmbad am Abend.',
       },
       {
         question: 'Ihr Computer ist kaputt. Sie suchen Hilfe.',
@@ -295,7 +307,8 @@ export const mockReadingA1Seeds: ReadingA1Exercise[] = [
           'www.pc-service-hahn.de – PC-Service Hahn: Wir reparieren Computer und Laptops, auch bei Ihnen zu Hause.',
         ],
         correctAnswer: 1,
-        explanation: 'Der PC-Service repariert Computer; der Kurs hilft nicht bei einem kaputten Computer.',
+        explanation:
+          'Der PC-Service repariert Computer; der Kurs hilft nicht bei einem kaputten Computer.',
       },
       {
         question: 'Sie möchten eine Katze haben.',
@@ -304,7 +317,8 @@ export const mockReadingA1Seeds: ReadingA1Exercise[] = [
           'www.tierarzt-sommer.de – Tierarztpraxis Sommer: Sprechstunde Montag bis Samstag.',
         ],
         correctAnswer: 0,
-        explanation: 'Im Tierheim können Sie eine Katze bekommen; der Tierarzt behandelt nur kranke Tiere.',
+        explanation:
+          'Im Tierheim können Sie eine Katze bekommen; der Tierarzt behandelt nur kranke Tiere.',
       },
     ]),
   },

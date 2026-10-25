@@ -3,8 +3,11 @@
 REST endpoints return `{ data }` (`ApiResponse<T>` in `@exam-one/contracts`). `apiFetch` unwraps `data` and throws `ApiClientError` on failure.
 
 ```ts
-{ data: T }                    // success, HTTP 2xx
-throw new NotFoundException({  // failure, HTTP 4xx/5xx
+{
+  data: T
+} // success, HTTP 2xx
+throw new NotFoundException({
+  // failure, HTTP 4xx/5xx
   code: 'EXERCISE_NOT_FOUND',
   message: 'Exercise not found',
 })

@@ -26,7 +26,8 @@ function requireString(value: unknown, field: string): void {
 }
 
 function requireRows(value: unknown, field: string, count: number): Record<string, unknown>[] {
-  if (!Array.isArray(value) || value.length !== count) fail(`${field} must contain exactly ${count} entries`)
+  if (!Array.isArray(value) || value.length !== count)
+    fail(`${field} must contain exactly ${count} entries`)
   return value.map((row, index) => {
     if (!isRecord(row)) fail(`${field}[${index}] must be an object`)
     return row
@@ -49,7 +50,8 @@ function requireTrueFalse(row: Record<string, unknown>, at: string): void {
 
 function requireOptions(row: Record<string, unknown>, at: string, count: number): void {
   const options = row['options']
-  if (!Array.isArray(options) || options.length !== count) fail(`${at}.options must contain exactly ${count} entries`)
+  if (!Array.isArray(options) || options.length !== count)
+    fail(`${at}.options must contain exactly ${count} entries`)
   options.forEach((option, index) => requireString(option, `${at}.options[${index}]`))
 }
 
@@ -60,7 +62,8 @@ export function validateReading(payload: Record<string, unknown>, rules: PartRun
   requireString(payload['content'], 'content')
   if (payload['textType'] !== READING_TEXT_TYPE[part])
     fail(`textType must be "${READING_TEXT_TYPE[part]}" for Teil ${part}`)
-  if (typeof payload['estimatedReadingTime'] !== 'number') fail('estimatedReadingTime must be a number')
+  if (typeof payload['estimatedReadingTime'] !== 'number')
+    fail('estimatedReadingTime must be a number')
   if (typeof payload['wordCount'] !== 'number') fail('wordCount must be a number')
   if (!Array.isArray(payload['topics']) || payload['topics'].some(t => typeof t !== 'string'))
     fail('topics must be an array of strings')
@@ -97,7 +100,10 @@ export function validateListening(payload: Record<string, unknown>): void {
 }
 
 /** Schreiben: both parts keep the writing-screen metadata the A2 topics carry. */
-function requireWritingTopic(payload: Record<string, unknown>, topicTypes: readonly string[]): void {
+function requireWritingTopic(
+  payload: Record<string, unknown>,
+  topicTypes: readonly string[]
+): void {
   requireString(payload['title'], 'title')
   requireString(payload['description'], 'description')
   requireString(payload['task'], 'task')
@@ -107,10 +113,18 @@ function requireWritingTopic(payload: Record<string, unknown>, topicTypes: reado
   if (!Array.isArray(payload['category']) || payload['category'].some(c => typeof c !== 'string'))
     fail('category must be an array of strings')
   const requirements = payload['requirements']
-  if (!Array.isArray(requirements) || !requirements.length || requirements.some(r => typeof r !== 'string'))
+  if (
+    !Array.isArray(requirements) ||
+    !requirements.length ||
+    requirements.some(r => typeof r !== 'string')
+  )
     fail('requirements must be a non-empty array of strings')
   const wordCount = payload['wordCount']
-  if (!isRecord(wordCount) || typeof wordCount['min'] !== 'number' || typeof wordCount['max'] !== 'number')
+  if (
+    !isRecord(wordCount) ||
+    typeof wordCount['min'] !== 'number' ||
+    typeof wordCount['max'] !== 'number'
+  )
     fail('wordCount must have numeric min and max')
 }
 
@@ -124,7 +138,8 @@ function validateForm(payload: Record<string, unknown>, rules: PartRuntime): voi
   if (!isRecord(form)) fail('form must be an object')
   requireString(form['title'], 'form.title')
   const rows = form['rows']
-  if (!Array.isArray(rows) || rows.some(row => !isRecord(row))) fail('form.rows must be an array of objects')
+  if (!Array.isArray(rows) || rows.some(row => !isRecord(row)))
+    fail('form.rows must be an array of objects')
   const blanks: string[] = []
   ;(rows as Record<string, unknown>[]).forEach((row, index) => {
     const at = `form.rows[${index}]`
@@ -133,12 +148,14 @@ function validateForm(payload: Record<string, unknown>, rules: PartRuntime): voi
     blanks.push(String(row['field']))
     if (row['options'] !== undefined) {
       const options = row['options']
-      if (!Array.isArray(options) || options.length < 2) fail(`${at}.options must list at least 2 choices`)
+      if (!Array.isArray(options) || options.length < 2)
+        fail(`${at}.options must list at least 2 choices`)
       options.forEach((option, i) => requireString(option, `${at}.options[${i}]`))
     }
   })
   const fieldIds = (rules.fields ?? []).map(field => field.id)
-  if (blanks.join('|') !== fieldIds.join('|')) fail(`the blank rows must be ${fieldIds.join(', ')}, in order`)
+  if (blanks.join('|') !== fieldIds.join('|'))
+    fail(`the blank rows must be ${fieldIds.join(', ')}, in order`)
   if (blanks.length === rows.length) fail('form must also print some rows already filled in')
 
   const expected = payload['expected']
@@ -163,7 +180,11 @@ export function validateWriting(payload: Record<string, unknown>, rules: PartRun
   requireWritingTopic(payload, ['email', 'note'])
 }
 
-const SPEAKING_TOPIC_TYPE: Record<number, string> = { 1: 'introduction', 2: 'interview', 3: 'requests' }
+const SPEAKING_TOPIC_TYPE: Record<number, string> = {
+  1: 'introduction',
+  2: 'interview',
+  3: 'requests',
+}
 /** Teil 2 alternates asking and answering; Teil 3 alternates requesting and reacting. */
 const CARD_KINDS: Record<number, readonly string[]> = {
   2: ['ask', 'answer', 'ask', 'answer'],
@@ -194,7 +215,8 @@ export function validateSpeaking(payload: Record<string, unknown>, rules: PartRu
   cards.forEach((card, index) => {
     const at = `cards[${index}]`
     if (card['segment'] !== ids[index]) fail(`${at}.segment must be "${ids[index]}"`)
-    if (card['kind'] !== CARD_KINDS[part]?.[index]) fail(`${at}.kind must be "${CARD_KINDS[part]?.[index]}"`)
+    if (card['kind'] !== CARD_KINDS[part]?.[index])
+      fail(`${at}.kind must be "${CARD_KINDS[part]?.[index]}"`)
     requireString(card['cue'], `${at}.cue`)
     if (part === 2) requireString(card['topic'], `${at}.topic`)
   })

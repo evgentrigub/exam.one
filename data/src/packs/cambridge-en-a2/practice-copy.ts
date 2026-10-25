@@ -10,11 +10,36 @@ const listeningInstructions = {
 
 /** Session and catalog chrome, in the slots the listening screen reads (see `ExamPart`). */
 const listeningChrome = {
-  1: { practiceSubtitle: 'Short conversations', practiceType: 'dialog', practiceMinutes: 6, practiceTimerSec: 360 },
-  2: { practiceSubtitle: 'Complete the notes', practiceType: 'notes', practiceMinutes: 6, practiceTimerSec: 360 },
-  3: { practiceSubtitle: 'Longer conversation', practiceType: 'conversation', practiceMinutes: 6, practiceTimerSec: 360 },
-  4: { practiceSubtitle: 'Short recordings', practiceType: 'recordings', practiceMinutes: 6, practiceTimerSec: 360 },
-  5: { practiceSubtitle: 'Matching', practiceType: 'matching', practiceMinutes: 6, practiceTimerSec: 360 },
+  1: {
+    practiceSubtitle: 'Short conversations',
+    practiceType: 'dialog',
+    practiceMinutes: 6,
+    practiceTimerSec: 360,
+  },
+  2: {
+    practiceSubtitle: 'Complete the notes',
+    practiceType: 'notes',
+    practiceMinutes: 6,
+    practiceTimerSec: 360,
+  },
+  3: {
+    practiceSubtitle: 'Longer conversation',
+    practiceType: 'conversation',
+    practiceMinutes: 6,
+    practiceTimerSec: 360,
+  },
+  4: {
+    practiceSubtitle: 'Short recordings',
+    practiceType: 'recordings',
+    practiceMinutes: 6,
+    practiceTimerSec: 360,
+  },
+  5: {
+    practiceSubtitle: 'Matching',
+    practiceType: 'matching',
+    practiceMinutes: 6,
+    practiceTimerSec: 360,
+  },
 } as const
 
 const writingTips = {
@@ -38,14 +63,28 @@ const speakingCopy = {
     practiceMinutes: 4,
     instruction:
       'The examiner asks you five questions. Record one answer for each: short answers for the first four, and two or three sentences for the last one.',
-    phrases: ['I live in …', 'I’m a student at …', 'I work as a …', 'I usually …', 'I really like … because …', 'My favourite … is …'],
+    phrases: [
+      'I live in …',
+      'I’m a student at …',
+      'I work as a …',
+      'I usually …',
+      'I really like … because …',
+      'My favourite … is …',
+    ],
   },
   2: {
     sessionTitle: 'Discussion',
     practiceMinutes: 6,
     instruction:
       'In the exam you talk with a partner about some pictures. Here, say what you think about each activity, ask your partner one question, then answer the examiner’s questions. Record each turn separately and give reasons.',
-    phrases: ['I like … because …', 'I don’t really like … It’s too …', 'What about you?', 'Do you like …?', 'I think … is more interesting than …', 'I prefer … because …'],
+    phrases: [
+      'I like … because …',
+      'I don’t really like … It’s too …',
+      'What about you?',
+      'Do you like …?',
+      'I think … is more interesting than …',
+      'I prefer … because …',
+    ],
   },
 } as const
 

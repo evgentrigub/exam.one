@@ -199,7 +199,12 @@ Turns (segment id, task, card, transcript):
       SCORING,
     ],
     outputContract: reviewContract(
-      [turn('ask1', 'Question 1'), turn('answer1', 'Answer 1'), turn('ask2', 'Question 2'), turn('answer2', 'Answer 2')].join(',\n'),
+      [
+        turn('ask1', 'Question 1'),
+        turn('answer1', 'Answer 1'),
+        turn('ask2', 'Question 2'),
+        turn('answer2', 'Answer 2'),
+      ].join(',\n'),
       6
     ),
   }),
@@ -220,7 +225,12 @@ Turns (segment id, task, card, transcript):
       SCORING,
     ],
     outputContract: reviewContract(
-      [turn('request1', 'Request 1'), turn('response1', 'Reaction 1'), turn('request2', 'Request 2'), turn('response2', 'Reaction 2')].join(',\n'),
+      [
+        turn('request1', 'Request 1'),
+        turn('response1', 'Reaction 1'),
+        turn('request2', 'Request 2'),
+        turn('response2', 'Reaction 2'),
+      ].join(',\n'),
       6
     ),
   }),

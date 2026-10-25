@@ -76,7 +76,8 @@ describe('Goethe A1 pack', () => {
 
   it('rejects a Teil 1 conversation without speaker labels', () => {
     const payload = seed('listening', 1)
-    ;(payload['items'] as Record<string, unknown>[])[0]!['transcript'] = 'Guten Abend. Zimmer 314, bitte.'
+    ;(payload['items'] as Record<string, unknown>[])[0]!['transcript'] =
+      'Guten Abend. Zimmer 314, bitte.'
     expect(() => part('listening', 1).validate!(payload, part('listening', 1).runtime!)).toThrow(
       'labelled turns'
     )
@@ -130,7 +131,9 @@ describe('Goethe A1 pack', () => {
   it('rejects a form without an expected entry, or with one outside its options', () => {
     const missing = seed('writing', 1)
     delete (missing['expected'] as Record<string, unknown>)['field3']
-    expect(() => part('writing', 1).validate!(missing, part('writing', 1).runtime!)).toThrow('expected.field3')
+    expect(() => part('writing', 1).validate!(missing, part('writing', 1).runtime!)).toThrow(
+      'expected.field3'
+    )
     const outside = seed('writing', 1)
     ;(outside['expected'] as Record<string, unknown>)['field4'] = 'Nachmittag'
     expect(() => part('writing', 1).validate!(outside, part('writing', 1).runtime!)).toThrow(
@@ -186,7 +189,12 @@ describe('Goethe A1 pack', () => {
 
   it('accepts a 3/1.5/0 message review for Teil 2', () => {
     const rules = part('writing', 2).runtime!
-    const points: Record<string, number> = { content1: 3, content2: 1.5, content3: 3, communication: 0.5 }
+    const points: Record<string, number> = {
+      content1: 3,
+      content2: 1.5,
+      content3: 3,
+      communication: 0.5,
+    }
     const review = {
       criteria: rules.criteria!.map(c => ({ ...c, points: points[c.id], comment: 'ok' })),
       totalPoints: 8,

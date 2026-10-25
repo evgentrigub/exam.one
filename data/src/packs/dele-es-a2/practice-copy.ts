@@ -16,10 +16,30 @@ const listeningInstructions = {
 
 /** Session and catalog chrome, in the slots the listening screen reads (see `ExamPart`). */
 const listeningChrome = {
-  1: { practiceSubtitle: 'Conversaciones breves', practiceType: 'dialog', practiceMinutes: 10, practiceTimerSec: 600 },
-  2: { practiceSubtitle: 'Noticias y anuncios de radio', practiceType: 'announcement', practiceMinutes: 10, practiceTimerSec: 600 },
-  3: { practiceSubtitle: '¿Quién lo dice?', practiceType: 'conversation', practiceMinutes: 10, practiceTimerSec: 600 },
-  4: { practiceSubtitle: 'Mensajes y avisos', practiceType: 'voicemail', practiceMinutes: 10, practiceTimerSec: 600 },
+  1: {
+    practiceSubtitle: 'Conversaciones breves',
+    practiceType: 'dialog',
+    practiceMinutes: 10,
+    practiceTimerSec: 600,
+  },
+  2: {
+    practiceSubtitle: 'Noticias y anuncios de radio',
+    practiceType: 'announcement',
+    practiceMinutes: 10,
+    practiceTimerSec: 600,
+  },
+  3: {
+    practiceSubtitle: '¿Quién lo dice?',
+    practiceType: 'conversation',
+    practiceMinutes: 10,
+    practiceTimerSec: 600,
+  },
+  4: {
+    practiceSubtitle: 'Mensajes y avisos',
+    practiceType: 'voicemail',
+    practiceMinutes: 10,
+    practiceTimerSec: 600,
+  },
 } as const
 
 const writingChrome = {
@@ -50,21 +70,42 @@ const speakingCopy = {
     practiceType: 'monologue',
     instruction:
       'In the exam you choose one of two topics and talk about it for 2–3 minutes, without interruption. Cover all five points on the card. You may prepare notes, but do not read them out.',
-    phrases: ['Voy a hablar de …', 'Para mí, lo más importante es …', 'Normalmente …', 'El año pasado …', 'Lo que más me gusta es …', 'Para terminar, …'],
+    phrases: [
+      'Voy a hablar de …',
+      'Para mí, lo más importante es …',
+      'Normalmente …',
+      'El año pasado …',
+      'Lo que más me gusta es …',
+      'Para terminar, …',
+    ],
   },
   2: {
     sessionTitle: 'Descripción de una escena',
     practiceType: 'photo',
     instruction:
       'In the exam you describe a photo for 2–3 minutes. Here the scene is described in words. Describe the people, the place, what they are doing and how they feel, with the help of the five guide questions.',
-    phrases: ['En la escena hay …', 'Parece que …', 'Está/Están + gerundio (hablando, comiendo) …', 'A la derecha / a la izquierda …', 'Creo que se sienten …', 'Antes / después, seguramente …'],
+    phrases: [
+      'En la escena hay …',
+      'Parece que …',
+      'Está/Están + gerundio (hablando, comiendo) …',
+      'A la derecha / a la izquierda …',
+      'Creo que se sienten …',
+      'Antes / después, seguramente …',
+    ],
   },
   3: {
     sessionTitle: 'Conversación con el examinador',
     practiceType: 'roleplay',
     instruction:
       'In the exam you act out a situation from the scene with the examiner for 3–4 minutes. Here the examiner’s lines are fixed cards: answer each one, and ask the question on your own card. Record each turn separately.',
-    phrases: ['Buenos días, quería …', '¿Cuánto cuesta …?', '¿Tiene …?', 'Prefiero …', 'Vale, perfecto.', 'Muchas gracias, adiós.'],
+    phrases: [
+      'Buenos días, quería …',
+      '¿Cuánto cuesta …?',
+      '¿Tiene …?',
+      'Prefiero …',
+      'Vale, perfecto.',
+      'Muchas gracias, adiós.',
+    ],
   },
 } as const
 

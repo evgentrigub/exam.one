@@ -21,7 +21,11 @@ export function useTtsHealth() {
     inFlight = true
     try {
       const res = await aiFetch<TtsHealthData>('/tts/health')
-      status.value = res.data?.ok ? 'ready' : res.data?.reason === 'unsupported' ? 'unsupported' : 'offline'
+      status.value = res.data?.ok
+        ? 'ready'
+        : res.data?.reason === 'unsupported'
+          ? 'unsupported'
+          : 'offline'
       lastCheckedAt.value = new Date().toISOString()
     } catch {
       status.value = 'offline'

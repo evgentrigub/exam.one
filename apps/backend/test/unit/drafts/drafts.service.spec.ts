@@ -4,11 +4,7 @@ import { PrismaService } from '@exam-one/nestjs-libraries'
 import { DraftsService } from '../../../src/practice/drafts.service'
 import { makeDraft, makeUser } from '../../../src/testing/fixtures'
 
-function expectCode(
-  error: unknown,
-  type: new (...args: any[]) => HttpException,
-  code: string
-) {
+function expectCode(error: unknown, type: new (...args: any[]) => HttpException, code: string) {
   expect(error).toBeInstanceOf(type)
   expect((error as HttpException).getResponse()).toEqual(expect.objectContaining({ code }))
 }
@@ -73,7 +69,12 @@ describe('DraftsService', () => {
 
     expect(prisma.draft.findUnique).toHaveBeenCalledWith({
       where: {
-        userId_packId_skill_topicId: { userId: user.id, packId: 'goethe-de-a2', skill: 'WRITING', topicId: draft.topicId },
+        userId_packId_skill_topicId: {
+          userId: user.id,
+          packId: 'goethe-de-a2',
+          skill: 'WRITING',
+          topicId: draft.topicId,
+        },
       },
     })
     expect(result?.payload).toEqual({ text: 'Hallo' })
@@ -85,7 +86,14 @@ describe('DraftsService', () => {
     await service.upsert(user, 'WRITING', 'topic-1', { text: 'Neu' })
 
     expect(prisma.draft.upsert).toHaveBeenCalledWith({
-      where: { userId_packId_skill_topicId: { userId: user.id, packId: 'goethe-de-a2', skill: 'WRITING', topicId: 'topic-1' } },
+      where: {
+        userId_packId_skill_topicId: {
+          userId: user.id,
+          packId: 'goethe-de-a2',
+          skill: 'WRITING',
+          topicId: 'topic-1',
+        },
+      },
       create: {
         userId: user.id,
         packId: 'goethe-de-a2',
