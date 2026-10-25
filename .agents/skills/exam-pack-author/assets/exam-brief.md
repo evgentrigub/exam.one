@@ -9,6 +9,7 @@ Fill in what is known. Mark missing information as **Unknown** rather than guess
 - Language and language code:
 - CEFR level:
 - Proposed pack ID and any required aliases:
+- Board ID and display label (new board or existing):
 - Exam edition/version and intended audience:
 - Sources: file or URL, title, edition/date, relevant pages or sections:
 - Status: official exam specification / user-designed practice / synthetic fixture:
