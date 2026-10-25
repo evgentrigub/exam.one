@@ -1,6 +1,9 @@
-# Lint, type-check, unit tests and build for every pull request and push to main. When they pass,
-# the E2E suite in evgentrigub/exam-one-e2e is started for the same commit; it reports back to
-# the commit as the "e2e" status.
+# Checks for every pull request and push to main, run as parallel jobs:
+#   Lint & format, Type-check, Build & unit tests, Backend e2e + migrations (Postgres and Redis
+#   service containers) and the frontend / backend Docker images.
+# "CI result" aggregates them and is the status check required on main. When it passes, the E2E
+# suite in evgentrigub/exam-one-e2e is started for the same commit; it reports back to the commit
+# as the "e2e" status.
 #
 # Secret E2E_DISPATCH_TOKEN: fine-grained token for evgentrigub/exam-one-e2e with
 # Contents: read and write (needed to send a repository_dispatch event).
@@ -19,44 +22,138 @@ permissions:
   contents: read
 
 jobs:
-  checks:
+  lint:
+    name: Lint & format
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
 
-      - uses: pnpm/action-setup@v4
+      - name: Prettier
+        run: pnpm format:check
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      # The Nuxt scripts read ../../.env; the example has no secrets and is enough to build.
-      - name: Environment for the build
-        run: cp .env.example .env
-
-      - name: Lint
+      - name: ESLint
         run: pnpm lint
-
-      - name: Type-check
-        run: pnpm type-check
-
-      # Before the tests: workspace packages (e.g. @exam-one/database) resolve to their dist/.
-      - name: Build
-        run: pnpm build
-
-      - name: Unit tests
-        run: pnpm test
 
       - name: Locale parity
         run: pnpm i18n:check
 
+  type-check:
+    name: Type-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+
+      - name: Type-check
+        run: pnpm type-check
+
+  build-test:
+    name: Build & unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+
+      # Before the tests: workspace packages (e.g. @exam-one/database) resolve to their dist/.
+      # The frontend type-check already runs in its own job.
+      - name: Build
+        run: pnpm build
+        env:
+          SKIP_NUXT_TYPECHECK: '1'
+
+      - name: Unit tests
+        run: pnpm test
+
+  backend-e2e:
+    name: Backend e2e + migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: exam_one
+          POSTGRES_USER: exam_one
+          POSTGRES_PASSWORD: exam_one
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U exam_one -d exam_one"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://exam_one:exam_one@localhost:5432/exam_one?schema=public
+      REDIS_URL: redis://localhost:6379
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+
+      - name: Build the backend's workspace dependencies
+        run: pnpm --filter "exam-one-backend^..." build
+
+      - name: Apply migrations
+        run: pnpm db:migrate:deploy
+
+      - name: Schema matches migrations
+        working-directory: libraries/database
+        run: pnpm exec prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
+
+      - name: Backend e2e
+        run: pnpm test:e2e
+
+  docker:
+    name: Docker image (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [frontend, backend]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Compose file is valid
+        run: cp .env.example .env && docker compose config --quiet
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: apps/${{ matrix.app }}/Dockerfile
+          push: false
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+
+  ci-result:
+    name: CI result
+    if: always()
+    needs: [lint, type-check, build-test, backend-e2e, docker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: All checks passed
+        env:
+          FAILED: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: |
+          if [ "${FAILED}" = "true" ]; then
+            echo "::error::One or more CI jobs failed or were cancelled."
+            exit 1
+          fi
+
   e2e:
-    needs: checks
+    needs: ci-result
+    # Pull requests from forks get no secrets, so only same-repository changes start the suite.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

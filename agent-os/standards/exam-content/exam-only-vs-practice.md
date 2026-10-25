@@ -3,9 +3,9 @@
 Each skill seed file exports three arrays:
 
 ```ts
-defaultReadingTopics      // practice
-mockExamReadingTopics     // examOnly: true
-allDefaultReadingTopics   // [...default, ...mock] — what db:seed upserts
+defaultReadingTopics // practice
+mockExamReadingTopics // examOnly: true
+allDefaultReadingTopics // [...default, ...mock] — what db:seed upserts
 ```
 
 - Practice composables filter `!examOnly`. Mock sets load those items via the set, not the practice catalog.

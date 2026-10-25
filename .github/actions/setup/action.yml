@@ -1,0 +1,21 @@
+name: Set up the workspace
+description: Install pnpm (version from packageManager), Node 24 and the workspace dependencies.
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v6
+
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 24
+        cache: pnpm
+
+    - name: Install
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    # The Nuxt scripts and the backend read ../../.env; the example has no secrets.
+    - name: Environment
+      shell: bash
+      run: cp .env.example .env
