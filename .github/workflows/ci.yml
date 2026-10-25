@@ -58,6 +58,9 @@ jobs:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
+      - name: Onboarding installer checks
+        run: node --test scripts/stack-install.test.mjs
+
       # Before the tests: workspace packages (e.g. @exam-one/database) resolve to their dist/.
       # The frontend type-check already runs in its own job.
       - name: Build

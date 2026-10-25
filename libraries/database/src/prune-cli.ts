@@ -16,7 +16,7 @@ async function main(): Promise<void> {
         !(flag >= 0 && index === flag + 1 && args[flag] === '--pack')
     )
   )
-    throw new Error('Usage: pnpm db:prune [--pack pack-id] [--force]')
+    throw new Error('Usage: pnpm --filter @exam-one/database db:prune [--pack pack-id] [--force]')
   if (process.env['NODE_ENV'] === 'production' && !args.includes('--force'))
     throw new Error('Production pruning requires --force')
   const prisma = createPrismaClient()

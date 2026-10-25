@@ -36,6 +36,8 @@ This file is the working guide for coding agents in this repository. It should b
 
 Use `pnpm`.
 
+- `bash scripts/stack-install.sh` / `pnpm stack:install` - check prerequisites, prepare `.env` and missing secrets, install dependencies, and start the stack; `--check` checks tools only, `--core` skips speech
+- Root database workflows are `db:migrate`, `db:migrate:deploy`, `db:seed`, and `db:reset-practice`; standalone `db:prune` and `db:validate` remain package-local
 - `pnpm dev:infra` - start the persistent development PostgreSQL container
 - `pnpm dev` - start Nuxt and NestJS locally with hot reload
 - `pnpm dev:frontend` - start only Nuxt

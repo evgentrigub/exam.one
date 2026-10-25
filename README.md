@@ -39,48 +39,48 @@ Mock results are practice estimates. Solo speaking and transcript-based feedback
 
 ### Requirements
 
-- [ ] Install Node.js 24 or newer: `curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash - && sudo apt-get install -y nodejs`
+- [ ] Install [Node.js 24 or newer](https://nodejs.org/en/download).
 - [ ] Install pnpm 10 using npm: `npm install -g pnpm@10.12.1`
-- [ ] Download Docker Engine and Docker Compose v2 with healthcheck support: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
-- [ ] Install Bash and OpenSSL: `sudo apt-get install -y bash openssl`
+- [ ] Install [Docker Desktop or Docker Engine with Compose](https://docs.docker.com/get-docker/), including Compose's `--wait` support.
+- [ ] Bash (included on macOS and most Linux systems; use WSL on Windows).
 - [ ] Several GB of disk space for images, speech models, and audio. Allow around 4 GB RAM for the core stack, with more for builds and speech services.
 
 ### Quick start
 
-1. Run from the `exam-one` repository root. For an existing installation, keep your `.env` and follow [Upgrades](#upgrades).
+1. From the `exam-one` repository root, run the installer. It works before pnpm or project dependencies are installed and reports any missing prerequisites with installation instructions:
 
 ```bash
-pnpm install
-cp .env.example .env
+bash scripts/stack-install.sh
 ```
 
-2. Generate two separate secrets and put them in `.env`:
+The installer checks Node, npm availability, the pinned pnpm version, Docker Compose's health-wait support, and access to the running Docker engine. Missing prerequisites stop installation; install or fix the reported tools and rerun the same command. npm is optional when pnpm already works. No tools are installed globally by the script.
+
+After checks pass, it creates `.env` from the template if needed, generates missing secrets using Node's crypto module, runs `pnpm install --frozen-lockfile`, and starts the existing stack workflow. Existing nonempty secrets and settings are preserved; invalid secrets must be corrected before installation continues. No host Python or OpenSSL is required for this workflow.
+
+With pnpm available, the equivalent command is `pnpm stack:install`. To check prerequisites without changing files or starting services:
 
 ```bash
-openssl rand -base64 48  # Copy the result into JWT_SECRET in .env
-openssl rand -base64 32  # Copy the result into SECRETS_ENCRYPTION_KEY in .env
+bash scripts/stack-install.sh --check
 ```
 
-Both are required before startup, even if you do not use AI. `JWT_SECRET` must be at least 32 characters; `SECRETS_ENCRYPTION_KEY` must be base64 for exactly 32 bytes.
+Initial setup can take 10–15 minutes to build images, download speech models, and prepare bundled listening audio. Rerun the installer after a failure to retry; existing secrets and stored data are retained. For an existing installation, keep your `.env` and follow [Upgrades](#upgrades).
 
-3. Start the stack:
-
-```bash
-pnpm stack:up
-```
-
-The initial setup could take around 10-15 minutes to build the images, download the speech models and generate initial exercises.
-
-4. Open [http://localhost:3000](http://localhost:3000) and register an account with any email. In the top right navbar click question mark icon to open `Quick Start` guide.
-5. By default, the app is configured to use the `Cambridge English A2` exam. Choose your exam in **Settings → Learning plan**.
-6. Set AI provider credentials in **Settings → AI providers** to enable AI features to generate exercise, exercise feedback, and mock exams.
-7. For other exams, download voices in **Settings → Generated files → Voice models**, then generate the pack's listening audio in the app. Transcription models are managed under **Settings → Generated files → Speech models**.
+2. Open the frontend URL printed by the installer (default [http://localhost:3000](http://localhost:3000)) and register an account with any email. In the top right navbar click question mark icon to open `Quick Start` guide.
+3. By default, the app is configured to use the `Cambridge English A2` exam. Choose your exam in **Settings → Learning plan**.
+4. Set AI provider credentials in **Settings → AI providers** to enable AI features to generate exercise, exercise feedback, and mock exams.
+5. For other exams, download voices in **Settings → Generated files → Voice models**, then generate the pack's listening audio in the app. Transcription models are managed under **Settings → Generated files → Speech models**.
 
 Startup applies database migrations and seeds bundled content. It starts the core application first, then downloads speech models, starts TTS/STT, and prepares listening audio. The first run can take several minutes; the app becomes usable while speech setup continues.
 
 ### Run without speech services
 
-If you don't need speech services (listening audio generation, transcription, or AI feedback), you can run the core stack only. After completing the same installation and secret setup, use this instead of `pnpm stack:up`:
+For a first installation without speech services, use:
+
+```bash
+bash scripts/stack-install.sh --core
+```
+
+For subsequent starts of an already configured core stack, use:
 
 ```bash
 pnpm stack:up:core
@@ -91,9 +91,9 @@ Accounts, text-based practice, history, and saved mock attempts work with the co
 ### Inspect and stop
 
 ```bash
-pnpm stack:ps    # Show service status
-pnpm stack:logs  # Follow logs; Ctrl+C stops following
-pnpm stack:down  # Stop the stack while preserving data
+docker compose ps       # Show service status
+docker compose logs -f  # Follow logs; Ctrl+C stops following
+pnpm stack:down         # Stop the stack while preserving data
 ```
 
 The API defaults to [http://localhost:3001](http://localhost:3001), with readiness at [/api/v1/health/ready](http://localhost:3001/api/v1/health/ready). API documentation at [/api/docs](http://localhost:3001/api/docs) is enabled in local development; Compose requires `SWAGGER_ENABLED=true`.
@@ -183,7 +183,7 @@ Backend startup applies committed migrations and upserts bundled content while p
 
 | Symptom                        | Check                                                                                                                             |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| API will not start             | Both required secrets in `.env`, PostgreSQL/Redis health, and `pnpm stack:logs`                                                   |
+| API will not start             | Both required secrets in `.env`, PostgreSQL/Redis health, and `docker compose logs -f backend`                                    |
 | Port conflict                  | Adjust the relevant `*_PORT` in `.env` or stop the conflicting process                                                            |
 | Cannot sign in over local HTTP | Keep `AUTH_COOKIE_SECURE=false` and check the database is available                                                               |
 | Missing listening audio        | Install voices for the exam language and generate its audio in Settings; see the [TTS guide](scripts/tts/README.md#bundled-audio) |
@@ -195,7 +195,7 @@ See the [stack and speech tools](scripts/README.md) for advanced setup and diagn
 
 ## Local development
 
-Complete the dependency installation and `.env` secret setup from [Quick start](#quick-start), then run Nuxt and NestJS on the host with PostgreSQL and Redis in Docker:
+Install dependencies with `pnpm install`. If `.env` does not exist, copy `.env.example` to `.env` and set both required secrets. For manual setup, `openssl rand -base64 48` generates a JWT secret and `openssl rand -base64 32` generates the encryption key; keep existing secrets when updating an installation. Then run Nuxt and NestJS on the host with PostgreSQL and Redis in Docker:
 
 ```bash
 pnpm dev:infra
