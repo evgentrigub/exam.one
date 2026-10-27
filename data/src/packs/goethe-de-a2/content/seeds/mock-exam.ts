@@ -86,11 +86,23 @@ export interface MockScaleRules {
  * against its own mark when `groups` is set, or the average on a `scale` reaching its pass
  * score (Cambridge: 120).
  */
+/**
+ * A grade awarded on the exact total of a passed result (telc: sehr gut from 270 of 300).
+ * Highest first; the UI names it `mockExam.grades.<id>` unless `labelKey` says otherwise.
+ */
+export interface MockGradeBand {
+  id: string
+  min: number
+  labelKey?: string
+}
+
 export interface MockExamRules {
   maximumPoints: number
   passPoints?: number
   groups?: MockPassGroup[]
   scale?: MockScaleRules
+  /** Grades for a passed result; a failed result reports `failed`, whatever its total. */
+  grades?: ReadonlyArray<MockGradeBand>
 }
 
 export interface MockExamSet {

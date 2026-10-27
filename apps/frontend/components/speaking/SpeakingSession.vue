@@ -29,6 +29,25 @@
         <p class="text-sm text-base-content/60">{{ instruction }}</p>
       </div>
 
+      <article
+        v-if="stimulus"
+        class="rounded-box border border-base-300 bg-base-100 p-5 ring-soft"
+        :aria-labelledby="stimulusHeadingId"
+      >
+        <p class="mb-2 text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
+          {{ t('speaking.session.stimulus') }}
+        </p>
+        <h3 :id="stimulusHeadingId" class="font-display text-base font-semibold leading-snug">
+          {{ stimulus.title }}
+        </h3>
+        <div class="mt-3 max-h-[28rem] space-y-2.5 overflow-y-auto pr-1 text-sm leading-relaxed">
+          <p v-for="(paragraph, index) in stimulusParagraphs" :key="index">{{ paragraph }}</p>
+        </div>
+        <p v-if="stimulus.source" class="mt-3 text-xs text-base-content/45">
+          {{ stimulus.source }}
+        </p>
+      </article>
+
       <div
         v-for="group in promptGroups"
         :key="group.label"
@@ -124,7 +143,11 @@
         </div>
 
         <div class="space-y-4 p-5">
-          <SpeakingCard v-if="segment.card" :card="segment.card" />
+          <SpeakingCard
+            v-if="segment.card"
+            :card="segment.card"
+            :max-seconds="segment.maxSeconds"
+          />
           <SpeakingRecorder
             :max-seconds="segment.maxSeconds"
             :disabled="recorderDisabled(segment.key)"
@@ -341,6 +364,15 @@ const selectedTopicId = ref(
 const selectedTopic = computed(() =>
   topicOptions.value.find(option => option.id === selectedTopicId.value)
 )
+/** The text this part is about (a discussion article), from the chosen topic or the topic. */
+const stimulus = computed(
+  () =>
+    selectedTopic.value?.stimulus ?? ('stimulus' in props.topic ? props.topic.stimulus : undefined)
+)
+const stimulusParagraphs = computed(() =>
+  (stimulus.value?.content ?? '').split(/\n+/).filter(paragraph => paragraph.trim())
+)
+const stimulusHeadingId = useId()
 watch(selectedTopicId, () => {
   for (const id of segmentIds) transcripts[id] = ''
   emit('progress', { transcripts: attemptTranscripts(), durationSec: 0 })
@@ -477,13 +509,15 @@ function cardSegments(): SessionSegment[] {
     const round = (rounds[card.kind] = (rounds[card.kind] ?? 0) + 1)
     // An examiner question reads as one, not as a partner's line.
     const copy = card.speaker === 'examiner' ? 'examiner' : card.kind
+    const maxSeconds = segment.maxSeconds ?? CARD_TURN_SECONDS
+    const time = `${Math.floor(maxSeconds / 60)}:${String(maxSeconds % 60).padStart(2, '0')}`
     return [
       {
         key: segment.id,
-        title: t(`speaking.cards.${copy}.title`, { round }),
+        title: t(`speaking.cards.${copy}.title`, { round, time }),
         description: t(`speaking.cards.${copy}.description`),
         placeholder: t('speaking.cards.placeholder'),
-        maxSeconds: segment.maxSeconds ?? CARD_TURN_SECONDS,
+        maxSeconds,
         card,
       },
     ]

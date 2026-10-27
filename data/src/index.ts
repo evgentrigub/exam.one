@@ -26,6 +26,7 @@ export { CERTPOL_PL_B1_PACK_ID, certpolPlB1 } from './packs/certpol-pl-b1/pack'
 export { DELE_ES_A2_PACK_ID, deleEsA2 } from './packs/dele-es-a2/pack'
 export { DELE_ES_B1_PACK_ID, deleEsB1 } from './packs/dele-es-b1/pack'
 export { goetheDeC1 } from './packs/goethe-de-c1/pack'
+export { TELC_DE_B2_PACK_ID, telcDeB2 } from './packs/telc-de-b2/pack'
 export { buildMockExamOverviewPrompt } from './packs/goethe-de-a2/prompts/mock-exam'
 export type {
   MockExamOverview,

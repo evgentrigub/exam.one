@@ -8,12 +8,12 @@ Run the application locally with Docker Compose. Accounts and practice records a
 
 ## Supported exam packs
 
-All ten packs include the four skills, bundled practice, and a bundled mock exam (Set 1). **Yes** means a pack is available in exam.one; **No** means that board and level are not currently supported in the app.
+All eleven packs include the four skills, bundled practice, and a bundled mock exam (Set 1). **Yes** means a pack is available in exam.one; **No** means that board and level are not currently supported in the app.
 
 | Exam board / language         | A1  | A2  | B1  | B2  | C1  |
 | ----------------------------- | --- | --- | --- | --- | --- |
 | Goethe-Institut · German      | Yes | Yes | Yes | No  | Yes |
-| TELC · German                 | No  | No  | No  | No  | No  |
+| telc · German                 | No  | No  | No  | Yes | No  |
 | Cambridge English · English   | No  | Yes | Yes | No  | No  |
 | Certyfikat Polski · Polish    | No  | Yes | Yes | No  | No  |
 | Instituto Cervantes · Spanish | No  | Yes | Yes | No  | No  |

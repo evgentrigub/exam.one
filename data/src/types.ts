@@ -48,6 +48,11 @@ export interface ExamPart {
   layout?: PartLayout
   /** Show selected choice words/sentences in numbered passage gaps. Answers remain indices. */
   choiceGaps?: boolean
+  /**
+   * Questions share one option list: show it once as a lettered bank and answer each question
+   * with compact letter chips. Display only; payloads whose options differ keep the full grid.
+   */
+  optionBank?: boolean
   runtime?: PartRuntime
   adapter?: ExerciseAdapter
   /**

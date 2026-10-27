@@ -3,7 +3,9 @@
     v-if="card.kind === 'presentation'"
     class="rounded-box border border-primary/30 bg-primary/5 p-5"
   >
-    <p class="font-semibold">{{ $t('speaking.cards.presentation.title') }}</p>
+    <p class="font-semibold">
+      {{ $t('speaking.cards.presentation.title', { time: formatClock(maxSeconds) }) }}
+    </p>
     <p class="mt-2 leading-relaxed" :lang="lang">{{ card.cue }}</p>
   </div>
   <!-- A full-sentence task (e.g. a C1 statement to react to) reads as plain text, not a word card. -->
@@ -64,7 +66,12 @@
 import { UserRound } from 'lucide-vue-next'
 import type { SpeakingCard } from '@exam-one/exam-packs'
 
-const props = defineProps<{ card: SpeakingCard }>()
+const props = defineProps<{ card: SpeakingCard; maxSeconds: number }>()
+
+/** A recording limit as the recorder shows it, such as 1:30. */
+function formatClock(seconds: number): string {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+}
 
 // Card text is in the exam language, whatever the interface language is.
 const { pack } = useActivePack()

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { ForbiddenException, HttpException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@exam-one/nestjs-libraries'
+import { getPack } from '@exam-one/exam-packs'
 import { MockExamService } from '../../../src/mock-exam/mock-exam.service'
 import { makeMockExamAttempt, makeMockExamSet, makeUser } from '../../../src/testing/fixtures'
 
@@ -244,6 +245,62 @@ describe('MockExamService', () => {
       create: { userId: user.id, setId: set.id, state: { module: 'listening' } },
       update: { state: { module: 'listening' } },
       include: { set: true },
+    })
+  })
+
+  it('recomputes banded speaking scores from saved reviews and rejects off-band grades', async () => {
+    const bundled = getPack('telc-de-b2')!.bundledMockSet!
+    const set = makeMockExamSet({
+      packId: 'telc-de-b2',
+      externalId: bundled.id,
+      content: bundled.content as never,
+      modules: bundled.modules as never,
+    })
+    prisma.mockExamSet.findFirst.mockResolvedValue(set)
+    prisma.mockExamAttempt.upsert.mockImplementation(({ create }) =>
+      Promise.resolve(makeMockExamAttempt({ set, state: create.state }))
+    )
+    const review = (band: number) => {
+      const criteria = ['expression', 'taskCompletion', 'accuracy'].map((id, i) => ({
+        id,
+        label: ['Ausdrucksfähigkeit', 'Aufgabenbewältigung', 'Formale Richtigkeit'][i],
+        maxPoints: 7,
+        points: [7, 5, 3, 0][band],
+        grade: 'ABCD'[band],
+        comment: '',
+      }))
+      return {
+        criteria,
+        totalPoints: criteria.reduce((sum, c) => sum + c.points!, 0),
+        maxPoints: 21,
+        summary: '',
+        strengths: [],
+        improvements: [],
+      }
+    }
+    const speakingIds = bundled.content.speaking.map(topic => topic.id!)
+    const state = (bands: number[]) => ({
+      modules: {
+        speaking: {
+          scoreFinal: 75,
+          responses: Object.fromEntries(
+            speakingIds.map((id, i) => [id, { speakingReview: review(bands[i]!), rawScore: 21 }])
+          ),
+        },
+      },
+    })
+
+    const saved = await service.upsertAttempt(user, set.externalId, state([1, 1, 3]))
+    const speaking = (saved.state as { modules: { speaking: Record<string, unknown> } }).modules
+      .speaking
+    expect(speaking['scoreRaw']).toBe(30)
+    expect(speaking['scoreFinal']).toBeCloseTo((30 * 75) / 63)
+    expect(speaking['grading']).toBe('done')
+
+    const offBand = state([1, 1, 1])
+    offBand.modules.speaking.responses[speakingIds[0]!]!.speakingReview.criteria[0]!.points = 6
+    await expect(service.upsertAttempt(user, set.externalId, offBand)).rejects.toMatchObject({
+      response: expect.objectContaining({ code: 'INVALID_REVIEW' }),
     })
   })
 

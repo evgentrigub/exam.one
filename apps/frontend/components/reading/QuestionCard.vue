@@ -8,8 +8,26 @@
       </div>
     </div>
 
+    <!-- Option bank: the options are listed once above, answered here by letter -->
+    <div v-if="compact" class="mt-2.5 flex flex-wrap gap-1.5" role="group">
+      <button
+        v-for="(option, i) in question.options"
+        :key="i"
+        :disabled="submitted"
+        type="button"
+        :aria-label="option"
+        :aria-pressed="selectedAnswer === i"
+        :title="optionText(option)"
+        class="grid h-9 min-w-9 place-items-center rounded-field border px-2 font-mono text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        :class="getLetterPillClass(i)"
+        @click="selectAnswer(i)"
+      >
+        {{ optionLetter(option, i) }}
+      </button>
+    </div>
+
     <!-- 2×2 option grid -->
-    <div class="grid sm:grid-cols-2 gap-2 mt-3">
+    <div v-else class="grid sm:grid-cols-2 gap-2 mt-3">
       <button
         v-for="(option, i) in question.options"
         :key="i"
@@ -55,6 +73,7 @@
 <script setup lang="ts">
 import { Check, X } from 'lucide-vue-next'
 import type { ReadingQuestion } from '~/utils/exercises/reading'
+import { optionLetter, optionText } from '~/utils/optionBank'
 
 interface Props {
   question: ReadingQuestion
@@ -64,14 +83,23 @@ interface Props {
   showFeedback?: boolean
   /** Richtig / Falsch items: the options are the answer, so no a/b letter is shown. */
   trueFalse?: boolean
+  /** The options are shown once in an option bank; answer with letter chips only. */
+  compact?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), { showFeedback: true, trueFalse: false })
+const props = withDefaults(defineProps<Props>(), {
+  showFeedback: true,
+  trueFalse: false,
+  compact: false,
+})
 
 const { t } = useI18n()
 
 function optionLabel(index: number): string {
-  return props.trueFalse ? (props.question.options[index] ?? '') : String.fromCharCode(65 + index)
+  if (props.trueFalse) return props.question.options[index] ?? ''
+  return props.compact
+    ? optionLetter(props.question.options[index], index)
+    : String.fromCharCode(65 + index)
 }
 
 const emit = defineEmits<{
@@ -114,6 +142,8 @@ function getLetterPillClass(index: number) {
   )
     return 'border-error bg-error text-error-content'
   if (props.selectedAnswer === index) return 'border-primary bg-primary text-primary-content'
-  return 'border-base-300 bg-base-100'
+  return props.compact
+    ? 'border-base-300 bg-base-100 hover:border-base-content/40 disabled:hover:border-base-300'
+    : 'border-base-300 bg-base-100'
 }
 </script>

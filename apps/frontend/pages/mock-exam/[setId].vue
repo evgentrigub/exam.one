@@ -39,7 +39,11 @@
           <p class="mt-1 text-sm opacity-80">{{ passMessage }}</p>
         </div>
         <div class="sm:ml-auto sm:text-right">
-          <div class="font-mono text-3xl font-bold">
+          <div v-if="gradeLabel" class="font-display text-2xl font-bold">{{ gradeLabel }}</div>
+          <div
+            class="font-mono"
+            :class="gradeLabel ? 'text-sm font-semibold opacity-80' : 'text-3xl font-bold'"
+          >
             {{
               passResult.pending ? '—' : `${Math.round((roundedOverall / maximumPoints) * 100)}%`
             }}
@@ -347,24 +351,43 @@
   >
     <h1 class="font-display text-2xl font-bold">{{ $t('c1.preparation') }}</h1>
     <TimerChip :seconds="preparationSeconds" />
-    <label class="label" for="prep-topic">{{ $t('c1.chooseTopic') }}</label>
-    <select
-      id="prep-topic"
-      class="select select-bordered w-full"
-      :value="preparation.selectedTopic"
-      @change="
-        updatePreparation(activeModuleId, {
-          selectedTopic: ($event.target as HTMLSelectElement).value,
-        })
-      "
+    <template v-if="preparationTopics.length">
+      <label class="label" for="prep-topic">{{ $t('c1.chooseTopic') }}</label>
+      <select
+        id="prep-topic"
+        class="select select-bordered w-full"
+        :value="preparation.selectedTopic"
+        @change="
+          updatePreparation(activeModuleId, {
+            selectedTopic: ($event.target as HTMLSelectElement).value,
+          })
+        "
+      >
+        <option v-for="topic in preparationTopics" :key="topic.id" :value="topic.id">
+          {{ topic.theme }}
+        </option>
+      </select>
+      <p class="rounded-box bg-base-200 p-5">
+        {{ preparationTopics.find(t => t.id === preparation?.selectedTopic)?.cards[0]?.cue }}
+      </p>
+    </template>
+    <article
+      v-for="material in preparationMaterials"
+      :key="material.part"
+      class="rounded-box border border-base-300 bg-base-100 p-5"
     >
-      <option v-for="topic in preparationTopics" :key="topic.id" :value="topic.id">
-        {{ topic.theme }}
-      </option>
-    </select>
-    <p class="rounded-box bg-base-200 p-5">
-      {{ preparationTopics.find(t => t.id === preparation?.selectedTopic)?.cards[0]?.cue }}
-    </p>
+      <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/50">
+        {{ $t('exercisesUi.part') }} {{ material.part }} · {{ material.theme }}
+      </p>
+      <h2 class="mt-1 font-display text-base font-semibold">{{ material.stimulus.title }}</h2>
+      <p
+        v-for="(paragraph, index) in material.stimulus.content.split(/\n+/).filter(Boolean)"
+        :key="index"
+        class="mt-2 text-sm leading-relaxed"
+      >
+        {{ paragraph }}
+      </p>
+    </article>
     <label class="label" for="prep-notes">{{ $t('c1.notes') }}</label>
     <textarea
       id="prep-notes"
@@ -729,6 +752,14 @@ const preparationTopics = computed(() => {
   const topic = set.value.content.speaking[0]
   return topic && 'topicOptions' in topic ? (topic.topicOptions ?? []) : []
 })
+/** Texts the speaking parts are about (a discussion article, a planning situation). */
+const preparationMaterials = computed(() =>
+  set.value.content.speaking.flatMap(topic =>
+    'stimulus' in topic && topic.stimulus
+      ? [{ part: topic.testingPart, theme: topic.theme, stimulus: topic.stimulus }]
+      : []
+  )
+)
 watch([preparationSeconds, preparation], () => {
   if (
     preparation.value &&
@@ -787,6 +818,13 @@ const passMessage = computed(() => {
   if (passed) return t('mockExam.passAllGroups')
   const below = groups.filter(group => !group.passed).map(group => group.label)
   return t('mockExam.groupBelow', { groups: below.join(', ') })
+})
+/** The grade a set with grade bands awards (telc: sehr gut … ausreichend), or blank. */
+const gradeLabel = computed(() => {
+  const grade = passResult.value.grade
+  if (!grade) return ''
+  const band = set.value.rules?.grades?.find(item => item.id === grade)
+  return t(band?.labelKey ?? `mockExam.grades.${grade}`)
 })
 const hasPendingAiGrading = computed(() =>
   (['writing', 'speaking'] as const).some(skill => isAiReviewInProgress(skill))
@@ -1022,6 +1060,9 @@ function overviewInput(): MockExamOverviewInput {
             ...(group.pending ? { pending: group.pending } : {}),
           })),
         }
+      : {}),
+    ...(gradeLabel.value
+      ? { grade: { label: gradeLabel.value, failed: passResult.value.grade === 'failed' } }
       : {}),
     modules: set.value.modules.map(definition => ({
       ...(definition.id ? { id: definition.id } : {}),

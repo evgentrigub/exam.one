@@ -103,7 +103,8 @@
     "greeting": "Saludo",
     "description": "Descripción",
     "photo": "Descripción de foto",
-    "roleplay": "Juego de rol"
+    "roleplay": "Juego de rol",
+    "news": "Noticias"
   },
   "home": {
     "title": "Exam.one",
@@ -297,7 +298,8 @@
       "goethe": "Alemán Goethe",
       "cambridge": "Inglés Cambridge",
       "certyfikat-polski": "Polaco Certyfikat",
-      "instituto-cervantes": "Español DELE"
+      "instituto-cervantes": "Español DELE",
+      "telc": "Alemán telc"
     },
     "targetLevel": "Nivel objetivo",
     "levelA2Desc": "Elemental",
@@ -830,7 +832,8 @@
       "range": "Variedad de lengua",
       "accuracy": "Corrección",
       "communicativeAchievement": "Logro comunicativo",
-      "genreAdequacy": "Género y registro"
+      "genreAdequacy": "Género y registro",
+      "communicativeDesign": "Organización comunicativa"
     },
     "modelAnswer": {
       "title": "Respuesta modelo",
@@ -1012,7 +1015,8 @@
     "coherence": "Coherencia",
     "accuracy": "Corrección",
     "range": "Alcance lingüístico",
-    "structures": "Estructuras"
+    "structures": "Estructuras",
+    "expression": "Capacidad expresiva"
   },
   "mockExam": {
     "grammar": "Gramática",
@@ -1164,7 +1168,14 @@
       "raw": "Puntos brutos {score} / {max}",
       "originalEstimate": "Resultado estimado en la Cambridge English Scale a partir de tareas originales de la aplicación, sin calibración oficial. La expresión oral utiliza una rúbrica adaptada de transcripciones, sin pronunciación ni ponderación oficial de los criterios."
     },
-    "openAiSettings": "Abrir ajustes de IA"
+    "openAiSettings": "Abrir ajustes de IA",
+    "grades": {
+      "sehrGut": "sehr gut (sobresaliente)",
+      "gut": "gut (notable)",
+      "befriedigend": "befriedigend (bien)",
+      "ausreichend": "ausreichend (suficiente)",
+      "failed": "No aprobado"
+    }
   },
   "pastExams": {
     "back": "Volver al progreso",
@@ -1214,8 +1225,8 @@
         "description": "Responde con una o dos frases y da un motivo cuando puedas."
       },
       "presentation": {
-        "title": "Presentación · 5 minutos",
-        "description": "Presenta el tema elegido con una estructura clara."
+        "title": "Monólogo · hasta {time}",
+        "description": "Habla sin interrupciones y con una estructura clara."
       }
     },
     "recorder": {
@@ -1299,7 +1310,8 @@
       "checkingAvailability": "Comprobando la disponibilidad de voz a texto…",
       "requiresStt": "Para grabar se necesita una herramienta de voz a texto disponible.",
       "noAudio": "No se captó audio. Introduce la transcripción a mano o vuelve a grabar.",
-      "transcriptionFailed": "Error en la transcripción. Introduce la transcripción a mano."
+      "transcriptionFailed": "Error en la transcripción. Introduce la transcripción a mano.",
+      "stimulus": "Texto para debatir"
     }
   },
   "listening": {
@@ -1423,7 +1435,13 @@
     "backToOverview": "Volver al resumen",
     "answerQuestions": "Responder preguntas",
     "noQuestions": "No hay preguntas disponibles",
-    "gapInstructions": "Escribe una palabra en cada hueco. La ortografía cuenta; las mayúsculas, no."
+    "gapInstructions": "Escribe una palabra en cada hueco. La ortografía cuenta; las mayúsculas, no.",
+    "bank": {
+      "title": "Banco de respuestas",
+      "onceEach": "Cada opción encaja como máximo con un ítem; algunas no se usan.",
+      "reusable": "Una opción puede encajar con varios ítems.",
+      "usedBy": "→ {items}"
+    }
   },
   "errors": {
     "requestFailed": "Error en la solicitud",

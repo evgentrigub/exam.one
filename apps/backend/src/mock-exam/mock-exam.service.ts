@@ -119,7 +119,12 @@ export class MockExamService {
       throw new NotFoundException({ code: 'SET_NOT_FOUND', message: 'Mock exam set not found' })
     }
     const pack = getPack(set.packId)
-    if (pack?.structure.some(m => m.parts.some(p => p.runtime?.zeroCriterion))) {
+    // Banded rubrics (Goethe C1, telc B2) are re-validated and their module scores recomputed
+    // from the saved reviews, so a stored grade cannot drift from its band or zero rule.
+    const banded = pack?.structure.some(m =>
+      m.parts.some(p => p.runtime?.zeroCriterion || p.runtime?.criteria?.some(c => c.allowedPoints))
+    )
+    if (pack && banded) {
       try {
         const saved = record(state)
         const modules = record(saved['modules'])

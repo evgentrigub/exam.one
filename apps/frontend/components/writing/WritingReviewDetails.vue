@@ -154,6 +154,7 @@ const CRITERION_LABELS: Record<string, string> = {
   taskCompletion: 'writing.reviewDetails.taskFulfillment',
   range: 'writing.reviewDetails.range',
   accuracy: 'writing.reviewDetails.accuracy',
+  communicativeDesign: 'writing.reviewDetails.communicativeDesign',
   communicativeAchievement: 'writing.reviewDetails.communicativeAchievement',
   genreAdequacy: 'writing.reviewDetails.genreAdequacy',
   coherence: 'writing.reviewDetails.coherence',

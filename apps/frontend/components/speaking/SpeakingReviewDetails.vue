@@ -94,6 +94,7 @@ const CRITERION_LABELS: Record<string, string> = {
       'grammar',
       'coherence',
       'accuracy',
+      'expression',
       'range',
       'structures',
     ].map(id => [id, `speakingReview.${id}`])

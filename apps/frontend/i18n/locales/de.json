@@ -103,7 +103,8 @@
     "greeting": "Glückwünsche",
     "description": "Beschreibung",
     "photo": "Bildbeschreibung",
-    "roleplay": "Rollenspiel"
+    "roleplay": "Rollenspiel",
+    "news": "Nachrichten"
   },
   "home": {
     "title": "Exam.one",
@@ -297,7 +298,8 @@
       "goethe": "Deutsch Goethe",
       "cambridge": "Englisch Cambridge",
       "certyfikat-polski": "Polnisch Certyfikat",
-      "instituto-cervantes": "Spanisch DELE"
+      "instituto-cervantes": "Spanisch DELE",
+      "telc": "Deutsch telc"
     },
     "targetLevel": "Zielniveau",
     "levelA2Desc": "Elementar",
@@ -830,7 +832,8 @@
       "range": "Sprachlicher Umfang",
       "accuracy": "Sprachliche Richtigkeit",
       "communicativeAchievement": "Kommunikative Wirkung",
-      "genreAdequacy": "Textsorte und Register"
+      "genreAdequacy": "Textsorte und Register",
+      "communicativeDesign": "Kommunikative Gestaltung"
     },
     "modelAnswer": {
       "title": "Musterantwort",
@@ -1012,7 +1015,8 @@
     "coherence": "Kohärenz",
     "accuracy": "Sprachliche Korrektheit",
     "range": "Sprachliches Spektrum",
-    "structures": "Strukturen"
+    "structures": "Strukturen",
+    "expression": "Ausdrucksfähigkeit"
   },
   "mockExam": {
     "grammar": "Grammatik",
@@ -1164,7 +1168,14 @@
       "raw": "Rohpunkte {score} / {max}",
       "originalEstimate": "Geschätztes Ergebnis auf der Cambridge English Scale anhand eigener App-Aufgaben, die keine kalibrierten offiziellen Tests sind. Sprechen nutzt ein angepasstes Transkript-Raster ohne Aussprache oder offizielle Kriteriengewichtung."
     },
-    "openAiSettings": "KI-Einstellungen öffnen"
+    "openAiSettings": "KI-Einstellungen öffnen",
+    "grades": {
+      "sehrGut": "sehr gut",
+      "gut": "gut",
+      "befriedigend": "befriedigend",
+      "ausreichend": "ausreichend",
+      "failed": "nicht bestanden"
+    }
   },
   "pastExams": {
     "back": "Zurück zum Fortschritt",
@@ -1214,8 +1225,8 @@
         "description": "Antworte in ein, zwei Sätzen und nenne, wenn möglich, einen Grund."
       },
       "presentation": {
-        "title": "Präsentation · 5 Minuten",
-        "description": "Präsentiere das gewählte Thema mit einem klaren Aufbau."
+        "title": "Monolog · bis {time}",
+        "description": "Sprechen Sie allein und klar gegliedert."
       }
     },
     "recorder": {
@@ -1299,7 +1310,8 @@
       "checkingAvailability": "Verfügbarkeit der Spracherkennung wird geprüft…",
       "requiresStt": "Für die Aufnahme wird ein verfügbares Spracherkennungs-Tool benötigt.",
       "noAudio": "Es wurde kein Ton aufgenommen. Gib das Transkript manuell ein oder nimm erneut auf.",
-      "transcriptionFailed": "Die Transkription ist fehlgeschlagen. Gib das Transkript manuell ein."
+      "transcriptionFailed": "Die Transkription ist fehlgeschlagen. Gib das Transkript manuell ein.",
+      "stimulus": "Text zur Diskussion"
     }
   },
   "listening": {
@@ -1423,7 +1435,13 @@
     "backToOverview": "Zurück zur Übersicht",
     "answerQuestions": "Fragen beantworten",
     "noQuestions": "Keine Fragen verfügbar",
-    "gapInstructions": "Schreib in jede Lücke ein Wort. Die Rechtschreibung zählt, Groß- und Kleinschreibung nicht."
+    "gapInstructions": "Schreib in jede Lücke ein Wort. Die Rechtschreibung zählt, Groß- und Kleinschreibung nicht.",
+    "bank": {
+      "title": "Lösungsauswahl",
+      "onceEach": "Jede Lösung passt höchstens zu einer Aufgabe; einige bleiben übrig.",
+      "reusable": "Eine Lösung kann zu mehreren Aufgaben passen.",
+      "usedBy": "→ {items}"
+    }
   },
   "errors": {
     "requestFailed": "Anfrage fehlgeschlagen",

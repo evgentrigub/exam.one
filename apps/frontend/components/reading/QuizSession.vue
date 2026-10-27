@@ -25,7 +25,15 @@
         @update:model-value="handleTypedAnswers"
         @commit="flushDraft"
       />
-      <div v-else class="mt-5 space-y-6">
+      <OptionBank
+        v-if="bankOptions"
+        class="mt-5"
+        :options="bankOptions"
+        :usage="bankUsage"
+        :exclusive="part?.runtime?.reuseOptions === false"
+        :repeatable="part?.runtime?.repeatableOptions ?? []"
+      />
+      <div v-if="!isGapFill" class="mt-5" :class="bankOptions ? 'space-y-5' : 'space-y-6'">
         <QuestionCard
           v-for="(q, i) in questions"
           :id="gapInputId(q.id)"
@@ -37,6 +45,7 @@
           :submitted="isFinished"
           :show-feedback="!examMode"
           :true-false="isTrueFalse"
+          :compact="Boolean(bankOptions)"
           @answer-selected="handleAnswerSelected"
         />
       </div>
@@ -148,8 +157,10 @@ import { isGapAnswerCorrect } from '@exam-one/exam-packs'
 import type { ReadingExercise, ReadingQuestion } from '~/utils/exercises/reading'
 import { useProgress } from '~/composables/useProgress'
 import QuestionCard from '~/components/reading/QuestionCard.vue'
+import OptionBank from '~/components/reading/OptionBank.vue'
 import GapFillInputs from '~/components/gapFill/GapFillInputs.vue'
 import { gapInputId, type ObjectiveAnswer, type ObjectiveAnswers } from '~/utils/gapFill'
+import { optionLetter, optionUsage, sharedOptions } from '~/utils/optionBank'
 
 interface Props {
   text: ReadingExercise
@@ -187,11 +198,13 @@ const answeredQuestions = ref<ObjectiveAnswers>({})
 
 const questions = computed(() => props.text.questions || [])
 const { partsFor } = useActivePack()
-const itemFormat = computed(
-  () => partsFor('reading').find(part => part.n === props.text.testingPart)?.itemFormat
-)
+const part = computed(() => partsFor('reading').find(item => item.n === props.text.testingPart))
+const itemFormat = computed(() => part.value?.itemFormat)
 const isTrueFalse = computed(() => itemFormat.value === 'true-false')
 const isGapFill = computed(() => itemFormat.value === 'gap-fill')
+/** The shared bank of an `optionBank` part; a payload whose options differ keeps the grid. */
+const bankOptions = computed(() => (part.value?.optionBank ? sharedOptions(questions.value) : null))
+const bankUsage = computed(() => optionUsage(questions.value, answeredQuestions.value))
 
 /** A choice is an index; a typed gap counts once it is not blank. */
 function isAnswered(value: ObjectiveAnswer | undefined): value is ObjectiveAnswer {
@@ -267,10 +280,7 @@ function handleTypedAnswers(value: ObjectiveAnswers) {
 watch(
   [answeredQuestions, isFinished],
   () => {
-    if (
-      isGapFill.value ||
-      partsFor('reading').find(p => p.n === props.text.testingPart)?.choiceGaps
-    )
+    if (isGapFill.value || part.value?.choiceGaps)
       emit('gapState', { answers: { ...answeredQuestions.value }, revealed: isFinished.value })
   },
   { immediate: true }
@@ -328,7 +338,8 @@ function restartQuiz() {
 
 /** A letter for lettered options; the option itself for Richtig / Falsch; a gap's own word. */
 function formatAnswerLabel(index: number, options?: readonly string[]) {
-  return isTrueFalse.value ? (options?.[index] ?? '') : String.fromCharCode(65 + index)
+  if (isTrueFalse.value) return options?.[index] ?? ''
+  return bankOptions.value ? optionLetter(options?.[index], index) : String.fromCharCode(65 + index)
 }
 
 function answerLabel(answer: ObjectiveAnswer, question?: ReadingQuestion) {

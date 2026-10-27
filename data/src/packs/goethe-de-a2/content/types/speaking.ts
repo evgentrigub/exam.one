@@ -67,13 +67,26 @@ export interface SpeakingCard {
   speaker?: 'examiner'
 }
 
+/** A text the learner reads before speaking, such as the article a discussion is about. */
+export interface SpeakingStimulus {
+  title: string
+  source?: string
+  content: string
+}
+
 /** A card exchange: one recording per card, in the part's segment order (Goethe A1 Teil 2–3). */
 export interface SpeakingCardsTopic extends SpeakingTopicBase {
   testingPart: number
   topicType: string
   theme: string
   cards: SpeakingCard[]
-  topicOptions?: Array<{ id: string; theme: string; cards: SpeakingCard[] }>
+  stimulus?: SpeakingStimulus
+  topicOptions?: Array<{
+    id: string
+    theme: string
+    cards: SpeakingCard[]
+    stimulus?: SpeakingStimulus
+  }>
 }
 
 export type SpeakingA2Topic =
