@@ -103,7 +103,8 @@
     "greeting": "Powitanie",
     "description": "Opis",
     "photo": "Opis zdjęcia",
-    "roleplay": "Odgrywanie ról"
+    "roleplay": "Odgrywanie ról",
+    "news": "Wiadomości"
   },
   "home": {
     "title": "Exam.one",
@@ -297,7 +298,8 @@
       "goethe": "Niemiecki Goethe",
       "cambridge": "Angielski Cambridge",
       "certyfikat-polski": "Polski Certyfikat",
-      "instituto-cervantes": "Hiszpański DELE"
+      "instituto-cervantes": "Hiszpański DELE",
+      "telc": "Niemiecki telc"
     },
     "targetLevel": "Poziom docelowy",
     "levelA2Desc": "Podstawowy",
@@ -830,7 +832,8 @@
       "range": "Zakres językowy",
       "accuracy": "Poprawność",
       "communicativeAchievement": "Skuteczność komunikacyjna",
-      "genreAdequacy": "Gatunek i rejestr"
+      "genreAdequacy": "Gatunek i rejestr",
+      "communicativeDesign": "Organizacja komunikacyjna"
     },
     "modelAnswer": {
       "title": "Odpowiedź wzorcowa",
@@ -1012,7 +1015,8 @@
     "coherence": "Spójność",
     "accuracy": "Poprawność",
     "range": "Bogactwo językowe",
-    "structures": "Struktury"
+    "structures": "Struktury",
+    "expression": "Sprawność wypowiedzi"
   },
   "mockExam": {
     "grammar": "Gramatyka",
@@ -1164,7 +1168,14 @@
       "raw": "Punkty surowe {score} / {max}",
       "originalEstimate": "Szacunkowy wynik Cambridge English Scale na podstawie autorskich zadań aplikacji, które nie są skalibrowanymi testami oficjalnymi. Mówienie oceniamy według dostosowanej skali transkrypcji, bez wymowy i oficjalnych wag kryteriów."
     },
-    "openAiSettings": "Otwórz ustawienia AI"
+    "openAiSettings": "Otwórz ustawienia AI",
+    "grades": {
+      "sehrGut": "sehr gut (bardzo dobry)",
+      "gut": "gut (dobry)",
+      "befriedigend": "befriedigend (dostateczny)",
+      "ausreichend": "ausreichend (dopuszczający)",
+      "failed": "Niezdany"
+    }
   },
   "pastExams": {
     "back": "Wróć do postępów",
@@ -1214,8 +1225,8 @@
         "description": "Odpowiedz jednym lub dwoma zdaniami i, jeśli możesz, podaj powód."
       },
       "presentation": {
-        "title": "Prezentacja · 5 minut",
-        "description": "Przedstaw wybrany temat w przejrzysty sposób."
+        "title": "Monolog · do {time}",
+        "description": "Mów samodzielnie, w przejrzystym porządku."
       }
     },
     "recorder": {
@@ -1299,7 +1310,8 @@
       "checkingAvailability": "Sprawdzanie dostępności zamiany mowy na tekst…",
       "requiresStt": "Nagrywanie wymaga dostępnego narzędzia do zamiany mowy na tekst.",
       "noAudio": "Nie zarejestrowano dźwięku. Wpisz transkrypcję ręcznie lub nagraj ponownie.",
-      "transcriptionFailed": "Transkrypcja nie powiodła się. Wpisz transkrypcję ręcznie."
+      "transcriptionFailed": "Transkrypcja nie powiodła się. Wpisz transkrypcję ręcznie.",
+      "stimulus": "Tekst do dyskusji"
     }
   },
   "listening": {
@@ -1423,7 +1435,13 @@
     "backToOverview": "Wróć do przeglądu",
     "answerQuestions": "Odpowiedz na pytania",
     "noQuestions": "Brak pytań",
-    "gapInstructions": "Wpisz jedno słowo w każdą lukę. Pisownia się liczy, wielkość liter nie."
+    "gapInstructions": "Wpisz jedno słowo w każdą lukę. Pisownia się liczy, wielkość liter nie.",
+    "bank": {
+      "title": "Bank odpowiedzi",
+      "onceEach": "Każda opcja pasuje najwyżej do jednego zadania; niektóre zostają.",
+      "reusable": "Jedna opcja może pasować do kilku zadań.",
+      "usedBy": "→ {items}"
+    }
   },
   "errors": {
     "requestFailed": "Żądanie nie powiodło się",

@@ -15,11 +15,14 @@ Use existing repository functions through an ephemeral invocation or scratch har
    ```sh
    pnpm --filter @exam-one/exam-packs lint
    pnpm --filter @exam-one/exam-packs type-check
+   pnpm i18n:check
    ```
+
+   `pnpm i18n:check` compares the five frontend locales after new criterion, exercise-type or board keys.
 
 6. Once registered, `node scripts/eval-prompts.mjs --pack <packId> --control` scores the pack's seeds against the production projection and `validate` guards, offline and free. With provider credentials and the user's agreement, `--n 3 --skill <module>` runs each generator through the real LLM and scores its output the same way; it makes paid calls.
 
-The data package's current `test` script only reports that no pack tests are configured. Do not report it as runtime coverage. Backend unit specs under `apps/backend/test/unit/ai/` show how existing packs are tested, but adding one is application work. Checks requiring provider credentials, a running application, or a database are separate from offline contract checks; report their status independently.
+The data package's current `test` script only reports that no pack tests are configured. Do not report it as runtime coverage. Backend unit specs under `apps/backend/test/unit/ai/` show how existing packs are tested, but adding one is application work. Existing specs still run against the new registration: importing the registry runs `validatePacks` over every pack, and `pack-structure-i18n.spec.ts` checks every registered pack's translations. Run the backend suite (`pnpm --filter exam-one-backend test`) after registering when execution is permitted. Checks requiring provider credentials, a running application, or a database are separate from offline contract checks; report their status independently.
 
 ## Registration and integration
 
@@ -43,5 +46,7 @@ Determine whether the user runs local development or Docker Compose before recom
 - For local development, `pnpm build` rebuilds workspace packages; restart the existing frontend/backend development processes as needed (`pnpm dev` starts both).
 - For an existing Compose installation, rebuilding and recreating the frontend/backend services with `docker compose up -d --build frontend backend` incorporates pack source changes. Explain that the existing startup process may run its normal database initialization; pack registration itself needs no new Prisma migration.
 - Do not recommend resetting the database, reinstalling speech models, or using the full stack setup merely to activate a pack. Do not restart services unless that action is within the user's request.
+
+Bundled listening seeds with an explicit `audio` map need prepared WAVs: `pnpm generate:listening-audio --packs <packId>` synthesises them with the installed voices and reuses unchanged files on later runs. Report it as not run when the speech service is unavailable.
 
 In the final report, distinguish authored configuration, available runtime capabilities, checks performed, and manual checks still pending. Include the pack ID, file links, selection instructions, and agreed unsupported scope. No deployment or publication is implied.

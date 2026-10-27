@@ -103,7 +103,8 @@
     "greeting": "Greeting",
     "description": "Description",
     "photo": "Photo description",
-    "roleplay": "Role-play"
+    "roleplay": "Role-play",
+    "news": "News"
   },
   "home": {
     "title": "Exam.one",
@@ -297,7 +298,8 @@
       "goethe": "German Goethe",
       "cambridge": "English Cambridge",
       "certyfikat-polski": "Polish Certyfikat",
-      "instituto-cervantes": "Spanish DELE"
+      "instituto-cervantes": "Spanish DELE",
+      "telc": "German telc"
     },
     "targetLevel": "Target level",
     "levelA2Desc": "Elementary",
@@ -830,7 +832,8 @@
       "range": "Range of language",
       "accuracy": "Accuracy",
       "communicativeAchievement": "Communicative Achievement",
-      "genreAdequacy": "Genre and register"
+      "genreAdequacy": "Genre and register",
+      "communicativeDesign": "Communicative design"
     },
     "modelAnswer": {
       "title": "Model Answer",
@@ -1012,7 +1015,8 @@
     "coherence": "Coherence",
     "accuracy": "Accuracy",
     "range": "Range of language",
-    "structures": "Structures"
+    "structures": "Structures",
+    "expression": "Expressiveness"
   },
   "mockExam": {
     "grammar": "Grammar",
@@ -1164,7 +1168,14 @@
       "raw": "Raw {score} / {max}",
       "originalEstimate": "Estimated Cambridge English Scale result from original app tasks, which are not calibrated official tests. Speaking uses an adapted transcript rubric without pronunciation or official criterion weighting."
     },
-    "openAiSettings": "Open AI settings"
+    "openAiSettings": "Open AI settings",
+    "grades": {
+      "sehrGut": "sehr gut (very good)",
+      "gut": "gut (good)",
+      "befriedigend": "befriedigend (satisfactory)",
+      "ausreichend": "ausreichend (sufficient)",
+      "failed": "Not passed"
+    }
   },
   "pastExams": {
     "back": "Back to progress",
@@ -1214,8 +1225,8 @@
         "description": "Answer in a sentence or two, and give a reason where you can."
       },
       "presentation": {
-        "title": "Presentation · 5 minutes",
-        "description": "Present the chosen topic with a clear structure."
+        "title": "Monologue · up to {time}",
+        "description": "Speak on your own with a clear structure."
       }
     },
     "recorder": {
@@ -1299,7 +1310,8 @@
       "checkingAvailability": "Checking speech-to-text availability…",
       "requiresStt": "Recording requires an available speech-to-text tool.",
       "noAudio": "No audio was captured. Enter the transcript manually or re-record.",
-      "transcriptionFailed": "Transcription failed. Enter the transcript manually."
+      "transcriptionFailed": "Transcription failed. Enter the transcript manually.",
+      "stimulus": "Text to discuss"
     }
   },
   "listening": {
@@ -1423,7 +1435,13 @@
     "backToOverview": "Back to overview",
     "answerQuestions": "Answer questions",
     "noQuestions": "No questions available",
-    "gapInstructions": "Write one word in each gap. Spelling counts; capital letters don't."
+    "gapInstructions": "Write one word in each gap. Spelling counts; capital letters don't.",
+    "bank": {
+      "title": "Answer bank",
+      "onceEach": "Each option fits at most one item; some are not used.",
+      "reusable": "An option may fit more than one item.",
+      "usedBy": "→ {items}"
+    }
   },
   "errors": {
     "requestFailed": "Request failed",

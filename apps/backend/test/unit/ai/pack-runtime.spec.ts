@@ -1,4 +1,5 @@
 import {
+  applyReviewRules,
   formatAdapter,
   isGapAnswerCorrect,
   normalizeGapAnswer,
@@ -140,6 +141,100 @@ describe('Data-only pack runtime', () => {
       })),
     }
     expect(() => validatePacks([pack])).toThrow('replay')
+  })
+})
+
+describe('Option banks and four-band rubrics', () => {
+  const bankRules = { minutes: 1, maxPoints: 3, reuseOptions: false, repeatableOptions: [2] }
+  const bankView = (answers: number[]) =>
+    formatAdapter('matching', bankRules).project({
+      title: 'Bank',
+      questions: answers.map((correctAnswer, i) => ({
+        id: `q${i + 1}`,
+        text: `Situation ${i + 1}`,
+        options: ['a · Ad', 'b · Ad', 'x · No ad'],
+        correctAnswer,
+      })),
+    })
+
+  it('lets a repeatable option recur while every other answer stays unique', () => {
+    expect(() => validateView(bankView([0, 2, 2]), bankRules)).not.toThrow()
+    expect(() => validateView(bankView([0, 0, 2]), bankRules)).toThrow('unique')
+    expect(() =>
+      validateView(bankView([0, 2, 2]), { ...bankRules, repeatableOptions: [] })
+    ).toThrow('unique')
+  })
+
+  it('refuses an option bank on a non-choice part and repeatable options outside the list', () => {
+    const patched = (patch: Partial<ExamPart>, runtimePatch: Record<string, unknown> = {}) => ({
+      ...syntheticEnglishA1,
+      structure: syntheticEnglishA1.structure.map(module => ({
+        ...module,
+        parts: module.parts.map(part =>
+          part.itemFormat === (patch.itemFormat ?? 'matching')
+            ? { ...part, ...patch, runtime: { ...part.runtime!, ...runtimePatch } }
+            : part
+        ),
+      })),
+    })
+    expect(() => validatePacks([patched({ itemFormat: 'freeform', optionBank: true })])).toThrow(
+      'option bank'
+    )
+    expect(() =>
+      validatePacks([patched({ optionBank: true }, { optionCount: 3, repeatableOptions: [3] })])
+    ).toThrow('repeatable option')
+    expect(() =>
+      validatePacks([patched({ optionBank: true }, { optionCount: 3, repeatableOptions: [2] })])
+    ).not.toThrow()
+  })
+
+  it('grades a four-band A–D rubric and zeroes it with the lowest letter', () => {
+    const rules = {
+      minutes: 30,
+      maxPoints: 10,
+      zeroCriterion: 'task',
+      criteria: [
+        { id: 'task', label: 'Task', maxPoints: 5, allowedPoints: [5, 3, 1, 0] },
+        { id: 'form', label: 'Form', maxPoints: 5, allowedPoints: [5, 3, 1, 0] },
+      ],
+    }
+    const review = (task: [number, string], form: [number, string]) => ({
+      maxPoints: 10,
+      totalPoints: task[0] + form[0],
+      criteria: [
+        { ...rules.criteria[0], points: task[0], grade: task[1], comment: '' },
+        { ...rules.criteria[1], points: form[0], grade: form[1], comment: '' },
+      ],
+    })
+    expect(validateReview(review([3, 'B'], [0, 'D']), rules).totalPoints).toBe(3)
+    expect(() => validateReview(review([3, 'B'], [0, 'E']), rules)).toThrow('band')
+    expect(() => validateReview(review([2, 'B'], [0, 'D']), rules)).toThrow('band')
+    const zeroed = applyReviewRules(validateReview(review([0, 'D'], [5, 'A']), rules), rules, {})
+    expect(zeroed.criteria.map(c => c.grade)).toEqual(['D', 'D'])
+    expect(() =>
+      validatePacks([
+        {
+          ...syntheticEnglishA1,
+          structure: syntheticEnglishA1.structure.map(module => ({
+            ...module,
+            parts: module.parts.map(part =>
+              part.itemFormat === 'freeform'
+                ? {
+                    ...part,
+                    runtime: {
+                      ...part.runtime!,
+                      criteria: part.runtime!.criteria!.map(c => ({
+                        ...c,
+                        allowedPoints: [c.maxPoints, 0, 0],
+                      })),
+                    },
+                  }
+                : part
+            ),
+          })),
+        },
+      ])
+    ).toThrow('criterion bands')
   })
 })
 

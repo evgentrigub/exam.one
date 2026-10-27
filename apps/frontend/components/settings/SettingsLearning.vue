@@ -127,7 +127,10 @@ const levelOptions = computed<SetChoiceOption[]>(() => {
       label: pack.cefr,
       desc: pack.title,
     })),
-    { id: 'b2-soon', label: 'B2', disabled: true },
+    // B2 is announced as coming soon only on boards that do not offer it yet.
+    ...(liveForBoard.some(pack => pack.cefr === 'B2')
+      ? []
+      : [{ id: 'b2-soon', label: 'B2', disabled: true }]),
   ]
 })
 

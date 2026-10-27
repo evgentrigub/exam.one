@@ -34,6 +34,8 @@ export interface MockExamOverviewInput {
     pass: number
     skills: Partial<Record<SkillId, number | null>>
   }
+  /** Set only for an exam with grade bands: the grade the total earns, already localized. */
+  grade?: { label: string; failed: boolean } | null
   modules: Array<{
     id?: string
     label?: string
@@ -97,6 +99,10 @@ Identify what went well and what deserves more practice. Treat pending AI grades
     }${
       result.scale
         ? '\nThe result is reported on the scale in `scale`: module scores are raw marks, and each skill also has a scale score; the overall score is their average and passes at `scale.pass`. Refer to the scale scores and the band, not to raw points.'
+        : ''
+    }${
+      result.grade
+        ? '\nThe `grade` is the overall grade the result earns. Name it once; if `grade.failed` is true, the exam is not passed, whatever the total.'
         : ''
     }
 Return only JSON with this shape:

@@ -4,7 +4,7 @@ export interface RubricCriterion {
   id: string
   label: string
   maxPoints: number
-  /** Discrete rubric bands, highest first (A–E). */
+  /** Discrete rubric bands, highest first, graded A, B, … (A–E or A–D). */
   allowedPoints?: number[]
 }
 export interface ResponseField {
@@ -19,6 +19,8 @@ export interface PartRuntime {
   questionCount?: number
   optionCount?: number
   reuseOptions?: boolean
+  /** Option indices any number of questions may share despite `reuseOptions: false` (an `x`). */
+  repeatableOptions?: number[]
   replays?: number
   previewSeconds?: number
   zeroCriterion?: string
@@ -271,10 +273,13 @@ export function validateView(view: ExerciseView, rules: PartRuntime): void {
       if (q['weight'] !== undefined && (!Number.isFinite(q['weight']) || q['weight'] <= 0))
         throw new Error('Invalid question weight')
     }
+    const exclusive = view.questions
+      .map(q => q['correctAnswer'])
+      .filter(answer => !rules.repeatableOptions?.includes(answer))
     if (
       view.format === 'matching' &&
       rules.reuseOptions === false &&
-      new Set(view.questions.map(q => q['correctAnswer'])).size !== view.questions.length
+      new Set(exclusive).size !== exclusive.length
     )
       throw new Error('Matching answers must be unique')
   }
@@ -432,7 +437,7 @@ export function applyReviewRules(
     criteria: review.criteria.map(c => ({
       ...c,
       points: 0,
-      ...(c.allowedPoints ? { grade: 'E' } : {}),
+      ...(c.allowedPoints ? { grade: 'ABCDE'[c.allowedPoints.length - 1] } : {}),
     })),
     ruleApplied: tooShort ? 'below_half_length' : 'task_fulfilment_zero',
   }

@@ -23,6 +23,24 @@ export interface MockPassResult {
   pending?: true
   /** Set when the rules report on a scale. */
   scale?: MockScaleResult
+  /**
+   * Set when the rules define `grades`: the band a passed total earns, `failed` when the result
+   * does not pass, or null while a required grade is pending.
+   */
+  grade?: string | null
+}
+
+/** The grade id for a result under `grades`; the total is compared exactly, without rounding. */
+function gradeFor(
+  rules: MockExamRules | undefined,
+  overall: number,
+  passed: boolean,
+  pending: boolean
+): Pick<MockPassResult, 'grade'> {
+  if (!rules?.grades?.length) return {}
+  if (pending) return { grade: null }
+  if (!passed) return { grade: 'failed' }
+  return { grade: rules.grades.find(band => overall >= band.min)?.id ?? 'failed' }
 }
 
 export interface MockScaleResult {
@@ -146,11 +164,13 @@ export function evaluateMockPass(
   const passed = groups.length
     ? groups.every(group => group.passed)
     : Math.round(overall) >= (rules?.passPoints ?? DEFAULT_RULES.passPoints)
+  const pending = groups.some(group => group.pending)
   return {
     overall,
     maximum,
     passed,
     groups,
-    ...(groups.some(group => group.pending) ? { pending: true as const } : {}),
+    ...(pending ? { pending: true as const } : {}),
+    ...gradeFor(rules, overall, passed, pending),
   }
 }

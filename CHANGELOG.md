@@ -4,7 +4,18 @@ This file records user-visible changes to exam.one. Release tags use the form `v
 
 ## Unreleased
 
-No changes recorded.
+### Added
+
+- telc Deutsch B2 exam pack: all twelve parts of the written and oral exam with original practice tasks, a bundled mock exam (Set 1) and generated sets. Mock results pass on the written and oral parts separately and show the telc grade.
+- Option banks for parts that repeat one option list, answered with compact letter chips; a repeatable "no match" option.
+- Speaking tasks can show a text to read, such as the article a discussion is about, on the speaking and mock preparation screens.
+- Rubrics with four bands (A–D) and mock grade bands.
+
+### Changed
+
+- The monologue card on speaking screens shows the part's own time limit.
+- Learning plan announces B2 as coming soon only for boards without a B2 pack.
+- Saved mock attempts with banded rubrics are re-validated, and their module scores recomputed, for every banded pack.
 
 ## 1.0.0
 

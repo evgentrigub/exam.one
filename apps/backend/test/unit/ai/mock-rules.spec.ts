@@ -83,6 +83,67 @@ describe('evaluateMockPass', () => {
   })
 })
 
+describe('evaluateMockPass grades', () => {
+  const GRADED: MockExamRules = {
+    maximumPoints: 300,
+    groups: [
+      {
+        id: 'written',
+        label: 'Written',
+        skills: ['reading', 'listening', 'writing'],
+        maximumPoints: 225,
+        passPoints: 135,
+        rounding: 'none',
+      },
+      {
+        id: 'oral',
+        label: 'Oral',
+        skills: ['speaking'],
+        maximumPoints: 75,
+        passPoints: 45,
+        rounding: 'none',
+      },
+    ],
+    grades: [
+      { id: 'sehrGut', min: 270 },
+      { id: 'gut', min: 240 },
+      { id: 'befriedigend', min: 210 },
+      { id: 'ausreichend', min: 180 },
+    ],
+  }
+
+  it('awards the band the exact total reaches, without rounding up', () => {
+    const grade = (speaking: number) =>
+      evaluateMockPass(GRADED, { reading: 100, listening: 75, writing: 45, speaking }).grade
+    expect(grade(50)).toBe('sehrGut')
+    expect(grade(49.5)).toBe('gut')
+    expect(grade(45)).toBe('gut')
+  })
+
+  it('reports failed when one group misses its mark, whatever the total', () => {
+    const result = evaluateMockPass(GRADED, {
+      reading: 105,
+      listening: 75,
+      writing: 45,
+      speaking: 40,
+    })
+    expect(result.overall).toBe(265)
+    expect(result).toMatchObject({ passed: false, grade: 'failed' })
+    expect(
+      evaluateMockPass(GRADED, { reading: 60, listening: 44.5, writing: 30, speaking: 75 }).grade
+    ).toBe('failed')
+  })
+
+  it('reports no grade while a required grade is pending, and none without bands', () => {
+    expect(
+      evaluateMockPass(GRADED, { reading: 105, listening: 75, writing: null, speaking: 75 })
+    ).toMatchObject({ pending: true, grade: null })
+    expect(
+      evaluateMockPass(DELE, { reading: 25, writing: 25, listening: 25, speaking: 25 })
+    ).not.toHaveProperty('grade')
+  })
+})
+
 describe('objectiveExercisePoints', () => {
   it('scales correct answers to the exercise points, so half-point gaps earn half', () => {
     expect(objectiveExercisePoints(7, 10, 5)).toBe(3.5)

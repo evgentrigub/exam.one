@@ -78,16 +78,28 @@ export function validatePacks(packs: readonly ExamPack[]): void {
           const bands = criterion.allowedPoints
           if (
             bands &&
-            (bands.length !== 5 ||
+            (bands.length < 2 ||
+              bands.length > 5 ||
               bands[0] !== criterion.maxPoints ||
-              bands[4] !== 0 ||
+              bands[bands.length - 1] !== 0 ||
               bands.some(
                 (points, i) =>
                   !Number.isFinite(points) || points < 0 || (i > 0 && points >= bands[i - 1]!)
               ))
           )
-            fail('invalid A–E criterion bands')
+            fail('invalid criterion bands')
         }
+        if (part.optionBank && !['selection', 'matching'].includes(part.itemFormat))
+          fail(`option bank needs a choice format in ${module.id}:${part.n}`)
+        if (
+          rules.repeatableOptions?.some(
+            index =>
+              !Number.isInteger(index) ||
+              index < 0 ||
+              (rules.optionCount !== undefined && index >= rules.optionCount)
+          )
+        )
+          fail('invalid repeatable option')
         if (rules.zeroCriterion && !rules.criteria?.some(c => c.id === rules.zeroCriterion))
           fail('unknown task-zero criterion')
         if (

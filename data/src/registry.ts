@@ -9,6 +9,7 @@ import { goetheDeA1 } from './packs/goethe-de-a1/pack'
 import { goetheDeA2 } from './packs/goethe-de-a2/pack'
 import { goetheDeB1 } from './packs/goethe-de-b1/pack'
 import { goetheDeC1 } from './packs/goethe-de-c1/pack'
+import { telcDeB2 } from './packs/telc-de-b2/pack'
 import { DEFAULT_PACK_ID, type ExamPack } from './types'
 
 const PACKS: readonly ExamPack[] = [
@@ -22,6 +23,7 @@ const PACKS: readonly ExamPack[] = [
   deleEsA2,
   deleEsB1,
   goetheDeC1,
+  telcDeB2,
 ]
 validatePacks(PACKS)
 
